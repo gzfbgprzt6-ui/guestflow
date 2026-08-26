@@ -119,38 +119,54 @@ nav {
 
 /* commission visual */
 .commission-box {
-  display: flex; flex-direction: column;
-  gap: 2px; max-width: 480px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2px; width: 100%;
+  max-width: 480px;
   margin: 48px auto 0;
   background: var(--ink); border-radius: 16px;
   overflow: hidden;
 }
+.comm-head {
+  padding: 14px 20px 10px;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: #444; background: #111;
+  border-bottom: 1px solid #1f1f1f;
+  grid-column: 1 / -1;
+}
 .comm-row {
   display: flex; align-items: center;
   justify-content: space-between;
-  padding: 16px 22px;
+  padding: 14px 20px;
   background: #111;
   border-bottom: 1px solid #1f1f1f;
+  gap: 12px;
 }
 .comm-row:last-child { border-bottom: none; }
-.comm-label { font-size: 14px; color: #888; font-weight: 500; }
-.comm-val { font-size: 22px; font-weight: 800; letter-spacing: -.02em; }
-.comm-val.red { color: #F87171; }
+.comm-label { font-size: 13px; color: #888; font-weight: 500; text-align: left; }
+.comm-val { font-size: 20px; font-weight: 800; letter-spacing: -.02em; flex-shrink: 0; }
+.comm-val.red  { color: #F87171; }
 .comm-val.red2 { color: #F87171; }
-.comm-val.grn { color: #4ADE80; }
-.comm-head {
-  padding: 16px 22px 12px;
-  font-size: 11px; font-weight: 700;
-  letter-spacing: .1em; text-transform: uppercase;
-  color: #444;
+.comm-val.grn  { color: #4ADE80; }
+
+@media(min-width:540px) {
+  .commission-box {
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 560px;
+  }
+  .comm-row {
+    flex-direction: column; align-items: flex-start;
+    border-bottom: none; border-right: 1px solid #1f1f1f;
+    padding: 20px;
+  }
+  .comm-row:last-child { border-right: none; }
+  .comm-val { font-size: 24px; margin-top: 6px; }
 }
 
 @media(min-width:640px) {
   .hero { padding: 80px 40px 96px; }
   .hero-btns { flex-direction: row; justify-content: center; }
-  .commission-box { flex-direction: row; border-radius: 16px; }
-  .comm-row { flex: 1; flex-direction: column; align-items: flex-start; border-bottom: none; border-right: 1px solid #1f1f1f; padding: 22px; }
-  .comm-row:last-child { border-right: none; }
 }
 
 /* ── HOW ─────────────────────────────────────── */
