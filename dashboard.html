@@ -189,7 +189,7 @@ aside.open{left:0}
       <div class="nav-item" onclick="nav('avail',this)">📅 Dostupnost</div>
       <div class="nav-sec">Dijeljenje</div>
       <div class="nav-item" onclick="nav('links',this)">🔗 Linkovi i QR</div>
-      <div class="nav-item" onclick="nav('bookings',this)">📋 Rezervacije</div>
+      <div class="nav-item" onclick="nav('bookings',this);window.loadBookings&&window.loadBookings()">📋 Rezervacije</div>
       <div class="nav-item" onclick="nav('sub',this)">💳 Pretplata</div>
       <div class="nav-item" onclick="window.location.href='/account.html'">⚙️ Postavke računa</div>
       <div class="nav-item" onclick="signOut()" style="margin-top:auto">🚪 Odjava</div>
