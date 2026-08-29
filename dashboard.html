@@ -876,84 +876,85 @@ window.signOut = async () => {
   // ── BOOKINGS ──────────────────────────────────────────
   let lastBookingUrl = '', lastBookingPhone = ''
 
-  window.loadBookings = async function() {
-    const activeProp = PROP || PROPS.find((_, i) => i < PLAN_LIMIT)
-    if (!activeProp) {
-      document.getElementById('bookings-list').innerHTML =
-        '<div style="text-align:center;color:var(--muted);font-size:13px;padding:24px">Nema aktivnih objekata.</div>'
-      return
-    }
-    const { data: bookings } = await sb
-      .from('bookings').select('*')
-      .eq('property_id', activeProp.id)
-      .order('checkin_date', { ascending: false }).limit(50)
-
-    const el = document.getElementById('bookings-list')
-    if (!bookings?.length) {
-      el.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:13px;padding:24px"><div style="font-size:32px;margin-bottom:8px">📋</div>Još nema rezervacija.<br>Kreiraj prvi link za gosta →</div>'
-      return
-    }
-    const now = new Date()
-    el.innerHTML = bookings.map(b => {
-      const expired = b.token_expires_at && new Date(b.token_expires_at) < now
-      const active = b.is_active && !expired
-      const ci = window.fmtDateDash(b.checkin_date)
-      const co = window.fmtDateDash(b.checkout_date)
-      const url = 'odmoria.com/h/' + b.token
-      return "<div style='border:1px solid var(--border);border-radius:10px;padding:13px 14px;margin-bottom:8px;display:flex;align-items:center;gap:12px;flex-wrap:wrap'>" +
-        "<div style='flex:1;min-width:160px'>" +
-          "<div style='font-size:13.5px;font-weight:700'>" + (b.guest_name||'Gost') + "</div>" +
-          "<div style='font-size:11.5px;color:var(--muted)'>" + ci + " – " + co + (b.guest_note?' · '+b.guest_note:'') + "</div>" +
-          "<div style='font-family:monospace;font-size:11px;color:var(--blue);margin-top:3px'>" + url + "</div>" +
-        "</div>" +
-        "<div style='font-size:12px;font-weight:700;color:" + (active?'var(--green)':'var(--muted)') + ";flex-shrink:0'>" + (active?'🟢 Aktivan':'⚫ Istekao') + "</div>" +
-        "<div style='display:flex;gap:6px;flex-shrink:0'>" +
-          (active?"<button onclick="window.copyBookingLink('" + b.token + "')" style='font-size:12px;padding:6px 11px;border-radius:7px;background:var(--ink);color:#fff;border:none;cursor:pointer;font-family:var(--f);font-weight:700'>Kopiraj</button>":'') +
-          (active?"<button onclick="window.deactivateBooking('" + b.id + "')" style='font-size:12px;padding:6px 11px;border-radius:7px;background:transparent;border:1.5px solid var(--border);cursor:pointer;font-family:var(--f);font-weight:600;color:var(--muted)'>Deaktiviraj</button>":'') +
-        "</div>" +
-      "</div>"
-    }).join('')
-  }
-
   window.fmtDateDash = function(d) {
     if (!d) return ''
     return new Date(d).toLocaleDateString('hr-HR', {day:'numeric',month:'short',year:'2-digit'})
   }
 
+  window.loadBookings = async function() {
+    const activeProp = PROP || PROPS.find(function(_, i){ return i < PLAN_LIMIT })
+    if (!activeProp) {
+      var el = document.getElementById('bookings-list')
+      if (el) el.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:13px;padding:24px">Nema aktivnih objekata.</div>'
+      return
+    }
+    var res = await sb.from('bookings').select('*').eq('property_id', activeProp.id).order('checkin_date', { ascending: false }).limit(50)
+    var bookings = res.data || []
+    var el = document.getElementById('bookings-list')
+    if (!el) return
+    if (!bookings.length) {
+      el.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:13px;padding:24px"><div style="font-size:32px;margin-bottom:8px">📋</div>Još nema rezervacija. Kreiraj prvi link →</div>'
+      return
+    }
+    var now = new Date()
+    var html = ''
+    bookings.forEach(function(b) {
+      var expired = b.token_expires_at && new Date(b.token_expires_at) < now
+      var active = b.is_active && !expired
+      var ci = window.fmtDateDash(b.checkin_date)
+      var co = window.fmtDateDash(b.checkout_date)
+      var url = 'odmoria.com/h/' + b.token
+      html += '<div style="border:1px solid var(--border);border-radius:10px;padding:13px 14px;margin-bottom:8px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">'
+      html += '<div style="flex:1;min-width:160px">'
+      html += '<div style="font-size:13.5px;font-weight:700">' + (b.guest_name||'Gost') + '</div>'
+      html += '<div style="font-size:11.5px;color:var(--muted)">' + ci + ' – ' + co + (b.guest_note?' · '+b.guest_note:'') + '</div>'
+      html += '<div style="font-family:monospace;font-size:11px;color:var(--blue);margin-top:3px">' + url + '</div>'
+      html += '</div>'
+      html += '<div style="font-size:12px;font-weight:700;color:' + (active?'var(--green)':'var(--muted)') + ';flex-shrink:0">' + (active?'🟢 Aktivan':'⚫ Istekao') + '</div>'
+      html += '<div style="display:flex;gap:6px;flex-shrink:0">'
+      if (active) html += '<button onclick="window.copyBookingLink(\'' + b.token + '\')" style="font-size:12px;padding:6px 11px;border-radius:7px;background:var(--ink);color:#fff;border:none;cursor:pointer;font-weight:700">Kopiraj</button>'
+      if (active) html += '<button onclick="window.deactivateBooking(\'' + b.id + '\')" style="font-size:12px;padding:6px 11px;border-radius:7px;background:transparent;border:1.5px solid var(--border);cursor:pointer;color:var(--muted)">Deaktiviraj</button>'
+      html += '</div></div>'
+    })
+    el.innerHTML = html
+  }
+
   window.showAddBooking = function() {
     document.getElementById('add-booking-form').style.display = 'block'
     document.getElementById('booking-result').style.display = 'none'
-    const tom = new Date(); tom.setDate(tom.getDate()+1)
-    const dat = new Date(); dat.setDate(dat.getDate()+8)
+    var tom = new Date(); tom.setDate(tom.getDate()+1)
+    var dat = new Date(); dat.setDate(dat.getDate()+8)
     document.getElementById('bk-checkin').value = tom.toISOString().slice(0,10)
     document.getElementById('bk-checkout').value = dat.toISOString().slice(0,10)
   }
 
-  window.hideAddBooking = function() { document.getElementById('add-booking-form').style.display = 'none' }
-  window.hideResult = function() { document.getElementById('booking-result').style.display = 'none' }
+  window.hideAddBooking = function() {
+    document.getElementById('add-booking-form').style.display = 'none'
+  }
+
+  window.hideResult = function() {
+    document.getElementById('booking-result').style.display = 'none'
+  }
 
   window.createBooking = async function() {
-    const activeProp = PROP || PROPS.find((_, i) => i < PLAN_LIMIT)
+    var activeProp = PROP || PROPS.find(function(_, i){ return i < PLAN_LIMIT })
     if (!activeProp) return
-    const name = document.getElementById('bk-name').value.trim() || 'Gost'
-    const note = document.getElementById('bk-note').value.trim()
-    const ci = document.getElementById('bk-checkin').value
-    const co = document.getElementById('bk-checkout').value
+    var name = (document.getElementById('bk-name').value||'').trim() || 'Gost'
+    var note = (document.getElementById('bk-note').value||'').trim()
+    var ci = document.getElementById('bk-checkin').value
+    var co = document.getElementById('bk-checkout').value
     if (!ci || !co) { showAlert('booking-alert','err','Upiši datume.'); return }
     if (ci >= co) { showAlert('booking-alert','err','Check-out mora biti nakon check-in.'); return }
-
-    const { data: booking, error } = await sb.from('bookings').insert({
+    var res = await sb.from('bookings').insert({
       property_id: activeProp.id, guest_name: name, guest_note: note,
       checkin_date: ci, checkout_date: co
     }).select().single()
-
-    if (error) { showAlert('booking-alert','err','Greška: '+error.message); return }
-
-    const url = 'https://odmoria.com/h/' + booking.token
+    if (res.error) { showAlert('booking-alert','err','Greška: '+res.error.message); return }
+    var url = 'https://odmoria.com/h/' + res.data.token
     lastBookingUrl = url
     lastBookingPhone = activeProp.phone || ''
     document.getElementById('result-url').textContent = url.replace('https://','')
-    document.getElementById('result-desc').textContent = 'Link za ' + name + ' vrijedi od ' + window.fmtDateDash(ci) + ' do dan nakon odjave.'
+    document.getElementById('result-desc').textContent = 'Link za ' + name + ' vrijedi do dan nakon odjave (' + window.fmtDateDash(co) + ').'
     document.getElementById('add-booking-form').style.display = 'none'
     document.getElementById('booking-result').style.display = 'block'
     await window.loadBookings()
@@ -961,33 +962,27 @@ window.signOut = async () => {
   }
 
   window.copyBookingLink = function(token) {
-    navigator.clipboard?.writeText('https://odmoria.com/h/' + token)
+    navigator.clipboard && navigator.clipboard.writeText('https://odmoria.com/h/' + token)
     toast('Link kopiran!')
   }
 
   window.copyResultLink = function() {
-    navigator.clipboard?.writeText(lastBookingUrl)
+    navigator.clipboard && navigator.clipboard.writeText(lastBookingUrl)
     toast('Link kopiran!')
   }
 
   window.shareWhatsApp = function() {
-    const msg = 'Dobrodošli! Sve informacije o vašem boravku: ' + lastBookingUrl
-    const phone = (lastBookingPhone||'').replace(/\D/g,'')
+    var msg = 'Dobrodošli! Sve informacije o vašem boravku: ' + lastBookingUrl
+    var phone = (lastBookingPhone||'').replace(/\D/g,'')
     window.open('https://wa.me/'+phone+'?text='+encodeURIComponent(msg),'_blank')
   }
 
   window.deactivateBooking = async function(id) {
     if (!confirm('Deaktiviraj ovaj link?')) return
-    const { error } = await sb.from('bookings').update({is_active:false}).eq('id',id)
-    if (error) { toast('Greška: '+error.message); return }
+    var res = await sb.from('bookings').update({is_active:false}).eq('id',id)
+    if (res.error) { toast('Greška: '+res.error.message); return }
     await window.loadBookings()
     toast('Link deaktiviran')
-  }
-
-  const _origNav2 = window.nav
-  window.nav = function(id, el) {
-    _origNav2(id, el)
-    if (id === 'bookings') window.loadBookings()
   }
 
 init()
