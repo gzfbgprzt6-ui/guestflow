@@ -179,7 +179,7 @@ aside.open{left:0}
       <select class="prop-sel" id="prop-sel" onchange="onPropChange()"></select>
     </div>
     <div class="nav-wrap">
-      <div class="nav-item" onclick="window.location.href='/add-property.html'" style="background:rgba(26,86,219,.1);color:#60A5FA;margin-bottom:4px">+ Dodaj objekt</div>
+
       <div class="nav-item on" onclick="nav('overview',this)">📊 Pregled</div>
       <div class="nav-sec">Sadržaj</div>
       <div class="nav-item" onclick="nav('property',this)">🏠 Objekt</div>
@@ -551,8 +551,7 @@ async function selectProp(p) {
 window.onPropChange = async () => {
   const sel = document.getElementById('prop-sel')
   if (sel.value === '__new__') {
-    toast('Kreiranje novog objekta...')
-    await createFirstProp()
+    window.location.href = '/add-property.html'
     return
   }
   const p = PROPS.find(x => x.id === sel.value)
