@@ -259,6 +259,11 @@ async function init() {
   const { count } = await sb.from('properties').select('id', { count: 'exact', head: true }).eq('user_id', USER.id)
   PROP_COUNT = count || 0
 
+  // Check if plan expired
+  if (sub?.period_end && new Date(sub.period_end) < new Date() && PLAN !== 'free') {
+    PLAN = 'free'
+  }
+
   const limit = LIMITS[PLAN] || 1
 
   document.getElementById('loading').style.display = 'none'

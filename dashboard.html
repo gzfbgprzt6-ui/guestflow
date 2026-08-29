@@ -492,32 +492,90 @@ async function init() {
 }
 
 // ── PROPERTIES ───────────────────────────────────────
+// Plan limits
+const PLAN_LIMITS = { free: 1, pro: 5, business: 15 }
+let USER_PLAN = 'free'
+let PLAN_LIMIT = 1
+
 async function loadProps() {
+  // 1. Get user plan
+  const { data: sub } = await sb.from('subscriptions').select('plan,status,period_end').eq('user_id', USER.id).maybeSingle()
+  
+  // Check if plan expired — downgrade to free
+  if (sub && sub.period_end && new Date(sub.period_end) < new Date() && sub.plan !== 'free') {
+    USER_PLAN = 'free'
+  } else {
+    USER_PLAN = sub?.plan || 'free'
+  }
+  PLAN_LIMIT = PLAN_LIMITS[USER_PLAN] || 1
+  
+  // Update plan badge in sidebar
+  document.getElementById('user-plan').textContent = USER_PLAN.charAt(0).toUpperCase() + USER_PLAN.slice(1) + ' plan'
+
+  // 2. Get all properties
   const { data } = await sb.from('properties').select('*').eq('user_id', USER.id).order('created_at')
   PROPS = data || []
 
-  const sel = document.getElementById('prop-sel')
-  sel.innerHTML = ''
-
   if (PROPS.length === 0) {
-    // No properties — send to onboarding wizard
     window.location.href = '/onboarding.html'
     return
   }
 
+  // 3. Build selector — lock properties over plan limit
+  const sel = document.getElementById('prop-sel')
+  sel.innerHTML = ''
+
   PROPS.forEach((p, i) => {
     const opt = document.createElement('option')
     opt.value = p.id
-    opt.textContent = '🏠 ' + p.name
+    const isLocked = i >= PLAN_LIMIT
+    opt.textContent = (isLocked ? '🔒 ' : '🏠 ') + p.name + (isLocked ? ' (zaključano)' : '')
+    opt.dataset.locked = isLocked ? '1' : '0'
     sel.appendChild(opt)
   })
-  // Add option
+
+  // Add new property option (only if under limit)
   const addOpt = document.createElement('option')
   addOpt.value = '__new__'
-  addOpt.textContent = '+ Dodaj objekt'
+  addOpt.textContent = PROPS.length >= PLAN_LIMIT 
+    ? '🔒 Nadogradi za više objekata' 
+    : '+ Dodaj objekt'
   sel.appendChild(addOpt)
 
-  await selectProp(PROPS[0])
+  // 4. Show lock banner if over limit
+  if (PROPS.length > PLAN_LIMIT) {
+    showPlanLockBanner()
+  }
+
+  // 5. Select first UNLOCKED property
+  const firstUnlocked = PROPS.find((_, i) => i < PLAN_LIMIT)
+  if (firstUnlocked) await selectProp(firstUnlocked)
+}
+
+function showPlanLockBanner() {
+  // Remove existing banner if any
+  document.getElementById('plan-lock-banner')?.remove()
+  
+  const locked = PROPS.length - PLAN_LIMIT
+  const banner = document.createElement('div')
+  banner.id = 'plan-lock-banner'
+  banner.style.cssText = 'background:#0F172A;border:1px solid #1A56DB;border-radius:11px;padding:14px 16px;margin-bottom:14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap'
+  banner.innerHTML = `
+    <div style="flex:1;min-width:200px">
+      <div style="font-size:13.5px;font-weight:700;color:#fff;margin-bottom:3px">
+        🔒 ${locked} objekt${locked > 1 ? 'a' : ''} zaključan${locked > 1 ? 'o' : ''}
+      </div>
+      <div style="font-size:12px;color:#64748B;line-height:1.5">
+        Tvoj ${USER_PLAN.charAt(0).toUpperCase() + USER_PLAN.slice(1)} plan uključuje ${PLAN_LIMIT} objekt${PLAN_LIMIT > 1 ? 'a' : ''}. 
+        Nadogradi plan za pristup svim objektima.
+      </div>
+    </div>
+    <button onclick="nav('sub',document.querySelectorAll('.nav-item')[8])" 
+      style="padding:9px 16px;border-radius:8px;background:#1A56DB;color:#fff;border:none;cursor:pointer;font-size:13px;font-weight:700;font-family:inherit;flex-shrink:0">
+      Nadogradi plan →
+    </button>
+  `
+  document.querySelector('.content').prepend(banner)
 }
 
 async function createFirstProp() {
@@ -550,10 +608,31 @@ async function selectProp(p) {
 
 window.onPropChange = async () => {
   const sel = document.getElementById('prop-sel')
+  const selectedOpt = sel.options[sel.selectedIndex]
+  
   if (sel.value === '__new__') {
+    if (PROPS.length >= PLAN_LIMIT) {
+      toast('Nadogradi plan za dodavanje novih objekata 🔒')
+      // Reset to first property
+      sel.value = PROPS[0]?.id || ''
+      return
+    }
     window.location.href = '/add-property.html'
     return
   }
+  
+  // Check if selected property is locked
+  if (selectedOpt?.dataset.locked === '1') {
+    toast('Ovaj objekt je zaključan — nadogradi plan 🔒')
+    // Reset to first unlocked
+    const firstUnlocked = PROPS.find((_, i) => i < PLAN_LIMIT)
+    if (firstUnlocked) {
+      sel.value = firstUnlocked.id
+      await selectProp(firstUnlocked)
+    }
+    return
+  }
+  
   const p = PROPS.find(x => x.id === sel.value)
   if (p) await selectProp(p)
 }
