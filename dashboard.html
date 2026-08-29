@@ -549,7 +549,11 @@ async function loadProps() {
 
   // 5. Select first UNLOCKED property
   const firstUnlocked = PROPS.find((_, i) => i < PLAN_LIMIT)
-  if (firstUnlocked) await selectProp(firstUnlocked)
+  if (firstUnlocked) {
+    await selectProp(firstUnlocked)
+    // Make sure selector shows correct value
+    document.getElementById('prop-sel').value = firstUnlocked.id
+  }
 }
 
 function showPlanLockBanner() {
