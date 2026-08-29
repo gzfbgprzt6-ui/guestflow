@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pomoć — Odmoria</title>
+<meta name="description" content="Odgovori na najčešća pitanja o Odmoria servisu. Postavljanje objekta, linkovi za goste, planovi i naplata.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0F172A;--white:#fff;--bg:#F8FAFC;--border:#E2E8F0;--muted:#64748B;--text:#1E293B;--blue:#1A56DB;--blue-lt:#EEF3FF;--blue-dk:#1343B0;--green:#0F6E3F;--green-lt:#E7F5EE;--f:'Plus Jakarta Sans',system-ui,sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--f);background:var(--white);color:var(--text);-webkit-font-smoothing:antialiased;line-height:1.6}
+a{color:var(--blue);text-decoration:none}
+a:hover{text-decoration:underline}
+nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.95);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:56px}
+.logo{font-size:18px;font-weight:800;letter-spacing:-.5px;color:var(--ink)}
+.logo span{color:var(--blue)}
+.nav-r{display:flex;gap:10px}
+.btn{display:inline-flex;align-items:center;justify-content:center;font-weight:700;border-radius:9px;padding:9px 18px;font-size:13.5px;border:none;cursor:pointer;transition:.15s;font-family:var(--f);text-decoration:none}
+.btn-blue{background:var(--blue);color:#fff}.btn-blue:hover{background:var(--blue-dk)}
+.btn-out{background:var(--white);color:var(--text);border:1.5px solid var(--border)}.btn-out:hover{border-color:#94A3B8}
+
+/* HERO */
+.hero{background:var(--bg);border-bottom:1px solid var(--border);padding:52px 24px 40px;text-align:center}
+.hero h1{font-size:clamp(28px,5vw,44px);font-weight:800;letter-spacing:-.03em;margin-bottom:10px}
+.hero p{font-size:16px;color:var(--muted);margin-bottom:24px}
+.search-wrap{max-width:440px;margin:0 auto;position:relative}
+.search-inp{width:100%;padding:12px 48px 12px 16px;border:1.5px solid var(--border);border-radius:10px;font-size:15px;font-family:var(--f);color:var(--text);background:var(--white);transition:border-color .15s}
+.search-inp:focus{outline:none;border-color:var(--blue)}
+.search-ic{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:18px;pointer-events:none}
+
+/* LAYOUT */
+.layout{max-width:960px;margin:0 auto;padding:48px 24px 80px;display:grid;grid-template-columns:200px 1fr;gap:48px}
+.sidebar{position:relative}
+.sidebar-sticky{position:sticky;top:72px}
+.cat-list{list-style:none}
+.cat-item{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:8px;font-size:13.5px;font-weight:600;color:var(--muted);cursor:pointer;margin-bottom:2px;transition:.12s;user-select:none}
+.cat-item:hover{background:var(--bg);color:var(--text)}
+.cat-item.on{background:var(--blue-lt);color:var(--blue)}
+.cat-ic{font-size:16px;flex-shrink:0}
+
+/* CATEGORIES & QUESTIONS */
+.cat-section{margin-bottom:48px;scroll-margin-top:80px}
+.cat-h{font-size:20px;font-weight:800;letter-spacing:-.01em;margin-bottom:4px;display:flex;align-items:center;gap:10px}
+.cat-desc{font-size:14px;color:var(--muted);margin-bottom:20px}
+.faq-item{border:1px solid var(--border);border-radius:11px;margin-bottom:8px;overflow:hidden}
+.faq-q{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;cursor:pointer;font-size:15px;font-weight:600;gap:12px;transition:.15s;user-select:none}
+.faq-q:hover{background:var(--bg)}
+.faq-arrow{font-size:18px;color:var(--muted);transition:transform .2s;flex-shrink:0}
+.faq-a{font-size:14px;line-height:1.75;color:var(--muted);padding:0 18px;max-height:0;overflow:hidden;transition:max-height .3s ease, padding .2s}
+.faq-a.open{max-height:500px;padding:0 18px 16px}
+.faq-a p{margin-bottom:10px}
+.faq-a p:last-child{margin-bottom:0}
+.faq-a ul{padding-left:18px;margin-bottom:10px}
+.faq-a li{margin-bottom:5px}
+.faq-a strong{color:var(--text)}
+.faq-a a{color:var(--blue)}
+
+/* CONTACT STRIP */
+.contact-strip{background:var(--ink);border-radius:14px;padding:36px;text-align:center;margin-top:40px}
+.cs-h{font-size:20px;font-weight:800;color:#fff;margin-bottom:8px}
+.cs-p{font-size:14px;color:rgba(255,255,255,.6);margin-bottom:20px;line-height:1.65}
+.cs-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.cs-btn{padding:11px 22px;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;border:none;font-family:var(--f);transition:.15s;text-decoration:none;display:inline-flex;align-items:center;gap:7px}
+.cs-btn-w{background:#fff;color:var(--ink)}.cs-btn-w:hover{background:#f1f5f9}
+.cs-btn-g{background:rgba(255,255,255,.1);color:#fff;border:1.5px solid rgba(255,255,255,.2)}.cs-btn-g:hover{background:rgba(255,255,255,.15)}
+
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:28px 24px;text-align:center;font-size:13px;color:var(--muted)}
+footer a{color:var(--blue);font-weight:500}
+
+@media(max-width:700px){
+  .layout{grid-template-columns:1fr;gap:0;padding:28px 16px 60px}
+  .sidebar{display:none}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">Odmor<span>ia</span></a>
+  <div class="nav-r">
+    <a href="/login.html" class="btn btn-out">Prijava</a>
+    <a href="/register.html" class="btn btn-blue">Počni besplatno</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <h1>Kako ti možemo pomoći?</h1>
+  <p>Pronađi odgovore na najčešća pitanja o Odmori.</p>
+  <div class="search-wrap">
+    <input class="search-inp" id="search-inp" type="text" placeholder="Pretraži pitanja..." oninput="searchFaq()">
+    <span class="search-ic">🔍</span>
+  </div>
+</div>
+
+<div class="layout">
+  <div class="sidebar">
+    <div class="sidebar-sticky">
+      <ul class="cat-list">
+        <li class="cat-item on" onclick="scrollTo('start')"><span class="cat-ic">🚀</span>Početak</li>
+        <li class="cat-item" onclick="scrollTo('links')"><span class="cat-ic">🔗</span>Linkovi i gosti</li>
+        <li class="cat-item" onclick="scrollTo('security')"><span class="cat-ic">🔒</span>Sigurnost</li>
+        <li class="cat-item" onclick="scrollTo('plans')"><span class="cat-ic">💳</span>Planovi i naplata</li>
+        <li class="cat-item" onclick="scrollTo('technical')"><span class="cat-ic">🛠️</span>Tehničko</li>
+        <li class="cat-item" onclick="scrollTo('legal')"><span class="cat-ic">📋</span>Pravno i GDPR</li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="faq-content">
+
+    <div class="cat-section" id="cat-start">
+      <div class="cat-h">🚀 Početak</div>
+      <div class="cat-desc">Sve što trebaš za postavljanje prvog objekta.</div>
+
+      <div class="faq-item" data-tags="početak registracija besplatno objekt kreiranje">
+        <div class="faq-q" onclick="toggle(this)">
+          Kako početi koristiti Odmoria?
+          <span class="faq-arrow">›</span>
+        </div>
+        <div class="faq-a">
+          <p>Registracija traje manje od 2 minute. Idi na <a href="/register.html">odmoria.com/register</a>, unesi email i lozinku, potvrdi email — i odmah se otvara čarobnjak za postavljanje prvog objekta.</p>
+          <p>Free plan je besplatan zauvijek za jedan objekt. Ne treba kreditna kartica.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" data-tags="objekt postavljanje naziv lokacija wifi šifra">
+        <div class="faq-q" onclick="toggle(this)">
+          Što moram unijeti pri postavljanju objekta?
+          <span class="faq-arrow">›</span>
+        </div>
+        <div class="faq-a">
+          <p>Čarobnjak te provodi kroz 4 koraka:</p>
+          <ul>
+            <li><strong>Naziv i lokacija</strong> — npr. "Villa Luna, Hvar"</li>
+            <li><strong>Check-in</strong> — šifra vrata, adresa, upute za dolazak</li>
+            <li><strong>Wi-Fi</strong> — naziv mreže i lozinka</li>
+            <li><strong>Linkovi</strong> — odmah vidiš javni i privatni link</li>
+          </ul>
+          <p>Sve možeš promijeniti u dashboardu u bilo koje doba. Nema roka, nema pritiska.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" data-tags="10 minuta brzo koliko vremena">
+        <div class="faq-q" onclick="toggle(this)">
+          Koliko vremena traje postavljanje?
+          <span class="faq-arrow">›</span>
+        </div>
+        <div class="faq-a">
+          <p>Osnovno postavljanje (naziv, šifra, Wi-Fi) traje 3–5 minuta. Dodavanje lokalnog vodiča, prijevoza i dostupnosti obično traje ukupno 10–20 minuta.</p>
+          <p>Stranica je živa odmah nakon čarobnjaka — ne čekaš odobrenje.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" data-tags="dashboard uređivanje promjena ažuriranje">
+        <div class="faq-q" onclick="toggle(this)">
+          Mogu li promijeniti podatke nakon postavljanja?
+          <span class="faq-arrow">›</span>
+        </div>
+        <div class="faq-a">
+          <p>Da, u dashboardu možeš urediti sve u bilo koje doba — naziv, šifru, Wi-Fi, lokalni vodič, dostupnost, fotografije... Promjene su vidljive odmah svim gostima koji otvore link.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="cat-section" id="cat-links">
+      <div class="cat-h">🔗 Linkovi i gosti</div>
+      <div class="cat-desc">Kako funkcioniraju javni i privatni linkovi.</div>
+
+      <div class="faq-item" data-tags="javni link public stranica booking facebook dijeli">
+        <div class="faq-q" onclick="toggle(this)">
+          Što je javna stranica i kome je šaljem?
+          <span class="faq-arrow">›</span>
+        </div>
+        <div class="faq-a">
+          <p>Javna stranica (odmoria.com/p/tvoj-objekt) prikazuje:<br>fotografije, opis, lokalni vodič, prijevoz, dostupnost i gumb za kontakt.</p>
+          <p><strong>Ne prikazuje</strong> šifru vrata, Wi-Fi lozinku ni bilo koje osjetljive podatke.</p>
+          <p>Možeš je podijeliti svugdje: Booking.com opis, Facebook, Instagram bio, WhatsApp grupi bivših gostiju, emailom potencijalnim gostima.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" data-tags="privatni link gostinski hub token šifra wifi kada slati">
+        <div class="faq-q" onclick="toggle(this)">
+          Kada šaljem privatni gostinski link?
+          <span class="faq-arrow">›</span>
+        </div>
+        <div class="faq-a">
+          <p>Privatni link (odmoria.com/h/tvoj-objekt-kod) šalješ <strong>samo potvrđenim gostima</strong> — nakon što primite rezervaciju i uplatu ili dogovor.</p>
+          <p>Link prikazuje šifru vrata, Wi-Fi lozinku i sve upute za dolazak. Gosti ga mogu otvoriti bez računa ili aplikacije.</p>
+          <p>Preporučujemo ga slati 1–2 dana prije dolaska, ne tjednima unaprijed.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" data-tags="gostinski hub aplikacija registracija gost korisnik">
+        <div class="faq-q" onclick="toggle(this)">
+          Trebaju li gosti kreirati račun?
+          <span class="faq-arrow">›</span>
+        </div>
+        <div class="faq-a">
+          <p><strong>Ne.</strong> Gosti otvaraju link u pregledniku i odmah vide sve informacije. Nema registracije, nema aplikacije, nema lozinke za pamtiti.</p>
+          <p>To je jedna od glavnih prednosti Odmorie — gosti ne ostavljaju email ni osobne podatke na našoj platformi.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" data-tags="qr kod ispiši download png svg apartman folder">
+        <div class="faq-q" onclick="toggle(this)">
+          Kako koristiti QR kod?
+          <span class="faq-arrow">›</span>
+        </div>
+        <div class="faq-a">
+          <p>U dashboardu, pod "Linkovi i QR", možeš preuzeti QR kod koji vodi na privatni gostinski hub. Ispiši ga i postavi u apartman:</p>
+          <ul>
+            <li>Na hladnjak ili welcome folder</li>
+            <li>Na ulazna vrata iznutra</li>
+            <li>Kraj kreveta ili na TV komodi</li>
+          </ul>
+          <p>Gost skenira telefonom i odmah dobiva sve informacije — Wi-Fi, šifre, preporuke.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" data-tags="link promjena novi link gost token istječe">
+        <div class="faq-q" onclick="toggle(this)">
+          Mogu li promijeniti privatni link između gostiju?
+          <span class="faq-arrow">›</span>
+        </div>
+        <div class="faq-a">
+          <p>Trenutno link ostaje isti (token se ne mijenja automatski). Ako želiš onemogućiti pristup prethodnom gostu, možeš promijeniti šifru vrata ili Wi-Fi lozinku u dashboardu — link ostaje ali osjetljivi podaci su drukčiji.</p>
+          <p>Generiranje novog tokena po rezervaciji dolazi u sljedećoj verziji Odmorie.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="cat-section" id="cat-security">
+      <div class="cat-h">🔒 Sigurnost i privatnost</div>
+      <div class="cat-desc">Kako štitimo tvoje i gostove podatke.</div>
+
+      <div class="faq-item" data-tags="šifra vrata wifi lozinka javno prikazuje sigurno">
+        <div class="faq-q" onclick="toggle(this)">
+          Je li sigurno da šifra i Wi-Fi budu u aplikaciji?
+          <span class="faq-arrow">›</span>
+        </div>
+        <div class="faq-a">
+          <p><strong>Da.</strong> Javna stranica nikad ne prikazuje šifru vrata ni Wi-Fi lozinku — čak ni slučajno, to je zaštićeno na razini baze podataka, ne samo u kodu.</p>
+          <p>Samo privatni link s ispravnim tokenom može prikazati osjetljive podatke. Bez tokena — nema pristupa.</p>
+          <p>Preporuka: koristiti sef za ključeve s kodom koji mijenjate između gostiju, ne fizički ključ.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" data-tags="gost podaci email gdpr osobni podaci prikupljamo">
+        <div class="faq-q" onclick="toggle(this)">
+          Koje podatke o gostima prikupljate?
+          <span class="faq-arrow">›</span>
+        </div>
+        <div class="faq-a">
+          <p><strong>Nikakve osobne podatke o gostima.</strong> Gosti ne trebaju ni email ni ime — samo otvore link.</p>
+          <p>Anonimno bilježimo broj otvaranja stranice (radi statistike za domaćina), bez IP adrese, bez identiteta gosta.</p>
+          <p>Više informacija u <a href="/privacy.html">Pravilima privatnosti</a>.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" data-tags="lozinka baza supabase enkripcija sigurnost">
+        <div class="faq-q" onclick="toggle(this)">
+          Gdje se čuvaju moji podaci?
+          <span class="faq-arrow">›</span>
+        </div>
+        <div class="faq-a">
+          <p>Podaci su pohranjeni u Supabase bazi podataka, u EU (Irska). Lozinke su hashirane i nikad ne vidimo pravu lozinku. Kreditne kartice obrađuje isključivo Stripe — mi ne vidimo broj kartice.</p>
+          <p>Svi prijenosi podataka su šifrirani (HTTPS/TLS).</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="cat-section" id="cat-plans">
+      <div class="cat-h">💳 Planovi i naplata</div>
+      <div class="cat-desc">Što je uključeno i kako funkcionira naplata.</div>
+
+      <div class="faq-item" data-tags="planovi free pro business cijena objekti razlika">
+        <div class="faq-q" onclick="toggle(this)">
+          Koje planove nudite i što je uključeno?
+          <span class="faq-arrow">›</span>
+        </div>
+        <div class="faq-a">
+          <ul>
+            <li><strong>Free (€0)</strong> — 1 objekt, sve osnovne funkcije, Odmoria branding, besplatno zauvijek</li>
+            <li><strong>Pro (€15/mj)</strong> — do 5 objekata, ukloni branding, vlastita domena, analitika 90 dana</li>
+            <li><strong>Business (€49/mj)</strong> — do 15 objekata, white-label, tim pristup (do 5), analitika 12 mj</li>
+          </ul>
+          <p>Za više od 15 objekata kontaktiraj nas za prilagođenu ponudu.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" data-tags="besplatno free plan uvijek objekt funkcije">
+        <div class="faq-q" onclick="toggle(this)">
+          Je li Free plan stvarno besplatan zauvijek?
+          <span class="faq-arrow">›</span>
+        </div>
+        <div class="faq-a">
+          <p><strong>Da.</strong> Free plan nije trial ni ograničeni period. Možeš koristiti Odmoria besplatno za jedan objekt bez vremenskog ograničenja, bez kreditne kartice.</p>
+          <p>Jedino ograničenje je Odmoria branding na dnu stranice i limit na 5 fotografija i 5 lokalnih preporuka.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" data-tags="otkazati pretplatu cancel odustati plan">
+        <div class="faq-q" onclick="toggle(this)">
+          Mogu li otkazati pretplatu u bilo koje doba?
+          <span class="faq-arrow">›</span>
+        </div>
+        <div class="faq-a">
+          <p>Da, u dashboardu pod "Pretplata" → "Upravljaj pretplatom" (otvara Stripe portal). Otkazivanjem zadržavaš pristup do kraja plaćenog perioda.</p>
+          <p>Nakon isteka prelazite automatski na Free plan (1 objekt). Podaci ostaju — ništa se ne briše.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" data-tags="povrat novac refund 14 dana">
+        <div class="faq-q" onclick="toggle(this)">
+          Postoji li politika povrata?
+          <span class="faq-arrow">›</span>
+        </div>
+        <div class="faq-a">
+          <p>Ako ste nezadovoljni u prvih 14 dana Pro ili Business plana, javite nam se na <a href="mailto:podrska@odmoria.com">podrska@odmoria.com</a> i vraćamo novac bez pitanja.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" data-tags="provizija naknada rezervacija direktno booking airbnb">
+        <div class="faq-q" onclick="toggle(this)">
+          Naplaćujete li proviziju po rezervaciji?
+          <span class="faq-arrow">›</span>
+        </div>
+        <div class="faq-a">
+          <p><strong>Ne.</strong> Odmoria naplaćuje samo fiksnu mjesečnu ili godišnju pretplatu. Ne naplaćujemo proviziju po rezervaciji, po noćenju ni po prihodu.</p>
+          <p>Odmoria nije platforma za rezervacije — mi pružamo digitalni vodič. Rezervacije i plaćanja dogovarate direktno s gostima.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="cat-section" id="cat-technical">
+      <div class="cat-h">🛠️ Tehničko</div>
+      <div class="cat-desc">Integracije, fotografije, vlastita domena.</div>
+
+      <div class="faq-item" data-tags="fotografije slike upload koliko">
+        <div class="faq-q" onclick="toggle(this)">
+          Koliko fotografija mogu uploadati?
+          <span class="faq-arrow">›</span>
+        </div>
+        <div class="faq-a">
+          <ul>
+            <li><strong>Free:</strong> 5 fotografija po objektu</li>
+            <li><strong>Pro:</strong> 30 fotografija po objektu</li>
+            <li><strong>Business:</strong> 50 fotografija po objektu</li>
+          </ul>
+          <p>Upload fotografija dolazi u sljedećoj verziji Odmorie (trenutno je u razvoju). Za sada se fotografije nalaze na javnoj stranici kao placeholder.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" data-tags="vlastita domena custom domain .hr .com">
+        <div class="faq-q" onclick="toggle(this)">
+          Mogu li koristiti vlastitu domenu?
+          <span class="faq-arrow">›</span>
+        </div>
+        <div class="faq-a">
+          <p>Vlastita domena dostupna je na Pro i Business planu (npr. vodic.villa-luna.hr). Upute za postavljanje su u dashboardu pod "Pretplata".</p>
+          <p>Na Free planu stranica je dostupna na odmoria.com/p/tvoj-objekt.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" data-tags="booking airbnb kompatibilno integracija platforme">
+        <div class="faq-q" onclick="toggle(this)">
+          Radi li Odmoria uz Booking.com i Airbnb?
+          <span class="faq-arrow">›</span>
+        </div>
+        <div class="faq-a">
+          <p>Da. Odmoria je komplementarni alat, ne zamjena. Možeš nastaviti primati rezervacije putem Booking.com i Airbnba, a Odmoria javnu stranicu koristiti za privlačenje direktnih gostiju.</p>
+          <p>Javnu Odmoria stranicu možeš dodati u opis na Bookingu kao "više informacija o objektu" — prikazuje sve bez osjetljivih podataka.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" data-tags="mobitel mobilna aplikacija android ios">
+        <div class="faq-q" onclick="toggle(this)">
+          Postoji li mobilna aplikacija?
+          <span class="faq-arrow">›</span>
+        </div>
+        <div class="faq-a">
+          <p>Zasebna aplikacija za App Store/Google Play trenutno ne postoji. Dashboard je optimiziran za mobilni preglednik i radi dobro na svim uređajima.</p>
+          <p>Gostinska stranica je posebno dizajnirana za mobile — gosti je otvaraju u mobilnom pregledniku bez instaliranja ičega.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="cat-section" id="cat-legal">
+      <div class="cat-h">📋 Pravno i GDPR</div>
+      <div class="cat-desc">Usklađenost s propisima i zaštita podataka.</div>
+
+      <div class="faq-item" data-tags="gdpr eu europa zakon podaci usklađenost">
+        <div class="faq-q" onclick="toggle(this)">
+          Je li Odmoria usklađena s GDPR-om?
+          <span class="faq-arrow">›</span>
+        </div>
+        <div class="faq-a">
+          <p>Da. Odmoria je dizajnirana s privacy-by-default pristupom:</p>
+          <ul>
+            <li>Gosti ne ostavljaju osobne podatke (nema registracije)</li>
+            <li>Analitika je anonimna — bez IP adresa, bez identifikacije</li>
+            <li>Podaci su pohranjeni u EU (Irska)</li>
+            <li>Stripe obrađuje plaćanja uz vlastiti DPA</li>
+          </ul>
+          <p>Više u <a href="/privacy.html">Pravilima privatnosti</a>.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" data-tags="platforma rezervacija pravno zakon posrednik">
+        <div class="faq-q" onclick="toggle(this)">
+          Je li Odmoria platforma za rezervacije?
+          <span class="faq-arrow">›</span>
+        </div>
+        <div class="faq-a">
+          <p><strong>Ne.</strong> Odmoria je alat za informiranje gostiju — digitalni vodič. Mi nismo stranka u ugovorima između tebe i gostiju, ne obrađujemo rezervacije ni plaćanja gostiju, i ne naplaćujemo proviziju po rezervaciji.</p>
+          <p>Rezervacije i plaćanja dogovarate direktno — Odmoria je samo kanal komunikacije informacija o objektu.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" data-tags="brisanje računa podaci zahtjev">
+        <div class="faq-q" onclick="toggle(this)">
+          Kako mogu obrisati račun i podatke?
+          <span class="faq-arrow">›</span>
+        </div>
+        <div class="faq-a">
+          <p>U Postavkama računa (dashboard → ⚙️) nalazi se "Opasna zona" za brisanje računa, ili pošalji zahtjev na <a href="mailto:podrska@odmoria.com">podrska@odmoria.com</a>. Brišemo sve podatke u roku 30 dana.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTACT STRIP -->
+    <div class="contact-strip">
+      <div class="cs-h">Nisi pronašao/la odgovor?</div>
+      <div class="cs-p">Naš tim odgovara u roku 24 sata radnim danima. Slobodno nam piši!</div>
+      <div class="cs-btns">
+        <a href="mailto:podrska@odmoria.com" class="cs-btn cs-btn-w">✉️ Pošalji email</a>
+        <a href="https://wa.me/385000000000" class="cs-btn cs-btn-g">💬 WhatsApp</a>
+      </div>
+    </div>
+
+  </div><!-- /faq-content -->
+</div><!-- /layout -->
+
+<footer>
+  <a href="/">Odmoria</a> · <a href="/privacy.html">Privatnost</a> · <a href="/terms.html">Uvjeti</a> · © 2026
+</footer>
+
+<script>
+// Toggle FAQ answer
+function toggle(qEl) {
+  const a = qEl.nextElementSibling
+  const arrow = qEl.querySelector('.faq-arrow')
+  const isOpen = a.classList.contains('open')
+  // close all
+  document.querySelectorAll('.faq-a.open').forEach(el => {
+    el.classList.remove('open')
+    el.previousElementSibling.querySelector('.faq-arrow').style.transform = 'rotate(0deg)'
+  })
+  if (!isOpen) {
+    a.classList.add('open')
+    arrow.style.transform = 'rotate(90deg)'
+  }
+}
+
+// Search
+function searchFaq() {
+  const q = document.getElementById('search-inp').value.toLowerCase().trim()
+  document.querySelectorAll('.faq-item').forEach(item => {
+    const tags = item.dataset.tags || ''
+    const text = item.querySelector('.faq-q').textContent.toLowerCase()
+    const match = !q || tags.includes(q) || text.includes(q)
+    item.style.display = match ? 'block' : 'none'
+  })
+  // hide empty sections
+  document.querySelectorAll('.cat-section').forEach(sec => {
+    const visible = [...sec.querySelectorAll('.faq-item')].some(i => i.style.display !== 'none')
+    sec.style.display = visible ? 'block' : 'none'
+  })
+}
+
+// Sidebar scroll
+function scrollTo(id) {
+  const map = {start:'cat-start',links:'cat-links',security:'cat-security',plans:'cat-plans',technical:'cat-technical',legal:'cat-legal'}
+  const el = document.getElementById(map[id])
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  document.querySelectorAll('.cat-item').forEach(i => i.classList.remove('on'))
+  event.currentTarget.classList.add('on')
+}
+
+// Active sidebar on scroll
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const id = e.target.id.replace('cat-','')
+      document.querySelectorAll('.cat-item').forEach((item, i) => {
+        const map = ['start','links','security','plans','technical','legal']
+        item.classList.toggle('on', map[i] === id)
+      })
+    }
+  })
+}, { rootMargin: '-30% 0px -60% 0px' })
+
+document.querySelectorAll('.cat-section').forEach(s => observer.observe(s))
+</script>
+</body>
+</html>

@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard — Odmoria</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0A0A0A;--white:#fff;--bg:#F5F4F1;--bg2:#EDECE9;--border:#E2E0DB;--muted:#6B6A67;--text:#1A1917;--blue:#1A56DB;--blue-lt:#EEF3FF;--green:#0E6E3F;--green-lt:#E7F5EE;--f:'Plus Jakarta Sans',system-ui,sans-serif;--r:10px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--f);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;min-height:100dvh;display:flex;flex-direction:column}
+a{color:inherit;text-decoration:none}
+button{font-family:var(--f);cursor:pointer}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;font-weight:700;border-radius:var(--r);padding:9px 18px;font-size:13.5px;border:none;cursor:pointer;transition:all .15s;font-family:var(--f)}
+.btn-ink{background:var(--ink);color:#fff}.btn-ink:hover{background:#222}
+.btn-blue{background:var(--blue);color:#fff}.btn-blue:hover{background:#1343B0}
+.btn-out{background:var(--white);color:var(--text);border:1.5px solid var(--border)}.btn-out:hover{border-color:#999}
+.btn-sm{padding:7px 14px;font-size:12.5px}
+.btn-ghost{background:transparent;color:var(--muted)}
+
+/* loading screen */
+#loading{position:fixed;inset:0;background:var(--white);display:flex;align-items:center;justify-content:center;z-index:999;flex-direction:column;gap:12px}
+.spin{width:28px;height:28px;border:3px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.spin-lbl{font-size:13px;color:var(--muted);font-weight:500}
+
+/* layout */
+.layout{display:flex;flex:1;overflow:hidden;height:calc(100dvh)}
+aside{width:220px;background:var(--ink);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;position:fixed;top:0;bottom:0;left:-220px;z-index:200;transition:left .25s}
+aside.open{left:0}
+.aside-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:190}
+.aside-overlay.on{display:block}
+.aside-logo{padding:18px 16px 14px;font-size:17px;font-weight:800;color:#fff;border-bottom:1px solid #1f1f1f;letter-spacing:-.5px;flex-shrink:0}
+.aside-logo span{color:var(--blue)}
+.prop-wrap{padding:11px 13px;border-bottom:1px solid #1f1f1f;flex-shrink:0}
+.prop-lbl{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#444;margin-bottom:5px}
+.prop-sel{width:100%;background:#141414;border:1px solid #2a2a2a;border-radius:7px;padding:8px 10px;color:#fff;font-family:var(--f);font-size:12.5px}
+.nav-wrap{padding:8px;flex:1;overflow-y:auto}
+.nav-sec{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#333;padding:8px 8px 4px;margin-top:4px}
+.nav-item{display:flex;align-items:center;gap:8px;padding:9px 10px;border-radius:7px;font-size:13px;font-weight:500;color:#666;cursor:pointer;transition:.12s;margin-bottom:1px}
+.nav-item:hover{background:#161616;color:#ccc}
+.nav-item.on{background:var(--blue);color:#fff}
+.aside-user{padding:12px 13px;border-top:1px solid #1f1f1f;display:flex;align-items:center;gap:9px;flex-shrink:0}
+.user-av{width:30px;height:30px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0}
+.user-name{font-size:12px;font-weight:700;color:#fff}
+.user-plan{font-size:10px;color:#444}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;margin-left:0}
+.topbar{background:var(--white);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;padding:0 14px;height:52px;flex-shrink:0;position:sticky;top:0;z-index:50}
+.ham{display:flex;flex-direction:column;gap:4.5px;padding:6px;background:none;border:none;cursor:pointer;flex-shrink:0}
+.ham span{display:block;width:20px;height:2px;background:var(--text);border-radius:2px}
+.topbar-title{font-size:14px;font-weight:700;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.topbar-r{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.link-pill{display:none;align-items:center;gap:6px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:5px 11px;font-size:11.5px}
+.link-pill-url{color:var(--blue);font-weight:600}
+.link-pill-copy{font-size:11px;font-weight:700;padding:3px 8px;border-radius:5px;background:var(--blue);color:#fff;border:none;cursor:pointer}
+.content{flex:1;overflow-y:auto;padding:14px}
+
+/* panels */
+.panel{display:none}
+.panel.on{display:block}
+
+/* cards */
+.card{background:var(--white);border:1px solid var(--border);border-radius:13px;overflow:hidden;margin-bottom:14px}
+.card-head{padding:13px 18px;border-bottom:1px solid var(--border);font-weight:700;font-size:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.card-body{padding:18px}
+
+/* stats grid */
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.stat{background:var(--white);border:1px solid var(--border);border-radius:11px;padding:15px}
+.stat-l{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.stat-v{font-size:26px;font-weight:800;letter-spacing:-.02em;margin-bottom:2px}
+.stat-s{font-size:11.5px;color:var(--blue);font-weight:600}
+
+/* welcome banner */
+.welcome{background:var(--ink);border-radius:13px;padding:22px;margin-bottom:14px}
+.welcome h2{font-size:16px;font-weight:800;color:#fff;margin-bottom:5px}
+.welcome p{font-size:12.5px;color:#666;line-height:1.6;margin-bottom:14px}
+.welcome-btns{display:flex;gap:8px;flex-wrap:wrap}
+.wbtn{padding:9px 16px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;border:none;font-family:var(--f)}
+.wbtn-w{background:#fff;color:var(--ink)}
+.wbtn-g{background:rgba(255,255,255,.07);color:#888;border:1px solid #333}
+
+/* form elements */
+.fg{margin-bottom:15px}
+.fg label,.fl{display:block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.fi,.fta,.fsel{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--r);font-size:14px;color:var(--text);background:var(--white);transition:border-color .15s;font-family:var(--f)}
+.fi:focus,.fta:focus,.fsel:focus{outline:none;border-color:var(--blue)}
+.fta{resize:vertical;min-height:72px;line-height:1.5}
+.fg2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fg-hint{font-size:11px;color:var(--muted);margin-top:4px}
+.save-row{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;padding-top:16px;border-top:1px solid var(--border)}
+
+/* toggle */
+.togrow{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;cursor:pointer;transition:.12s;margin-bottom:4px}
+.togrow:hover{background:var(--bg)}
+.togrow.on{background:var(--blue-lt)}
+.togrow-lbl{font-size:13.5px;font-weight:500;flex:1}
+.togsw{width:36px;height:20px;border-radius:10px;background:var(--border);position:relative;cursor:pointer;transition:background .15s;flex-shrink:0}
+.togsw.on{background:var(--blue)}
+.togsw::after{content:'';position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:#fff;transition:left .15s}
+.togsw.on::after{left:19px}
+
+/* calendar */
+.calwrap{border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.calhead{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;border-bottom:1px solid var(--border)}
+.calhead strong{font-size:14px;font-weight:700}
+.calnbtn{width:30px;height:30px;border-radius:7px;border:1px solid var(--border);background:var(--white);cursor:pointer;font-size:15px;font-weight:700;color:var(--muted);display:flex;align-items:center;justify-content:center}
+.calbody{padding:12px 14px}
+.caldow{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:6px}
+.caldow span{text-align:center;font-size:10px;font-weight:700;color:var(--muted)}
+.caldays{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cday{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:500;border-radius:6px;cursor:pointer;transition:.12s;background:var(--bg)}
+.cday:hover{background:var(--blue-lt);color:var(--blue)}
+.cday.taken{background:var(--blue);color:#fff}
+.calleg{display:flex;gap:14px;margin-top:10px;font-size:11.5px;color:var(--muted)}
+.calleg span{display:flex;align-items:center;gap:5px}
+.calleg i{display:inline-block;width:11px;height:11px;border-radius:3px;font-style:normal}
+
+/* links panel */
+.link-cards{display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:12px}
+.lbadge{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:3px 10px;border-radius:20px;display:inline-block;margin-bottom:8px}
+.lbadge-pub{background:var(--green-lt);color:var(--green)}
+.lbadge-priv{background:var(--blue-lt);color:var(--blue)}
+.link-url{font-family:monospace;font-size:12px;color:var(--muted);margin-bottom:6px;word-break:break-all}
+.link-desc{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:12px}
+
+/* subscription */
+.sub-grid{display:flex;flex-direction:column;gap:12px}
+.sub-pcard{border:1.5px solid var(--border);border-radius:13px;padding:22px}
+.sub-pcard.on{border-color:var(--blue)}
+.sub-tier{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.sub-amt{font-size:32px;font-weight:800;letter-spacing:-.02em;margin-bottom:4px}
+.sub-desc{font-size:13px;color:var(--muted);margin-bottom:16px}
+.sub-feats{list-style:none;margin-bottom:18px}
+.sub-feats li{font-size:13px;padding:7px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;font-weight:500}
+.sub-feats li::before{content:'✓';color:var(--blue);font-weight:800;flex-shrink:0}
+.sub-feats li:last-child{border-bottom:none}
+
+/* toast */
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:11px 20px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;white-space:nowrap;opacity:0;transition:opacity .2s;pointer-events:none;box-shadow:0 8px 24px rgba(0,0,0,.2)}
+#toast.show{opacity:1}
+
+/* alert */
+.alert{border-radius:9px;padding:12px 15px;font-size:13.5px;font-weight:500;margin-bottom:14px;line-height:1.5}
+.alert-err{background:#FEF2F2;border:1px solid #FECACA;color:#B91C1C}
+.alert-ok{background:var(--green-lt);border:1px solid #B7E4CC;color:var(--green)}
+
+/* desktop */
+@media(min-width:640px){
+  aside{left:0;position:sticky;top:0;height:100dvh}
+  .aside-overlay{display:none!important}
+  .ham{display:none}
+  .main{margin-left:0}
+  .link-pill{display:flex}
+  .stats{grid-template-columns:repeat(4,1fr)}
+  .link-cards{grid-template-columns:1fr 1fr}
+  .sub-grid{flex-direction:row;align-items:flex-start}
+  .sub-pcard{flex:1}
+  .fg2{grid-template-columns:1fr 1fr}
+  .content{padding:20px}
+}
+@media(min-width:1024px){.content{padding:28px}}
+</style>
+</head>
+<body>
+
+<div id="loading"><div class="spin"></div><div class="spin-lbl">Učitavanje...</div></div>
+<div id="toast"></div>
+
+<div class="layout" id="app" style="display:none">
+  <!-- SIDEBAR -->
+  <div class="aside-overlay" id="overlay" onclick="closeSide()"></div>
+  <aside id="aside">
+    <div class="aside-logo">Odmor<span>ia</span></div>
+    <div class="prop-wrap">
+      <div class="prop-lbl">Aktivni objekt</div>
+      <select class="prop-sel" id="prop-sel" onchange="onPropChange()"></select>
+    </div>
+    <div class="nav-wrap">
+      <div class="nav-item" onclick="window.location.href='/add-property.html'" style="background:rgba(26,86,219,.1);color:#60A5FA;margin-bottom:4px">+ Dodaj objekt</div>
+      <div class="nav-item on" onclick="nav('overview',this)">📊 Pregled</div>
+      <div class="nav-sec">Sadržaj</div>
+      <div class="nav-item" onclick="nav('property',this)">🏠 Objekt</div>
+      <div class="nav-item" onclick="nav('checkin',this)">🔑 Check-in</div>
+      <div class="nav-item" onclick="nav('wifi',this)">📶 Wi-Fi</div>
+      <div class="nav-item" onclick="nav('local',this)">🗺️ Lokalni vodič</div>
+      <div class="nav-item" onclick="nav('avail',this)">📅 Dostupnost</div>
+      <div class="nav-sec">Dijeljenje</div>
+      <div class="nav-item" onclick="nav('links',this)">🔗 Linkovi i QR</div>
+      <div class="nav-item" onclick="nav('bookings',this)">📋 Rezervacije</div>
+      <div class="nav-item" onclick="nav('sub',this)">💳 Pretplata</div>
+      <div class="nav-item" onclick="window.location.href='/account.html'">⚙️ Postavke računa</div>
+      <div class="nav-item" onclick="signOut()" style="margin-top:auto">🚪 Odjava</div>
+    </div>
+    <div class="aside-user">
+      <div class="user-av" id="user-av">?</div>
+      <div>
+        <div class="user-name" id="user-name">...</div>
+        <div class="user-plan" id="user-plan">Free plan</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <button class="ham" onclick="toggleSide()"><span></span><span></span><span></span></button>
+      <div class="topbar-title" id="topbar-title">Pregled</div>
+      <div class="topbar-r">
+        <div class="link-pill">
+          <span style="font-size:11px;color:var(--muted)">Javno:</span>
+          <span class="link-pill-url" id="pill-url">odmoria.com/p/...</span>
+          <button class="link-pill-copy" onclick="copyLink('pub')">Kopiraj</button>
+        </div>
+        <button class="btn btn-ink btn-sm" id="view-pub-btn" onclick="viewPub()">Pogledaj →</button>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- OVERVIEW -->
+      <div class="panel on" id="p-overview">
+        <div class="welcome">
+          <h2 id="welcome-title">Dobrodošao/la! 👋</h2>
+          <p id="welcome-sub">Tvoja Odmoria stranica je živa. Podijeli je s potencijalnim gostima!</p>
+          <div class="welcome-btns">
+            <button class="wbtn wbtn-w" onclick="viewPub()">Pogledaj javnu stranicu</button>
+            <button class="wbtn wbtn-g" onclick="viewGuest()">Pogledaj gostinski hub</button>
+          </div>
+        </div>
+        <div class="stats">
+          <div class="stat"><div class="stat-l">Pregledi stranice</div><div class="stat-v">—</div><div class="stat-s">Uskoro dostupno</div></div>
+          <div class="stat"><div class="stat-l">Upiti</div><div class="stat-v">—</div><div class="stat-s">Uskoro dostupno</div></div>
+          <div class="stat"><div class="stat-l">QR skeniranja</div><div class="stat-v">—</div><div class="stat-s">Uskoro dostupno</div></div>
+          <div class="stat"><div class="stat-l">Procj. ušteda</div><div class="stat-v" style="color:var(--green)">—</div><div class="stat-s">Uskoro dostupno</div></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="card" style="cursor:pointer" onclick="nav('avail',qn(5))"><div class="card-head">📅 Ažuriraj dostupnost</div><div style="padding:14px;font-size:13px;color:var(--muted);line-height:1.6">Označi zauzete termine da gosti vide slobodne datume.</div></div>
+          <div class="card" style="cursor:pointer" onclick="nav('links',qn(7))"><div class="card-head">🔗 Dohvati QR kod</div><div style="padding:14px;font-size:13px;color:var(--muted);line-height:1.6">Preuzmi i postavi u apartman za instant pristup vodiču.</div></div>
+        </div>
+      </div>
+
+      <!-- PROPERTY -->
+      <div class="panel" id="p-property">
+        <div class="card">
+          <div class="card-head">Detalji objekte <button class="btn btn-ink btn-sm" onclick="saveProp()">Spremi</button></div>
+          <div class="card-body">
+            <div id="prop-alert"></div>
+            <div class="fg"><label class="fl">Naziv objekta</label><input class="fi" id="prop-name" placeholder="Villa Luna"></div>
+            <div class="fg2">
+              <div class="fg"><label class="fl">Vrsta</label><select class="fsel" id="prop-type"><option>Apartman</option><option>Villa</option><option>Kuća</option><option>Studio</option><option>Chalet</option></select></div>
+              <div class="fg"><label class="fl">Lokacija</label><input class="fi" id="prop-location" placeholder="Hvar, Hrvatska"></div>
+            </div>
+            <div class="fg"><label class="fl">Poruka dobrodošlice</label><textarea class="fta" id="prop-welcome" rows="3" placeholder="Dobrodošli! Sve što trebate..."></textarea></div>
+            <div class="fg2">
+              <div class="fg"><label class="fl">Vaše ime</label><input class="fi" id="prop-host" placeholder="Ana"></div>
+              <div class="fg"><label class="fl">WhatsApp</label><input class="fi" id="prop-phone" placeholder="+385 91 234 5678"></div>
+            </div>
+            <div class="fg"><label class="fl">Email za upite</label><input class="fi" id="prop-email" type="email" placeholder="ana@primjer.hr"></div>
+            <div style="border-top:1px solid var(--border);padding-top:15px;margin-top:4px">
+              <div style="font-size:12px;font-weight:700;margin-bottom:11px">Vidljive sekcije u hubu</div>
+              <div class="togrow on" onclick="togSec(this,'wifi')"><span class="togrow-lbl">📶 Wi-Fi i lozinke</span><div class="togsw on"></div></div>
+              <div class="togrow on" onclick="togSec(this,'checkin')"><span class="togrow-lbl">🔑 Upute za dolazak</span><div class="togsw on"></div></div>
+              <div class="togrow on" onclick="togSec(this,'local')"><span class="togrow-lbl">🗺️ Lokalni vodič</span><div class="togsw on"></div></div>
+              <div class="togrow on" onclick="togSec(this,'transport')"><span class="togrow-lbl">🚢 Prijevoz</span><div class="togsw on"></div></div>
+              <div class="togrow on" onclick="togSec(this,'attractions')"><span class="togrow-lbl">🏛️ Atrakcije</span><div class="togsw on"></div></div>
+              <div class="togrow on" onclick="togSec(this,'availability')"><span class="togrow-lbl">📅 Dostupnost</span><div class="togsw on"></div></div>
+              <div class="togrow" onclick="togSec(this,'faq')"><span class="togrow-lbl">❓ FAQ</span><div class="togsw"></div></div>
+              <div class="togrow on" onclick="togSec(this,'checkout')"><span class="togrow-lbl">🚪 Odjava</span><div class="togsw on"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHECK-IN -->
+      <div class="panel" id="p-checkin">
+        <div class="card">
+          <div class="card-head">Check-in i pristup <button class="btn btn-ink btn-sm" onclick="saveCheckin()">Spremi</button></div>
+          <div class="card-body">
+            <div id="checkin-alert"></div>
+            <div class="fg2">
+              <div class="fg"><label class="fl">Check-in od</label><input class="fi" id="ci-time" value="15:00"></div>
+              <div class="fg"><label class="fl">Check-out do</label><input class="fi" id="co-time" value="10:00"></div>
+            </div>
+            <div class="fg">
+              <label class="fl">Šifra vrata / sef</label>
+              <input class="fi" id="door-code" placeholder="1234" style="font-size:22px;font-weight:800;letter-spacing:.12em">
+              <div class="fg-hint">🔒 Prikazuje se samo na privatnom gostinskom linku — nikad na javnoj stranici.</div>
+            </div>
+            <div class="fg"><label class="fl">Parking info</label><input class="fi" id="parking" placeholder="Mjesto #4, ispred zgrade"></div>
+            <div class="fg"><label class="fl">Upute za dolazak</label><textarea class="fta" id="ci-notes" rows="3" placeholder="Sef za ključeve nalazi se desno od ulaza..."></textarea></div>
+            <div class="fg"><label class="fl">Adresa</label><input class="fi" id="address" placeholder="Ulica i broj, grad"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WIFI -->
+      <div class="panel" id="p-wifi">
+        <div class="card" style="margin-bottom:14px">
+          <div class="card-head">Wi-Fi detalji <button class="btn btn-ink btn-sm" onclick="saveWifi()">Spremi</button></div>
+          <div class="card-body">
+            <div id="wifi-alert"></div>
+            <div class="fg"><label class="fl">Naziv mreže (SSID)</label><input class="fi" id="wifi-name" placeholder="NazivMreze_5G"></div>
+            <div class="fg"><label class="fl">Lozinka</label><input class="fi" id="wifi-pass" placeholder="lozinka123">
+              <div class="fg-hint">🔒 Gosti kopiraju jednim tapom. Samo privatni gostinski link.</div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head">Pregled — gost vidi</div>
+          <div style="padding:16px">
+            <div style="background:var(--ink);border-radius:11px;padding:15px;color:#fff">
+              <div style="font-size:9px;color:#555;text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px">Mreža</div>
+              <div id="prev-net" style="font-size:15px;font-weight:800;margin-bottom:11px">—</div>
+              <div style="background:#141414;border-radius:8px;padding:11px 13px;display:flex;align-items:center;justify-content:space-between;gap:10px">
+                <div><div style="font-size:9px;color:#555;margin-bottom:2px">Lozinka</div><div id="prev-pw" style="font-size:18px;font-weight:800;letter-spacing:.05em">—</div></div>
+                <button onclick="toast('Lozinka kopirana!')" style="padding:8px 14px;border-radius:7px;background:var(--blue);border:none;color:#fff;font-size:12px;font-weight:700;cursor:pointer;flex-shrink:0">Kopiraj</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LOCAL -->
+      <div class="panel" id="p-local">
+        <div class="card">
+          <div class="card-head">Lokalne preporuke <button class="btn btn-blue btn-sm" onclick="addPlace()">+ Dodaj</button></div>
+          <div class="card-body" id="local-list"><div style="text-align:center;padding:20px;color:var(--muted);font-size:13px">Učitavanje...</div></div>
+        </div>
+      </div>
+
+      <!-- AVAILABILITY -->
+      <div class="panel" id="p-avail">
+        <div class="card">
+          <div class="card-head">Kalendar dostupnosti</div>
+          <div class="card-body">
+            <div class="alert alert-ok" style="display:block;margin-bottom:14px"><strong>Tap na datum</strong> za označavanje kao zauzet (plavo) ili slobodan. Gosti ovo vide na javnoj stranici.</div>
+            <div class="calwrap">
+              <div class="calhead">
+                <button class="calnbtn" onclick="calNav(-1)">‹</button>
+                <strong id="cal-title">...</strong>
+                <button class="calnbtn" onclick="calNav(1)">›</button>
+              </div>
+              <div class="calbody">
+                <div class="caldow"><span>P</span><span>U</span><span>S</span><span>Č</span><span>P</span><span>S</span><span>N</span></div>
+                <div class="caldays" id="cal-days"></div>
+              </div>
+              <div class="calleg">
+                <span><i style="background:var(--bg);border:1px solid var(--border)"></i> Slobodno</span>
+                <span><i style="background:var(--blue)"></i> Zauzeto</span>
+              </div>
+            </div>
+            <div style="display:flex;justify-content:flex-end;margin-top:12px">
+              <button class="btn btn-ink btn-sm" onclick="saveAvail()">Spremi dostupnost</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LINKS -->
+      <div class="panel" id="p-links">
+        <div class="link-cards" style="margin-bottom:12px">
+          <div class="card" style="padding:20px">
+            <div class="lbadge lbadge-pub">🟢 Javna stranica</div>
+            <div class="link-url" id="pub-url-display">odmoria.com/p/...</div>
+            <div class="link-desc">Dijeli na Facebooku, Instagramu, u opisu na Bookingu. Bez osjetljivih podataka.</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button class="btn btn-ink btn-sm" onclick="copyLink('pub')">Kopiraj link</button>
+              <button class="btn btn-out btn-sm" onclick="viewPub()">Pregledaj →</button>
+            </div>
+          </div>
+          <div class="card" style="padding:20px">
+            <div class="lbadge lbadge-priv">🔵 Gostinski link</div>
+            <div class="link-url" id="guest-url-display">odmoria.com/h/...</div>
+            <div class="link-desc">Šalji samo potvrđenim gostima. Sadrži šifru i Wi-Fi. Istječe za 60 dana.</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button class="btn btn-ink btn-sm" onclick="copyLink('guest')">Kopiraj link</button>
+              <button class="btn btn-out btn-sm" onclick="viewGuest()">Pregledaj →</button>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="padding:20px;text-align:center">
+          <div style="font-size:15px;font-weight:700;margin-bottom:5px">QR kod</div>
+          <div style="font-size:13px;color:var(--muted);margin-bottom:14px">Ispiši i postavi u apartman — na hladnjak, ulaz ili welcome folder.</div>
+          <div style="width:80px;height:80px;background:var(--ink);border-radius:9px;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:36px;color:#fff">▣</div>
+          <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+            <button class="btn btn-ink btn-sm" onclick="toast('QR kod preuzet!')">Preuzmi PNG</button>
+            <button class="btn btn-out btn-sm" onclick="toast('QR SVG preuzet!')">Preuzmi SVG</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUBSCRIPTION -->
+      <div class="panel" id="p-sub">
+        <div class="card" style="margin-bottom:14px">
+          <div class="card-head">Trenutna pretplata</div>
+          <div class="card-body">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap">
+              <div style="width:42px;height:42px;border-radius:10px;background:var(--blue-lt);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">🌟</div>
+              <div><div style="font-size:15px;font-weight:700" id="sub-plan-name">Free plan</div><div style="font-size:12px;color:var(--muted)" id="sub-plan-desc">1 objekt · Besplatno zauvijek</div></div>
+              <span style="padding:4px 11px;border-radius:20px;font-size:11px;font-weight:700;background:var(--green-lt);color:var(--green);margin-left:auto">Aktivan</span>
+            </div>
+          </div>
+        </div>
+        <div class="sub-grid">
+          <div class="sub-pcard"><div class="sub-tier">Starter</div><div class="sub-amt">Besplatno</div><div class="sub-desc">Jedan objekt, zauvijek</div><ul class="sub-feats"><li>1 objekt</li><li>Javna + privatni link</li><li>Sve sekcije</li><li>QR kod</li></ul><button class="btn btn-out" style="width:100%;justify-content:center" onclick="toast('Već koristiš ovaj plan')">Aktivan plan</button></div>
+          <div class="sub-pcard on"><div class="sub-tier" style="color:var(--blue)">Pro</div><div class="sub-amt">10 € <span style="font-size:14px;font-weight:400;color:var(--muted)">/mj</span></div><div class="sub-desc">Neograničeni objekti</div><ul class="sub-feats"><li>Neograničeni objekti</li><li>Vlastita domena</li><li>Bez brandinga</li><li>Analitika</li></ul><button class="btn btn-blue" style="width:100%;justify-content:center" onclick="toast('Preusmjeravanje na Stripe…')">Nadogradi na Pro</button></div>
+          <div class="sub-pcard"><div class="sub-tier">Agency</div><div class="sub-amt">49 € <span style="font-size:14px;font-weight:400;color:var(--muted)">/mj</span></div><div class="sub-desc">Za property managere</div><ul class="sub-feats"><li>Sve iz Pro</li><li>Tim pristup</li><li>White-label</li><li>API pristup</li></ul><button class="btn btn-out" style="width:100%;justify-content:center" onclick="toast('Kontaktiraj nas: podrska@odmoria.com')">Kontaktiraj nas</button></div>
+        </div>
+      </div>
+
+
+      <!-- BOOKINGS -->
+      <div class="panel" id="p-bookings">
+        <div class="card" style="margin-bottom:14px">
+          <div class="card-head">
+            Rezervacije
+            <button class="btn btn-blue btn-sm" onclick="showAddBooking()">+ Nova rezervacija</button>
+          </div>
+          <div id="bookings-list" style="padding:14px">
+            <div style="text-align:center;color:var(--muted);font-size:13px;padding:20px">Učitavanje...</div>
+          </div>
+        </div>
+
+        <!-- Add booking form (hidden by default) -->
+        <div class="card" id="add-booking-form" style="display:none">
+          <div class="card-head">Nova rezervacija</div>
+          <div class="card-body">
+            <div id="booking-alert"></div>
+            <div class="fg2">
+              <div class="fg"><label class="fl">Ime gosta</label><input class="fi" id="bk-name" placeholder="Ana Kovač"></div>
+              <div class="fg"><label class="fl">Napomena (opcionalno)</label><input class="fi" id="bk-note" placeholder="2 odrasle + 1 dijete"></div>
+            </div>
+            <div class="fg2">
+              <div class="fg"><label class="fl">Check-in</label><input class="fi" id="bk-checkin" type="date"></div>
+              <div class="fg"><label class="fl">Check-out</label><input class="fi" id="bk-checkout" type="date"></div>
+            </div>
+            <div style="background:var(--bg);border-radius:9px;padding:12px;font-size:12.5px;color:var(--muted);margin-bottom:14px;line-height:1.6">
+              🔒 Generirat će se jedinstveni link koji vrijedi do dan nakon check-outa. Svaki gost dobiva vlastiti link.
+            </div>
+            <div style="display:flex;gap:8px;justify-content:flex-end">
+              <button class="btn btn-ghost btn-sm" onclick="hideAddBooking()">Odustani</button>
+              <button class="btn btn-ink btn-sm" onclick="createBooking()">Kreiraj link →</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Generated link result -->
+        <div class="card" id="booking-result" style="display:none;padding:20px">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--green);margin-bottom:8px">✓ Link generiran</div>
+          <div style="font-family:monospace;font-size:13px;color:var(--blue);word-break:break-all;margin-bottom:12px;font-weight:600" id="result-url"></div>
+          <div style="font-size:12.5px;color:var(--muted);margin-bottom:14px;line-height:1.6" id="result-desc"></div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn btn-ink btn-sm" onclick="copyResultLink()">Kopiraj link</button>
+            <button class="btn btn-out btn-sm" onclick="shareWhatsApp()">WhatsApp →</button>
+            <button class="btn btn-ghost btn-sm" onclick="hideResult()">Zatvori</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /layout -->
+
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+
+const SURL = 'https://wtojzqjhipdfbrnmprmz.supabase.co'
+const SKEY = 'sb_publishable_tmZAZTDbQ7ktc1N-8y4q4w_ztAu_62F'
+const sb = createClient(SURL, SKEY)
+
+// ── STATE ─────────────────────────────────────────────
+let USER = null, PROPS = [], PROP = null, SECTION = null
+let calMonth = new Date().getMonth(), calYear = new Date().getFullYear()
+let bookedDays = []
+const MONTHS = ['Siječanj','Veljača','Ožujak','Travanj','Svibanj','Lipanj','Srpanj','Kolovoz','Rujan','Listopad','Studeni','Prosinac']
+
+// ── INIT ──────────────────────────────────────────────
+async function init() {
+  const { data: { session } } = await sb.auth.getSession()
+  if (!session) { window.location.href = '/login.html'; return }
+
+  USER = session.user
+  document.getElementById('user-av').textContent = (USER.user_metadata?.full_name || USER.email || '?')[0].toUpperCase()
+  document.getElementById('user-name').textContent = USER.user_metadata?.full_name || USER.email.split('@')[0]
+
+  await loadProps()
+  document.getElementById('loading').style.display = 'none'
+  document.getElementById('app').style.display = 'flex'
+}
+
+// ── PROPERTIES ───────────────────────────────────────
+async function loadProps() {
+  const { data } = await sb.from('properties').select('*').eq('user_id', USER.id).order('created_at')
+  PROPS = data || []
+
+  const sel = document.getElementById('prop-sel')
+  sel.innerHTML = ''
+
+  if (PROPS.length === 0) {
+    // No properties — send to onboarding wizard
+    window.location.href = '/onboarding.html'
+    return
+  }
+
+  PROPS.forEach((p, i) => {
+    const opt = document.createElement('option')
+    opt.value = p.id
+    opt.textContent = '🏠 ' + p.name
+    sel.appendChild(opt)
+  })
+  // Add option
+  const addOpt = document.createElement('option')
+  addOpt.value = '__new__'
+  addOpt.textContent = '+ Dodaj objekt'
+  sel.appendChild(addOpt)
+
+  await selectProp(PROPS[0])
+}
+
+async function createFirstProp() {
+  const name = USER.user_metadata?.full_name ? USER.user_metadata.full_name + "'s Place" : 'Moj objekt'
+  const slug = 'objekt-' + Math.random().toString(36).slice(2,8)
+  const token = Math.random().toString(36).slice(2,10)
+
+  const { data, error } = await sb.from('properties').insert({
+    user_id: USER.id, name, slug, guest_token: token,
+    type: 'Apartman', location: '', welcome_msg: '', host_name: '', phone: '', email: ''
+  }).select().single()
+
+  if (!error && data) {
+    // Create empty sections row
+    await sb.from('sections').insert({ property_id: data.id })
+    await loadProps()
+  }
+}
+
+async function selectProp(p) {
+  PROP = p
+  updateLinks()
+  document.getElementById('welcome-title').textContent = 'Objekt: ' + p.name
+  document.getElementById('welcome-sub').textContent = 'Tvoja Odmoria stranica je živa. Podijeli je s potencijalnim gostima!'
+  fillPropForm()
+  await loadSection()
+  await loadLocal()
+  await loadAvail()
+}
+
+window.onPropChange = async () => {
+  const sel = document.getElementById('prop-sel')
+  if (sel.value === '__new__') {
+    toast('Kreiranje novog objekta...')
+    await createFirstProp()
+    return
+  }
+  const p = PROPS.find(x => x.id === sel.value)
+  if (p) await selectProp(p)
+}
+
+// ── LINKS ─────────────────────────────────────────────
+function updateLinks() {
+  if (!PROP) return
+  const pubUrl = `odmoria.com/p/${PROP.slug}`
+  const guestUrl = `odmoria.com/h/${PROP.slug}-${PROP.guest_token}`
+  document.getElementById('pill-url').textContent = pubUrl
+  document.getElementById('pub-url-display').textContent = pubUrl
+  document.getElementById('guest-url-display').textContent = guestUrl
+}
+
+window.copyLink = (type) => {
+  if (!PROP) return
+  const url = type === 'pub'
+    ? `https://odmoria.com/p/${PROP.slug}`
+    : `https://odmoria.com/h/${PROP.slug}-${PROP.guest_token}`
+  navigator.clipboard?.writeText(url).catch(()=>{})
+  toast(type === 'pub' ? 'Javni link kopiran!' : 'Gostinski link kopiran!')
+}
+
+window.viewPub = () => { if (PROP) window.open(`/p.html?slug=${PROP.slug}`, '_blank') }
+window.viewGuest = () => { if (PROP) window.open(`/h.html?slug=${PROP.slug}&token=${PROP.guest_token}`, '_blank') }
+
+// ── PROP FORM ─────────────────────────────────────────
+function fillPropForm() {
+  if (!PROP) return
+  document.getElementById('prop-name').value = PROP.name || ''
+  document.getElementById('prop-type').value = PROP.type || 'Apartman'
+  document.getElementById('prop-location').value = PROP.location || ''
+  document.getElementById('prop-welcome').value = PROP.welcome_msg || ''
+  document.getElementById('prop-host').value = PROP.host_name || ''
+  document.getElementById('prop-phone').value = PROP.phone || ''
+  document.getElementById('prop-email').value = PROP.email || ''
+}
+
+window.saveProp = async () => {
+  if (!PROP) return
+  const upd = {
+    name: val('prop-name'), type: val('prop-type'),
+    location: val('prop-location'), welcome_msg: val('prop-welcome'),
+    host_name: val('prop-host'), phone: val('prop-phone'), email: val('prop-email')
+  }
+  const { error } = await sb.from('properties').update(upd).eq('id', PROP.id)
+  if (error) { showAlert('prop-alert','err', error.message); return }
+  Object.assign(PROP, upd)
+  document.getElementById('prop-sel').options[document.getElementById('prop-sel').selectedIndex].textContent = '🏠 ' + PROP.name
+  showAlert('prop-alert','ok','Spremljeno ✓')
+  toast('Objekt spremljen ✓')
+}
+
+// ── SECTION (checkin + wifi) ───────────────────────────
+async function loadSection() {
+  const { data } = await sb.from('sections').select('*').eq('property_id', PROP.id).maybeSingle()
+  SECTION = data
+  if (!SECTION) {
+    await sb.from('sections').insert({ property_id: PROP.id })
+    const { data: d2 } = await sb.from('sections').select('*').eq('property_id', PROP.id).single()
+    SECTION = d2
+  }
+  fillCheckin(); fillWifi()
+}
+function fillCheckin() {
+  if (!SECTION) return
+  document.getElementById('ci-time').value = SECTION.checkin_time || '15:00'
+  document.getElementById('co-time').value = SECTION.checkout_time || '10:00'
+  document.getElementById('door-code').value = SECTION.door_code || ''
+  document.getElementById('parking').value = SECTION.parking_info || ''
+  document.getElementById('ci-notes').value = SECTION.checkin_notes || ''
+  document.getElementById('address').value = SECTION.address || ''
+}
+function fillWifi() {
+  if (!SECTION) return
+  document.getElementById('wifi-name').value = SECTION.wifi_name || ''
+  document.getElementById('wifi-pass').value = SECTION.wifi_pass || ''
+  document.getElementById('prev-net').textContent = SECTION.wifi_name || '—'
+  document.getElementById('prev-pw').textContent = SECTION.wifi_pass || '—'
+}
+window.saveCheckin = async () => {
+  const upd = { checkin_time: val('ci-time'), checkout_time: val('co-time'),
+    door_code: val('door-code'), parking_info: val('parking'),
+    checkin_notes: val('ci-notes'), address: val('address') }
+  const { error } = await sb.from('sections').update(upd).eq('property_id', PROP.id)
+  if (error) { showAlert('checkin-alert','err', error.message); return }
+  Object.assign(SECTION, upd)
+  showAlert('checkin-alert','ok','Spremljeno ✓'); toast('Check-in podaci spremljeni ✓')
+}
+window.saveWifi = async () => {
+  const upd = { wifi_name: val('wifi-name'), wifi_pass: val('wifi-pass') }
+  const { error } = await sb.from('sections').update(upd).eq('property_id', PROP.id)
+  if (error) { showAlert('wifi-alert','err', error.message); return }
+  Object.assign(SECTION, upd)
+  document.getElementById('prev-net').textContent = upd.wifi_name || '—'
+  document.getElementById('prev-pw').textContent = upd.wifi_pass || '—'
+  showAlert('wifi-alert','ok','Spremljeno ✓'); toast('Wi-Fi detalji spremljeni ✓')
+}
+// live wifi preview
+document.getElementById('wifi-name').addEventListener('input', e => { document.getElementById('prev-net').textContent = e.target.value || '—' })
+document.getElementById('wifi-pass').addEventListener('input', e => { document.getElementById('prev-pw').textContent = e.target.value || '—' })
+
+// ── LOCAL PLACES ──────────────────────────────────────
+let places = []
+async function loadLocal() {
+  const { data } = await sb.from('local_places').select('*').eq('property_id', PROP.id).order('sort_order')
+  places = data || []
+  renderLocal()
+}
+function renderLocal() {
+  const el = document.getElementById('local-list')
+  if (!places.length) { el.innerHTML = '<div style="text-align:center;padding:16px;color:var(--muted);font-size:13px">Još nema mjesta. Dodaj svoju prvu preporuku!</div>'; return }
+  el.innerHTML = places.map((p, i) => `
+    <div style="border:1px solid var(--border);border-radius:10px;padding:13px;margin-bottom:9px;display:flex;align-items:center;gap:12px">
+      <span style="font-size:24px;width:32px;text-align:center">${p.icon||'📍'}</span>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13.5px;font-weight:700">${esc(p.name)}</div>
+        <div style="font-size:11.5px;color:var(--muted)">${esc(p.category)} · ${esc(p.distance)}</div>
+      </div>
+      ${p.maps_query ? `<button onclick="window.open('https://www.google.com/maps/search/?api=1&query='+encodeURIComponent('${esc(p.maps_query)}'),'_blank')" style="font-size:18px;background:none;border:none;cursor:pointer" title="Otvori kartu">🗺️</button>` : ''}
+      <button onclick="deletePlace('${p.id}')" style="font-size:13px;color:#EF4444;background:none;border:none;cursor:pointer;padding:4px 8px;flex-shrink:0">Ukloni</button>
+    </div>`).join('')
+}
+window.addPlace = async () => {
+  const icon = prompt('Ikona (emoji):', '📍') || '📍'
+  const name = prompt('Naziv mjesta:') || ''
+  if (!name) return
+  const cat = prompt('Kategorija (npr. Restoran, Plaža):') || ''
+  const dist = prompt('Udaljenost (npr. 5 min hoda):') || ''
+  const maps = prompt('Google Maps pojam (npr. Konoba Menego Hvar):') || ''
+  const { error } = await sb.from('local_places').insert({ property_id: PROP.id, icon, name, category: cat, distance: dist, maps_query: maps, sort_order: places.length })
+  if (error) { toast('Greška: ' + error.message); return }
+  await loadLocal(); toast('Mjesto dodano ✓')
+}
+window.deletePlace = async (id) => {
+  if (!confirm('Ukloni ovo mjesto?')) return
+  await sb.from('local_places').delete().eq('id', id)
+  await loadLocal(); toast('Mjesto uklonjeno')
+}
+
+// ── AVAILABILITY ──────────────────────────────────────
+async function loadAvail() {
+  const { data } = await sb.from('availability').select('date').eq('property_id', PROP.id)
+  bookedDays = (data || []).map(r => r.date)
+  renderCal()
+}
+function renderCal() {
+  const t = document.getElementById('cal-title')
+  if (t) t.textContent = MONTHS[calMonth] + ' ' + calYear + '.'
+  const fd = (new Date(calYear, calMonth, 1).getDay() + 6) % 7
+  const dim = new Date(calYear, calMonth + 1, 0).getDate()
+  let h = ''
+  for (let i = 0; i < fd; i++) h += '<div></div>'
+  for (let d = 1; d <= dim; d++) {
+    const dateStr = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`
+    const taken = bookedDays.includes(dateStr)
+    h += `<div class="cday${taken?' taken':''}" onclick="toggleDay('${dateStr}')">${d}</div>`
+  }
+  const el = document.getElementById('cal-days')
+  if (el) el.innerHTML = h
+}
+window.calNav = (d) => {
+  calMonth += d
+  if (calMonth > 11) { calMonth = 0; calYear++ }
+  if (calMonth < 0) { calMonth = 11; calYear-- }
+  renderCal()
+}
+window.toggleDay = async (dateStr) => {
+  if (!PROP) return
+  const idx = bookedDays.indexOf(dateStr)
+  if (idx > -1) {
+    bookedDays.splice(idx, 1)
+    await sb.from('availability').delete().eq('property_id', PROP.id).eq('date', dateStr)
+  } else {
+    bookedDays.push(dateStr)
+    await sb.from('availability').upsert({ property_id: PROP.id, date: dateStr, is_booked: true })
+  }
+  renderCal()
+}
+window.saveAvail = () => toast('Dostupnost je automatski spremljena svakim klikom ✓')
+
+// ── SECTIONS TOGGLE ───────────────────────────────────
+window.togSec = (row, key) => {
+  row.classList.toggle('on')
+  const sw = row.querySelector('.togsw')
+  sw.classList.toggle('on')
+  if (!PROP) return
+  const upd = {}; upd['show_' + key] = sw.classList.contains('on')
+  sb.from('properties').update(upd).eq('id', PROP.id).then(() => {})
+}
+
+// ── NAV ───────────────────────────────────────────────
+window.nav = (id, el) => {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('on'))
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('on'))
+  const panel = document.getElementById('p-' + id)
+  if (panel) panel.classList.add('on')
+  if (el) el.classList.add('on')
+  document.getElementById('topbar-title').textContent = el ? el.textContent.replace(/^[^\w\s]+\s/,'') : id
+  closeSide()
+}
+window.qn = (i) => document.querySelectorAll('.nav-item')[i]
+
+window.toggleSide = () => {
+  document.getElementById('aside').classList.toggle('open')
+  document.getElementById('overlay').classList.toggle('on')
+}
+window.closeSide = () => {
+  document.getElementById('aside').classList.remove('open')
+  document.getElementById('overlay').classList.remove('on')
+}
+
+// ── UTILS ─────────────────────────────────────────────
+function val(id) { return document.getElementById(id)?.value?.trim() || '' }
+function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;') }
+function showAlert(id, type, msg) {
+  const el = document.getElementById(id)
+  if (!el) return
+  el.className = 'alert alert-' + (type === 'ok' ? 'ok' : 'err')
+  el.textContent = msg
+  el.style.display = 'block'
+  setTimeout(() => { el.style.display = 'none' }, 3500)
+}
+
+window.toast = (msg) => {
+  const el = document.getElementById('toast')
+  el.textContent = msg; el.classList.add('show')
+  clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove('show'), 2200)
+}
+
+// ── SIGN OUT ──────────────────────────────────────────
+window.signOut = async () => {
+  await sb.auth.signOut()
+  window.location.href = '/login.html'
+}
+
+init()
+</script>
+</body>
+</html>

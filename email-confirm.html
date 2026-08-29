@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Email potvrđen — Odmoria</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:#F8FAFC;color:#1E293B;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;-webkit-font-smoothing:antialiased}
+.logo{font-size:20px;font-weight:800;letter-spacing:-.5px;margin-bottom:44px;color:#0F172A}
+.logo span{color:#1A56DB}
+.card{background:#fff;border:1px solid #E2E8F0;border-radius:16px;padding:48px 40px;max-width:420px;width:100%;text-align:center;box-shadow:0 4px 24px rgba(0,0,0,.06)}
+.icon-wrap{width:64px;height:64px;border-radius:50%;margin:0 auto 22px;display:flex;align-items:center;justify-content:center;background:#E7F5EE}
+.spin{width:64px;height:64px;border:4px solid #E2E8F0;border-top-color:#1A56DB;border-radius:50%;animation:sp .8s linear infinite;margin:0 auto 22px}
+@keyframes sp{to{transform:rotate(360deg)}}
+h1{font-size:22px;font-weight:800;letter-spacing:-.02em;margin-bottom:8px}
+p{font-size:14px;color:#64748B;line-height:1.65;margin-bottom:24px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;font-weight:700;border-radius:10px;padding:12px 28px;font-size:15px;border:none;cursor:pointer;transition:all .15s;font-family:inherit;background:#1A56DB;color:#fff;text-decoration:none;width:100%}
+.btn:hover{background:#1343B0}
+.err-card{background:#FEF2F2;border:1px solid #FECACA;border-radius:12px;padding:16px;margin-bottom:20px;display:none}
+.err-card h3{font-size:15px;font-weight:700;color:#B91C1C;margin-bottom:6px}
+.err-card p{color:#B91C1C;margin:0}
+</style>
+</head>
+<body>
+
+<div class="logo">Odmor<span>ia</span></div>
+
+<div class="card">
+  <div id="state-loading">
+    <div class="spin"></div>
+    <h1>Potvrđujem email...</h1>
+    <p>Još trenutak, postavljamo tvoj račun.</p>
+  </div>
+
+  <div id="state-success" style="display:none">
+    <div class="icon-wrap">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="13" stroke="#0F6E3F" stroke-width="1.5"/><path d="M8 14l4 4 8-8" stroke="#0F6E3F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <h1>Email potvrđen!</h1>
+    <p>Tvoj Odmoria račun je aktivan. Postavi svoj prvi objekt — traje manje od 10 minuta.</p>
+    <a href="/onboarding.html" class="btn">Postavi prvi objekt →</a>
+  </div>
+
+  <div id="state-error" style="display:none">
+    <div style="font-size:48px;margin-bottom:20px">😕</div>
+    <div class="err-card" id="err-msg" style="display:block">
+      <h3>Nešto nije u redu</h3>
+      <p id="err-text">Link je možda istekao.</p>
+    </div>
+    <h1>Link nije valjan</h1>
+    <p>Link za potvrdu je istekao ili je već korišten. Registriraj se ponovo ili se prijavi.</p>
+    <a href="/register.html" class="btn" style="margin-bottom:10px">Registriraj se ponovo</a>
+    <a href="/login.html" class="btn" style="background:#fff;color:#1E293B;border:1.5px solid #E2E8F0;margin-top:8px">Prijavi se</a>
+  </div>
+</div>
+
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+
+const sb = createClient(
+  'https://wtojzqjhipdfbrnmprmz.supabase.co',
+  'sb_publishable_tmZAZTDbQ7ktc1N-8y4q4w_ztAu_62F'
+)
+
+function show(id) {
+  ['state-loading','state-success','state-error'].forEach(s => {
+    document.getElementById(s).style.display = s === id ? 'block' : 'none'
+  })
+}
+
+// Supabase appends tokens to URL hash on email confirmation
+// Listen for the session change
+const { data: { session }, error } = await sb.auth.getSession()
+
+if (session) {
+  show('state-success')
+  // Auto-redirect after 2.5s
+  setTimeout(() => window.location.href = '/onboarding.html', 2500)
+} else {
+  // Try to exchange hash token
+  sb.auth.onAuthStateChange((event, session) => {
+    if (event === 'SIGNED_IN' && session) {
+      show('state-success')
+      setTimeout(() => window.location.href = '/onboarding.html', 2500)
+    } else if (event === 'USER_UPDATED' && session) {
+      show('state-success')
+      setTimeout(() => window.location.href = '/onboarding.html', 2500)
+    }
+  })
+
+  // Fallback — if no hash event fires in 4s, show error
+  setTimeout(() => {
+    const el = document.getElementById('state-success')
+    if (el.style.display === 'none') {
+      show('state-error')
+      document.getElementById('err-text').textContent =
+        'Nismo uspjeli potvrditi email. Link je možda istekao.'
+    }
+  }, 4000)
+}
+</script>
+</body>
+</html>

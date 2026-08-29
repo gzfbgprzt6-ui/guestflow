@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dodaj objekt — Odmoria</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0F172A;--white:#fff;--bg:#F8FAFC;--border:#E2E8F0;--muted:#64748B;--text:#1E293B;--blue:#1A56DB;--blue-lt:#EEF3FF;--blue-dk:#1343B0;--green:#0F6E3F;--green-lt:#E7F5EE;--f:'Plus Jakarta Sans',system-ui,sans-serif;--r:10px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--f);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;min-height:100dvh;display:flex;flex-direction:column}
+a{color:inherit;text-decoration:none}
+#loading{position:fixed;inset:0;background:var(--white);display:flex;align-items:center;justify-content:center;z-index:999}
+.spin{width:24px;height:24px;border:3px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+nav{background:var(--white);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:58px;flex-shrink:0}
+.logo{font-size:18px;font-weight:800;letter-spacing:-.5px}.logo span{color:var(--blue)}
+.nav-back{font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:6px}
+.nav-back:hover{color:var(--text)}
+
+.main{flex:1;display:flex;align-items:flex-start;justify-content:center;padding:28px 16px 80px}
+.wrap{width:100%;max-width:540px}
+
+/* UPGRADE WALL */
+.upgrade-wall{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:40px 32px;text-align:center}
+.uw-ic{width:60px;height:60px;border-radius:50%;background:var(--blue-lt);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:26px}
+.uw-h{font-size:22px;font-weight:800;letter-spacing:-.02em;margin-bottom:8px}
+.uw-p{font-size:14px;color:var(--muted);line-height:1.65;margin-bottom:24px;max-width:380px;margin-left:auto;margin-right:auto}
+.plan-compare{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px}
+.pc-card{border:1.5px solid var(--border);border-radius:11px;padding:16px}
+.pc-card.feat{border-color:var(--blue)}
+.pc-tier{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.pc-tier.blue{color:var(--blue)}
+.pc-price{font-size:26px;font-weight:800;letter-spacing:-.02em;margin-bottom:4px}
+.pc-props{font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px}
+.pc-desc{font-size:12px;color:var(--muted)}
+
+/* FORM */
+.section-head{margin-bottom:20px}
+.section-title{font-size:20px;font-weight:800;letter-spacing:-.02em;margin-bottom:5px}
+.section-sub{font-size:14px;color:var(--muted);line-height:1.6}
+.card{background:var(--white);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:14px}
+.card-head{padding:18px 22px;border-bottom:1px solid var(--border);font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px}
+.card-body{padding:20px 22px}
+.fg{margin-bottom:15px}
+.fg label{display:block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.fi,.fta,.fsel{width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:var(--r);font-size:14px;color:var(--text);background:var(--white);transition:border-color .15s;font-family:var(--f)}
+.fi:focus,.fta:focus,.fsel:focus{outline:none;border-color:var(--blue)}
+.fi.big{font-size:22px;font-weight:800;letter-spacing:.1em}
+.fta{resize:none;line-height:1.55}
+.fg-hint{font-size:12px;color:var(--muted);margin-top:5px;line-height:1.55}
+.fg-hint.green{color:var(--green);font-weight:600}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.type-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.type-btn{border:1.5px solid var(--border);border-radius:9px;padding:12px 6px;text-align:center;cursor:pointer;transition:.15s;background:var(--white)}
+.type-btn:hover{border-color:#94A3B8}
+.type-btn.on{border-color:var(--blue);background:var(--blue-lt)}
+.type-btn-ic{font-size:22px;margin-bottom:4px}
+.type-btn-lbl{font-size:11.5px;font-weight:700;color:var(--text)}
+.type-btn.on .type-btn-lbl{color:var(--blue)}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;font-weight:700;border-radius:var(--r);padding:11px 22px;font-size:14px;border:none;cursor:pointer;transition:all .15s;font-family:var(--f)}
+.btn-blue{background:var(--blue);color:#fff;width:100%;padding:13px}.btn-blue:hover{background:var(--blue-dk)}
+.btn-blue:disabled{opacity:.5;cursor:not-allowed}
+.btn-out{background:var(--white);color:var(--text);border:1.5px solid var(--border)}.btn-out:hover{border-color:#94A3B8}
+.btn-full{width:100%;justify-content:center}
+
+.alert{border-radius:9px;padding:12px 15px;font-size:13.5px;font-weight:500;margin-bottom:14px;line-height:1.5;display:none}
+.alert-err{background:#FEF2F2;border:1px solid #FECACA;color:#B91C1C;display:block}
+.alert-ok{background:var(--green-lt);border:1px solid #B7E4CC;color:var(--green)}
+
+/* limit badge */
+.limit-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 13px;border-radius:8px;font-size:12.5px;font-weight:700;margin-bottom:20px}
+.limit-ok{background:var(--green-lt);color:var(--green)}
+.limit-warn{background:#FEF3C7;color:#92400E}
+
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;white-space:nowrap;opacity:0;transition:opacity .2s;pointer-events:none}
+#toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div id="loading"><div class="spin"></div></div>
+<div id="toast"></div>
+
+<nav>
+  <a href="/dashboard.html" class="logo">Odmor<span>ia</span></a>
+  <div class="nav-back" onclick="window.location.href='/dashboard.html'">
+    ← Dashboard
+  </div>
+</nav>
+
+<div class="main" id="main-app" style="display:none">
+  <div class="wrap">
+
+    <!-- UPGRADE WALL (shown if at limit) -->
+    <div id="upgrade-wall" style="display:none">
+      <div class="upgrade-wall">
+        <div class="uw-ic">🔒</div>
+        <div class="uw-h">Dostignut limit objekata</div>
+        <p class="uw-p">Na trenutnom planu ne možeš dodati više objekata. Nadogradi na Pro ili Business za više objekata.</p>
+        <div class="plan-compare">
+          <div class="pc-card feat">
+            <div class="pc-tier blue">Pro</div>
+            <div class="pc-price">15 €<span style="font-size:13px;font-weight:400;color:var(--muted)">/mj</span></div>
+            <div class="pc-props">Do 5 objekata</div>
+            <div class="pc-desc">Ukloni branding, analitika, vlastita domena</div>
+          </div>
+          <div class="pc-card">
+            <div class="pc-tier">Business</div>
+            <div class="pc-price">49 €<span style="font-size:13px;font-weight:400;color:var(--muted)">/mj</span></div>
+            <div class="pc-props">Do 15 objekata</div>
+            <div class="pc-desc">Timski rad, white-label, API pristup</div>
+          </div>
+        </div>
+        <button class="btn btn-blue" onclick="window.location.href='/dashboard.html'">Pogledaj planove →</button>
+        <div style="margin-top:12px"><a href="/dashboard.html" style="font-size:13px;color:var(--muted);font-weight:500">Natrag na dashboard</a></div>
+      </div>
+    </div>
+
+    <!-- ADD FORM (shown if under limit) -->
+    <div id="add-form" style="display:none">
+      <div class="section-head">
+        <div class="section-title">Dodaj novi objekt</div>
+        <div class="section-sub">Svaki objekt dobiva vlastitu javnu stranicu i privatni gostinski link.</div>
+      </div>
+
+      <div id="limit-info" class="limit-badge limit-ok" style="display:inline-flex">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6.5" stroke="currentColor"/><path d="M4 7l2.5 2.5 3.5-4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span id="limit-text">...</span>
+      </div>
+
+      <div class="alert alert-err" id="main-err" style="display:none"></div>
+
+      <div class="card">
+        <div class="card-head">🏠 Osnovno</div>
+        <div class="card-body">
+          <div class="fg">
+            <label>Naziv objekta *</label>
+            <input class="fi" id="prop-name" placeholder="npr. Apartman Sunce, Villa Mare...">
+          </div>
+          <div class="fg">
+            <label>Lokacija</label>
+            <input class="fi" id="prop-location" placeholder="npr. Split, Hrvatska">
+          </div>
+          <div class="fg">
+            <label>Vrsta objekta</label>
+            <div class="type-grid" id="type-grid">
+              <div class="type-btn on" data-type="Apartman" onclick="selType(this)"><div class="type-btn-ic">🏢</div><div class="type-btn-lbl">Apartman</div></div>
+              <div class="type-btn" data-type="Villa" onclick="selType(this)"><div class="type-btn-ic">🏛️</div><div class="type-btn-lbl">Villa</div></div>
+              <div class="type-btn" data-type="Kuća" onclick="selType(this)"><div class="type-btn-ic">🏡</div><div class="type-btn-lbl">Kuća</div></div>
+              <div class="type-btn" data-type="Studio" onclick="selType(this)"><div class="type-btn-ic">🛋️</div><div class="type-btn-lbl">Studio</div></div>
+              <div class="type-btn" data-type="Soba" onclick="selType(this)"><div class="type-btn-ic">🛏️</div><div class="type-btn-lbl">Soba</div></div>
+              <div class="type-btn" data-type="Chalet" onclick="selType(this)"><div class="type-btn-ic">⛷️</div><div class="type-btn-lbl">Chalet</div></div>
+            </div>
+          </div>
+          <div class="grid2">
+            <div class="fg"><label>Max. gostiju</label><input class="fi" id="max-guests" type="number" placeholder="4" min="1" max="50"></div>
+            <div class="fg"><label>Spavaće sobe</label><input class="fi" id="bedrooms" type="number" placeholder="2" min="0" max="20"></div>
+          </div>
+          <div class="fg"><label>Cijena po noći (€)</label><input class="fi" id="price" type="number" placeholder="120" min="0"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">🔑 Check-in</div>
+        <div class="card-body">
+          <div class="grid2">
+            <div class="fg"><label>Check-in od</label><input class="fi" id="ci-time" type="time" value="15:00"></div>
+            <div class="fg"><label>Check-out do</label><input class="fi" id="co-time" type="time" value="10:00"></div>
+          </div>
+          <div class="fg">
+            <label>Šifra vrata / sef</label>
+            <input class="fi big" id="door-code" placeholder="1234" maxlength="10">
+            <div class="fg-hint green">🔒 Samo na privatnom gostinskom linku</div>
+          </div>
+          <div class="fg"><label>Adresa</label><input class="fi" id="address" placeholder="Ulica i broj, grad"></div>
+          <div class="fg"><label>Napomene za dolazak</label><textarea class="fta" id="ci-notes" rows="2" placeholder="Sef je desno od ulaza..."></textarea></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">📶 Wi-Fi</div>
+        <div class="card-body">
+          <div class="fg"><label>Naziv mreže</label><input class="fi" id="wifi-name" placeholder="NazivMreze_5G"></div>
+          <div class="fg">
+            <label>Lozinka</label>
+            <input class="fi" id="wifi-pass" placeholder="lozinka123">
+            <div class="fg-hint green">🔒 Samo na privatnom gostinskom linku</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">📞 Kontakt</div>
+        <div class="card-body">
+          <div class="grid2">
+            <div class="fg"><label>Vaše ime</label><input class="fi" id="host-name" placeholder="Ana"></div>
+            <div class="fg"><label>WhatsApp</label><input class="fi" id="host-phone" type="tel" placeholder="+385 91..."></div>
+          </div>
+          <div class="fg"><label>Email za upite</label><input class="fi" id="host-email" type="email" placeholder="ana@primjer.hr"></div>
+          <div class="fg"><label>Poruka dobrodošlice</label><textarea class="fta" id="welcome-msg" rows="2" placeholder="Dobrodošli u naš apartman!"></textarea></div>
+        </div>
+      </div>
+
+      <button class="btn btn-blue" id="save-btn" onclick="saveProperty()">
+        <span id="save-txt">Kreiraj objekt →</span>
+      </button>
+    </div>
+
+    <!-- SUCCESS -->
+    <div id="success-wrap" style="display:none">
+      <div class="card" style="padding:36px;text-align:center">
+        <div style="width:56px;height:56px;border-radius:50%;background:var(--green-lt);display:flex;align-items:center;justify-content:center;margin:0 auto 18px;font-size:24px;color:var(--green)">✓</div>
+        <div style="font-size:22px;font-weight:800;margin-bottom:8px">Objekt kreiran!</div>
+        <div style="font-size:14px;color:var(--muted);line-height:1.65;margin-bottom:24px">Tvoja nova stranica je živa. Kopiraj linkove i podijeli ih.</div>
+        <div style="background:var(--bg);border-radius:10px;padding:14px;margin-bottom:10px;text-align:left">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--green);margin-bottom:4px">Javna stranica</div>
+          <div style="font-family:monospace;font-size:13px;color:var(--blue);font-weight:600;margin-bottom:8px" id="s-pub-url"></div>
+          <button class="btn btn-out" style="font-size:13px;padding:8px 14px" onclick="copyUrl('pub')">Kopiraj link</button>
+        </div>
+        <div style="background:var(--bg);border-radius:10px;padding:14px;margin-bottom:20px;text-align:left">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--blue);margin-bottom:4px">Gostinski link</div>
+          <div style="font-family:monospace;font-size:13px;color:var(--blue);font-weight:600;margin-bottom:8px" id="s-priv-url"></div>
+          <button class="btn btn-out" style="font-size:13px;padding:8px 14px" onclick="copyUrl('priv')">Kopiraj link</button>
+        </div>
+        <a href="/dashboard.html" class="btn btn-blue btn-full">← Na dashboard</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+
+const SURL = 'https://wtojzqjhipdfbrnmprmz.supabase.co'
+const SKEY = 'sb_publishable_tmZAZTDbQ7ktc1N-8y4q4w_ztAu_62F'
+const sb = createClient(SURL, SKEY)
+
+let USER = null, PLAN = 'free', PROP_COUNT = 0
+let selectedType = 'Apartman'
+let newSlug = '', newToken = ''
+
+const LIMITS = { free: 1, pro: 5, business: 15 }
+
+async function init() {
+  const { data: { session } } = await sb.auth.getSession()
+  if (!session) { window.location.href = '/login.html'; return }
+  USER = session.user
+
+  // Get plan
+  const { data: sub } = await sb.from('subscriptions').select('plan').eq('user_id', USER.id).maybeSingle()
+  PLAN = sub?.plan || 'free'
+
+  // Count existing properties
+  const { count } = await sb.from('properties').select('id', { count: 'exact', head: true }).eq('user_id', USER.id)
+  PROP_COUNT = count || 0
+
+  const limit = LIMITS[PLAN] || 1
+
+  document.getElementById('loading').style.display = 'none'
+  document.getElementById('main-app').style.display = 'flex'
+
+  if (PROP_COUNT >= limit) {
+    document.getElementById('upgrade-wall').style.display = 'block'
+  } else {
+    document.getElementById('add-form').style.display = 'block'
+    const remaining = limit - PROP_COUNT
+    const limitEl = document.getElementById('limit-info')
+    const limitTxt = document.getElementById('limit-text')
+    limitTxt.textContent = `${PROP_COUNT} od ${limit} objekata iskorišteno · još ${remaining} slobodno`
+    if (remaining === 1) {
+      limitEl.className = 'limit-badge limit-warn'
+    }
+    // Pre-fill host name
+    const name = USER.user_metadata?.full_name || ''
+    if (name) document.getElementById('host-name').value = name.split(' ')[0]
+  }
+}
+
+window.selType = (el) => {
+  document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('on'))
+  el.classList.add('on')
+  selectedType = el.dataset.type
+}
+
+window.saveProperty = async () => {
+  const name = document.getElementById('prop-name').value.trim()
+  if (!name) {
+    showErr('Upiši naziv objekta.')
+    return
+  }
+  hideErr()
+
+  const btn = document.getElementById('save-btn')
+  const txt = document.getElementById('save-txt')
+  btn.disabled = true
+  txt.innerHTML = '<div class="spin" style="border-top-color:#fff;width:16px;height:16px;border-width:2.5px"></div> Kreiranje...'
+
+  const slug = slugify(name) + '-' + Math.random().toString(36).slice(2,6)
+  const token = Math.random().toString(36).slice(2,12)
+  newSlug = slug
+  newToken = token
+
+  // 1. Create property
+  const { data: prop, error: propErr } = await sb.from('properties').insert({
+    user_id: USER.id, name, slug, guest_token: token,
+    type: selectedType,
+    location: document.getElementById('prop-location').value.trim(),
+    host_name: document.getElementById('host-name').value.trim(),
+    phone: document.getElementById('host-phone').value.trim(),
+    email: document.getElementById('host-email').value.trim(),
+    welcome_msg: document.getElementById('welcome-msg').value.trim(),
+    price_per_night: parseFloat(document.getElementById('price').value) || null,
+    max_guests: parseInt(document.getElementById('max-guests').value) || null,
+    bedrooms: parseInt(document.getElementById('bedrooms').value) || null,
+  }).select().single()
+
+  if (propErr) {
+    btn.disabled = false
+    txt.textContent = 'Kreiraj objekt →'
+    if (propErr.message?.includes('limit') || propErr.code === '23514') {
+      showErr('Dostignut limit objekata za tvoj plan. Nadogradi plan za više objekata.')
+    } else {
+      showErr('Greška: ' + propErr.message)
+    }
+    return
+  }
+
+  // 2. Create sections
+  await sb.from('sections').insert({
+    property_id: prop.id,
+    checkin_time: document.getElementById('ci-time').value,
+    checkout_time: document.getElementById('co-time').value,
+    door_code: document.getElementById('door-code').value.trim(),
+    address: document.getElementById('address').value.trim(),
+    checkin_notes: document.getElementById('ci-notes').value.trim(),
+    wifi_name: document.getElementById('wifi-name').value.trim(),
+    wifi_pass: document.getElementById('wifi-pass').value.trim(),
+  })
+
+  // 3. Show success
+  const base = 'odmoria.com'
+  document.getElementById('s-pub-url').textContent = base + '/p/' + slug
+  document.getElementById('s-priv-url').textContent = base + '/h/' + slug + '-' + token
+  document.getElementById('add-form').style.display = 'none'
+  document.getElementById('success-wrap').style.display = 'block'
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+window.copyUrl = (type) => {
+  const url = type === 'pub'
+    ? 'https://odmoria.com/p/' + newSlug
+    : 'https://odmoria.com/h/' + newSlug + '-' + newToken
+  navigator.clipboard?.writeText(url)
+  toast(type === 'pub' ? 'Javni link kopiran!' : 'Gostinski link kopiran!')
+}
+
+function slugify(s) {
+  return s.toLowerCase()
+    .replace(/[čć]/g,'c').replace(/š/g,'s').replace(/ž/g,'z').replace(/đ/g,'d')
+    .replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,40) || 'objekt'
+}
+function showErr(msg) {
+  const el = document.getElementById('main-err')
+  el.textContent = msg; el.style.display = 'block'
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+function hideErr() {
+  document.getElementById('main-err').style.display = 'none'
+}
+window.toast = (msg) => {
+  const el = document.getElementById('toast')
+  el.textContent = msg; el.classList.add('show')
+  clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove('show'), 2200)
+}
+
+init()
+</script>
+</body>
+</html>

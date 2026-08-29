@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Postavke računa — Odmoria</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0F172A;--white:#fff;--bg:#F8FAFC;--border:#E2E8F0;--muted:#64748B;--text:#1E293B;--blue:#1A56DB;--blue-lt:#EEF3FF;--blue-dk:#1343B0;--green:#0F6E3F;--green-lt:#E7F5EE;--red:#EF4444;--red-lt:#FEF2F2;--f:'Plus Jakarta Sans',system-ui,sans-serif;--r:10px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--f);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;min-height:100dvh;display:flex;flex-direction:column}
+a{color:inherit;text-decoration:none}
+#loading{position:fixed;inset:0;background:var(--white);display:flex;align-items:center;justify-content:center;z-index:999}
+.spin{width:24px;height:24px;border:3px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+nav{background:var(--white);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:58px;flex-shrink:0}
+.logo{font-size:18px;font-weight:800;letter-spacing:-.5px}.logo span{color:var(--blue)}
+.nav-back{font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:6px}
+.nav-back:hover{color:var(--text)}
+.main{flex:1;display:flex;justify-content:center;padding:28px 16px 80px}
+.wrap{width:100%;max-width:520px}
+.page-title{font-size:22px;font-weight:800;letter-spacing:-.02em;margin-bottom:24px}
+.card{background:var(--white);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:14px}
+.card-head{padding:16px 22px;border-bottom:1px solid var(--border);font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px;color:var(--text)}
+.card-body{padding:20px 22px}
+.avatar-row{display:flex;align-items:center;gap:16px;padding:18px 22px;border-bottom:1px solid var(--border)}
+.avatar{width:52px;height:52px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;flex-shrink:0}
+.avatar-info{flex:1}
+.avatar-name{font-size:16px;font-weight:700}
+.avatar-email{font-size:13px;color:var(--muted)}
+.plan-badge{font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;display:inline-block;margin-top:4px}
+.plan-free{background:var(--bg);color:var(--muted);border:1px solid var(--border)}
+.plan-pro{background:var(--blue-lt);color:var(--blue)}
+.plan-business{background:#F3E8FF;color:#7C3AED}
+.fg{margin-bottom:14px}
+.fg label{display:block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.fi{width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:var(--r);font-size:14px;color:var(--text);background:var(--white);transition:border-color .15s;font-family:var(--f)}
+.fi:focus{outline:none;border-color:var(--blue)}
+.fi:read-only{background:var(--bg);color:var(--muted);cursor:not-allowed}
+.strength{height:4px;border-radius:2px;background:var(--border);margin-top:5px;transition:all .3s}
+.strength.weak{background:#EF4444;width:30%}
+.strength.medium{background:#F59E0B;width:65%}
+.strength.strong{background:#22C55E;width:100%}
+.str-lbl{font-size:11.5px;color:var(--muted);margin-top:4px}
+.save-row{display:flex;justify-content:flex-end;padding-top:14px;border-top:1px solid var(--border);margin-top:4px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;font-weight:700;border-radius:var(--r);padding:10px 20px;font-size:13.5px;border:none;cursor:pointer;transition:all .15s;font-family:var(--f)}
+.btn-blue{background:var(--blue);color:#fff}.btn-blue:hover{background:var(--blue-dk)}
+.btn-blue:disabled{opacity:.5;cursor:not-allowed}
+.btn-out{background:var(--white);color:var(--text);border:1.5px solid var(--border)}.btn-out:hover{border-color:#94A3B8}
+.btn-red{background:var(--red-lt);color:var(--red);border:1.5px solid #FECACA}.btn-red:hover{background:#FEE2E2}
+.btn-sm{padding:8px 16px;font-size:13px}
+.alert{border-radius:9px;padding:11px 15px;font-size:13px;font-weight:500;margin-bottom:12px;line-height:1.5;display:none}
+.alert-err{background:var(--red-lt);border:1px solid #FECACA;color:#B91C1C}
+.alert-ok{background:var(--green-lt);border:1px solid #B7E4CC;color:var(--green)}
+.info-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:14px}
+.info-row:last-child{border-bottom:none}
+.info-lbl{color:var(--muted);font-weight:500}
+.info-val{font-weight:600}
+.danger-text{font-size:13.5px;color:var(--muted);line-height:1.65;margin-bottom:16px}
+.confirm-input-wrap{display:none;margin-bottom:12px}
+
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;white-space:nowrap;opacity:0;transition:opacity .2s;pointer-events:none}
+#toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div id="loading"><div class="spin"></div></div>
+<div id="toast"></div>
+
+<nav>
+  <a href="/dashboard.html" class="logo">Odmor<span>ia</span></a>
+  <div class="nav-back" onclick="window.location.href='/dashboard.html'">← Dashboard</div>
+</nav>
+
+<div class="main" id="main-app" style="display:none">
+  <div class="wrap">
+    <div class="page-title">Postavke računa</div>
+
+    <!-- AVATAR + PLAN -->
+    <div class="card">
+      <div class="avatar-row">
+        <div class="avatar" id="av">?</div>
+        <div class="avatar-info">
+          <div class="avatar-name" id="av-name">...</div>
+          <div class="avatar-email" id="av-email">...</div>
+          <div class="plan-badge plan-free" id="plan-badge">Free plan</div>
+        </div>
+        <button class="btn btn-blue btn-sm" onclick="window.location.href='/dashboard.html'">Nadogradi</button>
+      </div>
+      <div class="card-body">
+        <div class="info-row"><span class="info-lbl">Plan</span><span class="info-val" id="plan-name">Free</span></div>
+        <div class="info-row"><span class="info-lbl">Objekti</span><span class="info-val" id="prop-count">0 / 1</span></div>
+        <div class="info-row"><span class="info-lbl">Registriran</span><span class="info-val" id="reg-date">—</span></div>
+      </div>
+    </div>
+
+    <!-- PROFILE -->
+    <div class="card">
+      <div class="card-head">👤 Profil</div>
+      <div class="card-body">
+        <div class="alert alert-err" id="profile-err"></div>
+        <div class="alert alert-ok" id="profile-ok"></div>
+        <div class="fg">
+          <label>Puno ime</label>
+          <input class="fi" id="full-name" placeholder="Tvoje ime">
+        </div>
+        <div class="fg">
+          <label>Email adresa</label>
+          <input class="fi" id="email" type="email" placeholder="email@primjer.hr" readonly>
+          <div style="font-size:11.5px;color:var(--muted);margin-top:4px">Email se ne može promijeniti direktno. Kontaktiraj podršku.</div>
+        </div>
+        <div class="save-row">
+          <button class="btn btn-blue" onclick="saveProfile()">
+            <span id="profile-btn-txt">Spremi promjene</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PASSWORD -->
+    <div class="card">
+      <div class="card-head">🔒 Promjena lozinke</div>
+      <div class="card-body">
+        <div class="alert alert-err" id="pw-err"></div>
+        <div class="alert alert-ok" id="pw-ok"></div>
+        <div class="fg">
+          <label>Nova lozinka</label>
+          <input class="fi" id="new-pass" type="password" placeholder="Najmanje 8 znakova" oninput="checkStrength()">
+          <div class="strength" id="str-bar"></div>
+          <div class="str-lbl" id="str-lbl"></div>
+        </div>
+        <div class="fg">
+          <label>Ponovi lozinku</label>
+          <input class="fi" id="confirm-pass" type="password" placeholder="Ista lozinka">
+        </div>
+        <div class="save-row">
+          <button class="btn btn-blue" onclick="savePassword()">
+            <span id="pw-btn-txt">Promijeni lozinku</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- NOTIFICATIONS -->
+    <div class="card">
+      <div class="card-head">🔔 Obavijesti</div>
+      <div class="card-body">
+        <div class="info-row">
+          <div>
+            <div style="font-size:14px;font-weight:600">Email obavijesti</div>
+            <div style="font-size:12.5px;color:var(--muted);margin-top:2px">Novosti i ažuriranja Odmorie</div>
+          </div>
+          <div style="width:36px;height:20px;border-radius:10px;background:var(--blue);position:relative;cursor:pointer" onclick="toggleNotif(this)">
+            <div style="position:absolute;top:3px;left:19px;width:14px;height:14px;border-radius:50%;background:#fff;transition:.15s" id="notif-dot"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DANGER ZONE -->
+    <div class="card" style="border-color:#FECACA">
+      <div class="card-head" style="color:var(--red)">⚠️ Opasna zona</div>
+      <div class="card-body">
+        <div class="danger-text">Brisanje računa je trajno i ne može se poništiti. Svi tvoji objekti, linkovi i podaci bit će obrisani odmah.</div>
+        <div class="alert alert-err" id="delete-err"></div>
+        <div class="confirm-input-wrap" id="confirm-wrap">
+          <label class="fg" style="font-size:13px;font-weight:600;color:var(--red);margin-bottom:6px;display:block">Upiši <strong>briši račun</strong> za potvrdu:</label>
+          <input class="fi" id="confirm-input" placeholder="briši račun" style="border-color:#FECACA">
+        </div>
+        <button class="btn btn-red" id="delete-btn" onclick="handleDelete()">
+          <span id="delete-btn-txt">Obriši račun</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+
+const SURL = 'https://wtojzqjhipdfbrnmprmz.supabase.co'
+const SKEY = 'sb_publishable_tmZAZTDbQ7ktc1N-8y4q4w_ztAu_62F'
+const sb = createClient(SURL, SKEY)
+
+let USER = null
+let deleteStep = 0
+const LIMITS = { free: 1, pro: 5, business: 15 }
+
+async function init() {
+  const { data: { session } } = await sb.auth.getSession()
+  if (!session) { window.location.href = '/login.html'; return }
+  USER = session.user
+
+  // Fill profile
+  const name = USER.user_metadata?.full_name || ''
+  document.getElementById('full-name').value = name
+  document.getElementById('email').value = USER.email || ''
+  document.getElementById('av').textContent = (name || USER.email || '?')[0].toUpperCase()
+  document.getElementById('av-name').textContent = name || USER.email.split('@')[0]
+  document.getElementById('av-email').textContent = USER.email
+
+  // Plan & stats
+  const { data: sub } = await sb.from('subscriptions').select('plan,period_end').eq('user_id', USER.id).maybeSingle()
+  const plan = sub?.plan || 'free'
+  const limit = LIMITS[plan] || 1
+  const { count } = await sb.from('properties').select('id', { count: 'exact', head: true }).eq('user_id', USER.id)
+  const propCount = count || 0
+
+  const planNames = { free: 'Free', pro: 'Pro', business: 'Business' }
+  const planClasses = { free: 'plan-free', pro: 'plan-pro', business: 'plan-business' }
+  document.getElementById('plan-badge').textContent = planNames[plan] + ' plan'
+  document.getElementById('plan-badge').className = 'plan-badge ' + (planClasses[plan] || 'plan-free')
+  document.getElementById('plan-name').textContent = planNames[plan] || 'Free'
+  document.getElementById('prop-count').textContent = propCount + ' / ' + limit
+
+  const created = new Date(USER.created_at)
+  document.getElementById('reg-date').textContent = created.toLocaleDateString('hr-HR', { day: 'numeric', month: 'long', year: 'numeric' })
+
+  document.getElementById('loading').style.display = 'none'
+  document.getElementById('main-app').style.display = 'flex'
+}
+
+// ── PROFILE ───────────────────────────────────────────
+window.saveProfile = async () => {
+  const name = document.getElementById('full-name').value.trim()
+  const btn = document.getElementById('profile-btn-txt')
+  clearAlerts('profile')
+  btn.textContent = 'Spremanje...'
+
+  const { error } = await sb.auth.updateUser({ data: { full_name: name } })
+  btn.textContent = 'Spremi promjene'
+
+  if (error) { showAlert('profile', 'err', error.message); return }
+  document.getElementById('av').textContent = (name || USER.email || '?')[0].toUpperCase()
+  document.getElementById('av-name').textContent = name || USER.email.split('@')[0]
+  showAlert('profile', 'ok', '✓ Profil ažuriran')
+  toast('Profil spremljen ✓')
+}
+
+// ── PASSWORD ──────────────────────────────────────────
+window.checkStrength = () => {
+  const v = document.getElementById('new-pass').value
+  const bar = document.getElementById('str-bar')
+  const lbl = document.getElementById('str-lbl')
+  bar.className = 'strength'
+  if (!v) { lbl.textContent = ''; return }
+  if (v.length < 8) { bar.classList.add('weak'); lbl.textContent = 'Prekratka'; return }
+  const strong = /[A-Z]/.test(v) && /[0-9]/.test(v) && v.length >= 12
+  if (strong) { bar.classList.add('strong'); lbl.textContent = 'Jaka ✓' }
+  else { bar.classList.add('medium'); lbl.textContent = 'Dobra' }
+}
+
+window.savePassword = async () => {
+  const p1 = document.getElementById('new-pass').value
+  const p2 = document.getElementById('confirm-pass').value
+  clearAlerts('pw')
+
+  if (p1.length < 8) { showAlert('pw', 'err', 'Lozinka mora imati najmanje 8 znakova.'); return }
+  if (p1 !== p2) { showAlert('pw', 'err', 'Lozinke se ne podudaraju.'); return }
+
+  document.getElementById('pw-btn-txt').textContent = 'Mijenjam...'
+  const { error } = await sb.auth.updateUser({ password: p1 })
+  document.getElementById('pw-btn-txt').textContent = 'Promijeni lozinku'
+
+  if (error) { showAlert('pw', 'err', error.message); return }
+  document.getElementById('new-pass').value = ''
+  document.getElementById('confirm-pass').value = ''
+  document.getElementById('str-bar').className = 'strength'
+  document.getElementById('str-lbl').textContent = ''
+  showAlert('pw', 'ok', '✓ Lozinka promijenjena')
+  toast('Lozinka promijenjena ✓')
+}
+
+// ── DELETE ACCOUNT ────────────────────────────────────
+window.handleDelete = () => {
+  if (deleteStep === 0) {
+    // Show confirmation input
+    deleteStep = 1
+    document.getElementById('confirm-wrap').style.display = 'block'
+    document.getElementById('delete-btn-txt').textContent = 'Potvrdi brisanje'
+    document.getElementById('delete-btn').style.background = '#EF4444'
+    document.getElementById('delete-btn').style.color = '#fff'
+    document.getElementById('delete-btn').style.border = 'none'
+    return
+  }
+
+  const input = document.getElementById('confirm-input').value.trim().toLowerCase()
+  if (input !== 'briši račun') {
+    showAlert('delete', 'err', 'Upiši točno: briši račun')
+    return
+  }
+
+  // Can't actually delete from client (needs service role)
+  // Show instructions
+  showAlert('delete', 'err', 'Za brisanje računa pošalji email na podrska@odmoria.com s naslova svog računa. Brišemo u roku 24h.')
+  deleteStep = 0
+  document.getElementById('confirm-wrap').style.display = 'none'
+  document.getElementById('delete-btn-txt').textContent = 'Obriši račun'
+}
+
+window.toggleNotif = (el) => {
+  const dot = el.querySelector('div')
+  const isOn = dot.style.left === '19px' || dot.style.left === ''
+  if (isOn) {
+    el.style.background = '#CBD5E1'
+    dot.style.left = '3px'
+  } else {
+    el.style.background = 'var(--blue)'
+    dot.style.left = '19px'
+  }
+}
+
+// ── UTILS ─────────────────────────────────────────────
+function showAlert(sec, type, msg) {
+  const el = document.getElementById(sec + '-' + (type === 'ok' ? 'ok' : 'err'))
+  if (!el) return
+  el.textContent = msg
+  el.style.display = 'block'
+  if (type === 'ok') setTimeout(() => el.style.display = 'none', 3500)
+}
+function clearAlerts(sec) {
+  const e = document.getElementById(sec + '-err')
+  const o = document.getElementById(sec + '-ok')
+  if (e) e.style.display = 'none'
+  if (o) o.style.display = 'none'
+}
+window.toast = (msg) => {
+  const el = document.getElementById('toast')
+  el.textContent = msg; el.classList.add('show')
+  clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove('show'), 2200)
+}
+
+init()
+</script>
+</body>
+</html>

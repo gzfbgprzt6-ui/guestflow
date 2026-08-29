@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign in — Odmoria</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:#F5F4F1;color:#1A1917;min-height:100dvh;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+nav{background:#fff;border-bottom:1px solid #E2E0DB;display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:58px;flex-shrink:0}
+.logo{font-size:18px;font-weight:800;letter-spacing:-.5px}
+.nav-link{font-size:14px;font-weight:500;color:#6B6A67}
+.nav-link:hover{color:#1A1917}
+.main{flex:1;display:flex;align-items:center;justify-content:center;padding:32px 16px}
+.card{background:#fff;border:1px solid #E2E0DB;border-radius:16px;padding:36px 32px;width:100%;max-width:440px;box-shadow:0 4px 24px rgba(0,0,0,.06)}
+.card-title{font-size:24px;font-weight:800;letter-spacing:-.02em;margin-bottom:6px}
+.card-sub{font-size:14px;color:#6B6A67;margin-bottom:28px;line-height:1.6}
+.fg{margin-bottom:16px}
+.fg label{display:block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6B6A67;margin-bottom:6px}
+.fg input{width:100%;padding:11px 14px;border:1.5px solid #E2E0DB;border-radius:10px;font-size:15px;color:#1A1917;background:#fff;transition:border-color .15s;font-family:inherit}
+.fg input:focus{outline:none;border-color:#1A56DB}
+.fg input.err{border-color:#EF4444}
+.fg-row{display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6B6A67;margin-bottom:6px}
+.fg-row a{font-size:12px;text-transform:none;letter-spacing:0;color:#1A56DB;font-weight:600}
+.field-err{font-size:12px;color:#EF4444;margin-top:4px;display:none}
+.btn-primary{width:100%;padding:13px;border-radius:10px;font-size:15px;font-weight:700;background:#1A56DB;color:#fff;border:none;cursor:pointer;transition:background .15s;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-primary:hover{background:#1343B0}
+.btn-primary:disabled{opacity:.6;cursor:not-allowed}
+.divider{display:flex;align-items:center;gap:12px;margin:20px 0;color:#6B6A67;font-size:13px}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:#E2E0DB}
+.btn-google{width:100%;padding:12px;border-radius:10px;font-size:14px;font-weight:600;background:#fff;color:#1A1917;border:1.5px solid #E2E0DB;cursor:pointer;transition:border-color .15s;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:10px}
+.btn-google:hover{border-color:#999}
+.google-ic{width:18px;height:18px}
+.alert{border-radius:10px;padding:13px 16px;font-size:14px;font-weight:500;margin-bottom:16px;display:none;line-height:1.5}
+.alert-err{background:#FEF2F2;border:1px solid #FECACA;color:#B91C1C}
+.alert-ok{background:#F0FDF4;border:1px solid #BBF7D0;color:#15803D}
+.bottom-link{text-align:center;font-size:14px;color:#6B6A67;margin-top:20px}
+.bottom-link a{color:#1A56DB;font-weight:600}
+.spinner{width:18px;height:18px;border:2.5px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* magic link tab */
+.tabs{display:flex;gap:0;background:#F5F4F1;border-radius:10px;padding:4px;margin-bottom:24px}
+.tab{flex:1;padding:9px;text-align:center;font-size:13px;font-weight:600;color:#6B6A67;border-radius:7px;cursor:pointer;transition:.15s}
+.tab.on{background:#fff;color:#1A1917;box-shadow:0 1px 4px rgba(0,0,0,.1)}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">Odmoria</a>
+  <a href="/register.html" class="nav-link">No account? Create one free →</a>
+</nav>
+
+<div class="main">
+  <div class="card">
+    <div class="card-title">Welcome back</div>
+    <div class="card-sub">Sign in to your Odmoria dashboard.</div>
+
+    <div class="tabs">
+      <div class="tab on" id="tab-pw" onclick="switchTab('pw')">Password</div>
+      <div class="tab" id="tab-magic" onclick="switchTab('magic')">Magic link</div>
+    </div>
+
+    <div class="alert alert-err" id="alert-err"></div>
+    <div class="alert alert-ok" id="alert-ok"></div>
+
+    <!-- password form -->
+    <form id="pw-form" novalidate>
+      <div class="fg">
+        <label>Email address</label>
+        <input type="email" id="pw-email" placeholder="ana@example.com" autocomplete="email" required>
+        <div class="field-err" id="err-pw-email">Please enter a valid email.</div>
+      </div>
+      <div class="fg">
+        <div class="fg-row">
+          <span>Password</span>
+          <a href="#" id="forgot-link" onclick="showForgot(event)">Forgot password?</a>
+        </div>
+        <input type="password" id="pw-pass" placeholder="Your password" autocomplete="current-password" required>
+        <div class="field-err" id="err-pw-pass">Please enter your password.</div>
+      </div>
+      <button type="submit" class="btn-primary" id="pw-btn">
+        <span id="pw-btn-text">Sign in →</span>
+      </button>
+    </form>
+
+    <!-- magic link form -->
+    <form id="magic-form" novalidate style="display:none">
+      <div class="fg">
+        <label>Email address</label>
+        <input type="email" id="magic-email" placeholder="ana@example.com" autocomplete="email" required>
+        <div class="field-err" id="err-magic-email">Please enter a valid email.</div>
+      </div>
+      <button type="submit" class="btn-primary" id="magic-btn">
+        <span id="magic-btn-text">Send magic link →</span>
+      </button>
+    </form>
+
+    <div class="divider">or</div>
+
+    <button class="btn-google" onclick="signInGoogle()">
+      <svg class="google-ic" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      Continue with Google
+    </button>
+
+    <div class="bottom-link">
+      No account yet? <a href="/register.html">Create one free</a>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+
+const SUPABASE_URL = 'https://wtojzqjhipdfbrnmprmz.supabase.co'
+const SUPABASE_KEY = 'sb_publishable_tmZAZTDbQ7ktc1N-8y4q4w_ztAu_62F'
+const sb = createClient(SUPABASE_URL, SUPABASE_KEY)
+
+// ── already logged in? ────────────────────────────────
+const { data: { session } } = await sb.auth.getSession()
+if (session) window.location.href = '/dashboard'
+
+// ── helpers ───────────────────────────────────────────
+function showErr(msg) {
+  const el = document.getElementById('alert-err')
+  el.textContent = msg
+  el.style.display = 'block'
+  document.getElementById('alert-ok').style.display = 'none'
+}
+function showOk(msg) {
+  const el = document.getElementById('alert-ok')
+  el.textContent = msg
+  el.style.display = 'block'
+  document.getElementById('alert-err').style.display = 'none'
+}
+function setLoading(btnId, txtId, on, label = 'Sign in →') {
+  const btn = document.getElementById(btnId)
+  const txt = document.getElementById(txtId)
+  btn.disabled = on
+  txt.innerHTML = on ? '<div class="spinner"></div> Signing in…' : label
+}
+
+// ── tabs ──────────────────────────────────────────────
+window.switchTab = (tab) => {
+  document.getElementById('tab-pw').classList.toggle('on', tab === 'pw')
+  document.getElementById('tab-magic').classList.toggle('on', tab === 'magic')
+  document.getElementById('pw-form').style.display = tab === 'pw' ? 'block' : 'none'
+  document.getElementById('magic-form').style.display = tab === 'magic' ? 'block' : 'none'
+  document.getElementById('alert-err').style.display = 'none'
+  document.getElementById('alert-ok').style.display = 'none'
+}
+
+// ── password sign in ──────────────────────────────────
+document.getElementById('pw-form').addEventListener('submit', async (e) => {
+  e.preventDefault()
+  const email = document.getElementById('pw-email').value.trim()
+  const pass  = document.getElementById('pw-pass').value
+
+  let valid = true
+  const emailErr = document.getElementById('err-pw-email')
+  const passErr  = document.getElementById('err-pw-pass')
+  const emailInp = document.getElementById('pw-email')
+  const passInp  = document.getElementById('pw-pass')
+
+  if (!email || !email.includes('@')) {
+    emailInp.classList.add('err'); emailErr.style.display = 'block'; valid = false
+  } else {
+    emailInp.classList.remove('err'); emailErr.style.display = 'none'
+  }
+  if (!pass) {
+    passInp.classList.add('err'); passErr.style.display = 'block'; valid = false
+  } else {
+    passInp.classList.remove('err'); passErr.style.display = 'none'
+  }
+  if (!valid) return
+
+  setLoading('pw-btn', 'pw-btn-text', true)
+  document.getElementById('alert-err').style.display = 'none'
+
+  const { error } = await sb.auth.signInWithPassword({ email, password: pass })
+
+  if (error) {
+    setLoading('pw-btn', 'pw-btn-text', false)
+    if (error.message.includes('Invalid login')) {
+      showErr('Incorrect email or password. Please try again.')
+    } else if (error.message.includes('Email not confirmed')) {
+      showErr('Please confirm your email first — check your inbox.')
+    } else {
+      showErr(error.message)
+    }
+    return
+  }
+
+  window.location.href = '/dashboard'
+})
+
+// ── magic link ────────────────────────────────────────
+document.getElementById('magic-form').addEventListener('submit', async (e) => {
+  e.preventDefault()
+  const email = document.getElementById('magic-email').value.trim()
+
+  const emailErr = document.getElementById('err-magic-email')
+  const emailInp = document.getElementById('magic-email')
+  if (!email || !email.includes('@')) {
+    emailInp.classList.add('err'); emailErr.style.display = 'block'; return
+  }
+  emailInp.classList.remove('err'); emailErr.style.display = 'none'
+
+  const btn = document.getElementById('magic-btn')
+  const txt = document.getElementById('magic-btn-text')
+  btn.disabled = true
+  txt.innerHTML = '<div class="spinner"></div> Sending…'
+
+  const { error } = await sb.auth.signInWithOtp({
+    email,
+    options: { emailRedirectTo: window.location.origin + '/dashboard' }
+  })
+
+  btn.disabled = false
+  txt.textContent = 'Send magic link →'
+
+  if (error) { showErr(error.message); return }
+  showOk('✓ Magic link sent! Check your email and click the link to sign in.')
+})
+
+// ── forgot password ───────────────────────────────────
+window.showForgot = async (e) => {
+  e.preventDefault()
+  const email = document.getElementById('pw-email').value.trim()
+  if (!email || !email.includes('@')) {
+    showErr('Enter your email above first, then click "Forgot password?".')
+    return
+  }
+  const { error } = await sb.auth.resetPasswordForEmail(email, {
+    redirectTo: window.location.origin + '/reset-password'
+  })
+  if (error) { showErr(error.message); return }
+  showOk('✓ Password reset email sent. Check your inbox.')
+}
+
+// ── google ────────────────────────────────────────────
+window.signInGoogle = async () => {
+  const { error } = await sb.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo: window.location.origin + '/dashboard' }
+  })
+  if (error) showErr(error.message)
+}
+</script>
+</body>
+</html>

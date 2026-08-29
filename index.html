@@ -1,613 +1,228 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>GuestFlow — Direct bookings. No commissions.</title>
-<meta name="description" content="Give your guests a beautiful digital guide. Share a public page for marketing, a private link after booking. Stop paying 15% to Airbnb and Booking.com.">
+<title>Odmoria — Digitalni vodič za goste. Direktne rezervacije.</title>
+<meta name="description" content="Dajte gostima lijep digitalni vodič — šifra vrata, Wi-Fi, lokalni savjeti. Javna stranica za marketing, privatni link za potvrđene goste.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-/* ── TOKENS ─────────────────────────────────── */
-:root {
-  --ink:     #0A0A0A;
-  --white:   #FFFFFF;
-  --bg:      #F5F4F1;
-  --border:  #E2E0DB;
-  --muted:   #6B6A67;
-  --blue:    #1A56DB;
-  --blue-lt: #EEF3FF;
-  --green:   #0E6E3F;
-  --green-lt:#E7F5EE;
-  --f: 'Plus Jakarta Sans', system-ui, sans-serif;
-  --r: 12px;
-}
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-body {
-  font-family: var(--f);
-  background: var(--white);
-  color: var(--ink);
-  font-size: 15px;
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-}
-img { display: block; max-width: 100%; }
-a { color: inherit; text-decoration: none; }
-button { font-family: var(--f); cursor: pointer; }
-
-/* ── BUTTONS ─────────────────────────────────── */
-.btn {
-  display: inline-flex; align-items: center; justify-content: center;
-  gap: 8px; font-weight: 700; border-radius: var(--r);
-  padding: 13px 24px; font-size: 15px; border: none;
-  cursor: pointer; transition: all .15s; font-family: var(--f);
-  text-decoration: none;
-}
-.btn-black { background: var(--ink); color: var(--white); }
-.btn-black:hover { background: #222; transform: translateY(-1px); }
-.btn-blue { background: var(--blue); color: var(--white); }
-.btn-blue:hover { background: #1343B0; transform: translateY(-1px); }
-.btn-out {
-  background: transparent; color: var(--ink);
-  border: 1.5px solid var(--border);
-}
-.btn-out:hover { border-color: var(--ink); }
-.btn-lg { padding: 15px 32px; font-size: 16px; }
-.btn-full { width: 100%; }
-
-/* ── NAV ─────────────────────────────────────── */
-nav {
-  position: sticky; top: 0; z-index: 100;
-  background: rgba(255,255,255,.92);
-  backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--border);
-  display: flex; align-items: center;
-  justify-content: space-between;
-  padding: 0 24px; height: 60px;
-}
-.nav-logo {
-  font-size: 19px; font-weight: 800;
-  letter-spacing: -.5px; color: var(--ink);
-}
-.nav-links {
-  display: none;
-  gap: 28px; font-size: 14px;
-  font-weight: 500; color: var(--muted);
-}
-.nav-links a:hover { color: var(--ink); }
-.nav-r { display: flex; gap: 8px; }
-@media(min-width:640px) {
-  nav { padding: 0 40px; }
-  .nav-links { display: flex; }
-}
-
-/* ── HERO ─────────────────────────────────────── */
-.hero {
-  padding: 56px 24px 64px;
-  text-align: center;
-  border-bottom: 1px solid var(--border);
-  background: var(--white);
-}
-.hero-tag {
-  display: inline-flex; align-items: center; gap: 7px;
-  font-size: 12px; font-weight: 700;
-  letter-spacing: .08em; text-transform: uppercase;
-  color: var(--blue); background: var(--blue-lt);
-  padding: 5px 14px; border-radius: 20px;
-  margin-bottom: 28px;
-}
-.hero h1 {
-  font-size: clamp(36px, 8vw, 72px);
-  font-weight: 800; line-height: 1.04;
-  letter-spacing: -.04em;
-  margin-bottom: 20px;
-}
-.hero h1 span { color: var(--blue); }
-.hero-sub {
-  font-size: clamp(16px, 2.5vw, 19px);
-  color: var(--muted); line-height: 1.65;
-  max-width: 540px; margin: 0 auto 36px;
-}
-.hero-btns {
-  display: flex; flex-direction: column;
-  align-items: center; gap: 10px;
-  margin-bottom: 40px;
-}
-.hero-note { font-size: 13px; color: var(--muted); }
-
-/* commission visual */
-.commission-box {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 2px; width: 100%;
-  max-width: 480px;
-  margin: 48px auto 0;
-  background: var(--ink); border-radius: 16px;
-  overflow: hidden;
-}
-.comm-head {
-  padding: 14px 20px 10px;
-  font-size: 11px; font-weight: 700;
-  letter-spacing: .1em; text-transform: uppercase;
-  color: #444; background: #111;
-  border-bottom: 1px solid #1f1f1f;
-  grid-column: 1 / -1;
-}
-.comm-row {
-  display: flex; align-items: center;
-  justify-content: space-between;
-  padding: 14px 20px;
-  background: #111;
-  border-bottom: 1px solid #1f1f1f;
-  gap: 12px;
-}
-.comm-row:last-child { border-bottom: none; }
-.comm-label { font-size: 13px; color: #888; font-weight: 500; text-align: left; }
-.comm-val { font-size: 20px; font-weight: 800; letter-spacing: -.02em; flex-shrink: 0; }
-.comm-val.red  { color: #F87171; }
-.comm-val.red2 { color: #F87171; }
-.comm-val.grn  { color: #4ADE80; }
-
-@media(min-width:540px) {
-  .commission-box {
-    grid-template-columns: repeat(3, 1fr);
-    max-width: 560px;
-  }
-  .comm-row {
-    flex-direction: column; align-items: flex-start;
-    border-bottom: none; border-right: 1px solid #1f1f1f;
-    padding: 20px;
-  }
-  .comm-row:last-child { border-right: none; }
-  .comm-val { font-size: 24px; margin-top: 6px; }
-}
-
-@media(min-width:640px) {
-  .hero { padding: 80px 40px 96px; }
-  .hero-btns { flex-direction: row; justify-content: center; }
-}
-
-/* ── HOW ─────────────────────────────────────── */
-.section { padding: 72px 24px; }
-.section-label {
-  font-size: 11px; font-weight: 700;
-  letter-spacing: .1em; text-transform: uppercase;
-  color: var(--blue); margin-bottom: 12px;
-}
-.section-h {
-  font-size: clamp(26px, 5vw, 44px);
-  font-weight: 800; letter-spacing: -.03em;
-  line-height: 1.08; margin-bottom: 48px;
-}
-.steps {
-  display: flex; flex-direction: column; gap: 2px;
-  background: var(--border); border-radius: 16px;
-  overflow: hidden;
-}
-.step {
-  background: var(--white); padding: 32px 28px;
-}
-.step-n {
-  font-size: 44px; font-weight: 800;
-  color: var(--border); line-height: 1;
-  letter-spacing: -.03em; margin-bottom: 16px;
-}
-.step-h { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
-.step-p { font-size: 14px; line-height: 1.7; color: var(--muted); }
-@media(min-width:768px) {
-  .section { padding: 96px 80px; }
-  .steps { flex-direction: row; }
-  .step { flex: 1; }
-}
-
-/* ── TWO LINKS ───────────────────────────────── */
-.twolinks {
-  background: var(--ink); padding: 72px 24px;
-}
-.twolinks-h {
-  font-size: clamp(26px, 5vw, 44px);
-  font-weight: 800; color: var(--white);
-  letter-spacing: -.03em; line-height: 1.1;
-  margin-bottom: 12px;
-}
-.twolinks-sub {
-  font-size: 16px; color: #888; margin-bottom: 40px; line-height: 1.65;
-}
-.link-cards {
-  display: flex; flex-direction: column; gap: 14px;
-}
-.link-card {
-  background: #111; border: 1px solid #222;
-  border-radius: 14px; padding: 22px;
-}
-.lbadge {
-  font-size: 10px; font-weight: 700;
-  letter-spacing: .08em; text-transform: uppercase;
-  padding: 3px 10px; border-radius: 20px;
-  display: inline-block; margin-bottom: 10px;
-}
-.lbadge-pub { background: #0D2E1A; color: #4ADE80; }
-.lbadge-priv { background: #0F1F4A; color: #60A5FA; }
-.lcard-title { font-size: 16px; font-weight: 700; color: var(--white); margin-bottom: 6px; }
-.lcard-url { font-family: monospace; font-size: 12px; color: #555; margin-bottom: 10px; }
-.lcard-p { font-size: 13px; color: #777; line-height: 1.65; }
-@media(min-width:640px) {
-  .twolinks { padding: 96px 80px; }
-  .link-cards { flex-direction: row; }
-  .link-card { flex: 1; }
-}
-
-/* ── FEATURES ────────────────────────────────── */
-.features-sec { background: var(--bg); }
-.feat-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2px; background: var(--border);
-  border-radius: 16px; overflow: hidden;
-  margin-top: 0;
-}
-.feat {
-  background: var(--white); padding: 28px 24px;
-}
-.feat-ic { font-size: 26px; margin-bottom: 12px; }
-.feat-h { font-size: 15px; font-weight: 700; margin-bottom: 7px; }
-.feat-p { font-size: 13px; color: var(--muted); line-height: 1.65; }
-@media(min-width:768px) {
-  .feat-grid { grid-template-columns: repeat(3,1fr); }
-  .feat { padding: 36px 32px; }
-}
-
-/* ── PRICING ─────────────────────────────────── */
-.price-grid {
-  display: flex; flex-direction: column; gap: 16px;
-}
-.price-card {
-  border: 1.5px solid var(--border);
-  border-radius: 16px; padding: 32px 28px;
-  flex: 1;
-}
-.price-card.feat-p { border-color: var(--blue); }
-.price-tier {
-  font-size: 11px; font-weight: 700;
-  letter-spacing: .1em; text-transform: uppercase;
-  color: var(--muted); margin-bottom: 14px;
-}
-.price-amt {
-  font-size: 44px; font-weight: 800;
-  letter-spacing: -.03em; margin-bottom: 6px;
-}
-.price-per { font-size: 15px; font-weight: 400; color: var(--muted); }
-.price-desc { font-size: 14px; color: var(--muted); margin-bottom: 22px; line-height: 1.6; }
-.price-feats { list-style: none; margin-bottom: 26px; }
-.price-feats li {
-  font-size: 14px; padding: 9px 0;
-  border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; gap: 10px; font-weight: 500;
-}
-.price-feats li::before { content: '✓'; color: var(--blue); font-weight: 800; flex-shrink: 0; }
-.price-feats li:last-child { border-bottom: none; }
-@media(min-width:768px) {
-  .price-grid { flex-direction: row; align-items: flex-start; }
-}
-
-/* ── SAVINGS CALC ────────────────────────────── */
-.calc-sec {
-  background: var(--bg);
-  padding: 72px 24px;
-}
-.calc-box {
-  max-width: 560px; margin: 0 auto;
-  background: var(--white); border: 1px solid var(--border);
-  border-radius: 16px; padding: 28px;
-}
-.calc-title { font-size: 16px; font-weight: 700; margin-bottom: 20px; }
-.calc-row {
-  display: flex; align-items: center;
-  justify-content: space-between; margin-bottom: 14px;
-}
-.calc-row label { font-size: 14px; font-weight: 600; color: var(--muted); }
-.calc-input {
-  display: flex; align-items: center; gap: 10px;
-}
-.calc-input input {
-  width: 80px; padding: 8px 12px;
-  border: 1.5px solid var(--border); border-radius: 8px;
-  font-size: 15px; font-weight: 700; text-align: center;
-  font-family: var(--f); color: var(--ink);
-}
-.calc-input input:focus { outline: none; border-color: var(--blue); }
-.calc-result {
-  background: var(--green-lt); border: 1px solid #B7E4CC;
-  border-radius: 10px; padding: 16px 18px; margin-top: 20px;
-}
-.calc-r-row {
-  display: flex; justify-content: space-between;
-  font-size: 14px; margin-bottom: 8px;
-}
-.calc-r-row.tot {
-  font-weight: 800; font-size: 16px; padding-top: 10px;
-  border-top: 1px solid #B7E4CC; margin-top: 4px; margin-bottom: 0;
-}
-.calc-r-row .green { color: var(--green); font-weight: 700; }
-@media(min-width:640px) { .calc-sec { padding: 96px 80px; } }
-
-/* ── CTA ─────────────────────────────────────── */
-.cta-sec {
-  margin: 0 16px 64px;
-  background: var(--ink);
-  border-radius: 16px; padding: 56px 28px;
-  text-align: center;
-}
-.cta-sec h2 {
-  font-size: clamp(26px, 5vw, 44px);
-  font-weight: 800; color: var(--white);
-  letter-spacing: -.03em; line-height: 1.1;
-  margin-bottom: 12px;
-}
-.cta-sec h2 span { color: var(--blue); }
-.cta-sec p { font-size: 16px; color: #888; margin-bottom: 28px; }
-@media(min-width:640px) {
-  .cta-sec { margin: 0 80px 80px; padding: 80px; }
-}
-
-/* ── FOOTER ──────────────────────────────────── */
-footer {
-  border-top: 1px solid var(--border);
-  padding: 40px 24px 28px;
-  display: flex; flex-direction: column; gap: 24px;
-}
-.footer-logo { font-size: 17px; font-weight: 800; margin-bottom: 8px; }
-.footer-desc { font-size: 13px; color: var(--muted); line-height: 1.65; max-width: 240px; }
-.footer-cols { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
-.fcol-h {
-  font-size: 11px; font-weight: 700;
-  letter-spacing: .1em; text-transform: uppercase;
-  color: var(--muted); margin-bottom: 12px;
-}
-.fcol a {
-  display: block; font-size: 13.5px;
-  color: var(--muted); margin-bottom: 9px; font-weight: 500;
-}
-.fcol a:hover { color: var(--ink); }
-.footer-copy {
-  font-size: 12px; color: var(--muted);
-  padding-top: 20px; border-top: 1px solid var(--border);
-}
-@media(min-width:640px) {
-  footer { flex-direction: row; padding: 48px 80px 36px; gap: 48px; }
-  footer > div:first-child { min-width: 220px; }
-}
+:root{--ink:#0A0A0A;--white:#fff;--bg:#F5F4F1;--border:#E2E0DB;--muted:#6B6A67;--text:#1A1917;--blue:#1A56DB;--blue-lt:#EEF3FF;--green:#0E6E3F;--green-lt:#E7F5EE;--f:'Plus Jakarta Sans',system-ui,sans-serif;--r:10px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--f);background:var(--white);color:var(--text);-webkit-font-smoothing:antialiased;line-height:1.6;font-size:15px}
+a{color:inherit;text-decoration:none}
+button{font-family:var(--f);cursor:pointer}
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.93);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:58px;gap:12px}
+.logo{font-size:20px;font-weight:800;letter-spacing:-.5px;color:var(--ink);flex-shrink:0}
+.logo span{color:var(--blue)}
+.nav-links{display:none;gap:24px;font-size:13.5px;font-weight:500;color:var(--muted)}
+.nav-links a:hover{color:var(--ink)}
+.nav-r{display:flex;gap:8px;flex-shrink:0}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;font-weight:700;border-radius:var(--r);padding:10px 20px;font-size:14px;border:none;cursor:pointer;transition:all .15s;font-family:var(--f)}
+.btn-ink{background:var(--ink);color:#fff}.btn-ink:hover{background:#222}
+.btn-blue{background:var(--blue);color:#fff}.btn-blue:hover{background:#1343B0}
+.btn-out{background:var(--white);color:var(--text);border:1.5px solid var(--border)}.btn-out:hover{border-color:#999}
+.btn-lg{padding:14px 28px;font-size:15px;border-radius:12px}
+.btn-sm{padding:8px 16px;font-size:13px}
+.hero{padding:52px 20px 64px;text-align:center;border-bottom:1px solid var(--border)}
+.hero-tag{display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);background:var(--blue-lt);padding:5px 13px;border-radius:20px;margin-bottom:24px}
+.hero h1{font-size:clamp(34px,8vw,68px);font-weight:800;line-height:1.04;letter-spacing:-.04em;margin-bottom:18px}
+.hero h1 span{color:var(--blue)}
+.hero-sub{font-size:clamp(15px,2.5vw,18px);color:var(--muted);line-height:1.68;max-width:520px;margin:0 auto 32px}
+.hero-btns{display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:36px}
+.hero-note{font-size:12.5px;color:var(--muted)}
+.hero-note a{color:var(--blue);font-weight:600}
+.cbox{max-width:480px;margin:48px auto 0;background:var(--ink);border-radius:16px;overflow:hidden}
+.cbox-head{padding:13px 20px 10px;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#444;border-bottom:1px solid #1f1f1f}
+.cbox-rows{display:flex;flex-direction:column}
+.crow{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;background:#111;border-bottom:1px solid #1f1f1f;gap:12px}
+.crow:last-child{border-bottom:none}
+.crow-lbl{font-size:13px;color:#888;font-weight:500}
+.crow-note{font-size:10px;color:#555;margin-top:2px}
+.crow-val{font-size:20px;font-weight:800;letter-spacing:-.02em;flex-shrink:0}
+.crow-val.r{color:#F87171}.crow-val.g{color:#4ADE80}
+.sec{padding:64px 20px}
+.sec-lbl{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);margin-bottom:10px}
+.sec-h{font-size:clamp(24px,5vw,40px);font-weight:800;letter-spacing:-.03em;line-height:1.08;margin-bottom:40px}
+.steps{display:flex;flex-direction:column;gap:2px;background:var(--border);border-radius:14px;overflow:hidden}
+.step{background:var(--white);padding:28px 24px}
+.step-n{font-size:42px;font-weight:800;color:var(--border);line-height:1;letter-spacing:-.03em;margin-bottom:14px}
+.step-h{font-size:17px;font-weight:700;margin-bottom:7px}
+.step-p{font-size:13.5px;line-height:1.7;color:var(--muted)}
+.twolinks{background:var(--ink);padding:64px 20px}
+.twolinks-h{font-size:clamp(24px,5vw,40px);font-weight:800;color:#fff;letter-spacing:-.03em;line-height:1.1;margin-bottom:10px}
+.twolinks-sub{font-size:15px;color:#888;margin-bottom:36px;line-height:1.65;max-width:520px}
+.lcards{display:flex;flex-direction:column;gap:12px}
+.lcard{background:#111;border:1px solid #222;border-radius:13px;padding:20px}
+.lbadge{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:3px 10px;border-radius:20px;display:inline-block;margin-bottom:10px}
+.lbadge-pub{background:#0D2E1A;color:#4ADE80}
+.lbadge-priv{background:#0F1F4A;color:#60A5FA}
+.lcard-h{font-size:15px;font-weight:700;color:#fff;margin-bottom:5px}
+.lcard-url{font-family:monospace;font-size:11.5px;color:#555;margin-bottom:9px}
+.lcard-p{font-size:13px;color:#777;line-height:1.65}
+.feat-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--border);border-radius:14px;overflow:hidden}
+.feat{background:var(--white);padding:26px 22px}
+.feat-ic{font-size:24px;margin-bottom:11px}
+.feat-h{font-size:14px;font-weight:700;margin-bottom:6px}
+.feat-p{font-size:13px;color:var(--muted);line-height:1.65}
+.calc-box{max-width:540px;margin:0 auto;background:var(--white);border:1px solid var(--border);border-radius:14px;padding:26px}
+.calc-title{font-size:15px;font-weight:700;margin-bottom:18px}
+.calc-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;gap:12px}
+.calc-row label{font-size:13.5px;font-weight:600;color:var(--muted)}
+.calc-inp{width:96px;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:15px;font-weight:700;text-align:center;font-family:var(--f);color:var(--text);transition:border-color .15s;flex-shrink:0}
+.calc-inp:focus{outline:none;border-color:var(--blue)}
+.calc-result{background:var(--green-lt);border:1px solid #B7E4CC;border-radius:10px;padding:15px 17px;margin-top:18px}
+.cr-row{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:7px}
+.cr-row.tot{font-weight:800;font-size:15px;padding-top:9px;border-top:1px solid #B7E4CC;margin-top:3px;margin-bottom:0}
+.cr-green{color:var(--green);font-weight:700}
+.calc-disc{font-size:11px;color:var(--muted);margin-top:10px;line-height:1.6}
+.price-grid{display:flex;flex-direction:column;gap:14px}
+.pcard{border:1.5px solid var(--border);border-radius:14px;padding:28px 24px}
+.pcard.feat{border-color:var(--blue)}
+.ptier{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+.pamt{font-size:40px;font-weight:800;letter-spacing:-.03em;margin-bottom:5px}
+.pamt .per{font-size:14px;font-weight:400;color:var(--muted)}
+.pdesc{font-size:13.5px;color:var(--muted);margin-bottom:20px;line-height:1.6}
+.pfeats{list-style:none;margin-bottom:22px}
+.pfeats li{font-size:13.5px;padding:8px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px;font-weight:500}
+.pfeats li::before{content:'✓';color:var(--blue);font-weight:800;flex-shrink:0}
+.pfeats li:last-child{border-bottom:none}
+.cta-box{background:var(--ink);border-radius:14px;padding:48px 24px;text-align:center;margin:0 16px 56px}
+.cta-h{font-size:clamp(24px,5vw,40px);font-weight:800;color:#fff;letter-spacing:-.03em;line-height:1.1;margin-bottom:10px}
+.cta-h span{color:var(--blue)}
+.cta-p{font-size:15px;color:#888;margin-bottom:26px;line-height:1.65}
+footer{border-top:1px solid var(--border);padding:36px 20px 24px;display:flex;flex-direction:column;gap:24px}
+.footer-logo{font-size:17px;font-weight:800;margin-bottom:7px}
+.footer-logo span{color:var(--blue)}
+.footer-desc{font-size:13px;color:var(--muted);line-height:1.65;max-width:240px}
+.footer-cols{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.fcol-h{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:11px}
+.fcol a{display:block;font-size:13px;color:var(--muted);margin-bottom:8px;font-weight:500}
+.fcol a:hover{color:var(--text)}
+.footer-copy{font-size:11.5px;color:var(--muted);padding-top:18px;border-top:1px solid var(--border);width:100%}
+@media(min-width:540px){.cbox-rows{flex-direction:row}.crow{flex-direction:column;align-items:flex-start;flex:1;border-bottom:none;border-right:1px solid #1f1f1f}.crow:last-child{border-right:none}.crow-val{font-size:24px;margin-top:4px}}
+@media(min-width:640px){nav{padding:0 40px}.nav-links{display:flex}.hero{padding:80px 40px 96px}.hero-btns{flex-direction:row;justify-content:center}.sec{padding:88px 40px}.steps{flex-direction:row}.step{flex:1}.twolinks{padding:88px 40px}.lcards{flex-direction:row}.lcard{flex:1}.price-grid{flex-direction:row;align-items:flex-start}.pcard{flex:1}.cta-box{margin:0 40px 72px;padding:72px 56px}footer{flex-direction:row;padding:48px 40px 36px;gap:40px}footer>div:first-child{min-width:200px}}
+@media(min-width:1024px){nav{padding:0 80px}.hero{padding:96px 80px 112px}.sec{padding:96px 80px}.twolinks{padding:96px 80px}.feat-grid{grid-template-columns:repeat(3,1fr)}.cta-box{margin:0 80px 80px}footer{padding:56px 80px 40px}}
 </style>
 </head>
 <body>
-
-<!-- NAV -->
 <nav>
-  <div class="nav-logo">GuestFlow</div>
-  <div class="nav-links">
-    <a href="#how">How it works</a>
-    <a href="#features">Features</a>
-    <a href="#pricing">Pricing</a>
-  </div>
+  <div class="logo">Odmor<span>ia</span></div>
+  <div class="nav-links"><a href="#kako">Kako radi</a><a href="#mogucnosti">Mogućnosti</a><a href="#cijene">Cijene</a></div>
   <div class="nav-r">
-    <a href="/login" class="btn btn-out" style="padding:9px 18px;font-size:14px">Sign in</a>
-    <a href="/register" class="btn btn-blue" style="padding:9px 18px;font-size:14px">Start free →</a>
+    <a href="/login.html" class="btn btn-out btn-sm">Prijava</a>
+    <a href="/register.html" class="btn btn-ink btn-sm">Isprobaj besplatno →</a>
   </div>
 </nav>
-
-<!-- HERO -->
 <section class="hero">
-  <div class="hero-tag">✦ For short-term rental hosts</div>
-  <h1>Stop paying 15%<br>on your <span>own guests</span></h1>
-  <p class="hero-sub">Give guests a beautiful digital guide — door codes, Wi-Fi, local tips. A public page for marketing, a private link for confirmed guests. Direct bookings keep 100% of the room rate.</p>
+  <div class="hero-tag">✦ Za iznajmljivače apartmana i villa</div>
+  <h1>Vaši gosti.<br><span>Vaše rezervacije.</span></h1>
+  <p class="hero-sub">Dajte gostima lijep digitalni vodič — šifra vrata, Wi-Fi, lokalni savjeti, prijevoz. Javna stranica za marketing, privatni link za potvrđene goste. Odmoria ne naplaćuje proviziju po rezervaciji.</p>
   <div class="hero-btns">
-    <a href="/register" class="btn btn-black btn-lg">Create your page — free →</a>
-    <a href="#how" class="btn btn-out btn-lg">See how it works</a>
+    <a href="/register.html" class="btn btn-ink btn-lg">Kreiraj svoju stranicu — besplatno →</a>
+    <a href="#kako" class="btn btn-out btn-lg">Kako radi?</a>
   </div>
-  <div class="hero-note">Free forever for 1 property · No credit card needed</div>
-
-  <!-- commission visual -->
-  <div class="commission-box">
-    <div class="comm-head">On a €40,000/yr rental</div>
-    <div class="comm-row">
-      <div class="comm-label">Booking.com takes</div>
-      <div class="comm-val red">€6,000</div>
-    </div>
-    <div class="comm-row">
-      <div class="comm-label">Airbnb takes</div>
-      <div class="comm-val red2">€6,200</div>
-    </div>
-    <div class="comm-row">
-      <div class="comm-label">GuestFlow costs</div>
-      <div class="comm-val grn">€120/yr</div>
+  <div class="hero-note">Besplatno zauvijek za 1 objekt · Bez kreditne kartice · <a href="#cijene">Pogledaj cijene</a></div>
+  <div class="cbox">
+    <div class="cbox-head">Na godišnjem prihodu od 40.000 €</div>
+    <div class="cbox-rows">
+      <div class="crow"><div><div class="crow-lbl">Platforme za rezervacije</div><div class="crow-note">mogu naplaćivati proviziju</div></div><div class="crow-val r">do ~6.000 €</div></div>
+      <div class="crow"><div><div class="crow-lbl">Odmoria Pro godišnje</div><div class="crow-note">bez provizije po rezervaciji</div></div><div class="crow-val g">120 €/god</div></div>
     </div>
   </div>
 </section>
-
-<!-- HOW IT WORKS -->
-<section class="section" id="how">
-  <div class="section-label">How it works</div>
-  <div class="section-h">Three steps to direct bookings.</div>
-  <div class="steps">
-    <div class="step">
-      <div class="step-n">01</div>
-      <div class="step-h">Build your page in 10 minutes</div>
-      <p class="step-p">Add photos, descriptions, local tips, Wi-Fi, house rules, transport, and availability. Your public page goes live instantly — no code, no tech skills needed.</p>
-    </div>
-    <div class="step">
-      <div class="step-n">02</div>
-      <div class="step-h">Share it anywhere</div>
-      <p class="step-p">Post it on Facebook, add it to your Booking description, send it to past guests. Each enquiry comes directly to you — no OTA in between, no commission.</p>
-    </div>
-    <div class="step">
-      <div class="step-n">03</div>
-      <div class="step-h">Send the private link after booking</div>
-      <p class="step-p">Confirmed guests get a private link with door codes, Wi-Fi passwords, and your full local guide. Public page stays clean — no sensitive data ever shown publicly.</p>
+<section class="sec" id="kako">
+  <div style="max-width:960px;margin:0 auto">
+    <div class="sec-lbl">Kako radi</div>
+    <div class="sec-h">Tri koraka do direktnih rezervacija.</div>
+    <div class="steps">
+      <div class="step"><div class="step-n">01</div><div class="step-h">Izgradi svoju stranicu za 10 minuta</div><p class="step-p">Dodaj fotografije, opis, lokalne savjete, Wi-Fi, kućni red, prijevoz i dostupnost. Stranica je odmah živa — bez koda, bez tehničkog znanja.</p></div>
+      <div class="step"><div class="step-n">02</div><div class="step-h">Dijeli je svugdje</div><p class="step-p">Objavi na Facebooku, dodaj u opis na Bookingu, pošalji bivšim gostima. Svaki upit stiže direktno tebi — bez posrednika, bez provizije.</p></div>
+      <div class="step"><div class="step-n">03</div><div class="step-h">Privatni link nakon rezervacije</div><p class="step-p">Potvrđeni gosti dobiju privatni link sa šifrom vrata, Wi-Fi lozinkom i kompletnim lokalnim vodičem. Javna stranica nikad ne prikazuje osjetljive podatke.</p></div>
     </div>
   </div>
 </section>
-
-<!-- TWO LINKS -->
 <div class="twolinks">
   <div style="max-width:960px;margin:0 auto">
-    <div class="section-label" style="color:#60A5FA">Two links, one hub</div>
-    <div class="twolinks-h">Public for marketing.<br>Private for guests.</div>
-    <div class="twolinks-sub">Your public link is safe to post anywhere — no door codes, no Wi-Fi passwords. The private guest link unlocks everything. Same hub, two views, full control.</div>
-    <div class="link-cards">
-      <div class="link-card">
-        <span class="lbadge lbadge-pub">🟢 Public page</span>
-        <div class="lcard-title">Share anywhere, anytime</div>
-        <div class="lcard-url">guestflow.com/p/villa-luna</div>
-        <p class="lcard-p">Photos, availability, local guide, transport, contact button. No sensitive data. Safe for Facebook, Booking description, Instagram bio — anywhere you reach guests.</p>
-      </div>
-      <div class="link-card">
-        <span class="lbadge lbadge-priv">🔵 Guest link</span>
-        <div class="lcard-title">Sent only after booking</div>
-        <div class="lcard-url">guestflow.com/h/villa-luna-7fk2x</div>
-        <p class="lcard-p">Same content plus door code, Wi-Fi password, full check-in instructions. Link expires. You control when it's sent and for how long.</p>
-      </div>
+    <div class="sec-lbl" style="color:#60A5FA">Dva linka, jedan hub</div>
+    <div class="twolinks-h">Javno za marketing.<br>Privatno za goste.</div>
+    <div class="twolinks-sub">Javni link možeš podijeliti svugdje — bez šifri, bez lozinki. Privatni gostinski link otkriva sve. Isti hub, dva prikaza, puna kontrola.</div>
+    <div class="lcards">
+      <div class="lcard"><span class="lbadge lbadge-pub">🟢 Javna stranica</span><div class="lcard-h">Dijeli svugdje, bilo kada</div><div class="lcard-url">odmoria.com/p/villa-luna</div><p class="lcard-p">Fotografije, dostupnost, lokalni vodič, prijevoz, gumb za kontakt. Bez osjetljivih podataka. Sigurno za Facebook, Instagram, Booking opis.</p></div>
+      <div class="lcard"><span class="lbadge lbadge-priv">🔵 Gostinski link</span><div class="lcard-h">Šalje se samo nakon rezervacije</div><div class="lcard-url">odmoria.com/h/villa-luna-7fk2x</div><p class="lcard-p">Isti sadržaj plus šifra vrata, Wi-Fi lozinka, kompletne upute za dolazak. Link istječe. Ti kontroliraš kada se šalje.</p></div>
     </div>
   </div>
 </div>
-
-<!-- FEATURES -->
-<section class="section features-sec" id="features">
+<div class="sec" id="mogucnosti" style="background:var(--bg)">
   <div style="max-width:960px;margin:0 auto">
-    <div class="section-label">Everything included</div>
-    <div class="section-h">Built for hosts who care about the details.</div>
+    <div class="sec-lbl">Sve uključeno</div>
+    <div class="sec-h">Izgrađeno za iznajmljivače koji mare za detalje.</div>
     <div class="feat-grid">
-      <div class="feat"><div class="feat-ic">🗺️</div><div class="feat-h">Local guide</div><p class="feat-p">Add restaurants, beaches and hidden gems with distances, maps, and your personal notes.</p></div>
-      <div class="feat"><div class="feat-ic">🚢</div><div class="feat-h">Transport info</div><p class="feat-p">Ferry times, taxi numbers, bike rentals — guests always know how to get around.</p></div>
-      <div class="feat"><div class="feat-ic">📅</div><div class="feat-h">Availability calendar</div><p class="feat-p">You update it manually. Guests see what's free and contact you directly — no booking engine, no legal complexity.</p></div>
-      <div class="feat"><div class="feat-ic">📶</div><div class="feat-h">One-tap Wi-Fi</div><p class="feat-p">Guests copy the password with a single tap. Stop writing it on a whiteboard or sending it four times per stay.</p></div>
-      <div class="feat"><div class="feat-ic">🔒</div><div class="feat-h">Private by design</div><p class="feat-p">Public page for marketing. Private link for guests. Sensitive info never shows publicly — ever.</p></div>
-      <div class="feat"><div class="feat-ic">✏️</div><div class="feat-h">Update anytime</div><p class="feat-p">New restaurant opened? Ferry schedule changed? Update once. All guests with your link see it immediately.</p></div>
+      <div class="feat"><div class="feat-ic">🗺️</div><div class="feat-h">Lokalni vodič</div><p class="feat-p">Dodaj restorane, plaže i skrivene bisere s udaljenostima, Google Maps linkovima i osobnim preporukama.</p></div>
+      <div class="feat"><div class="feat-ic">🚢</div><div class="feat-h">Prijevoz</div><p class="feat-p">Vremena trajekta, taxi brojevi, iznajmljivanje bicikla — gosti uvijek znaju kako se kretati.</p></div>
+      <div class="feat"><div class="feat-ic">📅</div><div class="feat-h">Kalendar dostupnosti</div><p class="feat-p">Ti ažuriraš ručno. Gosti vide slobodne termine i kontaktiraju te direktno.</p></div>
+      <div class="feat"><div class="feat-ic">📶</div><div class="feat-h">Wi-Fi jednim tapom</div><p class="feat-p">Gosti kopiraju lozinku jednim tapom. Prestani je pisati na whiteboard.</p></div>
+      <div class="feat"><div class="feat-ic">🔒</div><div class="feat-h">Privatno po dizajnu</div><p class="feat-p">Osjetljivi podaci nikad nisu javno prikazani — šifre i lozinke samo na privatnom linku.</p></div>
+      <div class="feat"><div class="feat-ic">✏️</div><div class="feat-h">Ažuriraj bilo kad</div><p class="feat-p">Promjena u rasporedu trajekta? Ažuriraš jednom, svi gosti odmah vide promjenu.</p></div>
     </div>
   </div>
-</section>
-
-<!-- SAVINGS CALCULATOR -->
-<section class="calc-sec">
-  <div class="section-label" style="text-align:center">Do the math</div>
-  <div class="section-h" style="text-align:center;margin-bottom:32px">How much are you leaving on the table?</div>
-  <div class="calc-box">
-    <div class="calc-title">Commission calculator</div>
-    <div class="calc-row">
-      <label>Annual rental revenue (€)</label>
-      <div class="calc-input">
-        <input type="number" id="revenue" value="40000" oninput="calcSavings()">
-      </div>
-    </div>
-    <div class="calc-row">
-      <label>OTA commission rate (%)</label>
-      <div class="calc-input">
-        <input type="number" id="rate" value="15" min="1" max="30" oninput="calcSavings()">
-      </div>
-    </div>
-    <div class="calc-result">
-      <div class="calc-r-row"><span>OTA commission per year</span><span id="r-ota" style="color:#EF4444;font-weight:700">€6,000</span></div>
-      <div class="calc-r-row"><span>GuestFlow Pro per year</span><span>€120</span></div>
-      <div class="calc-r-row tot"><span>You keep extra</span><span class="green" id="r-save">€5,880/yr</span></div>
-    </div>
-  </div>
-</section>
-
-<!-- PRICING -->
-<section class="section" id="pricing" style="background:var(--white)">
-  <div style="max-width:960px;margin:0 auto">
-    <div class="section-label">Pricing</div>
-    <div class="section-h">Start free. Grow when you're ready.</div>
-    <div class="price-grid">
-      <div class="price-card">
-        <div class="price-tier">Starter</div>
-        <div class="price-amt">Free <span class="price-per">forever</span></div>
-        <div class="price-desc">One property. All the core features. No card required.</div>
-        <ul class="price-feats">
-          <li>1 property hub</li>
-          <li>Public + private guest link</li>
-          <li>All sections</li>
-          <li>QR code</li>
-          <li>Google Maps integration</li>
-        </ul>
-        <a href="/register" class="btn btn-out btn-full">Get started free</a>
-      </div>
-      <div class="price-card feat-p">
-        <div class="price-tier" style="color:var(--blue)">Pro — most popular</div>
-        <div class="price-amt">€10 <span class="price-per">/ month</span></div>
-        <div class="price-desc">Unlimited properties and your own branding.</div>
-        <ul class="price-feats">
-          <li>Unlimited properties</li>
-          <li>Remove GuestFlow branding</li>
-          <li>Custom domain</li>
-          <li>Analytics & link tracking</li>
-          <li>Guest message templates</li>
-          <li>Priority support</li>
-        </ul>
-        <a href="/register" class="btn btn-blue btn-full">Start 14-day trial</a>
-      </div>
-      <div class="price-card">
-        <div class="price-tier">Agency</div>
-        <div class="price-amt">€49 <span class="price-per">/ month</span></div>
-        <div class="price-desc">For property managers with multiple clients.</div>
-        <ul class="price-feats">
-          <li>Everything in Pro</li>
-          <li>Team access</li>
-          <li>White-label option</li>
-          <li>API access</li>
-        </ul>
-        <a href="mailto:hello@guestflow.com" class="btn btn-out btn-full">Talk to us</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- CTA -->
-<div class="cta-sec">
-  <h2>Your next guest <span>doesn't have to cost you €120.</span></h2>
-  <p>Set up your first property hub in under ten minutes.</p>
-  <a href="/register" class="btn btn-blue btn-lg">Create your page — free →</a>
 </div>
-
-<!-- FOOTER -->
+<div class="sec" style="background:var(--bg)">
+  <div style="max-width:960px;margin:0 auto">
+    <div class="sec-lbl" style="text-align:center">Izračunaj</div>
+    <div class="sec-h" style="text-align:center;margin-bottom:28px">Koliko ostavljaš na stolu?</div>
+    <div class="calc-box">
+      <div class="calc-title">Kalkulator uštede</div>
+      <div class="calc-row"><label>Godišnji prihod od najma (€)</label><input class="calc-inp" type="number" id="revenue" value="40000" min="0" oninput="calc()"></div>
+      <div class="calc-row"><label>Procjenjena stopa provizije (%)</label><input class="calc-inp" type="number" id="rate" value="15" min="1" max="30" oninput="calc()"></div>
+      <div class="calc-result">
+        <div class="cr-row"><span>Provizija platforme godišnje</span><span id="r-ota" style="color:#EF4444;font-weight:700">6.000 €</span></div>
+        <div class="cr-row"><span>Odmoria Pro godišnje</span><span>120 €</span></div>
+        <div class="cr-row tot"><span>Možeš zadržati više</span><span class="cr-green" id="r-save">5.880 €/god</span></div>
+      </div>
+      <div class="calc-disc">* Odmoria ne naplaćuje proviziju po rezervaciji. Stopa provizije platformi ovisi o platformi, vrsti objekta i ugovoru — unesite vlastitu procjenu.</div>
+    </div>
+  </div>
+</div>
+<section class="sec" id="cijene" style="background:var(--white)">
+  <div style="max-width:960px;margin:0 auto">
+    <div class="sec-lbl">Cijene</div>
+    <div class="sec-h">Počni besplatno. Rasti kada si spreman.</div>
+    <div class="price-grid">
+      <div class="pcard"><div class="ptier">Starter</div><div class="pamt">Besplatno <span class="per">zauvijek</span></div><div class="pdesc">Jedan objekt. Sve osnovne mogućnosti. Bez kreditne kartice.</div><ul class="pfeats"><li>1 objekt</li><li>Javna stranica + privatni link</li><li>Sve sekcije vodiča</li><li>QR kod</li><li>Google Maps integracija</li></ul><a href="/register.html" class="btn btn-out" style="width:100%;justify-content:center">Počni besplatno</a></div>
+      <div class="pcard feat"><div class="ptier" style="color:var(--blue)">Pro — najpopularnije</div><div class="pamt">10 € <span class="per">/ mj</span></div><div class="pdesc">Neograničeni objekti i vlastiti branding.</div><ul class="pfeats"><li>Neograničeni objekti</li><li>Ukloni Odmoria branding</li><li>Vlastita domena</li><li>Analitika i praćenje linkova</li><li>Predlošci poruka za goste</li><li>Prioritetna podrška</li></ul><a href="/register.html" class="btn btn-blue" style="width:100%;justify-content:center">Isprobaj 14 dana besplatno</a></div>
+      <div class="pcard"><div class="ptier">Agency</div><div class="pamt">49 € <span class="per">/ mj</span></div><div class="pdesc">Za property managere s više klijenata.</div><ul class="pfeats"><li>Sve iz Pro plana</li><li>Tim pristup</li><li>White-label opcija</li><li>API pristup</li></ul><a href="mailto:podrska@odmoria.com" class="btn btn-out" style="width:100%;justify-content:center">Kontaktiraj nas</a></div>
+    </div>
+  </div>
+</section>
+<div class="cta-box">
+  <div class="cta-h">Tvoji gosti. <span>Tvoj prihod.</span></div>
+  <div class="cta-p">Postavi prvi objekt za manje od deset minuta.</div>
+  <a href="/register.html" class="btn btn-blue btn-lg">Kreiraj svoju stranicu — besplatno →</a>
+</div>
 <footer>
-  <div>
-    <div class="footer-logo">GuestFlow</div>
-    <div class="footer-desc">Digital guest guides for short-term rental hosts. Share a link. Skip the commission.</div>
-  </div>
+  <div><div class="footer-logo">Odmor<span>ia</span></div><div class="footer-desc">Digitalni vodiči za goste kratkoročnih najma. Dijeli link. Preskači proviziju.</div></div>
   <div class="footer-cols">
-    <div class="fcol">
-      <div class="fcol-h">Product</div>
-      <a href="#how">How it works</a>
-      <a href="#features">Features</a>
-      <a href="#pricing">Pricing</a>
-    </div>
-    <div class="fcol">
-      <div class="fcol-h">Support</div>
-      <a href="#">Help centre</a>
-      <a href="mailto:hello@guestflow.com">Contact</a>
-      <a href="#">Status</a>
-    </div>
-    <div class="fcol">
-      <div class="fcol-h">Legal</div>
-      <a href="#">Privacy</a>
-      <a href="#">Terms</a>
-    </div>
+    <div class="fcol"><div class="fcol-h">Proizvod</div><a href="#kako">Kako radi</a><a href="#mogucnosti">Mogućnosti</a><a href="#cijene">Cijene</a></div>
+    <div class="fcol"><div class="fcol-h">Podrška</div><a href="#">Pomoć</a><a href="mailto:podrska@odmoria.com">Kontakt</a></div>
+    <div class="fcol"><div class="fcol-h">Pravno</div><a href="/privacy.html">Privatnost</a><a href="/terms.html">Uvjeti</a></div>
   </div>
-  <div class="footer-copy" style="width:100%">© 2026 GuestFlow. Made for hosts who care about their guests.</div>
+  <div class="footer-copy">© 2026 Odmoria. Napravljeno za iznajmljivače koji mare za goste.</div>
 </footer>
-
 <script>
-function calcSavings() {
-  var rev = parseFloat(document.getElementById('revenue').value) || 0;
-  var rate = parseFloat(document.getElementById('rate').value) || 0;
-  var ota = Math.round(rev * rate / 100);
-  var save = Math.max(0, ota - 120);
-  document.getElementById('r-ota').textContent = '€' + ota.toLocaleString();
-  document.getElementById('r-save').textContent = '€' + save.toLocaleString() + '/yr';
+function fmt(n){return n.toLocaleString('hr-HR')}
+function calc(){
+  var rev=parseFloat(document.getElementById('revenue').value)||0
+  var rate=parseFloat(document.getElementById('rate').value)||0
+  var ota=Math.round(rev*rate/100)
+  var save=Math.max(0,ota-120)
+  document.getElementById('r-ota').textContent=fmt(ota)+' €'
+  document.getElementById('r-save').textContent=fmt(save)+' €/god'
 }
-calcSavings();
+calc()
 </script>
 </body>
 </html>

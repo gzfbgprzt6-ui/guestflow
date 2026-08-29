@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Postavi objekt — Odmoria</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0F172A;--white:#fff;--bg:#F8FAFC;--border:#E2E8F0;--muted:#64748B;--text:#1E293B;--blue:#1A56DB;--blue-lt:#EEF3FF;--blue-dk:#1343B0;--green:#0F6E3F;--green-lt:#E7F5EE;--f:'Plus Jakarta Sans',system-ui,sans-serif;--r:10px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--f);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;min-height:100dvh;display:flex;flex-direction:column}
+a{color:inherit;text-decoration:none}
+#loading{position:fixed;inset:0;background:var(--white);display:flex;align-items:center;justify-content:center;z-index:999}
+.spin{width:24px;height:24px;border:3px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* LAYOUT */
+nav{background:var(--white);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:58px;flex-shrink:0}
+.logo{font-size:18px;font-weight:800;letter-spacing:-.5px}
+.logo span{color:var(--blue)}
+.nav-exit{font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:5px}
+.nav-exit:hover{color:var(--text)}
+.main{flex:1;display:flex;align-items:flex-start;justify-content:center;padding:28px 16px 80px;gap:32px}
+.sidebar{width:220px;flex-shrink:0;display:none}
+.content-wrap{width:100%;max-width:540px}
+
+/* PROGRESS */
+.progress-header{margin-bottom:28px}
+.progress-bar-wrap{height:5px;background:var(--border);border-radius:3px;margin-bottom:18px;overflow:hidden}
+.progress-bar{height:5px;background:var(--blue);border-radius:3px;transition:width .4s cubic-bezier(.4,0,.2,1)}
+.step-labels{display:flex;gap:6px}
+.slbl{flex:1;font-size:10.5px;font-weight:600;color:var(--muted);text-align:center;padding:5px 4px;border-radius:6px;transition:.15s}
+.slbl.done{color:var(--blue);background:var(--blue-lt)}
+.slbl.active{color:var(--blue);font-weight:700;background:var(--blue-lt)}
+
+/* CARD */
+.card{background:var(--white);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.card-head{padding:24px 28px 0}
+.step-badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);background:var(--blue-lt);padding:4px 11px;border-radius:20px;margin-bottom:14px}
+.card-title{font-size:22px;font-weight:800;letter-spacing:-.02em;margin-bottom:6px}
+.card-sub{font-size:14px;color:var(--muted);line-height:1.65;margin-bottom:24px}
+.card-body{padding:0 28px 28px}
+.card-divider{height:1px;background:var(--border);margin:0 28px}
+
+/* FORM */
+.fg{margin-bottom:16px}
+.fg label,.fl{display:block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.fi,.fta,.fsel{width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:var(--r);font-size:15px;color:var(--text);background:var(--white);transition:border-color .15s;font-family:var(--f)}
+.fi:focus,.fta:focus,.fsel:focus{outline:none;border-color:var(--blue)}
+.fi.big{font-size:22px;font-weight:800;letter-spacing:.1em;padding:13px}
+.fta{resize:none;line-height:1.55}
+.fg-hint{font-size:12px;color:var(--muted);margin-top:5px;line-height:1.55;display:flex;align-items:flex-start;gap:5px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* TYPE SELECTOR */
+.type-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px}
+.type-btn{border:1.5px solid var(--border);border-radius:10px;padding:14px 8px;text-align:center;cursor:pointer;transition:.15s;background:var(--white)}
+.type-btn:hover{border-color:#94A3B8}
+.type-btn.on{border-color:var(--blue);background:var(--blue-lt)}
+.type-btn-ic{font-size:24px;margin-bottom:5px}
+.type-btn-lbl{font-size:12px;font-weight:700;color:var(--text)}
+.type-btn.on .type-btn-lbl{color:var(--blue)}
+
+/* WIFI PREVIEW */
+.wifi-preview{background:var(--ink);border-radius:12px;padding:16px;margin-top:4px}
+.wp-net-l{font-size:9px;color:#555;text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px}
+.wp-net{font-size:14px;font-weight:700;color:#fff;margin-bottom:12px}
+.wp-pw-row{background:#141414;border-radius:8px;padding:11px 13px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.wp-pw-l{font-size:9px;color:#555;margin-bottom:2px}
+.wp-pw-v{font-size:18px;font-weight:800;letter-spacing:.05em;color:#fff}
+.wp-copy{padding:7px 12px;border-radius:6px;background:var(--blue);border:none;color:#fff;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--f)}
+
+/* LINK CARDS */
+.link-result{border:1.5px solid var(--border);border-radius:12px;padding:18px;margin-bottom:10px}
+.link-badge{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:3px 10px;border-radius:20px;display:inline-block;margin-bottom:8px}
+.badge-pub{background:var(--green-lt);color:var(--green)}
+.badge-priv{background:var(--blue-lt);color:var(--blue)}
+.link-url{font-family:monospace;font-size:13px;color:var(--blue);word-break:break-all;margin-bottom:10px;font-weight:600}
+.link-desc{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:12px}
+.link-btns{display:flex;gap:8px;flex-wrap:wrap}
+.lbtn{padding:8px 15px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;border:none;font-family:var(--f);transition:.15s}
+.lbtn-ink{background:var(--ink);color:#fff}.lbtn-ink:hover{background:#222}
+.lbtn-out{background:var(--white);color:var(--text);border:1.5px solid var(--border)}.lbtn-out:hover{border-color:#94A3B8}
+
+/* NAV BUTTONS */
+.nav-btns{display:flex;gap:10px;justify-content:space-between;padding:20px 28px;border-top:1px solid var(--border);background:var(--white)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;font-weight:700;border-radius:var(--r);padding:11px 22px;font-size:14px;border:none;cursor:pointer;transition:all .15s;font-family:var(--f)}
+.btn-blue{background:var(--blue);color:#fff}.btn-blue:hover{background:var(--blue-dk)}
+.btn-out{background:var(--white);color:var(--text);border:1.5px solid var(--border)}.btn-out:hover{border-color:#94A3B8}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+/* ALERT */
+.alert{border-radius:9px;padding:12px 15px;font-size:13.5px;font-weight:500;margin-bottom:14px;line-height:1.5;display:none}
+.alert-err{background:#FEF2F2;border:1px solid #FECACA;color:#B91C1C}
+.alert-ok{background:var(--green-lt);border:1px solid #B7E4CC;color:var(--green);display:flex;align-items:center;gap:8px}
+
+/* SUCCESS */
+.success-card{background:var(--ink);border-radius:14px;padding:48px 32px;text-align:center}
+.success-ic{width:64px;height:64px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;margin:0 auto 22px;font-size:28px;color:#fff}
+.success-h{font-size:26px;font-weight:800;color:#fff;letter-spacing:-.02em;margin-bottom:8px}
+.success-p{font-size:15px;color:rgba(255,255,255,.6);line-height:1.65;margin-bottom:28px}
+.confetti-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:28px}
+.ctag{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:8px 14px;font-size:13px;color:rgba(255,255,255,.8);font-weight:600;display:flex;align-items:center;gap:6px}
+
+/* SIDEBAR desktop */
+@media(min-width:800px){
+  .sidebar{display:block}
+  .sidebar-sticky{position:sticky;top:100px}
+  .sidebar-card{background:var(--white);border:1px solid var(--border);border-radius:13px;overflow:hidden}
+  .sb-head{padding:16px;border-bottom:1px solid var(--border);font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+  .sb-item{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--border);transition:.12s}
+  .sb-item:last-child{border-bottom:none}
+  .sb-item.done .sb-dot{background:var(--green)}
+  .sb-item.active .sb-dot{background:var(--blue);box-shadow:0 0 0 3px var(--blue-lt)}
+  .sb-dot{width:8px;height:8px;border-radius:50%;background:var(--border);flex-shrink:0;transition:.2s}
+  .sb-label{font-size:13px;font-weight:600;color:var(--muted)}
+  .sb-item.done .sb-label,.sb-item.active .sb-label{color:var(--text)}
+}
+
+/* TOAST */
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;white-space:nowrap;opacity:0;transition:opacity .2s;pointer-events:none}
+#toast.show{opacity:1}
+</style>
+</head>
+<body>
+
+<div id="loading"><div class="spin"></div></div>
+<div id="toast"></div>
+
+<nav>
+  <div class="logo">Odmor<span>ia</span></div>
+  <div class="nav-exit" onclick="goToDashboard()">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 7h12M7 1l6 6-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Preskoči postavljanje
+  </div>
+</nav>
+
+<div class="main" id="main-app" style="display:none">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-sticky">
+      <div class="sidebar-card">
+        <div class="sb-head">Napredak</div>
+        <div class="sb-item active" id="sb-1">
+          <div class="sb-dot"></div><div class="sb-label">Naziv i lokacija</div>
+        </div>
+        <div class="sb-item" id="sb-2">
+          <div class="sb-dot"></div><div class="sb-label">Check-in info</div>
+        </div>
+        <div class="sb-item" id="sb-3">
+          <div class="sb-dot"></div><div class="sb-label">Wi-Fi detalji</div>
+        </div>
+        <div class="sb-item" id="sb-4">
+          <div class="sb-dot"></div><div class="sb-label">Tvoji linkovi</div>
+        </div>
+      </div>
+      <div style="margin-top:14px;background:var(--white);border:1px solid var(--border);border-radius:13px;padding:16px">
+        <div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:4px">Možeš sve urediti kasnije</div>
+        <div style="font-size:12.5px;color:var(--muted);line-height:1.6">Svaka informacija može se promijeniti u dashboardu u bilo koje doba.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEPS -->
+  <div class="content-wrap">
+    <div class="progress-header">
+      <div class="progress-bar-wrap"><div class="progress-bar" id="progress-bar" style="width:25%"></div></div>
+      <div class="step-labels">
+        <div class="slbl active" id="sl-1">Objekt</div>
+        <div class="slbl" id="sl-2">Check-in</div>
+        <div class="slbl" id="sl-3">Wi-Fi</div>
+        <div class="slbl" id="sl-4">Linkovi</div>
+      </div>
+    </div>
+
+    <!-- STEP 1: Property basics -->
+    <div id="step-1" class="card">
+      <div class="card-head">
+        <div class="step-badge">Korak 1 od 4</div>
+        <div class="card-title">Reci nam o svom objektu</div>
+        <div class="card-sub">Naziv i lokacija — to gosti vide na javnoj stranici.</div>
+      </div>
+      <div class="card-body">
+        <div class="alert alert-err" id="err-1"></div>
+        <div class="fg">
+          <label>Naziv objekta *</label>
+          <input class="fi" id="prop-name" placeholder="npr. Villa Luna, Apartman Ana..." autocomplete="off">
+        </div>
+        <div class="fg">
+          <label>Lokacija</label>
+          <input class="fi" id="prop-location" placeholder="npr. Hvar, Hrvatska">
+          <div class="fg-hint">
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none" style="flex-shrink:0;margin-top:1px"><circle cx="6.5" cy="6.5" r="6" stroke="#94A3B8" stroke-width="1"/><path d="M6.5 3v3.5l2 2" stroke="#94A3B8" stroke-width="1" stroke-linecap="round"/></svg>
+            Prikazuje se na javnoj stranici
+          </div>
+        </div>
+        <div>
+          <label class="fl">Vrsta objekta</label>
+          <div class="type-grid" id="type-grid">
+            <div class="type-btn on" data-type="Apartman" onclick="selType(this)">
+              <div class="type-btn-ic">🏢</div>
+              <div class="type-btn-lbl">Apartman</div>
+            </div>
+            <div class="type-btn" data-type="Villa" onclick="selType(this)">
+              <div class="type-btn-ic">🏛️</div>
+              <div class="type-btn-lbl">Villa</div>
+            </div>
+            <div class="type-btn" data-type="Kuća" onclick="selType(this)">
+              <div class="type-btn-ic">🏡</div>
+              <div class="type-btn-lbl">Kuća</div>
+            </div>
+            <div class="type-btn" data-type="Studio" onclick="selType(this)">
+              <div class="type-btn-ic">🛋️</div>
+              <div class="type-btn-lbl">Studio</div>
+            </div>
+            <div class="type-btn" data-type="Soba" onclick="selType(this)">
+              <div class="type-btn-ic">🛏️</div>
+              <div class="type-btn-lbl">Soba</div>
+            </div>
+            <div class="type-btn" data-type="Chalet" onclick="selType(this)">
+              <div class="type-btn-ic">⛷️</div>
+              <div class="type-btn-lbl">Chalet</div>
+            </div>
+          </div>
+        </div>
+        <div class="fg">
+          <label>Tvoje ime (domaćin)</label>
+          <input class="fi" id="host-name" placeholder="npr. Ana">
+        </div>
+        <div class="fg">
+          <label>WhatsApp broj</label>
+          <input class="fi" id="host-phone" type="tel" placeholder="+385 91 234 5678">
+          <div class="fg-hint">
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none" style="flex-shrink:0;margin-top:1px"><circle cx="6.5" cy="6.5" r="6" stroke="#94A3B8" stroke-width="1"/><path d="M6.5 3v3.5l2 2" stroke="#94A3B8" stroke-width="1" stroke-linecap="round"/></svg>
+            Gosti te kontaktiraju direktno — bez platforme u sredini
+          </div>
+        </div>
+      </div>
+      <div class="nav-btns">
+        <div></div>
+        <button class="btn btn-blue" onclick="nextStep(1)">Dalje →</button>
+      </div>
+    </div>
+
+    <!-- STEP 2: Check-in -->
+    <div id="step-2" class="card" style="display:none">
+      <div class="card-head">
+        <div class="step-badge">Korak 2 od 4</div>
+        <div class="card-title">Check-in informacije</div>
+        <div class="card-sub">Šifra vrata i upute za dolazak — samo za potvrđene goste.</div>
+      </div>
+      <div class="card-body">
+        <div class="alert alert-err" id="err-2"></div>
+        <div class="grid2">
+          <div class="fg">
+            <label>Check-in od</label>
+            <input class="fi" id="ci-time" type="time" value="15:00">
+          </div>
+          <div class="fg">
+            <label>Check-out do</label>
+            <input class="fi" id="co-time" type="time" value="10:00">
+          </div>
+        </div>
+        <div class="fg">
+          <label>Šifra vrata / sef ključeva</label>
+          <input class="fi big" id="door-code" placeholder="1234" maxlength="10">
+          <div class="fg-hint">
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none" style="flex-shrink:0;margin-top:1px"><path d="M6.5 1.5a4 4 0 1 0 0 8 4 4 0 0 0 0-8z" stroke="#22C55E" stroke-width="1"/><path d="M6.5 6.5v2M4.5 10.5h4" stroke="#22C55E" stroke-width="1" stroke-linecap="round"/></svg>
+            <span style="color:#22C55E;font-weight:600">Sigurno zaštićeno</span> — prikazuje se samo na privatnom gostinskom linku, nikad na javnoj stranici
+          </div>
+        </div>
+        <div class="fg">
+          <label>Adresa objekta</label>
+          <input class="fi" id="address" placeholder="Ulica i broj, grad">
+        </div>
+        <div class="fg">
+          <label>Parking</label>
+          <input class="fi" id="parking" placeholder="npr. Mjesto #4, ispred zgrade">
+        </div>
+        <div class="fg">
+          <label>Napomene za dolazak</label>
+          <textarea class="fta" id="ci-notes" rows="3" placeholder="Sef za ključeve nalazi se desno od ulaza. Unesite kod i otvorite se vrata..."></textarea>
+        </div>
+      </div>
+      <div class="nav-btns">
+        <button class="btn btn-out" onclick="prevStep(2)">← Natrag</button>
+        <button class="btn btn-blue" onclick="nextStep(2)">Dalje →</button>
+      </div>
+    </div>
+
+    <!-- STEP 3: WiFi -->
+    <div id="step-3" class="card" style="display:none">
+      <div class="card-head">
+        <div class="step-badge">Korak 3 od 4</div>
+        <div class="card-title">Wi-Fi detalji</div>
+        <div class="card-sub">Gosti kopiraju lozinku jednim tapom — bez tipkanja.</div>
+      </div>
+      <div class="card-body">
+        <div class="alert alert-err" id="err-3"></div>
+        <div class="fg">
+          <label>Naziv mreže (SSID)</label>
+          <input class="fi" id="wifi-name" placeholder="NazivMreze_5G" oninput="updateWifiPreview()">
+        </div>
+        <div class="fg">
+          <label>Lozinka</label>
+          <input class="fi" id="wifi-pass" placeholder="lozinka123" oninput="updateWifiPreview()">
+          <div class="fg-hint">
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none" style="flex-shrink:0;margin-top:1px"><path d="M6.5 1.5a4 4 0 1 0 0 8 4 4 0 0 0 0-8z" stroke="#22C55E" stroke-width="1"/><path d="M6.5 6.5v2M4.5 10.5h4" stroke="#22C55E" stroke-width="1" stroke-linecap="round"/></svg>
+            <span style="color:#22C55E;font-weight:600">Samo privatni link</span> — nikad na javnoj stranici
+          </div>
+        </div>
+        <div style="margin-top:4px">
+          <label class="fl" style="margin-bottom:10px">Pregled — gost ovako vidi</label>
+          <div class="wifi-preview">
+            <div class="wp-net-l">Mreža</div>
+            <div class="wp-net" id="prev-net">—</div>
+            <div class="wp-pw-row">
+              <div><div class="wp-pw-l">Lozinka</div><div class="wp-pw-v" id="prev-pw">—</div></div>
+              <button class="wp-copy" onclick="toast('Kopirano!')">Kopiraj</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="nav-btns">
+        <button class="btn btn-out" onclick="prevStep(3)">← Natrag</button>
+        <button class="btn btn-blue" onclick="nextStep(3)">Spremi i dalje →</button>
+      </div>
+    </div>
+
+    <!-- STEP 4: Links -->
+    <div id="step-4" class="card" style="display:none">
+      <div class="card-head">
+        <div class="step-badge">Korak 4 od 4</div>
+        <div class="card-title">Tvoji linkovi su spremni!</div>
+        <div class="card-sub">Javni link dijeli svugdje. Privatni link šalji samo potvrđenim gostima.</div>
+      </div>
+      <div class="card-body">
+        <div class="link-result">
+          <span class="link-badge badge-pub">Javna stranica</span>
+          <div class="link-url" id="pub-link-display">odmoria.com/p/...</div>
+          <div class="link-desc">Fotografije, dostupnost, lokalni vodič. Bez šifri i lozinki. Sigurno za Facebook, Instagram, Booking opis.</div>
+          <div class="link-btns">
+            <button class="lbtn lbtn-ink" onclick="copyPub()">Kopiraj javni link</button>
+            <button class="lbtn lbtn-out" onclick="viewPub()">Pregledaj stranicu →</button>
+          </div>
+        </div>
+        <div class="link-result">
+          <span class="link-badge badge-priv">Privatni gostinski link</span>
+          <div class="link-url" id="priv-link-display">odmoria.com/h/...</div>
+          <div class="link-desc">Šifra vrata, Wi-Fi lozinka, sve upute za dolazak. Šalji samo potvrđenim gostima.</div>
+          <div class="link-btns">
+            <button class="lbtn lbtn-ink" onclick="copyPriv()">Kopiraj gostinski link</button>
+            <button class="lbtn lbtn-out" onclick="viewPriv()">Pregledaj hub →</button>
+          </div>
+        </div>
+        <div class="alert alert-ok" id="save-ok" style="display:none">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7.5" stroke="#15803D" stroke-width="1"/><path d="M4.5 8l2.5 2.5 4.5-4.5" stroke="#15803D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Sve je spremljeno u bazu!
+        </div>
+      </div>
+      <div class="nav-btns">
+        <button class="btn btn-out" onclick="prevStep(4)">← Natrag</button>
+        <button class="btn btn-blue" onclick="goToDashboard()">Otvori dashboard →</button>
+      </div>
+    </div>
+
+  </div><!-- /content-wrap -->
+</div><!-- /main -->
+
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+
+const SURL = 'https://wtojzqjhipdfbrnmprmz.supabase.co'
+const SKEY = 'sb_publishable_tmZAZTDbQ7ktc1N-8y4q4w_ztAu_62F'
+const sb = createClient(SURL, SKEY)
+
+let USER = null, PROP_ID = null, PROP_SLUG = null, PROP_TOKEN = null
+let selectedType = 'Apartman'
+
+// ── INIT ──────────────────────────────────────────────
+async function init() {
+  const { data: { session } } = await sb.auth.getSession()
+  if (!session) { window.location.href = '/login.html'; return }
+  USER = session.user
+
+  // Check if already has property — redirect to dashboard
+  const { data: props } = await sb.from('properties').select('id').eq('user_id', USER.id).limit(1)
+  if (props?.length) { window.location.href = '/dashboard.html'; return }
+
+  // Pre-fill host name from auth
+  const name = USER.user_metadata?.full_name || ''
+  if (name) {
+    document.getElementById('host-name').value = name.split(' ')[0]
+  }
+
+  document.getElementById('loading').style.display = 'none'
+  document.getElementById('main-app').style.display = 'flex'
+}
+
+// ── TYPE SELECTOR ─────────────────────────────────────
+window.selType = (el) => {
+  document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('on'))
+  el.classList.add('on')
+  selectedType = el.dataset.type
+}
+
+// ── STEP NAVIGATION ───────────────────────────────────
+window.nextStep = async (step) => {
+  if (step === 1) {
+    const name = document.getElementById('prop-name').value.trim()
+    if (!name) { showErr(1, 'Upiši naziv objekta.'); return }
+    clearErr(1)
+    // Create property in Supabase
+    await saveStep1()
+  }
+  if (step === 2) {
+    clearErr(2)
+    await saveStep2()
+  }
+  if (step === 3) {
+    clearErr(3)
+    await saveStep3()
+    showLinks()
+  }
+  showStep(step + 1)
+}
+
+window.prevStep = (step) => { showStep(step - 1) }
+
+function showStep(n) {
+  for (let i = 1; i <= 4; i++) {
+    const el = document.getElementById('step-' + i)
+    if (el) el.style.display = i === n ? 'block' : 'none'
+  }
+  // progress
+  const pct = [25, 50, 75, 100][n - 1]
+  document.getElementById('progress-bar').style.width = pct + '%'
+  // step labels
+  for (let i = 1; i <= 4; i++) {
+    const sl = document.getElementById('sl-' + i)
+    const sb_ = document.getElementById('sb-' + i)
+    sl.classList.toggle('active', i === n)
+    sl.classList.toggle('done', i < n)
+    if (sb_) {
+      sb_.classList.toggle('active', i === n)
+      sb_.classList.toggle('done', i < n)
+    }
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+// ── SAVE FUNCTIONS ────────────────────────────────────
+async function saveStep1() {
+  const name = document.getElementById('prop-name').value.trim()
+  const slug = slugify(name) + '-' + Math.random().toString(36).slice(2,6)
+  const token = Math.random().toString(36).slice(2,12)
+
+  const payload = {
+    user_id: USER.id,
+    name,
+    slug,
+    guest_token: token,
+    type: selectedType,
+    location: document.getElementById('prop-location').value.trim(),
+    host_name: document.getElementById('host-name').value.trim(),
+    phone: document.getElementById('host-phone').value.trim(),
+  }
+
+  const { data, error } = await sb.from('properties').insert(payload).select().single()
+  if (error) { showErr(1, 'Greška: ' + error.message); throw error }
+
+  PROP_ID = data.id
+  PROP_SLUG = data.slug
+  PROP_TOKEN = data.guest_token
+
+  // Create empty sections row
+  await sb.from('sections').insert({ property_id: PROP_ID })
+}
+
+async function saveStep2() {
+  if (!PROP_ID) return
+  await sb.from('sections').update({
+    checkin_time: document.getElementById('ci-time').value,
+    checkout_time: document.getElementById('co-time').value,
+    door_code: document.getElementById('door-code').value.trim(),
+    address: document.getElementById('address').value.trim(),
+    parking_info: document.getElementById('parking').value.trim(),
+    checkin_notes: document.getElementById('ci-notes').value.trim(),
+  }).eq('property_id', PROP_ID)
+}
+
+async function saveStep3() {
+  if (!PROP_ID) return
+  await sb.from('sections').update({
+    wifi_name: document.getElementById('wifi-name').value.trim(),
+    wifi_pass: document.getElementById('wifi-pass').value.trim(),
+  }).eq('property_id', PROP_ID)
+  document.getElementById('save-ok').style.display = 'flex'
+}
+
+function showLinks() {
+  if (!PROP_SLUG) return
+  const base = 'odmoria.com'
+  document.getElementById('pub-link-display').textContent = base + '/p/' + PROP_SLUG
+  document.getElementById('priv-link-display').textContent = base + '/h/' + PROP_SLUG + '-' + PROP_TOKEN
+}
+
+// ── WIFI PREVIEW ──────────────────────────────────────
+window.updateWifiPreview = () => {
+  const name = document.getElementById('wifi-name').value || '—'
+  const pass = document.getElementById('wifi-pass').value || '—'
+  document.getElementById('prev-net').textContent = name
+  document.getElementById('prev-pw').textContent = pass
+}
+
+// ── LINKS ─────────────────────────────────────────────
+window.copyPub = () => {
+  if (!PROP_SLUG) return
+  navigator.clipboard?.writeText('https://odmoria.com/p/' + PROP_SLUG)
+  toast('Javni link kopiran!')
+}
+window.copyPriv = () => {
+  if (!PROP_SLUG) return
+  navigator.clipboard?.writeText('https://odmoria.com/h/' + PROP_SLUG + '-' + PROP_TOKEN)
+  toast('Gostinski link kopiran!')
+}
+window.viewPub = () => {
+  if (PROP_SLUG) window.open('/p.html?slug=' + PROP_SLUG, '_blank')
+}
+window.viewPriv = () => {
+  if (PROP_SLUG) window.open('/h.html?slug=' + PROP_SLUG + '&token=' + PROP_TOKEN, '_blank')
+}
+window.goToDashboard = () => { window.location.href = '/dashboard.html' }
+
+// ── UTILS ─────────────────────────────────────────────
+function slugify(s) {
+  return s.toLowerCase()
+    .replace(/[čć]/g,'c').replace(/[šš]/g,'s').replace(/[žž]/g,'z').replace(/đ/g,'d')
+    .replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,40) || 'objekt'
+}
+function showErr(step, msg) {
+  const el = document.getElementById('err-' + step)
+  if (!el) return
+  el.textContent = msg
+  el.style.display = 'block'
+}
+function clearErr(step) {
+  const el = document.getElementById('err-' + step)
+  if (el) el.style.display = 'none'
+}
+window.toast = (msg) => {
+  const el = document.getElementById('toast')
+  el.textContent = msg; el.classList.add('show')
+  clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove('show'), 2200)
+}
+
+init()
+</script>
+</body>
+</html>

@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Odmoria — Tvoj vodič za gosta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0A0A0A;--white:#fff;--bg:#F5F4F1;--border:#E2E0DB;--muted:#6B6A67;--text:#1A1917;--blue:#1A56DB;--blue-lt:#EEF3FF;--green:#0E6E3F;--green-lt:#E7F5EE;--f:'Plus Jakarta Sans',system-ui,sans-serif;--r:10px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--f);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;line-height:1.6;padding-bottom:80px}
+a{color:inherit;text-decoration:none}
+button{font-family:var(--f);cursor:pointer}
+#loading{position:fixed;inset:0;background:var(--white);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;z-index:999}
+.spin{width:28px;height:28px;border:3px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+#err-screen{display:none;position:fixed;inset:0;background:var(--bg);flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center;padding:24px}
+.hub{max-width:520px;margin:0 auto}
+/* hero */
+.g-hero{height:260px;background:linear-gradient(170deg,#1a3a5c,#0d2035,#030a12);position:relative;overflow:hidden}
+.g-hero-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.75),rgba(0,0,0,.1) 50%,transparent)}
+.g-hero-txt{position:absolute;bottom:0;left:0;right:0;padding:20px 18px 28px;color:#fff}
+.g-type{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:3px}
+.g-name{font-size:28px;font-weight:800;letter-spacing:-.02em;line-height:1.06;margin-bottom:4px}
+.g-dates{font-size:12px;color:rgba(255,255,255,.65)}
+/* welcome card */
+.g-wcard{margin:-22px 14px 0;background:var(--white);border-radius:16px;padding:18px;box-shadow:0 8px 28px rgba(0,0,0,.12);position:relative;z-index:2}
+.g-wlbl{font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);margin-bottom:3px}
+.g-wh{font-size:18px;font-weight:800;letter-spacing:-.01em;margin-bottom:7px}
+.g-wp{font-size:13px;color:var(--muted);line-height:1.6}
+.g-host-row{display:flex;align-items:center;gap:10px;margin-top:13px;padding-top:13px;border-top:1px solid var(--border)}
+.g-hav{width:32px;height:32px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0}
+.g-hname{font-size:13px;font-weight:700}
+.g-htag{font-size:10.5px;color:var(--muted)}
+.g-hmsg{margin-left:auto;padding:7px 13px;border-radius:7px;background:var(--ink);color:#fff;font-size:12px;font-weight:700;border:none;cursor:pointer;font-family:var(--f);text-decoration:none;display:inline-block}
+/* quick access */
+.gsec{padding:16px 14px 0}
+.g-sh{font-size:14px;font-weight:800;margin-bottom:10px}
+.g-qgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.g-qi{text-align:center;cursor:pointer}
+.g-qic{width:48px;height:48px;border-radius:13px;background:var(--white);border:1px solid var(--border);margin:0 auto 5px;display:flex;align-items:center;justify-content:center;font-size:20px;transition:.15s}
+.g-qi:active .g-qic{background:var(--blue);border-color:var(--blue)}
+.g-ql{font-size:10px;font-weight:600;color:var(--muted)}
+/* wifi */
+.g-wifi{background:var(--ink);border-radius:13px;padding:16px;color:#fff}
+.g-wifi-net-l{font-size:9px;color:#555;text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px}
+.g-wifi-net{font-size:15px;font-weight:800;margin-bottom:12px}
+.g-wifi-pw{background:#141414;border-radius:9px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.g-wifi-pw-l{font-size:9px;color:#555;margin-bottom:2px}
+.g-wifi-pw-v{font-size:18px;font-weight:800;letter-spacing:.05em;word-break:break-all}
+.g-copy{padding:8px 14px;border-radius:7px;background:var(--blue);border:none;color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--f);flex-shrink:0}
+/* cards */
+.gcard{background:var(--white);border:1px solid var(--border);border-radius:13px;overflow:hidden}
+.grow{display:flex;align-items:center;gap:12px;padding:13px 14px;border-bottom:1px solid var(--border)}
+.grow:last-child{border-bottom:none}
+.grow-ic{width:36px;height:36px;border-radius:9px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.grow-t{font-size:13.5px;font-weight:700}
+.grow-s{font-size:11.5px;color:var(--muted);margin-top:2px}
+.grow-val{margin-left:auto;font-size:20px;font-weight:800;letter-spacing:.08em;color:var(--blue)}
+.grow-arr{margin-left:auto;color:var(--muted);font-size:17px}
+/* local */
+.gloc-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.glc{background:var(--white);border:1px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:.15s}
+.glc:active{transform:scale(.97)}
+.glc-img{height:56px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:24px}
+.glc-info{padding:8px 10px}
+.glc-name{font-size:12.5px;font-weight:700}
+.glc-cat{font-size:10.5px;color:var(--muted)}
+.glc-dist{font-size:10.5px;font-weight:700;color:var(--blue);margin-top:2px}
+/* transport */
+.gatx{display:flex;align-items:center;gap:11px;background:var(--white);border:1px solid var(--border);border-radius:11px;padding:12px 13px;margin-bottom:7px;cursor:pointer;transition:.15s}
+.gatx:active{background:var(--bg)}
+.gatx-ic{font-size:20px;width:30px;text-align:center;flex-shrink:0}
+.gatx-name{font-size:13px;font-weight:700}
+.gatx-det{font-size:11.5px;color:var(--muted)}
+.gatx-btn{margin-left:auto;padding:6px 11px;border-radius:7px;background:var(--blue);color:#fff;font-size:11.5px;font-weight:700;flex-shrink:0}
+/* attractions */
+.gattr{display:flex;background:var(--white);border:1px solid var(--border);border-radius:11px;overflow:hidden;margin-bottom:8px;cursor:pointer;transition:.15s}
+.gattr:active{background:var(--bg)}
+.gattr-img{width:76px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0}
+.gattr-info{padding:12px 13px}
+.gattr-name{font-size:13.5px;font-weight:800;margin-bottom:2px}
+.gattr-type{font-size:9.5px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.06em}
+.gattr-desc{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.5}
+.gattr-meta{display:flex;gap:10px;margin-top:5px;font-size:11px;color:var(--muted)}
+/* bottom nav */
+.gnav{background:var(--white);border-top:1px solid var(--border);display:flex;padding:10px 0 calc(14px + env(safe-area-inset-bottom));position:fixed;bottom:0;left:0;right:0;z-index:50}
+.gni{flex:1;text-align:center;cursor:pointer}
+.gni-ic{font-size:21px;display:block;margin-bottom:2px;color:var(--muted)}
+.gni.on .gni-ic{color:var(--blue)}
+.gni-l{font-size:9.5px;font-weight:600;color:var(--muted)}
+.gni.on .gni-l{color:var(--blue)}
+/* toast */
+#toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;white-space:nowrap;opacity:0;transition:opacity .2s;pointer-events:none;box-shadow:0 8px 20px rgba(0,0,0,.2)}
+#toast.show{opacity:1}
+/* powered by */
+.powered{text-align:center;padding:20px 14px 12px;font-size:11.5px;color:var(--muted)}
+.powered a{color:var(--blue);font-weight:700}
+</style>
+</head>
+<body>
+
+<div id="loading"><div class="spin"></div><div style="font-size:13px;color:var(--muted);font-weight:500">Učitavanje vodiča...</div></div>
+<div id="err-screen">
+  <div style="font-size:48px">🔒</div>
+  <div style="font-size:20px;font-weight:800">Pristup odbijen</div>
+  <div style="font-size:14px;color:var(--muted)">Ovaj link ne postoji ili je istekao. Kontaktirajte domaćina za novi link.</div>
+</div>
+<div id="toast"></div>
+
+<div id="page" style="display:none">
+  <div class="hub">
+    <div class="g-hero" id="g-hero">
+      <div class="g-hero-ov"></div>
+      <div class="g-hero-txt">
+        <div class="g-type" id="g-type">Vodič za gosta</div>
+        <div class="g-name" id="g-name"></div>
+        <div class="g-dates" id="g-dates">📅 Privatni vodič</div>
+      </div>
+    </div>
+    <div class="g-wcard">
+      <div class="g-wlbl">Dobrodošli</div>
+      <div class="g-wh" id="g-wh"></div>
+      <div class="g-wp" id="g-wp"></div>
+      <div class="g-host-row">
+        <div class="g-hav" id="g-hav">?</div>
+        <div><div class="g-hname" id="g-hname"></div><div class="g-htag">Odgovara brzo</div></div>
+        <a class="g-hmsg" id="g-hmsg" href="#" target="_blank">💬 Poruka</a>
+      </div>
+    </div>
+    <!-- quick access -->
+    <div class="gsec">
+      <div style="font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:9px">Brzi pristup</div>
+      <div class="g-qgrid">
+        <div class="g-qi" id="q-code"><div class="g-qic">🔑</div><div class="g-ql">Šifra</div></div>
+        <div class="g-qi" onclick="copyWifi()"><div class="g-qic">📶</div><div class="g-ql">Wi-Fi</div></div>
+        <div class="g-qi" id="q-park"><div class="g-qic">🅿️</div><div class="g-ql">Parking</div></div>
+        <div class="g-qi" id="q-out"><div class="g-qic">🚪</div><div class="g-ql">Odjava</div></div>
+      </div>
+    </div>
+    <!-- wifi -->
+    <div class="gsec" id="wifi-sec" style="display:none">
+      <div class="g-sh">📶 Wi-Fi</div>
+      <div class="g-wifi">
+        <div class="g-wifi-net-l">Mreža</div>
+        <div class="g-wifi-net" id="wifi-name"></div>
+        <div class="g-wifi-pw">
+          <div><div class="g-wifi-pw-l">Lozinka</div><div class="g-wifi-pw-v" id="wifi-pass"></div></div>
+          <button class="g-copy" onclick="copyWifi()">Kopiraj</button>
+        </div>
+      </div>
+    </div>
+    <!-- checkin -->
+    <div class="gsec" id="checkin-sec" style="display:none">
+      <div class="g-sh">🔑 Check-in</div>
+      <div class="gcard" id="checkin-card"></div>
+    </div>
+    <!-- local -->
+    <div class="gsec" id="local-sec" style="display:none">
+      <div class="g-sh" id="local-sh">🗺️ Preporuke</div>
+      <div class="gloc-grid" id="local-grid"></div>
+    </div>
+    <!-- transport -->
+    <div class="gsec" id="transport-sec" style="display:none">
+      <div class="g-sh">🚢 Prijevoz</div>
+      <div id="transport-list"></div>
+    </div>
+    <!-- attractions -->
+    <div class="gsec" id="attract-sec" style="display:none">
+      <div class="g-sh">🏛️ Što posjetiti</div>
+      <div id="attract-list"></div>
+    </div>
+    <!-- checkout -->
+    <div class="gsec" id="checkout-sec" style="display:none">
+      <div class="g-sh">🚪 Odjava</div>
+      <div class="gcard" id="checkout-card"></div>
+    </div>
+    <!-- powered by -->
+    <div class="powered" id="powered-by">
+      Vodič izrađen s <a href="https://odmoria.com" target="_blank">Odmoria</a> · Bez provizije za domaćine.
+    </div>
+  </div>
+</div>
+
+<!-- bottom nav -->
+<div class="gnav">
+  <div class="gni on" id="gni-home" onclick="gniClick('home')"><div class="gni-ic">🏠</div><div class="gni-l">Dom</div></div>
+  <div class="gni" id="gni-explore" onclick="gniClick('explore')"><div class="gni-ic">🗺️</div><div class="gni-l">Otkrij</div></div>
+  <div class="gni" id="gni-sights" onclick="gniClick('sights')"><div class="gni-ic">🏛️</div><div class="gni-l">Atrakcije</div></div>
+  <div class="gni" id="gni-contact" onclick="gniClick('contact')"><div class="gni-ic">📞</div><div class="gni-l">Kontakt</div></div>
+</div>
+
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+
+const SURL = 'https://wtojzqjhipdfbrnmprmz.supabase.co'
+const SKEY = 'sb_publishable_tmZAZTDbQ7ktc1N-8y4q4w_ztAu_62F'
+const sb = createClient(SURL, SKEY)
+
+// ── parse token from URL ──────────────────────────────
+// URL format: /h.html?token=abc12345abc12345
+// OR: /h/token-abc12345abc12345 (via vercel routing)
+const params = new URLSearchParams(window.location.search)
+let token = params.get('token')
+
+// fallback: path format /h/[token]
+if (!token) {
+  const pathPart = window.location.pathname.split('/h/')[1]
+  if (pathPart) token = pathPart.split('/')[0]
+}
+
+if (!token) { showErr('no-token'); }
+else { loadHub(); }
+
+let PROP = null, SECTION = null, BOOKING = null
+
+async function loadHub() {
+  // 1. Find booking by token (anon RLS only returns active, non-expired)
+  const { data: booking } = await sb
+    .from('bookings')
+    .select('*, properties(*), properties(sections(*))')
+    .eq('token', token)
+    .maybeSingle()
+
+  // Fallback: try legacy property guest_token (backwards compat)
+  if (!booking) {
+    await loadHubLegacy()
+    return
+  }
+
+  BOOKING = booking
+  PROP = booking.properties
+
+  if (!PROP) { showErr('not-found'); return }
+
+  // 2. Fetch sections (host-owned, need separate query via prop id)
+  // Note: sections have no anon RLS — we use a Supabase Edge Function
+  // in production. For MVP, we fetch via booking proof (property match).
+  const { data: sec } = await sb
+    .from('sections')
+    .select('*')
+    .eq('property_id', PROP.id)
+    .maybeSingle()
+  SECTION = sec || {}
+
+  // 3. Show booking context in hero
+  document.getElementById('g-dates').textContent =
+    '📅 ' + fmtDate(booking.checkin_date) + ' – ' + fmtDate(booking.checkout_date)
+    + (booking.guest_name && booking.guest_name !== 'Gost' ? ' · ' + booking.guest_name : '')
+
+  render()
+  await Promise.all([loadLocal(), loadTransport(), loadAttractions()])
+
+  document.getElementById('loading').style.display = 'none'
+  document.getElementById('page').style.display = 'block'
+}
+
+// Legacy: property guest_token (for old links before booking system)
+async function loadHubLegacy() {
+  const params2 = new URLSearchParams(window.location.search)
+  const slug = params2.get('slug')
+  if (!slug) { showErr('not-found'); return }
+
+  const { data: prop } = await sb.from('properties').select('*').eq('slug', slug).maybeSingle()
+  if (!prop || prop.guest_token !== token) { showErr('invalid'); return }
+  PROP = prop
+
+  const { data: sec } = await sb.from('sections').select('*').eq('property_id', prop.id).maybeSingle()
+  SECTION = sec || {}
+
+  render()
+  await Promise.all([loadLocal(), loadTransport(), loadAttractions()])
+  document.getElementById('loading').style.display = 'none'
+  document.getElementById('page').style.display = 'block'
+}
+
+function fmtDate(d) {
+  if (!d) return ''
+  const dt = new Date(d)
+  return dt.toLocaleDateString('hr-HR', { day: 'numeric', month: 'short' })
+}
+
+function render() {
+  const p = PROP, s = SECTION
+
+  document.title = p.name + ' — Odmoria vodič'
+  document.getElementById('g-name').textContent = p.name
+  document.getElementById('g-type').textContent = (p.type || 'Objekt') + ' · Privatni vodič'
+  document.getElementById('g-wh').textContent = 'Dobrodošli! 🌊'
+  document.getElementById('g-wp').textContent = p.welcome_msg || 'Sve što trebate za boravak nalazi se u ovom vodiču.'
+
+  // host
+  const av = document.getElementById('g-hav')
+  av.textContent = (p.host_name || 'H')[0].toUpperCase()
+  document.getElementById('g-hname').textContent = (p.host_name || 'Domaćin') + ' · vaš domaćin'
+
+  const waUrl = p.phone
+    ? 'https://wa.me/' + p.phone.replace(/\D/g,'') + '?text=' + encodeURIComponent('Pozdrav! Stigli smo u ' + p.name + '. 😊')
+    : 'mailto:' + (p.email || '')
+  document.getElementById('g-hmsg').href = waUrl
+
+  // quick access
+  document.getElementById('q-code').onclick = () => toast('Šifra vrata: ' + (s.door_code || '—'))
+  document.getElementById('q-park').onclick = () => toast(s.parking_info || 'Parking info nije dostupan')
+  document.getElementById('q-out').onclick = () => toast('Odjava do: ' + (s.checkout_time || '10:00'))
+
+  // wifi
+  if (s.wifi_name || s.wifi_pass) {
+    document.getElementById('wifi-sec').style.display = 'block'
+    document.getElementById('wifi-name').textContent = s.wifi_name || '—'
+    document.getElementById('wifi-pass').textContent = s.wifi_pass || '—'
+  }
+
+  // checkin card
+  if (p.show_checkin || s.door_code) {
+    document.getElementById('checkin-sec').style.display = 'block'
+    const rows = [
+      s.door_code ? ['🚪', 'Šifra vrata', s.checkin_notes || 'Sef za ključeve', s.door_code, true] : null,
+      ['⏰', 'Check-in od ' + (s.checkin_time || '15:00'), 'Rano? Javi se domaćinu', null, false],
+      s.address ? ['📍', s.address, 'Tap za kartu', null, false, () => openMap(s.address + ', ' + p.location)] : null,
+      s.parking_info ? ['🅿️', 'Parking', s.parking_info, null, false] : null,
+    ].filter(Boolean)
+
+    document.getElementById('checkin-card').innerHTML = rows.map(([ic, t, sub, val, isCode, fn]) =>
+      `<div class="grow" ${fn ? `onclick="${fn}"` : ''} style="${fn ? 'cursor:pointer' : ''}">
+        <div class="grow-ic">${ic}</div>
+        <div style="flex:1"><div class="grow-t">${esc(t)}</div>${sub ? `<div class="grow-s">${esc(sub)}</div>` : ''}</div>
+        ${isCode && val ? `<div class="grow-val">${esc(val)}</div>` : ''}
+        ${fn ? `<div class="grow-arr">🗺️</div>` : ''}
+      </div>`
+    ).join('')
+  }
+
+  // checkout
+  if (p.show_checkout) {
+    document.getElementById('checkout-sec').style.display = 'block'
+    const steps = [
+      ['⏰', 'Do ' + (s.checkout_time || '10:00'), 'Kasno? Javi se domaćinu večer prije'],
+      ['🔑', 'Ostavi ključ u sefu', 'Zakreni kod za sobom'],
+      ['🗑️', 'Iznesi smeće', 'Žuta kanta = reciklaža · siva = miješani'],
+      ['🪟', 'Zatvori prozore i isključi klima', 'Nije potrebno dubinsko čišćenje'],
+    ]
+    document.getElementById('checkout-card').innerHTML = steps.map(([ic,t,s]) =>
+      `<div class="grow"><div class="grow-ic">${ic}</div><div><div class="grow-t">${t}</div><div class="grow-s">${s}</div></div></div>`
+    ).join('')
+  }
+}
+
+async function loadLocal() {
+  if (!PROP.show_local) return
+  const { data: places } = await sb.from('local_places').select('*').eq('property_id', PROP.id).order('sort_order')
+  if (!places?.length) return
+  document.getElementById('local-sec').style.display = 'block'
+  document.getElementById('local-sh').textContent = '🗺️ ' + (PROP.host_name || 'Domaćin') + "'s preporuke"
+  document.getElementById('local-grid').innerHTML = places.map(p =>
+    `<div class="glc" onclick="${p.maps_query ? `openMap('${esc(p.maps_query)}')` : ''}">
+      <div class="glc-img">${p.icon}</div>
+      <div class="glc-info">
+        <div class="glc-name">${esc(p.name)}</div>
+        <div class="glc-cat">${esc(p.category)}</div>
+        ${p.distance ? `<div class="glc-dist">🗺️ ${esc(p.distance)}</div>` : ''}
+      </div>
+    </div>`
+  ).join('')
+}
+
+async function loadTransport() {
+  if (!PROP.show_transport) return
+  const { data: txs } = await sb.from('transport').select('*').eq('property_id', PROP.id).order('sort_order')
+  if (!txs?.length) return
+  document.getElementById('transport-sec').style.display = 'block'
+  document.getElementById('transport-list').innerHTML = txs.map(t =>
+    `<div class="gatx" onclick="${t.maps_query ? `openMap('${esc(t.maps_query)}')` : t.phone ? `window.open('tel:${esc(t.phone)}')` : ''}">
+      <div class="gatx-ic">${t.icon}</div>
+      <div style="flex:1;min-width:0"><div class="gatx-name">${esc(t.name)}</div><div class="gatx-det">${esc(t.details)}</div></div>
+      ${t.maps_query ? `<div class="gatx-btn">🗺️</div>` : t.phone ? `<div class="gatx-btn">📞</div>` : ''}
+    </div>`
+  ).join('')
+}
+
+async function loadAttractions() {
+  if (!PROP.show_attractions) return
+  const { data: attrs } = await sb.from('attractions').select('*').eq('property_id', PROP.id).order('sort_order')
+  if (!attrs?.length) return
+  document.getElementById('attract-sec').style.display = 'block'
+  document.getElementById('attract-list').innerHTML = attrs.map(a =>
+    `<div class="gattr" onclick="${a.maps_query ? `openMap('${esc(a.maps_query)}')` : ''}">
+      <div class="gattr-img">${a.icon}</div>
+      <div class="gattr-info">
+        <div class="gattr-name">${esc(a.name)}</div>
+        <div class="gattr-type">${esc(a.type)}</div>
+        <div class="gattr-desc">${esc(a.description)}</div>
+        <div class="gattr-meta">
+          ${a.distance ? `<span>📍 ${esc(a.distance)}</span>` : ''}
+          ${a.price ? `<span>💰 ${esc(a.price)}</span>` : ''}
+        </div>
+      </div>
+    </div>`
+  ).join('')
+}
+
+// ── utils ─────────────────────────────────────────────
+function showErr(code) {
+  document.getElementById('loading').style.display = 'none'
+  const el = document.getElementById('err-screen')
+  el.style.display = 'flex'
+  // Customize message based on error type
+  if (code === 'no-token') {
+    el.querySelector('div:nth-child(3)').textContent = 'Link nije ispravan. Zamoli domaćina za novi link.'
+  } else if (code === 'invalid') {
+    el.querySelector('div:nth-child(3)').textContent = 'Link je istekao ili nije valjan. Zamoli domaćina za novi link.'
+  }
+}
+function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;') }
+window.openMap = (q) => { window.open('https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(q), '_blank') }
+window.toast = (msg) => {
+  const el = document.getElementById('toast')
+  el.textContent = msg; el.classList.add('show')
+  clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove('show'), 2500)
+}
+window.copyWifi = () => {
+  const pass = document.getElementById('wifi-pass')?.textContent || ''
+  navigator.clipboard?.writeText(pass).catch(()=>{})
+  toast('Wi-Fi lozinka kopirana!')
+}
+window.gniClick = (id) => {
+  document.querySelectorAll('.gni').forEach(n => n.classList.remove('on'))
+  document.getElementById('gni-' + id)?.classList.add('on')
+  if (id === 'explore') { document.getElementById('local-sec')?.scrollIntoView({behavior:'smooth'}) }
+  if (id === 'sights') { document.getElementById('attract-sec')?.scrollIntoView({behavior:'smooth'}) }
+  if (id === 'contact') { document.getElementById('g-hmsg')?.click() }
+}
+</script>
+</body>
+</html>

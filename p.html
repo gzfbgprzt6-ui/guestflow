@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Odmoria</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0A0A0A;--white:#fff;--bg:#F5F4F1;--border:#E2E0DB;--muted:#6B6A67;--text:#1A1917;--blue:#1A56DB;--blue-lt:#EEF3FF;--green:#0E6E3F;--green-lt:#E7F5EE;--f:'Plus Jakarta Sans',system-ui,sans-serif;--r:10px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--f);background:var(--white);color:var(--text);-webkit-font-smoothing:antialiased;line-height:1.6}
+a{color:inherit;text-decoration:none}
+button{font-family:var(--f);cursor:pointer}
+/* loading */
+#loading{position:fixed;inset:0;background:var(--white);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;z-index:999}
+.spin{width:28px;height:28px;border:3px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+#err-screen{display:none;position:fixed;inset:0;background:var(--bg);align-items:center;justify-content:center;flex-direction:column;gap:16px;text-align:center;padding:24px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;font-weight:700;border-radius:var(--r);padding:10px 20px;font-size:14px;border:none;cursor:pointer;transition:all .15s;font-family:var(--f)}
+.btn-ink{background:var(--ink);color:#fff}.btn-ink:hover{background:#222}
+.btn-blue{background:var(--blue);color:#fff}.btn-blue:hover{background:#1343B0}
+.btn-out{background:var(--white);color:var(--text);border:1.5px solid var(--border)}.btn-out:hover{border-color:#999}
+.btn-sm{padding:8px 16px;font-size:13px}
+/* nav */
+nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.93);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 16px;height:52px;gap:10px}
+.nav-logo{font-size:15px;font-weight:800;color:var(--ink);flex-shrink:0}
+.nav-logo span{color:var(--blue)}
+.nav-prop{font-size:13px;font-weight:600;color:var(--muted);flex:1;min-width:0;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nav-btns{display:flex;gap:7px;flex-shrink:0}
+/* gallery */
+.gallery{padding:12px 14px 0}
+.gal-main{height:240px;border-radius:12px;background:linear-gradient(160deg,#b8cce0,#5a8fb0);display:flex;align-items:center;justify-content:center;font-size:64px;position:relative;cursor:pointer;overflow:hidden}
+.gal-thumbs{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:7px}
+.gal-thumb{height:110px;border-radius:9px;background:linear-gradient(160deg,#c5d9e8,#8aadc8);display:flex;align-items:center;justify-content:center;font-size:34px;cursor:pointer}
+.gal-thumb:last-child{background:linear-gradient(160deg,#b8d4e4,#7aa0bb)}
+.photo-btn{position:absolute;bottom:10px;right:10px;background:rgba(255,255,255,.92);border:none;border-radius:7px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--f)}
+/* content */
+.content{padding:16px 14px 120px}
+.prop-name{font-size:22px;font-weight:800;letter-spacing:-.02em;margin-bottom:6px}
+.prop-meta{display:flex;gap:8px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);margin-bottom:12px}
+.divider{height:1px;background:var(--border);margin:18px 0}
+.am-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:18px}
+.am-item{display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:500}
+.am-item span{font-size:18px;flex-shrink:0}
+.save-banner{background:var(--bg);border-radius:10px;padding:13px;display:flex;align-items:center;gap:11px;margin-bottom:16px}
+.save-banner-txt .h{font-size:13px;font-weight:700;margin-bottom:2px}
+.save-banner-txt .p{font-size:12px;color:var(--muted);line-height:1.55}
+.save-pct{font-size:18px;font-weight:800;color:var(--green);flex-shrink:0}
+.desc{font-size:14px;line-height:1.75;color:var(--muted);margin-bottom:18px}
+.sec-title{font-size:16px;font-weight:800;margin-bottom:12px}
+.local-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:20px}
+.lcard{border:1px solid var(--border);border-radius:9px;overflow:hidden;cursor:pointer;transition:.15s}
+.lcard:active{transform:scale(.97)}
+.lcard-img{height:56px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:24px}
+.lcard-info{padding:6px 8px}
+.lcard-name{font-size:12px;font-weight:700}
+.lcard-cat{font-size:10px;color:var(--muted)}
+.lcard-dist{font-size:10px;font-weight:700;color:var(--blue);margin-top:2px}
+.tx{display:flex;align-items:center;gap:11px;border:1px solid var(--border);border-radius:10px;padding:12px 13px;margin-bottom:7px;cursor:pointer;transition:.15s}
+.tx:active{background:var(--bg)}
+.tx-ic{font-size:20px;width:28px;text-align:center;flex-shrink:0}
+.tx-name{font-size:13.5px;font-weight:700}
+.tx-det{font-size:11.5px;color:var(--muted)}
+.tx-btn{margin-left:auto;font-size:11.5px;font-weight:700;color:var(--blue);padding:6px 11px;border:1.5px solid var(--blue);border-radius:7px;cursor:pointer;background:transparent;font-family:var(--f);flex-shrink:0}
+/* cal */
+.calwrap{border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:16px}
+.calhead{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--border)}
+.calhead strong{font-size:13.5px;font-weight:700}
+.calnbtn{width:28px;height:28px;border-radius:6px;border:1px solid var(--border);background:var(--white);cursor:pointer;font-size:14px;font-weight:700;color:var(--muted)}
+.calbody{padding:10px 12px}
+.caldow{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:5px}
+.caldow span{text-align:center;font-size:10px;font-weight:700;color:var(--muted)}
+.caldays{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cday{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;border-radius:6px;background:var(--bg)}
+.cday.taken{background:transparent;color:var(--border);text-decoration:line-through}
+.calleg{display:flex;gap:12px;margin-top:9px;font-size:11.5px;color:var(--muted)}
+.calleg span{display:flex;align-items:center;gap:5px}
+.calleg i{display:inline-block;width:10px;height:10px;border-radius:3px;font-style:normal}
+/* booking bar */
+.book-bar{position:fixed;bottom:0;left:0;right:0;background:var(--white);border-top:1px solid var(--border);padding:12px 14px calc(12px + env(safe-area-inset-bottom));display:flex;gap:10px;align-items:center;z-index:50;box-shadow:0 -3px 14px rgba(0,0,0,.07)}
+.book-price b{font-size:20px;font-weight:800;display:block;letter-spacing:-.01em}
+.book-price span{font-size:11px;color:var(--muted)}
+/* modal */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:none;align-items:flex-end;justify-content:center}
+.modal-bg.on{display:flex}
+.modal{background:var(--white);border-radius:18px 18px 0 0;padding:20px 16px calc(20px + env(safe-area-inset-bottom));width:100%;max-width:480px}
+.modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.modal-head h3{font-size:17px;font-weight:800}
+.modal-close{font-size:20px;color:var(--muted);background:none;border:none;padding:4px;cursor:pointer}
+.nights-ctrl{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px}
+.nights-ctrl label{font-size:13.5px;font-weight:600}
+.nc-btn{width:30px;height:30px;border-radius:7px;border:1px solid var(--border);background:var(--white);font-size:15px;font-weight:700;cursor:pointer;font-family:var(--f)}
+.sav-calc{background:var(--green-lt);border-radius:9px;padding:13px;margin-bottom:13px;border:1px solid #B7E4CC}
+.sav-h{font-size:12.5px;font-weight:700;color:var(--green);margin-bottom:9px}
+.sav-row{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px}
+.sav-row.tot{font-weight:800;padding-top:8px;border-top:1px solid #B7E4CC;margin-top:2px;margin-bottom:0}
+.sav-grn{color:var(--green);font-weight:700}
+.book-note{font-size:11px;color:var(--muted);text-align:center;margin-top:9px;line-height:1.55}
+/* desktop */
+@media(min-width:640px){
+  nav{padding:0 24px}
+  .gallery{display:grid;grid-template-columns:3fr 2fr;gap:7px;padding:16px 20px 0;max-width:960px;margin:0 auto}
+  .gal-main{height:340px;border-radius:10px 0 0 10px}
+  .gal-thumbs{display:grid;grid-template-rows:1fr 1fr;margin-top:0}
+  .gal-thumb{height:167px;border-radius:0}
+  .gal-thumb:first-child{border-radius:0 10px 0 0}
+  .gal-thumb:last-child{border-radius:0 0 10px 0}
+  .content{display:grid;grid-template-columns:1fr 300px;gap:36px;padding:24px 20px 80px;max-width:960px;margin:0 auto}
+  .book-bar{display:none}
+  .book-desktop{display:block!important}
+  .local-grid{grid-template-columns:repeat(3,1fr)}
+}
+</style>
+</head>
+<body>
+
+<div id="loading"><div class="spin"></div><div style="font-size:13px;color:var(--muted);font-weight:500">Učitavanje...</div></div>
+<div id="err-screen" style="display:none;position:fixed;inset:0;background:var(--bg);display:none;align-items:center;justify-content:center;flex-direction:column;gap:16px;text-align:center;padding:24px">
+  <div style="font-size:48px">😕</div>
+  <div style="font-size:20px;font-weight:800">Stranica nije pronađena</div>
+  <div style="font-size:14px;color:var(--muted)">Ovaj objekt ne postoji ili je uklonjen.</div>
+  <a href="/" class="btn btn-ink">Na početnu →</a>
+</div>
+
+<div id="page" style="display:none">
+  <nav>
+    <a href="/" class="nav-logo">Odmor<span>ia</span></a>
+    <div class="nav-prop" id="nav-prop-name"></div>
+    <div class="nav-btns">
+      <button class="btn btn-ink btn-sm" onclick="document.getElementById('book-modal').classList.add('on')">Rezerviraj</button>
+    </div>
+  </nav>
+
+  <div class="gallery" id="gallery">
+    <div class="gal-main">🏖️<button class="photo-btn">📷 Sve fotografije</button></div>
+    <div class="gal-thumbs">
+      <div class="gal-thumb">🌊</div>
+      <div class="gal-thumb">🛏️</div>
+    </div>
+  </div>
+
+  <div class="content">
+    <div id="main-col">
+      <div class="prop-name" id="prop-name"></div>
+      <div class="prop-meta" id="prop-meta"></div>
+      <div class="divider"></div>
+      <div class="am-grid" id="am-grid"></div>
+      <div class="divider"></div>
+      <div class="save-banner">
+        <span style="font-size:26px">💰</span>
+        <div class="save-banner-txt" style="flex:1">
+          <div class="h">Rezerviraj direktno — bez platformske naknade</div>
+          <div class="p">Odmoria ne naplaćuje proviziju po rezervaciji. Kontaktiraj domaćina izravno.</div>
+        </div>
+        <div class="save-pct">0% naknade</div>
+      </div>
+      <div class="desc" id="prop-desc"></div>
+      <div id="local-section" style="display:none">
+        <div class="divider"></div>
+        <div class="sec-title" id="local-title"></div>
+        <div class="local-grid" id="local-grid"></div>
+      </div>
+      <div id="transport-section" style="display:none">
+        <div class="sec-title">Prijevoz</div>
+        <div id="transport-list"></div>
+      </div>
+      <div id="avail-section" style="display:none">
+        <div class="divider"></div>
+        <div class="sec-title">Dostupnost</div>
+        <div class="calwrap">
+          <div class="calhead">
+            <button class="calnbtn" onclick="calNav(-1)">‹</button>
+            <strong id="cal-title"></strong>
+            <button class="calnbtn" onclick="calNav(1)">›</button>
+          </div>
+          <div class="calbody">
+            <div class="caldow"><span>P</span><span>U</span><span>S</span><span>Č</span><span>P</span><span>S</span><span>N</span></div>
+            <div class="caldays" id="cal-days"></div>
+          </div>
+          <div class="calleg">
+            <span><i style="background:var(--bg);border:1px solid var(--border)"></i>Slobodno</span>
+            <span><i style="background:var(--border)"></i>Zauzeto</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- desktop booking card -->
+    <div class="book-desktop" style="display:none">
+      <div style="border:1.5px solid var(--border);border-radius:13px;padding:20px;position:sticky;top:70px">
+        <div style="font-size:22px;font-weight:800;margin-bottom:4px" id="d-price">— <span style="font-size:14px;font-weight:400;color:var(--muted)">/ noć</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;background:var(--bg);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:11px">
+          <div style="padding:8px 11px;border-right:1px solid var(--border)"><div style="font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px">Check-in</div><div style="font-size:13px;font-weight:600">Po dogovoru</div></div>
+          <div style="padding:8px 11px"><div style="font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px">Check-out</div><div style="font-size:13px;font-weight:600">Po dogovoru</div></div>
+        </div>
+        <div id="d-book-btns"></div>
+        <div style="font-size:11px;color:var(--muted);text-align:center;margin-top:9px;line-height:1.55">Odmoria ne naplaćuje proviziju. Direktna komunikacija s domaćinom.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- mobile booking bar -->
+<div class="book-bar" id="book-bar" style="display:none">
+  <div class="book-price"><b id="m-price">—</b><span>/ noć</span></div>
+  <button class="btn btn-blue" style="flex:1" onclick="document.getElementById('book-modal').classList.add('on')">Kontaktiraj domaćina →</button>
+</div>
+
+<!-- booking modal -->
+<div class="modal-bg" id="book-modal" onclick="if(event.target===this)this.classList.remove('on')">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="modal-title">Rezervacija</h3>
+      <button class="modal-close" onclick="document.getElementById('book-modal').classList.remove('on')">✕</button>
+    </div>
+    <div class="nights-ctrl">
+      <label>Broj noći</label>
+      <div style="display:flex;align-items:center;gap:10px">
+        <button class="nc-btn" onclick="chgN(-1)">−</button>
+        <span id="nights-val" style="font-weight:800;font-size:16px;min-width:20px;text-align:center">7</span>
+        <button class="nc-btn" onclick="chgN(1)">+</button>
+      </div>
+    </div>
+    <div class="sav-calc">
+      <div class="sav-h">💰 Direktno vs. platforma</div>
+      <div class="sav-row"><span>Direktna rezervacija</span><span id="sc-tot">—</span></div>
+      <div class="sav-row"><span style="color:var(--muted)">Platforma (~15% naknada)</span><span style="color:var(--muted)" id="sc-fee">—</span></div>
+      <div class="sav-row tot"><span>Uštediš direktno</span><span class="sav-grn" id="sc-sav">—</span></div>
+    </div>
+    <div id="modal-btns"></div>
+    <div class="book-note">Odmoria ne naplaćuje proviziju. Plaćanje direktno s domaćinom.</div>
+  </div>
+</div>
+
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+
+const SURL = 'https://wtojzqjhipdfbrnmprmz.supabase.co'
+const SKEY = 'sb_publishable_tmZAZTDbQ7ktc1N-8y4q4w_ztAu_62F'
+const sb = createClient(SURL, SKEY)
+
+// ── slug from URL ─────────────────────────────────────
+const slug = new URLSearchParams(window.location.search).get('slug')
+  || window.location.pathname.split('/p/')[1]?.split('/')[0]
+
+if (!slug) { showErr(); }
+else { loadPage(); }
+
+let PROP = null, nights = 7, price = 0
+let calMonth = new Date().getMonth(), calYear = new Date().getFullYear()
+let bookedDates = []
+const MONTHS = ['Siječanj','Veljača','Ožujak','Travanj','Svibanj','Lipanj','Srpanj','Kolovoz','Rujan','Listopad','Studeni','Prosinac']
+
+async function loadPage() {
+  // Load property (no sections — public page never shows wifi_pass / door_code)
+  const { data: prop, error } = await sb
+    .from('properties').select('*').eq('slug', slug).maybeSingle()
+
+  if (error || !prop) { showErr(); return }
+  PROP = prop
+  price = parseFloat(prop.price_per_night) || 0
+
+  document.title = prop.name + ' — Odmoria'
+  document.getElementById('nav-prop-name').textContent = prop.name
+  document.getElementById('prop-name').textContent = prop.name
+  document.getElementById('prop-desc').textContent = prop.welcome_msg || ''
+
+  const meta = []
+  if (prop.location) meta.push('📍 ' + prop.location)
+  if (prop.type) meta.push('🏠 ' + prop.type)
+  if (prop.max_guests) meta.push('👥 ' + prop.max_guests + ' gostiju')
+  if (prop.bedrooms) meta.push('🛏️ ' + prop.bedrooms + ' sobe')
+  document.getElementById('prop-meta').textContent = meta.join(' · ')
+
+  if (price > 0) {
+    document.getElementById('d-price').innerHTML = `${price} € <span style="font-size:14px;font-weight:400;color:var(--muted)">/ noć</span>`
+    document.getElementById('m-price').textContent = price + ' €'
+  }
+
+  // amenities
+  const amEl = document.getElementById('am-grid')
+  const { data: ams } = await sb.from('amenities').select('icon,name').eq('property_id', prop.id).eq('enabled', true).order('sort_order')
+  if (ams?.length) {
+    amEl.innerHTML = ams.map(a => `<div class="am-item"><span>${a.icon}</span>${esc(a.name)}</div>`).join('')
+  } else {
+    amEl.parentElement.style.display = 'none'
+  }
+
+  // local places
+  if (prop.show_local) {
+    const { data: places } = await sb.from('local_places').select('*').eq('property_id', prop.id).order('sort_order')
+    if (places?.length) {
+      document.getElementById('local-section').style.display = 'block'
+      document.getElementById('local-title').textContent = (prop.host_name || 'Domaćin') + "'s preporuke"
+      document.getElementById('local-grid').innerHTML = places.map(p =>
+        `<div class="lcard" onclick="${p.maps_query ? `openMap('${esc(p.maps_query)}')` : ''}">
+          <div class="lcard-img">${p.icon}</div>
+          <div class="lcard-info">
+            <div class="lcard-name">${esc(p.name)}</div>
+            <div class="lcard-cat">${esc(p.category)}</div>
+            ${p.distance ? `<div class="lcard-dist">🗺️ ${esc(p.distance)}</div>` : ''}
+          </div>
+        </div>`
+      ).join('')
+    }
+  }
+
+  // transport
+  if (prop.show_transport) {
+    const { data: txs } = await sb.from('transport').select('*').eq('property_id', prop.id).order('sort_order')
+    if (txs?.length) {
+      document.getElementById('transport-section').style.display = 'block'
+      document.getElementById('transport-list').innerHTML = txs.map(t =>
+        `<div class="tx" onclick="${t.maps_query ? `openMap('${esc(t.maps_query)}')` : t.phone ? `window.open('tel:${esc(t.phone)}')` : ''}">
+          <div class="tx-ic">${t.icon}</div>
+          <div style="flex:1;min-width:0"><div class="tx-name">${esc(t.name)}</div><div class="tx-det">${esc(t.details)}</div></div>
+          ${t.maps_query ? `<button class="tx-btn" onclick="event.stopPropagation();openMap('${esc(t.maps_query)}')">🗺️</button>` : ''}
+          ${t.phone ? `<button class="tx-btn" onclick="event.stopPropagation();window.open('tel:${esc(t.phone)}')">📞</button>` : ''}
+        </div>`
+      ).join('')
+    }
+  }
+
+  // availability
+  if (prop.show_availability) {
+    const { data: avail } = await sb.from('availability').select('date').eq('property_id', prop.id)
+    bookedDates = (avail || []).map(r => r.date)
+    document.getElementById('avail-section').style.display = 'block'
+    renderCal()
+  }
+
+  // build booking buttons
+  const btns = buildBookBtns(prop)
+  document.getElementById('d-book-btns').innerHTML = btns
+  document.getElementById('modal-btns').innerHTML = btns
+  document.getElementById('modal-title').textContent = 'Rezerviraj ' + prop.name
+
+  updateCalc()
+
+  document.getElementById('loading').style.display = 'none'
+  document.getElementById('page').style.display = 'block'
+  document.getElementById('book-bar').style.display = window.innerWidth < 640 ? 'flex' : 'none'
+  window.addEventListener('resize', () => {
+    document.getElementById('book-bar').style.display = window.innerWidth < 640 ? 'flex' : 'none'
+  })
+}
+
+function buildBookBtns(prop) {
+  let h = ''
+  if (prop.phone) {
+    const waUrl = 'https://wa.me/' + prop.phone.replace(/\D/g, '') + '?text=' + encodeURIComponent('Zdravo! Zanima me rezervacija za ' + prop.name + '.')
+    h += `<a href="${waUrl}" target="_blank" style="display:block;width:100%;padding:13px;border-radius:9px;font-size:14px;font-weight:800;background:var(--blue);color:#fff;text-align:center;margin-bottom:8px;text-decoration:none">💬 Pošalji poruku domaćinu</a>`
+  }
+  if (prop.email) {
+    h += `<a href="mailto:${esc(prop.email)}?subject=Rezervacija: ${esc(prop.name)}" style="display:block;width:100%;padding:11px;border-radius:9px;font-size:13px;font-weight:700;background:transparent;border:1.5px solid var(--border);color:var(--text);text-align:center;margin-bottom:7px;text-decoration:none">✉️ Pošalji email</a>`
+  }
+  return h || '<div style="text-align:center;padding:16px;color:var(--muted);font-size:13px">Kontakt podaci nisu dostupni.</div>'
+}
+
+// ── calendar ──────────────────────────────────────────
+window.calNav = (d) => { calMonth += d; if (calMonth>11){calMonth=0;calYear++} if (calMonth<0){calMonth=11;calYear--} renderCal() }
+function renderCal() {
+  const el = document.getElementById('cal-title')
+  if (el) el.textContent = MONTHS[calMonth] + ' ' + calYear + '.'
+  const fd = (new Date(calYear, calMonth, 1).getDay() + 6) % 7
+  const dim = new Date(calYear, calMonth + 1, 0).getDate()
+  let h = ''
+  for (let i = 0; i < fd; i++) h += '<div></div>'
+  for (let d = 1; d <= dim; d++) {
+    const ds = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`
+    h += `<div class="cday${bookedDates.includes(ds)?' taken':''}">${d}</div>`
+  }
+  const days = document.getElementById('cal-days')
+  if (days) days.innerHTML = h
+}
+
+// ── booking calc ──────────────────────────────────────
+function updateCalc() {
+  const tot = price * nights
+  const fee = Math.round(tot * 0.15)
+  const fmt = n => n.toLocaleString('hr-HR') + ' €'
+  const setT = (id, v) => { const el = document.getElementById(id); if(el) el.textContent = v }
+  setT('sc-tot', price > 0 ? fmt(tot) : '—')
+  setT('sc-fee', price > 0 ? '+' + fmt(fee) : '—')
+  setT('sc-sav', price > 0 ? fmt(fee) : '—')
+  setT('nights-val', nights)
+}
+window.chgN = (d) => { nights = Math.max(1, nights + d); updateCalc() }
+
+// ── utils ─────────────────────────────────────────────
+function showErr() {
+  document.getElementById('loading').style.display = 'none'
+  const e = document.getElementById('err-screen')
+  e.style.display = 'flex'
+}
+function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;') }
+window.openMap = (q) => { window.open('https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(q), '_blank') }
+</script>
+</body>
+</html>
