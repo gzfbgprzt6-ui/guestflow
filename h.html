@@ -218,27 +218,40 @@ else { loadHub(); }
 let PROP = null, SECTION = null, BOOKING = null
 
 async function loadHub() {
-  // 1. Find booking by token (anon RLS only returns active, non-expired)
-  const { data: booking } = await sb
+  // 1. Find booking by token
+  const { data: booking, error: bErr } = await sb
     .from('bookings')
-    .select('*, properties(*), properties(sections(*))')
+    .select('*')
     .eq('token', token)
     .maybeSingle()
 
-  // Fallback: try legacy property guest_token (backwards compat)
+  // Fallback: try legacy property guest_token
   if (!booking) {
     await loadHubLegacy()
     return
   }
 
+  // Check if booking is active and not expired
+  const now = new Date()
+  const expires = booking.token_expires_at ? new Date(booking.token_expires_at) : null
+  if (!booking.is_active || (expires && expires < now)) {
+    showErr('invalid')
+    return
+  }
+
   BOOKING = booking
-  PROP = booking.properties
 
-  if (!PROP) { showErr('not-found'); return }
+  // 2. Fetch property
+  const { data: prop } = await sb
+    .from('properties')
+    .select('*')
+    .eq('id', booking.property_id)
+    .maybeSingle()
 
-  // 2. Fetch sections (host-owned, need separate query via prop id)
-  // Note: sections have no anon RLS — we use a Supabase Edge Function
-  // in production. For MVP, we fetch via booking proof (property match).
+  if (!prop) { showErr('not-found'); return }
+  PROP = prop
+
+  // 3. Fetch sections
   const { data: sec } = await sb
     .from('sections')
     .select('*')
@@ -246,7 +259,19 @@ async function loadHub() {
     .maybeSingle()
   SECTION = sec || {}
 
-  // 3. Show booking context in hero
+  // 4. Check if sensitive data should be shown
+  // Show 1h before checkin time on checkin date
+  const checkinDate = new Date(booking.checkin_date)
+  const checkinTimeStr = SECTION.checkin_time || '15:00'
+  const [ciHour, ciMin] = checkinTimeStr.split(':').map(Number)
+  checkinDate.setHours(ciHour, ciMin, 0, 0)
+  const unlockTime = new Date(checkinDate.getTime() - 60 * 60 * 1000) // 1h before
+  const checkoutDate = new Date(booking.checkout_date)
+  checkoutDate.setHours(23, 59, 0, 0)
+
+  window.SENSITIVE_UNLOCKED = now >= unlockTime && now <= checkoutDate
+
+  // 5. Show booking context in hero
   document.getElementById('g-dates').textContent =
     '📅 ' + fmtDate(booking.checkin_date) + ' – ' + fmtDate(booking.checkout_date)
     + (booking.guest_name && booking.guest_name !== 'Gost' ? ' · ' + booking.guest_name : '')
@@ -256,6 +281,21 @@ async function loadHub() {
 
   document.getElementById('loading').style.display = 'none'
   document.getElementById('page').style.display = 'block'
+
+  // Show unlock countdown if not yet unlocked
+  if (!window.SENSITIVE_UNLOCKED) {
+    showUnlockCountdown(unlockTime)
+  }
+
+  // Auto-refresh every 5 min to unlock when time comes
+  setInterval(async function() {
+    const n = new Date()
+    if (!window.SENSITIVE_UNLOCKED && n >= unlockTime) {
+      window.SENSITIVE_UNLOCKED = true
+      renderSensitive()
+      document.getElementById('unlock-banner')?.remove()
+    }
+  }, 5 * 60 * 1000)
 }
 
 // Legacy: property guest_token (for old links before booking system)
@@ -307,18 +347,27 @@ function render() {
   document.getElementById('q-park').onclick = () => toast(s.parking_info || 'Parking info nije dostupan')
   document.getElementById('q-out').onclick = () => toast('Odjava do: ' + (s.checkout_time || '10:00'))
 
-  // wifi
+  // wifi — show only if unlocked
   if (s.wifi_name || s.wifi_pass) {
     document.getElementById('wifi-sec').style.display = 'block'
-    document.getElementById('wifi-name').textContent = s.wifi_name || '—'
-    document.getElementById('wifi-pass').textContent = s.wifi_pass || '—'
+    if (window.SENSITIVE_UNLOCKED) {
+      document.getElementById('wifi-name').textContent = s.wifi_name || '—'
+      document.getElementById('wifi-pass').textContent = s.wifi_pass || '—'
+    } else {
+      document.getElementById('wifi-name').textContent = '—'
+      document.getElementById('wifi-pass').textContent = '— dostupno pri dolasku'
+    }
   }
 
   // checkin card
   if (p.show_checkin || s.door_code) {
     document.getElementById('checkin-sec').style.display = 'block'
     const rows = [
-      s.door_code ? ['🚪', 'Šifra vrata', s.checkin_notes || 'Sef za ključeve', s.door_code, true] : null,
+      s.door_code
+        ? ['🚪', window.SENSITIVE_UNLOCKED ? 'Šifra vrata' : 'Šifra vrata',
+           window.SENSITIVE_UNLOCKED ? (s.checkin_notes || 'Sef za ključeve') : 'Dostupno 1h prije dolaska',
+           window.SENSITIVE_UNLOCKED ? s.door_code : null, window.SENSITIVE_UNLOCKED]
+        : null,
       ['⏰', 'Check-in od ' + (s.checkin_time || '15:00'), 'Rano? Javi se domaćinu', null, false],
       s.address ? ['📍', s.address, 'Tap za kartu', null, false, () => openMap(s.address + ', ' + p.location)] : null,
       s.parking_info ? ['🅿️', 'Parking', s.parking_info, null, false] : null,
@@ -403,6 +452,63 @@ async function loadAttractions() {
 }
 
 // ── utils ─────────────────────────────────────────────
+function renderSensitive() {
+  if (!SECTION) return
+  // Update wifi
+  document.getElementById('wifi-name').textContent = SECTION.wifi_name || '—'
+  document.getElementById('wifi-pass').textContent = SECTION.wifi_pass || '—'
+  // Update door code row
+  const grows = document.querySelectorAll('.grow')
+  grows.forEach(g => {
+    const t = g.querySelector('.grow-t')
+    if (t && t.textContent === 'Šifra vrata') {
+      const sub = g.querySelector('.grow-s')
+      const val = g.querySelector('.grow-val')
+      if (sub) sub.textContent = SECTION.checkin_notes || 'Sef za ključeve'
+      if (val) val.textContent = SECTION.door_code || ''
+      else {
+        const v = document.createElement('div')
+        v.className = 'grow-val'
+        v.textContent = SECTION.door_code || ''
+        g.appendChild(v)
+      }
+    }
+  })
+  toast('Šifra i Wi-Fi su sada dostupni! 🔓')
+}
+
+function showUnlockCountdown(unlockTime) {
+  const banner = document.createElement('div')
+  banner.id = 'unlock-banner'
+  banner.style.cssText = 'background:#0F172A;border:1px solid #1A56DB;border-radius:12px;padding:14px 16px;margin:14px;display:flex;align-items:center;gap:12px'
+
+  function updateBanner() {
+    const now = new Date()
+    const diff = unlockTime - now
+    if (diff <= 0) {
+      banner.remove()
+      return
+    }
+    const hours = Math.floor(diff / 3600000)
+    const mins = Math.floor((diff % 3600000) / 60000)
+    const timeStr = hours > 0 ? hours + 'h ' + mins + 'min' : mins + ' min'
+    banner.innerHTML =
+      '<div style="font-size:24px">🔒</div>' +
+      '<div style="flex:1">' +
+        '<div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:2px">Šifra i Wi-Fi dostupni za ' + timeStr + '</div>' +
+        '<div style="font-size:12px;color:#64748B">Sigurnosni podaci se otključavaju 1h prije check-in vremena.</div>' +
+      '</div>'
+  }
+
+  updateBanner()
+  setInterval(updateBanner, 60000) // update every minute
+
+  // Insert after wifi section or at top of content
+  const wifiSec = document.getElementById('wifi-sec')
+  if (wifiSec) wifiSec.after(banner)
+  else document.querySelector('.hub').prepend(banner)
+}
+
 function showErr(code) {
   document.getElementById('loading').style.display = 'none'
   const el = document.getElementById('err-screen')
