@@ -4,540 +4,477 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>Odmoria — Tvoj vodič za gosta</title>
+<title>Gostinski vodič — Odmoria</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
 <style>
-:root{--ink:#0A0A0A;--white:#fff;--bg:#F5F4F1;--border:#E2E0DB;--muted:#6B6A67;--text:#1A1917;--blue:#1A56DB;--blue-lt:#EEF3FF;--green:#0E6E3F;--green-lt:#E7F5EE;--f:'Plus Jakarta Sans',system-ui,sans-serif;--r:10px}
+:root{--black:#0A0A0A;--warm-white:#F7F5F1;--pure-white:#FFFFFF;--electric:#2D5BE3;--stone:#E8E2D9;--stone-mid:#C8C0B4;--ink:#1A1917;--soft:#6B6560;--ghost:#9B9590;--green:#15803D;--green-bg:#DCFCE7;--serif:'DM Serif Display',Georgia,serif;--sans:'DM Sans',system-ui,sans-serif}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--f);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;line-height:1.6;padding-bottom:80px}
+body{font-family:var(--sans);background:var(--warm-white);color:var(--ink);-webkit-font-smoothing:antialiased;min-height:100dvh}
 a{color:inherit;text-decoration:none}
-button{font-family:var(--f);cursor:pointer}
-#loading{position:fixed;inset:0;background:var(--white);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;z-index:999}
-.spin{width:28px;height:28px;border:3px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:sp .7s linear infinite}
+button{font-family:var(--sans);cursor:pointer}
+
+/* LOADING */
+#loading{position:fixed;inset:0;background:var(--pure-white);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:999}
+.spin{width:28px;height:28px;border:2px solid var(--stone);border-top-color:var(--electric);border-radius:50%;animation:sp .7s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
-#err-screen{display:none;position:fixed;inset:0;background:var(--bg);flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center;padding:24px}
-.hub{max-width:520px;margin:0 auto}
-/* hero */
-.g-hero{height:260px;background:linear-gradient(170deg,#1a3a5c,#0d2035,#030a12);position:relative;overflow:hidden}
-.g-hero-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.75),rgba(0,0,0,.1) 50%,transparent)}
-.g-hero-txt{position:absolute;bottom:0;left:0;right:0;padding:20px 18px 28px;color:#fff}
-.g-type{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:3px}
-.g-name{font-size:28px;font-weight:800;letter-spacing:-.02em;line-height:1.06;margin-bottom:4px}
-.g-dates{font-size:12px;color:rgba(255,255,255,.65)}
-/* welcome card */
-.g-wcard{margin:-22px 14px 0;background:var(--white);border-radius:16px;padding:18px;box-shadow:0 8px 28px rgba(0,0,0,.12);position:relative;z-index:2}
-.g-wlbl{font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);margin-bottom:3px}
-.g-wh{font-size:18px;font-weight:800;letter-spacing:-.01em;margin-bottom:7px}
-.g-wp{font-size:13px;color:var(--muted);line-height:1.6}
-.g-host-row{display:flex;align-items:center;gap:10px;margin-top:13px;padding-top:13px;border-top:1px solid var(--border)}
-.g-hav{width:32px;height:32px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0}
-.g-hname{font-size:13px;font-weight:700}
-.g-htag{font-size:10.5px;color:var(--muted)}
-.g-hmsg{margin-left:auto;padding:7px 13px;border-radius:7px;background:var(--ink);color:#fff;font-size:12px;font-weight:700;border:none;cursor:pointer;font-family:var(--f);text-decoration:none;display:inline-block}
-/* quick access */
-.gsec{padding:16px 14px 0}
-.g-sh{font-size:14px;font-weight:800;margin-bottom:10px}
-.g-qgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-.g-qi{text-align:center;cursor:pointer}
-.g-qic{width:48px;height:48px;border-radius:13px;background:var(--white);border:1px solid var(--border);margin:0 auto 5px;display:flex;align-items:center;justify-content:center;font-size:20px;transition:.15s}
-.g-qi:active .g-qic{background:var(--blue);border-color:var(--blue)}
-.g-ql{font-size:10px;font-weight:600;color:var(--muted)}
-/* wifi */
-.g-wifi{background:var(--ink);border-radius:13px;padding:16px;color:#fff}
-.g-wifi-net-l{font-size:9px;color:#555;text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px}
-.g-wifi-net{font-size:15px;font-weight:800;margin-bottom:12px}
-.g-wifi-pw{background:#141414;border-radius:9px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.g-wifi-pw-l{font-size:9px;color:#555;margin-bottom:2px}
-.g-wifi-pw-v{font-size:18px;font-weight:800;letter-spacing:.05em;word-break:break-all}
-.g-copy{padding:8px 14px;border-radius:7px;background:var(--blue);border:none;color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--f);flex-shrink:0}
-/* cards */
-.gcard{background:var(--white);border:1px solid var(--border);border-radius:13px;overflow:hidden}
-.grow{display:flex;align-items:center;gap:12px;padding:13px 14px;border-bottom:1px solid var(--border)}
-.grow:last-child{border-bottom:none}
-.grow-ic{width:36px;height:36px;border-radius:9px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
-.grow-t{font-size:13.5px;font-weight:700}
-.grow-s{font-size:11.5px;color:var(--muted);margin-top:2px}
-.grow-val{margin-left:auto;font-size:20px;font-weight:800;letter-spacing:.08em;color:var(--blue)}
-.grow-arr{margin-left:auto;color:var(--muted);font-size:17px}
-/* local */
-.gloc-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
-.glc{background:var(--white);border:1px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:.15s}
-.glc:active{transform:scale(.97)}
-.glc-img{height:56px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:24px}
-.glc-info{padding:8px 10px}
-.glc-name{font-size:12.5px;font-weight:700}
-.glc-cat{font-size:10.5px;color:var(--muted)}
-.glc-dist{font-size:10.5px;font-weight:700;color:var(--blue);margin-top:2px}
-/* transport */
-.gatx{display:flex;align-items:center;gap:11px;background:var(--white);border:1px solid var(--border);border-radius:11px;padding:12px 13px;margin-bottom:7px;cursor:pointer;transition:.15s}
-.gatx:active{background:var(--bg)}
-.gatx-ic{font-size:20px;width:30px;text-align:center;flex-shrink:0}
-.gatx-name{font-size:13px;font-weight:700}
-.gatx-det{font-size:11.5px;color:var(--muted)}
-.gatx-btn{margin-left:auto;padding:6px 11px;border-radius:7px;background:var(--blue);color:#fff;font-size:11.5px;font-weight:700;flex-shrink:0}
-/* attractions */
-.gattr{display:flex;background:var(--white);border:1px solid var(--border);border-radius:11px;overflow:hidden;margin-bottom:8px;cursor:pointer;transition:.15s}
-.gattr:active{background:var(--bg)}
-.gattr-img{width:76px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0}
-.gattr-info{padding:12px 13px}
-.gattr-name{font-size:13.5px;font-weight:800;margin-bottom:2px}
-.gattr-type{font-size:9.5px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.06em}
-.gattr-desc{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.5}
-.gattr-meta{display:flex;gap:10px;margin-top:5px;font-size:11px;color:var(--muted)}
-/* bottom nav */
-.gnav{background:var(--white);border-top:1px solid var(--border);display:flex;padding:10px 0 calc(14px + env(safe-area-inset-bottom));position:fixed;bottom:0;left:0;right:0;z-index:50}
-.gni{flex:1;text-align:center;cursor:pointer}
-.gni-ic{font-size:21px;display:block;margin-bottom:2px;color:var(--muted)}
-.gni.on .gni-ic{color:var(--blue)}
-.gni-l{font-size:9.5px;font-weight:600;color:var(--muted)}
-.gni.on .gni-l{color:var(--blue)}
-/* toast */
-#toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;white-space:nowrap;opacity:0;transition:opacity .2s;pointer-events:none;box-shadow:0 8px 20px rgba(0,0,0,.2)}
+.loading-logo{font-family:var(--serif);font-size:22px;color:var(--black)}
+
+/* ERROR */
+#err-screen{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:100dvh;padding:40px;text-align:center}
+.err-icon{font-size:48px;margin-bottom:20px}
+.err-title{font-family:var(--serif);font-size:28px;color:var(--black);margin-bottom:10px;font-weight:400}
+.err-sub{font-size:15px;color:var(--soft);font-weight:300;line-height:1.65;max-width:340px}
+
+/* PAGE */
+#page{display:none;max-width:680px;margin:0 auto;padding:0 0 80px}
+
+/* HERO */
+.hub-hero{padding:32px 20px 28px;border-bottom:1px solid var(--stone);background:var(--pure-white)}
+.hub-logo{font-family:var(--serif);font-size:15px;color:var(--ghost);margin-bottom:20px}
+.hub-prop-name{font-family:var(--serif);font-size:32px;color:var(--black);line-height:1.08;font-weight:400;margin-bottom:6px;letter-spacing:-.02em}
+.hub-location{font-size:13.5px;color:var(--soft);font-weight:300;display:flex;align-items:center;gap:6px;margin-bottom:16px}
+.hub-dates-pill{display:inline-flex;align-items:center;gap:8px;background:var(--warm-white);border:1px solid var(--stone);border-radius:8px;padding:8px 14px;font-size:13px;font-weight:400;color:var(--ink)}
+.hub-dates-dot{width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0}
+
+/* COUNTDOWN BANNER */
+.countdown-banner{background:var(--black);padding:12px 20px;display:flex;align-items:center;gap:12px}
+.cb-icon{font-size:16px;flex-shrink:0}
+.cb-text{font-size:13px;color:#ccc;font-weight:300;line-height:1.5;flex:1}
+.cb-time{font-family:var(--serif);font-size:17px;color:#fff;flex-shrink:0;white-space:nowrap}
+
+/* SECTIONS */
+.hub-section{padding:20px 20px 0}
+.hub-section-label{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ghost);margin-bottom:12px}
+
+/* WIFI CARD */
+.wifi-card{background:var(--black);border-radius:12px;padding:18px;margin-bottom:12px}
+.wifi-net-row{margin-bottom:14px}
+.wifi-net-lbl{font-size:9.5px;color:#444;text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px}
+.wifi-net-name{font-size:16px;font-weight:500;color:#fff}
+.wifi-pw-row{background:#111;border-radius:8px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid #1a1a1a}
+.wifi-pw-inner{flex:1;min-width:0}
+.wifi-pw-lbl{font-size:9.5px;color:#444;text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px}
+.wifi-pw-val{font-size:18px;font-weight:500;color:#fff;letter-spacing:.04em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wifi-copy-btn{padding:9px 16px;border-radius:7px;background:var(--electric);border:none;color:#fff;font-size:13px;font-weight:500;cursor:pointer;flex-shrink:0;transition:background .12s}
+.wifi-copy-btn:hover{background:#1A3FA8}
+.wifi-locked{text-align:center;padding:16px;color:#333;font-size:13px;font-weight:300}
+
+/* INFO ROWS */
+.info-card{background:var(--pure-white);border:1px solid var(--stone);border-radius:12px;overflow:hidden;margin-bottom:12px}
+.info-row{display:flex;align-items:center;gap:14px;padding:14px 16px;border-bottom:1px solid var(--stone);transition:background .12s}
+.info-row:last-child{border-bottom:none}
+.info-row.clickable{cursor:pointer}
+.info-row.clickable:hover{background:var(--warm-white)}
+.info-ic{width:36px;height:36px;border-radius:9px;background:var(--warm-white);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;border:1px solid var(--stone)}
+.info-body{flex:1;min-width:0}
+.info-title{font-size:14px;font-weight:500;color:var(--ink);margin-bottom:1px}
+.info-sub{font-size:12.5px;color:var(--soft);font-weight:300;line-height:1.5}
+.info-val{font-size:18px;font-weight:600;color:var(--ink);letter-spacing:.06em;flex-shrink:0;font-family:monospace}
+.info-arrow{color:var(--stone-mid);flex-shrink:0;font-size:16px}
+.info-badge{font-size:11px;font-weight:500;padding:3px 9px;border-radius:20px;flex-shrink:0}
+.badge-locked{background:var(--warm-white);color:var(--ghost);border:1px solid var(--stone)}
+.badge-ok{background:var(--green-bg);color:var(--green)}
+
+/* LOCAL PLACES */
+.place-row{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid var(--stone);cursor:pointer;transition:background .12s}
+.place-row:last-child{border-bottom:none}
+.place-row:hover{background:var(--warm-white)}
+.place-ic{font-size:22px;width:36px;text-align:center;flex-shrink:0}
+.place-name{font-size:14px;font-weight:500;color:var(--ink);margin-bottom:1px}
+.place-meta{font-size:12px;color:var(--ghost);font-weight:300}
+.place-maps{font-size:11px;font-weight:500;color:var(--electric);flex-shrink:0}
+
+/* CONTACT */
+.contact-card{background:var(--black);border-radius:12px;padding:20px;margin-bottom:12px;display:flex;align-items:center;gap:16px}
+.contact-av{width:44px;height:44px;border-radius:50%;background:var(--electric);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;flex-shrink:0}
+.contact-name{font-size:15px;font-weight:500;color:#fff;margin-bottom:3px}
+.contact-role{font-size:12.5px;color:#555;font-weight:300}
+.contact-btns{display:flex;gap:8px;margin-left:auto;flex-shrink:0}
+.contact-btn{padding:8px 14px;border-radius:7px;font-size:13px;font-weight:500;border:none;cursor:pointer;font-family:var(--sans)}
+.contact-btn-wa{background:#25D366;color:#fff}
+.contact-btn-wa:hover{background:#1eb857}
+.contact-btn-call{background:#1f1f1f;color:#ccc;border:1px solid #2a2a2a}
+
+/* POWERED BY */
+.powered-by{text-align:center;padding:28px 20px 0;font-size:12px;color:var(--ghost);font-weight:300}
+.powered-by a{color:var(--electric);font-weight:400}
+
+/* TOAST */
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--black);color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;z-index:9999;white-space:nowrap;opacity:0;transition:opacity .2s;pointer-events:none}
 #toast.show{opacity:1}
-/* powered by */
-.powered{text-align:center;padding:20px 14px 12px;font-size:11.5px;color:var(--muted)}
-.powered a{color:var(--blue);font-weight:700}
+
+@media(min-width:720px){
+  #page{padding:0 0 80px}
+  .hub-hero{padding:40px 32px 32px;border-radius:0}
+  .hub-section{padding:24px 32px 0}
+  .countdown-banner{padding:14px 32px}
+  .wifi-card{border-radius:14px}
+  .powered-by{padding:32px 32px 0}
+}
 </style>
 </head>
 <body>
 
-<div id="loading"><div class="spin"></div><div style="font-size:13px;color:var(--muted);font-weight:500">Učitavanje vodiča...</div></div>
-<div id="err-screen">
-  <div style="font-size:48px">🔒</div>
-  <div style="font-size:20px;font-weight:800">Pristup odbijen</div>
-  <div style="font-size:14px;color:var(--muted)">Ovaj link ne postoji ili je istekao. Kontaktirajte domaćina za novi link.</div>
+<div id="loading">
+  <div class="loading-logo">Odmoria</div>
+  <div class="spin"></div>
 </div>
-<div id="toast"></div>
 
-<div id="page" style="display:none">
-  <div class="hub">
-    <div class="g-hero" id="g-hero">
-      <div class="g-hero-ov"></div>
-      <div class="g-hero-txt">
-        <div class="g-type" id="g-type">Vodič za gosta</div>
-        <div class="g-name" id="g-name"></div>
-        <div class="g-dates" id="g-dates">📅 Privatni vodič</div>
-      </div>
+<div id="err-screen">
+  <div class="err-icon">🔒</div>
+  <div class="err-title">Pristup odbijen</div>
+  <p class="err-sub" id="err-msg">Ovaj link ne postoji ili je istekao. Zamoli domaćina za novi link.</p>
+</div>
+
+<div id="page">
+  <div class="hub-hero">
+    <div class="hub-logo">Odmoria</div>
+    <div class="hub-prop-name" id="hub-name">Villa Luna</div>
+    <div class="hub-location" id="hub-location">
+      <span>📍</span><span>Hvar, Hrvatska</span>
     </div>
-    <div class="g-wcard">
-      <div class="g-wlbl">Dobrodošli</div>
-      <div class="g-wh" id="g-wh"></div>
-      <div class="g-wp" id="g-wp"></div>
-      <div class="g-host-row">
-        <div class="g-hav" id="g-hav">?</div>
-        <div><div class="g-hname" id="g-hname"></div><div class="g-htag">Odgovara brzo</div></div>
-        <a class="g-hmsg" id="g-hmsg" href="#" target="_blank">💬 Poruka</a>
-      </div>
+    <div class="hub-dates-pill" id="hub-dates" style="display:none">
+      <span class="hub-dates-dot"></span>
+      <span id="hub-dates-text">Tvoj boravak</span>
     </div>
-    <!-- quick access -->
-    <div class="gsec">
-      <div style="font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:9px">Brzi pristup</div>
-      <div class="g-qgrid">
-        <div class="g-qi" id="q-code"><div class="g-qic">🔑</div><div class="g-ql">Šifra</div></div>
-        <div class="g-qi" onclick="copyWifi()"><div class="g-qic">📶</div><div class="g-ql">Wi-Fi</div></div>
-        <div class="g-qi" id="q-park"><div class="g-qic">🅿️</div><div class="g-ql">Parking</div></div>
-        <div class="g-qi" id="q-out"><div class="g-qic">🚪</div><div class="g-ql">Odjava</div></div>
-      </div>
-    </div>
-    <!-- wifi -->
-    <div class="gsec" id="wifi-sec" style="display:none">
-      <div class="g-sh">📶 Wi-Fi</div>
-      <div class="g-wifi">
-        <div class="g-wifi-net-l">Mreža</div>
-        <div class="g-wifi-net" id="wifi-name"></div>
-        <div class="g-wifi-pw">
-          <div><div class="g-wifi-pw-l">Lozinka</div><div class="g-wifi-pw-v" id="wifi-pass"></div></div>
-          <button class="g-copy" onclick="copyWifi()">Kopiraj</button>
+  </div>
+
+  <div id="countdown-wrap"></div>
+
+  <!-- WELCOME -->
+  <div class="hub-section" id="welcome-sec" style="display:none">
+    <div class="hub-section-label">Dobrodošli</div>
+    <div class="info-card">
+      <div class="info-row">
+        <div class="info-ic">👋</div>
+        <div class="info-body">
+          <div class="info-title" id="welcome-title">Dragi gosti</div>
+          <div class="info-sub" id="welcome-text">Nadamo se da ćete uživati u boravku!</div>
         </div>
       </div>
     </div>
-    <!-- checkin -->
-    <div class="gsec" id="checkin-sec" style="display:none">
-      <div class="g-sh">🔑 Check-in</div>
-      <div class="gcard" id="checkin-card"></div>
-    </div>
-    <!-- local -->
-    <div class="gsec" id="local-sec" style="display:none">
-      <div class="g-sh" id="local-sh">🗺️ Preporuke</div>
-      <div class="gloc-grid" id="local-grid"></div>
-    </div>
-    <!-- transport -->
-    <div class="gsec" id="transport-sec" style="display:none">
-      <div class="g-sh">🚢 Prijevoz</div>
-      <div id="transport-list"></div>
-    </div>
-    <!-- attractions -->
-    <div class="gsec" id="attract-sec" style="display:none">
-      <div class="g-sh">🏛️ Što posjetiti</div>
-      <div id="attract-list"></div>
-    </div>
-    <!-- checkout -->
-    <div class="gsec" id="checkout-sec" style="display:none">
-      <div class="g-sh">🚪 Odjava</div>
-      <div class="gcard" id="checkout-card"></div>
-    </div>
-    <!-- powered by -->
-    <div class="powered" id="powered-by">
-      Vodič izrađen s <a href="https://odmoria.com" target="_blank">Odmoria</a> · Bez provizije za domaćine.
-    </div>
+  </div>
+
+  <!-- CHECKIN -->
+  <div class="hub-section" id="checkin-sec" style="display:none">
+    <div class="hub-section-label">Dolazak</div>
+    <div class="info-card" id="checkin-card"></div>
+  </div>
+
+  <!-- WIFI -->
+  <div class="hub-section" id="wifi-sec" style="display:none">
+    <div class="hub-section-label">Wi-Fi</div>
+    <div class="wifi-card" id="wifi-card"></div>
+  </div>
+
+  <!-- LOCAL -->
+  <div class="hub-section" id="local-sec" style="display:none">
+    <div class="hub-section-label">Lokalne preporuke</div>
+    <div class="info-card" id="local-card"></div>
+  </div>
+
+  <!-- TRANSPORT -->
+  <div class="hub-section" id="transport-sec" style="display:none">
+    <div class="hub-section-label">Prijevoz</div>
+    <div class="info-card" id="transport-card"></div>
+  </div>
+
+  <!-- CHECKOUT -->
+  <div class="hub-section" id="checkout-sec" style="display:none">
+    <div class="hub-section-label">Odjava</div>
+    <div class="info-card" id="checkout-card"></div>
+  </div>
+
+  <!-- CONTACT -->
+  <div class="hub-section" id="contact-sec" style="display:none">
+    <div class="hub-section-label">Domaćin</div>
+    <div class="contact-card" id="contact-card"></div>
+  </div>
+
+  <div class="powered-by" id="powered-by">
+    Digitalni vodič od <a href="https://odmoria.com" target="_blank">Odmoria</a> &mdash; bez provizije.
   </div>
 </div>
 
-<!-- bottom nav -->
-<div class="gnav">
-  <div class="gni on" id="gni-home" onclick="gniClick('home')"><div class="gni-ic">🏠</div><div class="gni-l">Dom</div></div>
-  <div class="gni" id="gni-explore" onclick="gniClick('explore')"><div class="gni-ic">🗺️</div><div class="gni-l">Otkrij</div></div>
-  <div class="gni" id="gni-sights" onclick="gniClick('sights')"><div class="gni-ic">🏛️</div><div class="gni-l">Atrakcije</div></div>
-  <div class="gni" id="gni-contact" onclick="gniClick('contact')"><div class="gni-ic">📞</div><div class="gni-l">Kontakt</div></div>
-</div>
+<div id="toast"></div>
 
 <script type="module">
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import{createClient}from'https://esm.sh/@supabase/supabase-js@2'
+const sb=createClient('https://wtojzqjhipdfbrnmprmz.supabase.co','sb_publishable_tmZAZTDbQ7ktc1N-8y4q4w_ztAu_62F')
 
-const SURL = 'https://wtojzqjhipdfbrnmprmz.supabase.co'
-const SKEY = 'sb_publishable_tmZAZTDbQ7ktc1N-8y4q4w_ztAu_62F'
-const sb = createClient(SURL, SKEY)
+let PROP=null,SECTION=null,BOOKING=null
+let SENSITIVE_UNLOCKED=false
 
-// ── parse token from URL ──────────────────────────────
-// URL format: /h.html?token=abc12345abc12345
-// OR: /h/token-abc12345abc12345 (via vercel routing)
-const params = new URLSearchParams(window.location.search)
-let token = params.get('token')
-
-// fallback: path format /h/[token]
-if (!token) {
-  const pathPart = window.location.pathname.split('/h/')[1]
-  if (pathPart) token = pathPart.split('/')[0]
+const params=new URLSearchParams(window.location.search)
+let token=params.get('token')
+if(!token){
+  const path=window.location.pathname.split('/h/')[1]
+  if(path)token=path.split('/')[0]
 }
 
-if (!token) { showErr('no-token'); }
-else { loadHub(); }
+if(!token){showErr('Link nije ispravan.');} else{loadHub()}
 
-let PROP = null, SECTION = null, BOOKING = null
+async function loadHub(){
+  // Try booking token
+  const{data:bk}=await sb.from('bookings').select('*').eq('token',token).maybeSingle()
 
-async function loadHub() {
-  // 1. Find booking by token
-  const { data: booking, error: bErr } = await sb
-    .from('bookings')
-    .select('*')
-    .eq('token', token)
-    .maybeSingle()
-
-  // Fallback: try legacy property guest_token
-  if (!booking) {
-    await loadHubLegacy()
-    return
-  }
-
-  // Check if booking is active and not expired
-  const now = new Date()
-  const expires = booking.token_expires_at ? new Date(booking.token_expires_at) : null
-  if (!booking.is_active || (expires && expires < now)) {
-    showErr('invalid')
-    return
-  }
-
-  BOOKING = booking
-
-  // 2. Fetch property
-  const { data: prop } = await sb
-    .from('properties')
-    .select('*')
-    .eq('id', booking.property_id)
-    .maybeSingle()
-
-  if (!prop) { showErr('not-found'); return }
-  PROP = prop
-
-  // 3. Fetch sections
-  const { data: sec } = await sb
-    .from('sections')
-    .select('*')
-    .eq('property_id', PROP.id)
-    .maybeSingle()
-  SECTION = sec || {}
-
-  // 4. Check if sensitive data should be shown
-  // Show 1h before checkin time on checkin date
-  const checkinDate = new Date(booking.checkin_date)
-  const checkinTimeStr = SECTION.checkin_time || '15:00'
-  const [ciHour, ciMin] = checkinTimeStr.split(':').map(Number)
-  checkinDate.setHours(ciHour, ciMin, 0, 0)
-  const unlockTime = new Date(checkinDate.getTime() - 60 * 60 * 1000) // 1h before
-  const checkoutDate = new Date(booking.checkout_date)
-  checkoutDate.setHours(23, 59, 0, 0)
-
-  window.SENSITIVE_UNLOCKED = now >= unlockTime && now <= checkoutDate
-
-  // 5. Show booking context in hero
-  document.getElementById('g-dates').textContent =
-    '📅 ' + fmtDate(booking.checkin_date) + ' – ' + fmtDate(booking.checkout_date)
-    + (booking.guest_name && booking.guest_name !== 'Gost' ? ' · ' + booking.guest_name : '')
-
-  render()
-  await Promise.all([loadLocal(), loadTransport(), loadAttractions()])
-
-  document.getElementById('loading').style.display = 'none'
-  document.getElementById('page').style.display = 'block'
-
-  // Show unlock countdown if not yet unlocked
-  if (!window.SENSITIVE_UNLOCKED) {
-    showUnlockCountdown(unlockTime)
-  }
-
-  // Auto-refresh every 5 min to unlock when time comes
-  setInterval(async function() {
-    const n = new Date()
-    if (!window.SENSITIVE_UNLOCKED && n >= unlockTime) {
-      window.SENSITIVE_UNLOCKED = true
-      renderSensitive()
-      document.getElementById('unlock-banner')?.remove()
+  if(!bk){
+    // Legacy fallback: slug + guest_token
+    const slug=params.get('slug')
+    if(slug){
+      const{data:prop}=await sb.from('properties').select('*').eq('slug',slug).maybeSingle()
+      if(prop&&prop.guest_token===token){
+        PROP=prop
+        SENSITIVE_UNLOCKED=true
+        await loadSection()
+        render()
+        return
+      }
     }
-  }, 5 * 60 * 1000)
-}
+    showErr('Link nije ispravan ili je istekao. Zamoli domaćina za novi link.')
+    return
+  }
 
-// Legacy: property guest_token (for old links before booking system)
-async function loadHubLegacy() {
-  const params2 = new URLSearchParams(window.location.search)
-  const slug = params2.get('slug')
-  if (!slug) { showErr('not-found'); return }
+  const now=new Date()
+  const expires=bk.token_expires_at?new Date(bk.token_expires_at):null
+  if(!bk.is_active||(expires&&expires<now)){
+    showErr('Ovaj link je istekao. Zamoli domaćina za novi link.')
+    return
+  }
 
-  const { data: prop } = await sb.from('properties').select('*').eq('slug', slug).maybeSingle()
-  if (!prop || prop.guest_token !== token) { showErr('invalid'); return }
-  PROP = prop
+  BOOKING=bk
 
-  const { data: sec } = await sb.from('sections').select('*').eq('property_id', prop.id).maybeSingle()
-  SECTION = sec || {}
+  const{data:prop}=await sb.from('properties').select('*').eq('id',bk.property_id).maybeSingle()
+  if(!prop){showErr('Objekt nije pronađen.');return}
+  PROP=prop
+
+  // Check time lock: show sensitive 1h before checkin
+  const ciDate=new Date(bk.checkin_date)
+  await loadSection()
+  const ciTime=SECTION?.checkin_time||'15:00'
+  const[h,m]=ciTime.split(':').map(Number)
+  ciDate.setHours(h,m,0,0)
+  const unlockAt=new Date(ciDate.getTime()-3600000)
+  const coDate=new Date(bk.checkout_date)
+  coDate.setHours(23,59,0,0)
+  SENSITIVE_UNLOCKED=now>=unlockAt&&now<=coDate
+
+  // Show dates in hero
+  const datesEl=document.getElementById('hub-dates')
+  const datesText=document.getElementById('hub-dates-text')
+  datesEl.style.display='inline-flex'
+  datesText.textContent=fmtD(bk.checkin_date)+' – '+fmtD(bk.checkout_date)+(bk.guest_name&&bk.guest_name!=='Gost'?' · '+bk.guest_name:'')
+
+  // Countdown banner if not yet unlocked
+  if(!SENSITIVE_UNLOCKED&&now<unlockAt){
+    showCountdown(unlockAt)
+    setInterval(()=>{
+      const n=new Date()
+      if(!SENSITIVE_UNLOCKED&&n>=unlockAt){
+        SENSITIVE_UNLOCKED=true
+        document.getElementById('countdown-wrap').innerHTML=''
+        render()
+        toast('Šifra i Wi-Fi su sada dostupni 🔓')
+      }
+    },60000)
+  }
 
   render()
-  await Promise.all([loadLocal(), loadTransport(), loadAttractions()])
-  document.getElementById('loading').style.display = 'none'
-  document.getElementById('page').style.display = 'block'
+
+  // Load related
+  await loadLocal()
+  await loadTransport()
+
+  document.getElementById('loading').style.display='none'
+  document.getElementById('page').style.display='block'
 }
 
-function fmtDate(d) {
-  if (!d) return ''
-  const dt = new Date(d)
-  return dt.toLocaleDateString('hr-HR', { day: 'numeric', month: 'short' })
+async function loadSection(){
+  const{data}=await sb.from('sections').select('*').eq('property_id',PROP.id).maybeSingle()
+  SECTION=data||{}
 }
 
-function render() {
-  const p = PROP, s = SECTION
+function render(){
+  // Hero
+  document.getElementById('hub-name').textContent=PROP.name||'Objekt'
+  document.getElementById('hub-location').innerHTML=PROP.location?`<span>📍</span><span>${esc(PROP.location)}</span>`:''
 
-  document.title = p.name + ' — Odmoria vodič'
-  document.getElementById('g-name').textContent = p.name
-  document.getElementById('g-type').textContent = (p.type || 'Objekt') + ' · Privatni vodič'
-  document.getElementById('g-wh').textContent = 'Dobrodošli! 🌊'
-  document.getElementById('g-wp').textContent = p.welcome_msg || 'Sve što trebate za boravak nalazi se u ovom vodiču.'
+  // Welcome
+  if(PROP.welcome_msg||PROP.host_name){
+    document.getElementById('welcome-sec').style.display='block'
+    document.getElementById('welcome-title').textContent='Dobrodošli'+(PROP.host_name?' od '+PROP.host_name:'')+'!'
+    document.getElementById('welcome-text').textContent=PROP.welcome_msg||'Nadamo se da ćete uživati u boravku!'
+  }
 
-  // host
-  const av = document.getElementById('g-hav')
-  av.textContent = (p.host_name || 'H')[0].toUpperCase()
-  document.getElementById('g-hname').textContent = (p.host_name || 'Domaćin') + ' · vaš domaćin'
-
-  const waUrl = p.phone
-    ? 'https://wa.me/' + p.phone.replace(/\D/g,'') + '?text=' + encodeURIComponent('Pozdrav! Stigli smo u ' + p.name + '. 😊')
-    : 'mailto:' + (p.email || '')
-  document.getElementById('g-hmsg').href = waUrl
-
-  // quick access
-  document.getElementById('q-code').onclick = () => toast('Šifra vrata: ' + (s.door_code || '—'))
-  document.getElementById('q-park').onclick = () => toast(s.parking_info || 'Parking info nije dostupan')
-  document.getElementById('q-out').onclick = () => toast('Odjava do: ' + (s.checkout_time || '10:00'))
-
-  // wifi — show only if unlocked
-  if (s.wifi_name || s.wifi_pass) {
-    document.getElementById('wifi-sec').style.display = 'block'
-    if (window.SENSITIVE_UNLOCKED) {
-      document.getElementById('wifi-name').textContent = s.wifi_name || '—'
-      document.getElementById('wifi-pass').textContent = s.wifi_pass || '—'
+  // Checkin
+  const s=SECTION
+  const ciRows=[]
+  if(s.door_code){
+    if(SENSITIVE_UNLOCKED){
+      ciRows.push({ic:'🚪',title:'Šifra vrata',sub:s.checkin_notes||'Sef za ključeve',val:s.door_code,valStyle:'font-size:22px;font-weight:700;color:var(--ink);letter-spacing:.1em;font-family:monospace'})
     } else {
-      document.getElementById('wifi-name').textContent = '—'
-      document.getElementById('wifi-pass').textContent = '— dostupno pri dolasku'
+      ciRows.push({ic:'🔒',title:'Šifra vrata',sub:'Dostupno 1h prije dolaska',badge:'badge-locked',badgeTxt:'Zaključano'})
     }
   }
-
-  // checkin card
-  if (p.show_checkin || s.door_code) {
-    document.getElementById('checkin-sec').style.display = 'block'
-    const rows = [
-      s.door_code
-        ? ['🚪', window.SENSITIVE_UNLOCKED ? 'Šifra vrata' : 'Šifra vrata',
-           window.SENSITIVE_UNLOCKED ? (s.checkin_notes || 'Sef za ključeve') : 'Dostupno 1h prije dolaska',
-           window.SENSITIVE_UNLOCKED ? s.door_code : null, window.SENSITIVE_UNLOCKED]
-        : null,
-      ['⏰', 'Check-in od ' + (s.checkin_time || '15:00'), 'Rano? Javi se domaćinu', null, false],
-      s.address ? ['📍', s.address, 'Tap za kartu', null, false, () => openMap(s.address + ', ' + p.location)] : null,
-      s.parking_info ? ['🅿️', 'Parking', s.parking_info, null, false] : null,
-    ].filter(Boolean)
-
-    document.getElementById('checkin-card').innerHTML = rows.map(([ic, t, sub, val, isCode, fn]) =>
-      `<div class="grow" ${fn ? `onclick="${fn}"` : ''} style="${fn ? 'cursor:pointer' : ''}">
-        <div class="grow-ic">${ic}</div>
-        <div style="flex:1"><div class="grow-t">${esc(t)}</div>${sub ? `<div class="grow-s">${esc(sub)}</div>` : ''}</div>
-        ${isCode && val ? `<div class="grow-val">${esc(val)}</div>` : ''}
-        ${fn ? `<div class="grow-arr">🗺️</div>` : ''}
+  if(s.checkin_time){
+    ciRows.push({ic:'⏰',title:'Check-in od '+s.checkin_time,sub:s.checkout_time?'Check-out do '+s.checkout_time:''})
+  }
+  if(s.address){
+    ciRows.push({ic:'📍',title:s.address,sub:'Tap za Google Maps',clickable:true,onclick:`openMaps('${esc(s.address+(PROP.location?', '+PROP.location:''))}')`})
+  }
+  if(s.parking_info){
+    ciRows.push({ic:'🅿️',title:'Parking',sub:s.parking_info})
+  }
+  if(ciRows.length){
+    document.getElementById('checkin-sec').style.display='block'
+    document.getElementById('checkin-card').innerHTML=ciRows.map(r=>
+      `<div class="info-row${r.clickable?' clickable':''}"${r.onclick?` onclick="${r.onclick}"`:''}>
+        <div class="info-ic">${r.ic}</div>
+        <div class="info-body">
+          <div class="info-title">${esc(r.title)}</div>
+          ${r.sub?`<div class="info-sub">${esc(r.sub)}</div>`:''}
+        </div>
+        ${r.val?`<div style="${r.valStyle||''}">${esc(r.val)}</div>`:''}
+        ${r.badge?`<div class="info-badge ${r.badge}">${r.badgeTxt}</div>`:''}
+        ${r.clickable?`<div class="info-arrow">›</div>`:''}
       </div>`
     ).join('')
   }
 
-  // checkout
-  if (p.show_checkout) {
-    document.getElementById('checkout-sec').style.display = 'block'
-    const steps = [
-      ['⏰', 'Do ' + (s.checkout_time || '10:00'), 'Kasno? Javi se domaćinu večer prije'],
-      ['🔑', 'Ostavi ključ u sefu', 'Zakreni kod za sobom'],
-      ['🗑️', 'Iznesi smeće', 'Žuta kanta = reciklaža · siva = miješani'],
-      ['🪟', 'Zatvori prozore i isključi klima', 'Nije potrebno dubinsko čišćenje'],
-    ]
-    document.getElementById('checkout-card').innerHTML = steps.map(([ic,t,s]) =>
-      `<div class="grow"><div class="grow-ic">${ic}</div><div><div class="grow-t">${t}</div><div class="grow-s">${s}</div></div></div>`
-    ).join('')
-  }
-}
-
-async function loadLocal() {
-  if (!PROP.show_local) return
-  const { data: places } = await sb.from('local_places').select('*').eq('property_id', PROP.id).order('sort_order')
-  if (!places?.length) return
-  document.getElementById('local-sec').style.display = 'block'
-  document.getElementById('local-sh').textContent = '🗺️ ' + (PROP.host_name || 'Domaćin') + "'s preporuke"
-  document.getElementById('local-grid').innerHTML = places.map(p =>
-    `<div class="glc" onclick="${p.maps_query ? `openMap('${esc(p.maps_query)}')` : ''}">
-      <div class="glc-img">${p.icon}</div>
-      <div class="glc-info">
-        <div class="glc-name">${esc(p.name)}</div>
-        <div class="glc-cat">${esc(p.category)}</div>
-        ${p.distance ? `<div class="glc-dist">🗺️ ${esc(p.distance)}</div>` : ''}
-      </div>
-    </div>`
-  ).join('')
-}
-
-async function loadTransport() {
-  if (!PROP.show_transport) return
-  const { data: txs } = await sb.from('transport').select('*').eq('property_id', PROP.id).order('sort_order')
-  if (!txs?.length) return
-  document.getElementById('transport-sec').style.display = 'block'
-  document.getElementById('transport-list').innerHTML = txs.map(t =>
-    `<div class="gatx" onclick="${t.maps_query ? `openMap('${esc(t.maps_query)}')` : t.phone ? `window.open('tel:${esc(t.phone)}')` : ''}">
-      <div class="gatx-ic">${t.icon}</div>
-      <div style="flex:1;min-width:0"><div class="gatx-name">${esc(t.name)}</div><div class="gatx-det">${esc(t.details)}</div></div>
-      ${t.maps_query ? `<div class="gatx-btn">🗺️</div>` : t.phone ? `<div class="gatx-btn">📞</div>` : ''}
-    </div>`
-  ).join('')
-}
-
-async function loadAttractions() {
-  if (!PROP.show_attractions) return
-  const { data: attrs } = await sb.from('attractions').select('*').eq('property_id', PROP.id).order('sort_order')
-  if (!attrs?.length) return
-  document.getElementById('attract-sec').style.display = 'block'
-  document.getElementById('attract-list').innerHTML = attrs.map(a =>
-    `<div class="gattr" onclick="${a.maps_query ? `openMap('${esc(a.maps_query)}')` : ''}">
-      <div class="gattr-img">${a.icon}</div>
-      <div class="gattr-info">
-        <div class="gattr-name">${esc(a.name)}</div>
-        <div class="gattr-type">${esc(a.type)}</div>
-        <div class="gattr-desc">${esc(a.description)}</div>
-        <div class="gattr-meta">
-          ${a.distance ? `<span>📍 ${esc(a.distance)}</span>` : ''}
-          ${a.price ? `<span>💰 ${esc(a.price)}</span>` : ''}
+  // WiFi
+  if(s.wifi_name||s.wifi_pass){
+    document.getElementById('wifi-sec').style.display='block'
+    if(SENSITIVE_UNLOCKED){
+      document.getElementById('wifi-card').innerHTML=`
+        <div class="wifi-net-row">
+          <div class="wifi-net-lbl">Mreža</div>
+          <div class="wifi-net-name">${esc(s.wifi_name||'—')}</div>
         </div>
+        <div class="wifi-pw-row">
+          <div class="wifi-pw-inner">
+            <div class="wifi-pw-lbl">Lozinka</div>
+            <div class="wifi-pw-val">${esc(s.wifi_pass||'—')}</div>
+          </div>
+          <button class="wifi-copy-btn" onclick="copyWifi()">Kopiraj</button>
+        </div>`
+      window._wifiPw=s.wifi_pass||''
+    } else {
+      document.getElementById('wifi-card').innerHTML=`
+        <div class="wifi-net-row">
+          <div class="wifi-net-lbl">Mreža</div>
+          <div class="wifi-net-name">${esc(s.wifi_name||'—')}</div>
+        </div>
+        <div class="wifi-locked">🔒 Lozinka dostupna 1h prije dolaska</div>`
+    }
+  }
+
+  // Checkout
+  if(s.checkout_notes){
+    document.getElementById('checkout-sec').style.display='block'
+    document.getElementById('checkout-card').innerHTML=`
+      <div class="info-row">
+        <div class="info-ic">🚪</div>
+        <div class="info-body">
+          <div class="info-title">Upute za odjavu</div>
+          <div class="info-sub">${esc(s.checkout_notes)}</div>
+        </div>
+      </div>`
+  }
+
+  // Contact
+  if(PROP.host_name||PROP.phone){
+    document.getElementById('contact-sec').style.display='block'
+    const av=(PROP.host_name||'H')[0].toUpperCase()
+    const phone=(PROP.phone||'').replace(/\D/g,'')
+    document.getElementById('contact-card').innerHTML=`
+      <div class="contact-av">${av}</div>
+      <div style="flex:1">
+        <div class="contact-name">${esc(PROP.host_name||'Domaćin')}</div>
+        <div class="contact-role">Vaš domaćin</div>
+      </div>
+      <div class="contact-btns">
+        ${phone?`<button class="contact-btn contact-btn-wa" onclick="window.open('https://wa.me/${phone}','_blank')">WhatsApp</button>`:''}
+        ${PROP.email?`<button class="contact-btn contact-btn-call" onclick="window.location.href='mailto:${esc(PROP.email)}'">Email</button>`:''}
+      </div>`
+  }
+
+  document.getElementById('loading').style.display='none'
+  document.getElementById('page').style.display='block'
+}
+
+async function loadLocal(){
+  if(!PROP)return
+  const{data}=await sb.from('local_places').select('*').eq('property_id',PROP.id).order('sort_order').limit(20)
+  const places=data||[]
+  if(!places.length)return
+  document.getElementById('local-sec').style.display='block'
+  document.getElementById('local-card').innerHTML=places.map(p=>
+    `<div class="place-row" onclick="${p.maps_query?`openMaps('${esc(p.maps_query)}')`:''}" ${!p.maps_query?'style="cursor:default"':''}>
+      <div class="place-ic">${p.icon||'📍'}</div>
+      <div style="flex:1">
+        <div class="place-name">${esc(p.name)}</div>
+        <div class="place-meta">${esc(p.category)}${p.distance?' · '+esc(p.distance):''}</div>
+      </div>
+      ${p.maps_query?'<div class="place-maps">Karta ›</div>':''}
+    </div>`
+  ).join('')
+}
+
+async function loadTransport(){
+  if(!PROP)return
+  const{data}=await sb.from('transport').select('*').eq('property_id',PROP.id).order('sort_order').limit(10)
+  const items=data||[]
+  if(!items.length)return
+  document.getElementById('transport-sec').style.display='block'
+  document.getElementById('transport-card').innerHTML=items.map(t=>
+    `<div class="info-row">
+      <div class="info-ic">${t.icon||'🚌'}</div>
+      <div class="info-body">
+        <div class="info-title">${esc(t.name)}</div>
+        ${t.info?`<div class="info-sub">${esc(t.info)}</div>`:''}
       </div>
     </div>`
   ).join('')
 }
 
-// ── utils ─────────────────────────────────────────────
-function renderSensitive() {
-  if (!SECTION) return
-  // Update wifi
-  document.getElementById('wifi-name').textContent = SECTION.wifi_name || '—'
-  document.getElementById('wifi-pass').textContent = SECTION.wifi_pass || '—'
-  // Update door code row
-  const grows = document.querySelectorAll('.grow')
-  grows.forEach(g => {
-    const t = g.querySelector('.grow-t')
-    if (t && t.textContent === 'Šifra vrata') {
-      const sub = g.querySelector('.grow-s')
-      const val = g.querySelector('.grow-val')
-      if (sub) sub.textContent = SECTION.checkin_notes || 'Sef za ključeve'
-      if (val) val.textContent = SECTION.door_code || ''
-      else {
-        const v = document.createElement('div')
-        v.className = 'grow-val'
-        v.textContent = SECTION.door_code || ''
-        g.appendChild(v)
-      }
-    }
-  })
-  toast('Šifra i Wi-Fi su sada dostupni! 🔓')
-}
-
-function showUnlockCountdown(unlockTime) {
-  const banner = document.createElement('div')
-  banner.id = 'unlock-banner'
-  banner.style.cssText = 'background:#0F172A;border:1px solid #1A56DB;border-radius:12px;padding:14px 16px;margin:14px;display:flex;align-items:center;gap:12px'
-
-  function updateBanner() {
-    const now = new Date()
-    const diff = unlockTime - now
-    if (diff <= 0) {
-      banner.remove()
-      return
-    }
-    const hours = Math.floor(diff / 3600000)
-    const mins = Math.floor((diff % 3600000) / 60000)
-    const timeStr = hours > 0 ? hours + 'h ' + mins + 'min' : mins + ' min'
-    banner.innerHTML =
-      '<div style="font-size:24px">🔒</div>' +
-      '<div style="flex:1">' +
-        '<div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:2px">Šifra i Wi-Fi dostupni za ' + timeStr + '</div>' +
-        '<div style="font-size:12px;color:#64748B">Sigurnosni podaci se otključavaju 1h prije check-in vremena.</div>' +
-      '</div>'
+function showCountdown(unlockAt){
+  const wrap=document.getElementById('countdown-wrap')
+  function update(){
+    const diff=unlockAt-new Date()
+    if(diff<=0){wrap.innerHTML='';return}
+    const h=Math.floor(diff/3600000)
+    const m=Math.floor((diff%3600000)/60000)
+    const timeStr=h>0?`${h}h ${m}min`:`${m} min`
+    wrap.innerHTML=`<div class="countdown-banner">
+      <div class="cb-icon">🔒</div>
+      <div class="cb-text">Šifra i Wi-Fi se otključavaju 1h prije dolaska.</div>
+      <div class="cb-time">${timeStr}</div>
+    </div>`
   }
-
-  updateBanner()
-  setInterval(updateBanner, 60000) // update every minute
-
-  // Insert after wifi section or at top of content
-  const wifiSec = document.getElementById('wifi-sec')
-  if (wifiSec) wifiSec.after(banner)
-  else document.querySelector('.hub').prepend(banner)
+  update()
+  setInterval(update,60000)
 }
 
-function showErr(code) {
-  document.getElementById('loading').style.display = 'none'
-  const el = document.getElementById('err-screen')
-  el.style.display = 'flex'
-  // Customize message based on error type
-  if (code === 'no-token') {
-    el.querySelector('div:nth-child(3)').textContent = 'Link nije ispravan. Zamoli domaćina za novi link.'
-  } else if (code === 'invalid') {
-    el.querySelector('div:nth-child(3)').textContent = 'Link je istekao ili nije valjan. Zamoli domaćina za novi link.'
-  }
+function showErr(msg){
+  document.getElementById('loading').style.display='none'
+  document.getElementById('err-screen').style.display='flex'
+  document.getElementById('err-msg').textContent=msg||'Ovaj link ne postoji ili je istekao.'
 }
-function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;') }
-window.openMap = (q) => { window.open('https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(q), '_blank') }
-window.toast = (msg) => {
-  const el = document.getElementById('toast')
-  el.textContent = msg; el.classList.add('show')
-  clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove('show'), 2500)
+
+function fmtD(d){if(!d)return'';return new Date(d).toLocaleDateString('hr-HR',{day:'numeric',month:'short'})}
+function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+
+window.copyWifi=()=>{
+  navigator.clipboard?.writeText(window._wifiPw||'')
+  toast('Lozinka kopirana! ✓')
 }
-window.copyWifi = () => {
-  const pass = document.getElementById('wifi-pass')?.textContent || ''
-  navigator.clipboard?.writeText(pass).catch(()=>{})
-  toast('Wi-Fi lozinka kopirana!')
-}
-window.gniClick = (id) => {
-  document.querySelectorAll('.gni').forEach(n => n.classList.remove('on'))
-  document.getElementById('gni-' + id)?.classList.add('on')
-  if (id === 'explore') { document.getElementById('local-sec')?.scrollIntoView({behavior:'smooth'}) }
-  if (id === 'sights') { document.getElementById('attract-sec')?.scrollIntoView({behavior:'smooth'}) }
-  if (id === 'contact') { document.getElementById('g-hmsg')?.click() }
+window.openMaps=(q)=>{window.open('https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q),'_blank')}
+window.toast=(msg)=>{
+  const el=document.getElementById('toast')
+  el.textContent=msg;el.classList.add('show')
+  clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('show'),2200)
 }
 </script>
 </body>

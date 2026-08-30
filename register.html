@@ -1,214 +1,79 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Create account — Odmoria</title>
+<title>Registracija — Odmoria</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
 <style>
+:root{--black:#0A0A0A;--warm-white:#F7F5F1;--pure-white:#FFFFFF;--electric:#2D5BE3;--stone:#E8E2D9;--ink:#1A1917;--soft:#6B6560;--ghost:#9B9590;--serif:'DM Serif Display',Georgia,serif;--sans:'DM Sans',system-ui,sans-serif}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:#F5F4F1;color:#1A1917;min-height:100dvh;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased}
-a{color:inherit;text-decoration:none}
-/* nav */
-nav{background:#fff;border-bottom:1px solid #E2E0DB;display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:58px;flex-shrink:0}
-.logo{font-size:18px;font-weight:800;letter-spacing:-.5px}
-.nav-link{font-size:14px;font-weight:500;color:#6B6A67}
-.nav-link:hover{color:#1A1917}
-/* layout */
-.main{flex:1;display:flex;align-items:center;justify-content:center;padding:32px 16px}
-.card{background:#fff;border:1px solid #E2E0DB;border-radius:16px;padding:36px 32px;width:100%;max-width:440px;box-shadow:0 4px 24px rgba(0,0,0,.06)}
-.card-title{font-size:24px;font-weight:800;letter-spacing:-.02em;margin-bottom:6px}
-.card-sub{font-size:14px;color:#6B6A67;margin-bottom:28px;line-height:1.6}
-/* form */
-.fg{margin-bottom:16px}
-.fg label{display:block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6B6A67;margin-bottom:6px}
-.fg input{width:100%;padding:11px 14px;border:1.5px solid #E2E0DB;border-radius:10px;font-size:15px;color:#1A1917;background:#fff;transition:border-color .15s;font-family:inherit}
-.fg input:focus{outline:none;border-color:#1A56DB}
-.fg input.err{border-color:#EF4444}
-.field-err{font-size:12px;color:#EF4444;margin-top:4px;display:none}
-/* button */
-.btn-primary{width:100%;padding:13px;border-radius:10px;font-size:15px;font-weight:700;background:#1A56DB;color:#fff;border:none;cursor:pointer;transition:background .15s;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px}
-.btn-primary:hover{background:#1343B0}
-.btn-primary:disabled{opacity:.6;cursor:not-allowed}
-/* divider */
-.divider{display:flex;align-items:center;gap:12px;margin:20px 0;color:#6B6A67;font-size:13px}
-.divider::before,.divider::after{content:'';flex:1;height:1px;background:#E2E0DB}
-/* google btn */
-.btn-google{width:100%;padding:12px;border-radius:10px;font-size:14px;font-weight:600;background:#fff;color:#1A1917;border:1.5px solid #E2E0DB;cursor:pointer;transition:border-color .15s;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:10px}
-.btn-google:hover{border-color:#999}
-.google-ic{width:18px;height:18px}
-/* alert */
-.alert{border-radius:10px;padding:13px 16px;font-size:14px;font-weight:500;margin-bottom:16px;display:none;line-height:1.5}
+body{font-family:var(--sans);background:var(--warm-white);color:var(--ink);-webkit-font-smoothing:antialiased;min-height:100dvh;display:grid;place-items:center;padding:20px}
+.card{background:var(--pure-white);border:1px solid var(--stone);border-radius:16px;padding:36px 32px;width:100%;max-width:400px}
+.logo{font-family:var(--serif);font-size:22px;color:var(--black);margin-bottom:28px}
+h1{font-family:var(--serif);font-size:26px;font-weight:400;color:var(--black);margin-bottom:6px;letter-spacing:-.01em}
+.sub{font-size:14px;color:var(--soft);font-weight:300;margin-bottom:28px;line-height:1.5}
+.free-pill{display:inline-flex;align-items:center;gap:7px;background:var(--warm-white);border:1px solid var(--stone);border-radius:20px;padding:5px 12px;font-size:12px;font-weight:500;color:var(--ink);margin-bottom:20px}
+.free-dot{width:6px;height:6px;border-radius:50%;background:#16A34A}
+.fg{margin-bottom:14px}
+.fl{display:block;font-size:11px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--ghost);margin-bottom:5px}
+.fi{width:100%;padding:10px 13px;border:1px solid var(--stone);border-radius:8px;font-size:14px;color:var(--ink);font-family:var(--sans);transition:border-color .15s}
+.fi:focus{outline:none;border-color:var(--electric)}
+.btn-main{width:100%;padding:12px;border-radius:8px;background:var(--black);color:#fff;font-size:14px;font-weight:500;border:none;cursor:pointer;font-family:var(--sans);transition:background .12s;margin-top:4px}
+.btn-main:hover{background:#222}
+.divider{display:flex;align-items:center;gap:12px;margin:18px 0;color:var(--ghost);font-size:13px}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--stone)}
+.btn-google{width:100%;padding:11px;border-radius:8px;background:var(--pure-white);border:1px solid var(--stone);font-size:14px;font-weight:400;color:var(--ink);cursor:pointer;font-family:var(--sans);display:flex;align-items:center;justify-content:center;gap:10px;transition:border-color .15s}
+.btn-google:hover{border-color:var(--stone-mid)}
+.alert{border-radius:8px;padding:11px 13px;font-size:13.5px;margin-bottom:14px;display:none;line-height:1.5}
 .alert-err{background:#FEF2F2;border:1px solid #FECACA;color:#B91C1C}
 .alert-ok{background:#F0FDF4;border:1px solid #BBF7D0;color:#15803D}
-/* bottom link */
-.bottom-link{text-align:center;font-size:14px;color:#6B6A67;margin-top:20px}
-.bottom-link a{color:#1A56DB;font-weight:600}
-/* terms */
-.terms{font-size:12px;color:#6B6A67;text-align:center;margin-top:14px;line-height:1.6}
-.terms a{color:#1A56DB}
-/* spinner */
-.spinner{width:18px;height:18px;border:2.5px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-/* plan badge */
-.plan-badge{background:#EEF3FF;border:1px solid #C7D9FF;border-radius:10px;padding:12px 16px;margin-bottom:24px;display:flex;align-items:center;gap:10px;font-size:13px;color:#1A56DB}
-.plan-badge strong{font-weight:700}
+.legal{font-size:12px;color:var(--ghost);font-weight:300;text-align:center;margin-top:14px;line-height:1.6}
+.legal a{color:var(--electric)}
+.bottom-link{text-align:center;font-size:13.5px;color:var(--soft);margin-top:20px;font-weight:300}
+.bottom-link a{color:var(--electric);font-weight:500}
 </style>
 </head>
 <body>
-
-<nav>
-  <a href="/" class="logo">Odmoria</a>
-  <a href="/login.html" class="nav-link">Already have an account? Sign in →</a>
-</nav>
-
-<div class="main">
-  <div class="card">
-    <div class="card-title">Create your account</div>
-    <div class="card-sub">Start for free. No credit card needed.</div>
-
-    <div class="plan-badge">
-      <span>🎉</span>
-      <div><strong>Free plan</strong> — 1 property, all features, forever free.</div>
-    </div>
-
-    <div class="alert alert-err" id="alert-err"></div>
-    <div class="alert alert-ok" id="alert-ok"></div>
-
-    <form id="reg-form" novalidate>
-      <div class="fg">
-        <label>Full name</label>
-        <input type="text" id="name" placeholder="Ana Marić" autocomplete="name" required>
-        <div class="field-err" id="err-name">Please enter your name.</div>
-      </div>
-      <div class="fg">
-        <label>Email address</label>
-        <input type="email" id="email" placeholder="ana@example.com" autocomplete="email" required>
-        <div class="field-err" id="err-email">Please enter a valid email.</div>
-      </div>
-      <div class="fg">
-        <label>Password</label>
-        <input type="password" id="password" placeholder="At least 8 characters" autocomplete="new-password" required minlength="8">
-        <div class="field-err" id="err-password">Password must be at least 8 characters.</div>
-      </div>
-      <button type="submit" class="btn-primary" id="submit-btn">
-        <span id="btn-text">Create account →</span>
-      </button>
-    </form>
-
-    <div class="divider">or</div>
-
-    <button class="btn-google" onclick="signInGoogle()">
-      <svg class="google-ic" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-      Continue with Google
-    </button>
-
-    <div class="terms">
-      By creating an account you agree to our
-      <a href="/terms">Terms of Service</a> and <a href="/privacy">Privacy Policy</a>.
-    </div>
-
-    <div class="bottom-link">
-      Already have an account? <a href="/login.html">Sign in</a>
-    </div>
-  </div>
+<div class="card">
+  <div class="logo">Odmoria</div>
+  <div class="free-pill"><span class="free-dot"></span>Free plan — 1 objekt, zauvijek besplatno.</div>
+  <h1>Kreiraj račun.</h1>
+  <p class="sub">Postavi prvi gostinski vodič za manje od 10 minuta.</p>
+  <div class="alert" id="alert"></div>
+  <div class="fg"><label class="fl">Ime</label><input class="fi" id="name" placeholder="Ana" autocomplete="given-name"></div>
+  <div class="fg"><label class="fl">Email</label><input class="fi" id="email" type="email" placeholder="tvoj@email.com" autocomplete="email"></div>
+  <div class="fg"><label class="fl">Lozinka</label><input class="fi" id="pass" type="password" placeholder="Min. 8 znakova" autocomplete="new-password"></div>
+  <button class="btn-main" onclick="register()">Kreiraj račun →</button>
+  <div class="divider">ili</div>
+  <button class="btn-google" onclick="loginGoogle()"><span>G</span> Nastavi s Googleom</button>
+  <div class="legal">Kreiranjem računa prihvaćaš <a href="/terms.html">Uvjete</a> i <a href="/privacy.html">Pravila privatnosti</a>.</div>
+  <div class="bottom-link">Već imaš račun? <a href="/login.html">Prijavi se</a></div>
 </div>
 
 <script type="module">
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import{createClient}from'https://esm.sh/@supabase/supabase-js@2'
+const sb=createClient('https://wtojzqjhipdfbrnmprmz.supabase.co','sb_publishable_tmZAZTDbQ7ktc1N-8y4q4w_ztAu_62F')
 
-const SUPABASE_URL = 'https://wtojzqjhipdfbrnmprmz.supabase.co'
-const SUPABASE_KEY = 'sb_publishable_tmZAZTDbQ7ktc1N-8y4q4w_ztAu_62F'
-const sb = createClient(SUPABASE_URL, SUPABASE_KEY)
+function showA(type,msg){const el=document.getElementById('alert');el.className='alert alert-'+type;el.textContent=msg;el.style.display='block'}
 
-// ── helpers ──────────────────────────────────────────
-function showErr(msg) {
-  const el = document.getElementById('alert-err')
-  el.textContent = msg
-  el.style.display = 'block'
-  document.getElementById('alert-ok').style.display = 'none'
-}
-function showOk(msg) {
-  const el = document.getElementById('alert-ok')
-  el.textContent = msg
-  el.style.display = 'block'
-  document.getElementById('alert-err').style.display = 'none'
-}
-function setLoading(on) {
-  const btn = document.getElementById('submit-btn')
-  const txt = document.getElementById('btn-text')
-  btn.disabled = on
-  txt.innerHTML = on
-    ? '<div class="spinner"></div> Creating account…'
-    : 'Create account →'
-}
-function fieldErr(id, show) {
-  const inp = document.getElementById(id)
-  const err = document.getElementById('err-' + id)
-  if (show) { inp.classList.add('err'); err.style.display = 'block' }
-  else { inp.classList.remove('err'); err.style.display = 'none' }
+window.register=async()=>{
+  const name=document.getElementById('name').value.trim()
+  const email=document.getElementById('email').value.trim()
+  const pass=document.getElementById('pass').value
+  if(!email||!pass){showA('err','Upiši email i lozinku.');return}
+  if(pass.length<8){showA('err','Lozinka mora imati najmanje 8 znakova.');return}
+  const{error}=await sb.auth.signUp({email,password:pass,options:{data:{full_name:name},emailRedirectTo:location.origin+'/email-confirm.html'}})
+  if(error){showA('err',error.message);return}
+  showA('ok','✓ Račun kreiran! Provjeri email za potvrdu, zatim se prijavi.')
 }
 
-// ── register ─────────────────────────────────────────
-document.getElementById('reg-form').addEventListener('submit', async (e) => {
-  e.preventDefault()
-
-  const name     = document.getElementById('name').value.trim()
-  const email    = document.getElementById('email').value.trim()
-  const password = document.getElementById('password').value
-
-  // basic validation
-  let valid = true
-  fieldErr('name',     !name)
-  fieldErr('email',    !email || !email.includes('@'))
-  fieldErr('password', password.length < 8)
-  if (!name) valid = false
-  if (!email || !email.includes('@')) valid = false
-  if (password.length < 8) valid = false
-  if (!valid) return
-
-  setLoading(true)
-  document.getElementById('alert-err').style.display = 'none'
-
-  const { data, error } = await sb.auth.signUp({
-    email,
-    password,
-    options: {
-      data: { full_name: name },
-      emailRedirectTo: window.location.origin + '/onboarding.html'
-    }
-  })
-
-  setLoading(false)
-
-  if (error) {
-    if (error.message.includes('already registered')) {
-      showErr('This email is already registered. Try signing in instead.')
-    } else {
-      showErr(error.message)
-    }
-    return
-  }
-
-  // success — Supabase sends confirmation email
-  showOk('✓ Account created! Check your email to confirm, then sign in.')
-  document.getElementById('reg-form').style.display = 'none'
-})
-
-// ── google ────────────────────────────────────────────
-window.signInGoogle = async () => {
-  const { error } = await sb.auth.signInWithOAuth({
-    provider: 'google',
-    options: { redirectTo: window.location.origin + '/onboarding.html' }
-  })
-  if (error) showErr(error.message)
+window.loginGoogle=async()=>{
+  const{error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.origin+'/dashboard.html'}})
+  if(error)showA('err',error.message)
 }
-
-// ── already logged in? ────────────────────────────────
-const { data: { session } } = await sb.auth.getSession()
-if (session) window.location.href = '/onboarding.html'
 </script>
 </body>
 </html>

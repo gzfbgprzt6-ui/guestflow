@@ -3,226 +3,434 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Odmoria — Digitalni vodič za goste. Direktne rezervacije.</title>
-<meta name="description" content="Dajte gostima lijep digitalni vodič — šifra vrata, Wi-Fi, lokalni savjeti. Javna stranica za marketing, privatni link za potvrđene goste.">
+<title>Odmoria — Digitalni vodič za goste. Direktno.</title>
+<meta name="description" content="Šifra vrata, Wi-Fi, lokalne preporuke — sve na jednom linku. Javna stranica za marketing, privatni link za potvrđene goste. Odmoria ne uzima proviziju.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
 <style>
-:root{--ink:#0A0A0A;--white:#fff;--bg:#F5F4F1;--border:#E2E0DB;--muted:#6B6A67;--text:#1A1917;--blue:#1A56DB;--blue-lt:#EEF3FF;--green:#0E6E3F;--green-lt:#E7F5EE;--f:'Plus Jakarta Sans',system-ui,sans-serif;--r:10px}
+:root{--black:#0A0A0A;--warm-white:#F7F5F1;--pure-white:#FFFFFF;--electric:#2D5BE3;--electric-dk:#1A3FA8;--stone:#E8E2D9;--stone-mid:#C8C0B4;--ink:#1A1917;--body:#4A4540;--soft:#6B6560;--ghost:#9B9590;--serif:'DM Serif Display',Georgia,serif;--sans:'DM Sans',system-ui,sans-serif}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:var(--f);background:var(--white);color:var(--text);-webkit-font-smoothing:antialiased;line-height:1.6;font-size:15px}
+body{font-family:var(--sans);background:var(--pure-white);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.6}
 a{color:inherit;text-decoration:none}
-button{font-family:var(--f);cursor:pointer}
-nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.93);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:58px;gap:12px}
-.logo{font-size:20px;font-weight:800;letter-spacing:-.5px;color:var(--ink);flex-shrink:0}
-.logo span{color:var(--blue)}
-.nav-links{display:none;gap:24px;font-size:13.5px;font-weight:500;color:var(--muted)}
-.nav-links a:hover{color:var(--ink)}
-.nav-r{display:flex;gap:8px;flex-shrink:0}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;font-weight:700;border-radius:var(--r);padding:10px 20px;font-size:14px;border:none;cursor:pointer;transition:all .15s;font-family:var(--f)}
-.btn-ink{background:var(--ink);color:#fff}.btn-ink:hover{background:#222}
-.btn-blue{background:var(--blue);color:#fff}.btn-blue:hover{background:#1343B0}
-.btn-out{background:var(--white);color:var(--text);border:1.5px solid var(--border)}.btn-out:hover{border-color:#999}
-.btn-lg{padding:14px 28px;font-size:15px;border-radius:12px}
-.btn-sm{padding:8px 16px;font-size:13px}
-.hero{padding:52px 20px 64px;text-align:center;border-bottom:1px solid var(--border)}
-.hero-tag{display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);background:var(--blue-lt);padding:5px 13px;border-radius:20px;margin-bottom:24px}
-.hero h1{font-size:clamp(34px,8vw,68px);font-weight:800;line-height:1.04;letter-spacing:-.04em;margin-bottom:18px}
-.hero h1 span{color:var(--blue)}
-.hero-sub{font-size:clamp(15px,2.5vw,18px);color:var(--muted);line-height:1.68;max-width:520px;margin:0 auto 32px}
-.hero-btns{display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:36px}
-.hero-note{font-size:12.5px;color:var(--muted)}
-.hero-note a{color:var(--blue);font-weight:600}
-.cbox{max-width:480px;margin:48px auto 0;background:var(--ink);border-radius:16px;overflow:hidden}
-.cbox-head{padding:13px 20px 10px;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#444;border-bottom:1px solid #1f1f1f}
-.cbox-rows{display:flex;flex-direction:column}
-.crow{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;background:#111;border-bottom:1px solid #1f1f1f;gap:12px}
-.crow:last-child{border-bottom:none}
-.crow-lbl{font-size:13px;color:#888;font-weight:500}
-.crow-note{font-size:10px;color:#555;margin-top:2px}
-.crow-val{font-size:20px;font-weight:800;letter-spacing:-.02em;flex-shrink:0}
-.crow-val.r{color:#F87171}.crow-val.g{color:#4ADE80}
-.sec{padding:64px 20px}
-.sec-lbl{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);margin-bottom:10px}
-.sec-h{font-size:clamp(24px,5vw,40px);font-weight:800;letter-spacing:-.03em;line-height:1.08;margin-bottom:40px}
-.steps{display:flex;flex-direction:column;gap:2px;background:var(--border);border-radius:14px;overflow:hidden}
-.step{background:var(--white);padding:28px 24px}
-.step-n{font-size:42px;font-weight:800;color:var(--border);line-height:1;letter-spacing:-.03em;margin-bottom:14px}
-.step-h{font-size:17px;font-weight:700;margin-bottom:7px}
-.step-p{font-size:13.5px;line-height:1.7;color:var(--muted)}
-.twolinks{background:var(--ink);padding:64px 20px}
-.twolinks-h{font-size:clamp(24px,5vw,40px);font-weight:800;color:#fff;letter-spacing:-.03em;line-height:1.1;margin-bottom:10px}
-.twolinks-sub{font-size:15px;color:#888;margin-bottom:36px;line-height:1.65;max-width:520px}
-.lcards{display:flex;flex-direction:column;gap:12px}
-.lcard{background:#111;border:1px solid #222;border-radius:13px;padding:20px}
-.lbadge{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:3px 10px;border-radius:20px;display:inline-block;margin-bottom:10px}
-.lbadge-pub{background:#0D2E1A;color:#4ADE80}
-.lbadge-priv{background:#0F1F4A;color:#60A5FA}
-.lcard-h{font-size:15px;font-weight:700;color:#fff;margin-bottom:5px}
-.lcard-url{font-family:monospace;font-size:11.5px;color:#555;margin-bottom:9px}
-.lcard-p{font-size:13px;color:#777;line-height:1.65}
-.feat-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--border);border-radius:14px;overflow:hidden}
-.feat{background:var(--white);padding:26px 22px}
-.feat-ic{font-size:24px;margin-bottom:11px}
-.feat-h{font-size:14px;font-weight:700;margin-bottom:6px}
-.feat-p{font-size:13px;color:var(--muted);line-height:1.65}
-.calc-box{max-width:540px;margin:0 auto;background:var(--white);border:1px solid var(--border);border-radius:14px;padding:26px}
-.calc-title{font-size:15px;font-weight:700;margin-bottom:18px}
-.calc-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;gap:12px}
-.calc-row label{font-size:13.5px;font-weight:600;color:var(--muted)}
-.calc-inp{width:96px;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:15px;font-weight:700;text-align:center;font-family:var(--f);color:var(--text);transition:border-color .15s;flex-shrink:0}
-.calc-inp:focus{outline:none;border-color:var(--blue)}
-.calc-result{background:var(--green-lt);border:1px solid #B7E4CC;border-radius:10px;padding:15px 17px;margin-top:18px}
-.cr-row{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:7px}
-.cr-row.tot{font-weight:800;font-size:15px;padding-top:9px;border-top:1px solid #B7E4CC;margin-top:3px;margin-bottom:0}
-.cr-green{color:var(--green);font-weight:700}
-.calc-disc{font-size:11px;color:var(--muted);margin-top:10px;line-height:1.6}
-.price-grid{display:flex;flex-direction:column;gap:14px}
-.pcard{border:1.5px solid var(--border);border-radius:14px;padding:28px 24px}
-.pcard.feat{border-color:var(--blue)}
-.ptier{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
-.pamt{font-size:40px;font-weight:800;letter-spacing:-.03em;margin-bottom:5px}
-.pamt .per{font-size:14px;font-weight:400;color:var(--muted)}
-.pdesc{font-size:13.5px;color:var(--muted);margin-bottom:20px;line-height:1.6}
-.pfeats{list-style:none;margin-bottom:22px}
-.pfeats li{font-size:13.5px;padding:8px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px;font-weight:500}
-.pfeats li::before{content:'✓';color:var(--blue);font-weight:800;flex-shrink:0}
-.pfeats li:last-child{border-bottom:none}
-.cta-box{background:var(--ink);border-radius:14px;padding:48px 24px;text-align:center;margin:0 16px 56px}
-.cta-h{font-size:clamp(24px,5vw,40px);font-weight:800;color:#fff;letter-spacing:-.03em;line-height:1.1;margin-bottom:10px}
-.cta-h span{color:var(--blue)}
-.cta-p{font-size:15px;color:#888;margin-bottom:26px;line-height:1.65}
-footer{border-top:1px solid var(--border);padding:36px 20px 24px;display:flex;flex-direction:column;gap:24px}
-.footer-logo{font-size:17px;font-weight:800;margin-bottom:7px}
-.footer-logo span{color:var(--blue)}
-.footer-desc{font-size:13px;color:var(--muted);line-height:1.65;max-width:240px}
-.footer-cols{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
-.fcol-h{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:11px}
-.fcol a{display:block;font-size:13px;color:var(--muted);margin-bottom:8px;font-weight:500}
-.fcol a:hover{color:var(--text)}
-.footer-copy{font-size:11.5px;color:var(--muted);padding-top:18px;border-top:1px solid var(--border);width:100%}
-@media(min-width:540px){.cbox-rows{flex-direction:row}.crow{flex-direction:column;align-items:flex-start;flex:1;border-bottom:none;border-right:1px solid #1f1f1f}.crow:last-child{border-right:none}.crow-val{font-size:24px;margin-top:4px}}
-@media(min-width:640px){nav{padding:0 40px}.nav-links{display:flex}.hero{padding:80px 40px 96px}.hero-btns{flex-direction:row;justify-content:center}.sec{padding:88px 40px}.steps{flex-direction:row}.step{flex:1}.twolinks{padding:88px 40px}.lcards{flex-direction:row}.lcard{flex:1}.price-grid{flex-direction:row;align-items:flex-start}.pcard{flex:1}.cta-box{margin:0 40px 72px;padding:72px 56px}footer{flex-direction:row;padding:48px 40px 36px;gap:40px}footer>div:first-child{min-width:200px}}
-@media(min-width:1024px){nav{padding:0 80px}.hero{padding:96px 80px 112px}.sec{padding:96px 80px}.twolinks{padding:96px 80px}.feat-grid{grid-template-columns:repeat(3,1fr)}.cta-box{margin:0 80px 80px}footer{padding:56px 80px 40px}}
+button{font-family:var(--sans);cursor:pointer}
+img{display:block;max-width:100%}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:100;height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 40px;background:rgba(255,255,255,.97);backdrop-filter:blur(10px);border-bottom:1px solid var(--stone)}
+.nav-logo{font-family:var(--serif);font-size:20px;color:var(--black);letter-spacing:-.2px}
+.nav-links{display:flex;gap:28px;font-size:14px;font-weight:400;color:var(--soft)}
+.nav-links a:hover{color:var(--black);transition:color .12s}
+.nav-r{display:flex;gap:8px;align-items:center}
+.btn-ghost{font-size:14px;font-weight:400;color:var(--soft);padding:7px 14px;border:none;background:transparent;border-radius:6px;transition:all .12s}
+.btn-ghost:hover{background:var(--warm-white);color:var(--black)}
+.btn-solid{font-size:14px;font-weight:500;color:#fff;padding:8px 20px;border:none;background:var(--black);border-radius:6px;transition:background .12s}
+.btn-solid:hover{background:#222}
+
+/* HERO */
+.hero{padding:80px 40px 0;text-align:center;border-bottom:1px solid var(--stone);overflow:hidden;background:var(--pure-white)}
+.hero-eyebrow{display:inline-block;font-size:12px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--electric);margin-bottom:22px}
+.hero h1{font-family:var(--serif);font-size:clamp(48px,7vw,80px);line-height:1.03;color:var(--black);margin-bottom:22px;letter-spacing:-.03em;font-weight:400}
+.hero h1 i{font-style:italic;color:var(--electric)}
+.hero-sub{font-size:18px;line-height:1.7;color:var(--soft);max-width:480px;margin:0 auto 36px;font-weight:300}
+.hero-btns{display:flex;gap:12px;justify-content:center;align-items:center;margin-bottom:56px}
+.btn-hero{font-size:15px;font-weight:500;color:#fff;padding:13px 28px;border:none;background:var(--black);border-radius:8px;transition:all .12s;display:inline-flex;align-items:center;gap:9px}
+.btn-hero:hover{background:#222;transform:translateY(-1px)}
+.btn-hero svg{transition:transform .15s}
+.btn-hero:hover svg{transform:translateX(2px)}
+.btn-hero-sec{font-size:15px;font-weight:400;color:var(--soft);padding:13px 18px;border:none;background:transparent;transition:color .12s}
+.btn-hero-sec:hover{color:var(--black)}
+
+/* browser window */
+.browser-outer{max-width:900px;margin:0 auto;position:relative}
+.browser-frame{border:1px solid var(--stone);border-radius:14px 14px 0 0;overflow:hidden;box-shadow:0 -12px 48px rgba(0,0,0,.07),0 -2px 8px rgba(0,0,0,.04)}
+.browser-topbar{background:#F3F1EE;border-bottom:1px solid var(--stone);height:40px;display:flex;align-items:center;gap:10px;padding:0 16px}
+.b-dots{display:flex;gap:5px}
+.bd{width:10px;height:10px;border-radius:50%}
+.b-url{flex:1;background:#E8E5E0;border-radius:5px;height:22px;display:flex;align-items:center;padding:0 12px;font-family:monospace;font-size:11px;color:#999;margin:0 10px}
+.browser-body{background:var(--pure-white);display:grid;grid-template-columns:196px 1fr;height:400px;overflow:hidden}
+
+/* mini dashboard inside browser */
+.ms{background:#0A0A0A;padding:16px 13px;display:flex;flex-direction:column;gap:2px;border-right:1px solid #1a1a1a}
+.ms-logo{font-family:var(--serif);font-size:14px;color:#fff;padding-bottom:14px;margin-bottom:10px;border-bottom:1px solid #1f1f1f}
+.ms-sec{font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:#3a3a3a;padding:9px 8px 4px}
+.ms-item{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:6px;font-size:11.5px;color:#666;transition:.12s}
+.ms-item:hover,.ms-item.on{background:#161616;color:#ccc}
+.ms-item.on{color:#fff}
+.ms-ic{font-size:13px;width:16px;text-align:center;flex-shrink:0}
+
+/* mini main content */
+.mm{padding:20px;display:flex;flex-direction:column;gap:14px;overflow:hidden}
+.mm-top{display:flex;align-items:center;justify-content:space-between}
+.mm-title{font-size:13.5px;font-weight:500;color:var(--ink)}
+.mm-badge{font-size:10px;font-weight:600;background:var(--electric);color:#fff;padding:4px 11px;border-radius:5px}
+.mm-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.mm-stat{background:var(--warm-white);border:1px solid var(--stone);border-radius:8px;padding:10px 12px}
+.mm-sv{font-size:18px;font-weight:500;color:var(--ink);line-height:1;margin-bottom:3px}
+.mm-sl{font-size:9px;color:var(--ghost);font-weight:400}
+.mm-card{background:var(--pure-white);border:1px solid var(--stone);border-radius:9px;overflow:hidden}
+.mm-card-h{padding:9px 13px;border-bottom:1px solid var(--stone);font-size:11.5px;font-weight:500;display:flex;justify-content:space-between;align-items:center;color:var(--ink)}
+.mm-row{display:flex;align-items:center;gap:9px;padding:8px 13px;border-bottom:1px solid #f5f3f0;font-size:10.5px}
+.mm-row:last-child{border-bottom:none}
+.mm-av{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8.5px;font-weight:600;color:#fff;flex-shrink:0}
+.mm-name{font-weight:500;font-size:11px;color:var(--ink)}
+.mm-date{font-size:10px;color:var(--ghost)}
+.mm-pill{font-size:8.5px;font-weight:600;padding:2px 7px;border-radius:20px;margin-left:auto;flex-shrink:0}
+.pill-act{background:#DCFCE7;color:#15803D}
+.pill-up{background:var(--warm-white);color:var(--ghost)}
+
+/* trust bar */
+.trust{display:flex;align-items:center;justify-content:center;gap:40px;padding:22px 40px;border-bottom:1px solid var(--stone);background:var(--warm-white)}
+.trust-i{font-size:13px;color:var(--soft);display:flex;align-items:center;gap:7px;font-weight:300}
+.trust-i::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--electric);flex-shrink:0}
+.trust-sep{width:1px;height:14px;background:var(--stone)}
+
+/* section base */
+.sec-label{font-size:12px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;color:var(--electric);margin-bottom:14px}
+.sec-h{font-family:var(--serif);font-size:clamp(32px,4vw,50px);line-height:1.07;color:var(--black);font-weight:400;letter-spacing:-.02em}
+
+/* HOW — sticky editorial */
+.how-wrap{border-top:1px solid var(--stone);border-bottom:1px solid var(--stone)}
+.how-grid{display:grid;grid-template-columns:300px 1fr;max-width:1080px;margin:0 auto}
+.how-sticky{padding:72px 48px 72px 40px;position:sticky;top:54px;height:fit-content;border-right:1px solid var(--stone)}
+.how-steps-col{padding:72px 48px}
+.how-step{display:grid;grid-template-columns:52px 1fr;gap:0;padding:32px 0;border-bottom:1px solid var(--stone)}
+.how-step:last-child{border-bottom:none}
+.how-n{font-family:var(--serif);font-style:italic;font-size:34px;color:var(--stone);line-height:1.05;padding-top:3px}
+.how-h{font-size:17px;font-weight:500;color:var(--black);margin-bottom:8px;letter-spacing:-.01em}
+.how-p{font-size:14.5px;line-height:1.75;color:var(--soft);font-weight:300}
+
+/* dark split */
+.dark-split{background:var(--black);padding:96px 40px}
+.dark-inner{max-width:1080px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
+.dark-label{font-size:12px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:14px}
+.dark-h{font-family:var(--serif);font-size:clamp(32px,4vw,50px);line-height:1.07;color:#fff;font-weight:400;margin-bottom:16px}
+.dark-p{font-size:15px;line-height:1.75;color:rgba(255,255,255,.4);font-weight:300}
+.lcard{background:#0F0F0F;border:1px solid #1f1f1f;border-radius:10px;padding:20px;margin-bottom:10px;transition:border-color .15s}
+.lcard:hover{border-color:#2a2a2a}
+.lcard:last-child{margin-bottom:0}
+.lbadge{font-size:9.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;padding:3px 9px;border-radius:20px;display:inline-block;margin-bottom:10px}
+.pub-b{background:rgba(74,222,128,.08);color:#4ADE80}
+.priv-b{background:rgba(96,165,250,.08);color:#60A5FA}
+.lcard-h{font-size:14.5px;font-weight:500;color:#fff;margin-bottom:4px}
+.lcard-url{font-family:monospace;font-size:11px;color:#2a2a2a;margin-bottom:8px}
+.lcard-p{font-size:13px;color:#444;line-height:1.65;font-weight:300}
+
+/* features asymmetric */
+.feat-bg{background:var(--warm-white);border-top:1px solid var(--stone);border-bottom:1px solid var(--stone)}
+.feat-sec{max-width:1080px;margin:0 auto;padding:96px 40px}
+.feat-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--stone);border:1px solid var(--stone);border-radius:14px;overflow:hidden;margin-top:48px}
+.fi{background:var(--warm-white);padding:30px 26px;transition:background .15s}
+.fi:hover{background:#EDE9E3}
+.fi.wide{grid-column:span 2}
+.fi-tag{font-size:10px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--electric);margin-bottom:8px}
+.fi-ic{width:34px;height:34px;border-radius:8px;background:var(--pure-white);border:1px solid var(--stone);display:flex;align-items:center;justify-content:center;margin-bottom:16px;font-size:16px}
+.fi-h{font-size:15px;font-weight:500;color:var(--black);margin-bottom:7px;letter-spacing:-.01em}
+.fi-p{font-size:13.5px;line-height:1.7;color:var(--soft);font-weight:300}
+
+/* testimonial */
+.testi-sec{padding:96px 40px;border-bottom:1px solid var(--stone)}
+.testi-inner{max-width:640px;margin:0 auto}
+.testi-q{font-family:var(--serif);font-size:clamp(22px,3vw,30px);line-height:1.5;color:var(--black);font-style:italic;font-weight:400;margin-bottom:28px}
+.testi-by{display:flex;align-items:center;gap:14px}
+.testi-av{width:40px;height:40px;border-radius:50%;background:var(--electric);color:#fff;font-size:13px;font-weight:500;display:flex;align-items:center;justify-content:center}
+.testi-name{font-size:14px;font-weight:500;color:var(--black)}
+.testi-role{font-size:13px;color:var(--ghost);font-weight:300;margin-top:1px}
+
+/* pricing */
+.price-sec{padding:96px 40px;border-bottom:1px solid var(--stone)}
+.price-inner{max-width:1080px;margin:0 auto}
+.price-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:48px}
+.tog-wrap{background:var(--warm-white);border:1px solid var(--stone);border-radius:8px;display:inline-flex;padding:3px;gap:2px}
+.tog{font-size:13px;font-weight:400;padding:6px 16px;border-radius:6px;border:none;cursor:pointer;background:transparent;color:var(--soft);transition:all .15s}
+.tog.on{background:var(--pure-white);color:var(--black);font-weight:500;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.tog-save{font-size:10px;font-weight:600;color:#16A34A;margin-left:3px}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.pcard{border:1px solid var(--stone);border-radius:12px;padding:28px 24px;transition:border-color .15s}
+.pcard:hover:not(.pf){border-color:var(--stone-mid)}
+.pf{border-color:var(--black);border-width:1.5px;position:relative}
+.pf::before{content:'Najpopularnije';position:absolute;top:-10px;left:20px;background:var(--black);color:#fff;font-size:10px;font-weight:500;padding:2px 10px;border-radius:20px;letter-spacing:.04em}
+.ptier{font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;color:var(--ghost);margin-bottom:18px}
+.ptier.blue{color:var(--electric)}
+.pamt{font-family:var(--serif);font-size:44px;color:var(--black);letter-spacing:-.02em;line-height:1;font-weight:400;margin-bottom:4px}
+.pamt sup{font-family:var(--sans);font-size:18px;font-weight:300;vertical-align:top;margin-top:10px;display:inline-block}
+.pper{font-size:13px;color:var(--ghost);font-weight:300;margin-bottom:20px}
+.pdesc{font-size:14px;color:var(--soft);font-weight:300;line-height:1.6;padding-bottom:20px;border-bottom:1px solid var(--stone);margin-bottom:20px}
+.pfl{margin-bottom:24px}
+.pf-item{display:flex;gap:9px;font-size:13.5px;color:var(--soft);font-weight:300;margin-bottom:9px;align-items:flex-start;line-height:1.5}
+.pck{width:16px;height:16px;border-radius:50%;background:var(--warm-white);border:1px solid var(--stone);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;font-size:9px;color:var(--electric)}
+.pcta{width:100%;padding:11px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;border:none;transition:all .12s}
+.pcta.dark{background:var(--black);color:#fff}
+.pcta.dark:hover{background:#222}
+.pcta.out{background:transparent;color:var(--black);border:1px solid var(--stone)}
+.pcta.out:hover{border-color:var(--stone-mid)}
+
+/* cta */
+.cta-sec{background:var(--warm-white);padding:96px 40px;text-align:center}
+.cta-h{font-family:var(--serif);font-size:clamp(38px,5.5vw,62px);color:var(--black);line-height:1.06;letter-spacing:-.02em;font-weight:400;margin-bottom:14px}
+.cta-h i{font-style:italic;color:var(--electric)}
+.cta-p{font-size:17px;color:var(--soft);font-weight:300;max-width:420px;margin:0 auto 36px;line-height:1.72}
+.cta-fine{font-size:13px;color:var(--ghost);margin-top:16px;font-weight:300}
+
+/* footer */
+footer{padding:56px 40px 32px;display:grid;grid-template-columns:240px 1fr;gap:56px;border-top:1px solid var(--stone)}
+.f-logo{font-family:var(--serif);font-size:18px;color:var(--black);margin-bottom:10px}
+.f-desc{font-size:13px;color:var(--ghost);line-height:1.65;font-weight:300;max-width:200px}
+.f-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:32px}
+.fc-h{font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;color:var(--stone-mid);margin-bottom:14px}
+.fc a{display:block;font-size:14px;color:var(--soft);font-weight:300;margin-bottom:9px;transition:color .12s}
+.fc a:hover{color:var(--black)}
+.f-bottom{border-top:1px solid var(--stone);padding:16px 40px;display:flex;justify-content:space-between;font-size:12px;color:var(--ghost)}
+
+/* responsive */
+@media(max-width:900px){
+  .nav{padding:0 20px}.nav-links{display:none}
+  .hero{padding:56px 20px 0}
+  .browser-body{grid-template-columns:1fr;height:280px}.ms{display:none}
+  .trust{flex-wrap:wrap;gap:14px;padding:18px 20px}.trust-sep{display:none}
+  .how-grid{grid-template-columns:1fr}.how-sticky{position:static;border-right:none;border-bottom:1px solid var(--stone);padding:48px 20px 32px}.how-steps-col{padding:32px 20px 48px}
+  .dark-inner{grid-template-columns:1fr;gap:40px}.dark-split{padding:64px 20px}
+  .feat-sec{padding:64px 20px}.feat-grid{grid-template-columns:1fr 1fr}.fi.wide{grid-column:span 1}
+  .testi-sec,.price-sec,.cta-sec{padding:64px 20px}
+  .pgrid{grid-template-columns:1fr}
+  footer{grid-template-columns:1fr;padding:40px 20px 24px;gap:32px}
+  .f-cols{grid-template-columns:repeat(2,1fr)}
+  .f-bottom{padding:16px 20px;flex-direction:column;gap:4px}
+}
+@media(max-width:560px){
+  .hero h1{font-size:38px}.feat-grid{grid-template-columns:1fr}
+  .hero-btns{flex-direction:column}.btn-hero-sec{padding:6px}
+}
 </style>
 </head>
 <body>
-<nav>
-  <div class="logo">Odmor<span>ia</span></div>
-  <div class="nav-links"><a href="#kako">Kako radi</a><a href="#mogucnosti">Mogućnosti</a><a href="#cijene">Cijene</a></div>
+
+<nav class="nav">
+  <div class="nav-logo">Odmoria</div>
+  <div class="nav-links">
+    <a href="#kako">Kako radi</a><a href="#mogucnosti">Mogućnosti</a>
+    <a href="#cijene">Cijene</a><a href="/help.html">Pomoć</a>
+  </div>
   <div class="nav-r">
-    <a href="/login.html" class="btn btn-out btn-sm">Prijava</a>
-    <a href="/register.html" class="btn btn-ink btn-sm">Isprobaj besplatno →</a>
+    <button class="btn-ghost" onclick="location.href='/login.html'">Prijava</button>
+    <button class="btn-solid" onclick="location.href='/register.html'">Počni besplatno</button>
   </div>
 </nav>
+
 <section class="hero">
-  <div class="hero-tag">✦ Za iznajmljivače apartmana i villa</div>
-  <h1>Vaši gosti.<br><span>Vaše rezervacije.</span></h1>
-  <p class="hero-sub">Dajte gostima lijep digitalni vodič — šifra vrata, Wi-Fi, lokalni savjeti, prijevoz. Javna stranica za marketing, privatni link za potvrđene goste. Odmoria ne naplaćuje proviziju po rezervaciji.</p>
+  <div class="hero-eyebrow">Za iznajmljivače na Jadranu</div>
+  <h1>Sve što gost treba.<br><i>Na jednom linku.</i></h1>
+  <p class="hero-sub">Šifra vrata, Wi-Fi, lokalne preporuke, prijevoz. Javna stranica za marketing, privatni link za potvrđene goste. Bez provizije.</p>
   <div class="hero-btns">
-    <a href="/register.html" class="btn btn-ink btn-lg">Kreiraj svoju stranicu — besplatno →</a>
-    <a href="#kako" class="btn btn-out btn-lg">Kako radi?</a>
+    <button class="btn-hero" onclick="location.href='/register.html'">
+      Postavi prvi objekt
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M2 7.5h11M9 3.5l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <button class="btn-hero-sec">Pogledaj primjer →</button>
   </div>
-  <div class="hero-note">Besplatno zauvijek za 1 objekt · Bez kreditne kartice · <a href="#cijene">Pogledaj cijene</a></div>
-  <div class="cbox">
-    <div class="cbox-head">Na godišnjem prihodu od 40.000 €</div>
-    <div class="cbox-rows">
-      <div class="crow"><div><div class="crow-lbl">Platforme za rezervacije</div><div class="crow-note">mogu naplaćivati proviziju</div></div><div class="crow-val r">do ~6.000 €</div></div>
-      <div class="crow"><div><div class="crow-lbl">Odmoria Pro godišnje</div><div class="crow-note">bez provizije po rezervaciji</div></div><div class="crow-val g">120 €/god</div></div>
-    </div>
-  </div>
-</section>
-<section class="sec" id="kako">
-  <div style="max-width:960px;margin:0 auto">
-    <div class="sec-lbl">Kako radi</div>
-    <div class="sec-h">Tri koraka do direktnih rezervacija.</div>
-    <div class="steps">
-      <div class="step"><div class="step-n">01</div><div class="step-h">Izgradi svoju stranicu za 10 minuta</div><p class="step-p">Dodaj fotografije, opis, lokalne savjete, Wi-Fi, kućni red, prijevoz i dostupnost. Stranica je odmah živa — bez koda, bez tehničkog znanja.</p></div>
-      <div class="step"><div class="step-n">02</div><div class="step-h">Dijeli je svugdje</div><p class="step-p">Objavi na Facebooku, dodaj u opis na Bookingu, pošalji bivšim gostima. Svaki upit stiže direktno tebi — bez posrednika, bez provizije.</p></div>
-      <div class="step"><div class="step-n">03</div><div class="step-h">Privatni link nakon rezervacije</div><p class="step-p">Potvrđeni gosti dobiju privatni link sa šifrom vrata, Wi-Fi lozinkom i kompletnim lokalnim vodičem. Javna stranica nikad ne prikazuje osjetljive podatke.</p></div>
-    </div>
-  </div>
-</section>
-<div class="twolinks">
-  <div style="max-width:960px;margin:0 auto">
-    <div class="sec-lbl" style="color:#60A5FA">Dva linka, jedan hub</div>
-    <div class="twolinks-h">Javno za marketing.<br>Privatno za goste.</div>
-    <div class="twolinks-sub">Javni link možeš podijeliti svugdje — bez šifri, bez lozinki. Privatni gostinski link otkriva sve. Isti hub, dva prikaza, puna kontrola.</div>
-    <div class="lcards">
-      <div class="lcard"><span class="lbadge lbadge-pub">🟢 Javna stranica</span><div class="lcard-h">Dijeli svugdje, bilo kada</div><div class="lcard-url">odmoria.com/p/villa-luna</div><p class="lcard-p">Fotografije, dostupnost, lokalni vodič, prijevoz, gumb za kontakt. Bez osjetljivih podataka. Sigurno za Facebook, Instagram, Booking opis.</p></div>
-      <div class="lcard"><span class="lbadge lbadge-priv">🔵 Gostinski link</span><div class="lcard-h">Šalje se samo nakon rezervacije</div><div class="lcard-url">odmoria.com/h/villa-luna-7fk2x</div><p class="lcard-p">Isti sadržaj plus šifra vrata, Wi-Fi lozinka, kompletne upute za dolazak. Link istječe. Ti kontroliraš kada se šalje.</p></div>
-    </div>
-  </div>
-</div>
-<div class="sec" id="mogucnosti" style="background:var(--bg)">
-  <div style="max-width:960px;margin:0 auto">
-    <div class="sec-lbl">Sve uključeno</div>
-    <div class="sec-h">Izgrađeno za iznajmljivače koji mare za detalje.</div>
-    <div class="feat-grid">
-      <div class="feat"><div class="feat-ic">🗺️</div><div class="feat-h">Lokalni vodič</div><p class="feat-p">Dodaj restorane, plaže i skrivene bisere s udaljenostima, Google Maps linkovima i osobnim preporukama.</p></div>
-      <div class="feat"><div class="feat-ic">🚢</div><div class="feat-h">Prijevoz</div><p class="feat-p">Vremena trajekta, taxi brojevi, iznajmljivanje bicikla — gosti uvijek znaju kako se kretati.</p></div>
-      <div class="feat"><div class="feat-ic">📅</div><div class="feat-h">Kalendar dostupnosti</div><p class="feat-p">Ti ažuriraš ručno. Gosti vide slobodne termine i kontaktiraju te direktno.</p></div>
-      <div class="feat"><div class="feat-ic">📶</div><div class="feat-h">Wi-Fi jednim tapom</div><p class="feat-p">Gosti kopiraju lozinku jednim tapom. Prestani je pisati na whiteboard.</p></div>
-      <div class="feat"><div class="feat-ic">🔒</div><div class="feat-h">Privatno po dizajnu</div><p class="feat-p">Osjetljivi podaci nikad nisu javno prikazani — šifre i lozinke samo na privatnom linku.</p></div>
-      <div class="feat"><div class="feat-ic">✏️</div><div class="feat-h">Ažuriraj bilo kad</div><p class="feat-p">Promjena u rasporedu trajekta? Ažuriraš jednom, svi gosti odmah vide promjenu.</p></div>
-    </div>
-  </div>
-</div>
-<div class="sec" style="background:var(--bg)">
-  <div style="max-width:960px;margin:0 auto">
-    <div class="sec-lbl" style="text-align:center">Izračunaj</div>
-    <div class="sec-h" style="text-align:center;margin-bottom:28px">Koliko ostavljaš na stolu?</div>
-    <div class="calc-box">
-      <div class="calc-title">Kalkulator uštede</div>
-      <div class="calc-row"><label>Godišnji prihod od najma (€)</label><input class="calc-inp" type="number" id="revenue" value="40000" min="0" oninput="calc()"></div>
-      <div class="calc-row"><label>Procjenjena stopa provizije (%)</label><input class="calc-inp" type="number" id="rate" value="15" min="1" max="30" oninput="calc()"></div>
-      <div class="calc-result">
-        <div class="cr-row"><span>Provizija platforme godišnje</span><span id="r-ota" style="color:#EF4444;font-weight:700">6.000 €</span></div>
-        <div class="cr-row"><span>Odmoria Pro godišnje</span><span>120 €</span></div>
-        <div class="cr-row tot"><span>Možeš zadržati više</span><span class="cr-green" id="r-save">5.880 €/god</span></div>
+  <div class="browser-outer">
+    <div class="browser-frame">
+      <div class="browser-topbar">
+        <div class="b-dots"><div class="bd" style="background:#FF5F56"></div><div class="bd" style="background:#FFBD2E"></div><div class="bd" style="background:#27C93F"></div></div>
+        <div class="b-url">odmoria.com/dashboard · Villa Luna</div>
       </div>
-      <div class="calc-disc">* Odmoria ne naplaćuje proviziju po rezervaciji. Stopa provizije platformi ovisi o platformi, vrsti objekta i ugovoru — unesite vlastitu procjenu.</div>
-    </div>
-  </div>
-</div>
-<section class="sec" id="cijene" style="background:var(--white)">
-  <div style="max-width:960px;margin:0 auto">
-    <div class="sec-lbl">Cijene</div>
-    <div class="sec-h">Počni besplatno. Rasti kada si spreman.</div>
-    <div class="price-grid">
-      <div class="pcard"><div class="ptier">Starter</div><div class="pamt">Besplatno <span class="per">zauvijek</span></div><div class="pdesc">Jedan objekt. Sve osnovne mogućnosti. Bez kreditne kartice.</div><ul class="pfeats"><li>1 objekt</li><li>Javna stranica + privatni link</li><li>Sve sekcije vodiča</li><li>QR kod</li><li>Google Maps integracija</li></ul><a href="/register.html" class="btn btn-out" style="width:100%;justify-content:center">Počni besplatno</a></div>
-      <div class="pcard feat"><div class="ptier" style="color:var(--blue)">Pro — najpopularnije</div><div class="pamt">10 € <span class="per">/ mj</span></div><div class="pdesc">Neograničeni objekti i vlastiti branding.</div><ul class="pfeats"><li>Neograničeni objekti</li><li>Ukloni Odmoria branding</li><li>Vlastita domena</li><li>Analitika i praćenje linkova</li><li>Predlošci poruka za goste</li><li>Prioritetna podrška</li></ul><a href="/register.html" class="btn btn-blue" style="width:100%;justify-content:center">Isprobaj 14 dana besplatno</a></div>
-      <div class="pcard"><div class="ptier">Agency</div><div class="pamt">49 € <span class="per">/ mj</span></div><div class="pdesc">Za property managere s više klijenata.</div><ul class="pfeats"><li>Sve iz Pro plana</li><li>Tim pristup</li><li>White-label opcija</li><li>API pristup</li></ul><a href="mailto:podrska@odmoria.com" class="btn btn-out" style="width:100%;justify-content:center">Kontaktiraj nas</a></div>
+      <div class="browser-body">
+        <div class="ms">
+          <div class="ms-logo">Odmoria</div>
+          <div class="ms-sec">Sadržaj</div>
+          <div class="ms-item on"><span class="ms-ic">◈</span>Pregled</div>
+          <div class="ms-item"><span class="ms-ic">⌂</span>Objekt</div>
+          <div class="ms-item"><span class="ms-ic">⚷</span>Check-in</div>
+          <div class="ms-item"><span class="ms-ic">≋</span>Wi-Fi</div>
+          <div class="ms-item"><span class="ms-ic">◎</span>Lokalni vodič</div>
+          <div class="ms-sec">Dijeljenje</div>
+          <div class="ms-item"><span class="ms-ic">◈</span>Rezervacije</div>
+          <div class="ms-item"><span class="ms-ic">⊡</span>Linkovi i QR</div>
+        </div>
+        <div class="mm">
+          <div class="mm-top">
+            <div class="mm-title">Villa Luna · Hvar</div>
+            <div class="mm-badge">+ Nova rezervacija</div>
+          </div>
+          <div class="mm-stats">
+            <div class="mm-stat"><div class="mm-sv">12</div><div class="mm-sl">Pregleda</div></div>
+            <div class="mm-stat"><div class="mm-sv">3</div><div class="mm-sl">Rezervacija</div></div>
+            <div class="mm-stat"><div class="mm-sv">iCal</div><div class="mm-sl">Sinkronizirano</div></div>
+            <div class="mm-stat"><div class="mm-sv">0 €</div><div class="mm-sl">Provizija</div></div>
+          </div>
+          <div class="mm-card">
+            <div class="mm-card-h">Aktivne rezervacije <span style="font-size:9px;color:var(--ghost);font-weight:300">3 aktivne</span></div>
+            <div class="mm-row"><div class="mm-av" style="background:#2D5BE3">AM</div><div style="flex:1"><div class="mm-name">Ana Matić</div><div class="mm-date">12–19. srp 2026</div></div><div class="mm-pill pill-act">Aktivan</div></div>
+            <div class="mm-row"><div class="mm-av" style="background:#555">MR</div><div style="flex:1"><div class="mm-name">Marco Rossi</div><div class="mm-date">20–26. srp 2026</div></div><div class="mm-pill pill-act">Aktivan</div></div>
+            <div class="mm-row"><div class="mm-av" style="background:#888">SK</div><div style="flex:1"><div class="mm-name">Sara Klein</div><div class="mm-date">3–10. kol 2026</div></div><div class="mm-pill pill-up">Nadolazeći</div></div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
-<div class="cta-box">
-  <div class="cta-h">Tvoji gosti. <span>Tvoj prihod.</span></div>
-  <div class="cta-p">Postavi prvi objekt za manje od deset minuta.</div>
-  <a href="/register.html" class="btn btn-blue btn-lg">Kreiraj svoju stranicu — besplatno →</a>
+
+<div class="trust">
+  <div class="trust-i">Booking.com iCal</div><div class="trust-sep"></div>
+  <div class="trust-i">Airbnb iCal</div><div class="trust-sep"></div>
+  <div class="trust-i">WhatsApp jednim klikom</div><div class="trust-sep"></div>
+  <div class="trust-i">0 € provizije</div><div class="trust-sep"></div>
+  <div class="trust-i">Šifra se otključava pred dolazak</div>
 </div>
-<footer>
-  <div><div class="footer-logo">Odmor<span>ia</span></div><div class="footer-desc">Digitalni vodiči za goste kratkoročnih najma. Dijeli link. Preskači proviziju.</div></div>
-  <div class="footer-cols">
-    <div class="fcol"><div class="fcol-h">Proizvod</div><a href="#kako">Kako radi</a><a href="#mogucnosti">Mogućnosti</a><a href="#cijene">Cijene</a></div>
-    <div class="fcol"><div class="fcol-h">Podrška</div><a href="#">Pomoć</a><a href="mailto:podrska@odmoria.com">Kontakt</a></div>
-    <div class="fcol"><div class="fcol-h">Pravno</div><a href="/privacy.html">Privatnost</a><a href="/terms.html">Uvjeti</a></div>
+
+<div id="kako" class="how-wrap">
+  <div class="how-grid">
+    <div class="how-sticky">
+      <div class="sec-label">Kako radi</div>
+      <h2 class="sec-h">Od nule<br>do živog<br>vodiča.</h2>
+      <p style="margin-top:16px;font-size:15px;line-height:1.72;color:var(--soft);font-weight:300">Tri koraka koje napravi jednom, a funkcioniraju za svakog sljedećeg gosta.</p>
+    </div>
+    <div class="how-steps-col">
+      <div class="how-step">
+        <div class="how-n">1</div>
+        <div><div class="how-h">Postavi objekt jednom</div><p class="how-p">Naziv, lokacija, šifra vrata, Wi-Fi lozinka, lokalne preporuke, vozni red trajekta. Sve za 10 minuta, bez tehničkog znanja.</p></div>
+      </div>
+      <div class="how-step">
+        <div class="how-n">2</div>
+        <div><div class="how-h">Javnu stranicu objavi svugdje</div><p class="how-p">Facebook, Instagram bio, opis na Bookingu. Fotografije, dostupnost, gumb za kontakt — bez šifri, bez lozinki. Marketing koji radi dok spavaš.</p></div>
+      </div>
+      <div class="how-step">
+        <div class="how-n">3</div>
+        <div><div class="how-h">Privatni link tek nakon rezervacije</div><p class="how-p">Jedan klik u dashboardu — generirani link s datumima i svim uputama. Šifra se otključava sat vremena pred dolazak. Istječe dan nakon odjave.</p></div>
+      </div>
+    </div>
   </div>
-  <div class="footer-copy">© 2026 Odmoria. Napravljeno za iznajmljivače koji mare za goste.</div>
+</div>
+
+<div class="dark-split">
+  <div class="dark-inner">
+    <div>
+      <div class="dark-label">Dva linka</div>
+      <h2 class="dark-h">Javno za<br>marketing.<br>Privatno<br>za goste.</h2>
+      <p class="dark-p">Isti hub, dva pogleda. Javni link dijeli bez straha — šifra i Wi-Fi nisu na njemu. Privatni šalješ samo potvrđenim gostima.</p>
+    </div>
+    <div>
+      <div class="lcard"><div class="lbadge pub-b">Javna stranica</div><div class="lcard-h">Dijeli svugdje</div><div class="lcard-url">odmoria.com/p/villa-luna</div><p class="lcard-p">Fotografije, dostupnost, lokalni vodič, kontakt gumb. Bez šifri. Sigurno za Facebook, Instagram, Booking opis.</p></div>
+      <div class="lcard"><div class="lbadge priv-b">Gostinski link</div><div class="lcard-h">Samo za potvrđene goste</div><div class="lcard-url">odmoria.com/h/villa-luna-7fk2x</div><p class="lcard-p">Šifra vrata, Wi-Fi lozinka, upute za dolazak. Istječe dan nakon odjave. Deaktiviraš u sekundi.</p></div>
+    </div>
+  </div>
+</div>
+
+<div id="mogucnosti" class="feat-bg">
+  <div class="feat-sec">
+    <div class="sec-label">Mogućnosti</div>
+    <h2 class="sec-h">Sve što trebaš,<br>ništa što ne trebaš.</h2>
+    <div class="feat-grid">
+      <div class="fi"><div class="fi-tag">Sigurnost</div><div class="fi-ic">🔒</div><div class="fi-h">Vremenski zaključano</div><p class="fi-p">Šifra i Wi-Fi vidljivi sat vremena prije check-ina. Ne ranije, ne nikome drugome.</p></div>
+      <div class="fi"><div class="fi-tag">Automatizacija</div><div class="fi-ic">📅</div><div class="fi-h">iCal sinkronizacija</div><p class="fi-p">Poveži Booking.com i Airbnb. Zauzeti datumi ažuriraju se svaki sat, automatski.</p></div>
+      <div class="fi"><div class="fi-tag">Komunikacija</div><div class="fi-ic">💬</div><div class="fi-h">WhatsApp jednim klikom</div><p class="fi-p">Gotova poruka s linkom za gosta. Klik, otvori WhatsApp, pošalji. 10 sekundi.</p></div>
+      <div class="fi wide"><div class="fi-tag">Iskustvo gosta</div><div class="fi-ic">🗺️</div><div class="fi-h">Lokalni vodič koji prati brend objekta</div><p class="fi-p">Restorani, plaže, prijevoz — svaki s Google Maps linkom. Na Pro planu možeš ukloniti Odmoria branding i dodati vlastiti logo i boje.</p></div>
+      <div class="fi"><div class="fi-tag">Fotografije</div><div class="fi-ic">📷</div><div class="fi-h">Galerija do 30 fotografija</div><p class="fi-p">Upload drag & drop, naslovna fotografija, javno vidljivo.</p></div>
+      <div class="fi"><div class="fi-tag">Analitika</div><div class="fi-ic">📊</div><div class="fi-h">Vidiš što funkcionira</div><p class="fi-p">Koliko gostiju je otvorilo vodič, kliknulo WhatsApp, pogledalo dostupnost.</p></div>
+    </div>
+  </div>
+</div>
+
+<div class="testi-sec">
+  <div class="testi-inner">
+    <p class="testi-q">Gostima više ne trebam objašnjavati gdje je sef, koji je Wi-Fi, kako se dolazi. Pošaljem link i to je to. Za tjedan dana mi se isplatilo.</p>
+    <div class="testi-by">
+      <div class="testi-av">AM</div>
+      <div><div class="testi-name">Ana Matić</div><div class="testi-role">2 apartmana · Brač</div></div>
+    </div>
+  </div>
+</div>
+
+<div id="cijene" class="price-sec">
+  <div class="price-inner">
+    <div class="price-head">
+      <div><div class="sec-label">Cijene</div><h2 class="sec-h">Počni besplatno.</h2></div>
+      <div class="tog-wrap">
+        <button class="tog on" id="tg-mj" onclick="setP('mj')">Mjesečno</button>
+        <button class="tog" id="tg-god" onclick="setP('god')">Godišnje<span class="tog-save">−17%</span></button>
+      </div>
+    </div>
+    <div class="pgrid">
+      <div class="pcard">
+        <div class="ptier">Starter</div>
+        <div class="pamt"><sup>€</sup>0</div><div class="pper">zauvijek besplatno</div>
+        <div class="pdesc">Jedan objekt, sve osnovno. Za prve korake.</div>
+        <div class="pfl">
+          <div class="pf-item"><div class="pck">✓</div>1 objekt</div>
+          <div class="pf-item"><div class="pck">✓</div>Javna stranica i privatni link</div>
+          <div class="pf-item"><div class="pck">✓</div>5 fotografija</div>
+          <div class="pf-item"><div class="pck">✓</div>QR kod i Google Maps</div>
+        </div>
+        <button class="pcta out" onclick="location.href='/register.html'">Počni besplatno</button>
+      </div>
+      <div class="pcard pf">
+        <div class="ptier blue">Pro</div>
+        <div class="pamt" id="pro-a"><sup>€</sup>15</div><div class="pper" id="pro-n">na mjesec</div>
+        <div class="pdesc">Za ozbiljne iznajmljivače s više objekata.</div>
+        <div class="pfl">
+          <div class="pf-item"><div class="pck">✓</div>Do 5 objekata</div>
+          <div class="pf-item"><div class="pck">✓</div>30 fotografija po objektu</div>
+          <div class="pf-item"><div class="pck">✓</div>iCal sinkronizacija</div>
+          <div class="pf-item"><div class="pck">✓</div>Rezervacije s tokenima</div>
+          <div class="pf-item"><div class="pck">✓</div>Bez Odmoria brandinga</div>
+          <div class="pf-item"><div class="pck">✓</div>Analitika 90 dana</div>
+        </div>
+        <button class="pcta dark" onclick="location.href='/register.html'">Odaberi Pro</button>
+      </div>
+      <div class="pcard">
+        <div class="ptier">Business</div>
+        <div class="pamt" id="biz-a"><sup>€</sup>49</div><div class="pper" id="biz-n">na mjesec</div>
+        <div class="pdesc">Za property managere i timove.</div>
+        <div class="pfl">
+          <div class="pf-item"><div class="pck">✓</div>Do 15 objekata</div>
+          <div class="pf-item"><div class="pck">✓</div>Tim pristup (5 članova)</div>
+          <div class="pf-item"><div class="pck">✓</div>White-label branding</div>
+          <div class="pf-item"><div class="pck">✓</div>Vlastita domena</div>
+          <div class="pf-item"><div class="pck">✓</div>Analitika 12 mj</div>
+        </div>
+        <button class="pcta out" onclick="location.href='/register.html'">Odaberi Business</button>
+      </div>
+    </div>
+    <p style="text-align:center;font-size:13px;color:var(--ghost);font-weight:300;margin-top:20px">Više od 15 objekata? <a href="mailto:podrska@odmoria.com" style="color:var(--electric)">Javi nam se →</a></p>
+  </div>
+</div>
+
+<div class="cta-sec">
+  <h2 class="cta-h">Gosti dolaze.<br><i>Provizija ne.</i></h2>
+  <p class="cta-p">Postavi prvi objekt za manje od 10 minuta. Besplatno, bez kartice.</p>
+  <button class="btn-hero" onclick="location.href='/register.html'">
+    Postavi prvi objekt
+    <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M2 7.5h11M9 3.5l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <p class="cta-fine">Besplatno zauvijek za 1 objekt · Bez kreditne kartice · GDPR usklađeno</p>
+</div>
+
+<footer>
+  <div><div class="f-logo">Odmoria</div><p class="f-desc">Digitalni vodiči za goste kratkoročnih najma. Bez provizije.</p></div>
+  <div class="f-cols">
+    <div class="fc"><div class="fc-h">Proizvod</div><a href="#kako">Kako radi</a><a href="#mogucnosti">Mogućnosti</a><a href="#cijene">Cijene</a><a href="/help.html">Pomoć</a></div>
+    <div class="fc"><div class="fc-h">Podrška</div><a href="mailto:podrska@odmoria.com">Kontakt</a><a href="/help.html">FAQ</a></div>
+    <div class="fc"><div class="fc-h">Pravno</div><a href="/privacy.html">Privatnost</a><a href="/terms.html">Uvjeti</a></div>
+  </div>
 </footer>
+<div class="f-bottom">
+  <span>© 2026 Odmoria</span>
+  <span>Napravljeno za iznajmljivače koji mare za goste</span>
+</div>
+
 <script>
-function fmt(n){return n.toLocaleString('hr-HR')}
-function calc(){
-  var rev=parseFloat(document.getElementById('revenue').value)||0
-  var rate=parseFloat(document.getElementById('rate').value)||0
-  var ota=Math.round(rev*rate/100)
-  var save=Math.max(0,ota-120)
-  document.getElementById('r-ota').textContent=fmt(ota)+' €'
-  document.getElementById('r-save').textContent=fmt(save)+' €/god'
+function setP(m){
+  document.getElementById('tg-mj').classList.toggle('on',m==='mj')
+  document.getElementById('tg-god').classList.toggle('on',m==='god')
+  document.getElementById('pro-a').innerHTML=m==='mj'?'<sup>€</sup>15':'<sup>€</sup>12.50'
+  document.getElementById('pro-n').textContent=m==='mj'?'na mjesec':'na mjesec · €150/god'
+  document.getElementById('biz-a').innerHTML=m==='mj'?'<sup>€</sup>49':'<sup>€</sup>40.83'
+  document.getElementById('biz-n').textContent=m==='mj'?'na mjesec':'na mjesec · €490/god'
 }
-calc()
+// subtle reveal
+var obs=new IntersectionObserver(function(en){en.forEach(function(e){if(e.isIntersecting){e.target.style.opacity='1';e.target.style.transform='translateY(0)'}})},{threshold:.08})
+document.querySelectorAll('.how-step,.fi,.lcard,.pcard,.testi-inner').forEach(function(el){el.style.opacity='0';el.style.transform='translateY(14px)';el.style.transition='opacity .4s ease,transform .4s ease';obs.observe(el)})
 </script>
 </body>
 </html>
