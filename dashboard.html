@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
 <style>
-:root{--black:#0A0A0A;--warm-white:#F7F5F1;--pure-white:#FFFFFF;--electric:#2D5BE3;--electric-dk:#1A3FA8;--stone:#E8E2D9;--stone-mid:#C8C0B4;--ink:#1A1917;--body:#4A4540;--soft:#6B6560;--ghost:#9B9590;--sidebar:#0A0A0A;--sidebar-border:#1a1a1a;--sidebar-hover:#141414;--sidebar-on:#1d1d1d;--green:#15803D;--green-bg:#DCFCE7;--serif:'DM Serif Display',Georgia,serif;--sans:'DM Sans',system-ui,sans-serif}
+:root{--black:#5A3323;--warm-white:#F7F5F1;--pure-white:#FFFFFF;--electric:#A15C3E;--electric-dk:#7E4630;--stone:#E8E2D9;--stone-mid:#C8C0B4;--ink:#1A1917;--body:#4A4540;--soft:#6B6560;--ghost:#9B9590;--sidebar:#5A3323;--sidebar-border:#6E4230;--sidebar-hover:#63392A;--sidebar-on:#6B4230;--green:#15803D;--green-bg:#DCFCE7;--serif:'DM Serif Display',Georgia,serif;--sans:'DM Sans',system-ui,sans-serif}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:var(--sans);background:var(--warm-white);color:var(--ink);-webkit-font-smoothing:antialiased;min-height:100dvh;display:flex;flex-direction:column}
 a{color:inherit;text-decoration:none}
@@ -27,22 +27,22 @@ aside{width:228px;flex-shrink:0;background:var(--sidebar);display:flex;flex-dire
 .aside-head{padding:18px 16px 16px;border-bottom:1px solid var(--sidebar-border);flex-shrink:0}
 .aside-logo{font-family:var(--serif);font-size:17px;color:#fff;margin-bottom:14px}
 .prop-select-wrap{position:relative}
-.prop-sel{width:100%;background:#141414;border:1px solid #2a2a2a;border-radius:7px;padding:8px 11px;color:#ccc;font-family:var(--sans);font-size:12.5px;appearance:none;cursor:pointer;padding-right:28px}
-.prop-sel:focus{outline:none;border-color:#3a3a3a}
-.prop-sel-arrow{position:absolute;right:10px;top:50%;transform:translateY(-50%);color:#777;font-size:10px;pointer-events:none}
+.prop-sel{width:100%;background:#63392A;border:1px solid #6E4230;border-radius:7px;padding:8px 11px;color:#E8D9CC;font-family:var(--sans);font-size:12.5px;appearance:none;cursor:pointer;padding-right:28px}
+.prop-sel:focus{outline:none;border-color:#8A5A42}
+.prop-sel-arrow{position:absolute;right:10px;top:50%;transform:translateY(-50%);color:#CBA98F;font-size:10px;pointer-events:none}
 .aside-nav{flex:1;overflow-y:auto;padding:8px 10px}
-.nav-section{font-size:9.5px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:#828282;padding:10px 6px 5px;margin-top:4px}
-.nav-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:7px;font-size:13px;font-weight:400;color:#9c9c9c;cursor:pointer;transition:.12s;margin-bottom:1px;border:none;background:transparent;width:100%;text-align:left}
-.nav-item:hover{background:var(--sidebar-hover);color:#ccc}
+.nav-section{font-size:9.5px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:#CBA98F;padding:10px 6px 5px;margin-top:4px}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:7px;font-size:13px;font-weight:400;color:#D9BFAE;cursor:pointer;transition:.12s;margin-bottom:1px;border:none;background:transparent;width:100%;text-align:left}
+.nav-item:hover{background:var(--sidebar-hover);color:#F0E4DA}
 .nav-item.on{background:var(--sidebar-on);color:#fff}
 .nav-item svg{flex-shrink:0;opacity:.6}
 .nav-item.on svg{opacity:1}
-.nav-item-add{color:#2D5BE3;margin-top:4px}
-.nav-item-add:hover{background:#0d1829;color:#60A5FA}
+.nav-item-add{color:#E0A280;margin-top:4px}
+.nav-item-add:hover{background:#63392A;color:#F0C4A8}
 .aside-user{border-top:1px solid var(--sidebar-border);padding:13px 16px;display:flex;align-items:center;gap:10px;flex-shrink:0}
 .user-av{width:28px;height:28px;border-radius:50%;background:var(--electric);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0}
-.user-name{font-size:12.5px;font-weight:500;color:#ccc;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.user-plan{font-size:10px;color:#868686}
+.user-name{font-size:12.5px;font-weight:500;color:#F0E4DA;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.user-plan{font-size:10px;color:#CBA98F}
 
 /* MAIN */
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
@@ -54,7 +54,10 @@ aside{width:228px;flex-shrink:0;background:var(--sidebar);display:flex;flex-dire
 .topbar-link{display:flex;align-items:center;gap:6px;background:var(--warm-white);border:1px solid var(--stone);border-radius:7px;padding:5px 12px;font-size:12px;color:var(--soft)}
 .topbar-link-url{color:var(--electric);font-weight:500}
 .topbar-copy{font-size:11px;font-weight:600;background:var(--black);color:#fff;padding:3px 9px;border-radius:5px;border:none;cursor:pointer;transition:background .12s}
-.topbar-copy:hover{background:#222}
+.topbar-copy:hover{background:#6B3F2D}
+.range-chips{display:flex;gap:2px;background:var(--warm-white);border:1px solid var(--stone);border-radius:20px;padding:2px;flex-shrink:0}
+.range-chip{font-size:12px;font-weight:500;padding:6px 13px;border-radius:20px;color:var(--ghost);border:none;background:transparent;cursor:pointer;font-family:var(--sans)}
+.range-chip.on{background:var(--black);color:#fff}
 
 /* CONTENT */
 .content{flex:1;overflow-y:auto;padding:28px 32px;display:flex;flex-direction:column;gap:0}
@@ -63,7 +66,7 @@ aside{width:228px;flex-shrink:0;background:var(--sidebar);display:flex;flex-dire
 
 /* BUTTONS */
 .btn{display:inline-flex;align-items:center;gap:6px;font-weight:500;border-radius:7px;padding:8px 16px;font-size:13.5px;border:none;cursor:pointer;transition:all .12s;font-family:var(--sans)}
-.btn-dark{background:var(--black);color:#fff}.btn-dark:hover{background:#222}
+.btn-dark{background:var(--black);color:#fff}.btn-dark:hover{background:#6B3F2D}
 .btn-el{background:var(--electric);color:#fff}.btn-el:hover{background:var(--electric-dk)}
 .btn-out{background:var(--pure-white);color:var(--ink);border:1px solid var(--stone)}.btn-out:hover{border-color:var(--stone-mid)}
 .btn-ghost-s{background:transparent;color:var(--soft);border:none}.btn-ghost-s:hover{color:var(--ink)}
@@ -86,13 +89,13 @@ aside{width:228px;flex-shrink:0;background:var(--sidebar);display:flex;flex-dire
 /* WELCOME */
 .welcome{background:var(--black);border-radius:14px;padding:24px 28px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:20px}
 .welcome-left h2{font-family:var(--serif);font-size:20px;color:#fff;font-weight:400;margin-bottom:4px}
-.welcome-left p{font-size:13.5px;color:#9a9a9a;font-weight:300;line-height:1.55}
+.welcome-left p{font-size:13.5px;color:#D9BFAE;font-weight:300;line-height:1.55}
 .welcome-btns{display:flex;gap:8px;flex-shrink:0}
 .wbtn{padding:9px 18px;border-radius:7px;font-size:13px;font-weight:500;cursor:pointer;border:none;font-family:var(--sans)}
 .wbtn-w{background:#fff;color:var(--black)}
 .wbtn-w:hover{background:#f0f0f0}
-.wbtn-dim{background:rgba(255,255,255,.06);color:#888;border:1px solid #222}
-.wbtn-dim:hover{background:rgba(255,255,255,.1)}
+.wbtn-dim{background:rgba(255,255,255,.08);color:#D9BFAE;border:1px solid #6E4230}
+.wbtn-dim:hover{background:rgba(255,255,255,.13)}
 
 /* FORMS */
 .fg{margin-bottom:14px}
@@ -120,10 +123,10 @@ aside{width:228px;flex-shrink:0;background:var(--sidebar);display:flex;flex-dire
 
 /* WIFI PREVIEW */
 .wifi-prev{background:var(--black);border-radius:10px;padding:14px;margin-top:4px}
-.wp-net-l{font-size:9.5px;color:#868686;text-transform:uppercase;letter-spacing:.07em;margin-bottom:2px}
+.wp-net-l{font-size:9.5px;color:#CBA98F;text-transform:uppercase;letter-spacing:.07em;margin-bottom:2px}
 .wp-net{font-size:14px;font-weight:500;color:#fff;margin-bottom:10px}
-.wp-pw{background:#111;border-radius:7px;padding:11px 13px;display:flex;align-items:center;justify-content:space-between;gap:10px}
-.wp-pw-l{font-size:9.5px;color:#868686;margin-bottom:2px}
+.wp-pw{background:#4A2A1C;border-radius:7px;padding:11px 13px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.wp-pw-l{font-size:9.5px;color:#CBA98F;margin-bottom:2px}
 .wp-pw-v{font-size:17px;font-weight:500;color:#fff;letter-spacing:.04em}
 .wp-copy{padding:7px 12px;border-radius:6px;background:var(--electric);border:none;color:#fff;font-size:11px;font-weight:500;cursor:pointer;font-family:var(--sans)}
 
@@ -161,7 +164,7 @@ aside{width:228px;flex-shrink:0;background:var(--sidebar);display:flex;flex-dire
 .link-card{border:1px solid var(--stone);border-radius:12px;padding:20px;background:var(--pure-white)}
 .lc-badge{font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;padding:3px 9px;border-radius:20px;display:inline-block;margin-bottom:10px}
 .pub-badge{background:var(--green-bg);color:var(--green)}
-.priv-badge{background:#EEF3FB;color:var(--electric)}
+.priv-badge{background:#F1E3DA;color:var(--electric)}
 .lc-h{font-size:14px;font-weight:500;color:var(--ink);margin-bottom:5px}
 .lc-url{font-family:monospace;font-size:12px;color:var(--electric);margin-bottom:8px;font-weight:500}
 .lc-desc{font-size:13px;color:var(--soft);font-weight:300;line-height:1.6;margin-bottom:12px}
@@ -169,7 +172,7 @@ aside{width:228px;flex-shrink:0;background:var(--sidebar);display:flex;flex-dire
 /* PLAN BANNER */
 .plan-banner{background:var(--black);border-radius:12px;padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;gap:14px}
 .pb-text h4{font-size:13.5px;font-weight:500;color:#fff;margin-bottom:3px}
-.pb-text p{font-size:12px;color:#9a9a9a;font-weight:300;line-height:1.5}
+.pb-text p{font-size:12px;color:#D9BFAE;font-weight:300;line-height:1.5}
 .pb-icon{font-size:18px;flex-shrink:0}
 
 /* SUBSCRIPTION */
@@ -309,6 +312,11 @@ aside{width:228px;flex-shrink:0;background:var(--sidebar);display:flex;flex-dire
     <div class="topbar">
       <button class="ham" onclick="toggleSide()"><span></span><span></span><span></span></button>
       <div class="topbar-title" id="topbar-title">Pregled</div>
+      <div class="range-chips">
+        <button class="range-chip" data-r="7" onclick="setRange(7)">7 dana</button>
+        <button class="range-chip on" data-r="30" onclick="setRange(30)">30 dana</button>
+        <button class="range-chip" data-r="180" onclick="setRange(180)">6 mjeseci</button>
+      </div>
       <div class="topbar-r">
         <div class="topbar-link" id="topbar-link" style="display:none">
           <span style="font-size:11px;color:var(--ghost)">Javno:</span>
@@ -333,10 +341,25 @@ aside{width:228px;flex-shrink:0;background:var(--sidebar);display:flex;flex-dire
     </div>
   </div>
   <div class="stats-grid">
-    <div class="stat-card"><div class="stat-label">Pregledi stranice</div><div class="stat-value">—</div><div class="stat-sub">Analitika uskoro</div></div>
-    <div class="stat-card"><div class="stat-label">Rezervacije</div><div class="stat-value">—</div><div class="stat-sub">Uskoro</div></div>
+    <div class="stat-card"><div class="stat-label">Pregledi stranice</div><div class="stat-value" id="stat-views">—</div><div class="stat-sub" id="stat-views-sub">Zadnjih 30 dana</div></div>
+    <div class="stat-card"><div class="stat-label">Aktivne rezervacije</div><div class="stat-value" id="stat-bookings">—</div><div class="stat-sub">Trenutno</div></div>
     <div class="stat-card"><div class="stat-label">iCal status</div><div class="stat-value" id="ical-status">—</div><div class="stat-sub">Booking + Airbnb</div></div>
     <div class="stat-card"><div class="stat-label">Provizija</div><div class="stat-value" style="color:var(--green)">0 €</div><div class="stat-sub">Po rezervaciji</div></div>
+  </div>
+  <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:12px;margin-bottom:12px">
+    <div class="card">
+      <div class="card-head"><div class="card-title">Pregledi stranice</div><div style="font-family:var(--serif);font-size:18px;color:var(--electric)" id="chart-total">—</div></div>
+      <div class="card-body">
+        <div id="views-chart-bars" style="display:flex;align-items:flex-end;gap:10px;height:90px;padding:0 2px"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><div class="card-title">Tvoj profil</div><span id="checklist-count" style="font-size:11.5px;color:var(--soft)">—</span></div>
+      <div class="card-body">
+        <div style="height:4px;background:var(--stone);border-radius:2px;margin-bottom:14px;overflow:hidden"><div id="checklist-bar" style="width:0%;height:100%;background:var(--electric);transition:width .3s"></div></div>
+        <div id="checklist-items" style="display:flex;flex-direction:column;gap:9px"></div>
+      </div>
+    </div>
   </div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
     <div class="card" style="cursor:pointer" onclick="nav('avail',document.getElementById('ni-avail'))"><div class="card-head"><div class="card-title">📅 Ažuriraj dostupnost</div></div><div style="padding:14px;font-size:13px;color:var(--soft);font-weight:300;line-height:1.6">Označi zauzete termine da gosti vide slobodne datume.</div></div>
@@ -615,6 +638,7 @@ let USER_PLAN='free',PLAN_LIMIT=1
 let calMonth=new Date().getMonth(),calYear=new Date().getFullYear()
 let bookedDays=[],icalDays=[]
 let lastBkUrl='',lastBkPhone=''
+let STAT_RANGE=30,localCount=0
 
 async function init(){
   const{data:{session}}=await sb.auth.getSession()
@@ -660,7 +684,7 @@ function showPlanBanner(){
   b.id='plan-banner-existing'
   b.className='plan-banner'
   const locked=PROPS.length-PLAN_LIMIT
-  b.innerHTML=`<div class="pb-icon">🔒</div><div class="pb-text" style="flex:1"><h4>${locked} objekt${locked>1?'a':''} zaključano</h4><p>Tvoj ${USER_PLAN} plan uključuje ${PLAN_LIMIT} objekt${PLAN_LIMIT>1?'a':''}. Nadogradi za pristup svima.</p></div><button class="btn btn-out btn-sm" onclick="nav('sub',document.getElementById('ni-sub'))" style="color:#fff;border-color:#2a2a2a;flex-shrink:0">Nadogradi →</button>`
+  b.innerHTML=`<div class="pb-icon">🔒</div><div class="pb-text" style="flex:1"><h4>${locked} objekt${locked>1?'a':''} zaključano</h4><p>Tvoj ${USER_PLAN} plan uključuje ${PLAN_LIMIT} objekt${PLAN_LIMIT>1?'a':''}. Nadogradi za pristup svima.</p></div><button class="btn btn-out btn-sm" onclick="nav('sub',document.getElementById('ni-sub'))" style="color:#fff;border-color:#6E4230;flex-shrink:0">Nadogradi →</button>`
   document.querySelector('.content').prepend(b)
 }
 
@@ -679,6 +703,9 @@ async function selectProp(p){
   await loadSection()
   await loadAvail()
   await loadLocal()
+  await loadOverviewStats()
+  await loadPageViewsChart()
+  renderChecklist()
 }
 
 window.onPropChange=async()=>{
@@ -753,8 +780,76 @@ async function loadLocal(){
   const{data}=await sb.from('local_places').select('*').eq('property_id',PROP.id).order('sort_order')
   const el=document.getElementById('local-list')
   const places=data||[]
+  localCount=places.length
   if(!places.length){el.innerHTML='<div style="text-align:center;padding:20px;color:var(--ghost);font-size:13px;font-weight:300">Nema mjesta. Dodaj prvu preporuku!</div>';return}
   el.innerHTML=places.map(p=>`<div style="border:1px solid var(--stone);border-radius:8px;padding:11px 14px;margin-bottom:8px;display:flex;align-items:center;gap:12px;background:var(--pure-white)"><span style="font-size:22px;width:30px;text-align:center">${p.icon||'📍'}</span><div style="flex:1"><div style="font-size:13.5px;font-weight:500">${esc(p.name)}</div><div style="font-size:11.5px;color:var(--ghost);font-weight:300">${esc(p.category)}${p.distance?' · '+esc(p.distance):''}</div></div>${p.maps_query?`<button onclick="window.open('https://www.google.com/maps/search/?api=1&query='+encodeURIComponent('${esc(p.maps_query)}'),'_blank')" style="font-size:13px;background:none;border:none;cursor:pointer;color:var(--soft)">🗺️</button>`:''}<button onclick="delPlace('${p.id}')" style="font-size:12px;color:#EF4444;background:none;border:none;cursor:pointer;padding:4px 8px;font-family:var(--sans)">Ukloni</button></div>`).join('')
+}
+
+window.setRange=async(days)=>{
+  STAT_RANGE=days
+  document.querySelectorAll('.range-chip').forEach(b=>b.classList.toggle('on',+b.dataset.r===days))
+  const sub=document.getElementById('stat-views-sub')
+  if(sub)sub.textContent=days===7?'Zadnjih 7 dana':days===180?'Zadnjih 6 mjeseci':'Zadnjih 30 dana'
+  await loadOverviewStats()
+}
+
+async function loadOverviewStats(){
+  if(!PROP)return
+  const since=new Date();since.setDate(since.getDate()-STAT_RANGE)
+  const{count:views}=await sb.from('page_views').select('*',{count:'exact',head:true}).eq('property_id',PROP.id).gte('timestamp',since.toISOString())
+  const ve=document.getElementById('stat-views');if(ve)ve.textContent=views??0
+  const{count:bk}=await sb.from('bookings').select('*',{count:'exact',head:true}).eq('property_id',PROP.id).eq('is_active',true)
+  const be=document.getElementById('stat-bookings');if(be)be.textContent=bk??0
+}
+
+async function loadPageViewsChart(){
+  if(!PROP)return
+  const now=new Date()
+  const start=new Date(now.getFullYear(),now.getMonth()-5,1)
+  const{data}=await sb.from('page_views').select('timestamp').eq('property_id',PROP.id).gte('timestamp',start.toISOString())
+  const buckets=[0,0,0,0,0,0]
+  const labels=[]
+  for(let i=5;i>=0;i--){
+    const d=new Date(now.getFullYear(),now.getMonth()-i,1)
+    labels.push(MONTHS[d.getMonth()].slice(0,3))
+  }
+  ;(data||[]).forEach(r=>{
+    const d=new Date(r.timestamp)
+    const diff=(now.getFullYear()-d.getFullYear())*12+(now.getMonth()-d.getMonth())
+    if(diff>=0&&diff<6)buckets[5-diff]++
+  })
+  renderViewsChart(buckets,labels)
+}
+
+function renderViewsChart(buckets,labels){
+  const wrap=document.getElementById('views-chart-bars')
+  const totalEl=document.getElementById('chart-total')
+  if(!wrap)return
+  const max=Math.max(...buckets,1)
+  const last=buckets.length-1
+  if(totalEl)totalEl.textContent=buckets[last]
+  wrap.innerHTML=buckets.map((v,i)=>{
+    const h=Math.round((v/max)*72)+4
+    const isLast=i===last
+    return`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0"><div style="width:100%;max-width:26px;height:${h}px;background:${isLast?'var(--electric)':'#B58768'};border-radius:4px 4px 0 0;position:relative">${isLast?`<div style="position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:11px;font-weight:600;color:var(--ink);white-space:nowrap">${v}</div>`:''}</div><span style="font-size:10.5px;color:${isLast?'var(--ink)':'var(--ghost)'};font-weight:${isLast?600:400}">${labels[i]}</span></div>`
+  }).join('')
+}
+
+function renderChecklist(){
+  if(!PROP)return
+  const items=[
+    {label:'Fotografije objekta',done:(PROP.photo_urls?.length||0)>0},
+    {label:'Check-in i Wi-Fi',done:!!(SECTION?.wifi_pass&&SECTION?.door_code)},
+    {label:'Dostupnost',done:bookedDays.length>0},
+    {label:'Lokalni vodič',done:localCount>0}
+  ]
+  const done=items.filter(i=>i.done).length
+  const bar=document.getElementById('checklist-bar')
+  if(bar)bar.style.width=Math.round(done/items.length*100)+'%'
+  const cnt=document.getElementById('checklist-count')
+  if(cnt)cnt.textContent=`${done}/${items.length} dovršeno`
+  const list=document.getElementById('checklist-items')
+  if(list)list.innerHTML=items.map(i=>`<div style="display:flex;align-items:center;gap:9px;font-size:12.5px;color:${i.done?'var(--ink)':'var(--ghost)'}"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="color:${i.done?'var(--electric)':'var(--stone-mid)'};flex-shrink:0"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/>${i.done?'<path d="M4.3 7.2l1.8 1.8 3.6-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>':''}</svg>${i.label}</div>`).join('')
 }
 
 window.addPlace=async()=>{
