@@ -46,6 +46,10 @@ nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.93);backdrop-f
 .content{padding:16px 14px 120px}
 .prop-name{font-size:22px;font-weight:800;letter-spacing:-.02em;margin-bottom:6px}
 .prop-meta{display:flex;gap:8px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);margin-bottom:12px}
+.detail-row{display:flex;flex-wrap:wrap;gap:16px 22px;margin-bottom:14px}
+.detail-item{display:flex;align-items:center;gap:6px;font-size:13.5px;color:var(--text);font-weight:700}
+.detail-item .ic{font-size:16px}
+.detail-item small{font-weight:400;color:var(--muted);margin-left:1px}
 .divider{height:1px;background:var(--border);margin:18px 0}
 .am-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:18px}
 .am-item{display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:500}
@@ -157,6 +161,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.93);backdrop-f
     <div id="main-col">
       <div class="prop-name" id="prop-name"></div>
       <div class="prop-meta" id="prop-meta"></div>
+      <div class="detail-row" id="detail-row"></div>
       <div class="divider"></div>
       <div class="am-grid" id="am-grid"></div>
       <div class="divider"></div>
@@ -286,9 +291,15 @@ async function loadPage() {
   const meta = []
   if (prop.location) meta.push('📍 ' + prop.location)
   if (prop.type) meta.push('🏠 ' + prop.type)
-  if (prop.max_guests) meta.push('👥 ' + prop.max_guests + ' gostiju')
-  if (prop.bedrooms) meta.push('🛏️ ' + prop.bedrooms + ' sobe')
   document.getElementById('prop-meta').textContent = meta.join(' · ')
+
+  const details = []
+  if (prop.max_guests) details.push({ic:'👥', v:prop.max_guests, l:prop.max_guests===1?'gost':'gostiju'})
+  if (prop.bedrooms) details.push({ic:'🛏️', v:prop.bedrooms, l:prop.bedrooms===1?'soba':'sobe'})
+  if (prop.beds) details.push({ic:'🛌', v:prop.beds, l:prop.beds===1?'krevet':'kreveta'})
+  if (prop.bathrooms) details.push({ic:'🚿', v:prop.bathrooms, l:prop.bathrooms===1?'kupaonica':'kupaonice'})
+  if (prop.size_m2) details.push({ic:'📐', v:prop.size_m2, l:'m²'})
+  document.getElementById('detail-row').innerHTML = details.map(d => `<div class="detail-item"><span class="ic">${d.ic}</span>${d.v}<small>${esc(d.l)}</small></div>`).join('')
 
   if (price > 0) {
     document.getElementById('d-price').innerHTML = `${price} € <span style="font-size:14px;font-weight:400;color:var(--muted)">/ noć</span>`

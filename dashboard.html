@@ -109,6 +109,7 @@ aside{width:228px;flex-shrink:0;background:var(--sidebar);display:flex;flex-dire
 .fg-hint{font-size:11.5px;color:var(--ghost);margin-top:4px;font-weight:300}
 .fg-hint.safe{color:#15803D;font-weight:400}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
 .save-row{display:flex;justify-content:flex-end;padding-top:16px;border-top:1px solid var(--stone);margin-top:4px;gap:8px}
 
 /* TOGGLE ROWS */
@@ -229,6 +230,7 @@ aside{width:228px;flex-shrink:0;background:var(--sidebar);display:flex;flex-dire
   .link-cards-grid,.sub-grid{grid-template-columns:1fr}
   .welcome{flex-direction:column;align-items:flex-start}
   .g2{grid-template-columns:1fr}
+  .g5{grid-template-columns:1fr 1fr}
   .ical-steps{grid-template-columns:1fr}
 }
 @media(min-width:1280px){.content{padding:32px 48px}}
@@ -384,6 +386,15 @@ aside{width:228px;flex-shrink:0;background:var(--sidebar);display:flex;flex-dire
       <div class="g2">
         <div class="fg"><label class="fl">Vrsta</label><select class="fsel" id="prop-type"><option>Apartman</option><option>Villa</option><option>Kuća</option><option>Studio</option><option>Soba</option></select></div>
         <div class="fg"><label class="fl">Lokacija</label><input class="fi" id="prop-location" placeholder="Hvar, Hrvatska"></div>
+      </div>
+      <div class="fg"><label class="fl">Kapacitet i veličina</label>
+        <div class="g5">
+          <div><input class="fi" id="prop-guests" type="number" min="1" placeholder="Gosti"></div>
+          <div><input class="fi" id="prop-bedrooms" type="number" min="0" placeholder="Sobe"></div>
+          <div><input class="fi" id="prop-beds" type="number" min="0" placeholder="Kreveti"></div>
+          <div><input class="fi" id="prop-bathrooms" type="number" min="0" step="0.5" placeholder="Kupaonice"></div>
+          <div><input class="fi" id="prop-size" type="number" min="0" placeholder="m²"></div>
+        </div>
       </div>
       <div class="fg"><label class="fl">Poruka dobrodošlice</label><textarea class="fta" id="prop-welcome" rows="3" placeholder="Dobrodošli u naš apartman..."></textarea></div>
       <div class="g2">
@@ -743,6 +754,11 @@ function fillPropForm(){
   document.getElementById('prop-name').value=PROP.name||''
   document.getElementById('prop-type').value=PROP.type||'Apartman'
   document.getElementById('prop-location').value=PROP.location||''
+  document.getElementById('prop-guests').value=PROP.max_guests||''
+  document.getElementById('prop-bedrooms').value=PROP.bedrooms||''
+  document.getElementById('prop-beds').value=PROP.beds||''
+  document.getElementById('prop-bathrooms').value=PROP.bathrooms||''
+  document.getElementById('prop-size').value=PROP.size_m2||''
   document.getElementById('prop-welcome').value=PROP.welcome_msg||''
   document.getElementById('prop-host').value=PROP.host_name||''
   document.getElementById('prop-phone').value=PROP.phone||''
@@ -751,7 +767,8 @@ function fillPropForm(){
 
 window.saveProp=async()=>{
   if(!PROP)return
-  const u={name:v('prop-name'),type:v('prop-type'),location:v('prop-location'),welcome_msg:v('prop-welcome'),host_name:v('prop-host'),phone:v('prop-phone'),email:v('prop-email')}
+  const u={name:v('prop-name'),type:v('prop-type'),location:v('prop-location'),welcome_msg:v('prop-welcome'),host_name:v('prop-host'),phone:v('prop-phone'),email:v('prop-email'),
+    max_guests:v('prop-guests')?+v('prop-guests'):null,bedrooms:v('prop-bedrooms')?+v('prop-bedrooms'):null,beds:v('prop-beds')?+v('prop-beds'):null,bathrooms:v('prop-bathrooms')?+v('prop-bathrooms'):null,size_m2:v('prop-size')?+v('prop-size'):null}
   const{error}=await sb.from('properties').update(u).eq('id',PROP.id)
   if(error){showA('prop-alert','err',error.message);return}
   Object.assign(PROP,u)
@@ -1026,7 +1043,8 @@ window.uploadPhotos=async(files)=>{
   }
   if(uploaded>0){
     const cover=PROP.cover_photo_url||urls[0]
-    await sb.from('properties').update({photo_urls:urls,cover_photo_url:cover}).eq('id',PROP.id)
+    const{error:saveErr}=await sb.from('properties').update({photo_urls:urls,cover_photo_url:cover}).eq('id',PROP.id)
+    if(saveErr){toast('Greška pri spremanju: '+saveErr.message);zone.style.opacity='';zone.style.pointerEvents='';document.getElementById('photo-input').value='';return}
     PROP.photo_urls=urls;PROP.cover_photo_url=cover
     renderPhotos(urls)
     document.getElementById('photo-count-lbl').textContent=urls.length+' / '+(PHOTO_LIMITS[USER_PLAN]||5)
