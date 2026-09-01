@@ -140,9 +140,11 @@ aside{width:228px;flex-shrink:0;background:var(--sidebar);display:flex;flex-dire
 .cal-dow{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:5px}
 .cal-dow span{text-align:center;font-size:10px;font-weight:500;color:var(--ghost)}
 .cal-days{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
-.cday{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:400;border-radius:5px;cursor:pointer;transition:.1s;background:var(--warm-white);color:var(--ink)}
+.cday{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:400;border-radius:5px;cursor:pointer;transition:background .12s;background:var(--warm-white);color:var(--ink)}
 .cday:hover{background:var(--stone)}
 .cday.taken{background:var(--electric);color:#fff}
+.cday.range-start{background:var(--electric-dk);color:#fff;box-shadow:0 0 0 2px var(--electric-dk)}
+.cday.range-preview{background:var(--electric);opacity:.5;color:#fff}
 .cday.ical{background:#7C3AED;color:#fff;cursor:not-allowed}
 .cday.ical:hover{background:#7C3AED}
 .cal-leg{display:flex;gap:14px;margin-top:10px;font-size:11.5px;color:var(--ghost)}
@@ -485,7 +487,7 @@ aside{width:228px;flex-shrink:0;background:var(--sidebar);display:flex;flex-dire
   <div class="card card-last">
     <div class="card-head"><div class="card-title">Kalendar dostupnosti</div><button class="btn btn-dark btn-sm" onclick="saveAvail()">Spremi</button></div>
     <div class="card-body">
-      <div style="background:var(--warm-white);border:1px solid var(--stone);border-radius:8px;padding:11px 14px;font-size:13px;color:var(--soft);font-weight:300;margin-bottom:16px;line-height:1.6">Klikni na datum za označavanje kao zauzeto. Plavo = ručno, ljubičasto = Booking/Airbnb.</div>
+      <div style="background:var(--warm-white);border:1px solid var(--stone);border-radius:8px;padding:11px 14px;font-size:13px;color:var(--soft);font-weight:300;margin-bottom:16px;line-height:1.6">Klikni prvi i zadnji datum da označiš cijeli period kao zauzet (ili isti datum dvaput za jedan dan). Smeđe = ručno, ljubičasto = Booking/Airbnb.</div>
       <div class="cal-wrap">
         <div class="cal-head">
           <button class="cal-nbtn" onclick="calNav(-1)">‹</button>
@@ -638,6 +640,7 @@ let USER=null,PROPS=[],PROP=null,SECTION=null
 let USER_PLAN='free',PLAN_LIMIT=1
 let calMonth=new Date().getMonth(),calYear=new Date().getFullYear()
 let bookedDays=[],icalDays=[]
+let rangeStart=null,hoverDs=null
 let lastBkUrl='',lastBkPhone=''
 let STAT_RANGE=30,localCount=0
 
@@ -878,31 +881,68 @@ async function loadAvail(){
   renderCal()
 }
 
+function datesBetween(a,b){
+  const out=[]
+  let d=new Date(a+'T00:00:00')
+  const end=new Date(b+'T00:00:00')
+  while(d<=end){out.push(d.toISOString().slice(0,10));d.setDate(d.getDate()+1)}
+  return out
+}
+
 function renderCal(){
   const el=document.getElementById('cal-title')
   if(el)el.textContent=MONTHS[calMonth]+' '+calYear+'.'
   const fd=(new Date(calYear,calMonth,1).getDay()+6)%7
   const dim=new Date(calYear,calMonth+1,0).getDate()
+  let previewSet=null
+  if(rangeStart&&hoverDs){
+    const[from,to]=rangeStart<hoverDs?[rangeStart,hoverDs]:[hoverDs,rangeStart]
+    previewSet=new Set(datesBetween(from,to))
+  }
   let h=''
   for(let i=0;i<fd;i++)h+='<div></div>'
   for(let d=1;d<=dim;d++){
     const ds=`${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`
     const ical=icalDays.includes(ds)
     const taken=bookedDays.includes(ds)
-    h+=`<div class="cday${ical?' ical':taken?' taken':''}" onclick="toggleDay('${ds}')">${d}</div>`
+    let cls='cday'
+    if(ical)cls+=' ical'
+    else if(rangeStart===ds)cls+=' range-start'
+    else if(previewSet&&previewSet.has(ds))cls+=' range-preview'
+    else if(taken)cls+=' taken'
+    h+=`<div class="${cls}" onclick="toggleDay('${ds}')" onmouseover="previewRange('${ds}')">${d}</div>`
   }
   const days=document.getElementById('cal-days')
   if(days)days.innerHTML=h
 }
 
-window.calNav=(d)=>{calMonth+=d;if(calMonth>11){calMonth=0;calYear++}if(calMonth<0){calMonth=11;calYear--}renderCal()}
+window.previewRange=(ds)=>{
+  if(!rangeStart||hoverDs===ds)return
+  hoverDs=ds
+  renderCal()
+}
+
+window.calNav=(d)=>{calMonth+=d;if(calMonth>11){calMonth=0;calYear++}if(calMonth<0){calMonth=11;calYear--}rangeStart=null;hoverDs=null;renderCal()}
+
 window.toggleDay=async(ds)=>{
   if(!PROP)return
   if(icalDays.includes(ds)){toast('Datum je sinkroniziran s Booking/Airbnb — mijenja se automatski 🔒');return}
-  const idx=bookedDays.indexOf(ds)
-  if(idx>-1){bookedDays.splice(idx,1);await sb.from('availability').delete().eq('property_id',PROP.id).eq('date',ds)}
-  else{bookedDays.push(ds);await sb.from('availability').upsert({property_id:PROP.id,date:ds,is_booked:true,source:'manual'})}
-  renderCal()
+  if(!rangeStart){rangeStart=ds;hoverDs=null;renderCal();return}
+  if(rangeStart===ds){
+    const idx=bookedDays.indexOf(ds)
+    if(idx>-1){bookedDays.splice(idx,1);await sb.from('availability').delete().eq('property_id',PROP.id).eq('date',ds)}
+    else{bookedDays.push(ds);await sb.from('availability').upsert({property_id:PROP.id,date:ds,is_booked:true,source:'manual'})}
+    rangeStart=null;hoverDs=null;renderCal()
+    return
+  }
+  const[from,to]=rangeStart<ds?[rangeStart,ds]:[ds,rangeStart]
+  const rangeDates=datesBetween(from,to).filter(x=>!icalDays.includes(x))
+  const newDates=rangeDates.filter(x=>!bookedDays.includes(x))
+  if(newDates.length){
+    await sb.from('availability').upsert(newDates.map(x=>({property_id:PROP.id,date:x,is_booked:true,source:'manual'})))
+    bookedDays.push(...newDates)
+  }
+  rangeStart=null;hoverDs=null;renderCal()
 }
 window.saveAvail=()=>toast('Dostupnost se sprema automatski svakim klikom ✓')
 
