@@ -31,10 +31,16 @@ nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.93);backdrop-f
 .nav-btns{display:flex;gap:7px;flex-shrink:0}
 /* gallery */
 .gallery{padding:12px 14px 0}
-.gal-main{height:240px;border-radius:12px;background:linear-gradient(160deg,#b8cce0,#5a8fb0);display:flex;align-items:center;justify-content:center;font-size:64px;position:relative;cursor:pointer;overflow:hidden}
+.gal-main{height:240px;border-radius:12px;background:linear-gradient(160deg,#e8ddd0,#c9b8a3);background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;font-size:64px;position:relative;cursor:pointer;overflow:hidden}
 .gal-thumbs{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:7px}
-.gal-thumb{height:110px;border-radius:9px;background:linear-gradient(160deg,#c5d9e8,#8aadc8);display:flex;align-items:center;justify-content:center;font-size:34px;cursor:pointer}
-.gal-thumb:last-child{background:linear-gradient(160deg,#b8d4e4,#7aa0bb)}
+.gal-thumb{height:110px;border-radius:9px;background:linear-gradient(160deg,#efe7dd,#d9c9b5);background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;font-size:34px;cursor:pointer}
+.photo-lb{position:fixed;inset:0;background:#000;z-index:300;display:none;align-items:center;justify-content:center}
+.photo-lb.on{display:flex}
+.photo-lb img{max-width:92vw;max-height:82vh;object-fit:contain;border-radius:8px}
+.photo-lb-close{position:absolute;top:16px;right:16px;font-size:20px;color:#fff;background:rgba(255,255,255,.15);border:none;border-radius:50%;width:38px;height:38px;cursor:pointer}
+.photo-lb-nav{position:absolute;top:50%;transform:translateY(-50%);font-size:20px;color:#fff;background:rgba(255,255,255,.15);border:none;border-radius:50%;width:42px;height:42px;cursor:pointer}
+.photo-lb-prev{left:14px}.photo-lb-next{right:14px}
+.photo-lb-count{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);color:#fff;font-size:12.5px;background:rgba(255,255,255,.15);padding:4px 12px;border-radius:20px}
 .photo-btn{position:absolute;bottom:10px;right:10px;background:rgba(255,255,255,.92);border:none;border-radius:7px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--f)}
 /* content */
 .content{padding:16px 14px 120px}
@@ -137,12 +143,14 @@ nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.93);backdrop-f
     </div>
   </nav>
 
-  <div class="gallery" id="gallery">
-    <div class="gal-main">🏖️<button class="photo-btn">📷 Sve fotografije</button></div>
-    <div class="gal-thumbs">
-      <div class="gal-thumb">🌊</div>
-      <div class="gal-thumb">🛏️</div>
-    </div>
+  <div class="gallery" id="gallery"></div>
+
+  <div class="photo-lb" id="photo-lb" onclick="if(event.target===this)closeGallery()">
+    <button class="photo-lb-close" onclick="closeGallery()">✕</button>
+    <button class="photo-lb-nav photo-lb-prev" onclick="lbNav(-1)">‹</button>
+    <img id="lb-img" src="">
+    <button class="photo-lb-nav photo-lb-next" onclick="lbNav(1)">›</button>
+    <div class="photo-lb-count" id="lb-count"></div>
   </div>
 
   <div class="content">
@@ -268,6 +276,7 @@ async function loadPage() {
   if (error || !prop) { showErr(); return }
   PROP = prop
   price = parseFloat(prop.price_per_night) || 0
+  renderGallery(prop)
 
   document.title = prop.name + ' — Odmoria'
   document.getElementById('nav-prop-name').textContent = prop.name
@@ -352,6 +361,34 @@ async function loadPage() {
   window.addEventListener('resize', () => {
     document.getElementById('book-bar').style.display = window.innerWidth < 640 ? 'flex' : 'none'
   })
+}
+
+// ── gallery ───────────────────────────────────────────
+let galleryUrls = [], lbIndex = 0
+function renderGallery(prop) {
+  galleryUrls = [...(prop.photo_urls || [])]
+  const cover = prop.cover_photo_url || galleryUrls[0]
+  if (cover && galleryUrls.includes(cover)) galleryUrls = [cover, ...galleryUrls.filter(u => u !== cover)]
+  const el = document.getElementById('gallery')
+  if (!galleryUrls.length) {
+    el.innerHTML = `<div class="gal-main">🏖️</div><div class="gal-thumbs"><div class="gal-thumb">🌊</div><div class="gal-thumb">🛏️</div></div>`
+    return
+  }
+  const thumbs = galleryUrls.slice(1, 3)
+  el.innerHTML = `<div class="gal-main" style="background-image:url('${esc(galleryUrls[0])}')" onclick="openGallery(0)"><button class="photo-btn" onclick="event.stopPropagation();openGallery(0)">📷 Sve fotografije${galleryUrls.length>1?' ('+galleryUrls.length+')':''}</button></div>` +
+    (thumbs.length ? `<div class="gal-thumbs">${thumbs.map((u,i) => `<div class="gal-thumb" style="background-image:url('${esc(u)}')" onclick="openGallery(${i+1})"></div>`).join('')}</div>` : '')
+}
+window.openGallery = (i) => {
+  if (!galleryUrls.length) return
+  lbIndex = i || 0
+  updateLb()
+  document.getElementById('photo-lb').classList.add('on')
+}
+window.closeGallery = () => document.getElementById('photo-lb').classList.remove('on')
+window.lbNav = (d) => { lbIndex = (lbIndex + d + galleryUrls.length) % galleryUrls.length; updateLb() }
+function updateLb() {
+  document.getElementById('lb-img').src = galleryUrls[lbIndex]
+  document.getElementById('lb-count').textContent = (lbIndex + 1) + ' / ' + galleryUrls.length
 }
 
 function buildBookBtns(prop) {
