@@ -389,12 +389,16 @@ aside{width:228px;flex-shrink:0;background:var(--sidebar);display:flex;flex-dire
       </div>
       <div class="fg"><label class="fl">Kapacitet i veličina</label>
         <div class="g5">
-          <div><input class="fi" id="prop-guests" type="number" min="1" placeholder="Gosti"></div>
-          <div><input class="fi" id="prop-bedrooms" type="number" min="0" placeholder="Sobe"></div>
-          <div><input class="fi" id="prop-beds" type="number" min="0" placeholder="Kreveti"></div>
-          <div><input class="fi" id="prop-bathrooms" type="number" min="0" step="0.5" placeholder="Kupaonice"></div>
-          <div><input class="fi" id="prop-size" type="number" min="0" placeholder="m²"></div>
+          <div><label class="fl" style="font-size:10px;margin-bottom:4px">Gosti</label><input class="fi" id="prop-guests" type="number" min="1" placeholder="4"></div>
+          <div><label class="fl" style="font-size:10px;margin-bottom:4px">Sobe</label><input class="fi" id="prop-bedrooms" type="number" min="0" placeholder="2"></div>
+          <div><label class="fl" style="font-size:10px;margin-bottom:4px">Kreveti</label><input class="fi" id="prop-beds" type="number" min="0" placeholder="3"></div>
+          <div><label class="fl" style="font-size:10px;margin-bottom:4px">Kupaonice</label><input class="fi" id="prop-bathrooms" type="number" min="0" step="0.5" placeholder="1"></div>
+          <div><label class="fl" style="font-size:10px;margin-bottom:4px">m²</label><input class="fi" id="prop-size" type="number" min="0" placeholder="65"></div>
         </div>
+      </div>
+      <div class="g2">
+        <div class="fg"><label class="fl">Cijena po noćenju (€)</label><input class="fi" id="prop-price" type="number" min="0" step="0.01" placeholder="80"></div>
+        <div class="fg"><label class="fl">Minimalni broj noćenja</label><input class="fi" id="prop-minstay" type="number" min="1" placeholder="2"></div>
       </div>
       <div class="fg"><label class="fl">Poruka dobrodošlice</label><textarea class="fta" id="prop-welcome" rows="3" placeholder="Dobrodošli u naš apartman..."></textarea></div>
       <div class="g2">
@@ -492,8 +496,20 @@ aside{width:228px;flex-shrink:0;background:var(--sidebar);display:flex;flex-dire
 <!-- AMENITIES -->
 <div class="panel" id="p-amenities">
   <div class="card card-last">
-    <div class="card-head"><div class="card-title">Sadržaji objekta</div><button class="btn btn-el btn-sm" onclick="addAmenity()">+ Dodaj</button></div>
-    <div class="card-body" id="amenities-list"><div style="text-align:center;padding:24px;color:var(--ghost);font-size:13px;font-weight:300">Učitavanje...</div></div>
+    <div class="card-head"><div class="card-title">Sadržaji objekta</div></div>
+    <div class="card-body">
+      <input class="fi" id="amenity-search" placeholder="Pretraži (npr. klima, parking, bazen)..." oninput="filterAmenities()" style="margin-bottom:14px">
+      <div id="amenity-catalog-list" style="max-height:400px;overflow-y:auto"></div>
+      <div style="margin-top:18px;padding-top:16px;border-top:1px solid var(--stone)">
+        <div style="font-size:12px;font-weight:500;color:var(--ghost);margin-bottom:10px;text-transform:uppercase;letter-spacing:.06em">Prilagođeni sadržaji</div>
+        <div id="custom-amenity-list"></div>
+        <div style="display:flex;gap:8px;margin-top:2px">
+          <input class="fi" id="custom-amenity-icon" placeholder="🏷️" style="max-width:64px;text-align:center;flex-shrink:0" maxlength="4">
+          <input class="fi" id="custom-amenity-name" placeholder="Naziv (npr. Sauna)" style="flex:1">
+          <button class="btn btn-el btn-sm" onclick="addCustomAmenity()" style="flex-shrink:0">+ Dodaj</button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -759,6 +775,8 @@ function fillPropForm(){
   document.getElementById('prop-beds').value=PROP.beds||''
   document.getElementById('prop-bathrooms').value=PROP.bathrooms||''
   document.getElementById('prop-size').value=PROP.size_m2||''
+  document.getElementById('prop-price').value=PROP.price_per_night||''
+  document.getElementById('prop-minstay').value=PROP.min_stay||''
   document.getElementById('prop-welcome').value=PROP.welcome_msg||''
   document.getElementById('prop-host').value=PROP.host_name||''
   document.getElementById('prop-phone').value=PROP.phone||''
@@ -768,7 +786,8 @@ function fillPropForm(){
 window.saveProp=async()=>{
   if(!PROP)return
   const u={name:v('prop-name'),type:v('prop-type'),location:v('prop-location'),welcome_msg:v('prop-welcome'),host_name:v('prop-host'),phone:v('prop-phone'),email:v('prop-email'),
-    max_guests:v('prop-guests')?+v('prop-guests'):null,bedrooms:v('prop-bedrooms')?+v('prop-bedrooms'):null,beds:v('prop-beds')?+v('prop-beds'):null,bathrooms:v('prop-bathrooms')?+v('prop-bathrooms'):null,size_m2:v('prop-size')?+v('prop-size'):null}
+    max_guests:v('prop-guests')?+v('prop-guests'):null,bedrooms:v('prop-bedrooms')?+v('prop-bedrooms'):null,beds:v('prop-beds')?+v('prop-beds'):null,bathrooms:v('prop-bathrooms')?+v('prop-bathrooms'):null,size_m2:v('prop-size')?+v('prop-size'):null,
+    price_per_night:v('prop-price')?+v('prop-price'):0,min_stay:v('prop-minstay')?+v('prop-minstay'):1}
   const{error}=await sb.from('properties').update(u).eq('id',PROP.id)
   if(error){showA('prop-alert','err',error.message);return}
   Object.assign(PROP,u)
@@ -887,27 +906,81 @@ function renderChecklist(){
   if(list)list.innerHTML=items.map(i=>`<div style="display:flex;align-items:center;gap:9px;font-size:12.5px;color:${i.done?'var(--ink)':'var(--ghost)'}"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="color:${i.done?'var(--electric)':'var(--stone-mid)'};flex-shrink:0"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/>${i.done?'<path d="M4.3 7.2l1.8 1.8 3.6-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>':''}</svg>${i.label}</div>`).join('')
 }
 
+const AMENITY_CATALOG=[
+  {icon:'📶',name:'Wi-Fi'},{icon:'❄️',name:'Klima uređaj'},{icon:'🌡️',name:'Grijanje'},{icon:'📺',name:'TV'},
+  {icon:'🫖',name:'Kuhalo za vodu'},{icon:'☕',name:'Aparat za kavu'},{icon:'🧺',name:'Perilica rublja'},{icon:'🌀',name:'Sušilica rublja'},
+  {icon:'🍽️',name:'Perilica posuđa'},{icon:'🧊',name:'Hladnjak'},{icon:'🍞',name:'Pećnica'},{icon:'🔲',name:'Mikrovalna'},
+  {icon:'🚗',name:'Parking'},{icon:'🏊',name:'Bazen'},{icon:'🌅',name:'Balkon / Terasa'},{icon:'🌳',name:'Vrt'},
+  {icon:'🔥',name:'Roštilj'},{icon:'🔐',name:'Sef'},{icon:'👔',name:'Glačalo'},{icon:'💨',name:'Fen za kosu'},
+  {icon:'🛏️',name:'Posteljina'},{icon:'🧻',name:'Ručnici'},{icon:'🍼',name:'Oprema za bebe'},{icon:'🐾',name:'Ljubimci dozvoljeni'},
+  {icon:'♿',name:'Pristup za invalide'},{icon:'🛗',name:'Dizalo'},{icon:'🚭',name:'Zabranjeno pušenje'},{icon:'📹',name:'Sigurnosne kamere (vanjske)'}
+]
+let amenityRows=[]
+
 async function loadAmenities(){
   if(!PROP)return
   const{data}=await sb.from('amenities').select('*').eq('property_id',PROP.id).order('sort_order')
-  const el=document.getElementById('amenities-list')
-  const items=data||[]
-  if(!items.length){el.innerHTML='<div style="text-align:center;padding:20px;color:var(--ghost);font-size:13px;font-weight:300">Nema sadržaja. Dodaj prvi (npr. kuhalo za vodu, perilica rublja).</div>';return}
-  el.innerHTML=items.map(a=>`<div style="border:1px solid var(--stone);border-radius:8px;padding:11px 14px;margin-bottom:8px;display:flex;align-items:center;gap:12px;background:var(--pure-white)"><span style="font-size:22px;width:30px;text-align:center">${a.icon||'✓'}</span><div style="flex:1;font-size:13.5px;font-weight:500">${esc(a.name)}</div><button onclick="delAmenity('${a.id}')" style="font-size:12px;color:#EF4444;background:none;border:none;cursor:pointer;padding:4px 8px;font-family:var(--sans)">Ukloni</button></div>`).join('')
+  amenityRows=data||[]
+  renderAmenityCatalog()
+  renderCustomAmenities()
 }
 
-window.addAmenity=async()=>{
-  const icon=prompt('Ikona (emoji):','✓')||'✓'
-  const name=prompt('Naziv sadržaja (npr. Kuhalo za vodu, Perilica rublja, Pećnica):')||''
+window.filterAmenities=()=>renderAmenityCatalog()
+
+function renderAmenityCatalog(){
+  const el=document.getElementById('amenity-catalog-list')
+  if(!el)return
+  const q=(document.getElementById('amenity-search')?.value||'').toLowerCase().trim()
+  const items=AMENITY_CATALOG.filter(a=>a.name.toLowerCase().includes(q))
+  if(!items.length){el.innerHTML='<div style="text-align:center;padding:20px;color:var(--ghost);font-size:13px;font-weight:300">Nema rezultata za "'+esc(q)+'"</div>';return}
+  el.innerHTML=items.map(a=>{
+    const on=amenityRows.some(r=>r.name===a.name)
+    return`<div class="tog-row" onclick="toggleAmenity('${a.name.replace(/'/g,"\\'")}','${a.icon}')"><span style="font-size:17px;width:26px;flex-shrink:0">${a.icon}</span><span class="tog-label">${esc(a.name)}</span><div class="tog-sw${on?' on':''}"></div></div>`
+  }).join('')
+}
+
+function renderCustomAmenities(){
+  const el=document.getElementById('custom-amenity-list')
+  if(!el)return
+  const catalogNames=new Set(AMENITY_CATALOG.map(a=>a.name))
+  const custom=amenityRows.filter(r=>!catalogNames.has(r.name))
+  if(!custom.length){el.innerHTML='';return}
+  el.innerHTML=custom.map(a=>`<div style="border:1px solid var(--stone);border-radius:8px;padding:9px 12px;margin-bottom:6px;display:flex;align-items:center;gap:10px;background:var(--pure-white)"><span style="font-size:17px;width:24px;flex-shrink:0">${a.icon||'✓'}</span><span style="flex:1;font-size:13.5px">${esc(a.name)}</span><button onclick="delAmenity('${a.id}')" style="font-size:12px;color:#EF4444;background:none;border:none;cursor:pointer;padding:4px 8px;font-family:var(--sans)">Ukloni</button></div>`).join('')
+}
+
+window.toggleAmenity=async(name,icon)=>{
+  if(!PROP)return
+  const row=amenityRows.find(r=>r.name===name)
+  if(row){
+    await sb.from('amenities').delete().eq('id',row.id)
+    amenityRows=amenityRows.filter(r=>r.id!==row.id)
+  }else{
+    const{data,error}=await sb.from('amenities').insert({property_id:PROP.id,icon,name,enabled:true,sort_order:999}).select().single()
+    if(error){toast('Greška: '+error.message);return}
+    amenityRows.push(data)
+  }
+  renderAmenityCatalog()
+}
+
+window.addCustomAmenity=async()=>{
+  if(!PROP)return
+  const icon=document.getElementById('custom-amenity-icon').value.trim()||'✓'
+  const name=document.getElementById('custom-amenity-name').value.trim()
   if(!name)return
-  const{error}=await sb.from('amenities').insert({property_id:PROP.id,icon,name,enabled:true,sort_order:999})
+  const{data,error}=await sb.from('amenities').insert({property_id:PROP.id,icon,name,enabled:true,sort_order:999}).select().single()
   if(error){toast('Greška: '+error.message);return}
-  await loadAmenities();toast('Sadržaj dodan ✓')
+  amenityRows.push(data)
+  document.getElementById('custom-amenity-name').value=''
+  renderCustomAmenities()
+  toast('Dodano ✓')
 }
 
 window.delAmenity=async(id)=>{
   if(!confirm('Ukloni ovaj sadržaj?'))return
-  await sb.from('amenities').delete().eq('id',id);await loadAmenities();toast('Uklonjen')
+  await sb.from('amenities').delete().eq('id',id)
+  amenityRows=amenityRows.filter(r=>r.id!==id)
+  renderAmenityCatalog();renderCustomAmenities()
+  toast('Uklonjen')
 }
 
 window.addPlace=async()=>{

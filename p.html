@@ -50,6 +50,10 @@ nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.93);backdrop-f
 .detail-item{display:flex;align-items:center;gap:6px;font-size:13.5px;color:var(--text);font-weight:700}
 .detail-item .ic{font-size:16px}
 .detail-item small{font-weight:400;color:var(--muted);margin-left:1px}
+.loc-link{color:var(--blue);text-decoration:none;font-weight:600}
+.loc-link:hover{text-decoration:underline}
+.map-box{margin:2px 0 14px;border-radius:10px;overflow:hidden;border:1px solid var(--border)}
+.map-box iframe{width:100%;height:160px;border:0;display:block}
 .divider{height:1px;background:var(--border);margin:18px 0}
 .am-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:18px}
 .am-item{display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:500}
@@ -162,6 +166,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.93);backdrop-f
       <div class="prop-name" id="prop-name"></div>
       <div class="prop-meta" id="prop-meta"></div>
       <div class="detail-row" id="detail-row"></div>
+      <div class="map-box" id="map-box" style="display:none"><iframe id="map-frame" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
       <div class="divider"></div>
       <div class="am-grid" id="am-grid"></div>
       <div class="divider"></div>
@@ -289,9 +294,15 @@ async function loadPage() {
   document.getElementById('prop-desc').textContent = prop.welcome_msg || ''
 
   const meta = []
-  if (prop.location) meta.push('📍 ' + prop.location)
-  if (prop.type) meta.push('🏠 ' + prop.type)
-  document.getElementById('prop-meta').textContent = meta.join(' · ')
+  if (prop.location) {
+    const mapsUrl = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(prop.location)
+    meta.push(`📍 <a class="loc-link" href="${mapsUrl}" target="_blank" rel="noopener">${esc(prop.location)}</a>`)
+    const frame = document.getElementById('map-frame')
+    frame.src = 'https://www.google.com/maps?q=' + encodeURIComponent(prop.location) + '&output=embed'
+    document.getElementById('map-box').style.display = 'block'
+  }
+  if (prop.type) meta.push('🏠 ' + esc(prop.type))
+  document.getElementById('prop-meta').innerHTML = meta.join(' · ')
 
   const details = []
   if (prop.max_guests) details.push({ic:'👥', v:prop.max_guests, l:prop.max_guests===1?'gost':'gostiju'})
