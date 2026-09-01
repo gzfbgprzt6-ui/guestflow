@@ -144,7 +144,7 @@ aside{width:228px;flex-shrink:0;background:var(--sidebar);display:flex;flex-dire
 .cday:hover{background:var(--stone)}
 .cday.taken{background:var(--electric);color:#fff}
 .cday.range-start{background:var(--electric-dk);color:#fff;box-shadow:0 0 0 2px var(--electric-dk)}
-.cday.range-preview{background:var(--electric);opacity:.5;color:#fff}
+.cday.range-preview{background:var(--electric);opacity:.5;color:#fff;transition:background .3s ease,opacity .3s ease}
 .cday.ical{background:#7C3AED;color:#fff;cursor:not-allowed}
 .cday.ical:hover{background:#7C3AED}
 .cal-leg{display:flex;gap:14px;margin-top:10px;font-size:11.5px;color:var(--ghost)}
@@ -640,7 +640,7 @@ let USER=null,PROPS=[],PROP=null,SECTION=null
 let USER_PLAN='free',PLAN_LIMIT=1
 let calMonth=new Date().getMonth(),calYear=new Date().getFullYear()
 let bookedDays=[],icalDays=[]
-let rangeStart=null,hoverDs=null
+let rangeStart=null,hoverDs=null,filledSet=new Set()
 let lastBkUrl='',lastBkPhone=''
 let STAT_RANGE=30,localCount=0
 
@@ -881,11 +881,12 @@ async function loadAvail(){
   renderCal()
 }
 
+function fmtLocal(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
 function datesBetween(a,b){
   const out=[]
   let d=new Date(a+'T00:00:00')
   const end=new Date(b+'T00:00:00')
-  while(d<=end){out.push(d.toISOString().slice(0,10));d.setDate(d.getDate()+1)}
+  while(d<=end){out.push(fmtLocal(d));d.setDate(d.getDate()+1)}
   return out
 }
 
@@ -894,11 +895,7 @@ function renderCal(){
   if(el)el.textContent=MONTHS[calMonth]+' '+calYear+'.'
   const fd=(new Date(calYear,calMonth,1).getDay()+6)%7
   const dim=new Date(calYear,calMonth+1,0).getDate()
-  let previewSet=null
-  if(rangeStart&&hoverDs){
-    const[from,to]=rangeStart<hoverDs?[rangeStart,hoverDs]:[hoverDs,rangeStart]
-    previewSet=new Set(datesBetween(from,to))
-  }
+  filledSet=new Set()
   let h=''
   for(let i=0;i<fd;i++)h+='<div></div>'
   for(let d=1;d<=dim;d++){
@@ -908,18 +905,31 @@ function renderCal(){
     let cls='cday'
     if(ical)cls+=' ical'
     else if(rangeStart===ds)cls+=' range-start'
-    else if(previewSet&&previewSet.has(ds))cls+=' range-preview'
     else if(taken)cls+=' taken'
-    h+=`<div class="${cls}" onclick="toggleDay('${ds}')" onmouseover="previewRange('${ds}')">${d}</div>`
+    h+=`<div class="${cls}" data-ds="${ds}" onclick="toggleDay('${ds}')" onmouseover="previewRange('${ds}')">${d}</div>`
   }
   const days=document.getElementById('cal-days')
   if(days)days.innerHTML=h
 }
 
 window.previewRange=(ds)=>{
-  if(!rangeStart||hoverDs===ds)return
+  if(!rangeStart||ds===rangeStart||ds===hoverDs)return
   hoverDs=ds
-  renderCal()
+  const[from,to]=rangeStart<ds?[rangeStart,ds]:[ds,rangeStart]
+  const target=new Set(datesBetween(from,to).filter(x=>x!==rangeStart&&!icalDays.includes(x)))
+  filledSet.forEach(x=>{
+    if(!target.has(x)){
+      const c=document.querySelector(`.cday[data-ds="${x}"]`)
+      if(c){c.style.transitionDelay='0s';c.classList.remove('range-preview')}
+    }
+  })
+  const newDates=[...target].filter(x=>!filledSet.has(x))
+  newDates.sort((a,b)=>Math.abs(new Date(a)-new Date(rangeStart))-Math.abs(new Date(b)-new Date(rangeStart)))
+  newDates.forEach((x,i)=>{
+    const c=document.querySelector(`.cday[data-ds="${x}"]`)
+    if(c){c.style.transitionDelay=(i*0.3)+'s';c.classList.add('range-preview')}
+  })
+  filledSet=target
 }
 
 window.calNav=(d)=>{calMonth+=d;if(calMonth>11){calMonth=0;calYear++}if(calMonth<0){calMonth=11;calYear--}rangeStart=null;hoverDs=null;renderCal()}
