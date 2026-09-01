@@ -73,8 +73,12 @@ nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.93);backdrop-f
 .caldow{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:5px}
 .caldow span{text-align:center;font-size:10px;font-weight:700;color:var(--muted)}
 .caldays{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
-.cday{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;border-radius:6px;background:var(--bg)}
-.cday.taken{background:transparent;color:var(--border);text-decoration:line-through}
+.cday{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;border-radius:6px;background:var(--bg);cursor:pointer;transition:background .15s ease}
+.cday.taken{background:transparent;color:var(--border);text-decoration:line-through;cursor:not-allowed}
+.cday.range-start{background:var(--blue);color:#fff}
+.cday.range-preview{background:var(--blue-lt);color:var(--blue)}
+.cal-sel-lbl{font-size:12px;font-weight:600;color:var(--blue);margin-top:9px;min-height:15px}
+.cal-clear{font-size:11.5px;color:var(--muted);text-decoration:underline;cursor:pointer;margin-top:2px;display:inline-block}
 .calleg{display:flex;gap:12px;margin-top:9px;font-size:11.5px;color:var(--muted)}
 .calleg span{display:flex;align-items:center;gap:5px}
 .calleg i{display:inline-block;width:10px;height:10px;border-radius:3px;font-style:normal}
@@ -183,6 +187,8 @@ nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.93);backdrop-f
             <span><i style="background:var(--bg);border:1px solid var(--border)"></i>Slobodno</span>
             <span><i style="background:var(--border)"></i>Zauzeto</span>
           </div>
+          <div class="cal-sel-lbl" id="cal-sel-lbl"></div>
+          <div class="cal-clear" id="cal-clear" style="display:none" onclick="clearRange()">Poništi odabir</div>
         </div>
       </div>
     </div>
@@ -192,8 +198,8 @@ nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.93);backdrop-f
       <div style="border:1.5px solid var(--border);border-radius:13px;padding:20px;position:sticky;top:70px">
         <div style="font-size:22px;font-weight:800;margin-bottom:4px" id="d-price">— <span style="font-size:14px;font-weight:400;color:var(--muted)">/ noć</span></div>
         <div style="display:grid;grid-template-columns:1fr 1fr;background:var(--bg);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:11px">
-          <div style="padding:8px 11px;border-right:1px solid var(--border)"><div style="font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px">Check-in</div><div style="font-size:13px;font-weight:600">Po dogovoru</div></div>
-          <div style="padding:8px 11px"><div style="font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px">Check-out</div><div style="font-size:13px;font-weight:600">Po dogovoru</div></div>
+          <div style="padding:8px 11px;border-right:1px solid var(--border)"><div style="font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px">Check-in</div><div style="font-size:13px;font-weight:600" id="ci-val">Po dogovoru</div></div>
+          <div style="padding:8px 11px"><div style="font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px">Check-out</div><div style="font-size:13px;font-weight:600" id="co-val">Po dogovoru</div></div>
         </div>
         <div id="d-book-btns"></div>
         <div style="font-size:11px;color:var(--muted);text-align:center;margin-top:9px;line-height:1.55">Odmoria ne naplaćuje proviziju. Direktna komunikacija s domaćinom.</div>
@@ -251,6 +257,7 @@ else { loadPage(); }
 let PROP = null, nights = 7, price = 0
 let calMonth = new Date().getMonth(), calYear = new Date().getFullYear()
 let bookedDates = []
+let rangeStart = null, hoverDs = null, checkinDs = null, checkoutDs = null
 const MONTHS = ['Siječanj','Veljača','Ožujak','Travanj','Svibanj','Lipanj','Srpanj','Kolovoz','Rujan','Listopad','Studeni','Prosinac']
 
 async function loadPage() {
@@ -349,8 +356,9 @@ async function loadPage() {
 
 function buildBookBtns(prop) {
   let h = ''
+  const dateTxt = checkinDs && checkoutDs ? ` (${fmtHRfull(checkinDs)} – ${fmtHRfull(checkoutDs)})` : ''
   if (prop.phone) {
-    const waUrl = 'https://wa.me/' + prop.phone.replace(/\D/g, '') + '?text=' + encodeURIComponent('Zdravo! Zanima me rezervacija za ' + prop.name + '.')
+    const waUrl = 'https://wa.me/' + prop.phone.replace(/\D/g, '') + '?text=' + encodeURIComponent('Zdravo! Zanima me rezervacija za ' + prop.name + dateTxt + '.')
     h += `<a href="${waUrl}" target="_blank" style="display:block;width:100%;padding:13px;border-radius:9px;font-size:14px;font-weight:800;background:var(--blue);color:#fff;text-align:center;margin-bottom:8px;text-decoration:none">💬 Pošalji poruku domaćinu</a>`
   }
   if (prop.email) {
@@ -359,8 +367,38 @@ function buildBookBtns(prop) {
   return h || '<div style="text-align:center;padding:16px;color:var(--muted);font-size:13px">Kontakt podaci nisu dostupni.</div>'
 }
 
+function refreshBookBtns() {
+  const btns = buildBookBtns(PROP)
+  const d = document.getElementById('d-book-btns'); if (d) d.innerHTML = btns
+  const m = document.getElementById('modal-btns'); if (m) m.innerHTML = btns
+}
+
 // ── calendar ──────────────────────────────────────────
-window.calNav = (d) => { calMonth += d; if (calMonth>11){calMonth=0;calYear++} if (calMonth<0){calMonth=11;calYear--} renderCal() }
+function fmtLocal(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function datesBetween(a,b){
+  const out=[]
+  let d=new Date(a+'T00:00:00')
+  const end=new Date(b+'T00:00:00')
+  while(d<=end){out.push(fmtLocal(d));d.setDate(d.getDate()+1)}
+  return out
+}
+function fmtHR(ds){const[,m,d]=ds.split('-');return `${+d}.${m}.`}
+function fmtHRfull(ds){const[y,m,d]=ds.split('-');return `${+d}.${m}.${y}.`}
+function setSelLbl(t){const el=document.getElementById('cal-sel-lbl');if(el)el.textContent=t}
+
+window.calNav = (d) => { calMonth += d; if (calMonth>11){calMonth=0;calYear++} if (calMonth<0){calMonth=11;calYear--} rangeStart=null;hoverDs=null; renderCal() }
+
+function isPreview(ds){
+  if(!rangeStart||!hoverDs)return false
+  const from=rangeStart<hoverDs?rangeStart:hoverDs
+  const to=rangeStart<hoverDs?hoverDs:rangeStart
+  return ds>from&&ds<to
+}
+function isSelected(ds){
+  if(!checkinDs||!checkoutDs)return false
+  return ds>checkinDs&&ds<checkoutDs
+}
+
 function renderCal() {
   const el = document.getElementById('cal-title')
   if (el) el.textContent = MONTHS[calMonth] + ' ' + calYear + '.'
@@ -370,10 +408,61 @@ function renderCal() {
   for (let i = 0; i < fd; i++) h += '<div></div>'
   for (let d = 1; d <= dim; d++) {
     const ds = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`
-    h += `<div class="cday${bookedDates.includes(ds)?' taken':''}">${d}</div>`
+    const taken = bookedDates.includes(ds)
+    let cls = 'cday'
+    if (taken) cls += ' taken'
+    else if (ds === rangeStart || ds === checkinDs || ds === checkoutDs) cls += ' range-start'
+    else if (isPreview(ds) || isSelected(ds)) cls += ' range-preview'
+    h += `<div class="${cls}"${taken?'':` onclick="pickDate('${ds}')" onmouseover="hoverDate('${ds}')"`}>${d}</div>`
   }
   const days = document.getElementById('cal-days')
   if (days) days.innerHTML = h
+}
+
+window.hoverDate = (ds) => {
+  if (!rangeStart || ds === hoverDs) return
+  hoverDs = ds
+  renderCal()
+}
+
+window.pickDate = (ds) => {
+  if (bookedDates.includes(ds)) return
+  if (!rangeStart) {
+    rangeStart = ds; hoverDs = null; checkinDs = null; checkoutDs = null
+    document.getElementById('cal-clear').style.display = 'none'
+    setSelLbl(`Početak: ${fmtHR(ds)} — odaberi datum odjave`)
+    renderCal()
+    return
+  }
+  if (rangeStart === ds) { rangeStart = null; hoverDs = null; setSelLbl(''); renderCal(); return }
+  const from = rangeStart < ds ? rangeStart : ds
+  const to = rangeStart < ds ? ds : rangeStart
+  if (datesBetween(from, to).some(x => bookedDates.includes(x))) {
+    setSelLbl('Odabrani period nije slobodan — pokušaj drugi raspon')
+    rangeStart = null; hoverDs = null; renderCal()
+    return
+  }
+  checkinDs = from; checkoutDs = to
+  rangeStart = null; hoverDs = null
+  nights = Math.max(1, Math.round((new Date(to) - new Date(from)) / 86400000))
+  document.getElementById('ci-val').textContent = fmtHRfull(from)
+  document.getElementById('co-val').textContent = fmtHRfull(to)
+  document.getElementById('cal-clear').style.display = 'inline-block'
+  setSelLbl(`Odabrano: ${fmtHR(from)} → ${fmtHR(to)} (${nights} noći)`)
+  updateCalc()
+  refreshBookBtns()
+  renderCal()
+}
+
+window.clearRange = () => {
+  checkinDs = null; checkoutDs = null; rangeStart = null; hoverDs = null
+  document.getElementById('ci-val').textContent = 'Po dogovoru'
+  document.getElementById('co-val').textContent = 'Po dogovoru'
+  document.getElementById('cal-clear').style.display = 'none'
+  setSelLbl('')
+  updateCalc()
+  refreshBookBtns()
+  renderCal()
 }
 
 // ── booking calc ──────────────────────────────────────
@@ -387,7 +476,11 @@ function updateCalc() {
   setT('sc-sav', price > 0 ? fmt(fee) : '—')
   setT('nights-val', nights)
 }
-window.chgN = (d) => { nights = Math.max(1, nights + d); updateCalc() }
+window.chgN = (d) => {
+  nights = Math.max(1, nights + d)
+  if (checkinDs || checkoutDs) { clearRange(); return }
+  updateCalc()
+}
 
 // ── utils ─────────────────────────────────────────────
 function showErr() {

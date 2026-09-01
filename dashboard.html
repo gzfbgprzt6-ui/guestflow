@@ -144,7 +144,7 @@ aside{width:228px;flex-shrink:0;background:var(--sidebar);display:flex;flex-dire
 .cday:hover{background:var(--stone)}
 .cday.taken{background:var(--electric);color:#fff}
 .cday.range-start{background:var(--electric-dk);color:#fff;box-shadow:0 0 0 2px var(--electric-dk)}
-.cday.range-preview{background:var(--electric);opacity:.5;color:#fff;transition:background .3s ease,opacity .3s ease}
+.cday.range-preview{background:var(--electric);opacity:.5;color:#fff;transition:background .15s ease,opacity .15s ease}
 .cday.ical{background:#7C3AED;color:#fff;cursor:not-allowed}
 .cday.ical:hover{background:#7C3AED}
 .cal-leg{display:flex;gap:14px;margin-top:10px;font-size:11.5px;color:var(--ghost)}
@@ -173,10 +173,10 @@ aside{width:228px;flex-shrink:0;background:var(--sidebar);display:flex;flex-dire
 .lc-desc{font-size:13px;color:var(--soft);font-weight:300;line-height:1.6;margin-bottom:12px}
 
 /* PLAN BANNER */
-.plan-banner{background:var(--black);border-radius:12px;padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;gap:14px}
-.pb-text h4{font-size:13.5px;font-weight:500;color:#fff;margin-bottom:3px}
-.pb-text p{font-size:12px;color:#D9BFAE;font-weight:300;line-height:1.5}
-.pb-icon{font-size:18px;flex-shrink:0}
+.plan-banner{background:var(--warm-white);border:1px solid var(--stone);border-radius:14px;padding:16px 20px;margin-bottom:16px;display:flex;align-items:center;gap:14px}
+.pb-text h4{font-size:13.5px;font-weight:600;color:var(--ink);margin-bottom:3px}
+.pb-text p{font-size:12px;color:var(--soft);font-weight:300;line-height:1.5}
+.pb-icon{width:36px;height:36px;border-radius:10px;background:var(--electric);color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
 
 /* SUBSCRIPTION */
 .sub-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
@@ -273,6 +273,10 @@ aside{width:228px;flex-shrink:0;background:var(--sidebar);display:flex;flex-dire
       <button class="nav-item" id="ni-wifi" onclick="nav('wifi',this)">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1.5 6c1.5-1.5 3.5-2.5 5.5-2.5S11 4.5 12.5 6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M3.5 8c1-1 2.2-1.5 3.5-1.5S10 7 11 8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><circle cx="7" cy="10.5" r="1" fill="currentColor"/></svg>
         Wi-Fi
+      </button>
+      <button class="nav-item" id="ni-amenities" onclick="nav('amenities',this)">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2.5 12.5V6.5a1 1 0 0 1 .4-.8l3.6-2.8a1 1 0 0 1 1.2 0l3.6 2.8a1 1 0 0 1 .4.8v6" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M5.5 12.5V9h3v3.5" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>
+        Sadržaji objekta
       </button>
       <button class="nav-item" id="ni-local" onclick="nav('local',this)">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1.5C5.07 1.5 3.5 3.07 3.5 5c0 2.625 3.5 7 3.5 7s3.5-4.375 3.5-7c0-1.93-1.57-3.5-3.5-3.5z" stroke="currentColor" stroke-width="1.2"/><circle cx="7" cy="5" r="1.2" stroke="currentColor" stroke-width="1.1"/></svg>
@@ -474,6 +478,14 @@ aside{width:228px;flex-shrink:0;background:var(--sidebar);display:flex;flex-dire
   </div>
 </div>
 
+<!-- AMENITIES -->
+<div class="panel" id="p-amenities">
+  <div class="card card-last">
+    <div class="card-head"><div class="card-title">Sadržaji objekta</div><button class="btn btn-el btn-sm" onclick="addAmenity()">+ Dodaj</button></div>
+    <div class="card-body" id="amenities-list"><div style="text-align:center;padding:24px;color:var(--ghost);font-size:13px;font-weight:300">Učitavanje...</div></div>
+  </div>
+</div>
+
 <!-- LOCAL -->
 <div class="panel" id="p-local">
   <div class="card card-last">
@@ -504,6 +516,7 @@ aside{width:228px;flex-shrink:0;background:var(--sidebar);display:flex;flex-dire
             <span><i style="background:var(--electric)"></i>Zauzeto (ručno)</span>
             <span><i style="background:#7C3AED"></i>Booking/Airbnb</span>
           </div>
+          <div id="cal-range-lbl" style="font-size:12.5px;font-weight:500;color:var(--electric-dk);margin-top:10px;min-height:16px"></div>
         </div>
       </div>
     </div>
@@ -688,7 +701,7 @@ function showPlanBanner(){
   b.id='plan-banner-existing'
   b.className='plan-banner'
   const locked=PROPS.length-PLAN_LIMIT
-  b.innerHTML=`<div class="pb-icon">🔒</div><div class="pb-text" style="flex:1"><h4>${locked} objekt${locked>1?'a':''} zaključano</h4><p>Tvoj ${USER_PLAN} plan uključuje ${PLAN_LIMIT} objekt${PLAN_LIMIT>1?'a':''}. Nadogradi za pristup svima.</p></div><button class="btn btn-out btn-sm" onclick="nav('sub',document.getElementById('ni-sub'))" style="color:#fff;border-color:#6E4230;flex-shrink:0">Nadogradi →</button>`
+  b.innerHTML=`<div class="pb-icon">🔒</div><div class="pb-text" style="flex:1"><h4>${locked} objekt${locked>1?'a':''} zaključano</h4><p>Tvoj ${USER_PLAN} plan uključuje ${PLAN_LIMIT} objekt${PLAN_LIMIT>1?'a':''}. Nadogradi za pristup svima.</p></div><button class="btn btn-el btn-sm" onclick="nav('sub',document.getElementById('ni-sub'))" style="flex-shrink:0">Nadogradi →</button>`
   document.querySelector('.content').prepend(b)
 }
 
@@ -707,6 +720,7 @@ async function selectProp(p){
   await loadSection()
   await loadAvail()
   await loadLocal()
+  await loadAmenities()
   await loadOverviewStats()
   await loadPageViewsChart()
   renderChecklist()
@@ -856,6 +870,29 @@ function renderChecklist(){
   if(list)list.innerHTML=items.map(i=>`<div style="display:flex;align-items:center;gap:9px;font-size:12.5px;color:${i.done?'var(--ink)':'var(--ghost)'}"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="color:${i.done?'var(--electric)':'var(--stone-mid)'};flex-shrink:0"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/>${i.done?'<path d="M4.3 7.2l1.8 1.8 3.6-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>':''}</svg>${i.label}</div>`).join('')
 }
 
+async function loadAmenities(){
+  if(!PROP)return
+  const{data}=await sb.from('amenities').select('*').eq('property_id',PROP.id).order('sort_order')
+  const el=document.getElementById('amenities-list')
+  const items=data||[]
+  if(!items.length){el.innerHTML='<div style="text-align:center;padding:20px;color:var(--ghost);font-size:13px;font-weight:300">Nema sadržaja. Dodaj prvi (npr. kuhalo za vodu, perilica rublja).</div>';return}
+  el.innerHTML=items.map(a=>`<div style="border:1px solid var(--stone);border-radius:8px;padding:11px 14px;margin-bottom:8px;display:flex;align-items:center;gap:12px;background:var(--pure-white)"><span style="font-size:22px;width:30px;text-align:center">${a.icon||'✓'}</span><div style="flex:1;font-size:13.5px;font-weight:500">${esc(a.name)}</div><button onclick="delAmenity('${a.id}')" style="font-size:12px;color:#EF4444;background:none;border:none;cursor:pointer;padding:4px 8px;font-family:var(--sans)">Ukloni</button></div>`).join('')
+}
+
+window.addAmenity=async()=>{
+  const icon=prompt('Ikona (emoji):','✓')||'✓'
+  const name=prompt('Naziv sadržaja (npr. Kuhalo za vodu, Perilica rublja, Pećnica):')||''
+  if(!name)return
+  const{error}=await sb.from('amenities').insert({property_id:PROP.id,icon,name,enabled:true,sort_order:999})
+  if(error){toast('Greška: '+error.message);return}
+  await loadAmenities();toast('Sadržaj dodan ✓')
+}
+
+window.delAmenity=async(id)=>{
+  if(!confirm('Ukloni ovaj sadržaj?'))return
+  await sb.from('amenities').delete().eq('id',id);await loadAmenities();toast('Uklonjen')
+}
+
 window.addPlace=async()=>{
   const icon=prompt('Ikona (emoji):','📍')||'📍'
   const name=prompt('Naziv mjesta:')||''
@@ -882,6 +919,8 @@ async function loadAvail(){
 }
 
 function fmtLocal(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function fmtHR(ds){const[,m,d]=ds.split('-');return `${+d}.${m}.`}
+function setRangeLbl(txt){const el=document.getElementById('cal-range-lbl');if(el)el.textContent=txt}
 function datesBetween(a,b){
   const out=[]
   let d=new Date(a+'T00:00:00')
@@ -927,22 +966,24 @@ window.previewRange=(ds)=>{
   newDates.sort((a,b)=>Math.abs(new Date(a)-new Date(rangeStart))-Math.abs(new Date(b)-new Date(rangeStart)))
   newDates.forEach((x,i)=>{
     const c=document.querySelector(`.cday[data-ds="${x}"]`)
-    if(c){c.style.transitionDelay=(i*0.3)+'s';c.classList.add('range-preview')}
+    if(c){c.style.transitionDelay=(i*0.15)+'s';c.classList.add('range-preview')}
   })
   filledSet=target
+  const n=datesBetween(from,to).length
+  setRangeLbl(`${fmtHR(from)} → ${fmtHR(to)} (${n} dana)`)
 }
 
-window.calNav=(d)=>{calMonth+=d;if(calMonth>11){calMonth=0;calYear++}if(calMonth<0){calMonth=11;calYear--}rangeStart=null;hoverDs=null;renderCal()}
+window.calNav=(d)=>{calMonth+=d;if(calMonth>11){calMonth=0;calYear++}if(calMonth<0){calMonth=11;calYear--}rangeStart=null;hoverDs=null;setRangeLbl('');renderCal()}
 
 window.toggleDay=async(ds)=>{
   if(!PROP)return
   if(icalDays.includes(ds)){toast('Datum je sinkroniziran s Booking/Airbnb — mijenja se automatski 🔒');return}
-  if(!rangeStart){rangeStart=ds;hoverDs=null;renderCal();return}
+  if(!rangeStart){rangeStart=ds;hoverDs=null;setRangeLbl(`Početak: ${fmtHR(ds)} — odaberi zadnji datum`);renderCal();return}
   if(rangeStart===ds){
     const idx=bookedDays.indexOf(ds)
     if(idx>-1){bookedDays.splice(idx,1);await sb.from('availability').delete().eq('property_id',PROP.id).eq('date',ds)}
     else{bookedDays.push(ds);await sb.from('availability').upsert({property_id:PROP.id,date:ds,is_booked:true,source:'manual'})}
-    rangeStart=null;hoverDs=null;renderCal()
+    rangeStart=null;hoverDs=null;setRangeLbl(`Označeno: ${fmtHR(ds)} ✓`);renderCal()
     return
   }
   const[from,to]=rangeStart<ds?[rangeStart,ds]:[ds,rangeStart]
@@ -952,7 +993,7 @@ window.toggleDay=async(ds)=>{
     await sb.from('availability').upsert(newDates.map(x=>({property_id:PROP.id,date:x,is_booked:true,source:'manual'})))
     bookedDays.push(...newDates)
   }
-  rangeStart=null;hoverDs=null;renderCal()
+  rangeStart=null;hoverDs=null;setRangeLbl(`Označeno: ${fmtHR(from)} → ${fmtHR(to)} ✓`);renderCal()
 }
 window.saveAvail=()=>toast('Dostupnost se sprema automatski svakim klikom ✓')
 
@@ -1073,7 +1114,7 @@ window.loadBookings=async function(){
     const colors=['#2D5BE3','#15803D','#7C3AED','#B91C1C','#92400E','#0369A1']
     const ci=fmtD(b.checkin_date);const co=fmtD(b.checkout_date)
     const col=colors[Math.abs(b.guest_name?.charCodeAt(0)||0)%colors.length]
-    return`<div class="bk-row"><div class="bk-av" style="background:${col}">${(b.guest_name||'G')[0].toUpperCase()}</div><div style="flex:1;min-width:0"><div class="bk-name">${esc(b.guest_name||'Gost')}</div><div class="bk-date">${ci} – ${co}${b.guest_note?' · '+esc(b.guest_note):''}</div><div class="bk-url">odmoria.com/h/${b.token}</div></div><div class="bk-pill ${act?'pill-on':'pill-exp'}">${act?'Aktivan':'Istekao'}</div><div class="bk-btns">${act?`<button class="btn btn-dark btn-sm" onclick="cpBk('${b.token}')">Kopiraj</button>`:''}${act?`<button class="btn btn-out btn-sm" onclick="deactBk('${b.id}')">Deaktiviraj</button>`:''}</div></div>`
+    return`<div class="bk-row"><div class="bk-av" style="background:${col}">${(b.guest_name||'G')[0].toUpperCase()}</div><div style="flex:1;min-width:0"><div class="bk-name">${esc(b.guest_name||'Gost')}</div><div class="bk-date">${ci} – ${co}${b.guest_note?' · '+esc(b.guest_note):''}</div><div class="bk-url">odmoria.com/h/${b.token}</div></div><div class="bk-pill ${act?'pill-on':'pill-exp'}">${act?'Aktivan':'Istekao'}</div><div class="bk-btns">${act?`<button class="btn btn-dark btn-sm" onclick="cpBk('${b.token}')">Kopiraj</button>`:''}${act?`<button class="btn btn-out btn-sm" onclick="deactBk('${b.id}')">Deaktiviraj</button>`:`<button class="btn btn-out btn-sm" style="color:#EF4444;border-color:#EF4444" onclick="delBk('${b.id}')">Obriši</button>`}</div></div>`
   }).join('')
 }
 
@@ -1111,6 +1152,7 @@ window.cpBk=(token)=>{navigator.clipboard?.writeText('https://odmoria.com/h/'+to
 window.copyResultLink=()=>{navigator.clipboard?.writeText(lastBkUrl);toast('Link kopiran!')}
 window.shareWA=()=>{const msg='Dobrodošli! Sve informacije: '+lastBkUrl;const ph=(lastBkPhone||'').replace(/\D/g,'');window.open('https://wa.me/'+ph+'?text='+encodeURIComponent(msg),'_blank')}
 window.deactBk=async(id)=>{if(!confirm('Deaktiviraj link?'))return;const{error}=await sb.from('bookings').update({is_active:false}).eq('id',id);if(error){toast('Greška: '+error.message);return}await window.loadBookings();toast('Link deaktiviran')}
+window.delBk=async(id)=>{if(!confirm('Trajno obriši ovu rezervaciju?'))return;const{error}=await sb.from('bookings').delete().eq('id',id);if(error){toast('Greška: '+error.message);return}await window.loadBookings();toast('Rezervacija obrisana')}
 
 // LINKS
 window.copyLink=(type)=>{
@@ -1128,7 +1170,7 @@ window.nav=(id,el)=>{
   const p=document.getElementById('p-'+id)
   if(p)p.classList.add('on')
   if(el)el.classList.add('on')
-  const titles={overview:'Pregled',property:'Objekt',photos:'Fotografije',checkin:'Check-in',wifi:'Wi-Fi',local:'Lokalni vodič',avail:'Dostupnost',ical:'iCal sinkronizacija',bookings:'Rezervacije',links:'Linkovi i QR',sub:'Pretplata'}
+  const titles={overview:'Pregled',property:'Objekt',photos:'Fotografije',checkin:'Check-in',wifi:'Wi-Fi',amenities:'Sadržaji objekta',local:'Lokalni vodič',avail:'Dostupnost',ical:'iCal sinkronizacija',bookings:'Rezervacije',links:'Linkovi i QR',sub:'Pretplata'}
   document.getElementById('topbar-title').textContent=titles[id]||id
   closeSide()
   if(id==='bookings')window.loadBookings()
