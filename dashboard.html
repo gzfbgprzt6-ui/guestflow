@@ -1119,6 +1119,18 @@ window.togSec=(row,key)=>{
 }
 
 // PHOTOS
+const CLOUDINARY_CLOUD='sck9mbg9'
+const CLOUDINARY_PRESET='odmoria_photos'
+async function uploadToCloudinary(file){
+  const fd=new FormData()
+  fd.append('file',file)
+  fd.append('upload_preset',CLOUDINARY_PRESET)
+  const res=await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`,{method:'POST',body:fd})
+  const data=await res.json()
+  if(!res.ok)throw new Error(data.error?.message||'Upload nije uspio')
+  return data.secure_url
+}
+
 window.uploadPhotos=async(files)=>{
   if(!PROP||!files.length)return
   const urls=[...(PROP.photo_urls||[])]
@@ -1130,12 +1142,12 @@ window.uploadPhotos=async(files)=>{
   for(const file of Array.from(files)){
     if(urls.length>=limit)break
     if(file.size>5*1024*1024){toast(file.name+' je prevelika');continue}
-    const ext=file.name.split('.').pop()
-    const path=USER.id+'/'+PROP.id+'/'+Date.now()+'-'+Math.random().toString(36).slice(2,6)+'.'+ext
-    const{data,error}=await sb.storage.from('property-photos').upload(path,file,{contentType:file.type,upsert:false})
-    if(error){toast('Upload greška: '+error.message);continue}
-    const{data:ud}=sb.storage.from('property-photos').getPublicUrl(path)
-    urls.push(ud.publicUrl);uploaded++
+    try{
+      const url=await uploadToCloudinary(file)
+      urls.push(url);uploaded++
+    }catch(e){
+      toast('Upload greška: '+e.message);continue
+    }
   }
   if(uploaded>0){
     const cover=PROP.cover_photo_url||urls[0]
