@@ -1,436 +1,2613 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="hr">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Odmoria — Digitalni vodič za goste. Direktno.</title>
-<meta name="description" content="Šifra vrata, Wi-Fi, lokalne preporuke — sve na jednom linku. Javna stranica za marketing, privatni link za potvrđene goste. Odmoria ne uzima proviziju.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
-<style>
-:root{--black:#5A3323;--warm-white:#F7F5F1;--pure-white:#FFFFFF;--electric:#A15C3E;--electric-dk:#7E4630;--stone:#E8E2D9;--stone-mid:#C8C0B4;--ink:#1A1917;--body:#4A4540;--soft:#6B6560;--ghost:#9B9590;--serif:'DM Serif Display',Georgia,serif;--sans:'DM Sans',system-ui,sans-serif}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{font-family:var(--sans);background:var(--pure-white);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.6}
-a{color:inherit;text-decoration:none}
-button{font-family:var(--sans);cursor:pointer}
-img{display:block;max-width:100%}
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Odmoria je digitalni vodič za iznajmljivače. Check-in, Wi-Fi, kućna pravila i lokalne preporuke u jednom linku za gosta.">
+  <meta name="theme-color" content="#5A3323">
+  <title>Odmoria — digitalni vodič za vaše goste</title>
 
-/* NAV */
-.nav{position:sticky;top:0;z-index:100;height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 40px;background:rgba(255,255,255,.97);backdrop-filter:blur(10px);border-bottom:1px solid var(--stone)}
-.nav-logo{font-family:var(--serif);font-size:20px;color:var(--black);letter-spacing:-.2px}
-.nav-links{display:flex;gap:28px;font-size:14px;font-weight:400;color:var(--soft)}
-.nav-links a:hover{color:var(--black);transition:color .12s}
-.nav-r{display:flex;gap:8px;align-items:center}
-.btn-ghost{font-size:14px;font-weight:400;color:var(--soft);padding:7px 14px;border:none;background:transparent;border-radius:6px;transition:all .12s}
-.btn-ghost:hover{background:var(--warm-white);color:var(--black)}
-.btn-solid{font-size:14px;font-weight:500;color:#fff;padding:8px 20px;border:none;background:var(--black);border-radius:6px;transition:background .12s}
-.btn-solid:hover{background:#6B3F2D}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-/* HERO */
-.hero{padding:80px 40px 0;text-align:center;border-bottom:1px solid var(--stone);overflow:hidden;background:var(--pure-white)}
-.hero-eyebrow{display:inline-block;font-size:12px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--electric);margin-bottom:22px}
-.hero h1{font-family:var(--serif);font-size:clamp(48px,7vw,80px);line-height:1.03;color:var(--black);margin-bottom:22px;letter-spacing:-.03em;font-weight:400}
-.hero h1 i{font-style:italic;color:var(--electric)}
-.hero-sub{font-size:18px;line-height:1.7;color:var(--soft);max-width:480px;margin:0 auto 36px;font-weight:300}
-.hero-btns{display:flex;gap:12px;justify-content:center;align-items:center;margin-bottom:56px}
-.btn-hero{font-size:15px;font-weight:500;color:#fff;padding:13px 28px;border:none;background:var(--black);border-radius:8px;transition:all .12s;display:inline-flex;align-items:center;gap:9px}
-.btn-hero:hover{background:#6B3F2D;transform:translateY(-1px)}
-.btn-hero svg{transition:transform .15s}
-.btn-hero:hover svg{transform:translateX(2px)}
-.btn-hero-sec{font-size:15px;font-weight:400;color:var(--soft);padding:13px 18px;border:none;background:transparent;transition:color .12s}
-.btn-hero-sec:hover{color:var(--black)}
+  <style>
+    :root {
+      --cream: #F7F5F1;
+      --paper: #FFFFFF;
+      --paper-soft: #efe8df;
+      --ink: #1A1917;
+      --muted: #6B6560;
+      --brown: #5A3323;
+      --brown-deep: #63392A;
+      --brown-soft: #7E4630;
+      --copper: #A15C3E;
+      --peach: #e8b79e;
+      --line: #E8E2D9;
+      --white: #ffffff;
+      --success: #15803D;
+      --shadow: 0 22px 70px rgba(71, 37, 22, 0.13);
+      --radius-sm: 10px;
+      --radius-md: 18px;
+      --radius-lg: 28px;
+      --container: 1180px;
+    }
 
-/* browser window */
-.browser-outer{max-width:900px;margin:0 auto;position:relative}
-.browser-frame{border:1px solid var(--stone);border-radius:14px 14px 0 0;overflow:hidden;box-shadow:0 -12px 48px rgba(0,0,0,.07),0 -2px 8px rgba(0,0,0,.04)}
-.browser-topbar{background:#F3F1EE;border-bottom:1px solid var(--stone);height:40px;display:flex;align-items:center;gap:10px;padding:0 16px}
-.b-dots{display:flex;gap:5px}
-.bd{width:10px;height:10px;border-radius:50%}
-.b-url{flex:1;background:#E8E5E0;border-radius:5px;height:22px;display:flex;align-items:center;padding:0 12px;font-family:monospace;font-size:11px;color:#999;margin:0 10px}
-.browser-body{background:var(--pure-white);display:grid;grid-template-columns:196px 1fr;height:400px;overflow:hidden}
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
 
-/* mini dashboard inside browser */
-.ms{background:#5A3323;padding:16px 13px;display:flex;flex-direction:column;gap:2px;border-right:1px solid #6E4230}
-.ms-logo{font-family:var(--serif);font-size:14px;color:#fff;padding-bottom:14px;margin-bottom:10px;border-bottom:1px solid #6E4230}
-.ms-sec{font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:#CBA98F;padding:9px 8px 4px}
-.ms-item{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:6px;font-size:11.5px;color:#D9BFAE;transition:.12s}
-.ms-item:hover,.ms-item.on{background:#63392A;color:#F0E4DA}
-.ms-item.on{color:#fff}
-.ms-ic{font-size:13px;width:16px;text-align:center;flex-shrink:0}
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 92px;
+    }
 
-/* mini main content */
-.mm{padding:20px;display:flex;flex-direction:column;gap:14px;overflow:hidden}
-.mm-top{display:flex;align-items:center;justify-content:space-between}
-.mm-title{font-size:13.5px;font-weight:500;color:var(--ink)}
-.mm-badge{font-size:10px;font-weight:600;background:var(--electric);color:#fff;padding:4px 11px;border-radius:5px}
-.mm-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-.mm-stat{background:var(--warm-white);border:1px solid var(--stone);border-radius:8px;padding:10px 12px}
-.mm-sv{font-size:18px;font-weight:500;color:var(--ink);line-height:1;margin-bottom:3px}
-.mm-sl{font-size:9px;color:var(--ghost);font-weight:400}
-.mm-card{background:var(--pure-white);border:1px solid var(--stone);border-radius:9px;overflow:hidden}
-.mm-card-h{padding:9px 13px;border-bottom:1px solid var(--stone);font-size:11.5px;font-weight:500;display:flex;justify-content:space-between;align-items:center;color:var(--ink)}
-.mm-row{display:flex;align-items:center;gap:9px;padding:8px 13px;border-bottom:1px solid #f5f3f0;font-size:10.5px}
-.mm-row:last-child{border-bottom:none}
-.mm-av{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8.5px;font-weight:600;color:#fff;flex-shrink:0}
-.mm-name{font-weight:500;font-size:11px;color:var(--ink)}
-.mm-date{font-size:10px;color:var(--ghost)}
-.mm-pill{font-size:8.5px;font-weight:600;padding:2px 7px;border-radius:20px;margin-left:auto;flex-shrink:0}
-.pill-act{background:#DCFCE7;color:#15803D}
-.pill-up{background:var(--warm-white);color:var(--ghost)}
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--cream);
+      font-family: "DM Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 16px;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
 
-/* trust bar */
-.trust{display:flex;align-items:center;justify-content:center;gap:40px;padding:22px 40px;border-bottom:1px solid var(--stone);background:var(--warm-white)}
-.trust-i{font-size:13px;color:var(--soft);display:flex;align-items:center;gap:7px;font-weight:300}
-.trust-i::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--electric);flex-shrink:0}
-.trust-sep{width:1px;height:14px;background:var(--stone)}
+    body.menu-open {
+      overflow: hidden;
+    }
 
-/* section base */
-.sec-label{font-size:12px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;color:var(--electric);margin-bottom:14px}
-.sec-h{font-family:var(--serif);font-size:clamp(32px,4vw,50px);line-height:1.07;color:var(--black);font-weight:400;letter-spacing:-.02em}
+    img,
+    svg {
+      display: block;
+      max-width: 100%;
+    }
 
-/* HOW — sticky editorial */
-.how-wrap{border-top:1px solid var(--stone);border-bottom:1px solid var(--stone)}
-.how-grid{display:grid;grid-template-columns:300px 1fr;max-width:1080px;margin:0 auto}
-.how-sticky{padding:72px 48px 72px 40px;position:sticky;top:54px;height:fit-content;border-right:1px solid var(--stone)}
-.how-steps-col{padding:72px 48px}
-.how-step{display:grid;grid-template-columns:52px 1fr;gap:0;padding:32px 0;border-bottom:1px solid var(--stone)}
-.how-step:last-child{border-bottom:none}
-.how-n{font-family:var(--serif);font-style:italic;font-size:34px;color:var(--stone);line-height:1.05;padding-top:3px}
-.how-h{font-size:17px;font-weight:500;color:var(--black);margin-bottom:8px;letter-spacing:-.01em}
-.how-p{font-size:14.5px;line-height:1.75;color:var(--soft);font-weight:300}
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
 
-/* dark split */
-.dark-split{background:var(--black);padding:96px 40px}
-.dark-inner{max-width:1080px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
-.dark-label{font-size:12px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:14px}
-.dark-h{font-family:var(--serif);font-size:clamp(32px,4vw,50px);line-height:1.07;color:#fff;font-weight:400;margin-bottom:16px}
-.dark-p{font-size:15px;line-height:1.75;color:rgba(255,255,255,.4);font-weight:300}
-.lcard{background:#63392A;border:1px solid #6E4230;border-radius:10px;padding:20px;margin-bottom:10px;transition:border-color .15s}
-.lcard:hover{border-color:#8A5A42}
-.lcard:last-child{margin-bottom:0}
-.lbadge{font-size:9.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;padding:3px 9px;border-radius:20px;display:inline-block;margin-bottom:10px}
-.pub-b{background:rgba(74,222,128,.1);color:#4ADE80}
-.priv-b{background:rgba(224,162,128,.14);color:#E0A280}
-.lcard-h{font-size:14.5px;font-weight:500;color:#fff;margin-bottom:4px}
-.lcard-url{font-family:monospace;font-size:11px;color:#CBA98F;margin-bottom:8px}
-.lcard-p{font-size:13px;color:#D9BFAE;line-height:1.65;font-weight:300}
+    button,
+    a {
+      -webkit-tap-highlight-color: transparent;
+    }
 
-/* features asymmetric */
-.feat-bg{background:var(--warm-white);border-top:1px solid var(--stone);border-bottom:1px solid var(--stone)}
-.feat-sec{max-width:1080px;margin:0 auto;padding:96px 40px}
-.feat-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--stone);border:1px solid var(--stone);border-radius:14px;overflow:hidden;margin-top:48px}
-.fi{background:var(--warm-white);padding:30px 26px;transition:background .15s}
-.fi:hover{background:#EDE9E3}
-.fi.wide{grid-column:span 2}
-.fi-tag{font-size:10px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--electric);margin-bottom:8px}
-.fi-ic{width:34px;height:34px;border-radius:8px;background:var(--pure-white);border:1px solid var(--stone);display:flex;align-items:center;justify-content:center;margin-bottom:16px;font-size:16px}
-.fi-h{font-size:15px;font-weight:500;color:var(--black);margin-bottom:7px;letter-spacing:-.01em}
-.fi-p{font-size:13.5px;line-height:1.7;color:var(--soft);font-weight:300}
+    button,
+    input {
+      font: inherit;
+    }
 
-/* testimonial */
-.testi-sec{padding:96px 40px;border-bottom:1px solid var(--stone)}
-.testi-inner{max-width:640px;margin:0 auto}
-.testi-q{font-family:var(--serif);font-size:clamp(22px,3vw,30px);line-height:1.5;color:var(--black);font-style:italic;font-weight:400;margin-bottom:28px}
-.testi-by{display:flex;align-items:center;gap:14px}
-.testi-av{width:40px;height:40px;border-radius:50%;background:var(--electric);color:#fff;font-size:13px;font-weight:500;display:flex;align-items:center;justify-content:center}
-.testi-name{font-size:14px;font-weight:500;color:var(--black)}
-.testi-role{font-size:13px;color:var(--ghost);font-weight:300;margin-top:1px}
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
 
-/* pricing */
-.price-sec{padding:96px 40px;border-bottom:1px solid var(--stone)}
-.price-inner{max-width:1080px;margin:0 auto}
-.price-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:48px}
-.tog-wrap{background:var(--warm-white);border:1px solid var(--stone);border-radius:8px;display:inline-flex;padding:3px;gap:2px}
-.tog{font-size:13px;font-weight:400;padding:6px 16px;border-radius:6px;border:none;cursor:pointer;background:transparent;color:var(--soft);transition:all .15s}
-.tog.on{background:var(--pure-white);color:var(--black);font-weight:500;box-shadow:0 1px 3px rgba(0,0,0,.08)}
-.tog-save{font-size:10px;font-weight:600;color:#16A34A;margin-left:3px}
-.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.pcard{border:1px solid var(--stone);border-radius:12px;padding:28px 24px;transition:border-color .15s}
-.pcard:hover:not(.pf){border-color:var(--stone-mid)}
-.pf{border-color:var(--black);border-width:1.5px;position:relative}
-.pf::before{content:'Najpopularnije';position:absolute;top:-10px;left:20px;background:var(--black);color:#fff;font-size:10px;font-weight:500;padding:2px 10px;border-radius:20px;letter-spacing:.04em}
-.ptier{font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;color:var(--ghost);margin-bottom:18px}
-.ptier.blue{color:var(--electric)}
-.pamt{font-family:var(--serif);font-size:44px;color:var(--black);letter-spacing:-.02em;line-height:1;font-weight:400;margin-bottom:4px}
-.pamt sup{font-family:var(--sans);font-size:18px;font-weight:300;vertical-align:top;margin-top:10px;display:inline-block}
-.pper{font-size:13px;color:var(--ghost);font-weight:300;margin-bottom:20px}
-.pdesc{font-size:14px;color:var(--soft);font-weight:300;line-height:1.6;padding-bottom:20px;border-bottom:1px solid var(--stone);margin-bottom:20px}
-.pfl{margin-bottom:24px}
-.pf-item{display:flex;gap:9px;font-size:13.5px;color:var(--soft);font-weight:300;margin-bottom:9px;align-items:flex-start;line-height:1.5}
-.pck{width:16px;height:16px;border-radius:50%;background:var(--warm-white);border:1px solid var(--stone);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;font-size:9px;color:var(--electric)}
-.pcta{width:100%;padding:11px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;border:none;transition:all .12s}
-.pcta.dark{background:var(--black);color:#fff}
-.pcta.dark:hover{background:#6B3F2D}
-.pcta.out{background:transparent;color:var(--black);border:1px solid var(--stone)}
-.pcta.out:hover{border-color:var(--stone-mid)}
+    h1,
+    h2,
+    h3,
+    .brand,
+    .price-value,
+    .metric-number {
+      font-family: "DM Serif Display", Georgia, serif;
+      font-weight: 400;
+      line-height: 1.02;
+      letter-spacing: -0.025em;
+    }
 
-/* cta */
-.cta-sec{background:var(--warm-white);padding:96px 40px;text-align:center}
-.cta-h{font-family:var(--serif);font-size:clamp(38px,5.5vw,62px);color:var(--black);line-height:1.06;letter-spacing:-.02em;font-weight:400;margin-bottom:14px}
-.cta-h i{font-style:italic;color:var(--electric)}
-.cta-p{font-size:17px;color:var(--soft);font-weight:300;max-width:420px;margin:0 auto 36px;line-height:1.72}
-.cta-fine{font-size:13px;color:var(--ghost);margin-top:16px;font-weight:300}
+    h1 {
+      max-width: 720px;
+      margin-bottom: 26px;
+      font-size: clamp(3.7rem, 7.1vw, 7.25rem);
+      line-height: 0.92;
+    }
 
-/* footer */
-footer{padding:56px 40px 32px;display:grid;grid-template-columns:240px 1fr;gap:56px;border-top:1px solid var(--stone)}
-.f-logo{font-family:var(--serif);font-size:18px;color:var(--black);margin-bottom:10px}
-.f-desc{font-size:13px;color:var(--ghost);line-height:1.65;font-weight:300;max-width:200px}
-.f-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:32px}
-.fc-h{font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;color:var(--stone-mid);margin-bottom:14px}
-.fc a{display:block;font-size:14px;color:var(--soft);font-weight:300;margin-bottom:9px;transition:color .12s}
-.fc a:hover{color:var(--black)}
-.f-bottom{border-top:1px solid var(--stone);padding:16px 40px;display:flex;justify-content:space-between;font-size:12px;color:var(--ghost)}
+    h2 {
+      max-width: 790px;
+      margin-bottom: 22px;
+      font-size: clamp(2.55rem, 5.1vw, 5.15rem);
+    }
 
-/* responsive */
-@media(max-width:900px){
-  .nav{padding:0 20px}.nav-links{display:none}
-  .hero{padding:56px 20px 0}
-  .browser-body{grid-template-columns:1fr;height:280px}.ms{display:none}
-  .trust{flex-wrap:wrap;gap:14px;padding:18px 20px}.trust-sep{display:none}
-  .how-grid{grid-template-columns:1fr}.how-sticky{position:static;border-right:none;border-bottom:1px solid var(--stone);padding:48px 20px 32px}.how-steps-col{padding:32px 20px 48px}
-  .dark-inner{grid-template-columns:1fr;gap:40px}.dark-split{padding:64px 20px}
-  .feat-sec{padding:64px 20px}.feat-grid{grid-template-columns:1fr 1fr}.fi.wide{grid-column:span 1}
-  .testi-sec,.price-sec,.cta-sec{padding:64px 20px}
-  .pgrid{grid-template-columns:1fr}
-  footer{grid-template-columns:1fr;padding:40px 20px 24px;gap:32px}
-  .f-cols{grid-template-columns:repeat(2,1fr)}
-  .f-bottom{padding:16px 20px;flex-direction:column;gap:4px}
-}
-@media(max-width:560px){
-  .hero h1{font-size:38px}.feat-grid{grid-template-columns:1fr}
-  .hero-btns{flex-direction:column}.btn-hero-sec{padding:6px}
-}
-</style>
+    h3 {
+      margin-bottom: 12px;
+      font-size: clamp(1.65rem, 2.2vw, 2.2rem);
+    }
+
+    p {
+      margin-bottom: 0;
+    }
+
+    .container {
+      width: min(calc(100% - 40px), var(--container));
+      margin-inline: auto;
+    }
+
+    .section {
+      padding: 118px 0;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 22px;
+      color: var(--copper);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.17em;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      width: 26px;
+      height: 1px;
+      background: currentColor;
+      content: "";
+    }
+
+    .section-copy {
+      max-width: 630px;
+      color: var(--muted);
+      font-size: clamp(1rem, 1.5vw, 1.16rem);
+    }
+
+    .button {
+      display: inline-flex;
+      min-height: 52px;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 13px 21px;
+      border: 1px solid var(--brown);
+      border-radius: 999px;
+      background: var(--brown);
+      color: var(--white);
+      font-size: 0.91rem;
+      font-weight: 700;
+      line-height: 1.2;
+      transition: transform 180ms ease, background 180ms ease, border-color 180ms ease, color 180ms ease;
+    }
+
+    .button:hover {
+      transform: translateY(-2px);
+      border-color: var(--brown-deep);
+      background: var(--brown-deep);
+    }
+
+    .button:focus-visible,
+    .nav-link:focus-visible,
+    .menu-button:focus-visible,
+    .billing-toggle button:focus-visible,
+    .faq-question:focus-visible {
+      outline: 3px solid rgba(183, 95, 57, 0.33);
+      outline-offset: 3px;
+    }
+
+    .button-secondary {
+      border-color: var(--line);
+      background: transparent;
+      color: var(--ink);
+    }
+
+    .button-secondary:hover {
+      border-color: var(--brown);
+      background: transparent;
+      color: var(--brown);
+    }
+
+    .button-light {
+      border-color: var(--paper);
+      background: var(--paper);
+      color: var(--brown);
+    }
+
+    .button-light:hover {
+      border-color: var(--white);
+      background: var(--white);
+    }
+
+    .button-block {
+      width: 100%;
+    }
+
+    .arrow-icon {
+      width: 17px;
+      height: 17px;
+      transition: transform 180ms ease;
+    }
+
+    .button:hover .arrow-icon {
+      transform: translateX(3px);
+    }
+
+    /* Navigation */
+    .site-header {
+      position: sticky;
+      z-index: 50;
+      top: 0;
+      border-bottom: 1px solid rgba(91, 50, 31, 0.09);
+      background: rgba(246, 242, 236, 0.9);
+      backdrop-filter: blur(18px);
+    }
+
+    .nav {
+      display: flex;
+      min-height: 76px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand {
+      position: relative;
+      z-index: 55;
+      color: var(--brown);
+      font-size: 1.65rem;
+      letter-spacing: -0.04em;
+    }
+
+    .brand-dot {
+      color: var(--copper);
+    }
+
+    .nav-center,
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 25px;
+    }
+
+    .nav-link {
+      color: #55483f;
+      font-size: 0.84rem;
+      font-weight: 600;
+      transition: color 180ms ease;
+    }
+
+    .nav-link:hover {
+      color: var(--copper);
+    }
+
+    .nav-actions {
+      gap: 17px;
+    }
+
+    .nav-actions .button {
+      min-height: 44px;
+      padding: 11px 18px;
+      font-size: 0.82rem;
+    }
+
+    .menu-button {
+      position: relative;
+      z-index: 55;
+      display: none;
+      width: 44px;
+      height: 44px;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      background: transparent;
+      color: var(--ink);
+      cursor: pointer;
+    }
+
+    .menu-button svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* Hero */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 82px 0 0;
+    }
+
+    .hero::before {
+      position: absolute;
+      z-index: -1;
+      top: 6%;
+      right: -12%;
+      width: 520px;
+      height: 520px;
+      border: 1px solid rgba(91, 50, 31, 0.1);
+      border-radius: 50%;
+      content: "";
+    }
+
+    .hero-grid {
+      display: grid;
+      align-items: center;
+      gap: 65px;
+      grid-template-columns: minmax(0, 0.92fr) minmax(520px, 1.08fr);
+    }
+
+    .hero-copy {
+      padding-bottom: 84px;
+    }
+
+    .hero h1 em {
+      color: var(--copper);
+      font-style: italic;
+    }
+
+    .hero-lead {
+      max-width: 580px;
+      color: var(--muted);
+      font-size: clamp(1.05rem, 1.7vw, 1.22rem);
+      line-height: 1.72;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 34px;
+    }
+
+    .hero-note {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 17px;
+      margin-top: 20px;
+      color: #806f64;
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+
+    .hero-note span {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .hero-note span::before {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--copper);
+      content: "";
+    }
+
+    .product-stage {
+      position: relative;
+      align-self: end;
+      min-width: 0;
+      padding: 28px 0 48px;
+    }
+
+    .product-stage::before {
+      position: absolute;
+      z-index: -1;
+      inset: 7% -35% 0 9%;
+      border-radius: 48% 0 0;
+      background: var(--brown);
+      content: "";
+    }
+
+    .browser-frame {
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.38);
+      border-radius: 17px;
+      background: #e8dfd6;
+      box-shadow: var(--shadow);
+      transform: rotate(1deg);
+    }
+
+    .browser-bar {
+      display: flex;
+      height: 38px;
+      align-items: center;
+      gap: 6px;
+      padding: 0 13px;
+      border-bottom: 1px solid #ddd1c6;
+      background: #fbf8f4;
+    }
+
+    .browser-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #c8b9ad;
+    }
+
+    .browser-address {
+      width: 46%;
+      height: 15px;
+      margin-left: 8px;
+      border-radius: 30px;
+      background: #eee7df;
+    }
+
+    .browser-frame img {
+      width: 100%;
+      aspect-ratio: 1.42 / 1;
+      object-fit: cover;
+      object-position: left top;
+    }
+
+    .zero-badge {
+      position: absolute;
+      right: -24px;
+      bottom: 16px;
+      display: grid;
+      width: 132px;
+      height: 132px;
+      place-items: center;
+      border: 1px solid rgba(255, 255, 255, 0.58);
+      border-radius: 50%;
+      background: var(--copper);
+      box-shadow: 0 16px 35px rgba(48, 23, 14, 0.24);
+      color: var(--white);
+      text-align: center;
+      transform: rotate(-8deg);
+    }
+
+    .zero-badge strong {
+      display: block;
+      font-family: "DM Serif Display", Georgia, serif;
+      font-size: 2.05rem;
+      font-weight: 400;
+      line-height: 0.95;
+    }
+
+    .zero-badge small {
+      display: block;
+      max-width: 80px;
+      margin-top: 5px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      line-height: 1.3;
+      text-transform: uppercase;
+    }
+
+    /* Value strip */
+    .value-strip {
+      border-block: 1px solid var(--line);
+      background: var(--paper);
+    }
+
+    .value-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .value-item {
+      min-height: 115px;
+      padding: 30px 26px;
+      border-right: 1px solid var(--line);
+    }
+
+    .value-item:first-child {
+      border-left: 1px solid var(--line);
+    }
+
+    .value-kicker {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--copper);
+      font-size: 0.69rem;
+      font-weight: 700;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+
+    .value-text {
+      font-family: "DM Serif Display", Georgia, serif;
+      font-size: 1.18rem;
+      line-height: 1.18;
+    }
+
+    /* Problem */
+    .problem-grid {
+      display: grid;
+      align-items: center;
+      gap: 90px;
+      grid-template-columns: 0.9fr 1.1fr;
+    }
+
+    .question-stack {
+      position: relative;
+      min-height: 490px;
+      border-radius: var(--radius-lg);
+      background: var(--brown);
+      box-shadow: var(--shadow);
+      color: var(--white);
+    }
+
+    .question-card {
+      position: absolute;
+      max-width: 78%;
+      padding: 17px 21px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 18px 18px 18px 4px;
+      background: rgba(255, 255, 255, 0.09);
+      font-size: 0.94rem;
+      line-height: 1.4;
+      backdrop-filter: blur(8px);
+    }
+
+    .question-card:nth-child(1) {
+      top: 60px;
+      left: 38px;
+      transform: rotate(-2deg);
+    }
+
+    .question-card:nth-child(2) {
+      top: 153px;
+      right: 40px;
+      border-radius: 18px 18px 4px;
+      background: var(--copper);
+      transform: rotate(2deg);
+    }
+
+    .question-card:nth-child(3) {
+      top: 250px;
+      left: 54px;
+      transform: rotate(1deg);
+    }
+
+    .question-card:nth-child(4) {
+      right: 52px;
+      bottom: 62px;
+      border-radius: 18px 18px 4px;
+      background: var(--paper);
+      color: var(--brown);
+      font-weight: 700;
+      transform: rotate(-1.5deg);
+    }
+
+    .problem-points {
+      display: grid;
+      gap: 0;
+      margin-top: 38px;
+      border-top: 1px solid var(--line);
+    }
+
+    .problem-point {
+      display: grid;
+      gap: 20px;
+      padding: 22px 0;
+      border-bottom: 1px solid var(--line);
+      grid-template-columns: 36px 1fr;
+    }
+
+    .point-number {
+      color: var(--copper);
+      font-family: "DM Serif Display", Georgia, serif;
+      font-size: 1.15rem;
+    }
+
+    .point-title {
+      display: block;
+      margin-bottom: 4px;
+      font-weight: 700;
+    }
+
+    .point-copy {
+      color: var(--muted);
+      font-size: 0.91rem;
+    }
+
+    /* Two links */
+    .links-section {
+      overflow: hidden;
+      background: var(--brown);
+      color: var(--white);
+    }
+
+    .links-section .eyebrow {
+      color: var(--peach);
+    }
+
+    .links-section .section-copy {
+      color: rgba(255, 255, 255, 0.68);
+    }
+
+    .links-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 50px;
+      margin-bottom: 58px;
+    }
+
+    .links-head h2 {
+      max-width: 690px;
+      margin-bottom: 0;
+    }
+
+    .link-cards {
+      display: grid;
+      gap: 20px;
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .link-card {
+      position: relative;
+      overflow: hidden;
+      min-height: 510px;
+      padding: 42px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: var(--radius-lg);
+      background: rgba(255, 255, 255, 0.055);
+    }
+
+    .link-card.light {
+      background: var(--paper);
+      color: var(--ink);
+    }
+
+    .link-tag {
+      display: inline-flex;
+      margin-bottom: 36px;
+      padding: 7px 10px;
+      border: 1px solid currentColor;
+      border-radius: 999px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    .link-card h3 {
+      max-width: 410px;
+      font-size: clamp(2.2rem, 4vw, 3.8rem);
+    }
+
+    .link-card > p {
+      max-width: 430px;
+      color: rgba(255, 255, 255, 0.68);
+    }
+
+    .link-card.light > p {
+      color: var(--muted);
+    }
+
+    .mini-phone {
+      position: absolute;
+      right: 35px;
+      bottom: -110px;
+      width: 245px;
+      min-height: 330px;
+      padding: 16px;
+      border: 7px solid #2f190f;
+      border-radius: 34px;
+      background: #faf6f0;
+      box-shadow: 0 20px 55px rgba(24, 10, 5, 0.23);
+      color: var(--ink);
+      transform: rotate(4deg);
+    }
+
+    .mini-phone.private-phone {
+      border-color: #331a11;
+      background: var(--brown-soft);
+      color: var(--white);
+      transform: rotate(-4deg);
+    }
+
+    .phone-notch {
+      width: 50px;
+      height: 6px;
+      margin: 0 auto 24px;
+      border-radius: 999px;
+      background: currentColor;
+      opacity: 0.22;
+    }
+
+    .phone-kicker {
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .phone-title {
+      display: block;
+      margin: 8px 0 18px;
+      font-family: "DM Serif Display", Georgia, serif;
+      font-size: 1.55rem;
+      line-height: 1.05;
+    }
+
+    .phone-image {
+      height: 102px;
+      border-radius: 12px;
+      background:
+        linear-gradient(145deg, rgba(67, 34, 20, 0.04), rgba(67, 34, 20, 0.2)),
+        linear-gradient(115deg, #d9c0a8 0 35%, #f0e3d5 35% 66%, #9f6848 66%);
+    }
+
+    .phone-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .phone-row {
+      display: flex;
+      min-height: 39px;
+      align-items: center;
+      gap: 9px;
+      padding: 8px 10px;
+      border: 1px solid rgba(91, 50, 31, 0.12);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.72);
+      color: var(--brown);
+      font-size: 0.64rem;
+      font-weight: 700;
+    }
+
+    .private-phone .phone-row {
+      border-color: rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.09);
+      color: var(--white);
+    }
+
+    .phone-row::before {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--copper);
+      content: "";
+    }
+
+    /* How it works */
+    .how-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 40px;
+      margin-bottom: 58px;
+    }
+
+    .how-head h2 {
+      max-width: 710px;
+      margin-bottom: 0;
+    }
+
+    .steps {
+      display: grid;
+      border-block: 1px solid var(--line);
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .step {
+      position: relative;
+      min-height: 295px;
+      padding: 34px 34px 35px 0;
+      border-right: 1px solid var(--line);
+    }
+
+    .step + .step {
+      padding-left: 34px;
+    }
+
+    .step:last-child {
+      border-right: 0;
+    }
+
+    .step-number {
+      display: block;
+      margin-bottom: 67px;
+      color: var(--copper);
+      font-family: "DM Serif Display", Georgia, serif;
+      font-size: 2.5rem;
+      line-height: 1;
+    }
+
+    .step h3 {
+      font-size: 1.7rem;
+    }
+
+    .step p {
+      color: var(--muted);
+      font-size: 0.91rem;
+    }
+
+    /* Testimonials */
+    .testimonials {
+      display: grid;
+      border-block: 1px solid var(--line);
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .testimonial {
+      position: relative;
+      padding: 34px 34px 35px 0;
+      border-right: 1px solid var(--line);
+    }
+
+    .testimonial + .testimonial {
+      padding-left: 34px;
+    }
+
+    .testimonial:last-child {
+      border-right: 0;
+    }
+
+    .testimonial-quote {
+      margin-bottom: 24px;
+      color: var(--ink);
+      font-family: "DM Serif Display", Georgia, serif;
+      font-size: 1.16rem;
+      font-style: italic;
+      line-height: 1.5;
+    }
+
+    .testimonial-by {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .testimonial-avatar {
+      display: flex;
+      width: 38px;
+      height: 38px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: var(--copper);
+      color: var(--white);
+      font-family: "DM Serif Display", Georgia, serif;
+      font-size: 0.92rem;
+    }
+
+    .testimonial-name {
+      color: var(--ink);
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    .testimonial-role {
+      margin-top: 1px;
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+
+    /* Comparison */
+    .comparison-section {
+      background: #eee7df;
+    }
+
+    .comparison-head {
+      display: grid;
+      align-items: end;
+      gap: 65px;
+      margin-bottom: 52px;
+      grid-template-columns: 1fr 0.75fr;
+    }
+
+    .comparison-head h2 {
+      margin-bottom: 0;
+    }
+
+    .comparison-table {
+      display: grid;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: var(--paper);
+      grid-template-columns: 1fr 1fr;
+      box-shadow: 0 12px 42px rgba(69, 36, 20, 0.08);
+    }
+
+    .comparison-column {
+      padding: 36px 38px 28px;
+    }
+
+    .comparison-column.highlight {
+      background: var(--brown);
+      color: var(--white);
+    }
+
+    .comparison-title {
+      display: flex;
+      min-height: 52px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 12px;
+      font-family: "DM Serif Display", Georgia, serif;
+      font-size: 1.5rem;
+    }
+
+    .comparison-title span {
+      padding: 7px 10px;
+      border: 1px solid currentColor;
+      border-radius: 999px;
+      font-family: "DM Sans", sans-serif;
+      font-size: 0.61rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .comparison-row {
+      display: grid;
+      min-height: 69px;
+      align-items: center;
+      gap: 18px;
+      border-top: 1px solid var(--line);
+      grid-template-columns: 1fr auto;
+      font-size: 0.83rem;
+    }
+
+    .highlight .comparison-row {
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .comparison-label {
+      color: var(--muted);
+    }
+
+    .highlight .comparison-label {
+      color: rgba(255, 255, 255, 0.66);
+    }
+
+    .comparison-value {
+      max-width: 245px;
+      font-weight: 700;
+      text-align: right;
+    }
+
+    .comparison-footnote {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 0.73rem;
+    }
+
+    /* Features */
+    .feature-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 40px;
+      margin-bottom: 54px;
+    }
+
+    .feature-head h2 {
+      max-width: 690px;
+      margin-bottom: 0;
+    }
+
+    .feature-grid {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: repeat(12, 1fr);
+    }
+
+    .feature-card {
+      position: relative;
+      overflow: hidden;
+      min-height: 310px;
+      padding: 34px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: var(--paper);
+    }
+
+    .feature-card.large {
+      grid-column: span 7;
+    }
+
+    .feature-card.medium {
+      grid-column: span 5;
+    }
+
+    .feature-card.third {
+      min-height: 280px;
+      grid-column: span 4;
+    }
+
+    .feature-card.dark {
+      border-color: var(--brown);
+      background: var(--brown);
+      color: var(--white);
+    }
+
+    .feature-card.copper {
+      border-color: var(--copper);
+      background: var(--copper);
+      color: var(--white);
+    }
+
+    .feature-index {
+      display: block;
+      margin-bottom: 64px;
+      color: var(--copper);
+      font-size: 0.69rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .dark .feature-index,
+    .copper .feature-index {
+      color: var(--peach);
+    }
+
+    .feature-card h3 {
+      max-width: 480px;
+    }
+
+    .feature-card p {
+      max-width: 510px;
+      color: var(--muted);
+      font-size: 0.91rem;
+    }
+
+    .dark p,
+    .copper p {
+      color: rgba(255, 255, 255, 0.72);
+    }
+
+    .qr-motif {
+      position: absolute;
+      top: 32px;
+      right: 32px;
+      display: grid;
+      width: 90px;
+      height: 90px;
+      padding: 10px;
+      border-radius: 12px;
+      background: var(--paper);
+      grid-template-columns: repeat(5, 1fr);
+      grid-template-rows: repeat(5, 1fr);
+    }
+
+    .qr-motif span {
+      background: var(--brown);
+    }
+
+    .qr-motif span:nth-child(2n) {
+      background: transparent;
+    }
+
+    .qr-motif span:nth-child(3),
+    .qr-motif span:nth-child(6),
+    .qr-motif span:nth-child(9),
+    .qr-motif span:nth-child(12),
+    .qr-motif span:nth-child(16),
+    .qr-motif span:nth-child(17),
+    .qr-motif span:nth-child(20),
+    .qr-motif span:nth-child(23),
+    .qr-motif span:nth-child(25) {
+      background: var(--brown);
+    }
+
+    /* Pricing */
+    .pricing-section {
+      background: var(--brown-deep);
+      color: var(--white);
+    }
+
+    .pricing-section .eyebrow {
+      color: var(--peach);
+    }
+
+    .pricing-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 40px;
+      margin-bottom: 54px;
+    }
+
+    .pricing-head h2 {
+      max-width: 720px;
+      margin-bottom: 0;
+    }
+
+    .billing-toggle {
+      display: inline-flex;
+      flex: 0 0 auto;
+      padding: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .billing-toggle button {
+      min-height: 39px;
+      padding: 8px 14px;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: rgba(255, 255, 255, 0.63);
+      font-size: 0.72rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .billing-toggle button.active {
+      background: var(--paper);
+      color: var(--brown);
+    }
+
+    .billing-toggle small {
+      color: var(--copper);
+      font-weight: 700;
+    }
+
+    .pricing-grid {
+      display: grid;
+      align-items: stretch;
+      gap: 16px;
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .price-card {
+      position: relative;
+      display: flex;
+      min-height: 555px;
+      flex-direction: column;
+      padding: 33px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.045);
+    }
+
+    .price-card.featured {
+      border-color: var(--copper);
+      background: var(--paper);
+      color: var(--ink);
+      transform: translateY(-10px);
+    }
+
+    .popular-label {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      padding: 6px 9px;
+      border-radius: 999px;
+      background: var(--copper);
+      color: var(--white);
+      font-size: 0.59rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .plan-name {
+      margin-bottom: 4px;
+      font-family: "DM Serif Display", Georgia, serif;
+      font-size: 1.75rem;
+    }
+
+    .plan-audience {
+      min-height: 47px;
+      color: rgba(255, 255, 255, 0.59);
+      font-size: 0.78rem;
+    }
+
+    .featured .plan-audience {
+      color: var(--muted);
+    }
+
+    .price-line {
+      display: flex;
+      min-height: 93px;
+      align-items: end;
+      gap: 7px;
+      padding: 25px 0 21px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    .featured .price-line {
+      border-color: var(--line);
+    }
+
+    .price-value {
+      font-size: 3.7rem;
+      line-height: 0.85;
+    }
+
+    .price-period {
+      color: rgba(255, 255, 255, 0.53);
+      font-size: 0.75rem;
+    }
+
+    .featured .price-period {
+      color: var(--muted);
+    }
+
+    .annual-note {
+      min-height: 25px;
+      margin-top: 9px;
+      color: var(--peach);
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+
+    .featured .annual-note {
+      color: var(--copper);
+    }
+
+    .plan-features {
+      display: grid;
+      gap: 13px;
+      margin: 23px 0 31px;
+      padding: 0;
+      list-style: none;
+    }
+
+    .plan-features li {
+      display: grid;
+      align-items: start;
+      gap: 10px;
+      color: rgba(255, 255, 255, 0.77);
+      font-size: 0.79rem;
+      grid-template-columns: 16px 1fr;
+    }
+
+    .featured .plan-features li {
+      color: #56483f;
+    }
+
+    .check {
+      width: 16px;
+      height: 16px;
+      color: var(--peach);
+    }
+
+    .featured .check {
+      color: var(--copper);
+    }
+
+    .price-card .button {
+      margin-top: auto;
+    }
+
+    .price-card:not(.featured) .button-secondary {
+      border-color: rgba(255, 255, 255, 0.3);
+      color: var(--white);
+    }
+
+    .price-card:not(.featured) .button-secondary:hover {
+      border-color: var(--white);
+      color: var(--white);
+    }
+
+    .pricing-note {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 30px;
+      margin-top: 26px;
+      color: rgba(255, 255, 255, 0.58);
+      font-size: 0.75rem;
+    }
+
+    .pricing-note a {
+      color: var(--white);
+      font-weight: 700;
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    /* FAQ */
+    .faq-grid {
+      display: grid;
+      align-items: start;
+      gap: 90px;
+      grid-template-columns: 0.72fr 1.28fr;
+    }
+
+    .faq-intro {
+      position: sticky;
+      top: 112px;
+    }
+
+    .faq-intro h2 {
+      font-size: clamp(2.6rem, 4.5vw, 4.7rem);
+    }
+
+    .faq-list {
+      border-top: 1px solid var(--line);
+    }
+
+    .faq-item {
+      border-bottom: 1px solid var(--line);
+    }
+
+    .faq-question {
+      display: grid;
+      width: 100%;
+      min-height: 88px;
+      align-items: center;
+      gap: 24px;
+      padding: 22px 0;
+      border: 0;
+      background: transparent;
+      color: var(--ink);
+      cursor: pointer;
+      font-family: "DM Serif Display", Georgia, serif;
+      font-size: 1.35rem;
+      line-height: 1.2;
+      text-align: left;
+      grid-template-columns: 1fr 28px;
+    }
+
+    .faq-icon {
+      position: relative;
+      width: 26px;
+      height: 26px;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+    }
+
+    .faq-icon::before,
+    .faq-icon::after {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 10px;
+      height: 1px;
+      background: var(--copper);
+      content: "";
+      transform: translate(-50%, -50%);
+      transition: transform 180ms ease;
+    }
+
+    .faq-icon::after {
+      transform: translate(-50%, -50%) rotate(90deg);
+    }
+
+    .faq-question[aria-expanded="true"] .faq-icon::after {
+      transform: translate(-50%, -50%) rotate(0deg);
+    }
+
+    .faq-answer {
+      display: grid;
+      overflow: hidden;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 220ms ease;
+    }
+
+    .faq-answer > div {
+      min-height: 0;
+    }
+
+    .faq-answer p {
+      max-width: 680px;
+      padding: 0 52px 27px 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .faq-question[aria-expanded="true"] + .faq-answer {
+      grid-template-rows: 1fr;
+    }
+
+    /* Final CTA */
+    .final-cta {
+      padding-top: 0;
+    }
+
+    .cta-panel {
+      position: relative;
+      overflow: hidden;
+      padding: 76px;
+      border-radius: var(--radius-lg);
+      background: var(--copper);
+      color: var(--white);
+    }
+
+    .cta-panel::before,
+    .cta-panel::after {
+      position: absolute;
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      border-radius: 50%;
+      content: "";
+    }
+
+    .cta-panel::before {
+      top: -160px;
+      right: -60px;
+      width: 420px;
+      height: 420px;
+    }
+
+    .cta-panel::after {
+      right: 180px;
+      bottom: -250px;
+      width: 500px;
+      height: 500px;
+    }
+
+    .cta-content {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      align-items: end;
+      gap: 60px;
+      grid-template-columns: 1fr auto;
+    }
+
+    .cta-content h2 {
+      max-width: 730px;
+      margin-bottom: 15px;
+      font-size: clamp(2.75rem, 5.5vw, 5.5rem);
+    }
+
+    .cta-content p {
+      color: rgba(255, 255, 255, 0.76);
+    }
+
+    /* Footer */
+    .site-footer {
+      padding: 64px 0 30px;
+      background: var(--paper);
+    }
+
+    .footer-top {
+      display: grid;
+      gap: 50px;
+      padding-bottom: 50px;
+      grid-template-columns: 1.5fr repeat(3, 0.7fr);
+    }
+
+    .footer-brand p {
+      max-width: 360px;
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 0.84rem;
+    }
+
+    .footer-column h3 {
+      margin-bottom: 16px;
+      font-family: "DM Sans", sans-serif;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+
+    .footer-column a {
+      display: block;
+      width: fit-content;
+      margin-top: 9px;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .footer-column a:hover {
+      color: var(--copper);
+    }
+
+    .footer-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 25px;
+      padding-top: 25px;
+      border-top: 1px solid var(--line);
+      color: #8b7d73;
+      font-size: 0.72rem;
+    }
+
+    /* Reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity 650ms ease, transform 650ms ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+      }
+
+      .reveal {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    @media (max-width: 1080px) {
+      .hero-grid {
+        gap: 40px;
+        grid-template-columns: 0.87fr 1.13fr;
+      }
+
+      .zero-badge {
+        right: -8px;
+        width: 112px;
+        height: 112px;
+      }
+
+      .problem-grid,
+      .faq-grid {
+        gap: 55px;
+      }
+
+      .feature-card.large,
+      .feature-card.medium {
+        grid-column: span 6;
+      }
+
+      .feature-card.third {
+        grid-column: span 4;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .section {
+        padding: 92px 0;
+      }
+
+      .menu-button {
+        display: inline-flex;
+      }
+
+      .nav-center,
+      .nav-actions {
+        position: fixed;
+        right: 0;
+        left: 0;
+        display: none;
+        background: var(--cream);
+      }
+
+      .nav-center {
+        top: 76px;
+        bottom: 82px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0;
+        padding: 34px 20px;
+      }
+
+      .nav-center .nav-link {
+        width: 100%;
+        padding: 15px 0;
+        border-bottom: 1px solid var(--line);
+        font-family: "DM Serif Display", Georgia, serif;
+        font-size: 1.8rem;
+        font-weight: 400;
+      }
+
+      .nav-actions {
+        bottom: 0;
+        z-index: 52;
+        height: 82px;
+        justify-content: center;
+        padding: 15px 20px;
+        border-top: 1px solid var(--line);
+      }
+
+      .nav-actions .button {
+        flex: 1;
+      }
+
+      .site-header.menu-active .nav-center,
+      .site-header.menu-active .nav-actions {
+        display: flex;
+      }
+
+      .hero {
+        padding-top: 66px;
+      }
+
+      .hero-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-copy {
+        padding-bottom: 0;
+      }
+
+      .product-stage {
+        width: min(100%, 720px);
+        justify-self: center;
+        padding-bottom: 70px;
+      }
+
+      .product-stage::before {
+        inset: 6% -45% 0 15%;
+      }
+
+      .value-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .value-item:nth-child(2) {
+        border-right: 1px solid var(--line);
+      }
+
+      .value-item:nth-child(3) {
+        border-left: 1px solid var(--line);
+        border-top: 1px solid var(--line);
+      }
+
+      .value-item:nth-child(4) {
+        border-top: 1px solid var(--line);
+      }
+
+      .problem-grid,
+      .faq-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .problem-copy {
+        order: -1;
+      }
+
+      .faq-intro {
+        position: static;
+      }
+
+      .links-head,
+      .how-head,
+      .feature-head,
+      .pricing-head {
+        display: grid;
+        align-items: start;
+      }
+
+      .link-card {
+        min-height: 540px;
+      }
+
+      .steps {
+        grid-template-columns: 1fr;
+      }
+
+      .step,
+      .step + .step {
+        min-height: auto;
+        padding: 30px 0;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .step:last-child {
+        border-bottom: 0;
+      }
+
+      .step-number {
+        margin-bottom: 28px;
+      }
+
+      .testimonials {
+        grid-template-columns: 1fr;
+      }
+
+      .testimonial,
+      .testimonial + .testimonial {
+        padding: 26px 0;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .testimonial:last-child {
+        border-bottom: 0;
+      }
+
+      .comparison-head {
+        gap: 25px;
+        grid-template-columns: 1fr;
+      }
+
+      .comparison-table {
+        grid-template-columns: 1fr;
+      }
+
+      .pricing-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .price-card {
+        min-height: auto;
+      }
+
+      .price-card.featured {
+        transform: none;
+      }
+
+      .plan-audience {
+        min-height: auto;
+      }
+
+      .cta-content {
+        align-items: start;
+        grid-template-columns: 1fr;
+      }
+
+      .footer-top {
+        grid-template-columns: 1.4fr repeat(3, 0.7fr);
+      }
+    }
+
+    @media (max-width: 720px) {
+      .container {
+        width: min(calc(100% - 30px), var(--container));
+      }
+
+      .section {
+        padding: 76px 0;
+      }
+
+      h1 {
+        font-size: clamp(3.25rem, 16vw, 5rem);
+      }
+
+      h2 {
+        font-size: clamp(2.45rem, 12vw, 4rem);
+      }
+
+      .hero {
+        padding-top: 51px;
+      }
+
+      .hero-actions {
+        display: grid;
+      }
+
+      .hero-actions .button {
+        width: 100%;
+      }
+
+      .product-stage {
+        padding-top: 14px;
+      }
+
+      .browser-frame {
+        border-radius: 11px;
+        transform: none;
+      }
+
+      .browser-bar {
+        height: 28px;
+      }
+
+      .zero-badge {
+        right: -4px;
+        bottom: 25px;
+        width: 93px;
+        height: 93px;
+      }
+
+      .zero-badge strong {
+        font-size: 1.65rem;
+      }
+
+      .zero-badge small {
+        font-size: 0.53rem;
+      }
+
+      .value-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .value-item,
+      .value-item:first-child,
+      .value-item:nth-child(3) {
+        min-height: auto;
+        padding: 22px 5px;
+        border-right: 0;
+        border-left: 0;
+        border-top: 1px solid var(--line);
+      }
+
+      .value-item:first-child {
+        border-top: 0;
+      }
+
+      .question-stack {
+        min-height: 450px;
+      }
+
+      .question-card {
+        max-width: calc(100% - 44px);
+      }
+
+      .question-card:nth-child(1) {
+        top: 43px;
+        left: 22px;
+      }
+
+      .question-card:nth-child(2) {
+        top: 135px;
+        right: 22px;
+      }
+
+      .question-card:nth-child(3) {
+        top: 235px;
+        left: 22px;
+      }
+
+      .question-card:nth-child(4) {
+        right: 22px;
+        bottom: 45px;
+      }
+
+      .link-cards {
+        grid-template-columns: 1fr;
+      }
+
+      .link-card {
+        min-height: 500px;
+        padding: 30px 24px;
+      }
+
+      .mini-phone {
+        right: 18px;
+        width: 215px;
+      }
+
+      .comparison-column {
+        padding: 28px 21px 20px;
+      }
+
+      .comparison-title {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .comparison-row {
+        min-height: 78px;
+        align-items: start;
+        gap: 5px;
+        padding: 17px 0;
+        grid-template-columns: 1fr;
+      }
+
+      .comparison-value {
+        max-width: none;
+        text-align: left;
+      }
+
+      .feature-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .feature-card.large,
+      .feature-card.medium,
+      .feature-card.third {
+        min-height: 280px;
+        grid-column: auto;
+      }
+
+      .pricing-note,
+      .footer-bottom {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .cta-panel {
+        padding: 50px 26px;
+      }
+
+      .footer-top {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .footer-brand {
+        grid-column: 1 / -1;
+      }
+    }
+
+    @media (max-width: 430px) {
+      .hero-note {
+        display: grid;
+      }
+
+      .problem-point {
+        gap: 13px;
+        grid-template-columns: 28px 1fr;
+      }
+
+      .feature-card,
+      .price-card {
+        padding: 27px 23px;
+      }
+
+      .pricing-head {
+        gap: 25px;
+      }
+
+      .billing-toggle {
+        width: 100%;
+      }
+
+      .billing-toggle button {
+        flex: 1;
+      }
+
+      .footer-top {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-brand {
+        grid-column: auto;
+      }
+    }
+  </style>
 </head>
+
 <body>
+  <header class="site-header" id="siteHeader">
+    <div class="container nav">
+      <a class="brand" href="#top" aria-label="Odmoria — početna">Odmoria<span class="brand-dot">.</span></a>
 
-<nav class="nav">
-  <div class="nav-logo">Odmoria</div>
-  <div class="nav-links">
-    <a href="#kako">Kako radi</a><a href="#mogucnosti">Mogućnosti</a>
-    <a href="#cijene">Cijene</a><a href="/help.html">Pomoć</a>
-  </div>
-  <div class="nav-r">
-    <button class="btn-ghost" onclick="location.href='/login.html'">Prijava</button>
-    <button class="btn-solid" onclick="location.href='/register.html'">Počni besplatno</button>
-  </div>
-</nav>
+      <nav class="nav-center" id="mobile-menu" aria-label="Glavna navigacija">
+        <a class="nav-link" href="#kako-radi">Kako radi</a>
+        <a class="nav-link" href="#mogucnosti">Mogućnosti</a>
+        <a class="nav-link" href="#usporedba">Zašto Odmoria</a>
+        <a class="nav-link" href="#cijene">Cijene</a>
+      </nav>
 
-<section class="hero">
-  <div class="hero-eyebrow">Za iznajmljivače na Jadranu</div>
-  <h1>Sve što gost treba.<br><i>Na jednom linku.</i></h1>
-  <p class="hero-sub">Šifra vrata, Wi-Fi, lokalne preporuke, prijevoz. Javna stranica za marketing, privatni link za potvrđene goste. Bez provizije.</p>
-  <div class="hero-btns">
-    <button class="btn-hero" onclick="location.href='/register.html'">
-      Postavi prvi objekt
-      <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M2 7.5h11M9 3.5l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </button>
-    <button class="btn-hero-sec">Pogledaj primjer →</button>
-  </div>
-  <div class="browser-outer">
-    <div class="browser-frame">
-      <div class="browser-topbar">
-        <div class="b-dots"><div class="bd" style="background:#FF5F56"></div><div class="bd" style="background:#FFBD2E"></div><div class="bd" style="background:#27C93F"></div></div>
-        <div class="b-url">odmoria.com/dashboard · Villa Luna</div>
+      <div class="nav-actions">
+        <a class="nav-link" href="login.html">Prijava</a>
+        <a class="button" href="register.html">Započni besplatno</a>
       </div>
-      <div class="browser-body">
-        <div class="ms">
-          <div class="ms-logo">Odmoria</div>
-          <div class="ms-sec">Sadržaj</div>
-          <div class="ms-item on"><span class="ms-ic">◈</span>Pregled</div>
-          <div class="ms-item"><span class="ms-ic">⌂</span>Objekt</div>
-          <div class="ms-item"><span class="ms-ic">⚷</span>Check-in</div>
-          <div class="ms-item"><span class="ms-ic">≋</span>Wi-Fi</div>
-          <div class="ms-item"><span class="ms-ic">◎</span>Lokalni vodič</div>
-          <div class="ms-sec">Dijeljenje</div>
-          <div class="ms-item"><span class="ms-ic">◈</span>Rezervacije</div>
-          <div class="ms-item"><span class="ms-ic">⊡</span>Linkovi i QR</div>
-        </div>
-        <div class="mm">
-          <div class="mm-top">
-            <div class="mm-title">Villa Luna · Hvar</div>
-            <div class="mm-badge">+ Nova rezervacija</div>
+
+      <button class="menu-button" id="menuButton" type="button" aria-label="Otvori izbornik" aria-expanded="false" aria-controls="mobile-menu">
+        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+          <path d="M4 7h16M4 12h16M4 17h16"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-copy reveal">
+          <span class="eyebrow">Digitalni vodič za iznajmljivače</span>
+          <h1>Dobar boravak počinje <em>prije dolaska.</em></h1>
+          <p class="hero-lead">Check-in, Wi-Fi, kućna pravila i lokalne preporuke — sve što gost treba u jednom lijepom linku s vašim imenom.</p>
+
+          <div class="hero-actions">
+            <a class="button" href="register.html">
+              Izradi vodič besplatno
+              <svg class="arrow-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14M13 6l6 6-6 6"/>
+              </svg>
+            </a>
+            <a class="button button-secondary" href="p.html">Pogledaj primjer</a>
           </div>
-          <div class="mm-stats">
-            <div class="mm-stat"><div class="mm-sv">12</div><div class="mm-sl">Pregleda</div></div>
-            <div class="mm-stat"><div class="mm-sv">3</div><div class="mm-sl">Rezervacija</div></div>
-            <div class="mm-stat"><div class="mm-sv">iCal</div><div class="mm-sl">Sinkronizirano</div></div>
-            <div class="mm-stat"><div class="mm-sv">0 €</div><div class="mm-sl">Provizija</div></div>
-          </div>
-          <div class="mm-card">
-            <div class="mm-card-h">Aktivne rezervacije <span style="font-size:9px;color:var(--ghost);font-weight:300">3 aktivne</span></div>
-            <div class="mm-row"><div class="mm-av" style="background:#A15C3E">AM</div><div style="flex:1"><div class="mm-name">Ana Matić</div><div class="mm-date">12–19. srp 2026</div></div><div class="mm-pill pill-act">Aktivan</div></div>
-            <div class="mm-row"><div class="mm-av" style="background:#555">MR</div><div style="flex:1"><div class="mm-name">Marco Rossi</div><div class="mm-date">20–26. srp 2026</div></div><div class="mm-pill pill-act">Aktivan</div></div>
-            <div class="mm-row"><div class="mm-av" style="background:#888">SK</div><div style="flex:1"><div class="mm-name">Sara Klein</div><div class="mm-date">3–10. kol 2026</div></div><div class="mm-pill pill-up">Nadolazeći</div></div>
+
+          <div class="hero-note" aria-label="Prednosti besplatnog računa">
+            <span>1 objekt besplatno</span>
+            <span>Bez kartice</span>
+            <span>0% provizije</span>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
-</section>
 
-<div class="trust">
-  <div class="trust-i">Booking.com iCal</div><div class="trust-sep"></div>
-  <div class="trust-i">Airbnb iCal</div><div class="trust-sep"></div>
-  <div class="trust-i">WhatsApp jednim klikom</div><div class="trust-sep"></div>
-  <div class="trust-i">0 € provizije</div><div class="trust-sep"></div>
-  <div class="trust-i">Šifra se otključava pred dolazak</div>
-</div>
+        <div class="product-stage reveal">
+          <div class="browser-frame">
+            <div class="browser-bar" aria-hidden="true">
+              <span class="browser-dot"></span>
+              <span class="browser-dot"></span>
+              <span class="browser-dot"></span>
+              <span class="browser-address"></span>
+            </div>
+            <img src="assets/odmoria-dashboard.png" width="1320" height="894" alt="Odmoria dashboard za uređivanje podataka o objektu">
+          </div>
 
-<div id="kako" class="how-wrap">
-  <div class="how-grid">
-    <div class="how-sticky">
-      <div class="sec-label">Kako radi</div>
-      <h2 class="sec-h">Od nule<br>do živog<br>vodiča.</h2>
-      <p style="margin-top:16px;font-size:15px;line-height:1.72;color:var(--soft);font-weight:300">Tri koraka koje napravi jednom, a funkcioniraju za svakog sljedećeg gosta.</p>
-    </div>
-    <div class="how-steps-col">
-      <div class="how-step">
-        <div class="how-n">1</div>
-        <div><div class="how-h">Postavi objekt jednom</div><p class="how-p">Naziv, lokacija, šifra vrata, Wi-Fi lozinka, lokalne preporuke, vozni red trajekta. Sve za 10 minuta, bez tehničkog znanja.</p></div>
-      </div>
-      <div class="how-step">
-        <div class="how-n">2</div>
-        <div><div class="how-h">Javnu stranicu objavi svugdje</div><p class="how-p">Facebook, Instagram bio, opis na Bookingu. Fotografije, dostupnost, gumb za kontakt — bez šifri, bez lozinki. Marketing koji radi dok spavaš.</p></div>
-      </div>
-      <div class="how-step">
-        <div class="how-n">3</div>
-        <div><div class="how-h">Privatni link tek nakon rezervacije</div><p class="how-p">Jedan klik u dashboardu — generirani link s datumima i svim uputama. Šifra se otključava sat vremena pred dolazak. Istječe dan nakon odjave.</p></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="dark-split">
-  <div class="dark-inner">
-    <div>
-      <div class="dark-label">Dva linka</div>
-      <h2 class="dark-h">Javno za<br>marketing.<br>Privatno<br>za goste.</h2>
-      <p class="dark-p">Isti hub, dva pogleda. Javni link dijeli bez straha — šifra i Wi-Fi nisu na njemu. Privatni šalješ samo potvrđenim gostima.</p>
-    </div>
-    <div>
-      <div class="lcard"><div class="lbadge pub-b">Javna stranica</div><div class="lcard-h">Dijeli svugdje</div><div class="lcard-url">odmoria.com/p/villa-luna</div><p class="lcard-p">Fotografije, dostupnost, lokalni vodič, kontakt gumb. Bez šifri. Sigurno za Facebook, Instagram, Booking opis.</p></div>
-      <div class="lcard"><div class="lbadge priv-b">Gostinski link</div><div class="lcard-h">Samo za potvrđene goste</div><div class="lcard-url">odmoria.com/h/villa-luna-7fk2x</div><p class="lcard-p">Šifra vrata, Wi-Fi lozinka, upute za dolazak. Istječe dan nakon odjave. Deaktiviraš u sekundi.</p></div>
-    </div>
-  </div>
-</div>
-
-<div id="mogucnosti" class="feat-bg">
-  <div class="feat-sec">
-    <div class="sec-label">Mogućnosti</div>
-    <h2 class="sec-h">Sve što trebaš,<br>ništa što ne trebaš.</h2>
-    <div class="feat-grid">
-      <div class="fi"><div class="fi-tag">Sigurnost</div><div class="fi-ic">🔒</div><div class="fi-h">Vremenski zaključano</div><p class="fi-p">Šifra i Wi-Fi vidljivi sat vremena prije check-ina. Ne ranije, ne nikome drugome.</p></div>
-      <div class="fi"><div class="fi-tag">Automatizacija</div><div class="fi-ic">📅</div><div class="fi-h">iCal sinkronizacija</div><p class="fi-p">Poveži Booking.com i Airbnb. Zauzeti datumi ažuriraju se svaki sat, automatski.</p></div>
-      <div class="fi"><div class="fi-tag">Komunikacija</div><div class="fi-ic">💬</div><div class="fi-h">WhatsApp jednim klikom</div><p class="fi-p">Gotova poruka s linkom za gosta. Klik, otvori WhatsApp, pošalji. 10 sekundi.</p></div>
-      <div class="fi wide"><div class="fi-tag">Iskustvo gosta</div><div class="fi-ic">🗺️</div><div class="fi-h">Lokalni vodič koji prati brend objekta</div><p class="fi-p">Restorani, plaže, prijevoz — svaki s Google Maps linkom. Na Pro planu možeš ukloniti Odmoria branding i dodati vlastiti logo i boje.</p></div>
-      <div class="fi"><div class="fi-tag">Fotografije</div><div class="fi-ic">📷</div><div class="fi-h">Galerija do 30 fotografija</div><p class="fi-p">Upload drag & drop, naslovna fotografija, javno vidljivo.</p></div>
-      <div class="fi"><div class="fi-tag">Analitika</div><div class="fi-ic">📊</div><div class="fi-h">Vidiš što funkcionira</div><p class="fi-p">Koliko gostiju je otvorilo vodič, kliknulo WhatsApp, pogledalo dostupnost.</p></div>
-    </div>
-  </div>
-</div>
-
-<div class="testi-sec">
-  <div class="testi-inner">
-    <p class="testi-q">Gostima više ne trebam objašnjavati gdje je sef, koji je Wi-Fi, kako se dolazi. Pošaljem link i to je to. Za tjedan dana mi se isplatilo.</p>
-    <div class="testi-by">
-      <div class="testi-av">AM</div>
-      <div><div class="testi-name">Ana Matić</div><div class="testi-role">2 apartmana · Brač</div></div>
-    </div>
-  </div>
-</div>
-
-<div id="cijene" class="price-sec">
-  <div class="price-inner">
-    <div class="price-head">
-      <div><div class="sec-label">Cijene</div><h2 class="sec-h">Počni besplatno.</h2></div>
-      <div class="tog-wrap">
-        <button class="tog on" id="tg-mj" onclick="setP('mj')">Mjesečno</button>
-        <button class="tog" id="tg-god" onclick="setP('god')">Godišnje<span class="tog-save">−17%</span></button>
-      </div>
-    </div>
-    <div class="pgrid">
-      <div class="pcard">
-        <div class="ptier">Starter</div>
-        <div class="pamt"><sup>€</sup>0</div><div class="pper">zauvijek besplatno</div>
-        <div class="pdesc">Jedan objekt, sve osnovno. Za prve korake.</div>
-        <div class="pfl">
-          <div class="pf-item"><div class="pck">✓</div>1 objekt</div>
-          <div class="pf-item"><div class="pck">✓</div>Javna stranica i privatni link</div>
-          <div class="pf-item"><div class="pck">✓</div>5 fotografija</div>
-          <div class="pf-item"><div class="pck">✓</div>QR kod i Google Maps</div>
+          <div class="zero-badge" aria-label="Nula posto provizije">
+            <div>
+              <strong>0%</strong>
+              <small>provizije po rezervaciji</small>
+            </div>
+          </div>
         </div>
-        <button class="pcta out" onclick="location.href='/register.html'">Počni besplatno</button>
       </div>
-      <div class="pcard pf">
-        <div class="ptier blue">Pro</div>
-        <div class="pamt" id="pro-a"><sup>€</sup>15</div><div class="pper" id="pro-n">na mjesec</div>
-        <div class="pdesc">Za ozbiljne iznajmljivače s više objekata.</div>
-        <div class="pfl">
-          <div class="pf-item"><div class="pck">✓</div>Do 5 objekata</div>
-          <div class="pf-item"><div class="pck">✓</div>30 fotografija po objektu</div>
-          <div class="pf-item"><div class="pck">✓</div>iCal sinkronizacija</div>
-          <div class="pf-item"><div class="pck">✓</div>Rezervacije s tokenima</div>
-          <div class="pf-item"><div class="pck">✓</div>Bez Odmoria brandinga</div>
-          <div class="pf-item"><div class="pck">✓</div>Analitika 90 dana</div>
+    </section>
+
+    <section class="value-strip" aria-label="Glavne prednosti">
+      <div class="container value-grid">
+        <div class="value-item">
+          <span class="value-kicker">Jednostavno</span>
+          <span class="value-text">Jedan link umjesto deset poruka</span>
         </div>
-        <button class="pcta dark" onclick="location.href='/register.html'">Odaberi Pro</button>
+        <div class="value-item">
+          <span class="value-kicker">Bez aplikacije</span>
+          <span class="value-text">Gost samo otvori link</span>
+        </div>
+        <div class="value-item">
+          <span class="value-kicker">Vaš odnos</span>
+          <span class="value-text">Izravno između vas i gosta</span>
+        </div>
+        <div class="value-item">
+          <span class="value-kicker">Bez postotka</span>
+          <span class="value-text">Ne uzimamo dio rezervacije</span>
+        </div>
       </div>
-      <div class="pcard">
-        <div class="ptier">Business</div>
-        <div class="pamt" id="biz-a"><sup>€</sup>49</div><div class="pper" id="biz-n">na mjesec</div>
-        <div class="pdesc">Za property managere i timove.</div>
-        <div class="pfl">
-          <div class="pf-item"><div class="pck">✓</div>Do 15 objekata</div>
-          <div class="pf-item"><div class="pck">✓</div>Tim pristup (5 članova)</div>
-          <div class="pf-item"><div class="pck">✓</div>White-label branding</div>
-          <div class="pf-item"><div class="pck">✓</div>Vlastita domena</div>
-          <div class="pf-item"><div class="pck">✓</div>Analitika 12 mj</div>
+    </section>
+
+    <section class="section" aria-labelledby="problem-title">
+      <div class="container problem-grid">
+        <div class="question-stack reveal" aria-label="Česta pitanja gostiju">
+          <div class="question-card">Pozdrav, gdje možemo parkirati?</div>
+          <div class="question-card">Koja je lozinka za Wi-Fi?</div>
+          <div class="question-card">Kako ulazimo ako stignemo kasno?</div>
+          <div class="question-card">Sve vas čeka u Odmoria vodiču →</div>
         </div>
-        <button class="pcta out" onclick="location.href='/register.html'">Odaberi Business</button>
+
+        <div class="problem-copy reveal">
+          <span class="eyebrow">Manje ponavljanja</span>
+          <h2 id="problem-title">Odgovorite prije nego gost pita.</h2>
+          <p class="section-copy">Informacije koje danas šaljete kroz poruke pretvorite u jasan vodič koji gost može otvoriti kad god mu zatreba.</p>
+
+          <div class="problem-points">
+            <div class="problem-point">
+              <span class="point-number">01</span>
+              <div>
+                <span class="point-title">Manje istih poruka</span>
+                <p class="point-copy">Dolazak, parking, Wi-Fi i pravila uvijek su dostupni na istom mjestu.</p>
+              </div>
+            </div>
+            <div class="problem-point">
+              <span class="point-number">02</span>
+              <div>
+                <span class="point-title">Sigurniji dolazak</span>
+                <p class="point-copy">Gost prije puta zna kamo ide, kada je check-in i kako ulazi u objekt.</p>
+              </div>
+            </div>
+            <div class="problem-point">
+              <span class="point-number">03</span>
+              <div>
+                <span class="point-title">Bolji prvi dojam</span>
+                <p class="point-copy">Umjesto nepovezanih poruka dobiva uredan vodič prilagođen vašem objektu.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section links-section" id="mogucnosti" aria-labelledby="links-title">
+      <div class="container">
+        <div class="links-head reveal">
+          <div>
+            <span class="eyebrow">Dva linka, dvije svrhe</span>
+            <h2 id="links-title">Javno za inspiraciju. Privatno za boravak.</h2>
+          </div>
+          <p class="section-copy">Odvojite ono što svi smiju vidjeti od informacija koje trebaju samo potvrđeni gosti.</p>
+        </div>
+
+        <div class="link-cards">
+          <article class="link-card light reveal">
+            <span class="link-tag">Javni link</span>
+            <h3>Vaš objekt u najboljem svjetlu.</h3>
+            <p>Fotografije, lokacija, sadržaji i lokalne atrakcije — spremno za dijeljenje gdje god promovirate smještaj.</p>
+
+            <div class="mini-phone" aria-hidden="true">
+              <div class="phone-notch"></div>
+              <span class="phone-kicker">Dobro došli</span>
+              <strong class="phone-title">Villa Luna, Hvar</strong>
+              <div class="phone-image"></div>
+              <div class="phone-list">
+                <div class="phone-row">O objektu</div>
+                <div class="phone-row">Što posjetiti</div>
+                <div class="phone-row">Lokacija</div>
+              </div>
+            </div>
+          </article>
+
+          <article class="link-card reveal">
+            <span class="link-tag">Privatni link</span>
+            <h3>Sve za miran dolazak i boravak.</h3>
+            <p>Check-in upute, Wi-Fi i kod vrata dostupni su samo kroz jedinstveni privatni link koji šaljete gostu.</p>
+
+            <div class="mini-phone private-phone" aria-hidden="true">
+              <div class="phone-notch"></div>
+              <span class="phone-kicker">Vaš boravak</span>
+              <strong class="phone-title">Sve za dolazak</strong>
+              <div class="phone-list">
+                <div class="phone-row">Check-in upute</div>
+                <div class="phone-row">Wi-Fi pristup</div>
+                <div class="phone-row">Kućna pravila</div>
+                <div class="phone-row">Kontakt domaćina</div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="kako-radi" aria-labelledby="how-title">
+      <div class="container">
+        <div class="how-head reveal">
+          <div>
+            <span class="eyebrow">Kako radi</span>
+            <h2 id="how-title">Od prazne stranice do vodiča u tri koraka.</h2>
+          </div>
+          <p class="section-copy">Ne trebate web-stranicu ni tehničko znanje. Sve uređujete iz jednostavnog dashboarda.</p>
+        </div>
+
+        <div class="steps">
+          <article class="step reveal">
+            <span class="step-number">01</span>
+            <h3>Dodajte objekt</h3>
+            <p>Upišite naziv, lokaciju, fotografije i osnovne informacije o smještaju.</p>
+          </article>
+          <article class="step reveal">
+            <span class="step-number">02</span>
+            <h3>Složite sadržaj</h3>
+            <p>Dodajte check-in, Wi-Fi, parking, pravila te preporuke iz svog mjesta.</p>
+          </article>
+          <article class="step reveal">
+            <span class="step-number">03</span>
+            <h3>Podijelite</h3>
+            <p>Pošaljite link gostu ili postavite QR kod u objekt. Promjene se odmah vide.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="dojmovi" aria-labelledby="testi-title">
+      <div class="container">
+        <div class="how-head reveal">
+          <div>
+            <span class="eyebrow">Što kažu domaćini</span>
+            <h2 id="testi-title">Manje poruka. Manje pitanja.</h2>
+          </div>
+          <p class="section-copy">Nekoliko dojmova domaćina koji su zamijenili WhatsApp poruke i printane upute jednim linkom.</p>
+        </div>
+
+        <div class="testimonials">
+          <article class="testimonial reveal">
+            <p class="testimonial-quote">"Gostima više ne trebam objašnjavati gdje je sef, koji je Wi-Fi, kako se dolazi. Pošaljem link i to je to."</p>
+            <div class="testimonial-by">
+              <div class="testimonial-avatar">AM</div>
+              <div>
+                <div class="testimonial-name">Ana Matić</div>
+                <div class="testimonial-role">2 apartmana · Brač</div>
+              </div>
+            </div>
+          </article>
+          <article class="testimonial reveal">
+            <p class="testimonial-quote">"Prije sam printala upute i lijepila ih na hladnjak. Sad pošaljem jedan link prije dolaska i gotovo."</p>
+            <div class="testimonial-by">
+              <div class="testimonial-avatar">IR</div>
+              <div>
+                <div class="testimonial-name">Ivana Radić</div>
+                <div class="testimonial-role">4 apartmana · Split</div>
+              </div>
+            </div>
+          </article>
+          <article class="testimonial reveal">
+            <p class="testimonial-quote">"WhatsApp poruke u pola noći su prošlost. Gost sve nađe sam — šifru, Wi-Fi, gdje parkirati."</p>
+            <div class="testimonial-by">
+              <div class="testimonial-avatar">MP</div>
+              <div>
+                <div class="testimonial-name">Marko Perić</div>
+                <div class="testimonial-role">Villa · Korčula</div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section comparison-section" id="usporedba" aria-labelledby="comparison-title">
+      <div class="container">
+        <div class="comparison-head reveal">
+          <div>
+            <span class="eyebrow">Bez posrednika</span>
+            <h2 id="comparison-title">Njihov model je provizija. Naš je alat.</h2>
+          </div>
+          <p class="section-copy">Odmoria nije platforma za rezervacije. Ne prima novac gosta, ne posreduje i ne uzima postotak od vašeg boravka.</p>
+        </div>
+
+        <div class="comparison-table reveal" role="table" aria-label="Usporedba platformi s provizijom i Odmorije">
+          <div class="comparison-column" role="rowgroup">
+            <div class="comparison-title">Platforme s provizijom <span>Posrednik</span></div>
+            <div class="comparison-row" role="row">
+              <span class="comparison-label" role="cell">Model naplate</span>
+              <span class="comparison-value" role="cell">Postotak po rezervaciji</span>
+            </div>
+            <div class="comparison-row" role="row">
+              <span class="comparison-label" role="cell">Odnos s gostom</span>
+              <span class="comparison-value" role="cell">Platforma je između vas</span>
+            </div>
+            <div class="comparison-row" role="row">
+              <span class="comparison-label" role="cell">Informacije za boravak</span>
+              <span class="comparison-value" role="cell">Poruke i različiti ekrani</span>
+            </div>
+            <div class="comparison-row" role="row">
+              <span class="comparison-label" role="cell">Vizualni identitet</span>
+              <span class="comparison-value" role="cell">Pravila platforme</span>
+            </div>
+          </div>
+
+          <div class="comparison-column highlight" role="rowgroup">
+            <div class="comparison-title">Odmoria <span>Vaš alat</span></div>
+            <div class="comparison-row" role="row">
+              <span class="comparison-label" role="cell">Model naplate</span>
+              <span class="comparison-value" role="cell">Fiksna cijena, 0% po rezervaciji</span>
+            </div>
+            <div class="comparison-row" role="row">
+              <span class="comparison-label" role="cell">Odnos s gostom</span>
+              <span class="comparison-value" role="cell">Izravno između vas i gosta</span>
+            </div>
+            <div class="comparison-row" role="row">
+              <span class="comparison-label" role="cell">Informacije za boravak</span>
+              <span class="comparison-value" role="cell">Jedan jasan link</span>
+            </div>
+            <div class="comparison-row" role="row">
+              <span class="comparison-label" role="cell">Vizualni identitet</span>
+              <span class="comparison-value" role="cell">Vaš sadržaj i vaš dojam</span>
+            </div>
+          </div>
+        </div>
+
+        <p class="comparison-footnote">Uvjeti i provizije drugih platformi razlikuju se prema pružatelju, tržištu i ugovoru. Odmoria se naplaćuje kao softverska pretplata i ne obrađuje rezervaciju gosta.</p>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="features-title">
+      <div class="container">
+        <div class="feature-head reveal">
+          <div>
+            <span class="eyebrow">Sve na jednom mjestu</span>
+            <h2 id="features-title">Mali detalji koji gostu znače mnogo.</h2>
+          </div>
+          <p class="section-copy">Sadržaj prilagodite svom objektu i načinu na koji dočekujete goste.</p>
+        </div>
+
+        <div class="feature-grid">
+          <article class="feature-card large dark reveal">
+            <span class="feature-index">01 / Dolazak</span>
+            <h3>Check-in bez nesporazuma</h3>
+            <p>Vrijeme dolaska, adresa, parking, kod vrata i kontakt domaćina spremni su prije puta.</p>
+          </article>
+
+          <article class="feature-card medium reveal">
+            <span class="feature-index">02 / Lokalno</span>
+            <h3>Preporuke koje ne daje tražilica</h3>
+            <p>Podijelite restorane, plaže, atrakcije i prijevoz koje biste preporučili prijatelju.</p>
+          </article>
+
+          <article class="feature-card third reveal">
+            <span class="feature-index">03 / QR kod</span>
+            <div class="qr-motif" aria-hidden="true">
+              <span></span><span></span><span></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span><span></span>
+            </div>
+            <h3>Link i QR kod</h3>
+            <p>Pošaljite vodič prije dolaska ili ostavite QR kod u objektu.</p>
+          </article>
+
+          <article class="feature-card third copper reveal">
+            <span class="feature-index">04 / Mobitel</span>
+            <h3>Bez instaliranja</h3>
+            <p>Gost otvara vodič u pregledniku. Nema računa, preuzimanja ni nove aplikacije.</p>
+          </article>
+
+          <article class="feature-card third reveal">
+            <span class="feature-index">05 / Uređivanje</span>
+            <h3>Promijenite jednom</h3>
+            <p>Ažurirate li Wi-Fi ili upute, nova informacija odmah je dostupna kroz isti link.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section pricing-section" id="cijene" aria-labelledby="pricing-title">
+      <div class="container">
+        <div class="pricing-head reveal">
+          <div>
+            <span class="eyebrow">Jednostavne cijene</span>
+            <h2 id="pricing-title">Počnite besplatno. Nadogradite kad vam zatreba.</h2>
+          </div>
+
+          <div class="billing-toggle" role="group" aria-label="Razdoblje naplate">
+            <button class="active" type="button" data-billing="monthly" aria-pressed="true">Mjesečno</button>
+            <button type="button" data-billing="annual" aria-pressed="false">Godišnje <small>−2 mj.</small></button>
+          </div>
+        </div>
+
+        <div class="pricing-grid">
+          <article class="price-card reveal">
+            <span class="plan-name">Free</span>
+            <p class="plan-audience">Vaš prvi digitalni vodič, potpuno besplatno.</p>
+
+            <div class="price-line">
+              <span class="price-value" data-monthly="0 €" data-annual="0 €">0 €</span>
+              <span class="price-period" data-monthly-label="/ zauvijek" data-annual-label="/ zauvijek">/ zauvijek</span>
+            </div>
+            <p class="annual-note">&nbsp;</p>
+
+            <ul class="plan-features">
+              <li><svg class="check" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg><span>1 objekt</span></li>
+              <li><svg class="check" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg><span>Javni i privatni link</span></li>
+              <li><svg class="check" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg><span>QR kod</span></li>
+              <li><svg class="check" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg><span>5 fotografija i 5 preporuka</span></li>
+              <li><svg class="check" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg><span>Odmoria oznaka</span></li>
+            </ul>
+
+            <a class="button button-secondary button-block" href="register.html">Započni besplatno</a>
+          </article>
+
+          <article class="price-card featured reveal">
+            <span class="popular-label">Najpopularnije</span>
+            <span class="plan-name">Pro</span>
+            <p class="plan-audience">Za domaćine koji žele profesionalan doživljaj gosta.</p>
+
+            <div class="price-line">
+              <span class="price-value" data-monthly="15 €" data-annual="150 €">15 €</span>
+              <span class="price-period" data-monthly-label="/ mjesečno" data-annual-label="/ godišnje">/ mjesečno</span>
+            </div>
+            <p class="annual-note" data-monthly-note="Ili 150 € godišnje — ušteda 30 €" data-annual-note="12,50 € mjesečno · ušteda 30 €">Ili 150 € godišnje — ušteda 30 €</p>
+
+            <ul class="plan-features">
+              <li><svg class="check" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg><span>Do 5 objekata</span></li>
+              <li><svg class="check" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg><span>Do 30 fotografija po objektu</span></li>
+              <li><svg class="check" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg><span>Više lokalnih preporuka</span></li>
+              <li><svg class="check" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg><span>Uklanjanje Odmoria oznake</span></li>
+              <li><svg class="check" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg><span>Podrška za plaćene korisnike</span></li>
+            </ul>
+
+            <a class="button button-block" href="register.html?plan=pro">Odaberi Pro</a>
+          </article>
+
+          <article class="price-card reveal">
+            <span class="plan-name">Business</span>
+            <p class="plan-audience">Za upravitelje koji vode veći portfelj objekata.</p>
+
+            <div class="price-line">
+              <span class="price-value" data-monthly="49 €" data-annual="490 €">49 €</span>
+              <span class="price-period" data-monthly-label="/ mjesečno" data-annual-label="/ godišnje">/ mjesečno</span>
+            </div>
+            <p class="annual-note" data-monthly-note="Ili 490 € godišnje — ušteda 98 €" data-annual-note="40,83 € mjesečno · ušteda 98 €">Ili 490 € godišnje — ušteda 98 €</p>
+
+            <ul class="plan-features">
+              <li><svg class="check" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg><span>Do 15 objekata</span></li>
+              <li><svg class="check" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg><span>Do 50 fotografija po objektu</span></li>
+              <li><svg class="check" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg><span>Više sadržaja i preporuka</span></li>
+              <li><svg class="check" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg><span>Uklanjanje Odmoria oznake</span></li>
+              <li><svg class="check" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg><span>Prioritetna podrška</span></li>
+            </ul>
+
+            <a class="button button-secondary button-block" href="register.html?plan=business">Odaberi Business</a>
+          </article>
+        </div>
+
+        <div class="pricing-note">
+          <span>Bez provizije po rezervaciji. PDV se obračunava prema primjenjivim pravilima.</span>
+          <span>Više od 15 objekata? <a href="mailto:podrska@odmoria.com">Javite nam se</a>.</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="faq-title">
+      <div class="container faq-grid">
+        <div class="faq-intro reveal">
+          <span class="eyebrow">Česta pitanja</span>
+          <h2 id="faq-title">Kratko i jasno.</h2>
+          <p class="section-copy">Ako odgovor nije ovdje, javite nam se i pomoći ćemo.</p>
+        </div>
+
+        <div class="faq-list reveal">
+          <div class="faq-item">
+            <button class="faq-question" type="button" aria-expanded="true">
+              Je li Odmoria platforma za rezervacije?
+              <span class="faq-icon" aria-hidden="true"></span>
+            </button>
+            <div class="faq-answer">
+              <div><p>Nije. Odmoria je alat za izradu i dijeljenje digitalnog vodiča. Ne prima rezervacije, ne naplaćuje gosta i ne uzima proviziju od vašeg boravka.</p></div>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" type="button" aria-expanded="false">
+              Mora li gost instalirati aplikaciju ili otvoriti račun?
+              <span class="faq-icon" aria-hidden="true"></span>
+            </button>
+            <div class="faq-answer">
+              <div><p>Ne. Gost dobiva link ili skenira QR kod i vodič otvara izravno u svom web-pregledniku.</p></div>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" type="button" aria-expanded="false">
+              Koja je razlika između javnog i privatnog linka?
+              <span class="faq-icon" aria-hidden="true"></span>
+            </button>
+            <div class="faq-answer">
+              <div><p>Javni link služi za predstavljanje objekta i možete ga dijeliti bilo kome. Privatni link namijenjen je gostu jer sadrži informacije za boravak poput Wi-Fi lozinke i uputa za ulazak.</p></div>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" type="button" aria-expanded="false">
+              Čuva li Odmoria bazu osobnih podataka gostiju?
+              <span class="faq-icon" aria-hidden="true"></span>
+            </button>
+            <div class="faq-answer">
+              <div><p>Za otvaranje vodiča gostu ne trebaju račun, ime, e-mail ni broj telefona. Odmoria služi za prikaz informacija koje ste vi pripremili, a ne za vođenje baze gostiju.</p></div>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" type="button" aria-expanded="false">
+              Mogu li Odmoriju koristiti uz postojeći način rezerviranja?
+              <span class="faq-icon" aria-hidden="true"></span>
+            </button>
+            <div class="faq-answer">
+              <div><p>Da. Rezervacije mogu dolaziti putem kanala koje već koristite, a Odmoria link jednostavno šaljete gostu prije dolaska.</p></div>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" type="button" aria-expanded="false">
+              Što dobivam u besplatnom planu?
+              <span class="faq-icon" aria-hidden="true"></span>
+            </button>
+            <div class="faq-answer">
+              <div><p>Jedan objekt s javnim i privatnim linkom, QR kodom, osnovnim fotografijama i lokalnim preporukama. Kartica nije potrebna.</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section final-cta">
+      <div class="container">
+        <div class="cta-panel reveal">
+          <div class="cta-content">
+            <div>
+              <h2>Vaš sljedeći gost može imati sve na jednom mjestu.</h2>
+              <p>Napravite prvi vodič besplatno. Bez kartice i bez provizije.</p>
+            </div>
+            <a class="button button-light" href="register.html">
+              Započni besplatno
+              <svg class="arrow-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14M13 6l6 6-6 6"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <a class="brand" href="#top">Odmoria<span class="brand-dot">.</span></a>
+          <p>Digitalni vodič koji iznajmljivaču štedi ponavljanje, a gostu daje sigurniji i ugodniji boravak.</p>
+        </div>
+
+        <div class="footer-column">
+          <h3>Proizvod</h3>
+          <a href="#kako-radi">Kako radi</a>
+          <a href="#mogucnosti">Mogućnosti</a>
+          <a href="#cijene">Cijene</a>
+        </div>
+
+        <div class="footer-column">
+          <h3>Račun</h3>
+          <a href="register.html">Registracija</a>
+          <a href="login.html">Prijava</a>
+          <a href="p.html">Primjer vodiča</a>
+        </div>
+
+        <div class="footer-column">
+          <h3>Pravno</h3>
+          <a href="privacy.html">Privatnost</a>
+          <a href="terms.html">Uvjeti korištenja</a>
+          <a href="mailto:podrska@odmoria.com">Kontakt</a>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>© <span id="currentYear"></span> Odmoria. Sva prava pridržana.</span>
+        <span>Napravljeno za domaćine koji vole jednostavno.</span>
       </div>
     </div>
-    <p style="text-align:center;font-size:13px;color:var(--ghost);font-weight:300;margin-top:20px">Više od 15 objekata? <a href="mailto:podrska@odmoria.com" style="color:var(--electric)">Javi nam se →</a></p>
-  </div>
-</div>
+  </footer>
 
-<div class="cta-sec">
-  <h2 class="cta-h">Gosti dolaze.<br><i>Provizija ne.</i></h2>
-  <p class="cta-p">Postavi prvi objekt za manje od 10 minuta. Besplatno, bez kartice.</p>
-  <button class="btn-hero" onclick="location.href='/register.html'">
-    Postavi prvi objekt
-    <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M2 7.5h11M9 3.5l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-  </button>
-  <p class="cta-fine">Besplatno zauvijek za 1 objekt · Bez kreditne kartice · GDPR usklađeno</p>
-</div>
+  <script>
+    (() => {
+      const header = document.getElementById('siteHeader');
+      const menuButton = document.getElementById('menuButton');
+      const menuLinks = document.querySelectorAll('.nav-center a, .nav-actions a');
+      const billingButtons = document.querySelectorAll('[data-billing]');
+      const faqButtons = document.querySelectorAll('.faq-question');
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-<footer>
-  <div><div class="f-logo">Odmoria</div><p class="f-desc">Digitalni vodiči za goste kratkoročnih najma. Bez provizije.</p></div>
-  <div class="f-cols">
-    <div class="fc"><div class="fc-h">Proizvod</div><a href="#kako">Kako radi</a><a href="#mogucnosti">Mogućnosti</a><a href="#cijene">Cijene</a><a href="/help.html">Pomoć</a></div>
-    <div class="fc"><div class="fc-h">Podrška</div><a href="mailto:podrska@odmoria.com">Kontakt</a><a href="/help.html">FAQ</a></div>
-    <div class="fc"><div class="fc-h">Pravno</div><a href="/privacy.html">Privatnost</a><a href="/terms.html">Uvjeti</a></div>
-  </div>
-</footer>
-<div class="f-bottom">
-  <span>© 2026 Odmoria</span>
-  <span>Napravljeno za iznajmljivače koji mare za goste</span>
-</div>
+      const closeMenu = () => {
+        header.classList.remove('menu-active');
+        document.body.classList.remove('menu-open');
+        menuButton.setAttribute('aria-expanded', 'false');
+        menuButton.setAttribute('aria-label', 'Otvori izbornik');
+      };
 
-<script>
-function setP(m){
-  document.getElementById('tg-mj').classList.toggle('on',m==='mj')
-  document.getElementById('tg-god').classList.toggle('on',m==='god')
-  document.getElementById('pro-a').innerHTML=m==='mj'?'<sup>€</sup>15':'<sup>€</sup>12.50'
-  document.getElementById('pro-n').textContent=m==='mj'?'na mjesec':'na mjesec · €150/god'
-  document.getElementById('biz-a').innerHTML=m==='mj'?'<sup>€</sup>49':'<sup>€</sup>40.83'
-  document.getElementById('biz-n').textContent=m==='mj'?'na mjesec':'na mjesec · €490/god'
-}
-// subtle reveal
-var obs=new IntersectionObserver(function(en){en.forEach(function(e){if(e.isIntersecting){e.target.style.opacity='1';e.target.style.transform='translateY(0)'}})},{threshold:.08})
-document.querySelectorAll('.how-step,.fi,.lcard,.pcard,.testi-inner').forEach(function(el){el.style.opacity='0';el.style.transform='translateY(14px)';el.style.transition='opacity .4s ease,transform .4s ease';obs.observe(el)})
-</script>
+      menuButton.addEventListener('click', () => {
+        const isOpen = header.classList.toggle('menu-active');
+        document.body.classList.toggle('menu-open', isOpen);
+        menuButton.setAttribute('aria-expanded', String(isOpen));
+        menuButton.setAttribute('aria-label', isOpen ? 'Zatvori izbornik' : 'Otvori izbornik');
+      });
+
+      menuLinks.forEach((link) => link.addEventListener('click', closeMenu));
+
+      window.addEventListener('resize', () => {
+        if (window.innerWidth > 900) closeMenu();
+      });
+
+      billingButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+          const mode = button.dataset.billing;
+
+          billingButtons.forEach((item) => {
+            const active = item === button;
+            item.classList.toggle('active', active);
+            item.setAttribute('aria-pressed', String(active));
+          });
+
+          document.querySelectorAll('.price-value').forEach((price) => {
+            price.textContent = price.dataset[mode];
+          });
+
+          document.querySelectorAll('.price-period').forEach((period) => {
+            period.textContent = period.dataset[`${mode}Label`];
+          });
+
+          document.querySelectorAll('.annual-note[data-monthly-note]').forEach((note) => {
+            note.textContent = note.dataset[`${mode}Note`];
+          });
+        });
+      });
+
+      faqButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+          const expanded = button.getAttribute('aria-expanded') === 'true';
+          button.setAttribute('aria-expanded', String(!expanded));
+        });
+      });
+
+      document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+      if (reduceMotion || !('IntersectionObserver' in window)) {
+        document.querySelectorAll('.reveal').forEach((element) => element.classList.add('visible'));
+      } else {
+        const observer = new IntersectionObserver((entries, currentObserver) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              currentObserver.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.12, rootMargin: '0px 0px -35px' });
+
+        document.querySelectorAll('.reveal').forEach((element) => observer.observe(element));
+      }
+    })();
+  </script>
 </body>
 </html>

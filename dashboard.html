@@ -32,10 +32,14 @@ aside{width:228px;flex-shrink:0;background:var(--sidebar);display:flex;flex-dire
 .prop-sel-arrow{position:absolute;right:10px;top:50%;transform:translateY(-50%);color:#CBA98F;font-size:10px;pointer-events:none}
 .aside-nav{flex:1;overflow-y:auto;padding:8px 10px}
 .nav-section{font-size:9.5px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:#CBA98F;padding:10px 6px 5px;margin-top:4px}
-.nav-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:7px;font-size:13px;font-weight:400;color:#D9BFAE;cursor:pointer;transition:.12s;margin-bottom:1px;border:none;background:transparent;width:100%;text-align:left}
-.nav-item:hover{background:var(--sidebar-hover);color:#F0E4DA}
+.nav-item{position:relative;display:flex;align-items:center;gap:9px;padding:8px 10px 8px 13px;border-radius:7px;font-size:13px;font-weight:400;color:#D9BFAE;cursor:pointer;transition:background .15s,color .15s;margin-bottom:1px;border:none;background:transparent;width:100%;text-align:left}
+.nav-item:hover{background:rgba(255,255,255,.08);color:#F5E8DE}
+.nav-item::before{content:'';position:absolute;left:0;top:3px;bottom:3px;width:3px;border-radius:0 3px 3px 0;background:#D9A583;opacity:0;transition:opacity .15s}
+.nav-item:hover::before{opacity:1}
 .nav-item.on{background:var(--sidebar-on);color:#fff}
-.nav-item svg{flex-shrink:0;opacity:.6}
+.nav-item.on::before{opacity:0}
+.nav-item svg{flex-shrink:0;opacity:.6;transition:opacity .15s}
+.nav-item:hover svg{opacity:.9}
 .nav-item.on svg{opacity:1}
 .nav-item-add{color:#E0A280;margin-top:4px}
 .nav-item-add:hover{background:#63392A;color:#F0C4A8}
@@ -60,7 +64,7 @@ aside{width:228px;flex-shrink:0;background:var(--sidebar);display:flex;flex-dire
 .range-chip.on{background:var(--black);color:#fff}
 
 /* CONTENT */
-.content{flex:1;overflow-y:auto;padding:28px 32px;display:flex;flex-direction:column;gap:0;max-width:760px}
+.content{flex:1;overflow-y:auto;padding:28px clamp(24px,4vw,56px);display:flex;flex-direction:column;gap:0;max-width:980px}
 .panel{display:none}
 .panel.on{display:block}
 
@@ -111,6 +115,25 @@ aside{width:228px;flex-shrink:0;background:var(--sidebar);display:flex;flex-dire
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .g5{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
 .save-row{display:flex;justify-content:flex-end;padding-top:16px;border-top:1px solid var(--stone);margin-top:4px;gap:8px}
+
+/* BOXLESS SECTION BLOCKS */
+.blk{padding:32px 0;border-top:1px solid var(--stone)}
+.blk:first-of-type{padding-top:4px;border-top:none}
+.blk-label{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--electric);margin-bottom:5px}
+.blk-title{font-family:var(--serif);font-size:19px;font-weight:400;color:var(--ink);margin-bottom:22px}
+.flow-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:22px 28px}
+.fld{display:flex;flex-direction:column;gap:6px}
+.fld label{font-size:10.5px;font-weight:500;letter-spacing:.05em;text-transform:uppercase;color:var(--ghost)}
+.fi-plain{width:100%;border:none;border-bottom:1.5px solid var(--stone);border-radius:0;padding:7px 0;background:transparent;font-family:var(--sans);font-size:15px;color:var(--ink);transition:border-color .15s}
+.fi-plain:focus{outline:none;border-color:var(--electric)}
+select.fi-plain{cursor:pointer}
+textarea.fi-plain{padding:8px 0;line-height:1.6}
+.cap-row{display:flex;flex-wrap:wrap;gap:34px 40px}
+.cap-item{display:flex;flex-direction:column;gap:8px;min-width:56px}
+.cap-item svg{width:22px;height:22px;color:var(--electric)}
+.cap-item input{font-family:var(--serif);font-size:24px;color:var(--ink);border:none;background:transparent;width:52px;padding:0}
+.cap-item input:focus{outline:none}
+.cap-item label{font-size:10.5px;color:var(--soft)}
 
 /* TOGGLE ROWS */
 .tog-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--stone);cursor:pointer;transition:.12s}
@@ -264,10 +287,6 @@ aside{width:228px;flex-shrink:0;background:var(--sidebar);display:flex;flex-dire
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 6.5L7 2l5 4.5V12H9V9H5v3H2V6.5z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>
         Objekt
       </button>
-      <button class="nav-item" id="ni-photos" onclick="nav('photos',this)">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1.5" y="3" width="11" height="8.5" rx="1.5" stroke="currentColor" stroke-width="1.2"/><circle cx="5" cy="6.5" r="1.2" stroke="currentColor" stroke-width="1.1"/><path d="M1.5 9.5l3-3 2.5 2.5 2-1.5 3 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Fotografije
-      </button>
       <button class="nav-item" id="ni-checkin" onclick="nav('checkin',this)">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="5.5" cy="6" r="2" stroke="currentColor" stroke-width="1.2"/><path d="M9 4l3 3-3 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 11c0-1.657 1.12-3 2.5-3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
         Check-in
@@ -275,10 +294,6 @@ aside{width:228px;flex-shrink:0;background:var(--sidebar);display:flex;flex-dire
       <button class="nav-item" id="ni-wifi" onclick="nav('wifi',this)">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1.5 6c1.5-1.5 3.5-2.5 5.5-2.5S11 4.5 12.5 6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M3.5 8c1-1 2.2-1.5 3.5-1.5S10 7 11 8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><circle cx="7" cy="10.5" r="1" fill="currentColor"/></svg>
         Wi-Fi
-      </button>
-      <button class="nav-item" id="ni-amenities" onclick="nav('amenities',this)">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2.5 12.5V6.5a1 1 0 0 1 .4-.8l3.6-2.8a1 1 0 0 1 1.2 0l3.6 2.8a1 1 0 0 1 .4.8v6" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M5.5 12.5V9h3v3.5" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>
-        Sadržaji objekta
       </button>
       <button class="nav-item" id="ni-local" onclick="nav('local',this)">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1.5C5.07 1.5 3.5 3.07 3.5 5c0 2.625 3.5 7 3.5 7s3.5-4.375 3.5-7c0-1.93-1.57-3.5-3.5-3.5z" stroke="currentColor" stroke-width="1.2"/><circle cx="7" cy="5" r="1.2" stroke="currentColor" stroke-width="1.1"/></svg>
@@ -376,70 +391,98 @@ aside{width:228px;flex-shrink:0;background:var(--sidebar);display:flex;flex-dire
   </div>
 </div>
 
-<!-- PROPERTY -->
+<!-- PROPERTY (Objekt + Fotografije + Sadržaji, konsolidirano) -->
 <div class="panel" id="p-property">
-  <div class="card">
-    <div class="card-head"><div class="card-title">Detalji objekta</div><button class="btn btn-dark btn-sm" onclick="saveProp()">Spremi</button></div>
-    <div class="card-body">
-      <div id="prop-alert"></div>
-      <div class="fg"><label class="fl">Naziv objekta</label><input class="fi" id="prop-name" placeholder="Villa Luna"></div>
-      <div class="g2">
-        <div class="fg"><label class="fl">Vrsta</label><select class="fsel" id="prop-type"><option>Apartman</option><option>Villa</option><option>Kuća</option><option>Studio</option><option>Soba</option></select></div>
-        <div class="fg"><label class="fl">Lokacija</label><input class="fi" id="prop-location" placeholder="Hvar, Hrvatska"></div>
-      </div>
-      <div class="fg"><label class="fl">Kapacitet i veličina</label>
-        <div class="g5">
-          <div><label class="fl" style="font-size:10px;margin-bottom:4px">Gosti</label><input class="fi" id="prop-guests" type="number" min="1" placeholder="4"></div>
-          <div><label class="fl" style="font-size:10px;margin-bottom:4px">Sobe</label><input class="fi" id="prop-bedrooms" type="number" min="0" placeholder="2"></div>
-          <div><label class="fl" style="font-size:10px;margin-bottom:4px">Kreveti</label><input class="fi" id="prop-beds" type="number" min="0" placeholder="3"></div>
-          <div><label class="fl" style="font-size:10px;margin-bottom:4px">Kupaonice</label><input class="fi" id="prop-bathrooms" type="number" min="0" step="0.5" placeholder="1"></div>
-          <div><label class="fl" style="font-size:10px;margin-bottom:4px">m²</label><input class="fi" id="prop-size" type="number" min="0" placeholder="65"></div>
-        </div>
-      </div>
-      <div class="g2">
-        <div class="fg"><label class="fl">Cijena po noćenju (€)</label><input class="fi" id="prop-price" type="number" min="0" step="0.01" placeholder="80"></div>
-        <div class="fg"><label class="fl">Minimalni broj noćenja</label><input class="fi" id="prop-minstay" type="number" min="1" placeholder="2"></div>
-      </div>
-      <div class="fg"><label class="fl">Poruka dobrodošlice</label><textarea class="fta" id="prop-welcome" rows="3" placeholder="Dobrodošli u naš apartman..."></textarea></div>
-      <div class="g2">
-        <div class="fg"><label class="fl">Vaše ime</label><input class="fi" id="prop-host" placeholder="Ana"></div>
-        <div class="fg"><label class="fl">WhatsApp</label><input class="fi" id="prop-phone" placeholder="+385 91 234 5678"></div>
-      </div>
-      <div class="fg"><label class="fl">Email za upite</label><input class="fi" id="prop-email" type="email" placeholder="ana@primjer.hr"></div>
-      <div style="margin-top:20px;padding-top:20px;border-top:1px solid var(--stone)">
-        <div style="font-size:12px;font-weight:500;color:var(--ghost);margin-bottom:12px;text-transform:uppercase;letter-spacing:.06em">Vidljive sekcije</div>
-        <div class="tog-row" onclick="togSec(this,'wifi')"><span class="tog-label">Wi-Fi i lozinke</span><div class="tog-sw on"></div></div>
-        <div class="tog-row" onclick="togSec(this,'checkin')"><span class="tog-label">Upute za dolazak</span><div class="tog-sw on"></div></div>
-        <div class="tog-row" onclick="togSec(this,'local')"><span class="tog-label">Lokalni vodič</span><div class="tog-sw on"></div></div>
-        <div class="tog-row" onclick="togSec(this,'transport')"><span class="tog-label">Prijevoz</span><div class="tog-sw on"></div></div>
-        <div class="tog-row" onclick="togSec(this,'availability')"><span class="tog-label">Dostupnost</span><div class="tog-sw on"></div></div>
-        <div class="tog-row" onclick="togSec(this,'checkout')"><span class="tog-label">Upute za odjavu</span><div class="tog-sw on"></div></div>
-      </div>
-    </div>
-  </div>
-</div>
+  <div id="prop-alert"></div>
 
-<!-- PHOTOS -->
-<div class="panel" id="p-photos">
-  <div class="card">
-    <div class="card-head">
-      <div class="card-title">Fotografije</div>
-      <div style="display:flex;align-items:center;gap:8px">
+  <section class="blk">
+    <div class="blk-label">Osnovno</div>
+    <div class="blk-title">Naziv i lokacija</div>
+    <div class="flow-grid">
+      <div class="fld"><label>Naziv</label><input class="fi-plain" id="prop-name" placeholder="Villa Luna"></div>
+      <div class="fld"><label>Vrsta</label><select class="fi-plain" id="prop-type"><option>Apartman</option><option>Villa</option><option>Kuća</option><option>Studio</option><option>Soba</option></select></div>
+      <div class="fld"><label>Lokacija</label><input class="fi-plain" id="prop-location" placeholder="Hvar, Hrvatska"></div>
+    </div>
+  </section>
+
+  <section class="blk">
+    <div class="blk-label">Kapacitet</div>
+    <div class="blk-title">Koliko gostiju prima objekt</div>
+    <div class="cap-row">
+      <div class="cap-item"><svg viewBox="0 0 24 24" fill="none"><circle cx="9" cy="8" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="17" cy="8" r="2.4" stroke="currentColor" stroke-width="1.3"/><path d="M15.5 14.2c2.7.3 4.8 2.6 4.8 5.4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><input id="prop-guests" type="number" min="1" placeholder="4"><label>Gosti</label></div>
+      <div class="cap-item"><svg viewBox="0 0 24 24" fill="none"><path d="M3 19v-9a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v9" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M3 19v-4M21 19v-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M3 14h18v-1a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v1z" stroke="currentColor" stroke-width="1.2"/></svg><input id="prop-bedrooms" type="number" min="0" placeholder="2"><label>Sobe</label></div>
+      <div class="cap-item"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="10" width="18" height="8" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M5 10V7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v3" stroke="currentColor" stroke-width="1.3"/><path d="M3 18v2M21 18v2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><input id="prop-beds" type="number" min="0" placeholder="3"><label>Kreveti</label></div>
+      <div class="cap-item"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12h16v4a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4v-4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M6 12V6a2 2 0 0 1 3.4-1.4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M9 20v1M15 20v1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><input id="prop-bathrooms" type="number" min="0" step="0.5" placeholder="1"><label>Kupaonice</label></div>
+      <div class="cap-item"><svg viewBox="0 0 24 24" fill="none"><path d="M4 20L20 4M4 20h6M4 20v-6M20 4h-6M20 4v6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><input id="prop-size" type="number" min="0" placeholder="65"><label>m²</label></div>
+    </div>
+  </section>
+
+  <section class="blk">
+    <div class="blk-label">Cijena</div>
+    <div class="blk-title">Po noćenju</div>
+    <div class="flow-grid" style="max-width:420px">
+      <div class="fld"><label>Cijena po noćenju (€)</label><input class="fi-plain" id="prop-price" type="number" min="0" step="0.01" placeholder="80"></div>
+      <div class="fld"><label>Minimalni broj noćenja</label><input class="fi-plain" id="prop-minstay" type="number" min="1" placeholder="2"></div>
+    </div>
+  </section>
+
+  <section class="blk">
+    <div class="blk-label">Dobrodošlica</div>
+    <div class="blk-title">Poruka i kontakt</div>
+    <div class="fld" style="margin-bottom:22px"><label>Poruka dobrodošlice</label><textarea class="fi-plain" id="prop-welcome" rows="2" placeholder="Dobrodošli u naš apartman..." style="resize:vertical"></textarea></div>
+    <div class="flow-grid">
+      <div class="fld"><label>Vaše ime</label><input class="fi-plain" id="prop-host" placeholder="Ana"></div>
+      <div class="fld"><label>WhatsApp</label><input class="fi-plain" id="prop-phone" placeholder="+385 91 234 5678"></div>
+      <div class="fld"><label>Email za upite</label><input class="fi-plain" id="prop-email" type="email" placeholder="ana@primjer.hr"></div>
+    </div>
+    <button class="btn btn-dark btn-sm" onclick="saveProp()" style="margin-top:24px">Spremi</button>
+  </section>
+
+  <section class="blk">
+    <div class="blk-label">Galerija</div>
+    <div class="blk-title" style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+      <span>Fotografije</span>
+      <span style="display:flex;align-items:center;gap:10px;font-family:var(--sans);font-weight:400">
         <span id="photo-count-lbl" style="font-size:12px;color:var(--ghost)">0 / 5</span>
-        <button class="btn btn-dark btn-sm" onclick="document.getElementById('photo-input').click()">+ Dodaj</button>
+        <button class="btn btn-el btn-sm" onclick="document.getElementById('photo-input').click()">+ Dodaj</button>
+      </span>
+    </div>
+    <div id="photos-alert"></div>
+    <div class="photo-grid" id="photo-grid"></div>
+    <div class="photo-upload-zone" id="upload-zone" onclick="document.getElementById('photo-input').click()">
+      <input type="file" id="photo-input" multiple accept="image/jpeg,image/png,image/webp" onchange="uploadPhotos(this.files)">
+      <div style="font-size:11px;font-weight:500;color:var(--ghost);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">Povuci fotografije ovdje</div>
+      <div style="font-size:13px;color:var(--soft);font-weight:300">ili klikni za odabir — JPG, PNG, WebP · Max 5 MB</div>
+    </div>
+    <div style="font-size:12px;color:var(--ghost);margin-top:10px;font-weight:300">Klikni na fotografiju za naslovnu.</div>
+  </section>
+
+  <section class="blk">
+    <div class="blk-label">Gostima na raspolaganju</div>
+    <div class="blk-title">Sadržaji objekta</div>
+    <input class="fi-plain" id="amenity-search" placeholder="Pretraži (npr. klima, parking, bazen)..." oninput="filterAmenities()" style="margin-bottom:16px;max-width:420px">
+    <div id="amenity-catalog-list" style="max-height:360px;overflow-y:auto"></div>
+    <div style="margin-top:18px;padding-top:16px;border-top:1px solid var(--stone)">
+      <div style="font-size:12px;font-weight:500;color:var(--ghost);margin-bottom:10px;text-transform:uppercase;letter-spacing:.06em">Prilagođeni sadržaji</div>
+      <div id="custom-amenity-list"></div>
+      <div style="display:flex;gap:8px;margin-top:2px;align-items:center">
+        <span id="custom-amenity-preview" style="font-size:19px;width:26px;text-align:center;flex-shrink:0">🏷️</span>
+        <input class="fi-plain" id="custom-amenity-name" placeholder="Naziv (npr. Sauna, Jacuzzi...)" style="flex:1" oninput="updateAmenityPreview()">
+        <button class="btn btn-el btn-sm" onclick="addCustomAmenity()" style="flex-shrink:0">+ Dodaj</button>
       </div>
     </div>
-    <div class="card-body">
-      <div id="photos-alert"></div>
-      <div class="photo-grid" id="photo-grid"></div>
-      <div class="photo-upload-zone" id="upload-zone" onclick="document.getElementById('photo-input').click()">
-        <input type="file" id="photo-input" multiple accept="image/jpeg,image/png,image/webp" onchange="uploadPhotos(this.files)">
-        <div style="font-size:11px;font-weight:500;color:var(--ghost);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">Povuci fotografije ovdje</div>
-        <div style="font-size:13px;color:var(--soft);font-weight:300">ili klikni za odabir — JPG, PNG, WebP · Max 5 MB</div>
-      </div>
-      <div style="font-size:12px;color:var(--ghost);margin-top:10px;font-weight:300">Klikni na fotografiju za naslovnu.</div>
-    </div>
-  </div>
+  </section>
+
+  <section class="blk">
+    <div class="blk-label">Vidljivost</div>
+    <div class="blk-title">Vidljive sekcije na gostinskom linku</div>
+    <div class="tog-row" onclick="togSec(this,'wifi')"><span class="tog-label">Wi-Fi i lozinke</span><div class="tog-sw on"></div></div>
+    <div class="tog-row" onclick="togSec(this,'checkin')"><span class="tog-label">Upute za dolazak</span><div class="tog-sw on"></div></div>
+    <div class="tog-row" onclick="togSec(this,'local')"><span class="tog-label">Lokalni vodič</span><div class="tog-sw on"></div></div>
+    <div class="tog-row" onclick="togSec(this,'transport')"><span class="tog-label">Prijevoz</span><div class="tog-sw on"></div></div>
+    <div class="tog-row" onclick="togSec(this,'availability')"><span class="tog-label">Dostupnost</span><div class="tog-sw on"></div></div>
+    <div class="tog-row" onclick="togSec(this,'checkout')"><span class="tog-label">Upute za odjavu</span><div class="tog-sw on"></div></div>
+  </section>
 </div>
 
 <!-- CHECKIN -->
@@ -487,26 +530,6 @@ aside{width:228px;flex-shrink:0;background:var(--sidebar);display:flex;flex-dire
         <div class="wp-pw">
           <div><div class="wp-pw-l">Lozinka</div><div class="wp-pw-v" id="prev-pw">—</div></div>
           <button class="wp-copy" onclick="toast('Kopirano!')">Kopiraj</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- AMENITIES -->
-<div class="panel" id="p-amenities">
-  <div class="card card-last">
-    <div class="card-head"><div class="card-title">Sadržaji objekta</div></div>
-    <div class="card-body">
-      <input class="fi" id="amenity-search" placeholder="Pretraži (npr. klima, parking, bazen)..." oninput="filterAmenities()" style="margin-bottom:14px">
-      <div id="amenity-catalog-list" style="max-height:400px;overflow-y:auto"></div>
-      <div style="margin-top:18px;padding-top:16px;border-top:1px solid var(--stone)">
-        <div style="font-size:12px;font-weight:500;color:var(--ghost);margin-bottom:10px;text-transform:uppercase;letter-spacing:.06em">Prilagođeni sadržaji</div>
-        <div id="custom-amenity-list"></div>
-        <div style="display:flex;gap:8px;margin-top:2px;align-items:center">
-          <span id="custom-amenity-preview" style="font-size:19px;width:26px;text-align:center;flex-shrink:0">🏷️</span>
-          <input class="fi" id="custom-amenity-name" placeholder="Naziv (npr. Sauna, Jacuzzi...)" style="flex:1" oninput="updateAmenityPreview()">
-          <button class="btn btn-el btn-sm" onclick="addCustomAmenity()" style="flex-shrink:0">+ Dodaj</button>
         </div>
       </div>
     </div>
@@ -744,6 +767,7 @@ async function selectProp(p){
   document.getElementById('priv-url-d').textContent=`odmoria.com/h/${p.slug}-${p.guest_token||'...'}`
   document.getElementById('ical-status').textContent=(p.ical_last_sync)?'Sinkronizirano':'—'
   fillPropForm()
+  loadPhotos()
   await loadSection()
   await loadAvail()
   await loadLocal()
@@ -1296,11 +1320,10 @@ window.nav=(id,el)=>{
   const p=document.getElementById('p-'+id)
   if(p)p.classList.add('on')
   if(el)el.classList.add('on')
-  const titles={overview:'Pregled',property:'Objekt',photos:'Fotografije',checkin:'Check-in',wifi:'Wi-Fi',amenities:'Sadržaji objekta',local:'Lokalni vodič',avail:'Dostupnost',ical:'iCal sinkronizacija',bookings:'Rezervacije',links:'Linkovi i QR',sub:'Pretplata'}
+  const titles={overview:'Pregled',property:'Objekt',checkin:'Check-in',wifi:'Wi-Fi',local:'Lokalni vodič',avail:'Dostupnost',ical:'iCal sinkronizacija',bookings:'Rezervacije',links:'Linkovi i QR',sub:'Pretplata'}
   document.getElementById('topbar-title').textContent=titles[id]||id
   closeSide()
   if(id==='bookings')window.loadBookings()
-  if(id==='photos')loadPhotos()
   if(id==='ical')loadIcal()
 }
 

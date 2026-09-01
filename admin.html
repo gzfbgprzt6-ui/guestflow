@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Admin — Odmoria</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--black:#5A3323;--warm-white:#F7F5F1;--pure-white:#FFFFFF;--electric:#A15C3E;--electric-dk:#7E4630;--stone:#E8E2D9;--stone-mid:#C8C0B4;--ink:#1A1917;--body:#4A4540;--soft:#6B6560;--ghost:#9B9590;--green:#15803D;--green-bg:#DCFCE7;--serif:'DM Serif Display',Georgia,serif;--sans:'DM Sans',system-ui,sans-serif}
+body{font-family:var(--sans);background:var(--warm-white);color:var(--ink);-webkit-font-smoothing:antialiased;min-height:100dvh}
+#gate{position:fixed;inset:0;background:var(--warm-white);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;z-index:99;text-align:center;padding:24px}
+#gate .spin{width:26px;height:26px;border:2.5px solid var(--stone);border-top-color:var(--electric);border-radius:50%;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+#gate p{font-size:13.5px;color:var(--soft)}
+#app{display:none}
+header{background:var(--black);padding:20px clamp(20px,4vw,48px);display:flex;align-items:center;justify-content:space-between;gap:16px}
+.logo{font-family:var(--serif);font-size:19px;color:#fff}
+.logo span{color:#D9A583}
+.logo em{font-style:normal;font-size:11px;color:#CBA98F;font-weight:500;letter-spacing:.08em;text-transform:uppercase;margin-left:10px;border-left:1px solid #6E4230;padding-left:10px}
+.hdr-r{display:flex;align-items:center;gap:14px}
+.hdr-r a{font-size:12.5px;color:#D9BFAE;text-decoration:none}
+.hdr-r a:hover{color:#fff}
+.btn{display:inline-flex;align-items:center;gap:6px;font-weight:500;border-radius:7px;padding:8px 16px;font-size:13px;border:none;cursor:pointer;font-family:var(--sans)}
+.btn-el{background:var(--electric);color:#fff}.btn-el:hover{background:var(--electric-dk)}
+.btn-out{background:transparent;color:#D9BFAE;border:1px solid #6E4230}.btn-out:hover{border-color:#8a5a44}
+main{max-width:1080px;margin:0 auto;padding:36px clamp(20px,4vw,48px) 80px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1px;background:var(--stone);border:1px solid var(--stone);border-radius:14px;overflow:hidden;margin-bottom:40px}
+.stat{background:var(--pure-white);padding:22px 22px}
+.stat-label{font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--ghost);margin-bottom:8px}
+.stat-val{font-family:var(--serif);font-size:32px;color:var(--ink)}
+section.blk{padding:32px 0;border-top:1px solid var(--stone)}
+section.blk:first-of-type{border-top:none;padding-top:0}
+.blk-label{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--electric);margin-bottom:5px}
+.blk-title{font-family:var(--serif);font-size:22px;font-weight:400;color:var(--ink);margin-bottom:22px}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{text-align:left;font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ghost);padding:0 12px 10px;border-bottom:1px solid var(--stone)}
+td{padding:14px 12px;border-bottom:1px solid var(--stone);vertical-align:top}
+tr:last-child td{border-bottom:none}
+.host-name{font-weight:600;color:var(--ink)}
+.host-sub{font-size:12px;color:var(--ghost);margin-top:2px}
+.prop-chip{display:inline-block;background:var(--warm-white);border:1px solid var(--stone);border-radius:20px;padding:3px 10px;font-size:11.5px;color:var(--soft);margin:2px 4px 2px 0}
+.plan-sel{padding:6px 10px;border:1px solid var(--stone);border-radius:7px;font-size:12.5px;color:var(--ink);background:var(--pure-white);font-family:var(--sans);cursor:pointer}
+.pill{font-size:10.5px;font-weight:600;padding:3px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:.04em}
+.pill-active{background:var(--green-bg);color:var(--green)}
+.pill-exp{background:#FEE2E2;color:#B91C1C}
+.row-save{font-size:12px;color:var(--electric);background:none;border:none;cursor:pointer;font-weight:600;margin-left:8px;font-family:var(--sans)}
+.empty{text-align:center;padding:40px;color:var(--ghost);font-size:13px;font-weight:300}
+#denied{display:none;position:fixed;inset:0;background:var(--warm-white);align-items:center;justify-content:center;flex-direction:column;gap:14px;text-align:center;padding:24px}
+#denied h1{font-family:var(--serif);font-size:26px;font-weight:400}
+#denied p{font-size:14px;color:var(--soft);max-width:360px}
+</style>
+</head>
+<body>
+
+<div id="gate"><div class="spin"></div><p>Provjera pristupa...</p></div>
+
+<div id="denied">
+  <h1>Nemaš pristup</h1>
+  <p>Ova stranica je dostupna samo administratoru platforme.</p>
+  <a class="btn btn-el" href="dashboard.html">Natrag na dashboard</a>
+</div>
+
+<div id="app">
+  <header>
+    <div class="logo">Odmor<span>ia</span><em>Admin</em></div>
+    <div class="hdr-r">
+      <a href="dashboard.html">← Moj dashboard</a>
+      <button class="btn btn-out" onclick="logout()">Odjava</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="stats" id="stats-row"></div>
+
+    <section class="blk">
+      <div class="blk-label">Domaćini</div>
+      <div class="blk-title">Svi korisnici i njihovi planovi</div>
+      <div id="users-table"></div>
+    </section>
+  </main>
+</div>
+
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { ODMORIA_PLANS, normalizePlanId } from './plans.js'
+
+const SURL='https://wtojzqjhipdfbrnmprmz.supabase.co'
+const SKEY='sb_publishable_tmZAZTDbQ7ktc1N-8y4q4w_ztAu_62F'
+const sb=createClient(SURL,SKEY)
+const ADMIN_EMAIL='vefraj@gmail.com'
+
+init()
+
+async function init(){
+  const{data:{user}}=await sb.auth.getUser()
+  if(!user){window.location.href='login.html';return}
+  if(user.email!==ADMIN_EMAIL){
+    document.getElementById('gate').style.display='none'
+    document.getElementById('denied').style.display='flex'
+    return
+  }
+  document.getElementById('gate').style.display='none'
+  document.getElementById('app').style.display='block'
+  await loadAll()
+}
+
+window.logout=async()=>{await sb.auth.signOut();window.location.href='login.html'}
+
+async function loadAll(){
+  const[{data:props},{data:subs},{data:bookings},{data:views}]=await Promise.all([
+    sb.from('properties').select('id,user_id,name,host_name,email,phone,created_at'),
+    sb.from('subscriptions').select('user_id,plan,status,period_end'),
+    sb.from('bookings').select('id,is_active').eq('is_active',true),
+    sb.from('page_views').select('id,timestamp').gte('timestamp',new Date(Date.now()-30*86400000).toISOString())
+  ])
+  const properties=props||[]
+  const subsByUser={}
+  ;(subs||[]).forEach(s=>subsByUser[s.user_id]=s)
+
+  const byUser={}
+  properties.forEach(p=>{
+    if(!byUser[p.user_id])byUser[p.user_id]={user_id:p.user_id,props:[],host_name:null,email:null,phone:null}
+    byUser[p.user_id].props.push(p)
+    if(!byUser[p.user_id].host_name&&p.host_name)byUser[p.user_id].host_name=p.host_name
+    if(!byUser[p.user_id].email&&p.email)byUser[p.user_id].email=p.email
+    if(!byUser[p.user_id].phone&&p.phone)byUser[p.user_id].phone=p.phone
+  })
+  const hosts=Object.values(byUser).sort((a,b)=>b.props.length-a.props.length)
+
+  renderStats(hosts.length,properties.length,(bookings||[]).length,(views||[]).length)
+  renderUsers(hosts,subsByUser)
+}
+
+function renderStats(hostCount,propCount,bookingCount,viewCount){
+  const items=[
+    {l:'Domaćina',v:hostCount},
+    {l:'Objekata',v:propCount},
+    {l:'Aktivnih rezervacija',v:bookingCount},
+    {l:'Pregleda (30 dana)',v:viewCount}
+  ]
+  document.getElementById('stats-row').innerHTML=items.map(i=>`<div class="stat"><div class="stat-label">${i.l}</div><div class="stat-val">${i.v}</div></div>`).join('')
+}
+
+function renderUsers(hosts,subsByUser){
+  const el=document.getElementById('users-table')
+  if(!hosts.length){el.innerHTML='<div class="empty">Nema registriranih domaćina još.</div>';return}
+  const planOpts=Object.keys(ODMORIA_PLANS).map(k=>`<option value="${k}">${ODMORIA_PLANS[k].name}</option>`).join('')
+  el.innerHTML=`<table>
+    <thead><tr><th>Domaćin</th><th>Objekti</th><th>Plan</th><th>Status</th><th></th></tr></thead>
+    <tbody>${hosts.map(h=>{
+      const sub=subsByUser[h.user_id]
+      const plan=normalizePlanId(sub?.plan)
+      const expired=sub?.period_end&&new Date(sub.period_end)<new Date()&&plan!=='free'
+      const statusPill=sub?`<span class="pill ${expired?'pill-exp':'pill-active'}">${expired?'Isteklo':(sub.status||'aktivan')}</span>`:`<span class="pill pill-exp">Bez pretplate</span>`
+      return`<tr data-uid="${h.user_id}">
+        <td><div class="host-name">${esc(h.host_name||'Bez imena')}</div><div class="host-sub">${esc(h.email||'—')}${h.phone?' · '+esc(h.phone):''}</div></td>
+        <td>${h.props.map(p=>`<span class="prop-chip">${esc(p.name||'Bez naziva')}</span>`).join('')}</td>
+        <td><select class="plan-sel" data-uid="${h.user_id}">${planOpts}</select></td>
+        <td>${statusPill}</td>
+        <td><button class="row-save" onclick="savePlan('${h.user_id}')">Spremi</button></td>
+      </tr>`
+    }).join('')}</tbody>
+  </table>`
+  hosts.forEach(h=>{
+    const sel=el.querySelector(`select[data-uid="${h.user_id}"]`)
+    if(sel)sel.value=normalizePlanId(subsByUser[h.user_id]?.plan)
+  })
+}
+
+window.savePlan=async(userId)=>{
+  const sel=document.querySelector(`select[data-uid="${userId}"]`)
+  const plan=sel.value
+  const{error}=await sb.from('subscriptions').update({plan}).eq('user_id',userId)
+  if(error){alert('Greška: '+error.message);return}
+  await loadAll()
+}
+
+function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+</script>
+</body>
+</html>

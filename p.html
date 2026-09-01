@@ -287,6 +287,7 @@ async function loadPage() {
   PROP = prop
   price = parseFloat(prop.price_per_night) || 0
   renderGallery(prop)
+  sb.from('page_views').insert({ property_id: prop.id, view_type: 'public' }).then(() => {})
 
   document.title = prop.name + ' — Odmoria'
   document.getElementById('nav-prop-name').textContent = prop.name

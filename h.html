@@ -228,6 +228,7 @@ async function loadHub(){
       if(prop&&prop.guest_token===token){
         PROP=prop
         SENSITIVE_UNLOCKED=true
+        sb.from('page_views').insert({ property_id: prop.id, view_type: 'guest_hub' }).then(() => {})
         await loadSection()
         render()
         return
@@ -249,6 +250,7 @@ async function loadHub(){
   const{data:prop}=await sb.from('properties').select('*').eq('id',bk.property_id).maybeSingle()
   if(!prop){showErr('Objekt nije pronađen.');return}
   PROP=prop
+  sb.from('page_views').insert({ property_id: prop.id, view_type: 'guest_hub' }).then(() => {})
 
   // Check time lock: show sensitive 1h before checkin
   const ciDate=new Date(bk.checkin_date)
