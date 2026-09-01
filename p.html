@@ -90,7 +90,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.93);backdrop-f
 .cday{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;border-radius:6px;background:var(--bg);cursor:pointer;transition:background .15s ease}
 .cday.taken{background:transparent;color:var(--border);text-decoration:line-through;cursor:not-allowed}
 .cday.range-start{background:var(--blue);color:#fff}
-.cday.range-preview{background:var(--blue-lt);color:var(--blue)}
+.cday.range-preview{background:var(--blue-lt);color:var(--blue);transition:background .15s ease}
 .cal-sel-lbl{font-size:12px;font-weight:600;color:var(--blue);margin-top:9px;min-height:15px}
 .cal-clear{font-size:11.5px;color:var(--muted);text-decoration:underline;cursor:pointer;margin-top:2px;display:inline-block}
 .calleg{display:flex;gap:12px;margin-top:9px;font-size:11.5px;color:var(--muted)}
@@ -275,7 +275,7 @@ else { loadPage(); }
 let PROP = null, nights = 7, price = 0
 let calMonth = new Date().getMonth(), calYear = new Date().getFullYear()
 let bookedDates = []
-let rangeStart = null, hoverDs = null, checkinDs = null, checkoutDs = null
+let rangeStart = null, hoverDs = null, checkinDs = null, checkoutDs = null, filledSet = new Set()
 const MONTHS = ['Siječanj','Veljača','Ožujak','Travanj','Svibanj','Lipanj','Srpanj','Kolovoz','Rujan','Listopad','Studeni','Prosinac']
 
 async function loadPage() {
@@ -445,24 +445,20 @@ function fmtHR(ds){const[,m,d]=ds.split('-');return `${+d}.${m}.`}
 function fmtHRfull(ds){const[y,m,d]=ds.split('-');return `${+d}.${m}.${y}.`}
 function setSelLbl(t){const el=document.getElementById('cal-sel-lbl');if(el)el.textContent=t}
 
-window.calNav = (d) => { calMonth += d; if (calMonth>11){calMonth=0;calYear++} if (calMonth<0){calMonth=11;calYear--} rangeStart=null;hoverDs=null; renderCal() }
+window.calNav = (d) => { calMonth += d; if (calMonth>11){calMonth=0;calYear++} if (calMonth<0){calMonth=11;calYear--} rangeStart=null;hoverDs=null;setSelLbl(''); renderCal() }
 
-function isPreview(ds){
-  if(!rangeStart||!hoverDs)return false
-  const from=rangeStart<hoverDs?rangeStart:hoverDs
-  const to=rangeStart<hoverDs?hoverDs:rangeStart
-  return ds>from&&ds<to
-}
 function isSelected(ds){
   if(!checkinDs||!checkoutDs)return false
   return ds>checkinDs&&ds<checkoutDs
 }
+function priceTxt(n){ return price>0 ? ` · ${Math.round(price*n).toLocaleString('hr-HR')} €` : '' }
 
 function renderCal() {
   const el = document.getElementById('cal-title')
   if (el) el.textContent = MONTHS[calMonth] + ' ' + calYear + '.'
   const fd = (new Date(calYear, calMonth, 1).getDay() + 6) % 7
   const dim = new Date(calYear, calMonth + 1, 0).getDate()
+  filledSet = new Set()
   let h = ''
   for (let i = 0; i < fd; i++) h += '<div></div>'
   for (let d = 1; d <= dim; d++) {
@@ -471,17 +467,34 @@ function renderCal() {
     let cls = 'cday'
     if (taken) cls += ' taken'
     else if (ds === rangeStart || ds === checkinDs || ds === checkoutDs) cls += ' range-start'
-    else if (isPreview(ds) || isSelected(ds)) cls += ' range-preview'
-    h += `<div class="${cls}"${taken?'':` onclick="pickDate('${ds}')" onmouseover="hoverDate('${ds}')"`}>${d}</div>`
+    else if (isSelected(ds)) cls += ' range-preview'
+    h += `<div class="${cls}" data-ds="${ds}"${taken?'':` onclick="pickDate('${ds}')" onmouseover="hoverDate('${ds}')"`}>${d}</div>`
   }
   const days = document.getElementById('cal-days')
   if (days) days.innerHTML = h
 }
 
 window.hoverDate = (ds) => {
-  if (!rangeStart || ds === hoverDs) return
+  if (!rangeStart || ds === rangeStart || ds === hoverDs) return
   hoverDs = ds
-  renderCal()
+  const from = rangeStart < ds ? rangeStart : ds
+  const to = rangeStart < ds ? ds : rangeStart
+  const target = new Set(datesBetween(from, to).filter(x => x !== rangeStart && !bookedDates.includes(x)))
+  filledSet.forEach(x => {
+    if (!target.has(x)) {
+      const c = document.querySelector(`.cday[data-ds="${x}"]`)
+      if (c) { c.style.transitionDelay = '0s'; c.classList.remove('range-preview') }
+    }
+  })
+  const newDates = [...target].filter(x => !filledSet.has(x))
+  newDates.sort((a,b) => Math.abs(new Date(a)-new Date(rangeStart)) - Math.abs(new Date(b)-new Date(rangeStart)))
+  newDates.forEach((x,i) => {
+    const c = document.querySelector(`.cday[data-ds="${x}"]`)
+    if (c) { c.style.transitionDelay = (i*0.15)+'s'; c.classList.add('range-preview') }
+  })
+  filledSet = target
+  const n = datesBetween(from, to).length - 1
+  setSelLbl(`${fmtHR(from)} → ${fmtHR(to)} · ${n} noć${n===1?'':'i'}${priceTxt(n)}`)
 }
 
 window.pickDate = (ds) => {
@@ -507,7 +520,7 @@ window.pickDate = (ds) => {
   document.getElementById('ci-val').textContent = fmtHRfull(from)
   document.getElementById('co-val').textContent = fmtHRfull(to)
   document.getElementById('cal-clear').style.display = 'inline-block'
-  setSelLbl(`Odabrano: ${fmtHR(from)} → ${fmtHR(to)} (${nights} noći)`)
+  setSelLbl(`Odabrano: ${fmtHR(from)} → ${fmtHR(to)} · ${nights} noć${nights===1?'':'i'}${priceTxt(nights)} ✓`)
   updateCalc()
   refreshBookBtns()
   renderCal()

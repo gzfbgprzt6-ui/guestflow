@@ -60,7 +60,7 @@ aside{width:228px;flex-shrink:0;background:var(--sidebar);display:flex;flex-dire
 .range-chip.on{background:var(--black);color:#fff}
 
 /* CONTENT */
-.content{flex:1;overflow-y:auto;padding:28px 32px;display:flex;flex-direction:column;gap:0}
+.content{flex:1;overflow-y:auto;padding:28px 32px;display:flex;flex-direction:column;gap:0;max-width:760px}
 .panel{display:none}
 .panel.on{display:block}
 
@@ -503,9 +503,9 @@ aside{width:228px;flex-shrink:0;background:var(--sidebar);display:flex;flex-dire
       <div style="margin-top:18px;padding-top:16px;border-top:1px solid var(--stone)">
         <div style="font-size:12px;font-weight:500;color:var(--ghost);margin-bottom:10px;text-transform:uppercase;letter-spacing:.06em">Prilagođeni sadržaji</div>
         <div id="custom-amenity-list"></div>
-        <div style="display:flex;gap:8px;margin-top:2px">
-          <input class="fi" id="custom-amenity-icon" placeholder="🏷️" style="max-width:64px;text-align:center;flex-shrink:0" maxlength="4">
-          <input class="fi" id="custom-amenity-name" placeholder="Naziv (npr. Sauna)" style="flex:1">
+        <div style="display:flex;gap:8px;margin-top:2px;align-items:center">
+          <span id="custom-amenity-preview" style="font-size:19px;width:26px;text-align:center;flex-shrink:0">🏷️</span>
+          <input class="fi" id="custom-amenity-name" placeholder="Naziv (npr. Sauna, Jacuzzi...)" style="flex:1" oninput="updateAmenityPreview()">
           <button class="btn btn-el btn-sm" onclick="addCustomAmenity()" style="flex-shrink:0">+ Dodaj</button>
         </div>
       </div>
@@ -962,15 +962,38 @@ window.toggleAmenity=async(name,icon)=>{
   renderAmenityCatalog()
 }
 
+const EMOJI_KEYWORDS=[
+  [/saun/i,'🧖'],[/jacuzzi|whirlpool|hidromasaž/i,'🛁'],[/kad[au]/i,'🛁'],[/tuš/i,'🚿'],
+  [/wifi|internet/i,'📶'],[/klim/i,'❄️'],[/grijanj|kamin/i,'🌡️'],[/\btv\b|televizor/i,'📺'],
+  [/kuhal[oa] za vod/i,'🫖'],[/kav/i,'☕'],[/perilic.*rublj/i,'🧺'],[/sušilic/i,'🌀'],
+  [/perilic.*posuđ|sudoper/i,'🍽️'],[/hladnjak|frižider/i,'🧊'],[/pećnic/i,'🍞'],[/mikroval/i,'🔲'],
+  [/parking|garaž/i,'🚗'],[/bazen/i,'🏊'],[/balkon|terasa/i,'🌅'],[/vrt|dvorište/i,'🌳'],
+  [/roštilj|bbq/i,'🔥'],[/sef/i,'🔐'],[/glačal/i,'👔'],[/fen/i,'💨'],
+  [/posteljin/i,'🛏️'],[/ručnik/i,'🧻'],[/beb|dijet/i,'🍼'],[/ljubimc|pas|mačk/i,'🐾'],
+  [/invalid|kolic/i,'♿'],[/dizalo|lift/i,'🛗'],[/pušenj/i,'🚭'],[/kamer/i,'📹'],
+  [/igraonic|igrač/i,'🧸'],[/knjig|biblioteka/i,'📚'],[/kamin/i,'🔥'],[/bicikl/i,'🚲']
+]
+function guessEmoji(name){
+  const cat=AMENITY_CATALOG.find(a=>a.name.toLowerCase()===name.toLowerCase())
+  if(cat)return cat.icon
+  const hit=EMOJI_KEYWORDS.find(([re])=>re.test(name))
+  return hit?hit[1]:'🏷️'
+}
+window.updateAmenityPreview=()=>{
+  const name=document.getElementById('custom-amenity-name').value.trim()
+  document.getElementById('custom-amenity-preview').textContent=name?guessEmoji(name):'🏷️'
+}
+
 window.addCustomAmenity=async()=>{
   if(!PROP)return
-  const icon=document.getElementById('custom-amenity-icon').value.trim()||'✓'
   const name=document.getElementById('custom-amenity-name').value.trim()
   if(!name)return
+  const icon=guessEmoji(name)
   const{data,error}=await sb.from('amenities').insert({property_id:PROP.id,icon,name,enabled:true,sort_order:999}).select().single()
   if(error){toast('Greška: '+error.message);return}
   amenityRows.push(data)
   document.getElementById('custom-amenity-name').value=''
+  document.getElementById('custom-amenity-preview').textContent='🏷️'
   renderCustomAmenities()
   toast('Dodano ✓')
 }
