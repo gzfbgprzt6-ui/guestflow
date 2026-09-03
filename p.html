@@ -24,7 +24,7 @@ button{font-family:var(--f);cursor:pointer}
 .btn-out{background:var(--white);color:var(--text);border:1.5px solid var(--border)}.btn-out:hover{border-color:#999}
 .btn-sm{padding:8px 16px;font-size:13px}
 /* nav */
-nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.93);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 16px;height:52px;gap:10px}
+nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.93);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 16px;height:58px;gap:10px}
 .nav-logo{font-size:15px;font-weight:800;color:var(--ink);flex-shrink:0}
 .nav-logo span{color:var(--blue)}
 .nav-prop{font-size:13px;font-weight:600;color:var(--muted);flex:1;min-width:0;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -130,17 +130,62 @@ nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.93);backdrop-f
 .book-note{font-size:11px;color:var(--muted);text-align:center;margin-top:9px;line-height:1.55}
 /* desktop */
 @media(min-width:640px){
-  nav{padding:0 24px}
-  .gallery{display:grid;grid-template-columns:3fr 2fr;gap:7px;padding:16px 20px 0;max-width:960px;margin:0 auto}
-  .gal-main{height:340px;border-radius:10px 0 0 10px}
+  body{background:#faf9f7}
+  nav{padding:0 max(24px,calc((100vw - 1200px)/2));height:64px}
+  .nav-logo{font-size:17px}
+  .nav-prop{font-size:14px}
+  .gallery{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(250px,.75fr);gap:8px;padding:28px 24px 0;max-width:1248px;margin:0 auto}
+  .gallery.single{display:block}
+  .gal-main{height:430px;border-radius:14px 0 0 14px;box-shadow:0 8px 28px rgba(48,31,23,.08)}
+  .gallery.single .gal-main{border-radius:14px}
   .gal-thumbs{display:grid;grid-template-rows:1fr 1fr;margin-top:0}
-  .gal-thumb{height:167px;border-radius:0}
-  .gal-thumb:first-child{border-radius:0 10px 0 0}
-  .gal-thumb:last-child{border-radius:0 0 10px 0}
-  .content{display:grid;grid-template-columns:1fr 300px;gap:36px;padding:24px 20px 80px;max-width:960px;margin:0 auto}
+  .gal-thumb{height:211px;border-radius:0}
+  .gal-thumb:first-child{border-radius:0 14px 0 0}
+  .gal-thumb:last-child{border-radius:0 0 14px 0}
+  .content{display:grid;grid-template-columns:minmax(0,1fr) 340px;align-items:start;gap:64px;padding:34px 24px 96px;max-width:1248px;margin:0 auto}
+  #main-col{min-width:0}
+  .prop-name{font-size:30px;line-height:1.2;margin-bottom:10px}
+  .prop-meta{font-size:14px;margin-bottom:18px}
+  .detail-row{gap:18px 30px;margin-bottom:20px}
+  .detail-item{font-size:14px}
+  .map-box{margin:8px 0 22px;border-radius:14px}
+  .map-box iframe{height:260px}
+  .divider{margin:24px 0}
+  .am-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 28px}
+  .am-item{font-size:14px}
+  .save-banner{padding:18px 20px;border-radius:14px;margin-bottom:22px;border:1px solid #ebe7e1}
+  .save-banner-txt .h{font-size:14px}
+  .save-banner-txt .p{font-size:13px}
+  .desc{font-size:16px;line-height:1.75;color:#55534f}
+  .sec-title{font-size:20px;margin-bottom:16px}
+  .calwrap{border-radius:14px;background:#fff}
+  .calhead{padding:14px 18px}
+  .calbody{padding:14px 16px}
+  .cday{font-size:13px}
+  .book-desktop>div{padding:24px!important;border-radius:16px!important;box-shadow:0 12px 34px rgba(48,31,23,.09);background:#fff}
   .book-bar{display:none}
   .book-desktop{display:block!important}
   .local-grid{grid-template-columns:repeat(3,1fr)}
+}
+@media(min-width:640px) and (max-width:1023px){
+  .gallery{padding-top:20px}
+  .gal-main{height:360px}
+  .gal-thumb{height:176px}
+  .content{grid-template-columns:minmax(0,1fr) 300px;gap:28px;padding-top:28px}
+  .prop-name{font-size:26px}
+}
+@media(max-width:639px){
+  .gallery{padding:10px 10px 0}
+  .gal-main{height:min(68vw,290px);border-radius:12px}
+  .gal-thumbs{grid-template-columns:1fr 1fr}
+  .gal-thumb{height:100px}
+  .content{padding:20px 16px 118px}
+  .prop-name{font-size:24px;line-height:1.2}
+  .detail-row{display:grid;grid-template-columns:1fr 1fr;gap:12px 14px}
+  .map-box iframe{height:210px}
+  .save-banner{align-items:flex-start;flex-wrap:wrap}
+  .save-pct{margin-left:37px}
+  .local-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 </style>
 </head>
@@ -455,10 +500,12 @@ function renderGallery(prop) {
   if (cover && galleryUrls.includes(cover)) galleryUrls = [cover, ...galleryUrls.filter(u => u !== cover)]
   const el = document.getElementById('gallery')
   if (!galleryUrls.length) {
+    el.classList.remove('single')
     el.innerHTML = `<div class="gal-main">🏖️</div><div class="gal-thumbs"><div class="gal-thumb">🌊</div><div class="gal-thumb">🛏️</div></div>`
     return
   }
   const thumbs = galleryUrls.slice(1, 3)
+  el.classList.toggle('single', !thumbs.length)
   el.innerHTML = `<div class="gal-main" style="background-image:url('${esc(galleryUrls[0])}')" onclick="openGallery(0)"><button class="photo-btn" onclick="event.stopPropagation();openGallery(0)">📷 Sve fotografije${galleryUrls.length>1?' ('+galleryUrls.length+')':''}</button></div>` +
     (thumbs.length ? `<div class="gal-thumbs">${thumbs.map((u,i) => `<div class="gal-thumb" style="background-image:url('${esc(u)}')" onclick="openGallery(${i+1})"></div>`).join('')}</div>` : '')
 }
