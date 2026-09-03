@@ -78,6 +78,18 @@ nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.93);backdrop-f
 .tx-name{font-size:13.5px;font-weight:700}
 .tx-det{font-size:11.5px;color:var(--muted)}
 .tx-btn{margin-left:auto;font-size:11.5px;font-weight:700;color:var(--blue);padding:6px 11px;border:1.5px solid var(--blue);border-radius:7px;cursor:pointer;background:transparent;font-family:var(--f);flex-shrink:0}
+.tx-desc{font-size:11.5px;color:var(--muted);margin-top:3px;line-height:1.5}
+.rule-list{margin-bottom:20px}
+.rule-item{display:flex;gap:9px;align-items:flex-start;font-size:13.5px;margin-bottom:9px;line-height:1.5}
+.rule-item .ic{flex-shrink:0;color:var(--blue);font-weight:800}
+.faq-list{margin-bottom:20px}
+.faq-row{border-bottom:1px solid var(--border);padding:13px 0}
+.faq-row:last-child{border-bottom:none}
+.faq-row summary{font-size:13.5px;font-weight:700;cursor:pointer;list-style:none}
+.faq-row summary::-webkit-details-marker{display:none}
+.faq-row summary::before{content:'+';display:inline-block;width:16px;color:var(--blue);font-weight:800}
+.faq-row[open] summary::before{content:'−'}
+.faq-row p{margin:8px 0 0 24px;font-size:12.5px;color:var(--muted);line-height:1.6}
 /* cal */
 .calwrap{border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:16px}
 .calhead{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--border)}
@@ -187,6 +199,21 @@ nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.93);backdrop-f
       <div id="transport-section" style="display:none">
         <div class="sec-title">Prijevoz</div>
         <div id="transport-list"></div>
+      </div>
+      <div id="attractions-section" style="display:none">
+        <div class="divider"></div>
+        <div class="sec-title">Atrakcije i aktivnosti</div>
+        <div id="attractions-list"></div>
+      </div>
+      <div id="rules-section" style="display:none">
+        <div class="divider"></div>
+        <div class="sec-title">Kućna pravila</div>
+        <div class="rule-list" id="rules-list"></div>
+      </div>
+      <div id="faq-section" style="display:none">
+        <div class="divider"></div>
+        <div class="sec-title">Česta pitanja</div>
+        <div class="faq-list" id="faq-list"></div>
       </div>
       <div id="avail-section" style="display:none">
         <div class="divider"></div>
@@ -359,6 +386,40 @@ async function loadPage() {
           ${t.phone ? `<button class="tx-btn" onclick="event.stopPropagation();window.open('tel:${esc(t.phone)}')">📞</button>` : ''}
         </div>`
       ).join('')
+    }
+  }
+
+  // attractions
+  if (prop.show_attractions) {
+    const { data: atts } = await sb.from('attractions').select('*').eq('property_id', prop.id).order('sort_order')
+    if (atts?.length) {
+      document.getElementById('attractions-section').style.display = 'block'
+      document.getElementById('attractions-list').innerHTML = atts.map(a => {
+        const det = [a.type, a.distance, a.price].filter(Boolean).join(' · ')
+        return `<div class="tx" onclick="${a.maps_query ? `openMap('${esc(a.maps_query)}')` : ''}">
+          <div class="tx-ic">${a.icon || '🎯'}</div>
+          <div style="flex:1;min-width:0"><div class="tx-name">${esc(a.name)}</div>${det ? `<div class="tx-det">${esc(det)}</div>` : ''}${a.description ? `<div class="tx-desc">${esc(a.description)}</div>` : ''}</div>
+          ${a.maps_query ? `<button class="tx-btn" onclick="event.stopPropagation();openMap('${esc(a.maps_query)}')">🗺️</button>` : ''}
+        </div>`
+      }).join('')
+    }
+  }
+
+  // house rules (public-safe, no dedicated visibility flag)
+  {
+    const { data: rules } = await sb.from('house_rules').select('*').eq('property_id', prop.id).order('sort_order')
+    if (rules?.length) {
+      document.getElementById('rules-section').style.display = 'block'
+      document.getElementById('rules-list').innerHTML = rules.map(r => `<div class="rule-item"><span class="ic">✓</span><span>${esc(r.rule_text)}</span></div>`).join('')
+    }
+  }
+
+  // faq
+  if (prop.show_faq) {
+    const { data: faqs } = await sb.from('faq').select('*').eq('property_id', prop.id).order('sort_order')
+    if (faqs?.length) {
+      document.getElementById('faq-section').style.display = 'block'
+      document.getElementById('faq-list').innerHTML = faqs.map(f => `<details class="faq-row"><summary>${esc(f.question)}</summary><p>${esc(f.answer)}</p></details>`).join('')
     }
   }
 

@@ -86,6 +86,22 @@ button{font-family:var(--sans);cursor:pointer}
 .place-meta{font-size:12px;color:var(--ghost);font-weight:300}
 .place-maps{font-size:11px;font-weight:500;color:var(--electric);flex-shrink:0}
 
+/* RULES */
+.rule-card{background:var(--pure-white);border:1px solid var(--stone);border-radius:12px;padding:14px 16px;margin-bottom:12px}
+.rule-item{display:flex;gap:9px;align-items:flex-start;font-size:13.5px;margin-bottom:8px;line-height:1.5;color:var(--ink)}
+.rule-item:last-child{margin-bottom:0}
+.rule-item .ic{color:var(--electric);font-weight:800;flex-shrink:0}
+
+/* FAQ */
+.faq-card{background:var(--pure-white);border:1px solid var(--stone);border-radius:12px;overflow:hidden;margin-bottom:12px}
+.faq-row{border-bottom:1px solid var(--stone);padding:13px 16px}
+.faq-row:last-child{border-bottom:none}
+.faq-row summary{font-size:13.5px;font-weight:500;cursor:pointer;list-style:none;color:var(--ink)}
+.faq-row summary::-webkit-details-marker{display:none}
+.faq-row summary::before{content:'+';display:inline-block;width:16px;color:var(--electric);font-weight:700}
+.faq-row[open] summary::before{content:'−'}
+.faq-row p{margin:8px 0 0 24px;font-size:12.5px;color:var(--soft);font-weight:300;line-height:1.6}
+
 /* CONTACT */
 .contact-card{background:var(--black);border-radius:12px;padding:20px;margin-bottom:12px;display:flex;align-items:center;gap:16px}
 .contact-av{width:44px;height:44px;border-radius:50%;background:var(--electric);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;flex-shrink:0}
@@ -181,6 +197,30 @@ button{font-family:var(--sans);cursor:pointer}
     <div class="info-card" id="transport-card"></div>
   </div>
 
+  <!-- DEVICES -->
+  <div class="hub-section" id="devices-sec" style="display:none">
+    <div class="hub-section-label">Kuća i uređaji</div>
+    <div class="info-card" id="devices-card"></div>
+  </div>
+
+  <!-- ATTRACTIONS -->
+  <div class="hub-section" id="attractions-sec" style="display:none">
+    <div class="hub-section-label">Atrakcije i aktivnosti</div>
+    <div class="info-card" id="attractions-card"></div>
+  </div>
+
+  <!-- RULES -->
+  <div class="hub-section" id="rules-sec" style="display:none">
+    <div class="hub-section-label">Kućna pravila</div>
+    <div class="rule-card" id="rules-card"></div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="hub-section" id="faq-sec" style="display:none">
+    <div class="hub-section-label">Česta pitanja</div>
+    <div class="faq-card" id="faq-card"></div>
+  </div>
+
   <!-- CHECKOUT -->
   <div class="hub-section" id="checkout-sec" style="display:none">
     <div class="hub-section-label">Odjava</div>
@@ -231,6 +271,13 @@ async function loadHub(){
         sb.from('page_views').insert({ property_id: prop.id, view_type: 'guest_hub' }).then(() => {})
         await loadSection()
         render()
+        await loadLocal()
+        await loadTransport()
+        await loadAttractions()
+        await loadRules()
+        await loadFaq()
+        document.getElementById('loading').style.display='none'
+        document.getElementById('page').style.display='block'
         return
       }
     }
@@ -288,6 +335,9 @@ async function loadHub(){
   // Load related
   await loadLocal()
   await loadTransport()
+  await loadAttractions()
+  await loadRules()
+  await loadFaq()
 
   document.getElementById('loading').style.display='none'
   document.getElementById('page').style.display='block'
@@ -372,6 +422,19 @@ function render(){
     }
   }
 
+  // Devices (private "how things work" info)
+  const devRows=[]
+  if(s.ac_info)devRows.push({ic:'❄️',title:'Klima-uređaj',sub:s.ac_info})
+  if(s.heating_info)devRows.push({ic:'🌡️',title:'Grijanje',sub:s.heating_info})
+  if(s.hot_water_info)devRows.push({ic:'🚿',title:'Topla voda',sub:s.hot_water_info})
+  if(s.kitchen_info)devRows.push({ic:'🍽️',title:'Kuhinja',sub:s.kitchen_info})
+  if(devRows.length){
+    document.getElementById('devices-sec').style.display='block'
+    document.getElementById('devices-card').innerHTML=devRows.map(r=>
+      `<div class="info-row"><div class="info-ic">${r.ic}</div><div class="info-body"><div class="info-title">${esc(r.title)}</div><div class="info-sub">${esc(r.sub)}</div></div></div>`
+    ).join('')
+  }
+
   // Checkout
   if(s.checkout_notes){
     document.getElementById('checkout-sec').style.display='block'
@@ -435,10 +498,47 @@ async function loadTransport(){
       <div class="info-ic">${t.icon||'🚌'}</div>
       <div class="info-body">
         <div class="info-title">${esc(t.name)}</div>
-        ${t.info?`<div class="info-sub">${esc(t.info)}</div>`:''}
+        ${t.details?`<div class="info-sub">${esc(t.details)}${t.phone?' · '+esc(t.phone):''}</div>`:t.phone?`<div class="info-sub">${esc(t.phone)}</div>`:''}
       </div>
     </div>`
   ).join('')
+}
+
+async function loadAttractions(){
+  if(!PROP)return
+  const{data}=await sb.from('attractions').select('*').eq('property_id',PROP.id).order('sort_order').limit(20)
+  const items=data||[]
+  if(!items.length)return
+  document.getElementById('attractions-sec').style.display='block'
+  document.getElementById('attractions-card').innerHTML=items.map(a=>{
+    const det=[a.type,a.distance,a.price].filter(Boolean).join(' · ')
+    return`<div class="info-row">
+      <div class="info-ic">${a.icon||'🎯'}</div>
+      <div class="info-body">
+        <div class="info-title">${esc(a.name)}</div>
+        ${det?`<div class="info-sub">${esc(det)}</div>`:''}
+        ${a.description?`<div class="info-sub">${esc(a.description)}</div>`:''}
+      </div>
+    </div>`
+  }).join('')
+}
+
+async function loadRules(){
+  if(!PROP)return
+  const{data}=await sb.from('house_rules').select('*').eq('property_id',PROP.id).order('sort_order').limit(30)
+  const items=data||[]
+  if(!items.length)return
+  document.getElementById('rules-sec').style.display='block'
+  document.getElementById('rules-card').innerHTML=items.map(r=>`<div class="rule-item"><span class="ic">✓</span><span>${esc(r.rule_text)}</span></div>`).join('')
+}
+
+async function loadFaq(){
+  if(!PROP)return
+  const{data}=await sb.from('faq').select('*').eq('property_id',PROP.id).order('sort_order').limit(30)
+  const items=data||[]
+  if(!items.length)return
+  document.getElementById('faq-sec').style.display='block'
+  document.getElementById('faq-card').innerHTML=items.map(f=>`<details class="faq-row"><summary>${esc(f.question)}</summary><p>${esc(f.answer)}</p></details>`).join('')
 }
 
 function showCountdown(unlockAt){
