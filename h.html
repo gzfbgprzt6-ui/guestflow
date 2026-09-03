@@ -7,126 +7,129 @@
 <title>Gostinski vodič — Odmoria</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--black:#5A3323;--warm-white:#F7F5F1;--pure-white:#FFFFFF;--electric:#A15C3E;--stone:#E8E2D9;--stone-mid:#C8C0B4;--ink:#1A1917;--soft:#6B6560;--ghost:#9B9590;--green:#15803D;--green-bg:#DCFCE7;--serif:'DM Serif Display',Georgia,serif;--sans:'DM Sans',system-ui,sans-serif}
+:root{--cream:#f5f1eb;--paper:#fffdf9;--paper-2:#ede5dc;--ink:#21150f;--muted:#786a60;--brown:#5b321f;--brown-deep:#432316;--brown-soft:#76442f;--copper:#b7603b;--peach:#e7b69c;--green:#3e6954;--green-bg:#e4eee8;--border:#dfd5ca;--white:#fff;--serif:'DM Serif Display',Georgia,serif;--f:'Manrope',system-ui,sans-serif}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--sans);background:var(--warm-white);color:var(--ink);-webkit-font-smoothing:antialiased;min-height:100dvh}
+body{font-family:var(--f);background:var(--cream);color:var(--ink);-webkit-font-smoothing:antialiased;min-height:100dvh}
 a{color:inherit;text-decoration:none}
-button{font-family:var(--sans);cursor:pointer}
+button{font-family:var(--f);cursor:pointer}
 
 /* LOADING */
-#loading{position:fixed;inset:0;background:var(--pure-white);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:999}
-.spin{width:28px;height:28px;border:2px solid var(--stone);border-top-color:var(--electric);border-radius:50%;animation:sp .7s linear infinite}
+#loading{position:fixed;inset:0;background:var(--cream);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:999}
+.spin{width:28px;height:28px;border:2px solid var(--border);border-top-color:var(--copper);border-radius:50%;animation:sp .7s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
-.loading-logo{font-family:var(--serif);font-size:22px;color:var(--black)}
+.loading-logo{font-family:var(--serif);font-size:22px;color:var(--brown)}
 
 /* ERROR */
-#err-screen{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:100dvh;padding:40px;text-align:center}
+#err-screen{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:100dvh;padding:40px;text-align:center;background:var(--cream)}
 .err-icon{font-size:48px;margin-bottom:20px}
-.err-title{font-family:var(--serif);font-size:28px;color:var(--black);margin-bottom:10px;font-weight:400}
-.err-sub{font-size:15px;color:var(--soft);font-weight:300;line-height:1.65;max-width:340px}
+.err-title{font-family:var(--serif);font-size:28px;color:var(--brown);margin-bottom:10px;font-weight:400}
+.err-sub{font-size:15px;color:var(--muted);font-weight:500;line-height:1.65;max-width:340px}
 
 /* PAGE */
-#page{display:none;max-width:680px;margin:0 auto;padding:0 0 80px}
+#page{display:none;max-width:680px;margin:0 auto;padding:0 0 90px;background:var(--cream)}
 
 /* HERO */
-.hub-hero{padding:32px 20px 28px;border-bottom:1px solid var(--stone);background:var(--pure-white)}
-.hub-logo{font-family:var(--serif);font-size:15px;color:var(--ghost);margin-bottom:20px}
-.hub-prop-name{font-family:var(--serif);font-size:32px;color:var(--black);line-height:1.08;font-weight:400;margin-bottom:6px;letter-spacing:-.02em}
-.hub-location{font-size:13.5px;color:var(--soft);font-weight:300;display:flex;align-items:center;gap:6px;margin-bottom:16px}
-.hub-dates-pill{display:inline-flex;align-items:center;gap:8px;background:var(--warm-white);border:1px solid var(--stone);border-radius:8px;padding:8px 14px;font-size:13px;font-weight:400;color:var(--ink)}
-.hub-dates-dot{width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0}
+.hub-hero{position:relative;overflow:hidden;padding:26px 20px 34px;background:var(--brown-deep);color:#fff}
+.hub-hero::before{position:absolute;top:-160px;right:-140px;width:320px;height:320px;border:1px solid rgba(255,255,255,.08);border-radius:50%;content:'';pointer-events:none}
+.hub-hero::after{position:absolute;bottom:-200px;left:-160px;width:340px;height:340px;border:1px solid rgba(231,182,156,.08);border-radius:50%;content:'';pointer-events:none}
+.hub-logo{position:relative;z-index:1;font-family:var(--serif);font-size:16px;color:#fff;margin-bottom:22px}
+.hub-logo span{color:var(--peach)}
+.hub-badge{position:relative;z-index:1;display:inline-flex;align-items:center;gap:6px;margin-bottom:14px;padding:5px 11px;border:1px solid rgba(255,255,255,.16);border-radius:999px;background:rgba(255,255,255,.06);color:var(--peach);font-size:9.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+.hub-prop-name{position:relative;z-index:1;font-family:var(--serif);font-size:clamp(30px,7vw,40px);color:#fff;line-height:1.05;font-weight:400;margin-bottom:8px;letter-spacing:-.02em}
+.hub-location{position:relative;z-index:1;font-size:13.5px;color:rgba(255,255,255,.65);font-weight:500;display:flex;align-items:center;gap:6px;margin-bottom:18px}
+.hub-dates-pill{position:relative;z-index:1;display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);border-radius:10px;padding:9px 15px;font-size:13px;font-weight:600;color:#fff}
+.hub-dates-dot{width:7px;height:7px;border-radius:50%;background:#91bca4;box-shadow:0 0 0 4px rgba(145,188,164,.15);flex-shrink:0}
 
 /* COUNTDOWN BANNER */
-.countdown-banner{background:var(--black);padding:12px 20px;display:flex;align-items:center;gap:12px}
+.countdown-banner{margin:16px 16px 0;padding:14px 18px;border-radius:14px;background:#fbf0e9;border:1px solid #e7c2ad;display:flex;align-items:center;gap:12px}
 .cb-icon{font-size:16px;flex-shrink:0}
-.cb-text{font-size:13px;color:#ccc;font-weight:300;line-height:1.5;flex:1}
-.cb-time{font-family:var(--serif);font-size:17px;color:#fff;flex-shrink:0;white-space:nowrap}
+.cb-text{font-size:12.5px;color:var(--muted);font-weight:600;line-height:1.5;flex:1}
+.cb-time{font-family:var(--serif);font-size:17px;color:var(--copper);flex-shrink:0;white-space:nowrap}
 
-/* SECTIONS */
-.hub-section{padding:20px 20px 0}
-.hub-section-label{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ghost);margin-bottom:12px}
+/* SECTIONS — page-section cards */
+.hub-section{margin:16px 16px 0;padding:24px 22px;border:1px solid var(--border);border-radius:20px;background:var(--paper);box-shadow:0 10px 30px rgba(67,35,22,.035)}
+.hub-section-label{color:var(--copper);font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-bottom:14px}
 
-/* WIFI CARD */
-.wifi-card{background:var(--black);border-radius:12px;padding:18px;margin-bottom:12px}
-.wifi-net-row{margin-bottom:14px}
-.wifi-net-lbl{font-size:9.5px;color:#CBA98F;text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px}
-.wifi-net-name{font-size:16px;font-weight:500;color:#fff}
-.wifi-pw-row{background:#4A2A1C;border-radius:8px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid #6E4230}
-.wifi-pw-inner{flex:1;min-width:0}
-.wifi-pw-lbl{font-size:9.5px;color:#CBA98F;text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px}
-.wifi-pw-val{font-size:18px;font-weight:500;color:#fff;letter-spacing:.04em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.wifi-copy-btn{padding:9px 16px;border-radius:7px;background:var(--electric);border:none;color:#fff;font-size:13px;font-weight:500;cursor:pointer;flex-shrink:0;transition:background .12s}
-.wifi-copy-btn:hover{background:#7E4630}
-.wifi-locked{text-align:center;padding:16px;color:#B7A594;font-size:13px;font-weight:300}
-
-/* INFO ROWS */
-.info-card{background:var(--pure-white);border:1px solid var(--stone);border-radius:12px;overflow:hidden;margin-bottom:12px}
-.info-row{display:flex;align-items:center;gap:14px;padding:14px 16px;border-bottom:1px solid var(--stone);transition:background .12s}
-.info-row:last-child{border-bottom:none}
+/* LIST ROWS (info / place) — chip style */
+.info-card,.rule-card,.faq-card{background:transparent}
+.info-row{display:flex;align-items:center;gap:13px;margin-bottom:9px;padding:13px 14px;border:1px solid #e6ddd3;border-radius:13px;background:#faf7f2;transition:border-color .15s,background .15s}
+.info-row:last-child{margin-bottom:0}
 .info-row.clickable{cursor:pointer}
-.info-row.clickable:hover{background:var(--warm-white)}
-.info-ic{width:36px;height:36px;border-radius:9px;background:var(--warm-white);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;border:1px solid var(--stone)}
+.info-row.clickable:hover{border-color:#d1bbae;background:#fff}
+.info-ic{width:36px;height:36px;border-radius:10px;background:var(--paper-2);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
 .info-body{flex:1;min-width:0}
-.info-title{font-size:14px;font-weight:500;color:var(--ink);margin-bottom:1px}
-.info-sub{font-size:12.5px;color:var(--soft);font-weight:300;line-height:1.5}
-.info-val{font-size:18px;font-weight:600;color:var(--ink);letter-spacing:.06em;flex-shrink:0;font-family:monospace}
-.info-arrow{color:var(--stone-mid);flex-shrink:0;font-size:16px}
-.info-badge{font-size:11px;font-weight:500;padding:3px 9px;border-radius:20px;flex-shrink:0}
-.badge-locked{background:var(--warm-white);color:var(--ghost);border:1px solid var(--stone)}
+.info-title{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:1px}
+.info-sub{font-size:12.5px;color:var(--muted);font-weight:500;line-height:1.5}
+.info-val{font-size:19px;font-weight:700;color:var(--ink);letter-spacing:.06em;flex-shrink:0;font-family:monospace}
+.info-arrow{color:#b6a99c;flex-shrink:0;font-size:16px}
+.info-badge{font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;flex-shrink:0}
+.badge-locked{background:var(--paper-2);color:var(--muted);border:1px solid var(--border)}
 .badge-ok{background:var(--green-bg);color:var(--green)}
 
+/* WIFI CARD — dark accent block inside a light section */
+.wifi-card{background:var(--brown-deep);border-radius:16px;padding:20px}
+.wifi-net-row{margin-bottom:14px}
+.wifi-net-lbl{font-size:9.5px;color:var(--peach);text-transform:uppercase;letter-spacing:.09em;font-weight:700;margin-bottom:3px}
+.wifi-net-name{font-size:16px;font-weight:600;color:#fff}
+.wifi-pw-row{background:var(--brown);border-radius:10px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid rgba(255,255,255,.1)}
+.wifi-pw-inner{flex:1;min-width:0}
+.wifi-pw-lbl{font-size:9.5px;color:var(--peach);text-transform:uppercase;letter-spacing:.09em;font-weight:700;margin-bottom:3px}
+.wifi-pw-val{font-size:18px;font-weight:600;color:#fff;letter-spacing:.04em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wifi-copy-btn{padding:9px 16px;border-radius:8px;background:var(--copper);border:none;color:#fff;font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0;transition:background .15s}
+.wifi-copy-btn:hover{background:#c96a43}
+.wifi-locked{text-align:center;padding:16px;color:rgba(255,255,255,.55);font-size:13px;font-weight:500}
+
 /* LOCAL PLACES */
-.place-row{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid var(--stone);cursor:pointer;transition:background .12s}
-.place-row:last-child{border-bottom:none}
-.place-row:hover{background:var(--warm-white)}
-.place-ic{font-size:22px;width:36px;text-align:center;flex-shrink:0}
-.place-name{font-size:14px;font-weight:500;color:var(--ink);margin-bottom:1px}
-.place-meta{font-size:12px;color:var(--ghost);font-weight:300}
-.place-maps{font-size:11px;font-weight:500;color:var(--electric);flex-shrink:0}
+.place-row{display:flex;align-items:center;gap:12px;margin-bottom:9px;padding:13px 14px;border:1px solid #e6ddd3;border-radius:13px;background:#faf7f2;cursor:pointer;transition:border-color .15s,background .15s}
+.place-row:last-child{margin-bottom:0}
+.place-row:hover{border-color:#d1bbae;background:#fff}
+.place-ic{width:36px;height:36px;border-radius:10px;background:var(--paper-2);display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+.place-name{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:1px}
+.place-meta{font-size:12px;color:var(--muted);font-weight:500}
+.place-maps{font-size:11px;font-weight:700;color:var(--copper);flex-shrink:0}
 
 /* RULES */
-.rule-card{background:var(--pure-white);border:1px solid var(--stone);border-radius:12px;padding:14px 16px;margin-bottom:12px}
-.rule-item{display:flex;gap:9px;align-items:flex-start;font-size:13.5px;margin-bottom:8px;line-height:1.5;color:var(--ink)}
-.rule-item:last-child{margin-bottom:0}
-.rule-item .ic{color:var(--electric);font-weight:800;flex-shrink:0}
+.rule-item{display:flex;gap:9px;align-items:flex-start;font-size:13px;padding:13px 0;border-bottom:1px solid #ebe4dc;line-height:1.5;color:var(--ink)}
+.rule-item:last-child{border-bottom:none;padding-bottom:0}
+.rule-item .ic{color:var(--copper);font-weight:800;flex-shrink:0}
 
 /* FAQ */
-.faq-card{background:var(--pure-white);border:1px solid var(--stone);border-radius:12px;overflow:hidden;margin-bottom:12px}
-.faq-row{border-bottom:1px solid var(--stone);padding:13px 16px}
+.faq-row{border-bottom:1px solid #e7ded5;padding:16px 0}
 .faq-row:last-child{border-bottom:none}
-.faq-row summary{font-size:13.5px;font-weight:500;cursor:pointer;list-style:none;color:var(--ink)}
+.faq-row summary{font-size:14px;font-weight:700;cursor:pointer;list-style:none;color:var(--ink)}
 .faq-row summary::-webkit-details-marker{display:none}
-.faq-row summary::before{content:'+';display:inline-block;width:16px;color:var(--electric);font-weight:700}
+.faq-row summary::before{content:'+';display:inline-block;width:16px;color:var(--copper);font-weight:800}
 .faq-row[open] summary::before{content:'−'}
-.faq-row p{margin:8px 0 0 24px;font-size:12.5px;color:var(--soft);font-weight:300;line-height:1.6}
+.faq-row p{margin:8px 0 0 24px;font-size:13px;color:var(--muted);font-weight:500;line-height:1.6}
 
-/* CONTACT */
-.contact-card{background:var(--black);border-radius:12px;padding:20px;margin-bottom:12px;display:flex;align-items:center;gap:16px}
-.contact-av{width:44px;height:44px;border-radius:50%;background:var(--electric);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;flex-shrink:0}
-.contact-name{font-size:15px;font-weight:500;color:#fff;margin-bottom:3px}
-.contact-role{font-size:12.5px;color:#D9BFAE;font-weight:300}
+/* CONTACT — dark accent block */
+.contact-card{background:var(--brown-deep);border-radius:16px;padding:20px;display:flex;align-items:center;gap:16px}
+.contact-av{width:44px;height:44px;border-radius:50%;background:var(--copper);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;flex-shrink:0}
+.contact-name{font-size:15px;font-weight:700;color:#fff;margin-bottom:3px}
+.contact-role{font-size:12.5px;color:var(--peach);font-weight:500}
 .contact-btns{display:flex;gap:8px;margin-left:auto;flex-shrink:0}
-.contact-btn{padding:8px 14px;border-radius:7px;font-size:13px;font-weight:500;border:none;cursor:pointer;font-family:var(--sans)}
+.contact-btn{padding:8px 14px;border-radius:8px;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:var(--f)}
 .contact-btn-wa{background:#25D366;color:#fff}
 .contact-btn-wa:hover{background:#1eb857}
-.contact-btn-call{background:#63392A;color:#F0E4DA;border:1px solid #6E4230}
+.contact-btn-call{background:var(--brown);color:#fff;border:1px solid rgba(255,255,255,.15)}
 
 /* POWERED BY */
-.powered-by{text-align:center;padding:28px 20px 0;font-size:12px;color:var(--ghost);font-weight:300}
-.powered-by a{color:var(--electric);font-weight:400}
+.powered-by{text-align:center;padding:28px 20px 0;font-size:12px;color:var(--muted);font-weight:500}
+.powered-by a{color:var(--copper);font-weight:700}
 
 /* TOAST */
-#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--black);color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;z-index:9999;white-space:nowrap;opacity:0;transition:opacity .2s;pointer-events:none}
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--brown-deep);color:#fff;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;white-space:nowrap;opacity:0;transition:opacity .2s;pointer-events:none}
 #toast.show{opacity:1}
 
 @media(min-width:720px){
-  #page{padding:0 0 80px}
-  .hub-hero{padding:40px 32px 32px;border-radius:0}
-  .hub-section{padding:24px 32px 0}
-  .countdown-banner{padding:14px 32px}
-  .wifi-card{border-radius:14px}
+  #page{padding:0 0 90px}
+  .hub-hero{padding:44px 36px 40px}
+  .hub-prop-name{font-size:44px}
+  .hub-section{margin:20px 32px 0;padding:28px 30px;border-radius:22px}
+  .countdown-banner{margin:20px 32px 0}
+  .wifi-card{border-radius:18px}
   .powered-by{padding:32px 32px 0}
 }
 </style>
@@ -146,7 +149,8 @@ button{font-family:var(--sans);cursor:pointer}
 
 <div id="page">
   <div class="hub-hero">
-    <div class="hub-logo">Odmoria</div>
+    <div class="hub-logo">Odmor<span>ia</span></div>
+    <div class="hub-badge">Privatni gostinski vodič</div>
     <div class="hub-prop-name" id="hub-name">Villa Luna</div>
     <div class="hub-location" id="hub-location">
       <span>📍</span><span>Hvar, Hrvatska</span>
