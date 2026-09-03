@@ -366,14 +366,16 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   .header-progress { display: none; }
 }
 @media (max-width: 780px) {
-  .app-shell { display: block; }
+  .app-shell { display: block; width: 100%; }
   .sidebar { width: min(310px, 86vw); transform: translateX(-101%); transition: transform 220ms ease; }
   .sidebar.open { transform: translateX(0); }
-  .main { grid-column: auto; margin-left: 0; width: 100%; }
+  .main { grid-column: auto; width: 100%; min-width: 0; margin-left: 0; }
+  .workspace { display: block; width: 100%; }
   .mobile-menu { display: grid; }
   .breadcrumb { flex: 1; }
   .topbar { padding-inline: 15px; }
-  .editor { padding: 31px 15px 95px; }
+  .editor { width: 100%; padding: 28px 15px 90px; }
+  .preview-pane { display: none; }
   .page-header { display: block; }
   .page-header h1 { font-size: 2.4rem; }
   .property-banner, .lock-banner { align-items: start; padding: 22px; grid-template-columns: 1fr; }
@@ -387,6 +389,11 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   .mobile-overlay.visible { opacity: 1; pointer-events: auto; }
 }
 @media (max-width: 480px) {
+  .breadcrumb { display: none; }
+  .topbar { gap: 8px; }
+  .top-actions { margin-left: auto; }
+  .top-actions .btn.secondary { display: none; }
+  .top-actions .btn { min-height: 38px; padding: 8px 11px; }
   .card { padding: 21px 17px; }
   .card-head { display: block; }
   .card-hint { max-width: none; margin-top: 10px; text-align: left; }
@@ -890,7 +897,7 @@ async function init(){
   buildTypePickers()
   await loadProps()
   document.getElementById('loading').style.display='none'
-  document.getElementById('app').style.display='grid'
+  document.getElementById('app').style.removeProperty('display')
 }
 
 function buildTypePickers(){
