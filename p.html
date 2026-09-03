@@ -6,7 +6,7 @@
 <title>Odmoria</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{--ink:#5A3323;--white:#fff;--bg:#F5F4F1;--border:#E2E0DB;--muted:#6B6A67;--text:#1A1917;--blue:#A15C3E;--blue-lt:#F1E3DA;--green:#0E6E3F;--green-lt:#E7F5EE;--f:'DM Sans',system-ui,sans-serif;--r:10px}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -187,6 +187,219 @@ nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.93);backdrop-f
   .save-pct{margin-left:37px}
   .local-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
+
+/* ── Odmoria public profile v2 ─────────────────────── */
+:root{
+  --cream:#f5f1eb;
+  --paper:#fffdf9;
+  --paper-2:#ede5dc;
+  --ink:#21150f;
+  --muted:#786a60;
+  --brown:#5b321f;
+  --brown-deep:#432316;
+  --brown-soft:#76442f;
+  --copper:#b7603b;
+  --peach:#e7b69c;
+  --green:#3e6954;
+  --green-lt:#e4eee8;
+  --border:#dfd5ca;
+  --blue:#b7603b;
+  --blue-lt:#f4e4da;
+  --white:#fff;
+  --bg:#f5f1eb;
+  --f:'Manrope',system-ui,sans-serif;
+  --serif:'DM Serif Display',Georgia,serif;
+  --r:12px;
+}
+body{background:var(--cream);font-family:var(--f);color:var(--ink)}
+.btn{border-radius:11px;min-height:42px}
+.btn-ink{background:var(--copper)}
+.btn-ink:hover{background:#984b2d;transform:translateY(-1px)}
+nav{height:70px;padding:0 max(22px,calc((100vw - 1200px)/2));background:rgba(67,35,22,.97);border-bottom-color:rgba(255,255,255,.1);color:#fff}
+.nav-logo{font-family:var(--serif);font-size:23px;font-weight:400;letter-spacing:-.04em;color:#fff}
+.nav-logo span{color:var(--peach)}
+.nav-prop{color:rgba(255,255,255,.62);font-size:13px;font-weight:600}
+.nav-btns{align-items:center;gap:16px}
+.nav-direct{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.58)}
+
+.listing-hero{position:relative;overflow:hidden;background:var(--brown-deep);color:#fff}
+.listing-hero::before{position:absolute;top:-330px;left:-220px;width:650px;height:650px;border:1px solid rgba(255,255,255,.08);border-radius:50%;content:'';pointer-events:none}
+.listing-hero::after{position:absolute;right:-180px;bottom:-410px;width:700px;height:700px;border:1px solid rgba(231,182,156,.1);border-radius:50%;content:'';pointer-events:none}
+.hero-frame{position:relative;z-index:1;display:grid;grid-template-columns:minmax(300px,360px) minmax(0,1fr);gap:48px;align-items:center;max-width:1248px;margin:0 auto;padding:48px 24px 58px}
+.hero-copy{min-width:0}
+.hero-kicker,.section-kicker,.booking-kicker{color:var(--peach);font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}
+.hero-kicker{margin-bottom:16px}
+.prop-name{margin:0 0 14px;font-family:var(--serif);font-size:clamp(42px,4.2vw,64px);font-weight:400;line-height:.98;letter-spacing:-.035em;color:#fff}
+.prop-meta{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 27px;color:rgba(255,255,255,.7);font-size:13px;line-height:1.65}
+.prop-meta .loc-link{color:#fff;font-weight:700;text-decoration-color:rgba(255,255,255,.35);text-underline-offset:4px}
+.detail-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;margin:0 0 28px;border-top:1px solid rgba(255,255,255,.13);border-left:1px solid rgba(255,255,255,.13)}
+.detail-item{display:grid;grid-template-columns:23px auto 1fr;gap:7px;align-items:center;min-height:57px;padding:10px 12px;border-right:1px solid rgba(255,255,255,.13);border-bottom:1px solid rgba(255,255,255,.13);color:#fff;font-size:14px;font-weight:800}
+.detail-item .ic{font-size:17px;filter:saturate(.7)}
+.detail-item small{color:rgba(255,255,255,.53);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.03em}
+.hero-contact{display:inline-flex;align-items:center;justify-content:space-between;gap:28px;min-height:48px;padding:11px 18px;border:0;border-radius:12px;background:var(--copper);color:#fff;font-size:13px;font-weight:800;box-shadow:0 10px 24px rgba(0,0,0,.14);transition:transform .18s ease,background .18s ease}
+.hero-contact:hover{background:#c96a43;transform:translateY(-2px)}
+.hero-contact span{font-size:18px}
+.hero-assurance{display:flex;align-items:center;gap:8px;margin-top:16px;color:rgba(255,255,255,.57);font-size:11px;font-weight:600}
+.hero-assurance i{display:block;width:7px;height:7px;border-radius:50%;background:#91bca4;box-shadow:0 0 0 4px rgba(145,188,164,.12)}
+
+.gallery{display:grid;grid-template-columns:minmax(0,1fr) minmax(155px,.34fr);gap:8px;min-width:0;padding:0;margin:0;max-width:none}
+.gallery.single{display:block}
+.gallery.one-thumb .gal-thumbs{grid-template-rows:1fr}
+.gallery.one-thumb .gal-thumb{height:490px;border-radius:0 24px 24px 0}
+.gal-main{height:490px;border-radius:24px 0 0 24px;background-color:#6f5144;box-shadow:0 26px 70px rgba(0,0,0,.22)}
+.gallery.single .gal-main{border-radius:24px}
+.gal-thumbs{display:grid;grid-template-columns:1fr;grid-template-rows:1fr 1fr;gap:8px;margin:0}
+.gal-thumb{height:241px;border-radius:0}
+.gal-thumb:first-child{border-radius:0 24px 0 0}
+.gal-thumb:last-child{border-radius:0 0 24px 0}
+.photo-btn{right:16px;bottom:16px;padding:9px 13px;border:1px solid rgba(33,21,15,.1);border-radius:10px;background:rgba(255,253,249,.94);color:var(--ink);box-shadow:0 8px 22px rgba(0,0,0,.12);font-size:11px;letter-spacing:.01em}
+
+.content{display:grid;grid-template-columns:minmax(0,1fr) 340px;align-items:start;gap:58px;max-width:1200px;margin:0 auto;padding:64px 0 110px}
+#main-col{display:grid;min-width:0;gap:22px}
+.page-section{padding:34px 36px;border:1px solid var(--border);border-radius:22px;background:var(--paper);box-shadow:0 10px 34px rgba(67,35,22,.035)}
+.section-heading{display:flex;align-items:flex-start;gap:16px;margin-bottom:25px}
+.section-no{display:grid;width:34px;height:34px;flex:0 0 34px;place-items:center;border:1px solid var(--border);border-radius:9px;color:var(--copper);font-family:var(--serif);font-size:13px}
+.section-kicker{margin-bottom:5px;color:var(--copper)}
+.section-heading h2,.sec-title{margin:0;font-family:var(--serif);font-size:29px;font-weight:400;line-height:1.08;letter-spacing:-.02em;color:var(--ink)}
+.sec-title{margin:5px 0 22px}
+.desc{margin:0;color:#5f534b;font-size:15px;line-height:1.85;white-space:pre-line}
+.divider{display:none}
+
+.am-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0}
+.am-item{min-height:64px;padding:12px 14px;border:1px solid #e7dfd6;border-radius:13px;background:#faf7f2;color:var(--ink);font-size:13px;font-weight:700}
+.am-item span{display:grid;width:34px;height:34px;place-items:center;border-radius:10px;background:var(--paper-2);font-size:17px}
+
+.save-banner{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:18px;align-items:center;overflow:hidden;margin:0;padding:26px 28px;border:0;border-radius:22px;background:var(--green);color:#fff}
+.save-banner::after{position:absolute;right:-70px;top:-90px;width:210px;height:210px;border:1px solid rgba(255,255,255,.13);border-radius:50%;content:''}
+.save-mark{display:grid;width:58px;height:58px;place-items:center;border:1px solid rgba(255,255,255,.22);border-radius:50%;font-family:var(--serif);font-size:22px}
+.save-banner-txt{position:relative;z-index:1}
+.save-banner-txt .h{margin-bottom:4px;font-family:var(--serif);font-size:20px;font-weight:400;line-height:1.2}
+.save-banner-txt .p{max-width:460px;color:rgba(255,255,255,.68);font-size:12px;line-height:1.6}
+.save-pct{position:relative;z-index:1;color:#fff;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+
+.map-box{overflow:hidden;margin:0;border:0;border-radius:15px;background:var(--paper-2)}
+.map-box iframe{height:300px}
+.local-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px;margin:0}
+.lcard{border-color:#e6ddd3;border-radius:14px;background:#faf7f2;transition:transform .18s ease,box-shadow .18s ease}
+.lcard:hover{transform:translateY(-3px);box-shadow:0 10px 25px rgba(67,35,22,.08)}
+.lcard-img{height:92px;background:var(--paper-2);font-size:29px}
+.lcard-info{padding:12px}
+.lcard-name{font-size:13px}
+.lcard-cat,.lcard-dist{font-size:10px}
+.tx{min-height:72px;margin-bottom:9px;padding:14px;border-color:#e6ddd3;border-radius:14px;background:#faf7f2}
+.tx:hover{border-color:#d1bbae;background:#fff}
+.tx-ic{display:grid;width:38px;height:38px;place-items:center;border-radius:11px;background:var(--paper-2);font-size:19px}
+.tx-name{font-size:13px}
+.tx-det,.tx-desc{font-size:11px}
+.tx-btn{border-color:#d6b29f;color:var(--copper)}
+.rule-list,.faq-list{margin:0}
+.rule-item{margin:0;padding:13px 0;border-bottom:1px solid #ebe4dc;font-size:13px}
+.rule-item:last-child{border-bottom:0}
+.rule-item .ic{color:var(--copper)}
+.faq-row{padding:16px 0;border-color:#e7ded5}
+.faq-row summary{font-size:14px}
+.faq-row summary::before{color:var(--copper)}
+.faq-row p{font-size:13px}
+
+.calwrap{overflow:hidden;margin:0;border-color:#e3d9ce;border-radius:16px;background:#faf7f2}
+.calhead{padding:16px 18px;background:var(--paper);border-color:#e7ded5}
+.calhead strong{font-family:var(--serif);font-size:18px;font-weight:400}
+.calnbtn{width:34px;height:34px;border-color:#ded2c7;border-radius:9px;color:var(--brown);background:#fff}
+.calbody{padding:18px}
+.caldow span{font-size:10px;letter-spacing:.06em}
+.caldays{gap:5px}
+.cday{border:1px solid transparent;border-radius:9px;background:#f1ebe4;font-size:12px}
+.cday:hover:not(.taken){border-color:#d9b8a6;background:#fff}
+.cday.range-start{background:var(--copper)}
+.cday.range-preview{background:#f1dcd0;color:#8f4327}
+.calleg{margin:0;padding:0 18px 14px;font-size:11px}
+.cal-sel-lbl{padding:0 18px;color:var(--copper)}
+.cal-clear{margin:2px 18px 16px}
+
+.book-desktop{min-width:0}
+.booking-card{position:sticky;top:94px;overflow:hidden;padding:28px;border:1px solid #d9cbbf;border-radius:22px;background:var(--paper);box-shadow:0 22px 55px rgba(67,35,22,.11)}
+.booking-card::before{position:absolute;top:0;left:0;width:100%;height:5px;background:linear-gradient(90deg,var(--copper),var(--peach));content:''}
+.booking-kicker{margin-bottom:10px;color:var(--copper)}
+.booking-price{margin-bottom:8px;font-family:var(--serif);font-size:37px;line-height:1;color:var(--ink)}
+.booking-price span,.booking-price span[style]{font-family:var(--f)!important;font-size:12px!important;font-weight:600!important;color:var(--muted)!important}
+.booking-copy{margin-bottom:20px;color:var(--muted);font-size:12px;line-height:1.65}
+.booking-dates{display:grid;grid-template-columns:1fr 1fr;overflow:hidden;margin-bottom:14px;border:1px solid var(--border);border-radius:12px;background:#faf7f2}
+.booking-date{padding:11px 12px}
+.booking-date+ .booking-date{border-left:1px solid var(--border)}
+.booking-date span{display:block;margin-bottom:3px;color:#9a8a7e;font-size:8px;font-weight:800;letter-spacing:.09em}
+.booking-date strong{display:block;font-size:12px}
+.booking-benefits{display:grid;gap:8px;margin-top:18px;padding-top:18px;border-top:1px solid #ebe3db;color:#5f534b;font-size:11px;font-weight:600}
+.booking-benefits b{margin-right:7px;color:var(--green)}
+.booking-note{margin-top:15px;color:#9a8c81;font-size:9px;line-height:1.55;text-align:center}
+
+.book-bar{background:var(--brown-deep);border:0;color:#fff;box-shadow:0 -8px 24px rgba(33,21,15,.16)}
+.book-price span{color:rgba(255,255,255,.55)}
+.modal{background:var(--paper)}
+.modal-head h3{font-family:var(--serif);font-size:25px;font-weight:400}
+
+@media(min-width:1200px){
+  .content{grid-template-columns:minmax(0,1fr) 340px}
+}
+@media(min-width:640px) and (max-width:1247px){
+  .hero-frame,.content{margin-left:24px;margin-right:24px}
+  .content{padding-left:0;padding-right:0}
+}
+@media(max-width:1020px){
+  .hero-frame{grid-template-columns:1fr;gap:30px;padding-top:28px}
+  .gallery{order:-1}
+  .gal-main{height:430px}
+  .gal-thumb{height:211px}
+  .gallery.one-thumb .gal-thumb{height:430px}
+  .hero-copy{max-width:700px;padding:0 8px 4px}
+  .prop-name{font-size:52px}
+  .detail-row{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .content{grid-template-columns:1fr;gap:22px;padding-top:38px}
+  .booking-card{position:relative;top:auto}
+}
+@media(max-width:720px){
+  nav{height:60px;padding:0 14px}
+  .nav-prop,.nav-direct{display:none}
+  .nav-btns{margin-left:auto}
+  .nav-btns .btn{min-height:38px;padding:8px 12px;font-size:11px}
+  .hero-frame{display:flex;flex-direction:column;gap:0;margin:0;padding:10px 10px 34px}
+  .gallery{order:-1;display:block;width:100%}
+  .gal-main,.gallery.single .gal-main{height:min(72vw,330px);border-radius:16px}
+  .gal-thumbs{display:none}
+  .photo-btn{right:10px;bottom:10px;padding:7px 10px}
+  .hero-copy{width:100%;padding:26px 8px 0}
+  .hero-kicker{margin-bottom:11px;font-size:9px}
+  .prop-name{margin-bottom:10px;font-size:39px}
+  .prop-meta{margin-bottom:20px;font-size:12px}
+  .detail-row{grid-template-columns:repeat(2,minmax(0,1fr));margin-bottom:22px}
+  .detail-item{min-height:52px;padding:8px 10px}
+  .hero-contact{width:100%}
+  .content{display:block;margin:0;padding:24px 14px 112px}
+  #main-col{gap:14px}
+  .page-section{padding:23px 20px;border-radius:17px}
+  .section-heading{gap:12px;margin-bottom:20px}
+  .section-heading h2,.sec-title{font-size:25px}
+  .desc{font-size:14px;line-height:1.75}
+  .am-grid{grid-template-columns:1fr;gap:8px}
+  .am-item{min-height:58px}
+  .save-banner{grid-template-columns:auto 1fr;padding:21px 19px;border-radius:17px}
+  .save-mark{width:48px;height:48px;font-size:19px}
+  .save-pct{grid-column:2;font-size:9px}
+  .map-box iframe{height:240px}
+  .local-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .lcard-img{height:72px}
+  .calbody{padding:12px 9px}
+  .caldays{gap:3px}
+  .cday{font-size:11px;border-radius:7px}
+  .book-desktop{display:none!important}
+}
+@media(max-width:390px){
+  .nav-btns .btn{padding:8px 10px}
+  .prop-name{font-size:35px}
+  .detail-row{grid-template-columns:1fr 1fr}
+  .detail-item{font-size:12px}
+  .page-section{padding:21px 17px}
+  .local-grid{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
@@ -204,11 +417,24 @@ nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.93);backdrop-f
     <a href="/" class="nav-logo">Odmor<span>ia</span></a>
     <div class="nav-prop" id="nav-prop-name"></div>
     <div class="nav-btns">
-      <button class="btn btn-ink btn-sm" onclick="document.getElementById('book-modal').classList.add('on')">Rezerviraj</button>
+      <span class="nav-direct">Direktno · bez provizije</span>
+      <button class="btn btn-ink btn-sm" onclick="document.getElementById('book-modal').classList.add('on')">Kontaktiraj domaćina</button>
     </div>
   </nav>
 
-  <div class="gallery" id="gallery"></div>
+  <header class="listing-hero">
+    <div class="hero-frame">
+      <div class="hero-copy">
+        <div class="hero-kicker">ODMORIA · IZRAVNO OD DOMAĆINA</div>
+        <h1 class="prop-name" id="prop-name"></h1>
+        <div class="prop-meta" id="prop-meta"></div>
+        <div class="detail-row" id="detail-row"></div>
+        <button class="hero-contact" onclick="document.getElementById('book-modal').classList.add('on')">Provjeri dostupnost <span>→</span></button>
+        <div class="hero-assurance"><i></i> Bez platformske naknade za rezervaciju</div>
+      </div>
+      <div class="gallery" id="gallery"></div>
+    </div>
+  </header>
 
   <div class="photo-lb" id="photo-lb" onclick="if(event.target===this)closeGallery()">
     <button class="photo-lb-close" onclick="closeGallery()">✕</button>
@@ -219,49 +445,67 @@ nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.93);backdrop-f
   </div>
 
   <div class="content">
-    <div id="main-col">
-      <div class="prop-name" id="prop-name"></div>
-      <div class="prop-meta" id="prop-meta"></div>
-      <div class="detail-row" id="detail-row"></div>
-      <div class="map-box" id="map-box" style="display:none"><iframe id="map-frame" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
-      <div class="divider"></div>
-      <div class="am-grid" id="am-grid"></div>
-      <div class="divider"></div>
-      <div class="save-banner">
-        <span style="font-size:26px">💰</span>
-        <div class="save-banner-txt" style="flex:1">
-          <div class="h">Rezerviraj direktno — bez platformske naknade</div>
-          <div class="p">Odmoria ne naplaćuje proviziju po rezervaciji. Kontaktiraj domaćina izravno.</div>
+    <main id="main-col">
+      <section class="page-section" id="intro-section">
+        <div class="section-heading">
+          <span class="section-no">01</span>
+          <div><div class="section-kicker">DOBRODOŠLI</div><h2>O smještaju</h2></div>
         </div>
-        <div class="save-pct">0% naknade</div>
-      </div>
-      <div class="desc" id="prop-desc"></div>
-      <div id="local-section" style="display:none">
-        <div class="divider"></div>
+        <div class="desc" id="prop-desc"></div>
+      </section>
+
+      <section class="page-section" id="amenities-section">
+        <div class="section-heading">
+          <span class="section-no">02</span>
+          <div><div class="section-kicker">UDOBNOST</div><h2>Što vas očekuje</h2></div>
+        </div>
+        <div class="am-grid" id="am-grid"></div>
+      </section>
+
+      <aside class="save-banner">
+        <div class="save-mark">0%</div>
+        <div class="save-banner-txt">
+          <div class="h">Rezervirajte izravno, bez skrivene naknade</div>
+          <div class="p">Odmoria vas povezuje s domaćinom. Dogovor i plaćanje ostaju između vas.</div>
+        </div>
+        <div class="save-pct">bez provizije</div>
+      </aside>
+
+      <section class="page-section" id="map-section" style="display:none">
+        <div class="section-heading">
+          <span class="section-no">03</span>
+          <div><div class="section-kicker">LOKACIJA</div><h2>Gdje ćete boraviti</h2></div>
+        </div>
+        <div class="map-box" id="map-box" style="display:none"><iframe id="map-frame" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
+      </section>
+
+      <section class="page-section" id="local-section" style="display:none">
+        <div class="section-kicker">PREPORUKE DOMAĆINA</div>
         <div class="sec-title" id="local-title"></div>
         <div class="local-grid" id="local-grid"></div>
-      </div>
-      <div id="transport-section" style="display:none">
+      </section>
+      <section class="page-section" id="transport-section" style="display:none">
+        <div class="section-kicker">KAKO STIĆI</div>
         <div class="sec-title">Prijevoz</div>
         <div id="transport-list"></div>
-      </div>
-      <div id="attractions-section" style="display:none">
-        <div class="divider"></div>
+      </section>
+      <section class="page-section" id="attractions-section" style="display:none">
+        <div class="section-kicker">ISTRAŽITE OKOLICU</div>
         <div class="sec-title">Atrakcije i aktivnosti</div>
         <div id="attractions-list"></div>
-      </div>
-      <div id="rules-section" style="display:none">
-        <div class="divider"></div>
+      </section>
+      <section class="page-section" id="rules-section" style="display:none">
+        <div class="section-kicker">PRIJE DOLASKA</div>
         <div class="sec-title">Kućna pravila</div>
         <div class="rule-list" id="rules-list"></div>
-      </div>
-      <div id="faq-section" style="display:none">
-        <div class="divider"></div>
+      </section>
+      <section class="page-section" id="faq-section" style="display:none">
+        <div class="section-kicker">DOBRO JE ZNATI</div>
         <div class="sec-title">Česta pitanja</div>
         <div class="faq-list" id="faq-list"></div>
-      </div>
-      <div id="avail-section" style="display:none">
-        <div class="divider"></div>
+      </section>
+      <section class="page-section" id="avail-section" style="display:none">
+        <div class="section-kicker">PLANIRAJTE BORAVAK</div>
         <div class="sec-title">Dostupnost</div>
         <div class="calwrap">
           <div class="calhead">
@@ -280,21 +524,27 @@ nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.93);backdrop-f
           <div class="cal-sel-lbl" id="cal-sel-lbl"></div>
           <div class="cal-clear" id="cal-clear" style="display:none" onclick="clearRange()">Poništi odabir</div>
         </div>
-      </div>
-    </div>
+      </section>
+    </main>
 
     <!-- desktop booking card -->
-    <div class="book-desktop" style="display:none">
-      <div style="border:1.5px solid var(--border);border-radius:13px;padding:20px;position:sticky;top:70px">
-        <div style="font-size:22px;font-weight:800;margin-bottom:4px" id="d-price">— <span style="font-size:14px;font-weight:400;color:var(--muted)">/ noć</span></div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;background:var(--bg);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:11px">
-          <div style="padding:8px 11px;border-right:1px solid var(--border)"><div style="font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px">Check-in</div><div style="font-size:13px;font-weight:600" id="ci-val">Po dogovoru</div></div>
-          <div style="padding:8px 11px"><div style="font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px">Check-out</div><div style="font-size:13px;font-weight:600" id="co-val">Po dogovoru</div></div>
+    <aside class="book-desktop" style="display:none">
+      <div class="booking-card">
+        <div class="booking-kicker">REZERVACIJA DIREKTNO</div>
+        <div class="booking-price" id="d-price">— <span>/ noć</span></div>
+        <div class="booking-copy">Odaberite datume u kalendaru ili odmah kontaktirajte domaćina.</div>
+        <div class="booking-dates">
+          <div class="booking-date"><span>CHECK-IN</span><strong id="ci-val">Po dogovoru</strong></div>
+          <div class="booking-date"><span>CHECK-OUT</span><strong id="co-val">Po dogovoru</strong></div>
         </div>
         <div id="d-book-btns"></div>
-        <div style="font-size:11px;color:var(--muted);text-align:center;margin-top:9px;line-height:1.55">Odmoria ne naplaćuje proviziju. Direktna komunikacija s domaćinom.</div>
+        <div class="booking-benefits">
+          <div><b>✓</b> Izravan dogovor s domaćinom</div>
+          <div><b>✓</b> Bez naknade platforme</div>
+        </div>
+        <div class="booking-note">Odmoria ne obrađuje plaćanje i ne naplaćuje proviziju po rezervaciji.</div>
       </div>
-    </div>
+    </aside>
   </div>
 </div>
 
@@ -365,6 +615,7 @@ async function loadPage() {
   document.getElementById('nav-prop-name').textContent = prop.name
   document.getElementById('prop-name').textContent = prop.name
   document.getElementById('prop-desc').textContent = prop.welcome_msg || ''
+  if (!prop.welcome_msg) document.getElementById('intro-section').style.display = 'none'
 
   const meta = []
   if (prop.location) {
@@ -373,6 +624,7 @@ async function loadPage() {
     const frame = document.getElementById('map-frame')
     frame.src = 'https://www.google.com/maps?q=' + encodeURIComponent(prop.location) + '&output=embed'
     document.getElementById('map-box').style.display = 'block'
+    document.getElementById('map-section').style.display = 'block'
   }
   if (prop.type) meta.push('🏠 ' + esc(prop.type))
   document.getElementById('prop-meta').innerHTML = meta.join(' · ')
@@ -501,11 +753,13 @@ function renderGallery(prop) {
   const el = document.getElementById('gallery')
   if (!galleryUrls.length) {
     el.classList.remove('single')
+    el.classList.remove('one-thumb')
     el.innerHTML = `<div class="gal-main">🏖️</div><div class="gal-thumbs"><div class="gal-thumb">🌊</div><div class="gal-thumb">🛏️</div></div>`
     return
   }
   const thumbs = galleryUrls.slice(1, 3)
   el.classList.toggle('single', !thumbs.length)
+  el.classList.toggle('one-thumb', thumbs.length === 1)
   el.innerHTML = `<div class="gal-main" style="background-image:url('${esc(galleryUrls[0])}')" onclick="openGallery(0)"><button class="photo-btn" onclick="event.stopPropagation();openGallery(0)">📷 Sve fotografije${galleryUrls.length>1?' ('+galleryUrls.length+')':''}</button></div>` +
     (thumbs.length ? `<div class="gal-thumbs">${thumbs.map((u,i) => `<div class="gal-thumb" style="background-image:url('${esc(u)}')" onclick="openGallery(${i+1})"></div>`).join('')}</div>` : '')
 }
