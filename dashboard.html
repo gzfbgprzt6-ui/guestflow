@@ -1401,8 +1401,15 @@ window.toggleDay=async(ds)=>{
   if(!rangeStart){rangeStart=ds;hoverDs=null;setRangeLbl(`Početak: ${fmtHR(ds)} — odaberi zadnji datum`);renderCal();return}
   if(rangeStart===ds){
     const idx=bookedDays.indexOf(ds)
-    if(idx>-1){bookedDays.splice(idx,1);await sb.from('availability').delete().eq('property_id',PROP.id).eq('date',ds)}
-    else{bookedDays.push(ds);await sb.from('availability').upsert({property_id:PROP.id,date:ds,is_booked:true,source:'manual'})}
+    if(idx>-1){
+      const{error}=await sb.from('availability').delete().eq('property_id',PROP.id).eq('date',ds)
+      if(error){toast('Greška: '+error.message);rangeStart=null;hoverDs=null;renderCal();return}
+      bookedDays.splice(idx,1)
+    }else{
+      const{error}=await sb.from('availability').upsert({property_id:PROP.id,date:ds,is_booked:true,source:'manual'})
+      if(error){toast('Greška: '+error.message);rangeStart=null;hoverDs=null;renderCal();return}
+      bookedDays.push(ds)
+    }
     rangeStart=null;hoverDs=null;setRangeLbl(`Označeno: ${fmtHR(ds)} ✓`);renderCal();renderChecklist()
     return
   }
@@ -1410,7 +1417,8 @@ window.toggleDay=async(ds)=>{
   const rangeDates=datesBetween(from,to).filter(x=>!icalDays.includes(x))
   const newDates=rangeDates.filter(x=>!bookedDays.includes(x))
   if(newDates.length){
-    await sb.from('availability').upsert(newDates.map(x=>({property_id:PROP.id,date:x,is_booked:true,source:'manual'})))
+    const{error}=await sb.from('availability').upsert(newDates.map(x=>({property_id:PROP.id,date:x,is_booked:true,source:'manual'})))
+    if(error){toast('Greška: '+error.message);rangeStart=null;hoverDs=null;renderCal();return}
     bookedDays.push(...newDates)
   }
   rangeStart=null;hoverDs=null;setRangeLbl(`Označeno: ${fmtHR(from)} → ${fmtHR(to)} ✓`);renderCal();renderChecklist()
