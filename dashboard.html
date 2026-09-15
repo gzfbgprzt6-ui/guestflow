@@ -1582,6 +1582,11 @@ window.createBooking=async()=>{
   if(ci>=co){showA('bk-alert','err','Check-out mora biti nakon check-in.');return}
   const{data,error}=await sb.from('bookings').insert({property_id:ap.id,guest_name:name,guest_note:note,checkin_date:ci,checkout_date:co}).select().single()
   if(error){showA('bk-alert','err','Greška: '+error.message);return}
+  const nights=datesBetween(ci,co).slice(0,-1)
+  if(nights.length){
+    const{error:availErr}=await sb.from('availability').upsert(nights.map(d=>({property_id:ap.id,date:d,is_booked:true,source:'manual',booking_id:data.id})))
+    if(availErr)toast('Rezervacija kreirana, ali kalendar dostupnosti nije ažuriran: '+availErr.message)
+  }
   const url='https://odmoria.com/h/'+data.token
   lastBkUrl=url;lastBkPhone=ap.phone||''
   document.getElementById('bk-result-url').textContent=url.replace('https://','')
@@ -1594,7 +1599,7 @@ window.cpBk=(token)=>{navigator.clipboard?.writeText('https://odmoria.com/h/'+to
 window.copyResultLink=()=>{navigator.clipboard?.writeText(lastBkUrl);toast('Link kopiran!')}
 window.shareWA=()=>{const msg='Dobrodošli! Sve informacije: '+lastBkUrl;const ph=(lastBkPhone||'').replace(/\D/g,'');window.open('https://wa.me/'+ph+'?text='+encodeURIComponent(msg),'_blank')}
 window.deactBk=async(id)=>{if(!confirm('Deaktiviraj link?'))return;const{error}=await sb.from('bookings').update({is_active:false}).eq('id',id);if(error){toast('Greška: '+error.message);return}await window.loadBookings();toast('Link deaktiviran')}
-window.delBk=async(id)=>{if(!confirm('Trajno obriši ovu rezervaciju?'))return;const{error}=await sb.from('bookings').delete().eq('id',id);if(error){toast('Greška: '+error.message);return}await window.loadBookings();toast('Rezervacija obrisana')}
+window.delBk=async(id)=>{if(!confirm('Trajno obriši ovu rezervaciju?'))return;await sb.from('availability').delete().eq('booking_id',id);const{error}=await sb.from('bookings').delete().eq('id',id);if(error){toast('Greška: '+error.message);return}await window.loadBookings();toast('Rezervacija obrisana')}
 
 // ── LINKS + QR ────────────────────────────────────────
 window.copyLink=(type)=>{
