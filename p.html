@@ -807,7 +807,7 @@ function datesBetween(a,b){
 function addDays(ds,delta){const d=new Date(ds+'T00:00:00');d.setDate(d.getDate()+delta);return fmtLocal(d)}
 function isFillableGap(from,to){
   if(!PROP?.allow_gap_fill_stays)return false
-  return bookedDates.includes(addDays(from,-1)) && bookedDates.includes(addDays(to,1))
+  return bookedDates.includes(addDays(from,-1)) && bookedDates.includes(to)
 }
 function fmtHR(ds){const[,m,d]=ds.split('-');return `${+d}.${m}.`}
 function fmtHRfull(ds){const[y,m,d]=ds.split('-');return `${+d}.${m}.${y}.`}
@@ -836,7 +836,8 @@ function renderCal() {
     if (taken) cls += ' taken'
     else if (ds === rangeStart || ds === checkinDs || ds === checkoutDs) cls += ' range-start'
     else if (isSelected(ds)) cls += ' range-preview'
-    h += `<div class="${cls}" data-ds="${ds}"${taken?'':` onclick="pickDate('${ds}')" onmouseover="hoverDate('${ds}')"`}>${d}</div>`
+    const clickable = !taken || !!rangeStart
+    h += `<div class="${cls}" data-ds="${ds}"${clickable?` onclick="pickDate('${ds}')"`:''}${taken?'':` onmouseover="hoverDate('${ds}')"`}>${d}</div>`
   }
   const days = document.getElementById('cal-days')
   if (days) days.innerHTML = h
@@ -866,8 +867,8 @@ window.hoverDate = (ds) => {
 }
 
 window.pickDate = (ds) => {
-  if (bookedDates.includes(ds)) return
   if (!rangeStart) {
+    if (bookedDates.includes(ds)) return
     rangeStart = ds; hoverDs = null; checkinDs = null; checkoutDs = null
     document.getElementById('cal-clear').style.display = 'none'
     setSelLbl(`Početak: ${fmtHR(ds)} — odaberi datum odjave`)
@@ -877,7 +878,7 @@ window.pickDate = (ds) => {
   if (rangeStart === ds) { rangeStart = null; hoverDs = null; setSelLbl(''); renderCal(); return }
   const from = rangeStart < ds ? rangeStart : ds
   const to = rangeStart < ds ? ds : rangeStart
-  if (datesBetween(from, to).some(x => bookedDates.includes(x))) {
+  if (datesBetween(from, to).slice(0, -1).some(x => bookedDates.includes(x))) {
     setSelLbl('Odabrani period nije slobodan — pokušaj drugi raspon')
     rangeStart = null; hoverDs = null; renderCal()
     return
