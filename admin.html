@@ -91,14 +91,14 @@ import { ODMORIA_PLANS, normalizePlanId } from './plans.js'
 const SURL='https://wtojzqjhipdfbrnmprmz.supabase.co'
 const SKEY='sb_publishable_tmZAZTDbQ7ktc1N-8y4q4w_ztAu_62F'
 const sb=createClient(SURL,SKEY)
-const ADMIN_EMAIL='vefraj@gmail.com'
+const ADMIN_UID='56549320-2c02-405c-9936-770144bd9b49'
 
 init()
 
 async function init(){
   const{data:{user}}=await sb.auth.getUser()
   if(!user){window.location.href='login.html';return}
-  if(user.email!==ADMIN_EMAIL){
+  if(user.id!==ADMIN_UID){
     document.getElementById('gate').style.display='none'
     document.getElementById('denied').style.display='flex'
     return

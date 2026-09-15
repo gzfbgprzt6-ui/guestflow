@@ -43,7 +43,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 ├── dashboard.html          # Glavni host dashboard — AKTIVNA, v2 redizajn
 ├── login.html               register.html            reset-password.html
 ├── email-confirm.html       onboarding.html          add-property.html
-├── account.html              help.html                admin.html (gated: vefraj@gmail.com)
+├── account.html              help.html                admin.html (gated: owner auth UID)
 ├── terms.html                privacy.html             404.html
 ├── vercel.json              # Rewrites za clean URL-ove + security headeri (NEMA cron konfiguracije)
 ├── plans.js                 # ODMORIA_PLANS — jedini frontend izvor istine za limite plana
@@ -150,7 +150,7 @@ URL-ovi vraćenih fotografija spremaju se u `properties.photo_urls` (jsonb) i `p
 - Postoji i stariji fallback (`slug` + `properties.guest_token`) koji **odmah** otključava bez vremenskog ograničenja — legacy put, ne koristi se za nove rezervacije.
 - Booking token se deaktivira ručno (`is_active=false`) ili istječe (`token_expires_at`).
 - Nema service role ključa u klijentskom kodu — sve stranice koriste samo publishable/anon key.
-- Admin panel (`admin.html`) je ispravno zaštićen i na RLS razini (`sql/admin-access.sql`, politike scope-ane na `auth.jwt()->>'email' = 'vefraj@gmail.com'`), ne samo klijentskom provjerom.
+- Admin panel (`admin.html`) je ispravno zaštićen i na RLS razini (`sql/admin-access.sql`, politike scope-ane na `auth.uid()` vlasnikovog računa), ne samo klijentskom provjerom.
 
 ---
 

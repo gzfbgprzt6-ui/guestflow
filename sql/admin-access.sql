@@ -1,29 +1,29 @@
 -- ============================================================
--- Admin pristup (vefraj@gmail.com) za admin.html
+-- Admin pristup (owner UID) za admin.html
 -- Pokreni jednom u Supabase -> SQL Editor.
--- Dodaje SAMO dodatne read/update politike scope-ane na tvoj email,
+-- Dodaje SAMO dodatne read/update politike scope-ane na tvoj auth UID,
 -- postojece politike (vlasnik vidi svoje) ostaju netaknute.
 -- ============================================================
 
 drop policy if exists "Admin reads all properties" on properties;
 create policy "Admin reads all properties"
 on properties for select
-using (auth.jwt() ->> 'email' = 'vefraj@gmail.com');
+using (auth.uid() = '56549320-2c02-405c-9936-770144bd9b49');
 
 drop policy if exists "Admin reads all subscriptions" on subscriptions;
 create policy "Admin reads all subscriptions"
 on subscriptions for select
-using (auth.jwt() ->> 'email' = 'vefraj@gmail.com');
+using (auth.uid() = '56549320-2c02-405c-9936-770144bd9b49');
 
 drop policy if exists "Admin updates subscriptions" on subscriptions;
 create policy "Admin updates subscriptions"
 on subscriptions for update
-using (auth.jwt() ->> 'email' = 'vefraj@gmail.com');
+using (auth.uid() = '56549320-2c02-405c-9936-770144bd9b49');
 
 drop policy if exists "Admin reads all bookings" on bookings;
 create policy "Admin reads all bookings"
 on bookings for select
-using (auth.jwt() ->> 'email' = 'vefraj@gmail.com');
+using (auth.uid() = '56549320-2c02-405c-9936-770144bd9b49');
 
 -- page_views tablica nikad nije bila kreirana iako je dashboard graf
 -- ocekivao da postoji (zato je graf pregleda uvijek bio prazan)
@@ -48,4 +48,4 @@ using (exists (select 1 from properties p where p.id = page_views.property_id an
 drop policy if exists "Admin reads all page_views" on page_views;
 create policy "Admin reads all page_views"
 on page_views for select
-using (auth.jwt() ->> 'email' = 'vefraj@gmail.com');
+using (auth.uid() = '56549320-2c02-405c-9936-770144bd9b49');
