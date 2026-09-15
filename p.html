@@ -804,6 +804,11 @@ function datesBetween(a,b){
   while(d<=end){out.push(fmtLocal(d));d.setDate(d.getDate()+1)}
   return out
 }
+function addDays(ds,delta){const d=new Date(ds+'T00:00:00');d.setDate(d.getDate()+delta);return fmtLocal(d)}
+function isFillableGap(from,to){
+  if(!PROP?.allow_gap_fill_stays)return false
+  return bookedDates.includes(addDays(from,-1)) && bookedDates.includes(addDays(to,1))
+}
 function fmtHR(ds){const[,m,d]=ds.split('-');return `${+d}.${m}.`}
 function fmtHRfull(ds){const[y,m,d]=ds.split('-');return `${+d}.${m}.${y}.`}
 function setSelLbl(t){const el=document.getElementById('cal-sel-lbl');if(el)el.textContent=t}
@@ -877,9 +882,16 @@ window.pickDate = (ds) => {
     rangeStart = null; hoverDs = null; renderCal()
     return
   }
+  const n = Math.max(1, Math.round((new Date(to) - new Date(from)) / 86400000))
+  const minStay = parseInt(PROP?.min_stay) || 1
+  if (n < minStay && !isFillableGap(from, to)) {
+    setSelLbl(`Minimalni boravak je ${minStay} noć${minStay===1?'':'i'} — pokušaj dulji raspon`)
+    rangeStart = null; hoverDs = null; renderCal()
+    return
+  }
   checkinDs = from; checkoutDs = to
   rangeStart = null; hoverDs = null
-  nights = Math.max(1, Math.round((new Date(to) - new Date(from)) / 86400000))
+  nights = n
   document.getElementById('ci-val').textContent = fmtHRfull(from)
   document.getElementById('co-val').textContent = fmtHRfull(to)
   document.getElementById('cal-clear').style.display = 'inline-block'

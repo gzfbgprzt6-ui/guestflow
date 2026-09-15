@@ -711,6 +711,10 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
               <div class="field"><label for="prop-price">Cijena po noćenju u eurima</label><input class="input" id="prop-price" type="number" min="0" step="0.01" oninput="livePreview()"></div>
               <div class="field"><label for="prop-minstay">Minimalno noćenja</label><input class="input" id="prop-minstay" type="number" min="1" oninput="livePreview()"></div>
             </div>
+            <div class="field" style="margin-top:14px;display:flex;align-items:center;gap:10px">
+              <input type="checkbox" id="prop-gapfill" style="width:18px;height:18px" oninput="livePreview()">
+              <label for="prop-gapfill" style="margin:0">Dopusti kraći boravak ako popunjava prazninu između dvije rezervacije (neovisno o minimalnom broju noćenja)</label>
+            </div>
             <div style="margin-top:18px;display:flex;justify-content:flex-end"><button class="btn" onclick="savePricing()">Spremi promjene</button></div>
           </div>
         </section>
@@ -991,6 +995,7 @@ function fillPropForm(){
   document.getElementById('prop-email').value=PROP.email||''
   document.getElementById('prop-price').value=PROP.price_per_night||0
   document.getElementById('prop-minstay').value=PROP.min_stay||1
+  document.getElementById('prop-gapfill').checked=!!PROP.allow_gap_fill_stays
   window.setType(PROP.type||'Apartman')
   COUNTS={guests:PROP.max_guests||0,bedrooms:PROP.bedrooms||0,beds:PROP.beds||0,bathrooms:PROP.bathrooms||0,size_m2:PROP.size_m2||0}
   Object.keys(COUNTS).forEach(k=>{
@@ -1024,7 +1029,7 @@ window.saveBasic=async()=>{
 
 window.savePricing=async()=>{
   if(!PROP)return
-  const u={price_per_night:v('prop-price')?+v('prop-price'):0,min_stay:v('prop-minstay')?+v('prop-minstay'):1}
+  const u={price_per_night:v('prop-price')?+v('prop-price'):0,min_stay:v('prop-minstay')?+v('prop-minstay'):1,allow_gap_fill_stays:document.getElementById('prop-gapfill').checked}
   const{error}=await sb.from('properties').update(u).eq('id',PROP.id)
   if(error){showA('pricing-alert','err',error.message);return}
   Object.assign(PROP,u)
