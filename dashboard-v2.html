@@ -1,0 +1,715 @@
+<!doctype html>
+<html lang="hr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Odmoria — dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..500&family=Manrope:wght@400;500;600;700;800&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#F7F3EC; --sand:#EFE7DA; --paper:#FFFFFF;
+  --ink:#1B2A4A; --ink-2:rgba(27,42,74,.62); --ink-3:rgba(27,42,74,.40);
+  --line:rgba(27,42,74,.10);
+  --accent:#E07856; --accent-d:#C95F3E;
+  --sage:#9CAF88; --sea:#4A7FA5;
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+*{box-sizing:border-box;-webkit-font-smoothing:antialiased}
+body{margin:0;background:var(--cream);color:var(--ink);font-family:'Manrope',system-ui,sans-serif;line-height:1.55;font-size:15px}
+h1,h2,h3{font-family:'Fraunces',Georgia,serif;font-weight:500;letter-spacing:-.015em;margin:0;line-height:1.1}
+a{color:inherit;text-decoration:none}
+::selection{background:var(--accent);color:#fff}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:200;opacity:.035;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+.app{display:flex;min-height:100vh}
+
+/* ===== SIDEBAR ===== */
+.side{width:244px;flex:none;border-right:1px solid var(--line);display:flex;flex-direction:column;
+  padding:22px 16px;position:sticky;top:0;height:100vh}
+.brand{display:flex;align-items:center;gap:9px;font-family:'Fraunces',serif;font-size:1.2rem;font-weight:600;padding:0 8px 22px}
+.badge-plan{margin-left:auto;background:var(--ink);color:#fff;font-size:.56rem;font-weight:800;letter-spacing:.1em;padding:4px 8px;border-radius:999px}
+.nav{display:flex;flex-direction:column;gap:2px}
+.nav button{display:flex;align-items:center;gap:11px;width:100%;text-align:left;border:0;background:transparent;
+  font-family:inherit;font-size:.87rem;font-weight:600;color:var(--ink-2);padding:10px 12px;border-radius:12px;cursor:pointer;
+  transition:background .2s,color .2s,transform .3s var(--ease)}
+.nav button:hover{background:rgba(27,42,74,.05);color:var(--ink);transform:translateX(2px)}
+.nav button.on{background:var(--ink);color:#fff}
+.nav svg{flex:none}
+.nav-sep{font-size:.6rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);padding:18px 12px 7px}
+.side-foot{margin-top:auto;border-top:1px solid var(--line);padding-top:14px;display:flex;align-items:center;gap:10px}
+.av{width:34px;height:34px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;
+  justify-content:center;font-size:.78rem;font-weight:800;flex:none}
+
+/* ===== MAIN ===== */
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.top{position:sticky;top:0;z-index:40;height:66px;display:flex;align-items:center;justify-content:space-between;
+  gap:16px;padding:0 28px;background:rgba(247,243,236,.86);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.top .url{font-size:.74rem;color:var(--ink-3);font-family:ui-monospace,monospace}
+.btn{display:inline-flex;align-items:center;gap:8px;border:0;cursor:pointer;font-family:inherit;font-size:.83rem;
+  font-weight:700;padding:11px 19px;border-radius:999px;min-height:42px;white-space:nowrap;
+  transition:transform .3s var(--ease),background .25s,box-shadow .3s var(--ease)}
+.btn-accent{background:var(--accent);color:#fff;box-shadow:0 8px 22px -10px rgba(224,120,86,.6)}
+.btn-accent:hover{background:var(--accent-d);transform:translateY(-2px)}
+.btn-line{background:transparent;border:1.5px solid var(--line);color:var(--ink)}
+.btn-line:hover{border-color:var(--ink);transform:translateY(-2px)}
+.btn-dark{background:var(--ink);color:#fff}
+.btn-dark:hover{background:var(--accent);transform:translateY(-2px)}
+
+.body{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:34px;padding:34px 28px 130px;align-items:start}
+@media(max-width:1180px){.body{grid-template-columns:minmax(0,1fr)}.preview-col{display:none}}
+@media(max-width:820px){.side{display:none}}
+
+.panel{display:none}
+.panel.on{display:block;animation:up .45s var(--ease)}
+@keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.eyebrow{font-size:.66rem;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--accent)}
+.ptitle{font-size:1.85rem;margin-top:10px}
+.psub{color:var(--ink-2);font-size:.93rem;margin-top:7px}
+
+.card{background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:26px;margin-top:20px}
+.card h3{font-family:'Manrope',sans-serif;font-size:.95rem;font-weight:800;letter-spacing:0}
+.card .hint{font-size:.79rem;color:var(--ink-3);margin-top:3px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:18px}
+@media(max-width:640px){.grid2{grid-template-columns:1fr}}
+label{display:block;font-size:.73rem;font-weight:800;color:var(--ink-2);margin-bottom:6px;letter-spacing:.01em}
+input,textarea,select{width:100%;background:var(--cream);border:1.5px solid var(--line);border-radius:13px;
+  padding:11px 14px;font-family:inherit;font-size:.89rem;color:var(--ink);transition:border-color .2s,box-shadow .2s,background .2s}
+input:focus,textarea:focus,select:focus{outline:0;border-color:var(--accent);background:var(--paper);box-shadow:0 0 0 3px rgba(224,120,86,.14)}
+textarea{resize:vertical;min-height:88px;line-height:1.55}
+.full{grid-column:1/-1}
+
+/* chips */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.chip{display:inline-flex;align-items:center;gap:7px;background:var(--cream);border:1.5px solid var(--line);
+  border-radius:999px;padding:7px 8px 7px 15px;font-size:.81rem;font-weight:700}
+.chip button{width:19px;height:19px;border-radius:50%;border:0;background:rgba(27,42,74,.08);color:var(--ink-2);
+  cursor:pointer;font-size:.65rem;line-height:1;transition:background .2s,color .2s}
+.chip button:hover{background:var(--accent);color:#fff}
+.toggle-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:9px;margin-top:16px}
+.tg{display:flex;align-items:center;gap:10px;background:var(--cream);border:1.5px solid var(--line);border-radius:13px;
+  padding:11px 14px;font-size:.85rem;font-weight:600;cursor:pointer;transition:border-color .25s,background .25s}
+.tg.on{border-color:var(--accent);background:rgba(224,120,86,.07)}
+.tg .box{width:18px;height:18px;border-radius:6px;border:1.5px solid var(--line);flex:none;display:flex;
+  align-items:center;justify-content:center;transition:background .25s,border-color .25s}
+.tg.on .box{background:var(--accent);border-color:var(--accent)}
+.tg.on .box svg{opacity:1}
+.tg .box svg{opacity:0;transition:opacity .2s}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:15px;margin-top:22px}
+.stat{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:20px 22px;
+  transition:transform .4s var(--ease),box-shadow .4s var(--ease)}
+.stat:hover{transform:translateY(-4px);box-shadow:0 22px 40px -26px rgba(27,42,74,.35)}
+.stat .k{font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+.stat .v{font-family:'Fraunces',serif;font-size:2.1rem;font-weight:600;margin-top:6px;line-height:1}
+.stat .d{font-size:.75rem;font-weight:700;color:var(--sage);margin-top:5px}
+
+.spotlight{background:var(--ink);color:#fff;border-radius:26px;padding:30px;margin-top:22px;position:relative;overflow:hidden;
+  display:flex;flex-wrap:wrap;gap:22px;align-items:center;justify-content:space-between}
+.spotlight::after{content:"";position:absolute;width:320px;height:320px;border-radius:50%;background:var(--accent);opacity:.14;right:-110px;top:-120px}
+.spotlight h3{font-family:'Fraunces',serif;font-size:1.4rem;font-weight:500;position:relative}
+.spotlight p{color:rgba(255,255,255,.6);font-size:.88rem;margin:7px 0 0;position:relative;max-width:46ch}
+.progress{height:7px;border-radius:99px;background:rgba(255,255,255,.14);margin-top:16px;overflow:hidden;position:relative;max-width:380px}
+.progress i{display:block;height:100%;background:var(--accent);border-radius:99px;width:0;transition:width 1.4s var(--ease)}
+
+/* bookings */
+.brow{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;
+  background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:15px 19px;margin-top:10px;
+  transition:transform .35s var(--ease),box-shadow .35s var(--ease)}
+.brow:hover{transform:translateX(4px);box-shadow:0 16px 30px -22px rgba(27,42,74,.35)}
+.pill{font-size:.69rem;font-weight:800;padding:5px 12px;border-radius:999px;white-space:nowrap}
+.pill.ok{background:rgba(156,175,136,.2);color:#4F7A5E}
+.pill.soon{background:rgba(224,120,86,.15);color:var(--accent-d)}
+.mono{font-family:ui-monospace,monospace;font-size:.74rem;color:var(--ink-3)}
+
+/* calendar */
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;max-width:460px;margin-top:18px}
+.dow{text-align:center;font-size:.66rem;font-weight:800;color:var(--ink-3);padding-bottom:4px}
+.day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:11px;background:var(--paper);
+  border:1.5px solid var(--line);font-size:.8rem;font-weight:700;cursor:pointer;transition:all .22s var(--ease)}
+.day:hover{border-color:var(--accent);transform:translateY(-2px)}
+.day.busy{background:var(--ink);border-color:var(--ink);color:#fff}
+.day.ical{background:var(--sea);border-color:var(--sea);color:#fff;cursor:not-allowed}
+.legend{display:flex;flex-wrap:wrap;gap:16px;margin-top:16px;font-size:.78rem;color:var(--ink-2);font-weight:600}
+.legend i{width:11px;height:11px;border-radius:4px;display:inline-block;margin-right:7px;vertical-align:-1px}
+
+/* design panel */
+.sw-row{display:flex;gap:11px;margin-top:14px;flex-wrap:wrap}
+.sw{width:44px;height:44px;border-radius:14px;cursor:pointer;border:3px solid transparent;transition:transform .3s var(--ease),border-color .2s}
+.sw:hover{transform:translateY(-3px)}
+.sw.on{border-color:var(--ink);transform:scale(1.08)}
+.styles{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:11px;margin-top:14px}
+.st{position:relative;text-align:left;background:var(--cream);border:2px solid var(--line);border-radius:16px;padding:16px;
+  cursor:pointer;font-family:inherit;transition:border-color .25s,background .25s,transform .3s var(--ease)}
+.st:hover{transform:translateY(-3px)}
+.st.on{border-color:var(--accent);background:var(--paper)}
+.st b{font-family:'Fraunces',serif;font-size:1.1rem;font-weight:500;display:block}
+.st small{color:var(--ink-3);font-size:.76rem;font-weight:600}
+.lock-tag{position:absolute;top:12px;right:13px;background:var(--ink);color:#fff;font-size:.55rem;font-weight:800;
+  letter-spacing:.1em;padding:4px 9px;border-radius:999px;display:flex;align-items:center;gap:5px}
+
+/* plan panel */
+.value{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:15px;margin-top:22px}
+.vitem{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:22px;
+  transition:transform .4s var(--ease),box-shadow .4s var(--ease)}
+.vitem:hover{transform:translateY(-5px);box-shadow:0 24px 44px -28px rgba(27,42,74,.35)}
+.vic{width:42px;height:42px;border-radius:13px;background:rgba(224,120,86,.12);display:flex;align-items:center;justify-content:center}
+.vitem h4{margin:14px 0 0;font-size:.95rem;font-weight:800}
+.vitem p{color:var(--ink-2);font-size:.85rem;margin:7px 0 0}
+.vitem .worth{margin-top:12px;font-size:.76rem;font-weight:800;color:var(--sage);display:flex;align-items:center;gap:7px}
+
+/* preview column */
+.preview-col{position:sticky;top:96px}
+.pv-label{font-size:.66rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);
+  display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.livedot{width:7px;height:7px;border-radius:50%;background:var(--sage);position:relative}
+.livedot::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:1.5px solid var(--sage);opacity:0;animation:ping 2.2s var(--ease) infinite}
+@keyframes ping{0%{transform:scale(.6);opacity:.9}100%{transform:scale(1.5);opacity:0}}
+.phone{width:100%;max-width:300px;border-radius:34px;padding:9px;background:var(--ink);
+  box-shadow:0 40px 70px -34px rgba(27,42,74,.55)}
+.screen{border-radius:27px;overflow:hidden;background:var(--cream);padding-bottom:14px;transition:background .5s var(--ease)}
+.ph-photo{height:172px;position:relative;transition:background .6s var(--ease)}
+.ph-photo::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(20,18,16,.78),transparent 62%)}
+.ph-over{position:absolute;left:15px;right:15px;bottom:13px;z-index:2;color:#fff}
+.ph-loc{font-size:.54rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;opacity:.85}
+.ph-name{font-family:'Fraunces',serif;font-size:1.38rem;line-height:1.1;margin-top:3px}
+.ph-tag{font-family:'Caveat',cursive;font-size:.96rem;opacity:.9}
+.ph-body{padding:13px 15px}
+.ph-chips{display:flex;flex-wrap:wrap;gap:5px}
+.ph-chip{font-size:.57rem;font-weight:700;background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:5px 9px;transition:background .4s,border-color .4s}
+.ph-row{display:flex;align-items:center;justify-content:space-between;gap:9px;background:var(--paper);
+  border:1px solid var(--line);border-radius:11px;padding:9px 11px;margin-top:7px;transition:background .4s,border-color .4s}
+.ph-row .k{font-size:.58rem;font-weight:800;color:var(--ink-3);letter-spacing:.05em}
+.ph-row .v{font-size:.68rem;font-weight:700;font-family:ui-monospace,monospace}
+.ph-cta{margin-top:11px;color:#fff;text-align:center;font-size:.68rem;font-weight:800;padding:10px;border-radius:999px;transition:background .4s}
+
+/* save bar + toast */
+.savebar{position:fixed;left:50%;bottom:24px;z-index:150;transform:translate(-50%,240%);opacity:0;pointer-events:none;
+  background:var(--ink);color:#fff;border-radius:999px;padding:11px 13px 11px 24px;display:flex;align-items:center;gap:18px;
+  box-shadow:0 26px 50px -20px rgba(27,42,74,.6);transition:transform .5s var(--ease),opacity .4s var(--ease)}
+.savebar.show{transform:translate(-50%,0);opacity:1;pointer-events:auto}
+.savebar .t{font-size:.85rem;font-weight:600;white-space:nowrap}
+.toast{position:fixed;left:50%;bottom:24px;z-index:160;transform:translate(-50%,240%);opacity:0;pointer-events:none;
+  background:var(--sage);color:#fff;border-radius:999px;padding:13px 26px;font-size:.86rem;font-weight:700;
+  transition:transform .5s var(--ease),opacity .4s var(--ease);white-space:nowrap}
+.toast.show{transform:translate(-50%,0);opacity:1}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="side">
+    <div class="brand">
+      <svg width="26" height="26" viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="10" fill="#1B2A4A"/><path d="M7 21c3.6-8.5 14.4-8.5 18 0" stroke="#E07856" stroke-width="2.6" stroke-linecap="round"/><circle cx="16" cy="11.5" r="2.4" fill="#F7F3EC"/></svg>
+      Odmoria
+      <span class="badge-plan">FREE</span>
+    </div>
+
+    <div class="nav" id="nav">
+      <button class="on" data-p="pregled"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3" y="3" width="7.5" height="9" rx="2"/><rect x="13.5" y="3" width="7.5" height="5" rx="2"/><rect x="13.5" y="11" width="7.5" height="10" rx="2"/><rect x="3" y="15" width="7.5" height="6" rx="2"/></svg>Pregled</button>
+
+      <div class="nav-sep">Objekt</div>
+      <button data-p="objekt"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10l9-7 9 7v10a1.6 1.6 0 0 1-1.6 1.6H4.6A1.6 1.6 0 0 1 3 20z"/></svg>Osnovno</button>
+      <button data-p="foto"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3.5"/><circle cx="8.6" cy="8.6" r="1.6"/><path d="M21 15.5L16 10.5 5.5 21"/></svg>Fotografije</button>
+      <button data-p="vodic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V4H6.5A2.5 2.5 0 0 0 4 6.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/></svg>Gostinski vodič</button>
+
+      <div class="nav-sep">Gosti</div>
+      <button data-p="rezervacije"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Rezervacije</button>
+      <button data-p="dostupnost"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/><circle cx="8.5" cy="15" r="1.3" fill="currentColor" stroke="none"/></svg>Dostupnost</button>
+
+      <div class="nav-sep">Stranica</div>
+      <button data-p="izgled"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18c1.5 0 2-1 1.5-2.5S12.5 16 13 14.5 15.5 13 17 13.5 21 14 21 12"/></svg>Izgled</button>
+      <button data-p="dijeljenje"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="2.8"/><circle cx="6" cy="12" r="2.8"/><circle cx="18" cy="19" r="2.8"/><path d="M8.6 10.7l6.8-4.1M8.6 13.3l6.8 4.1"/></svg>Dijeljenje</button>
+      <button data-p="plan"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.6 5.6 6.1.8-4.5 4.2 1.2 6L12 16.8 6.6 19.6l1.2-6-4.5-4.2 6.1-.8z"/></svg>Plan</button>
+    </div>
+
+    <div class="side-foot">
+      <div class="av">AM</div>
+      <div>
+        <div style="font-size:.82rem;font-weight:800">Ana Marić</div>
+        <div style="font-size:.71rem;color:var(--ink-3)">Free plan · 1 objekt</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ===== MAIN ===== -->
+  <div class="main">
+    <div class="top">
+      <div style="min-width:0">
+        <div style="font-family:'Fraunces',serif;font-size:1.05rem;font-weight:600" id="topName">Villa Maslina</div>
+        <div class="url">odmoria.com/p/villa-maslina</div>
+      </div>
+      <div style="display:flex;gap:10px">
+        <a class="btn btn-line" href="guest-v2.html" target="_blank">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6M10 14L21 3"/></svg>
+          Otvori stranicu
+        </a>
+        <button class="btn btn-accent" onclick="save()">Spremi</button>
+      </div>
+    </div>
+
+    <div class="body">
+      <div>
+
+        <!-- ============ PREGLED ============ -->
+        <section class="panel on" id="p-pregled">
+          <div class="eyebrow">Pregled</div>
+          <h1 class="ptitle">Dobro došla, Ana.</h1>
+          <div class="psub">Evo kako vam stranica stoji ovaj mjesec.</div>
+
+          <div class="stats">
+            <div class="stat"><div class="k">Pregleda stranice</div><div class="v">128</div><div class="d">▲ 18 % vs. prošli mjesec</div></div>
+            <div class="stat"><div class="k">Otvorenih vodiča</div><div class="v">9</div><div class="d">svi gosti ovog mjeseca</div></div>
+            <div class="stat"><div class="k">Plaćena provizija</div><div class="v" style="color:var(--accent)">0 €</div><div class="d" style="color:var(--ink-3)">kao i uvijek</div></div>
+          </div>
+
+          <div class="spotlight">
+            <div>
+              <h3>Stranica je <span style="color:var(--accent)">80 % gotova</span></h3>
+              <p>Dodajte još 2 fotografije i upute za klimu — to su dvije stvari koje gosti najviše traže.</p>
+              <div class="progress"><i id="prog"></i></div>
+            </div>
+            <button class="btn" style="background:#fff;color:var(--ink)" onclick="go('foto')">Dovrši postavljanje →</button>
+          </div>
+
+          <div class="card">
+            <h3>Nadolazeći gosti</h3>
+            <div class="brow">
+              <div>
+                <div style="font-weight:700;font-size:.9rem">Marko Perić · 12. – 19. srpnja</div>
+                <div class="mono">odmoria.com/h/xk29fm41</div>
+              </div>
+              <span class="pill ok">Vodič poslan</span>
+            </div>
+            <div class="brow">
+              <div>
+                <div style="font-weight:700;font-size:.9rem">Ana Kovač · 20. – 24. srpnja</div>
+                <div class="mono">odmoria.com/h/p8w3nd52</div>
+              </div>
+              <span class="pill soon">Za 8 dana</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ OSNOVNO ============ -->
+        <section class="panel" id="p-objekt">
+          <div class="eyebrow">Objekt</div>
+          <h1 class="ptitle">Osnovni podaci</h1>
+          <div class="psub">Ovo gost vidi prvo. Pišite kao da pričate prijatelju, ne kao oglas.</div>
+
+          <div class="card">
+            <h3>Identitet</h3>
+            <div class="grid2">
+              <div><label>Naziv objekta</label><input id="f-name" value="Villa Maslina"></div>
+              <div><label>Lokacija</label><input id="f-loc" value="Hvar, Dalmacija"></div>
+              <div class="full"><label>Podnaslov <span style="color:var(--ink-3);font-weight:600">— jedna rečenica, rukom pisana na stranici</span></label><input id="f-tag" value="Masline, sol i tišina."></div>
+              <div class="full"><label>Vaša priča</label><textarea id="f-story">Kuća je naša obiteljska — djed ju je gradio, a maslinik oko nje stariji je od svih nas. Uzmite si vremena: ujutro kava na terasi, popodne more, navečer tišina.</textarea></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Istaknuto</h3>
+            <div class="hint">Prikazuje se kao oznake preko naslovne fotografije. Enter za dodavanje.</div>
+            <div class="chips" id="chips"></div>
+            <input id="chipInput" placeholder="npr. Terasa s pogledom, 2 min do plaže…" style="margin-top:12px">
+          </div>
+
+          <div class="card">
+            <h3>Sadržaji</h3>
+            <div class="toggle-grid" id="amens"></div>
+          </div>
+
+          <div class="card">
+            <h3>Kućna pravila</h3>
+            <div class="grid2">
+              <div><label>Prijava</label><input id="f-in" value="15:00 – 22:00"></div>
+              <div><label>Odjava</label><input id="f-out" value="do 10:00"></div>
+              <div><label>Najviše gostiju</label><input id="f-guests" type="number" value="6"></div>
+              <div><label>Tiho doba</label><input id="f-quiet" value="23:00 – 07:00"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ FOTO ============ -->
+        <section class="panel" id="p-foto">
+          <div class="eyebrow">Fotografije</div>
+          <h1 class="ptitle">Neka osjete more</h1>
+          <div class="psub">Prva fotografija je naslovna — ona koju gost vidi prije svega ostalog.</div>
+          <div class="card">
+            <h3>Galerija <span style="color:var(--ink-3);font-weight:600;font-size:.8rem">· 3 / 5 na Free planu</span></h3>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:13px;margin-top:18px" id="gal"></div>
+            <button class="btn btn-line" style="margin-top:16px;width:100%;justify-content:center;border-style:dashed" onclick="toast('Upload bi ovdje otvorio Cloudinary')">+ Dodaj fotografiju</button>
+          </div>
+        </section>
+
+        <!-- ============ VODIČ ============ -->
+        <section class="panel" id="p-vodic">
+          <div class="eyebrow">Gostinski vodič</div>
+          <h1 class="ptitle">Ono što gost vidi tek kad stigne</h1>
+          <div class="psub">Wi-Fi i šifra vrata otključavaju se automatski na dan dolaska.</div>
+
+          <div class="card">
+            <h3>Pristup</h3>
+            <div class="grid2">
+              <div><label>Wi-Fi mreža</label><input id="f-wifi" value="VillaMaslina_Guest"></div>
+              <div><label>Wi-Fi lozinka</label><input id="f-wifipass" value="moreplovac2026"></div>
+              <div><label>Šifra vrata</label><input id="f-door" value="4271"></div>
+              <div><label>Adresa</label><input value="Put Svete Nedjelje 14, Hvar"></div>
+              <div class="full"><label>Upute za dolazak</label><textarea>Sef za ključ lijevo od vrata. Parkirajte ispod velike masline — mjesto broj 3. Niz stazu je more, 120 stepenica.</textarea></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Upute za korištenje</h3>
+            <div class="hint">Klima, topla voda, kuhinja — pitanja koja se ponavljaju svaki tjedan.</div>
+            <div class="grid2">
+              <div class="full"><label>Klima uređaj</label><textarea style="min-height:64px">Daljinski u ladici ispod TV-a. MODE → pahulja za hlađenje. Preporuka 24 °C.</textarea></div>
+              <div class="full"><label>Topla voda</label><textarea style="min-height:64px">Bojler je u kupaonici, uključen stalno. Spremnik 80 l — ostavite 20 min između tuširanja.</textarea></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Vaše preporuke</h3>
+            <div class="hint">Mjesta na koja stvarno idete. Ovo gosti najviše pamte.</div>
+            <div id="tips" style="margin-top:16px"></div>
+            <button class="btn btn-line" style="margin-top:13px" onclick="addTip()">+ Dodaj preporuku</button>
+          </div>
+        </section>
+
+        <!-- ============ REZERVACIJE ============ -->
+        <section class="panel" id="p-rezervacije">
+          <div class="eyebrow">Gosti</div>
+          <h1 class="ptitle">Rezervacije</h1>
+          <div class="psub">Svaki gost dobiva svoj privatni link koji vrijedi samo za njegov termin.</div>
+          <button class="btn btn-accent" style="margin-top:20px" onclick="toast('Otvorila bi se forma za novu rezervaciju')">+ Nova rezervacija</button>
+          <div class="card">
+            <div class="brow" style="margin-top:0">
+              <div><div style="font-weight:700;font-size:.9rem">Marko Perić · 12. – 19. srpnja</div><div class="mono">odmoria.com/h/xk29fm41</div></div>
+              <div style="display:flex;gap:9px;align-items:center"><span class="pill ok">Aktivno</span><button class="btn btn-line" style="min-height:34px;padding:7px 14px;font-size:.76rem" onclick="toast('Link kopiran')">Kopiraj</button></div>
+            </div>
+            <div class="brow">
+              <div><div style="font-weight:700;font-size:.9rem">Ana Kovač · 20. – 24. srpnja</div><div class="mono">odmoria.com/h/p8w3nd52</div></div>
+              <div style="display:flex;gap:9px;align-items:center"><span class="pill soon">Za 8 dana</span><button class="btn btn-line" style="min-height:34px;padding:7px 14px;font-size:.76rem" onclick="toast('Link kopiran')">Kopiraj</button></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ DOSTUPNOST ============ -->
+        <section class="panel" id="p-dostupnost">
+          <div class="eyebrow">Gosti</div>
+          <h1 class="ptitle">Dostupnost</h1>
+          <div class="psub">Kliknite dane da označite zauzeto. Srpanj 2026.</div>
+          <div class="card">
+            <div class="cal" id="cal"></div>
+            <div class="legend">
+              <span><i style="background:var(--paper);border:1.5px solid var(--line)"></i>Slobodno</span>
+              <span><i style="background:var(--ink)"></i>Zauzeto (ručno)</span>
+              <span><i style="background:var(--sea)"></i>Booking.com <span style="color:var(--ink-3)">— Pro</span></span>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ IZGLED ============ -->
+        <section class="panel" id="p-izgled">
+          <div class="eyebrow">Stranica</div>
+          <h1 class="ptitle">Izgled</h1>
+          <div class="psub">Promjene se odmah vide u pregledu desno.</div>
+          <div class="card">
+            <h3>Boja naglaska</h3>
+            <div class="sw-row" id="sw">
+              <div class="sw on" data-c="#E07856" style="background:#E07856" title="Terakota"></div>
+              <div class="sw" data-c="#4A7FA5" style="background:#4A7FA5" title="Jadran"></div>
+              <div class="sw" data-c="#9CAF88" style="background:#9CAF88" title="Maslina"></div>
+              <div class="sw" data-c="#B0678E" style="background:#B0678E" title="Lavanda"></div>
+              <div class="sw" data-c="#1B2A4A" style="background:#1B2A4A" title="Ponoć"></div>
+            </div>
+          </div>
+          <div class="card">
+            <h3>Stil stranice</h3>
+            <div class="styles" id="styles">
+              <button class="st on" data-s="obalni"><b>Obalni</b><small>Topla krem podloga, serif naslovi.</small></button>
+              <button class="st" data-s="moderni"><b>Moderni</b><small>Čisto bijelo, jak kontrast.</small>
+                <span class="lock-tag"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0" stroke-linecap="round"/></svg>PRO</span>
+              </button>
+              <button class="st" data-s="rustikalni"><b>Rustikalni</b><small>Zemljani tonovi, kamen i drvo.</small>
+                <span class="lock-tag"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0" stroke-linecap="round"/></svg>PRO</span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ DIJELJENJE ============ -->
+        <section class="panel" id="p-dijeljenje">
+          <div class="eyebrow">Stranica</div>
+          <h1 class="ptitle">Dijeljenje</h1>
+          <div class="psub">Jedan link ide svugdje — oglas, Facebook grupa, potpis u mailu.</div>
+          <div class="card">
+            <h3>Javni link</h3>
+            <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
+              <input value="odmoria.com/p/villa-maslina" readonly style="flex:1;min-width:220px;font-family:ui-monospace,monospace;font-size:.82rem">
+              <button class="btn btn-dark" onclick="toast('Link kopiran')">Kopiraj</button>
+            </div>
+            <div style="display:flex;gap:11px;margin-top:16px;flex-wrap:wrap">
+              <button class="btn btn-line" onclick="toast('Otvorio bi se Facebook')">Podijeli na Facebook</button>
+              <button class="btn btn-line" onclick="toast('Otvorio bi se WhatsApp')">Pošalji WhatsAppom</button>
+              <button class="btn btn-line" onclick="toast('QR kod bi se preuzeo')">Preuzmi QR kod</button>
+            </div>
+          </div>
+          <div class="card" style="background:var(--sand);border-color:transparent">
+            <h3>Gotov tekst za oglas</h3>
+            <div style="background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:18px;margin-top:14px;font-size:.89rem;color:var(--ink-2)" id="caption"></div>
+            <button class="btn btn-line" style="margin-top:13px" onclick="toast('Tekst kopiran')">Kopiraj tekst</button>
+          </div>
+        </section>
+
+        <!-- ============ PLAN ============ -->
+        <section class="panel" id="p-plan">
+          <div class="eyebrow">Plan</div>
+          <h1 class="ptitle">Što dobivate s Pro planom</h1>
+          <div class="psub">15 € mjesečno. Jedna izbjegnuta dvostruka rezervacija plati godinu dana.</div>
+
+          <div class="value">
+            <div class="vitem">
+              <div class="vic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E07856" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/></svg></div>
+              <h4>Kalendar se sam osvježava</h4>
+              <p>Booking.com i Airbnb termini automatski ulaze u vašu dostupnost. Nema ručnog prepisivanja, nema dvostrukih rezervacija.</p>
+              <div class="worth">Jedna izbjegnuta greška ≫ 180 € godišnje</div>
+            </div>
+
+            <div class="vitem">
+              <div class="vic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E07856" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18 15 15 0 0 1 0-18z"/></svg></div>
+              <h4>Vodič na jeziku gosta</h4>
+              <p>Njemački, engleski, talijanski, češki, poljski. Vi pišete jednom — gost čita na svom jeziku.</p>
+              <div class="worth">Manje pitanja, bolje recenzije</div>
+            </div>
+
+            <div class="vitem">
+              <div class="vic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E07856" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h10M4 17h7"/><circle cx="18.5" cy="16.5" r="3.2"/></svg></div>
+              <h4>Vaša domena, bez našeg potpisa</h4>
+              <p>villa-maslina.com umjesto odmoria.com/p/… i nigdje ne piše da je stranica naša. Gost vidi samo vas.</p>
+              <div class="worth">Izgledate kao vila, ne kao oglas</div>
+            </div>
+
+            <div class="vitem">
+              <div class="vic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E07856" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V10M10 19V5M16 19v-6M22 19H2"/></svg></div>
+              <h4>Vidite što gosti gledaju</h4>
+              <p>Odakle dolaze, koliko ih otvori vodič, koje preporuke klikaju. Znate što popraviti, ne nagađate.</p>
+              <div class="worth">Odluke na temelju brojki</div>
+            </div>
+
+            <div class="vitem">
+              <div class="vic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E07856" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10l9-7 9 7v10a1.6 1.6 0 0 1-1.6 1.6H4.6A1.6 1.6 0 0 1 3 20z"/><path d="M9 21v-7h6v7"/></svg></div>
+              <h4>Do 5 objekata</h4>
+              <p>Svaki sa svojom stranicom, svojim vodičem i svojim kalendarom. Sve iz jednog računa.</p>
+              <div class="worth">3 € po objektu mjesečno</div>
+            </div>
+
+            <div class="vitem">
+              <div class="vic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E07856" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18c1.5 0 2-1 1.5-2.5S12.5 16 13 14.5 15.5 13 17 13.5 21 14 21 12"/></svg></div>
+              <h4>Svi stilovi i boje</h4>
+              <p>Uz 30 fotografija po objektu umjesto 5. Vila i studio apartman ne moraju izgledati isto.</p>
+              <div class="worth">Dio paketa, ne razlog za sebe</div>
+            </div>
+          </div>
+
+          <div class="spotlight" style="margin-top:26px">
+            <div>
+              <h3>Probajte Pro 14 dana</h3>
+              <p>Bez kartice. Ako vam ne sjedne, račun se sam vraća na Free — ne naplaćujemo ništa.</p>
+            </div>
+            <button class="btn" style="background:var(--accent);color:#fff" onclick="toast('Ovdje bi išao Stripe checkout')">Uključi Pro →</button>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- ===== LIVE PREVIEW ===== -->
+      <div class="preview-col">
+        <div class="pv-label"><span class="livedot"></span> Uživo — ovo gost vidi</div>
+        <div class="phone">
+          <div class="screen" id="screen">
+            <div class="ph-photo" id="phPhoto">
+              <div class="ph-over">
+                <div class="ph-loc" id="pv-loc">Hvar, Dalmacija</div>
+                <div class="ph-name" id="pv-name">Villa Maslina</div>
+                <div class="ph-tag" id="pv-tag">Masline, sol i tišina.</div>
+              </div>
+            </div>
+            <div class="ph-body">
+              <div class="ph-chips" id="pv-chips"></div>
+              <div class="ph-row"><span class="k">PRIJAVA</span><span class="v" id="pv-in">15:00 – 22:00</span></div>
+              <div class="ph-row"><span class="k">WI-FI</span><span class="v" id="pv-wifi">VillaMaslina_Guest</span></div>
+              <div class="ph-row"><span class="k">ŠIFRA VRATA</span><span class="v">•••• </span></div>
+              <div class="ph-cta" id="pv-cta">Kontaktiraj domaćina</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="savebar" id="savebar">
+  <span class="t">Imate nespremljene promjene</span>
+  <button class="btn btn-accent" style="min-height:36px;padding:9px 20px" onclick="save()">Spremi</button>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+
+/* ---------- state ---------- */
+let S = {
+  chips:['Terasa s pogledom','2 min do plaže','Besplatan parking','Roštilj'],
+  amenities:['Wi-Fi','Klima','Puna kuhinja','Privatni parking','Roštilj','Smart TV'],
+  tips:[
+    {t:'Naša uvala', d:'Niz stazu iza kuće, 120 stepenica. Koriste je samo mještani.'},
+    {t:'Konoba Duboković', d:'Gore u brdima. Tražite njihovo maslinovo ulje.'}
+  ],
+  accent:'#E07856', style:'obalni', busy:new Set([3,4,5,6,7,8,9,12,13,14,15,16,17,18])
+};
+const ALL_AMENITIES = ['Wi-Fi','Klima','Puna kuhinja','Perilica rublja','Privatni parking','Roštilj','Ručnici za plažu','Smart TV','Terasa','Bazen','Kavni aparat','Sušilo za kosu'];
+let dirty = false;
+
+/* ---------- nav ---------- */
+function go(p){
+  $$('#nav button').forEach(b => b.classList.toggle('on', b.dataset.p === p));
+  $$('.panel').forEach(x => x.classList.toggle('on', x.id === 'p-' + p));
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+$$('#nav button').forEach(b => b.onclick = () => go(b.dataset.p));
+
+/* ---------- dirty / save ---------- */
+function markDirty(){ dirty = true; $('#savebar').classList.add('show'); }
+function save(){
+  dirty = false;
+  $('#savebar').classList.remove('show');
+  toast('Spremljeno — gostinska stranica je ažurirana');
+}
+let tt;
+function toast(msg){
+  const el = $('#toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(tt);
+  tt = setTimeout(()=>el.classList.remove('show'), 2400);
+}
+addEventListener('beforeunload', e => { if(dirty){ e.preventDefault(); e.returnValue=''; } });
+
+/* ---------- live preview ---------- */
+const STYLES = {
+  obalni:    {bg:'#F7F3EC', card:'#FFFFFF', line:'rgba(27,42,74,.10)', photo:'linear-gradient(160deg,#EBC9A9 0%,ACCENT 42%,#3F6F63 78%,#28463F 100%)'},
+  moderni:   {bg:'#FFFFFF', card:'#F6F6F7', line:'rgba(20,20,22,.10)', photo:'linear-gradient(200deg,#D9DEE3 0%,ACCENT 55%,#2C3238 100%)'},
+  rustikalni:{bg:'#F1EADF', card:'#FBF6EE', line:'rgba(84,62,42,.16)', photo:'linear-gradient(150deg,#D9C2A0 0%,ACCENT 46%,#7C5A3C 100%)'}
+};
+function paint(){
+  const st = STYLES[S.style];
+  $('#screen').style.background = st.bg;
+  $('#phPhoto').style.background = st.photo.replace('ACCENT', S.accent);
+  $('#pv-cta').style.background = S.accent;
+  $$('#screen .ph-chip, #screen .ph-row').forEach(el => { el.style.background = st.card; el.style.borderColor = st.line; });
+  $('#pv-name').textContent = $('#f-name').value || 'Bez naziva';
+  $('#pv-loc').textContent = $('#f-loc').value;
+  $('#pv-tag').textContent = $('#f-tag').value;
+  $('#pv-in').textContent = $('#f-in').value;
+  $('#pv-wifi').textContent = $('#f-wifi').value;
+  $('#topName').textContent = $('#f-name').value || 'Bez naziva';
+  $('#pv-chips').innerHTML = S.chips.slice(0,3).map(c => `<span class="ph-chip">✦ ${c}</span>`).join('');
+  $('#caption').textContent = `☀️ Direktna rezervacija, bez provizije — ${$('#f-name').value} u ${$('#f-loc').value}. ${$('#f-tag').value} Javite se izravno i dogovorimo termin. 🌊`;
+}
+$$('#p-objekt input, #p-objekt textarea, #p-vodic input, #p-vodic textarea').forEach(el => {
+  el.addEventListener('input', () => { markDirty(); paint(); });
+});
+
+/* ---------- chips ---------- */
+function renderChips(){
+  $('#chips').innerHTML = S.chips.map((c,i) =>
+    `<span class="chip">${c}<button onclick="delChip(${i})" aria-label="Ukloni">✕</button></span>`).join('');
+  paint();
+}
+window.delChip = i => { S.chips.splice(i,1); renderChips(); markDirty(); };
+$('#chipInput').addEventListener('keydown', e => {
+  if(e.key === 'Enter' && e.target.value.trim()){
+    S.chips.push(e.target.value.trim()); e.target.value=''; renderChips(); markDirty();
+  }
+});
+
+/* ---------- amenities ---------- */
+function renderAmens(){
+  $('#amens').innerHTML = ALL_AMENITIES.map(a => {
+    const on = S.amenities.includes(a);
+    return `<div class="tg ${on?'on':''}" data-a="${a}">
+      <span class="box"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>${a}</div>`;
+  }).join('');
+  $$('#amens .tg').forEach(t => t.onclick = () => {
+    const a = t.dataset.a, i = S.amenities.indexOf(a);
+    i > -1 ? S.amenities.splice(i,1) : S.amenities.push(a);
+    renderAmens(); markDirty();
+  });
+}
+
+/* ---------- gallery ---------- */
+$('#gal').innerHTML = [0,1,2].map((i) => `
+  <div style="position:relative;border-radius:16px;overflow:hidden;aspect-ratio:4/3;
+    background:linear-gradient(${140+i*22}deg,#EBC9A9,#E07856 45%,#3F6F63 85%)">
+    ${i===0 ? '<span style="position:absolute;top:9px;left:9px;background:var(--accent);color:#fff;font-size:.56rem;font-weight:800;letter-spacing:.1em;padding:4px 9px;border-radius:999px">NASLOVNA</span>' : ''}
+  </div>`).join('');
+
+/* ---------- tips ---------- */
+function renderTips(){
+  $('#tips').innerHTML = S.tips.map((t,i) => `
+    <div style="background:var(--cream);border-radius:16px;padding:15px;display:flex;gap:12px;align-items:flex-start;margin-bottom:10px">
+      <div style="flex:1;display:flex;flex-direction:column;gap:9px">
+        <input value="${t.t.replace(/"/g,'&quot;')}" style="font-weight:700" oninput="S.tips[${i}].t=this.value;markDirty()">
+        <textarea style="min-height:56px;font-size:.85rem" oninput="S.tips[${i}].d=this.value;markDirty()">${t.d}</textarea>
+      </div>
+      <button style="border:0;background:none;cursor:pointer;color:var(--ink-3);font-size:1rem" onclick="delTip(${i})">✕</button>
+    </div>`).join('');
+}
+window.delTip = i => { S.tips.splice(i,1); renderTips(); markDirty(); };
+window.addTip = () => { S.tips.push({t:'Nova preporuka', d:''}); renderTips(); markDirty(); };
+window.markDirty = markDirty;
+
+/* ---------- design ---------- */
+$$('#sw .sw').forEach(s => s.onclick = () => {
+  $$('#sw .sw').forEach(x => x.classList.remove('on'));
+  s.classList.add('on'); S.accent = s.dataset.c; paint(); markDirty();
+});
+$$('#styles .st').forEach(b => b.onclick = () => {
+  if(b.querySelector('.lock-tag')){ toast('Ovaj stil je dio Pro plana'); go('plan'); return; }
+  $$('#styles .st').forEach(x => x.classList.remove('on'));
+  b.classList.add('on'); S.style = b.dataset.s; paint(); markDirty();
+});
+
+/* ---------- calendar ---------- */
+function renderCal(){
+  const dow = ['P','U','S','Č','P','S','N'];
+  let h = dow.map(d => `<div class="dow">${d}</div>`).join('');
+  const first = (new Date(2026,6,1).getDay()+6)%7;
+  for(let i=0;i<first;i++) h += '<div></div>';
+  for(let d=1; d<=31; d++){
+    const ical = d>=21 && d<=24;
+    const cls = ical ? 'ical' : (S.busy.has(d) ? 'busy' : '');
+    h += `<div class="day ${cls}" data-d="${d}">${d}</div>`;
+  }
+  $('#cal').innerHTML = h;
+  $$('#cal .day').forEach(el => el.onclick = () => {
+    if(el.classList.contains('ical')){ toast('Ovaj termin dolazi s Booking.com-a — Pro plan'); return; }
+    const d = +el.dataset.d;
+    S.busy.has(d) ? S.busy.delete(d) : S.busy.add(d);
+    renderCal(); markDirty();
+  });
+}
+
+/* ---------- init ---------- */
+renderChips(); renderAmens(); renderTips(); renderCal(); paint();
+setTimeout(()=>{ $('#prog').style.width = '80%'; }, 400);
+</script>
+</body>
+</html>
