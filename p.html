@@ -101,6 +101,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.93);backdrop-f
 .caldays{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
 .cday{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;border-radius:6px;background:var(--bg);cursor:pointer;transition:background .15s ease}
 .cday.taken{background:transparent;color:var(--border);text-decoration:line-through;cursor:not-allowed}
+.cday.taken.pickable{cursor:pointer;text-decoration:none;color:var(--copper);border:1px dashed var(--copper)}
 .cday.range-start{background:var(--blue);color:#fff}
 .cday.range-preview{background:var(--blue-lt);color:var(--blue);transition:background .15s ease}
 .cal-sel-lbl{font-size:12px;font-weight:600;color:var(--blue);margin-top:9px;min-height:15px}
@@ -523,7 +524,6 @@ nav{height:70px;padding:0 max(22px,calc((100vw - 1200px)/2));background:rgba(67,
           </div>
           <div class="cal-sel-lbl" id="cal-sel-lbl"></div>
           <div class="cal-clear" id="cal-clear" style="display:none" onclick="clearRange()">Poništi odabir</div>
-          <div id="debug-info" style="margin-top:14px;padding:10px;background:#fff3cd;border:1px solid #d4a017;border-radius:8px;font-size:12px;font-family:monospace;white-space:pre-wrap"></div>
         </div>
       </section>
     </main>
@@ -822,12 +822,6 @@ function isSelected(ds){
 }
 function priceTxt(n){ return price>0 ? ` · ${Math.round(price*n).toLocaleString('hr-HR')} €` : '' }
 
-let lastDebugExtra = ''
-function updateDebug() {
-  const el = document.getElementById('debug-info')
-  if (!el) return
-  el.textContent = `min_stay=${PROP?.min_stay} gap_fill=${PROP?.allow_gap_fill_stays}\nbookedDates=${JSON.stringify(bookedDates)}\n${lastDebugExtra}`
-}
 function renderCal() {
   const el = document.getElementById('cal-title')
   if (el) el.textContent = MONTHS[calMonth] + ' ' + calYear + '.'
@@ -839,16 +833,16 @@ function renderCal() {
   for (let d = 1; d <= dim; d++) {
     const ds = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`
     const taken = bookedDates.includes(ds)
+    const pickable = taken && rangeStart && ds > rangeStart
     let cls = 'cday'
-    if (taken) cls += ' taken'
-    else if (ds === rangeStart || ds === checkinDs || ds === checkoutDs) cls += ' range-start'
+    if (ds === rangeStart || ds === checkinDs || ds === checkoutDs) cls += ' range-start'
+    else if (taken) cls += pickable ? ' taken pickable' : ' taken'
     else if (isSelected(ds)) cls += ' range-preview'
     const clickable = !taken || !!rangeStart
     h += `<div class="${cls}" data-ds="${ds}"${clickable?` onclick="pickDate('${ds}')"`:''}${taken?'':` onmouseover="hoverDate('${ds}')"`}>${d}</div>`
   }
   const days = document.getElementById('cal-days')
   if (days) days.innerHTML = h
-  updateDebug()
 }
 
 window.hoverDate = (ds) => {
@@ -887,7 +881,6 @@ window.pickDate = (ds) => {
   const from = rangeStart < ds ? rangeStart : ds
   const to = rangeStart < ds ? ds : rangeStart
   if (datesBetween(from, to).slice(0, -1).some(x => bookedDates.includes(x))) {
-    lastDebugExtra = `OVERLAP REJECT from=${from} to=${to}`
     setSelLbl('Odabrani period nije slobodan — pokušaj drugi raspon')
     rangeStart = null; hoverDs = null; renderCal()
     return
@@ -895,7 +888,6 @@ window.pickDate = (ds) => {
   const n = Math.max(1, Math.round((new Date(to) - new Date(from)) / 86400000))
   const minStay = parseInt(PROP?.min_stay) || 1
   const gapOk = isFillableGap(from, to)
-  lastDebugExtra = `from=${from} to=${to} n=${n} minStay=${minStay} prevBooked(${addDays(from,-1)})=${bookedDates.includes(addDays(from,-1))} toBooked(${to})=${bookedDates.includes(to)} isFillableGap=${gapOk}`
   if (n < minStay && !gapOk) {
     setSelLbl(`Minimalni boravak je ${minStay} noć${minStay===1?'':'i'} — pokušaj dulji raspon`)
     rangeStart = null; hoverDs = null; renderCal()
