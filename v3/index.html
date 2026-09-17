@@ -87,24 +87,62 @@
 .lockrow svg{animation:jiggle 5s var(--ease) infinite}
 @keyframes jiggle{0%,58%,100%{transform:none}64%,88%{transform:translateY(-2px) rotate(-12deg)}}
 
-/* igralište */
-.play{display:grid;grid-template-columns:.9fr 1.1fr;gap:56px;align-items:center;margin-top:54px}
-@media(max-width:940px){.play{grid-template-columns:1fr;gap:44px}.play__ctrl{order:2}}
-.sw-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px}
-.sw{width:48px;height:48px;border-radius:16px;cursor:pointer;border:3px solid transparent;
-  transition:transform .45s var(--ease),border-color .3s}
+/* ---------- KONFIGURATOR ---------- */
+.play{display:grid;grid-template-columns:1fr 420px;gap:50px;align-items:start;margin-top:48px}
+@media(max-width:1040px){.play{grid-template-columns:1fr;gap:40px}.play__pv{order:-1}}
+
+/* preklopnik plana */
+.planflip{display:inline-flex;background:var(--sand);border-radius:999px;padding:5px;gap:4px;position:relative}
+.planflip button{border:0;background:transparent;font-family:inherit;font-size:.88rem;font-weight:800;
+  color:var(--ink-50);padding:12px 26px;border-radius:999px;cursor:pointer;
+  transition:background .5s var(--ease),color .35s,box-shadow .5s var(--ease);display:flex;align-items:center;gap:8px}
+.planflip button.on{background:var(--shell);color:var(--ink);box-shadow:0 8px 22px -10px rgba(20,32,46,.35)}
+.planflip button[data-plan="pro"].on{background:var(--ink);color:#fff}
+
+.cfgbox{background:var(--shell);border:1px solid var(--line-2);border-radius:var(--r-lg);padding:28px;margin-top:22px}
+.cfgrow{padding:22px 0;border-bottom:1px dashed var(--line)}
+.cfgrow:first-child{padding-top:0}
+.cfgrow:last-child{border-bottom:0;padding-bottom:0}
+.cfglab{display:flex;align-items:center;justify-content:space-between;gap:14px;font-size:.87rem;font-weight:800}
+.cfgcount{font-size:.72rem;font-weight:700;color:var(--ink-30)}
+.cfghint{font-size:.78rem;color:var(--ink-50);margin-top:3px;font-weight:500}
+
+.sw-row{display:flex;gap:11px;flex-wrap:wrap;margin-top:14px}
+.sw{width:44px;height:44px;border-radius:15px;cursor:pointer;border:3px solid transparent;position:relative;
+  transition:transform .45s var(--ease),border-color .3s,opacity .3s}
 .sw:hover{transform:translateY(-4px)}
 .sw.on{border-color:var(--ink);transform:scale(1.09)}
-.stylelist{display:flex;flex-direction:column;gap:11px;margin-top:16px}
-.st{position:relative;text-align:left;background:var(--cream);border:2px solid var(--line);border-radius:var(--r-md);
-  padding:17px 19px;cursor:pointer;transition:border-color .35s,background .35s,transform .5s var(--ease)}
-.st:hover{transform:translateX(5px)}
-.st.on{border-color:var(--terra);background:var(--shell)}
-.st b{font-family:'Fraunces',serif;font-size:1.15rem;font-weight:500;display:block;
-  font-variation-settings:'SOFT' 20,'WONK' 1}
-.st small{color:var(--ink-50);font-size:.79rem;font-weight:600}
-.protag{position:absolute;top:15px;right:16px;background:var(--ink);color:#fff;font-size:.56rem;font-weight:800;
-  letter-spacing:.12em;padding:5px 10px;border-radius:999px}
+.sw.lk{opacity:.42}
+.sw.lk::after{content:"";position:absolute;inset:0;border-radius:12px;
+  background:rgba(250,246,239,.5) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13' height='13' viewBox='0 0 24 24' fill='none' stroke='%2314202E' stroke-width='3' stroke-linecap='round'%3E%3Crect x='5' y='11' width='14' height='9' rx='2'/%3E%3Cpath d='M8 11V7a4 4 0 0 1 8 0'/%3E%3C/svg%3E") center/13px no-repeat}
+
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(128px,1fr));gap:9px;margin-top:14px}
+.opt{position:relative;text-align:left;background:var(--cream);border:2px solid var(--line);border-radius:var(--r-sm);
+  padding:13px 14px;cursor:pointer;font-family:inherit;transition:border-color .3s,background .3s,transform .4s var(--ease),opacity .3s}
+.opt:hover{transform:translateY(-3px)}
+.opt.on{border-color:var(--terra);background:var(--shell)}
+.opt.lk{opacity:.5}
+.opt b{display:block;font-size:.87rem;font-weight:800}
+.opt small{color:var(--ink-30);font-size:.72rem;font-weight:600}
+.opt .lk-i{position:absolute;top:10px;right:11px;opacity:.55}
+.cfgin{width:100%;background:var(--cream);border:1.5px solid var(--line);border-radius:12px;padding:11px 14px;
+  font-family:inherit;font-size:.88rem;color:var(--ink);margin-top:12px;transition:border-color .25s,box-shadow .25s,background .25s}
+.cfgin:focus{outline:0;border-color:var(--terra);background:var(--shell);box-shadow:0 0 0 3px rgba(212,103,74,.14)}
+
+.upsell{margin-top:20px;border-radius:var(--r-md);padding:18px 20px;display:flex;flex-wrap:wrap;gap:14px;
+  align-items:center;justify-content:space-between;background:var(--ink);color:#fff;
+  opacity:0;max-height:0;overflow:hidden;transition:opacity .5s var(--ease),max-height .6s var(--ease),margin .4s}
+.upsell.show{opacity:1;max-height:200px}
+.upsell p{margin:0;font-size:.86rem;color:rgba(255,255,255,.7)}
+.upsell b{color:#fff;display:block;font-size:.95rem;margin-bottom:3px}
+
+/* pregled */
+.play__pv{position:sticky;top:96px}
+.pvwrap{display:flex;flex-direction:column;align-items:center;gap:14px}
+.pvnote{font-size:.76rem;color:var(--ink-30);font-weight:700;display:flex;align-items:center;gap:8px}
+.pvbadge{margin-top:10px;font-size:.55rem;font-weight:800;letter-spacing:.1em;color:var(--ink-30);
+  background:var(--sand);border-radius:999px;padding:5px 12px;display:inline-flex;align-items:center;gap:6px;
+  transition:opacity .5s var(--ease)}
 
 /* brojke */
 .nums{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;margin-top:20px}
@@ -409,53 +447,120 @@
       <p class="lead" style="margin-top:18px">Kliknite boju ili stil — stranica se mijenja dok gledate. Gost vidi vaš objekt, ne šablonu koju je već vidio sto puta.</p>
     </div>
 
+    <div style="margin-top:28px" data-rv="up">
+      <div class="planflip" id="planflip">
+        <button class="on" data-plan="free">Free plan</button>
+        <button data-plan="pro">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.6 5.6 6.1.8-4.5 4.2 1.2 6L12 16.8 6.6 19.6l1.2-6-4.5-4.2 6.1-.8z"/></svg>
+          Pro plan
+        </button>
+      </div>
+      <div class="cfghint" style="margin-top:12px" id="planNote">Prebacite na Pro i gledajte što se otključa — desno, uživo.</div>
+    </div>
+
     <div class="play">
-      <div class="play__ctrl card" data-rv="left">
-        <div style="font-weight:800;font-size:.95rem">Boja naglaska</div>
-        <div class="sw-row" id="sw">
-          <div class="sw on" data-c="#D4674A" style="background:#D4674A" title="Terakota"></div>
-          <div class="sw" data-c="#2E6B77" style="background:#2E6B77" title="Jadran"></div>
-          <div class="sw" data-c="#7E8F6A" style="background:#7E8F6A" title="Maslina"></div>
-          <div class="sw" data-c="#E9A13B" style="background:#E9A13B" title="Zlatni sat"></div>
-          <div class="sw" data-c="#14202E" style="background:#14202E" title="Ponoć"></div>
+      <div data-rv="left">
+        <div class="cfgbox">
+
+          <div class="cfgrow">
+            <div class="cfglab">Naziv i podnaslov <span class="cfgcount">uvijek dostupno</span></div>
+            <div class="cfghint">Upišite svoje — prikaz se mijenja dok tipkate.</div>
+            <input class="cfgin" id="cName" value="Villa Maslina" maxlength="28" aria-label="Naziv objekta">
+            <input class="cfgin" id="cTag" value="Masline, sol i tišina." maxlength="40" aria-label="Podnaslov">
+          </div>
+
+          <div class="cfgrow">
+            <div class="cfglab">Boja naglaska <span class="cfgcount" id="cntColor">1 od 8</span></div>
+            <div class="sw-row" id="sw">
+              <div class="sw on" data-c="#D4674A" data-free="1" style="background:#D4674A" title="Terakota"></div>
+              <div class="sw" data-c="#2E6B77" style="background:#2E6B77" title="Jadran"></div>
+              <div class="sw" data-c="#7E8F6A" style="background:#7E8F6A" title="Maslina"></div>
+              <div class="sw" data-c="#E9A13B" style="background:#E9A13B" title="Zlatni sat"></div>
+              <div class="sw" data-c="#9C5B7B" style="background:#9C5B7B" title="Lavanda"></div>
+              <div class="sw" data-c="#3C6E5B" style="background:#3C6E5B" title="Bor"></div>
+              <div class="sw" data-c="#B8452F" style="background:#B8452F" title="Cigla"></div>
+              <div class="sw" data-c="#14202E" style="background:#14202E" title="Ponoć"></div>
+            </div>
+          </div>
+
+          <div class="cfgrow">
+            <div class="cfglab">Naslovna slika <span class="cfgcount" id="cntCover">1 od 4</span></div>
+            <div class="cfghint">Dok ne dodate svoje fotografije, stranica koristi jedan od naših prizora.</div>
+            <div class="opts" id="covers">
+              <button class="opt on" data-v="zalazak" data-free="1"><b>Zalazak</b><small>toplo, zlatno</small></button>
+              <button class="opt" data-v="more"><b>Otvoreno more</b><small>plavo, mirno</small></button>
+              <button class="opt" data-v="maslinik"><b>Maslinik</b><small>zeleno, sjenovito</small></button>
+              <button class="opt" data-v="kamen"><b>Stari kamen</b><small>bež, mediteran</small></button>
+            </div>
+          </div>
+
+          <div class="cfgrow">
+            <div class="cfglab">Tipografija <span class="cfgcount" id="cntFont">1 od 3</span></div>
+            <div class="opts" id="fonts">
+              <button class="opt on" data-v="klasik" data-free="1"><b>Klasik</b><small>serif, topao</small></button>
+              <button class="opt" data-v="cist"><b>Čist</b><small>bez serifa, jasan</small></button>
+              <button class="opt" data-v="rukopis"><b>Rukopis</b><small>osobno, ležerno</small></button>
+            </div>
+          </div>
+
+          <div class="cfgrow">
+            <div class="cfglab">Podloga <span class="cfgcount" id="cntStyle">1 od 3</span></div>
+            <div class="opts" id="styles">
+              <button class="opt on" data-v="obalni" data-free="1"><b>Obalni</b><small>topla krema</small></button>
+              <button class="opt" data-v="moderni"><b>Moderni</b><small>čisto bijelo</small></button>
+              <button class="opt" data-v="nocni"><b>Noćni</b><small>tamno</small></button>
+            </div>
+          </div>
+
+          <div class="cfgrow">
+            <div class="cfglab">Naš potpis na vašoj stranici</div>
+            <div class="cfghint" id="brandNote">Na Free planu gost u podnožju vidi malu oznaku „Powered by Odmoria”.</div>
+          </div>
+
         </div>
 
-        <div style="font-weight:800;font-size:.95rem;margin-top:30px">Stil stranice</div>
-        <div class="stylelist" id="styles">
-          <button class="st on" data-s="obalni"><b>Obalni</b><small>Topla krem podloga, serif naslovi, zalazak.</small></button>
-          <button class="st" data-s="moderni"><b>Moderni</b><small>Čisto bijelo, jak tipografski kontrast.</small><span class="protag">PRO</span></button>
-          <button class="st" data-s="nocni"><b>Noćni</b><small>Tamna podloga, svjetlo kao naglasak.</small><span class="protag">PRO</span></button>
+        <div class="upsell" id="upsell">
+          <div>
+            <b>Ovo je dio Pro plana</b>
+            <p>8 boja, 4 prizora, 3 tipografije, tamna podloga i bez našeg potpisa — plus kalendar s Booking.com-a.</p>
+          </div>
+          <button class="btn btn--fill btn--sm" onclick="setPlan('pro')">Isprobaj Pro ovdje <span class="arr">→</span></button>
         </div>
-
-        <p style="font-size:.84rem;color:var(--ink-50);margin-top:20px;display:flex;gap:9px">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--terra)" stroke-width="2" style="flex:none;margin-top:2px"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8.5v.01" stroke-linecap="round"/></svg>
-          <span>Boja i stil su najmanji dio Pro plana. Ono zbog čega ga domaćini uzimaju je <b style="color:var(--ink)">automatski kalendar s Booking.com-a</b> i <b style="color:var(--ink)">vodič na jeziku gosta</b>.</span>
-        </p>
       </div>
 
-      <div style="display:flex;justify-content:center" data-rv="right">
-        <div class="screencard" style="width:min(300px,86vw)">
-          <div class="screenframe">
-            <div class="screeninner" id="pvScreen">
-              <div class="sc-top" id="pvTop" style="height:178px">
-                <div class="sc-ov">
-                  <div class="sc-loc">Hvar, Dalmacija</div>
-                  <div class="sc-name">Villa Maslina</div>
-                  <div class="hand" style="font-size:1rem;opacity:.9">Masline, sol i tišina.</div>
+      <div class="play__pv" data-rv="right">
+        <div class="pvwrap">
+          <div class="pvnote"><span class="dot-live"></span> Ovako izgleda gostu</div>
+          <div class="screencard" style="width:min(310px,84vw)">
+            <div class="screenframe">
+              <div class="screeninner" id="pvScreen">
+                <div class="sc-top" id="pvTop" style="height:186px">
+                  <div class="sc-ov">
+                    <div class="sc-loc">Hvar, Dalmacija</div>
+                    <div class="sc-name" id="pvName">Villa Maslina</div>
+                    <div class="sc-tagline hand" id="pvTag" style="font-size:1rem;opacity:.92">Masline, sol i tišina.</div>
+                  </div>
                 </div>
-              </div>
-              <div class="sc-body">
-                <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:5px">
-                  <span class="pvchip" style="font-size:.57rem;font-weight:700;background:var(--shell);border:1px solid var(--line-2);border-radius:999px;padding:5px 10px">✦ Terasa</span>
-                  <span class="pvchip" style="font-size:.57rem;font-weight:700;background:var(--shell);border:1px solid var(--line-2);border-radius:999px;padding:5px 10px">✦ 2 min do plaže</span>
+                <div class="sc-body">
+                  <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:5px">
+                    <span class="pvchip" style="font-size:.57rem;font-weight:700;background:var(--shell);border:1px solid var(--line-2);border-radius:999px;padding:5px 10px">✦ Terasa</span>
+                    <span class="pvchip" style="font-size:.57rem;font-weight:700;background:var(--shell);border:1px solid var(--line-2);border-radius:999px;padding:5px 10px">✦ 2 min do plaže</span>
+                  </div>
+                  <div class="sc-row"><span class="sc-k">SLOBODNO</span><span class="sc-v">12. – 19. srp</span></div>
+                  <div class="sc-row"><span class="sc-k">PRIJAVA</span><span class="sc-v">15:00 – 22:00</span></div>
+                  <div class="sc-row"><span class="sc-k">WI-FI</span><span class="sc-v">VillaMaslina</span></div>
+                  <div class="sc-cta" id="pvCta">Kontaktiraj domaćina</div>
+                  <div style="text-align:center;margin-top:9px" id="pvBrandWrap">
+                    <span class="pvbadge" id="pvBrand">
+                      <svg width="9" height="9" viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="10" fill="#14202E"/><path d="M6.5 21.5c4-9.5 15-9.5 19 0" stroke="#D4674A" stroke-width="3" stroke-linecap="round"/></svg>
+                      POWERED BY ODMORIA
+                    </span>
+                  </div>
                 </div>
-                <div class="sc-row"><span class="sc-k">PRIJAVA</span><span class="sc-v">15:00 – 22:00</span></div>
-                <div class="sc-row"><span class="sc-k">WI-FI</span><span class="sc-v">VillaMaslina</span></div>
-                <div class="sc-row"><span class="sc-k">ŠIFRA VRATA</span><span class="sc-v">4 2 7 1</span></div>
-                <div class="sc-cta" id="pvCta">Kontaktiraj domaćina</div>
               </div>
             </div>
           </div>
+          <div class="pvnote" id="pvSummary" style="text-align:center;max-width:280px;line-height:1.5"></div>
         </div>
       </div>
     </div>
@@ -582,37 +687,111 @@ const F = ['Bez provizije po rezervaciji','Gost ne instalira ništa','Šifra pod
            'Radi na svakom telefonu','Vaše preporuke, ne vodič iz 2009.','Postavljanje za 10 minuta'];
 $('#ticker').innerHTML = [...F,...F].map(f=>`<span class="ticker__item">${f}</span><span class="ticker__dot">✦</span>`).join('');
 
-/* igralište: boja + stil mijenjaju prikaz uživo */
+/* ---------- KONFIGURATOR: Free vs Pro uživo ---------- */
 const STYLES = {
-  obalni:{bg:'#FAF6EF',card:'#FFFCF7',line:'rgba(20,32,46,.06)',ink:'#14202E',
-          top:'linear-gradient(165deg,#F3C78C,ACCENT 46%,#2E6B77 88%)'},
-  moderni:{bg:'#FFFFFF',card:'#F5F5F6',line:'rgba(20,20,22,.08)',ink:'#101114',
-          top:'linear-gradient(200deg,#DCE0E4,ACCENT 56%,#22262B 96%)'},
-  nocni:{bg:'#18222E',card:'rgba(255,255,255,.07)',line:'rgba(255,255,255,.12)',ink:'#F2EFE9',
-          top:'linear-gradient(170deg,#3A4E60,ACCENT 52%,#0F1822 96%)'}
+  obalni:{bg:'#FAF6EF',card:'#FFFCF7',line:'rgba(20,32,46,.06)',ink:'#14202E',k:'rgba(20,32,46,.35)'},
+  moderni:{bg:'#FFFFFF',card:'#F4F5F6',line:'rgba(20,20,22,.08)',ink:'#101114',k:'rgba(16,17,20,.4)'},
+  nocni:{bg:'#18222E',card:'rgba(255,255,255,.07)',line:'rgba(255,255,255,.12)',ink:'#F2EFE9',k:'rgba(255,255,255,.45)'}
 };
-let accent = '#D4674A', styleKey = 'obalni';
+/* prizori: ACCENT se zamjenjuje odabranom bojom pa se svaki prizor slaže s bojom */
+const COVERS = {
+  zalazak:  'linear-gradient(165deg,#F6D9A8 0%,#F0B078 22%,ACCENT 52%,#2E5E6B 84%,#1B3948 100%)',
+  more:     'linear-gradient(170deg,#CFE3E8 0%,#7FB3C0 26%,ACCENT 58%,#1E4A5C 90%)',
+  maslinik: 'linear-gradient(160deg,#E4E2C4 0%,#A9B98A 28%,ACCENT 60%,#33502F 92%)',
+  kamen:    'linear-gradient(175deg,#F2E7D6 0%,#DCC7A8 30%,ACCENT 62%,#6B5741 94%)'
+};
+const FONTS = {
+  klasik:  {fam:"'Fraunces',Georgia,serif", vs:"'SOFT' 20,'WONK' 1", size:'1.34rem', ls:'-.02em'},
+  cist:    {fam:"'Manrope',sans-serif",     vs:"normal",             size:'1.2rem',  ls:'-.035em'},
+  rukopis: {fam:"'Caveat',cursive",         vs:"normal",             size:'1.72rem', ls:'0'}
+};
+const FREE = {colors:1, covers:1, fonts:1, styles:1};
+
+let CFG = {plan:'free', accent:'#D4674A', cover:'zalazak', font:'klasik', style:'obalni'};
+
+function isFree(el){ return el.dataset.free === '1'; }
+
+function lockUI(){
+  const pro = CFG.plan === 'pro';
+  $$('#sw .sw').forEach(el => el.classList.toggle('lk', !pro && !isFree(el)));
+  ['#covers','#fonts','#styles'].forEach(sel =>
+    $$(sel + ' .opt').forEach(el => el.classList.toggle('lk', !pro && !isFree(el))));
+
+  $('#cntColor').textContent = pro ? '8 boja' : '1 od 8 — Free';
+  $('#cntCover').textContent = pro ? '4 prizora' : '1 od 4 — Free';
+  $('#cntFont').textContent  = pro ? '3 tipografije' : '1 od 3 — Free';
+  $('#cntStyle').textContent = pro ? '3 podloge' : '1 od 3 — Free';
+
+  $('#brandNote').innerHTML = pro
+    ? '<b style="color:var(--olive)">Nema našeg potpisa.</b> Stranica izgleda 100 % kao vaša.'
+    : 'Na Free planu gost u podnožju vidi malu oznaku „Powered by Odmoria”.';
+  $('#planNote').textContent = pro
+    ? 'Sve je otključano. Vratite na Free da vidite razliku.'
+    : 'Prebacite na Pro i gledajte što se otključa — desno, uživo.';
+
+  $('#pvBrandWrap').style.opacity = pro ? '0' : '1';
+  $('#pvSummary').textContent = pro
+    ? 'Pro: 8 boja · 4 prizora · 3 tipografije · 3 podloge · bez našeg potpisa'
+    : 'Free: 1 boja · 1 prizor · 1 tipografija · s našim potpisom';
+}
 
 function paint(){
-  const st = STYLES[styleKey];
-  $('#pvScreen').style.background = st.bg;
-  $('#pvScreen').style.color = st.ink;
-  $('#pvTop').style.background = st.top.replace('ACCENT', accent);
-  $('#pvCta').style.background = accent;
+  const st = STYLES[CFG.style], f = FONTS[CFG.font];
+  const scr = $('#pvScreen');
+  scr.style.background = st.bg; scr.style.color = st.ink;
+  $('#pvTop').style.background = COVERS[CFG.cover].replace('ACCENT', CFG.accent);
+  $('#pvCta').style.background = CFG.accent;
   $$('#pvScreen .sc-row, #pvScreen .pvchip').forEach(el => {
     el.style.background = st.card; el.style.borderColor = st.line; el.style.color = st.ink;
   });
-  $$('#pvScreen .sc-k').forEach(el => el.style.color = styleKey === 'nocni' ? 'rgba(255,255,255,.45)' : '');
+  $$('#pvScreen .sc-k').forEach(el => el.style.color = st.k);
+
+  const n = $('#pvName');
+  n.style.fontFamily = f.fam; n.style.fontVariationSettings = f.vs;
+  n.style.fontSize = f.size; n.style.letterSpacing = f.ls;
+  $('#pvTag').style.display = CFG.font === 'rukopis' ? 'none' : 'block';
 }
+
+function setPlan(p){
+  CFG.plan = p;
+  $$('#planflip button').forEach(b => b.classList.toggle('on', b.dataset.plan === p));
+  if(p === 'free'){                       /* vrati na ono što Free stvarno nudi */
+    CFG = {...CFG, accent:'#D4674A', cover:'zalazak', font:'klasik', style:'obalni'};
+    $$('#sw .sw').forEach(el => el.classList.toggle('on', isFree(el)));
+    ['#covers','#fonts','#styles'].forEach(sel =>
+      $$(sel + ' .opt').forEach(el => el.classList.toggle('on', isFree(el))));
+  }
+  $('#upsell').classList.remove('show');
+  lockUI(); paint();
+}
+window.setPlan = setPlan;
+$$('#planflip button').forEach(b => b.onclick = () => setPlan(b.dataset.plan));
+
+function nudge(){
+  $('#upsell').classList.add('show');
+  clearTimeout(nudge._t);
+  nudge._t = setTimeout(() => $('#upsell').classList.remove('show'), 6000);
+}
+
+/* boje */
 $$('#sw .sw').forEach(s => s.onclick = () => {
+  if(CFG.plan === 'free' && !isFree(s)) return nudge();
   $$('#sw .sw').forEach(x => x.classList.remove('on'));
-  s.classList.add('on'); accent = s.dataset.c; paint();
+  s.classList.add('on'); CFG.accent = s.dataset.c; paint();
 });
-$$('#styles .st').forEach(b => b.onclick = () => {
-  $$('#styles .st').forEach(x => x.classList.remove('on'));
-  b.classList.add('on'); styleKey = b.dataset.s; paint();
+/* prizor / tipografija / podloga */
+[['#covers','cover'],['#fonts','font'],['#styles','style']].forEach(([sel,key]) => {
+  $$(sel + ' .opt').forEach(b => b.onclick = () => {
+    if(CFG.plan === 'free' && !isFree(b)) return nudge();
+    $$(sel + ' .opt').forEach(x => x.classList.remove('on'));
+    b.classList.add('on'); CFG[key] = b.dataset.v; paint();
+  });
 });
-paint();
+/* tekst uživo */
+$('#cName').addEventListener('input', e => $('#pvName').textContent = e.target.value || 'Vaš objekt');
+$('#cTag').addEventListener('input', e => $('#pvTag').textContent = e.target.value);
+
+setPlan('free');
 
 /* cijene */
 $$('#switch button').forEach(b => b.onclick = () => {
