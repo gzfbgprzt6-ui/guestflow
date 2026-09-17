@@ -484,13 +484,14 @@
           </div>
 
           <div class="cfgrow">
-            <div class="cfglab">Naslovna slika <span class="cfgcount" id="cntCover">1 od 4</span></div>
-            <div class="cfghint">Dok ne dodate svoje fotografije, stranica koristi jedan od naših prizora.</div>
+            <div class="cfglab">Naslovna slika <span class="cfgcount" id="cntCover">1 od 5</span></div>
+            <div class="cfghint">Na Pro planu birate 2–3 vlastite fotografije koje se polako izmjenjuju u zaglavlju — ostale idu u galeriju.</div>
             <div class="opts" id="covers">
               <button class="opt on" data-v="zalazak" data-free="1"><b>Zalazak</b><small>toplo, zlatno</small></button>
               <button class="opt" data-v="more"><b>Otvoreno more</b><small>plavo, mirno</small></button>
               <button class="opt" data-v="maslinik"><b>Maslinik</b><small>zeleno, sjenovito</small></button>
               <button class="opt" data-v="kamen"><b>Stari kamen</b><small>bež, mediteran</small></button>
+              <button class="opt" data-v="foto"><b>Vaše fotografije</b><small>2–3 slike koje se izmjenjuju</small></button>
             </div>
           </div>
 
@@ -698,8 +699,26 @@ const COVERS = {
   zalazak:  'linear-gradient(165deg,#F6D9A8 0%,#F0B078 22%,ACCENT 52%,#2E5E6B 84%,#1B3948 100%)',
   more:     'linear-gradient(170deg,#CFE3E8 0%,#7FB3C0 26%,ACCENT 58%,#1E4A5C 90%)',
   maslinik: 'linear-gradient(160deg,#E4E2C4 0%,#A9B98A 28%,ACCENT 60%,#33502F 92%)',
-  kamen:    'linear-gradient(175deg,#F2E7D6 0%,#DCC7A8 30%,ACCENT 62%,#6B5741 94%)'
+  kamen:    'linear-gradient(175deg,#F2E7D6 0%,#DCC7A8 30%,ACCENT 62%,#6B5741 94%)',
+  foto:     'PHOTO'
 };
+/* naslovne fotografije koje se izmjenjuju u pregledu — isto što gost vidi uživo */
+const PHOTOS = ['img/terasa.webp','img/kuhinja.jpg','img/dnevni.jpg'];
+let photoI = 0, photoTimer = null;
+function photoBg(n){
+  return 'linear-gradient(180deg,color-mix(in srgb,' + CFG.accent + ' 26%,transparent) 0%,'
+       + 'rgba(20,32,46,.10) 40%,rgba(20,32,46,.58) 100%), url(\'' + PHOTOS[n] + '\') center/cover no-repeat';
+}
+function photoLoop(on){
+  clearInterval(photoTimer); photoTimer = null;
+  if(!on) return;
+  photoTimer = setInterval(() => {
+    photoI = (photoI + 1) % PHOTOS.length;
+    const t = document.querySelector('#pvTop');
+    t.style.opacity = '.25';
+    setTimeout(() => { t.style.background = photoBg(photoI); t.style.opacity = '1'; }, 260);
+  }, 2800);
+}
 const FONTS = {
   klasik:  {fam:"'Fraunces',Georgia,serif", vs:"'SOFT' 20,'WONK' 1", size:'1.34rem', ls:'-.02em'},
   cist:    {fam:"'Manrope',sans-serif",     vs:"normal",             size:'1.2rem',  ls:'-.035em'},
@@ -718,7 +737,7 @@ function lockUI(){
     $$(sel + ' .opt').forEach(el => el.classList.toggle('lk', !pro && !isFree(el))));
 
   $('#cntColor').textContent = pro ? '8 boja' : '1 od 8 — Free';
-  $('#cntCover').textContent = pro ? '4 prizora' : '1 od 4 — Free';
+  $('#cntCover').textContent = pro ? '4 prizora + vaše fotografije' : '1 od 5 — Free';
   $('#cntFont').textContent  = pro ? '3 tipografije' : '1 od 3 — Free';
   $('#cntStyle').textContent = pro ? '3 podloge' : '1 od 3 — Free';
 
@@ -731,7 +750,7 @@ function lockUI(){
 
   $('#pvBrandWrap').style.opacity = pro ? '0' : '1';
   $('#pvSummary').textContent = pro
-    ? 'Pro: 8 boja · 4 prizora · 3 tipografije · 3 podloge · bez našeg potpisa'
+    ? 'Pro: 8 boja · vlastite fotografije u zaglavlju · 3 tipografije · 3 podloge · bez našeg potpisa'
     : 'Free: 1 boja · 1 prizor · 1 tipografija · s našim potpisom';
 }
 
@@ -739,7 +758,10 @@ function paint(){
   const st = STYLES[CFG.style], f = FONTS[CFG.font];
   const scr = $('#pvScreen');
   scr.style.background = st.bg; scr.style.color = st.ink;
-  $('#pvTop').style.background = COVERS[CFG.cover].replace('ACCENT', CFG.accent);
+  const isFoto = CFG.cover === 'foto';
+  $('#pvTop').style.transition = 'background .5s var(--ease),opacity .26s linear';
+  $('#pvTop').style.background = isFoto ? photoBg(photoI) : COVERS[CFG.cover].replace('ACCENT', CFG.accent);
+  photoLoop(isFoto);
   $('#pvCta').style.background = CFG.accent;
   $$('#pvScreen .sc-row, #pvScreen .pvchip').forEach(el => {
     el.style.background = st.card; el.style.borderColor = st.line; el.style.color = st.ink;

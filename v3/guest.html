@@ -24,6 +24,97 @@
 .islands svg{width:100%;height:100%}
 .hl{display:flex;flex-wrap:wrap;gap:9px;margin-top:28px}
 
+/* ---- FOTO HERO: 2-3 naslovne fotke utkane u dizajn ---- */
+.hero--photo{background:var(--night)}
+.phs{position:absolute;inset:0;overflow:hidden;background:var(--night)}
+.ph{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;
+  /* jedinstvena gradacija: svaka fotka pada u istu paletu */
+  filter:saturate(.84) contrast(1.06) brightness(.97);
+  transform:scale(1.05);transition:opacity 1.7s var(--ease)}
+.ph.on{opacity:1;animation:kenburns 9.5s linear forwards}
+@keyframes kenburns{from{transform:scale(1.04) translate3d(0,0,0)}to{transform:scale(1.15) translate3d(-1.6%,-1.2%,0)}}
+/* topli sloj koji ujednačava hladne i tople fotke */
+.phs__tone{position:absolute;inset:0;background:var(--terra);mix-blend-mode:soft-light;opacity:.20}
+.phs__grade{position:absolute;inset:0;background:
+  radial-gradient(108% 64% at 68% 14%,rgba(255,224,168,.32) 0%,rgba(255,224,168,0) 62%),
+  linear-gradient(178deg,rgba(20,32,46,.44) 0%,rgba(20,32,46,.04) 22%,rgba(20,32,46,.34) 54%,rgba(20,32,46,.76) 78%,rgba(20,32,46,.95) 100%)}
+.hero--photo h1{color:#fff;text-shadow:0 8px 40px rgba(20,32,46,.45)}
+.hero--photo h1{font-size:clamp(2.9rem,7.6vw,6rem)}
+.hero--photo .hand{color:rgba(255,255,255,.82)}
+.hero--photo .kicker{color:var(--sun)}
+.hero--photo .chip--glass{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.26);color:#fff;
+  backdrop-filter:blur(10px)}
+/* prebacivanje fotki */
+.phnav{position:absolute;right:var(--gut);bottom:clamp(96px,11vh,132px);z-index:7;
+  display:flex;flex-direction:column;align-items:flex-end;gap:13px}
+.phcap{font-size:.74rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:rgba(255,255,255,.72);transition:opacity .5s}
+.phbars{display:flex;gap:9px}
+.phbars button{width:38px;height:3px;border-radius:3px;border:0;padding:0;cursor:pointer;
+  background:rgba(255,255,255,.28);overflow:hidden;transition:background .4s}
+.phbars button:hover{background:rgba(255,255,255,.5)}
+.phbars i{display:block;height:100%;width:0;background:#fff;border-radius:3px}
+.phbars button.on i{animation:phbar 7s linear forwards}
+@keyframes phbar{from{width:0}to{width:100%}}
+@media(max-width:620px){
+  /* na mobitelu: samo crtice, na dnu, bez natpisa koji se sudara s pločicama */
+  .phnav{left:0;right:0;bottom:16px;align-items:center}
+  .phcap{display:none}
+  .ph{background-position:50% 62%}
+  /* manje pločica da naslov diše */
+  .hero--photo .hl .chip:nth-child(n+3){display:none}
+}
+
+/* ---- FOTO TRAKA usred stranice ---- */
+.band{position:relative;overflow:hidden;height:clamp(330px,48vh,500px);margin:clamp(66px,8vw,112px) 0}
+.band__img{position:absolute;inset:-14% 0;background-size:cover;background-position:center;
+  filter:saturate(.84) contrast(1.06)}
+.band__tone{position:absolute;inset:0;background:var(--sea);mix-blend-mode:soft-light;opacity:.34}
+.band__grade{position:absolute;inset:0;background:
+  linear-gradient(94deg,rgba(20,32,46,.84) 0%,rgba(20,32,46,.54) 42%,rgba(20,32,46,.14) 78%,rgba(20,32,46,.3) 100%)}
+.band__in{position:relative;z-index:3;height:100%;display:flex;align-items:center}
+.band__q{max-width:min(560px,62vw);color:#fff}
+.band__q .hand{font-size:clamp(1.9rem,3.6vw,2.9rem);line-height:1.22;color:#fff}
+.band__q .kicker{color:var(--sun)}
+@media(max-width:620px){.band__q{max-width:none}.band__grade{background:linear-gradient(180deg,rgba(20,32,46,.42),rgba(20,32,46,.86))}}
+
+/* ---- GALERIJA ---- */
+.gal{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:clamp(120px,15vw,186px);gap:14px}
+.gal figure{margin:0;position:relative;overflow:hidden;border-radius:var(--r-md);cursor:zoom-in;
+  background:var(--sand)}
+.gal figure:nth-child(1){grid-column:span 2;grid-row:span 2}
+.gal figure:nth-child(2){grid-column:span 2}
+.gal figure:nth-child(3){grid-column:span 1}
+.gal figure:nth-child(4){grid-column:span 1}
+.gal img{width:100%;height:100%;object-fit:cover;display:block;
+  filter:saturate(.88) contrast(1.04);transition:transform 1.1s var(--ease),filter .6s}
+.gal figure:hover img{transform:scale(1.06);filter:saturate(1) contrast(1.02)}
+.gal figcaption{position:absolute;left:14px;bottom:12px;z-index:2;color:#fff;font-size:.74rem;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;text-shadow:0 2px 14px rgba(20,32,46,.8);
+  opacity:0;transform:translateY(6px);transition:opacity .45s,transform .45s var(--ease)}
+.gal figure:hover figcaption{opacity:1;transform:none}
+.gal .more{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;
+  background:var(--night);color:#fff;font-weight:700;font-size:.9rem;cursor:default}
+.gal .more span{font-family:'Fraunces',serif;font-size:2rem;font-weight:400;color:var(--sun)}
+@media(max-width:760px){
+  .gal{grid-template-columns:repeat(2,1fr)}
+  .gal figure:nth-child(1){grid-column:span 2;grid-row:span 1}
+  .gal figure:nth-child(2){grid-column:span 2}
+}
+/* lightbox */
+.lb{position:fixed;inset:0;z-index:90;background:rgba(14,22,32,.94);backdrop-filter:blur(8px);
+  display:flex;align-items:center;justify-content:center;padding:clamp(16px,4vw,52px);
+  opacity:0;pointer-events:none;transition:opacity .45s var(--ease)}
+.lb.show{opacity:1;pointer-events:auto}
+.lb img{max-width:100%;max-height:100%;border-radius:var(--r-md);box-shadow:0 40px 90px -30px #000;
+  transform:scale(.96);transition:transform .55s var(--ease)}
+.lb.show img{transform:scale(1)}
+.lb__x{position:absolute;top:22px;right:22px;width:44px;height:44px;border-radius:50%;cursor:pointer;
+  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);color:#fff;font-size:1.3rem}
+.lb__nav{position:absolute;top:50%;transform:translateY(-50%);width:46px;height:46px;border-radius:50%;
+  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);color:#fff;cursor:pointer;font-size:1.2rem}
+.lb__nav.prev{left:16px}.lb__nav.next{right:16px}
+
 /* pismo domaćina */
 .letter{text-align:center}
 .letter p{font-family:'Fraunces',serif;font-weight:300;font-size:clamp(1.3rem,2.5vw,1.85rem);line-height:1.46;
@@ -219,25 +310,18 @@ details .body{padding:0 0 22px;color:var(--ink-70);font-size:.94rem;animation:fa
 </div>
 
 <!-- ============ HERO ============ -->
-<header class="hero" data-scene>
-  <div class="scene">
-    <div class="scene__sun" data-speed="0.14" data-mouse="16"></div>
-    <div class="scene__haze"></div>
-    <div class="islands" data-speed="0.07" data-mouse="9">
-      <svg viewBox="0 0 1440 200" preserveAspectRatio="none" fill="none">
-        <path d="M0 148c78-6 122-34 196-32 71 2 104 27 176 24 74-3 110-36 190-34 72 2 118 30 190 30 76 0 122-31 196-28 70 3 118 28 190 30 60 2 200-10 302-22v204H0z" fill="#6E8290" opacity=".5"/>
-        <path d="M0 170c96-10 150-42 236-38 78 4 120 33 198 31 80-2 122-40 204-36 74 4 122 34 196 34 80 0 126-33 204-29 66 3 128 26 402 18v210H0z" fill="#3E5A69" opacity=".72"/>
-        <path d="M0 192c120-8 170-30 268-24 86 5 128 24 210 22 84-2 126-26 208-22 78 4 126 22 202 22 82 0 132-18 214-14 70 3 200 6 338 2v122H0z" fill="#22394A" opacity=".92"/>
-      </svg>
-    </div>
-    <div class="scene__sea" data-speed="0.03">
-      <div class="shimmer" style="top:10%;left:44%;width:22%;animation-delay:0s"></div>
-      <div class="shimmer" style="top:17%;left:20%;width:16%;animation-delay:1.2s"></div>
-      <div class="shimmer" style="top:25%;left:60%;width:24%;animation-delay:2.3s"></div>
-      <div class="shimmer" style="top:33%;left:32%;width:19%;animation-delay:.7s"></div>
-      <div class="shimmer" style="top:42%;left:14%;width:21%;animation-delay:3s"></div>
-    </div>
-    <div class="scene__veil"></div>
+<header class="hero hero--photo" data-scene>
+  <div class="phs">
+    <div class="ph on" data-cap="Terasa s pogledom" style="background-image:url('img/terasa.webp')"></div>
+    <div class="ph" data-cap="Kuhinja i blagovaonica" style="background-image:url('img/kuhinja.jpg')"></div>
+    <div class="ph" data-cap="Dnevni boravak" style="background-image:url('img/dnevni.jpg')"></div>
+    <div class="phs__tone"></div>
+    <div class="phs__grade"></div>
+  </div>
+
+  <div class="phnav">
+    <div class="phcap" id="phCap">Terasa s pogledom</div>
+    <div class="phbars" id="phBars"></div>
   </div>
 
   <div class="mark">
@@ -254,9 +338,9 @@ details .body{padding:0 0 22px;color:var(--ink-70);font-size:.94rem;animation:fa
     <h1 style="margin-top:14px">
       <span class="mask-line" data-rv-now><span>Villa Maslina</span></span>
     </h1>
-    <div class="hand" style="font-size:clamp(1.7rem,4vw,2.5rem);color:var(--ink-70);margin-top:4px"
+    <div class="hand" style="font-size:clamp(1.7rem,4vw,2.5rem);margin-top:4px"
          data-rv="fade" data-rv-delay="420">Masline, sol i tišina.</div>
-    <div class="hl" data-rv="up" data-rv-delay="540">
+    <div class="hl" data-rv="up" data-rv-now>
       <span class="chip chip--glass">✦ Terasa s pogledom</span>
       <span class="chip chip--glass">✦ 2 min do plaže</span>
       <span class="chip chip--glass">✦ Besplatan parking</span>
@@ -302,6 +386,27 @@ details .body{padding:0 0 22px;color:var(--ink-70);font-size:.94rem;animation:fa
         <svg class="ic" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
         <div class="v">15:00</div><div class="k">prijava, odjava do 10:00</div>
       </div>
+    </div>
+  </div>
+
+  <!-- ============ GALERIJA ============ -->
+  <div class="wrap" style="margin-top:clamp(56px,7vw,92px)">
+    <div class="kicker bare" data-rv="fade">Galerija</div>
+    <h2 data-rv="up" style="margin:14px 0 30px">Kako to izgleda uživo</h2>
+    <div class="gal" data-rv="up">
+      <figure onclick="lbOpen(0)">
+        <img src="img/terasa.webp" alt="Terasa s pogledom na more" loading="lazy">
+        <figcaption>Terasa</figcaption>
+      </figure>
+      <figure onclick="lbOpen(1)">
+        <img src="img/kuhinja.jpg" alt="Kuhinja i blagovaonica" loading="lazy">
+        <figcaption>Kuhinja</figcaption>
+      </figure>
+      <figure onclick="lbOpen(2)">
+        <img src="img/dnevni.jpg" alt="Dnevni boravak" loading="lazy">
+        <figcaption>Dnevni boravak</figcaption>
+      </figure>
+      <figure class="more"><span>+9</span>fotografija</figure>
     </div>
   </div>
 </section>
@@ -495,6 +600,19 @@ details .body{padding:0 0 22px;color:var(--ink-70);font-size:.94rem;animation:fa
   </div>
 </section>
 
+<!-- ============ FOTO TRAKA ============ -->
+<div class="band">
+  <div class="band__img" data-speed="0.12" style="background-image:url('img/terasa.webp')"></div>
+  <div class="band__tone"></div>
+  <div class="band__grade"></div>
+  <div class="band__in">
+    <div class="wrap"><div class="band__q" data-rv="up">
+      <div class="kicker bare">Naš savjet</div>
+      <div class="hand" style="margin-top:16px">Kavu pijte na terasi oko sedam ujutro — more je tad staklo, a nema nikoga.</div>
+    </div></div>
+  </div>
+</div>
+
 <!-- ============ UPUTE ============ -->
 <section class="sec" style="padding-top:0">
   <div class="wrap wrap-narrow">
@@ -636,10 +754,102 @@ details .body{padding:0 0 22px;color:var(--ink-70);font-size:.94rem;animation:fa
   <a class="btn btn--fill btn--sm" href="https://wa.me/385991234567" target="_blank" rel="noopener">Javi se</a>
 </div></div>
 
+<div class="lb" id="lb" onclick="if(event.target.id==='lb')lbClose()">
+  <button class="lb__x" onclick="lbClose()" aria-label="Zatvori">✕</button>
+  <button class="lb__nav prev" onclick="lbStep(-1)" aria-label="Prethodna">‹</button>
+  <img id="lbImg" alt="">
+  <button class="lb__nav next" onclick="lbStep(1)" aria-label="Sljedeća">›</button>
+</div>
+
 <script src="motion.js"></script>
 <script>
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
+
+/* ============ 0. NASLOVNE FOTOGRAFIJE — rotacija u heroju ============ */
+(function(){
+  const slides = $$('.ph');
+  if(slides.length < 2) return;
+  const bars = $('#phBars'), cap = $('#phCap');
+  const DWELL = 7000;
+  let i = 0, timer = null;
+
+  slides.forEach((_, n) => {
+    const b = document.createElement('button');
+    b.innerHTML = '<i></i>';
+    b.setAttribute('aria-label', 'Fotografija ' + (n + 1));
+    b.onclick = () => go(n);
+    bars.appendChild(b);
+  });
+
+  function go(n){
+    if(n === i) return;
+    const prev = slides[i];
+    // zamrzni zoom prethodne fotke da ne "poskoči" dok se stapa
+    prev.style.transform = getComputedStyle(prev).transform;
+    prev.classList.remove('on');
+    setTimeout(() => { if(!prev.classList.contains('on')) prev.style.transform = ''; }, 1800);
+    i = n;
+    const s = slides[i];
+    s.classList.remove('on');
+    void s.offsetWidth;              // restart Ken Burns
+    s.classList.add('on');
+    cap.style.opacity = 0;
+    setTimeout(() => { cap.textContent = s.dataset.cap; cap.style.opacity = 1; }, 320);
+    paint();
+    arm();
+  }
+  function paint(){
+    [...bars.children].forEach((b, n) => {
+      b.classList.remove('on');
+      if(n === i){ void b.offsetWidth; b.classList.add('on'); }
+    });
+  }
+  function arm(){
+    clearTimeout(timer);
+    if(matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+    timer = setTimeout(() => go((i + 1) % slides.length), DWELL);
+  }
+  // pauziraj dok je kartica u pozadini — ne trošimo promet ni bateriju
+  document.addEventListener('visibilitychange', () => document.hidden ? clearTimeout(timer) : arm());
+  paint(); arm();
+
+  // predučitaj ostale tek kad je prva gotova
+  addEventListener('load', () => slides.slice(1).forEach(el => {
+    const u = (el.style.backgroundImage.match(/url\(["']?(.+?)["']?\)/) || [])[1];
+    if(u) new Image().src = u;
+  }));
+})();
+
+/* ============ 0b. GALERIJA — lightbox ============ */
+const GAL = [
+  {src:'img/terasa.webp', alt:'Terasa s pogledom na more'},
+  {src:'img/kuhinja.jpg', alt:'Kuhinja i blagovaonica'},
+  {src:'img/dnevni.jpg',  alt:'Dnevni boravak'}
+];
+let lbI = 0;
+function lbOpen(n){
+  lbI = n;
+  const img = document.getElementById('lbImg');
+  img.src = GAL[n].src; img.alt = GAL[n].alt;
+  document.getElementById('lb').classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+function lbClose(){
+  document.getElementById('lb').classList.remove('show');
+  document.body.style.overflow = '';
+}
+function lbStep(d){
+  lbI = (lbI + d + GAL.length) % GAL.length;
+  const img = document.getElementById('lbImg');
+  img.src = GAL[lbI].src; img.alt = GAL[lbI].alt;
+}
+addEventListener('keydown', e => {
+  if(!document.getElementById('lb').classList.contains('show')) return;
+  if(e.key === 'Escape') lbClose();
+  if(e.key === 'ArrowLeft') lbStep(-1);
+  if(e.key === 'ArrowRight') lbStep(1);
+});
 const F = ['Prijava od 15:00','Spava 6 osoba','Wi-Fi u cijeloj kući','More 120 stepenica niže',
            'Parking ispred kuće','Ana odgovara u sat vremena'];
 $('#ticker').innerHTML = [...F,...F].map(f=>`<span class="ticker__item">${f}</span><span class="ticker__dot">✦</span>`).join('');
