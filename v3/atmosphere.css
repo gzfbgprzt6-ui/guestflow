@@ -1,0 +1,234 @@
+/* ==========================================================================
+   Odmoria v3 — zajednički vizualni sustav
+   Jadran u zlatnom satu: svjetlo, kamen, more, maslina.
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..700,0..100,0..1;1,9..144,300..600,0..100,0..1&family=Manrope:wght@400;500;600;700;800&family=Caveat:wght@500;600;700&display=swap');
+
+:root{
+  /* podloge */
+  --cream:#FAF6EF;
+  --sand:#F1E7D7;
+  --shell:#FFFCF7;
+  --night:#14202E;
+  --night-2:#1C2E3F;
+
+  /* tinta */
+  --ink:#14202E;
+  --ink-70:rgba(20,32,46,.70);
+  --ink-50:rgba(20,32,46,.50);
+  --ink-30:rgba(20,32,46,.30);
+  --line:rgba(20,32,46,.10);
+  --line-2:rgba(20,32,46,.06);
+
+  /* akcenti */
+  --terra:#D4674A;
+  --terra-d:#B44F35;
+  --sun:#E9A13B;
+  --sea:#2E6B77;
+  --olive:#7E8F6A;
+  --rose:#E3A08A;
+
+  /* motion */
+  --ease:cubic-bezier(.16,1,.3,1);
+  --ease-soft:cubic-bezier(.33,1,.68,1);
+  --dur:.9s;
+
+  /* mjere */
+  --gut:clamp(20px,4vw,44px);
+  --maxw:1220px;
+  --r-lg:30px;
+  --r-md:20px;
+  --r-sm:14px;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--cream);color:var(--ink);
+  font-family:'Manrope',system-ui,-apple-system,sans-serif;
+  font-size:16px;line-height:1.62;letter-spacing:-.005em;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  overflow-x:hidden;
+}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+button{font:inherit}
+::selection{background:var(--terra);color:#fff}
+
+/* ---------- zrno + vinjeta: daje stranici "film" kvalitetu ---------- */
+.grain::after{
+  content:"";position:fixed;inset:-50%;pointer-events:none;z-index:200;opacity:.055;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation:grainShift 7s steps(6) infinite;
+}
+@keyframes grainShift{
+  0%{transform:translate(0,0)}     16%{transform:translate(-4%,-3%)}
+  33%{transform:translate(3%,-5%)} 50%{transform:translate(-3%,4%)}
+  66%{transform:translate(5%,2%)}  83%{transform:translate(-2%,-4%)}
+  100%{transform:translate(0,0)}
+}
+
+/* ---------- tipografija ---------- */
+.display,h1,h2,h3{
+  font-family:'Fraunces',Georgia,serif;font-weight:400;
+  font-variation-settings:'SOFT' 14,'WONK' 1,'opsz' 96;
+  letter-spacing:-.025em;line-height:1.02;margin:0;
+}
+h1{font-size:clamp(2.9rem,7.2vw,6.1rem)}
+h2{font-size:clamp(2.1rem,4.4vw,3.6rem)}
+h3{font-size:clamp(1.3rem,2vw,1.7rem);line-height:1.15}
+.italic{font-style:italic;font-variation-settings:'SOFT' 30,'WONK' 1}
+.hand{font-family:'Caveat',cursive;font-weight:600;letter-spacing:0}
+.kicker{
+  font-size:.7rem;font-weight:800;letter-spacing:.26em;text-transform:uppercase;
+  color:var(--terra);display:inline-flex;align-items:center;gap:13px;
+}
+.kicker::before{content:"";width:26px;height:1.5px;background:currentColor;opacity:.8}
+.kicker.bare::before{display:none}
+.lead{font-size:clamp(1rem,1.3vw,1.15rem);color:var(--ink-70);line-height:1.68;max-width:34em}
+
+/* ---------- raspored ---------- */
+.wrap{width:100%;max-width:var(--maxw);margin-inline:auto;padding-inline:var(--gut)}
+.wrap-narrow{max-width:820px}
+.sec{padding-block:clamp(72px,10vw,132px);position:relative}
+.sec-tight{padding-block:clamp(48px,6vw,80px)}
+
+/* ==========================================================================
+   JADRANSKA SCENA — slojeviti animirani prizor umjesto fotografije
+   ========================================================================== */
+.scene{position:absolute;inset:0;overflow:hidden;
+  background:linear-gradient(176deg,#FBE3B4 0%,#F3C78C 22%,#E9A98A 42%,#C98874 58%,#6E7E85 76%,#3E5C68 100%)}
+.scene__layer{position:absolute;left:-6%;right:-6%;will-change:transform}
+.scene__sun{
+  position:absolute;width:clamp(120px,15vw,210px);aspect-ratio:1;border-radius:50%;
+  background:radial-gradient(circle at 50% 50%,#FFF3D6 0%,#FFE0A3 38%,rgba(233,161,59,.55) 62%,rgba(233,161,59,0) 74%);
+  top:16%;left:62%;transform:translate(-50%,-50%);animation:sunPulse 9s ease-in-out infinite;
+}
+@keyframes sunPulse{0%,100%{opacity:.92;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.06)}}
+.scene__haze{
+  position:absolute;inset:0;
+  background:radial-gradient(120% 60% at 62% 34%,rgba(255,231,186,.55) 0%,rgba(255,231,186,0) 60%);
+  mix-blend-mode:screen;
+}
+.scene__sea{position:absolute;left:0;right:0;bottom:0;height:44%;overflow:hidden;
+  background:linear-gradient(180deg,rgba(58,88,102,.38) 0%,rgba(38,68,86,.72) 26%,rgba(20,42,58,.92) 62%,rgba(16,34,48,.96) 100%)}
+.shimmer{position:absolute;height:2px;border-radius:2px;
+  background:linear-gradient(90deg,transparent,rgba(255,226,180,.75),transparent);filter:blur(.8px);
+  animation:shimmer 7s ease-in-out infinite}
+@keyframes shimmer{
+  0%,100%{opacity:.12;transform:translateX(-4%) scaleX(.72)}
+  50%{opacity:.7;transform:translateX(4%) scaleX(1)}
+}
+.scene__veil{position:absolute;inset:0;
+  background:linear-gradient(to top,var(--cream) 0%,rgba(250,246,239,.96) 20%,rgba(250,246,239,.62) 32%,
+    rgba(250,246,239,.18) 44%,rgba(20,32,46,.04) 56%,rgba(20,32,46,.14) 80%,rgba(20,32,46,.24) 100%)}
+.scene--night{background:linear-gradient(176deg,#2B4054 0%,#24384A 40%,#1A2C3C 70%,#131F2B 100%)}
+.scene--night .scene__veil{background:linear-gradient(to top,var(--night) 0%,rgba(20,32,46,.4) 30%,rgba(20,32,46,.55) 100%)}
+
+/* ---------- gumbi ---------- */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;border:0;cursor:pointer;
+  font-family:'Manrope',sans-serif;font-size:.94rem;font-weight:700;letter-spacing:-.01em;
+  padding:17px 30px;border-radius:999px;min-height:54px;position:relative;overflow:hidden;
+  transition:transform .55s var(--ease),box-shadow .55s var(--ease),background .3s,color .3s;
+  will-change:transform;
+}
+.btn--fill{background:var(--terra);color:#fff;box-shadow:0 14px 34px -14px rgba(212,103,74,.8)}
+.btn--fill:hover{background:var(--terra-d);box-shadow:0 22px 46px -16px rgba(212,103,74,.85)}
+.btn--ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--line)}
+.btn--ghost:hover{box-shadow:inset 0 0 0 1.5px var(--ink)}
+.btn--light{background:rgba(255,255,255,.92);color:var(--ink);backdrop-filter:blur(10px)}
+.btn--light:hover{background:#fff}
+.btn--dark{background:var(--ink);color:#fff}
+.btn--dark:hover{background:var(--terra)}
+.btn--sm{padding:11px 20px;min-height:42px;font-size:.84rem}
+
+/* strelica koja se pomakne */
+.btn .arr{transition:transform .5s var(--ease)}
+.btn:hover .arr{transform:translateX(4px)}
+
+/* ---------- kartice ---------- */
+.card{background:var(--shell);border:1px solid var(--line-2);border-radius:var(--r-lg);padding:clamp(22px,2.4vw,32px)}
+.card--raise{transition:transform .7s var(--ease),box-shadow .7s var(--ease)}
+.card--raise:hover{transform:translateY(-8px);box-shadow:0 40px 70px -40px rgba(20,32,46,.4)}
+.chip{
+  display:inline-flex;align-items:center;gap:8px;background:var(--shell);border:1px solid var(--line);
+  border-radius:999px;padding:9px 17px;font-size:.84rem;font-weight:700;
+}
+.chip--glass{background:rgba(255,255,255,.86);backdrop-filter:blur(12px);border-color:rgba(255,255,255,.5);
+  box-shadow:0 10px 26px -18px rgba(20,32,46,.7)}
+
+/* ==========================================================================
+   MOTION — otkrivanje, maske, paralaksa
+   ========================================================================== */
+[data-rv]{opacity:0;will-change:transform,opacity}
+[data-rv="up"]{transform:translateY(46px)}
+[data-rv="fade"]{transform:none}
+[data-rv="scale"]{transform:scale(.94)}
+[data-rv="left"]{transform:translateX(-40px)}
+[data-rv="right"]{transform:translateX(40px)}
+[data-rv].rv-in{opacity:1;transform:none;
+  transition:opacity 1s var(--ease),transform 1.1s var(--ease)}
+
+/* naslov koji se diže redak po redak iza maske */
+.mask-line{display:block;overflow:hidden;padding-bottom:.08em;margin-bottom:-.08em}
+.mask-line > span{display:block;transform:translateY(105%);opacity:0;
+  transition:transform 1.15s var(--ease),opacity .8s var(--ease)}
+.rv-in .mask-line > span,.mask-line.rv-in > span{transform:none;opacity:1}
+
+/* otkrivanje slike/plohe brisanjem */
+.wipe{clip-path:inset(0 100% 0 0);transition:clip-path 1.3s var(--ease)}
+.wipe.rv-in{clip-path:inset(0 0 0 0)}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms !important;animation-iteration-count:1 !important;
+    transition-duration:.01ms !important;scroll-behavior:auto !important}
+  [data-rv]{opacity:1 !important;transform:none !important}
+  .mask-line > span{transform:none !important;opacity:1 !important}
+  .wipe{clip-path:none !important}
+}
+
+/* ---------- traka koja klizi ---------- */
+.ticker{overflow:hidden;border-block:1px solid var(--line);background:var(--sand);padding-block:17px}
+.ticker__track{display:flex;gap:46px;width:max-content;align-items:center;animation:tick 42s linear infinite}
+.ticker:hover .ticker__track{animation-play-state:paused}
+@keyframes tick{to{transform:translateX(-50%)}}
+.ticker__item{font-family:'Fraunces',serif;font-style:italic;font-size:1.05rem;color:var(--ink-50);white-space:nowrap;
+  font-variation-settings:'SOFT' 30,'WONK' 1}
+.ticker__dot{color:var(--terra)}
+
+/* ---------- vodoravni klizač ---------- */
+.rail{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:18px;
+  scrollbar-width:none;cursor:grab}
+.rail::-webkit-scrollbar{display:none}
+.rail.is-drag{cursor:grabbing;scroll-snap-type:none}
+.rail > *{scroll-snap-align:center;flex:none}
+
+/* ---------- sitno ---------- */
+.dot-live{width:8px;height:8px;border-radius:50%;background:var(--olive);position:relative;flex:none}
+.dot-live::after{content:"";position:absolute;inset:-5px;border-radius:50%;border:1.5px solid var(--olive);
+  opacity:0;animation:ping 2.6s var(--ease) infinite}
+@keyframes ping{0%{transform:scale(.55);opacity:.85}100%{transform:scale(1.6);opacity:0}}
+.squiggle{display:block}
+.squiggle path{stroke-dasharray:200;stroke-dashoffset:200;transition:stroke-dashoffset 1.6s var(--ease) .2s}
+.rv-in .squiggle path,.squiggle.rv-in path{stroke-dashoffset:0}
+
+/* ---------- navigacija ---------- */
+.nav{position:fixed;inset:0 0 auto;z-index:120;height:74px;transition:background .4s,backdrop-filter .4s,box-shadow .4s}
+.nav.is-stuck{background:rgba(250,246,239,.82);backdrop-filter:blur(18px);box-shadow:0 1px 0 var(--line)}
+.nav__in{height:100%;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{display:flex;align-items:center;gap:11px;font-family:'Fraunces',serif;font-size:1.32rem;font-weight:600;
+  font-variation-settings:'SOFT' 20,'WONK' 1;letter-spacing:-.03em}
+.nav__links{display:flex;gap:30px;font-size:.9rem;font-weight:600;color:var(--ink-70)}
+.nav__links a{position:relative;padding-block:4px}
+.nav__links a::after{content:"";position:absolute;inset:auto 100% -1px 0;height:1.5px;background:var(--terra);
+  transition:right .45s var(--ease)}
+.nav__links a:hover{color:var(--ink)}
+.nav__links a:hover::after{right:0}
+@media(max-width:900px){.nav__links{display:none}}
+
+/* ---------- podnožje ---------- */
+.foot{border-top:1px solid var(--line);padding-block:40px;color:var(--ink-50);font-size:.86rem}
+.foot__in{display:flex;flex-wrap:wrap;gap:18px;justify-content:space-between;align-items:center}
+.foot a:hover{color:var(--ink)}

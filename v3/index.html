@@ -1,0 +1,630 @@
+<!doctype html>
+<html lang="hr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Odmoria — gost zna sve, prije nego pita</title>
+<meta name="description" content="Digitalni vodič za goste vašeg apartmana. Wi-Fi, šifra vrata, upute i preporuke na jednom linku. Bez provizije.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="atmosphere.css">
+<style>
+/* ---- specifično za landing ---- */
+.hero{position:relative;height:100svh;min-height:640px;display:flex;align-items:flex-end;overflow:hidden}
+.hero__in{position:relative;z-index:5;width:100%;padding-bottom:clamp(40px,7vh,84px)}
+.hero h1{max-width:13ch}
+.hero .lead{margin-top:26px;max-width:30em;font-size:clamp(1rem,1.35vw,1.2rem)}
+.hero__cta{display:flex;flex-wrap:wrap;gap:14px;margin-top:36px}
+.hero__trust{display:flex;flex-wrap:wrap;gap:10px 28px;margin-top:30px;font-size:.87rem;font-weight:600;color:var(--ink-70)}
+.hero__trust span{display:flex;align-items:center;gap:9px}
+.hero__trust svg{color:var(--olive);flex:none}
+
+.islands{position:absolute;left:-4%;right:-4%;bottom:36%;height:17vh;min-height:104px}
+.islands svg{width:100%;height:100%}
+.olive{position:absolute;top:-30px;right:-40px;width:clamp(240px,30vw,430px);opacity:.9;
+  transform:translate(var(--mx,0),var(--my,0)) rotate(6deg);transition:transform .4s var(--ease-soft)}
+.scroll-cue{display:flex;align-items:center;gap:13px;margin-top:38px;font-size:.85rem;font-weight:600;color:var(--ink-50)}
+.cue{width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.85);backdrop-filter:blur(10px);
+  display:grid;place-items:center;animation:cueBob 2.6s var(--ease-soft) infinite;box-shadow:0 10px 24px -14px rgba(20,32,46,.6)}
+@keyframes cueBob{0%,100%{transform:translateY(0)}50%{transform:translateY(7px)}}
+
+/* rail s prikazima */
+.rail-head{display:flex;flex-wrap:wrap;gap:18px;align-items:flex-end;justify-content:space-between}
+.screencard{width:clamp(230px,24vw,278px)}
+.screenframe{border-radius:30px;padding:9px;background:var(--ink);box-shadow:0 40px 70px -40px rgba(20,32,46,.6)}
+.screeninner{border-radius:23px;overflow:hidden;background:var(--cream);position:relative;padding-bottom:14px}
+.sc-top{height:154px;position:relative;background:linear-gradient(165deg,#F3C78C,#D4674A 46%,#2E6B77 86%)}
+.sc-top::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(20,18,16,.8),transparent 60%)}
+.sc-ov{position:absolute;left:14px;right:14px;bottom:12px;color:#fff;z-index:2}
+.sc-loc{font-size:.52rem;font-weight:800;letter-spacing:.2em;text-transform:uppercase;opacity:.85}
+.sc-name{font-family:'Fraunces',serif;font-size:1.3rem;font-variation-settings:'SOFT' 20,'WONK' 1;margin-top:2px}
+.sc-body{padding:13px 14px;display:flex;flex-direction:column;gap:7px}
+.sc-row{display:flex;align-items:center;justify-content:space-between;gap:9px;background:var(--shell);
+  border:1px solid var(--line-2);border-radius:11px;padding:9px 11px}
+.sc-k{font-size:.56rem;font-weight:800;letter-spacing:.1em;color:var(--ink-30)}
+.sc-v{font-size:.68rem;font-weight:700;font-family:ui-monospace,monospace}
+.sc-cta{margin-top:3px;background:var(--terra);color:#fff;text-align:center;font-size:.68rem;font-weight:800;
+  padding:10px;border-radius:999px}
+.screencap{margin-top:16px;font-size:.84rem;color:var(--ink-50);font-weight:600;max-width:24em}
+.screencap b{color:var(--ink);font-weight:800;display:block;font-size:.95rem;margin-bottom:3px}
+
+/* pitanja */
+.ask{position:relative;min-height:340px}
+.ask .b{position:absolute;background:var(--shell);border:1px solid var(--line);border-radius:20px 20px 20px 6px;
+  padding:13px 17px;font-size:.9rem;font-weight:600;box-shadow:0 16px 34px -22px rgba(20,32,46,.45);
+  opacity:0;transform:translateY(30px)}
+.ask.rv-in .b{opacity:1;transition:opacity .75s var(--ease),transform .95s var(--ease)}
+.ask .b i{display:block;font-size:.66rem;color:var(--ink-30);font-weight:700;font-style:normal;margin-top:4px}
+.ask.rv-in .b:nth-child(1){transform:rotate(-3deg);transition-delay:.05s}
+.ask.rv-in .b:nth-child(2){transform:rotate(2.2deg);transition-delay:.17s}
+.ask.rv-in .b:nth-child(3){transform:rotate(-1.6deg);transition-delay:.29s}
+.ask.rv-in .b:nth-child(4){transform:rotate(3deg);transition-delay:.41s}
+.ask.rv-in .b:nth-child(5){transform:rotate(-2.4deg);transition-delay:.53s}
+.ask .b:nth-child(1){left:0;top:0}
+.ask .b:nth-child(2){left:26%;top:70px}
+.ask .b:nth-child(3){left:4%;top:142px}
+.ask .b:nth-child(4){left:30%;top:212px}
+.ask .b:nth-child(5){left:2%;top:280px}
+
+/* tamna sekcija */
+.night{position:relative;color:#fff;overflow:hidden;background:var(--night)}
+.night h2,.night h3{color:#fff}
+.night .kicker{color:var(--rose)}
+.night .lead{color:rgba(255,255,255,.62)}
+.pagecards{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin-top:54px;align-items:start}
+@media(max-width:860px){.pagecards{grid-template-columns:1fr}}
+.pgc{background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.12);border-radius:var(--r-lg);
+  padding:30px;transition:transform .7s var(--ease),background .5s}
+.pgc:hover{transform:translateY(-8px);background:rgba(255,255,255,.085)}
+.pgc--b{margin-top:38px}
+.pgtag{font-size:.62rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;padding:6px 13px;border-radius:999px}
+.pgtag--pub{background:rgba(126,143,106,.22);color:#B9CBA3}
+.pgtag--priv{background:rgba(212,103,74,.2);color:#EDA890}
+.pgc ul{list-style:none;padding:0;margin:20px 0 0;display:flex;flex-direction:column;gap:11px}
+.pgc li{display:flex;gap:11px;align-items:center;font-size:.9rem;color:rgba(255,255,255,.78)}
+.lockrow{margin-top:24px;display:flex;align-items:center;gap:12px;background:rgba(212,103,74,.1);
+  border:1px solid rgba(212,103,74,.26);border-radius:var(--r-sm);padding:14px 17px;font-size:.85rem;color:rgba(255,255,255,.85)}
+.lockrow svg{animation:jiggle 5s var(--ease) infinite}
+@keyframes jiggle{0%,58%,100%{transform:none}64%,88%{transform:translateY(-2px) rotate(-12deg)}}
+
+/* igralište */
+.play{display:grid;grid-template-columns:.9fr 1.1fr;gap:56px;align-items:center;margin-top:54px}
+@media(max-width:940px){.play{grid-template-columns:1fr;gap:44px}.play__ctrl{order:2}}
+.sw-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px}
+.sw{width:48px;height:48px;border-radius:16px;cursor:pointer;border:3px solid transparent;
+  transition:transform .45s var(--ease),border-color .3s}
+.sw:hover{transform:translateY(-4px)}
+.sw.on{border-color:var(--ink);transform:scale(1.09)}
+.stylelist{display:flex;flex-direction:column;gap:11px;margin-top:16px}
+.st{position:relative;text-align:left;background:var(--cream);border:2px solid var(--line);border-radius:var(--r-md);
+  padding:17px 19px;cursor:pointer;transition:border-color .35s,background .35s,transform .5s var(--ease)}
+.st:hover{transform:translateX(5px)}
+.st.on{border-color:var(--terra);background:var(--shell)}
+.st b{font-family:'Fraunces',serif;font-size:1.15rem;font-weight:500;display:block;
+  font-variation-settings:'SOFT' 20,'WONK' 1}
+.st small{color:var(--ink-50);font-size:.79rem;font-weight:600}
+.protag{position:absolute;top:15px;right:16px;background:var(--ink);color:#fff;font-size:.56rem;font-weight:800;
+  letter-spacing:.12em;padding:5px 10px;border-radius:999px}
+
+/* brojke */
+.nums{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;margin-top:20px}
+@media(max-width:760px){.nums{grid-template-columns:1fr;gap:18px}}
+.num{padding:28px 0;border-top:1px solid var(--line)}
+.num .v{font-family:'Fraunces',serif;font-size:clamp(2.6rem,5vw,4rem);font-weight:500;line-height:1;
+  font-variation-settings:'SOFT' 20,'WONK' 1;color:var(--terra)}
+.num .k{font-size:.9rem;color:var(--ink-70);margin-top:10px;font-weight:600;max-width:24ch}
+
+/* cijene */
+.plans{display:grid;grid-template-columns:.88fr 1.12fr .88fr;gap:22px;align-items:center;margin-top:54px}
+@media(max-width:1000px){.plans{grid-template-columns:1fr;max-width:440px;margin-inline:auto}}
+.plan{background:var(--shell);border:1px solid var(--line);border-radius:var(--r-lg);padding:32px 28px;
+  transition:transform .7s var(--ease),box-shadow .7s var(--ease)}
+.plan:hover{transform:translateY(-7px);box-shadow:0 38px 64px -40px rgba(20,32,46,.4)}
+.plan--hero{border:2px solid var(--terra);padding:44px 32px;position:relative;
+  box-shadow:0 36px 70px -34px rgba(212,103,74,.5)}
+.planbadge{position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--terra);color:#fff;
+  font-size:.63rem;font-weight:800;letter-spacing:.14em;padding:7px 17px;border-radius:999px;white-space:nowrap}
+.planname{font-family:'Fraunces',serif;font-size:1.4rem;font-variation-settings:'SOFT' 20,'WONK' 1}
+.price{display:flex;align-items:baseline;gap:10px;margin-top:14px;flex-wrap:wrap}
+.price .n{font-family:'Fraunces',serif;font-size:3rem;font-weight:500;line-height:1;transition:opacity .25s}
+.price .p{font-size:.86rem;color:var(--ink-30);font-weight:700}
+.plan ul{list-style:none;padding:0;margin:24px 0 0;display:flex;flex-direction:column;gap:12px}
+.plan li{display:flex;gap:11px;align-items:flex-start;font-size:.91rem;color:var(--ink-70)}
+.plan li svg{color:var(--olive);flex:none;margin-top:4px}
+.plan .btn{width:100%;margin-top:28px}
+.switch{display:inline-flex;background:var(--sand);border-radius:999px;padding:5px;gap:4px;margin-top:26px}
+.switch button{border:0;background:transparent;font-size:.86rem;font-weight:700;color:var(--ink-50);
+  padding:11px 22px;border-radius:999px;cursor:pointer;transition:background .45s var(--ease),color .3s}
+.switch button.on{background:var(--shell);color:var(--ink);box-shadow:0 6px 18px -8px rgba(20,32,46,.3)}
+
+/* završni poziv */
+.final{position:relative;overflow:hidden;text-align:center;padding-block:clamp(90px,13vw,160px)}
+.final h2{max-width:15ch;margin-inline:auto}
+</style>
+</head>
+<body class="grain">
+
+<nav class="nav"><div class="wrap nav__in">
+  <a href="#" class="brand">
+    <svg width="31" height="31" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+      <rect width="32" height="32" rx="10" fill="#14202E"/>
+      <path d="M6.5 21.5c4-9.5 15-9.5 19 0" stroke="#D4674A" stroke-width="2.6" stroke-linecap="round"/>
+      <circle cx="16" cy="11" r="2.6" fill="#E9A13B"/>
+    </svg>
+    Odmoria
+  </a>
+  <div class="nav__links">
+    <a href="#gost">Što gost vidi</a>
+    <a href="#kako">Kako radi</a>
+    <a href="#izgled">Izgled</a>
+    <a href="#cijene">Cijene</a>
+  </div>
+  <a href="../register.html" class="btn btn--dark btn--sm" data-magnetic="8">Počni besplatno</a>
+</div></nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero" data-scene>
+  <div class="scene">
+    <div class="scene__sun" data-speed="0.14" data-mouse="18" style="transform:translate(-50%,-50%)"></div>
+    <div class="scene__haze"></div>
+
+    <div class="islands" data-speed="0.07" data-mouse="10">
+      <svg viewBox="0 0 1440 200" preserveAspectRatio="none" fill="none">
+        <path d="M0 148c78-6 122-34 196-32 71 2 104 27 176 24 74-3 110-36 190-34 72 2 118 30 190 30 76 0 122-31 196-28 70 3 118 28 190 30 60 2 200-10 302-22v204H0z"
+              fill="#6E8290" opacity=".5"/>
+        <path d="M0 170c96-10 150-42 236-38 78 4 120 33 198 31 80-2 122-40 204-36 74 4 122 34 196 34 80 0 126-33 204-29 66 3 128 26 402 18v210H0z"
+              fill="#3E5A69" opacity=".72"/>
+        <path d="M0 192c120-8 170-30 268-24 86 5 128 24 210 22 84-2 126-26 208-22 78 4 126 22 202 22 82 0 132-18 214-14 70 3 200 6 338 2v122H0z"
+              fill="#22394A" opacity=".92"/>
+      </svg>
+    </div>
+
+    <div class="scene__sea" data-speed="0.03">
+      <div class="shimmer" style="top:9%;left:46%;width:22%;animation-delay:0s"></div>
+      <div class="shimmer" style="top:15%;left:22%;width:16%;animation-delay:1.1s"></div>
+      <div class="shimmer" style="top:22%;left:58%;width:26%;animation-delay:2.2s"></div>
+      <div class="shimmer" style="top:29%;left:34%;width:19%;animation-delay:.6s"></div>
+      <div class="shimmer" style="top:36%;left:64%;width:14%;animation-delay:3.1s"></div>
+      <div class="shimmer" style="top:44%;left:12%;width:23%;animation-delay:1.7s"></div>
+    </div>
+
+    <div class="scene__veil"></div>
+
+    <svg class="olive" data-mouse="26" viewBox="0 0 400 300" fill="none" aria-hidden="true">
+      <path d="M392 18C330 44 262 78 206 124 160 162 124 206 96 254" stroke="#2B4450" stroke-width="3.4" stroke-linecap="round" opacity=".5"/>
+      <g fill="#2B4450" opacity=".45">
+        <ellipse cx="348" cy="40" rx="25" ry="11" transform="rotate(-26 348 40)"/>
+        <ellipse cx="306" cy="66" rx="24" ry="10.5" transform="rotate(-20 306 66)"/>
+        <ellipse cx="268" cy="94" rx="23" ry="10" transform="rotate(-14 268 94)"/>
+        <ellipse cx="232" cy="124" rx="22" ry="10" transform="rotate(-8 232 124)"/>
+        <ellipse cx="198" cy="158" rx="21" ry="9.5" transform="rotate(2 198 158)"/>
+        <ellipse cx="168" cy="194" rx="20" ry="9" transform="rotate(10 168 194)"/>
+        <ellipse cx="142" cy="230" rx="19" ry="8.5" transform="rotate(18 142 230)"/>
+        <ellipse cx="368" cy="74" rx="20" ry="9" transform="rotate(34 368 74)"/>
+        <ellipse cx="322" cy="112" rx="19" ry="8.5" transform="rotate(40 322 112)"/>
+        <ellipse cx="282" cy="150" rx="18" ry="8" transform="rotate(46 282 150)"/>
+      </g>
+      <circle cx="292" cy="112" r="7.5" fill="#7E8F6A" opacity=".8"/>
+      <circle cx="222" cy="176" r="6.5" fill="#7E8F6A" opacity=".7"/>
+    </svg>
+  </div>
+
+  <div class="hero__in wrap">
+    <div class="kicker" data-rv="fade" data-rv-now>Za iznajmljivače na Jadranu</div>
+    <h1 style="margin-top:20px">
+      <span class="mask-line" data-rv-now><span>Gost zna sve,</span></span>
+      <span class="mask-line" data-rv-now><span class="italic" style="color:var(--terra)">prije nego pita.</span></span>
+    </h1>
+    <p class="lead" data-rv="up" data-rv-delay="420">
+      Wi-Fi, šifra vrata, put do kuće i vaše preporuke — na jednoj stranici koju gost otvori u browseru.
+      Bez aplikacije, bez provizije, bez poruka u pola noći.
+    </p>
+    <div class="hero__cta" data-rv="up" data-rv-delay="540">
+      <a href="../register.html" class="btn btn--fill" data-magnetic="12">Napravi svoj vodič <span class="arr">→</span></a>
+      <a href="guest.html" class="btn btn--light">Pogledaj primjer</a>
+    </div>
+    <div class="hero__trust" data-rv="up" data-rv-delay="640">
+      <span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Bez kartice</span>
+      <span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Gotovo za 10 minuta</span>
+      <span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Bez provizije, zauvijek</span>
+    </div>
+    <div class="scroll-cue" data-rv="fade" data-rv-delay="800">
+      <span class="cue"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#14202E" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg></span>
+      pogledajte što gost dobije
+    </div>
+  </div>
+</header>
+
+<div class="ticker"><div class="ticker__track" id="ticker"></div></div>
+
+<!-- ============ ŠTO GOST VIDI (vodoravni klizač) ============ -->
+<section class="sec" id="gost">
+  <div class="wrap">
+    <div class="rail-head">
+      <div data-rv="up">
+        <div class="kicker">Što gost vidi</div>
+        <h2 style="margin-top:18px">Jedan link. <span class="italic" style="color:var(--terra)">Sve unutra.</span></h2>
+      </div>
+      <div class="hand" style="font-size:1.5rem;color:var(--ink-30)" data-rv="fade">povucite u stranu →</div>
+    </div>
+  </div>
+
+  <div class="wrap" style="margin-top:44px">
+    <div class="rail" data-rv-stagger="110">
+      <div class="screencard" data-rv="up">
+        <div class="screenframe">
+          <div class="screeninner">
+            <div class="sc-top"><div class="sc-ov"><div class="sc-loc">Hvar, Dalmacija</div><div class="sc-name">Villa Maslina</div></div></div>
+            <div class="sc-body">
+              <div class="sc-row"><span class="sc-k">WI-FI</span><span class="sc-v">VillaMaslina</span></div>
+              <div class="sc-row"><span class="sc-k">ŠIFRA VRATA</span><span class="sc-v">4 2 7 1</span></div>
+              <div class="sc-row"><span class="sc-k">PRIJAVA</span><span class="sc-v">15:00</span></div>
+              <div class="sc-cta">Kontaktiraj domaćina</div>
+            </div>
+          </div>
+        </div>
+        <div class="screencap"><b>Pristup</b>Šifra se otključa tek na dan dolaska — ne ranije.</div>
+      </div>
+
+      <div class="screencard" data-rv="up">
+        <div class="screenframe">
+          <div class="screeninner">
+            <div class="sc-top" style="background:linear-gradient(165deg,#F3C78C,#7E8F6A 50%,#2B4450 90%)">
+              <div class="sc-ov"><div class="sc-loc">Dolazak</div><div class="sc-name">Put do vrata</div></div>
+            </div>
+            <div class="sc-body">
+              <div class="sc-row"><span class="sc-k">ADRESA</span><span class="sc-v">Sv. Nedjelje 14</span></div>
+              <div class="sc-row"><span class="sc-k">PARKING</span><span class="sc-v">mjesto 3</span></div>
+              <div class="sc-row"><span class="sc-k">KLJUČ</span><span class="sc-v">sef lijevo</span></div>
+              <div class="sc-cta" style="background:var(--sea)">Otvori u Maps</div>
+            </div>
+          </div>
+        </div>
+        <div class="screencap"><b>Dolazak</b>Adresa, parking i put od trajekta — korak po korak.</div>
+      </div>
+
+      <div class="screencard" data-rv="up">
+        <div class="screenframe">
+          <div class="screeninner">
+            <div class="sc-top" style="background:linear-gradient(165deg,#E9A13B,#D4674A 55%,#2E6B77 92%)">
+              <div class="sc-ov"><div class="sc-loc">Preporuke</div><div class="sc-name">Naša uvala</div></div>
+            </div>
+            <div class="sc-body">
+              <div class="sc-row"><span class="sc-k">PLAŽA</span><span class="sc-v">120 stepenica</span></div>
+              <div class="sc-row"><span class="sc-k">KONOBA</span><span class="sc-v">10 min autom</span></div>
+              <div class="sc-row"><span class="sc-k">IZLET</span><span class="sc-v">Pakleni otoci</span></div>
+              <div class="sc-cta" style="background:var(--olive)">Sve preporuke</div>
+            </div>
+          </div>
+        </div>
+        <div class="screencap"><b>Preporuke</b>Vaša mjesta, ne prepisani vodič iz 2009.</div>
+      </div>
+
+      <div class="screencard" data-rv="up">
+        <div class="screenframe">
+          <div class="screeninner">
+            <div class="sc-top" style="background:linear-gradient(165deg,#C98874,#2E6B77 60%,#14202E 95%)">
+              <div class="sc-ov"><div class="sc-loc">Upute</div><div class="sc-name">Kako što radi</div></div>
+            </div>
+            <div class="sc-body">
+              <div class="sc-row"><span class="sc-k">KLIMA</span><span class="sc-v">MODE → ❄</span></div>
+              <div class="sc-row"><span class="sc-k">TOPLA VODA</span><span class="sc-v">bojler 80 l</span></div>
+              <div class="sc-row"><span class="sc-k">PERILICA</span><span class="sc-v">ECO 50°</span></div>
+              <div class="sc-cta" style="background:var(--ink)">Pitaj domaćina</div>
+            </div>
+          </div>
+        </div>
+        <div class="screencap"><b>Upute</b>Klima, bojler, perilica — pitanja koja se ponavljaju svaki tjedan.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PITANJA ============ -->
+<section class="sec" style="padding-top:0">
+  <div class="wrap">
+    <div style="max-width:620px" data-rv="up">
+      <div class="kicker">Zašto</div>
+      <h2 style="margin-top:18px">Ista pitanja. <span class="italic" style="color:var(--terra)">Svaki tjedan.</span></h2>
+      <p class="lead" style="margin-top:18px">Svaki gost pita isto, a vi odgovarate ručno — na plaži, za večerom, u pola noći prije dolaska.</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;margin-top:50px" class="pgcols">
+      <div class="ask" data-rv="fade">
+        <div class="b">Bok! Koja je šifra za wifi?<i>23:41</i></div>
+        <div class="b">Gdje točno parkiramo?<i>07:12</i></div>
+        <div class="b">Kako doći s trajekta?<i>14:08</i></div>
+        <div class="b">Ima li blizu dobar restoran?<i>21:55</i></div>
+        <div class="b">Kad se možemo prijaviti?<i>06:30</i></div>
+      </div>
+
+      <div class="card" style="background:var(--ink);color:#fff;border:0;position:relative;overflow:hidden" data-rv="right">
+        <div style="position:absolute;width:300px;height:300px;border-radius:50%;background:var(--terra);opacity:.15;right:-110px;top:-120px"></div>
+        <div class="kicker" style="color:var(--rose);position:relative">Umjesto toga</div>
+        <h3 style="margin-top:16px;font-size:1.9rem;position:relative">Pošaljete jedan link.<br>I to je to.</h3>
+        <p style="color:rgba(255,255,255,.62);margin:16px 0 0;font-size:.95rem;position:relative">
+          Gost dobije svoju stranicu čim potvrdite rezervaciju. Sve je tamo — i ostaje tamo, kad god mu zatreba.
+        </p>
+        <div style="display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.08);
+          border:1px solid rgba(255,255,255,.16);border-radius:999px;padding:14px 20px;margin-top:24px;
+          font-family:ui-monospace,monospace;font-size:.85rem;position:relative">
+          <span class="dot-live"></span>odmoria.com/h/xk29fm41
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TAMNA: DVIJE STRANICE ============ -->
+<section class="night sec" id="kako" data-scene>
+  <div class="scene scene--night" style="opacity:.5">
+    <div class="islands" style="bottom:0;opacity:.35" data-speed="0.05">
+      <svg viewBox="0 0 1440 200" preserveAspectRatio="none" fill="none">
+        <path d="M0 170c96-10 150-42 236-38 78 4 120 33 198 31 80-2 122-40 204-36 74 4 122 34 196 34 80 0 126-33 204-29 66 3 128 26 402 18v210H0z" fill="#0C161F"/>
+      </svg>
+    </div>
+  </div>
+  <div class="wrap" style="position:relative">
+    <div style="max-width:700px" data-rv="up">
+      <div class="kicker">Kako radi</div>
+      <h2 style="margin-top:18px">Dvije stranice. Jedna za svijet,<br><span class="italic" style="color:var(--rose)">jedna samo za gosta.</span></h2>
+      <p class="lead" style="margin-top:20px">Postavite objekt jednom. Odmoria napravi obje — i one same znaju tko što smije vidjeti.</p>
+    </div>
+
+    <div class="pagecards">
+      <div class="pgc" data-rv="up">
+        <span class="pgtag pgtag--pub">Javna stranica</span>
+        <h3 style="margin-top:18px">Za dijeljenje svugdje</h3>
+        <p style="color:rgba(255,255,255,.6);font-size:.93rem;margin-top:12px">Fotografije, priča o objektu, sadržaji i slobodni termini. Facebook, Instagram, oglas — gdje god želite.</p>
+        <ul>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#B9CBA3" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Galerija i opis objekta</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#B9CBA3" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Kalendar dostupnosti</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#B9CBA3" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Kontakt izravno na vas</li>
+        </ul>
+      </div>
+      <div class="pgc pgc--b" data-rv="up" data-rv-delay="130">
+        <span class="pgtag pgtag--priv">Privatna stranica</span>
+        <h3 style="margin-top:18px">Samo za potvrđenog gosta</h3>
+        <p style="color:rgba(255,255,255,.6);font-size:.93rem;margin-top:12px">Jedinstveni link koji gost dobije tek kad potvrdite rezervaciju. Ne indeksira se, ne curi.</p>
+        <ul>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#EDA890" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Wi-Fi i šifra vrata</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#EDA890" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Upute za dolazak i parking</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#EDA890" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Vaše osobne preporuke</li>
+        </ul>
+        <div class="lockrow">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#D4674A" stroke-width="2.2" stroke-linecap="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0"/></svg>
+          Šifra vrata otključa se tek kad gost stvarno stigne.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ IGRALIŠTE ============ -->
+<section class="sec" id="izgled">
+  <div class="wrap">
+    <div style="max-width:640px" data-rv="up">
+      <div class="kicker">Izgled</div>
+      <h2 style="margin-top:18px">Vaš objekt, <span class="italic" style="color:var(--terra)">vaš karakter.</span></h2>
+      <p class="lead" style="margin-top:18px">Kliknite boju ili stil — stranica se mijenja dok gledate. Gost vidi vaš objekt, ne šablonu koju je već vidio sto puta.</p>
+    </div>
+
+    <div class="play">
+      <div class="play__ctrl card" data-rv="left">
+        <div style="font-weight:800;font-size:.95rem">Boja naglaska</div>
+        <div class="sw-row" id="sw">
+          <div class="sw on" data-c="#D4674A" style="background:#D4674A" title="Terakota"></div>
+          <div class="sw" data-c="#2E6B77" style="background:#2E6B77" title="Jadran"></div>
+          <div class="sw" data-c="#7E8F6A" style="background:#7E8F6A" title="Maslina"></div>
+          <div class="sw" data-c="#E9A13B" style="background:#E9A13B" title="Zlatni sat"></div>
+          <div class="sw" data-c="#14202E" style="background:#14202E" title="Ponoć"></div>
+        </div>
+
+        <div style="font-weight:800;font-size:.95rem;margin-top:30px">Stil stranice</div>
+        <div class="stylelist" id="styles">
+          <button class="st on" data-s="obalni"><b>Obalni</b><small>Topla krem podloga, serif naslovi, zalazak.</small></button>
+          <button class="st" data-s="moderni"><b>Moderni</b><small>Čisto bijelo, jak tipografski kontrast.</small><span class="protag">PRO</span></button>
+          <button class="st" data-s="nocni"><b>Noćni</b><small>Tamna podloga, svjetlo kao naglasak.</small><span class="protag">PRO</span></button>
+        </div>
+
+        <p style="font-size:.84rem;color:var(--ink-50);margin-top:20px;display:flex;gap:9px">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--terra)" stroke-width="2" style="flex:none;margin-top:2px"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8.5v.01" stroke-linecap="round"/></svg>
+          <span>Boja i stil su najmanji dio Pro plana. Ono zbog čega ga domaćini uzimaju je <b style="color:var(--ink)">automatski kalendar s Booking.com-a</b> i <b style="color:var(--ink)">vodič na jeziku gosta</b>.</span>
+        </p>
+      </div>
+
+      <div style="display:flex;justify-content:center" data-rv="right">
+        <div class="screencard" style="width:min(300px,86vw)">
+          <div class="screenframe">
+            <div class="screeninner" id="pvScreen">
+              <div class="sc-top" id="pvTop" style="height:178px">
+                <div class="sc-ov">
+                  <div class="sc-loc">Hvar, Dalmacija</div>
+                  <div class="sc-name">Villa Maslina</div>
+                  <div class="hand" style="font-size:1rem;opacity:.9">Masline, sol i tišina.</div>
+                </div>
+              </div>
+              <div class="sc-body">
+                <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:5px">
+                  <span class="pvchip" style="font-size:.57rem;font-weight:700;background:var(--shell);border:1px solid var(--line-2);border-radius:999px;padding:5px 10px">✦ Terasa</span>
+                  <span class="pvchip" style="font-size:.57rem;font-weight:700;background:var(--shell);border:1px solid var(--line-2);border-radius:999px;padding:5px 10px">✦ 2 min do plaže</span>
+                </div>
+                <div class="sc-row"><span class="sc-k">PRIJAVA</span><span class="sc-v">15:00 – 22:00</span></div>
+                <div class="sc-row"><span class="sc-k">WI-FI</span><span class="sc-v">VillaMaslina</span></div>
+                <div class="sc-row"><span class="sc-k">ŠIFRA VRATA</span><span class="sc-v">4 2 7 1</span></div>
+                <div class="sc-cta" id="pvCta">Kontaktiraj domaćina</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ BROJKE ============ -->
+<section class="sec-tight">
+  <div class="wrap">
+    <div class="nums" data-rv-stagger="140">
+      <div class="num" data-rv="up">
+        <div class="v"><span data-count="0" data-count-suffix=" €">0 €</span></div>
+        <div class="k">provizije po rezervaciji — naplaćujemo alat, ne vaš promet</div>
+      </div>
+      <div class="num" data-rv="up">
+        <div class="v"><span data-count="10" data-count-suffix=" min">10 min</span></div>
+        <div class="k">od registracije do gotove stranice koju možete poslati</div>
+      </div>
+      <div class="num" data-rv="up">
+        <div class="v"><span data-count="0" data-count-suffix="">0</span></div>
+        <div class="k">aplikacija koje gost mora instalirati — samo otvori link</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CIJENE ============ -->
+<section class="sec" id="cijene" style="background:var(--sand)">
+  <div class="wrap">
+    <div style="text-align:center;max-width:640px;margin-inline:auto" data-rv="up">
+      <div class="kicker bare" style="justify-content:center">Cijene</div>
+      <h2 style="margin-top:18px">Plaćate alat, <span class="italic" style="color:var(--terra)">ne postotak.</span></h2>
+      <p class="lead" style="margin:18px auto 0">Bez provizije po rezervaciji, bez skrivenih naknada. Otkažete kad želite.</p>
+      <div class="switch" id="switch">
+        <button class="on" data-p="m">Mjesečno</button>
+        <button data-p="y">Godišnje <b style="color:var(--olive);margin-left:6px">−2 mj.</b></button>
+      </div>
+    </div>
+
+    <div class="plans">
+      <div class="plan" data-rv="up">
+        <div class="planname">Free</div>
+        <div class="price"><span class="n" data-m="0 €" data-y="0 €">0 €</span><span class="p" data-mp="zauvijek" data-yp="zauvijek">zauvijek</span></div>
+        <ul>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> 1 objekt, 5 fotografija</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Javna i privatna stranica</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Obalni stil</li>
+        </ul>
+        <a href="../register.html" class="btn btn--ghost">Kreni besplatno</a>
+      </div>
+
+      <div class="plan plan--hero" data-rv="up" data-rv-delay="110">
+        <span class="planbadge">Najčešći izbor</span>
+        <div class="planname">Pro</div>
+        <div class="price"><span class="n" data-m="15 €" data-y="150 €">15 €</span><span class="p" data-mp="/ mjesečno" data-yp="/ godišnje">/ mjesečno</span></div>
+        <ul>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> <b style="color:var(--ink);font-weight:800">Kalendar se sam osvježava</b> s Booking.com-a i Airbnb-a</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Vodič na jeziku gosta — 5 jezika</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Vaša domena, bez našeg potpisa</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> 5 objekata · 30 fotografija · svi stilovi</li>
+        </ul>
+        <a href="../register.html" class="btn btn--fill" data-magnetic="10">Uzmi Pro <span class="arr">→</span></a>
+        <div style="text-align:center;font-size:.78rem;color:var(--ink-30);margin-top:14px">Jedna izbjegnuta dvostruka rezervacija plati godinu dana.</div>
+      </div>
+
+      <div class="plan" data-rv="up" data-rv-delay="200">
+        <div class="planname">Business</div>
+        <div class="price"><span class="n" data-m="49 €" data-y="490 €">49 €</span><span class="p" data-mp="/ mjesečno" data-yp="/ godišnje">/ mjesečno</span></div>
+        <ul>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> 15 objekata, 50 fotografija</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Sve iz Pro plana</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Prioritetna podrška</li>
+        </ul>
+        <a href="../register.html" class="btn btn--ghost">Uzmi Business</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ZAVRŠNI POZIV ============ -->
+<section class="final" data-scene>
+  <div class="scene" style="opacity:.55">
+    <div class="scene__sun" style="top:26%;left:50%" data-speed="0.1"></div>
+    <div class="islands" style="bottom:12%" data-speed="0.05">
+      <svg viewBox="0 0 1440 200" preserveAspectRatio="none" fill="none">
+        <path d="M0 176c110-10 164-38 258-32 84 5 126 28 206 26 82-2 124-32 206-28 76 4 124 30 198 30 80 0 128-28 208-24 68 3 190 8 364 4v208H0z" fill="#4A6672" opacity=".5"/>
+      </svg>
+    </div>
+    <div class="scene__veil"></div>
+  </div>
+  <div class="wrap" style="position:relative">
+    <div class="kicker bare" style="justify-content:center" data-rv="fade">Spremni?</div>
+    <h2 style="margin-top:22px" data-rv="up">Vaš sljedeći gost zaslužuje <span class="italic" style="color:var(--terra)">bolju dobrodošlicu.</span></h2>
+    <svg class="squiggle" width="160" height="24" viewBox="0 0 160 24" fill="none" style="margin:26px auto 0" data-rv="fade">
+      <path d="M5 16 Q 38 4 80 13 T 155 10" stroke="#D4674A" stroke-width="2.8" stroke-linecap="round"/>
+    </svg>
+    <div style="margin-top:32px" data-rv="up">
+      <a href="../register.html" class="btn btn--fill" data-magnetic="14">Napravi svoj vodič — besplatno <span class="arr">→</span></a>
+    </div>
+    <div style="margin-top:16px;font-size:.85rem;color:var(--ink-50)" data-rv="fade">Bez kartice · Gotovo za 10 minuta · Otkažete kad želite</div>
+  </div>
+</section>
+
+<footer class="foot"><div class="wrap foot__in">
+  <div style="display:flex;align-items:center;gap:10px">
+    <svg width="21" height="21" viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="10" fill="#14202E"/><path d="M6.5 21.5c4-9.5 15-9.5 19 0" stroke="#D4674A" stroke-width="2.6" stroke-linecap="round"/><circle cx="16" cy="11" r="2.6" fill="#E9A13B"/></svg>
+    Odmoria — bez provizije, zauvijek.
+  </div>
+  <div style="display:flex;gap:24px">
+    <a href="guest.html">Primjer vodiča</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="../terms.html">Uvjeti</a>
+    <a href="../privacy.html">Privatnost</a>
+  </div>
+</div></footer>
+
+<script src="motion.js"></script>
+<script>
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+
+/* traka */
+const F = ['Bez provizije po rezervaciji','Gost ne instalira ništa','Šifra pod ključem do dolaska',
+           'Radi na svakom telefonu','Vaše preporuke, ne vodič iz 2009.','Postavljanje za 10 minuta'];
+$('#ticker').innerHTML = [...F,...F].map(f=>`<span class="ticker__item">${f}</span><span class="ticker__dot">✦</span>`).join('');
+
+/* igralište: boja + stil mijenjaju prikaz uživo */
+const STYLES = {
+  obalni:{bg:'#FAF6EF',card:'#FFFCF7',line:'rgba(20,32,46,.06)',ink:'#14202E',
+          top:'linear-gradient(165deg,#F3C78C,ACCENT 46%,#2E6B77 88%)'},
+  moderni:{bg:'#FFFFFF',card:'#F5F5F6',line:'rgba(20,20,22,.08)',ink:'#101114',
+          top:'linear-gradient(200deg,#DCE0E4,ACCENT 56%,#22262B 96%)'},
+  nocni:{bg:'#18222E',card:'rgba(255,255,255,.07)',line:'rgba(255,255,255,.12)',ink:'#F2EFE9',
+          top:'linear-gradient(170deg,#3A4E60,ACCENT 52%,#0F1822 96%)'}
+};
+let accent = '#D4674A', styleKey = 'obalni';
+
+function paint(){
+  const st = STYLES[styleKey];
+  $('#pvScreen').style.background = st.bg;
+  $('#pvScreen').style.color = st.ink;
+  $('#pvTop').style.background = st.top.replace('ACCENT', accent);
+  $('#pvCta').style.background = accent;
+  $$('#pvScreen .sc-row, #pvScreen .pvchip').forEach(el => {
+    el.style.background = st.card; el.style.borderColor = st.line; el.style.color = st.ink;
+  });
+  $$('#pvScreen .sc-k').forEach(el => el.style.color = styleKey === 'nocni' ? 'rgba(255,255,255,.45)' : '');
+}
+$$('#sw .sw').forEach(s => s.onclick = () => {
+  $$('#sw .sw').forEach(x => x.classList.remove('on'));
+  s.classList.add('on'); accent = s.dataset.c; paint();
+});
+$$('#styles .st').forEach(b => b.onclick = () => {
+  $$('#styles .st').forEach(x => x.classList.remove('on'));
+  b.classList.add('on'); styleKey = b.dataset.s; paint();
+});
+paint();
+
+/* cijene */
+$$('#switch button').forEach(b => b.onclick = () => {
+  $$('#switch button').forEach(x => x.classList.remove('on'));
+  b.classList.add('on');
+  const y = b.dataset.p === 'y';
+  $$('.price .n').forEach(n => {
+    n.style.opacity = 0;
+    setTimeout(() => { n.textContent = y ? n.dataset.y : n.dataset.m; n.style.opacity = 1; }, 170);
+  });
+  $$('.price .p').forEach(p => setTimeout(() => p.textContent = y ? p.dataset.yp : p.dataset.mp, 170));
+});
+</script>
+</body>
+</html>
