@@ -1020,9 +1020,17 @@ function datesBetween(a, b) {
   return out
 }
 function addDays(ds, delta) { const d = new Date(ds + 'T00:00:00'); d.setDate(d.getDate() + delta); return fmtLocal(d) }
+function minGap() {
+  const v = parseInt(PROP?.min_gap_stay)
+  return Number.isFinite(v) && v > 0 ? v : 3
+}
+
 function isFillableGap(from, to) {
   if (!PROP?.allow_gap_fill_stays) return false
-  return bookedDates.includes(addDays(from, -1)) && bookedDates.includes(to)
+  if (!bookedDates.includes(addDays(from, -1)) || !bookedDates.includes(to)) return false
+  // domacin odredjuje koliko kratak razmak uopce zeli nuditi
+  const nights = datesBetween(from, to).length - 1
+  return nights >= minGap()
 }
 
 /**
@@ -1040,7 +1048,7 @@ function fillableGaps() {
     if (set.has(cur)) continue                 // nema razmaka iza ovog dana
     const run = []
     while (!set.has(cur) && run.length < 90) { run.push(cur); cur = addDays(cur, 1) }
-    if (set.has(cur) && run.length && run.length < minStay) {
+    if (set.has(cur) && run.length >= minGap() && run.length < minStay) {
       out.push({ from: run[0], to: cur, nights: run.length })
     }
   }

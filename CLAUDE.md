@@ -55,7 +55,8 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 └── sql/
     ├── admin-access.sql                    # RLS politike scope-ane na owner auth UID
     ├── plan-limits.sql                     # tablica `plans` + okidaci koji limite PROVODE u bazi
-    ├── add-gap-fill-stays.sql               add-booking-id-to-availability.sql
+    ├── add-gap-fill-stays.sql               add-min-gap-stay.sql
+    ├── add-booking-id-to-availability.sql
     ├── add-source-to-availability.sql
     └── fix-missing-columns-and-storage.sql # ALTER TABLE dopune (photo_urls, ical_*, beds/bathrooms/size_m2) + storage bucket policy
 ```
@@ -76,7 +77,7 @@ subscriptions   -- user_id, plan (free/pro/business), status, period_end
 properties      -- user_id, name, slug, host_name, phone, email, welcome_msg,
                    photo_urls, cover_photo_url, beds, bathrooms, size_m2,
                    ical_booking_url, ical_airbnb_url, ical_last_sync, guest_token (legacy),
-                   show_availability, allow_gap_fill_stays
+                   show_availability, allow_gap_fill_stays, min_gap_stay
 sections        -- property_id, wifi_name, wifi_pass, door_code, checkin_time, checkout_time,
                    address, parking_info, checkin_notes, checkout_notes,
                    ac_info, heating_info, hot_water_info, kitchen_info

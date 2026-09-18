@@ -711,9 +711,14 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
               <div class="field"><label for="prop-price">Cijena po noćenju u eurima</label><input class="input" id="prop-price" type="number" min="0" step="0.01" oninput="livePreview()"></div>
               <div class="field"><label for="prop-minstay">Minimalno noćenja</label><input class="input" id="prop-minstay" type="number" min="1" oninput="livePreview()"></div>
             </div>
-            <div class="field" style="margin-top:14px;display:flex;align-items:center;gap:10px">
-              <input type="checkbox" id="prop-gapfill" style="width:18px;height:18px" oninput="livePreview()">
+            <div class="field" style="margin-top:14px;display:flex;align-items:flex-start;gap:10px">
+              <input type="checkbox" id="prop-gapfill" style="width:18px;height:18px;margin-top:2px" onchange="toggleGapRow()" oninput="livePreview()">
               <label for="prop-gapfill" style="margin:0">Dopusti kraći boravak ako popunjava prazninu između dvije rezervacije (neovisno o minimalnom broju noćenja)</label>
+            </div>
+            <div class="field" id="gap-row" style="margin-top:12px;display:none;max-width:420px">
+              <label for="prop-mingap">Najkraći razmak koji se smije popuniti</label>
+              <input class="input" id="prop-mingap" type="number" min="1" max="30" oninput="livePreview()">
+              <div class="helper">Razmaci kraći od ovoga neće se ponuditi gostu. Na primjer, uz 3 — praznina od jedne ili dvije noći ostaje slobodna, a praznina od tri noći se nudi.</div>
             </div>
             <div style="margin-top:18px;display:flex;justify-content:flex-end"><button class="btn" onclick="savePricing()">Spremi promjene</button></div>
           </div>
@@ -997,6 +1002,8 @@ function fillPropForm(){
   document.getElementById('prop-price').value=PROP.price_per_night||0
   document.getElementById('prop-minstay').value=PROP.min_stay||1
   document.getElementById('prop-gapfill').checked=!!PROP.allow_gap_fill_stays
+  document.getElementById('prop-mingap').value=PROP.min_gap_stay??3
+  window.toggleGapRow()
   window.setType(PROP.type||'Apartman')
   COUNTS={guests:PROP.max_guests||0,bedrooms:PROP.bedrooms||0,beds:PROP.beds||0,bathrooms:PROP.bathrooms||0,size_m2:PROP.size_m2||0}
   Object.keys(COUNTS).forEach(k=>{
@@ -1028,9 +1035,14 @@ window.saveBasic=async()=>{
   renderChecklist()
 }
 
+window.toggleGapRow=()=>{
+  const on=document.getElementById('prop-gapfill').checked
+  document.getElementById('gap-row').style.display=on?'':'none'
+}
 window.savePricing=async()=>{
   if(!PROP)return
-  const u={price_per_night:v('prop-price')?+v('prop-price'):0,min_stay:v('prop-minstay')?+v('prop-minstay'):1,allow_gap_fill_stays:document.getElementById('prop-gapfill').checked}
+  const u={price_per_night:v('prop-price')?+v('prop-price'):0,min_stay:v('prop-minstay')?+v('prop-minstay'):1,allow_gap_fill_stays:document.getElementById('prop-gapfill').checked,
+    min_gap_stay:Math.max(1,parseInt(v('prop-mingap'))||3)}
   const{error}=await sb.from('properties').update(u).eq('id',PROP.id)
   if(error){showA('pricing-alert','err',error.message);return}
   Object.assign(PROP,u)
