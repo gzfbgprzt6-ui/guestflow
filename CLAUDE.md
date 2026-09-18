@@ -40,7 +40,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 ├── index.html              # Landing page — AKTIVNA
 ├── p.html                  # Javna stranica objekta (?slug=xxx) — AKTIVNA, **v3 dizajn**
 ├── h.html                  # Privatni gostinski hub (?token=xxx) — AKTIVNA, **v3 dizajn**
-├── dashboard.html          # Glavni host dashboard — AKTIVNA, v2 redizajn
+├── dashboard.html          # Glavni host dashboard — AKTIVNA, **v3 paleta i tipografija**
 ├── login.html               register.html            reset-password.html
 ├── email-confirm.html       onboarding.html          add-property.html
 ├── account.html              help.html                admin.html (gated: owner auth UID)
@@ -162,21 +162,15 @@ Tablica cijena gore je početno stanje u bazi; planovi i cijene još nisu konač
 
 ---
 
-## Dizajn sustav (v2 — dashboard.html)
+## Dashboard — v3 preko vlastitih tokena
 
-**Fontovi:** DM Serif Display (naslovi) + Manrope 400–800 (sučelje).
+`dashboard.html` **nije prepisan**, nego preslikan: imena tokena su ostala ista (`--cream`, `--brown`, `--copper`…), samo su im vrijednosti zamijenjene v3 paletom, a DM Serif Display zamijenjen Fraunces-om. Time je 830 linija provjerene logike (kalendar, fotografije, rezervacije, iCal) ostalo netaknuto.
 
-**Paleta (canonical `:root` tokeni, dijeljeni kroz dashboard/p/h):**
-```css
---cream:#f5f1eb; --paper:#fffdf9; --paper-2:#ede5dc;
---ink:#21150f; --muted:#786a60;
---brown:#5b321f; --brown-deep:#432316; --brown-soft:#76442f; --copper:#b7603b; --peach:#e7b69c;
---green:#3e6954; --green-bg:#e4eee8; --border:#dfd5ca;
-```
+`--brown` sada znači tamnoplavu `#14202E`, `--copper` je terra `#D4674A`. **Imena namjerno nisu mijenjana** jer se koriste na ~200 mjesta; mijenjati ih značilo bi ~200 prilika za grešku bez ijedne vizualne koristi.
 
-**Uzorci:** numerirane/kicker "page-section" kartice, chip-red liste (male bordered kartice po stavci), tamni "spotlight" blokovi (`--brown-deep`) za Wi-Fi/kontakt podatke, tamni hero na p.html i h.html.
+Dashboard **ne učitava `atmosphere.css`** — ima vlastiti potpun CSS. Dvostruko definiranje istih tokena bi se sukobilo.
 
-`index.html` koristi vlastitu, srodnu ali ne bit-identičnu smeđe/kremastu paletu (`--cream:#F7F5F1`, `--brown:#5A3323` itd.) — nije nasljedio v2 token set 1:1.
+`index.html` još ima vlastitu smeđu paletu i čeka prijenos.
 
 ---
 
