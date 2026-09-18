@@ -32,9 +32,17 @@
   filter:saturate(.84) contrast(1.06) brightness(.97);
   transform:scale(1.05);transition:opacity 1.7s var(--ease)}
 .ph.on{opacity:1;animation:kenburns 9.5s linear forwards}
+.ph.art{transform:none}
+.ph.art.on{animation:none}
 @keyframes kenburns{from{transform:scale(1.04) translate3d(0,0,0)}to{transform:scale(1.15) translate3d(-1.6%,-1.2%,0)}}
 /* topli sloj koji ujednačava hladne i tople fotke */
 .phs__tone{position:absolute;inset:0;background:var(--terra);mix-blend-mode:soft-light;opacity:.20}
+/* nacrtani prizori vec imaju vlastitu dubinu — ne gusi ih */
+.phs:has(.ph.art.on) .phs__tone{opacity:.08}
+.phs:has(.ph.art.on) .phs__grade{background:
+  radial-gradient(100% 58% at 66% 14%,rgba(255,228,176,.20) 0%,rgba(255,228,176,0) 60%),
+  linear-gradient(178deg,rgba(20,32,46,.20) 0%,rgba(20,32,46,0) 24%,rgba(20,32,46,.10) 50%,
+    rgba(20,32,46,.52) 76%,rgba(20,32,46,.88) 100%)}
 .phs__grade{position:absolute;inset:0;background:
   radial-gradient(108% 64% at 68% 14%,rgba(255,224,168,.32) 0%,rgba(255,224,168,0) 62%),
   linear-gradient(178deg,rgba(20,32,46,.44) 0%,rgba(20,32,46,.04) 22%,rgba(20,32,46,.34) 54%,rgba(20,32,46,.76) 78%,rgba(20,32,46,.95) 100%)}
@@ -80,8 +88,9 @@
 
 /* ---- GALERIJA ---- */
 .gal{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:clamp(120px,15vw,186px);gap:14px}
-.gal figure{margin:0;position:relative;overflow:hidden;border-radius:var(--r-md);cursor:zoom-in;
-  background:var(--sand)}
+.gal figure{margin:0;position:relative;overflow:hidden;border-radius:var(--r-md)}
+/* podloga dok se fotografija ucitava — ne smije gaziti nacrtane prizore */
+.gal figure:has(img){background:var(--sand);cursor:zoom-in}
 .gal figure:nth-child(1){grid-column:span 2;grid-row:span 2}
 .gal figure:nth-child(2){grid-column:span 2}
 .gal figure:nth-child(3){grid-column:span 1}
@@ -93,6 +102,13 @@
   letter-spacing:.1em;text-transform:uppercase;text-shadow:0 2px 14px rgba(20,32,46,.8);
   opacity:0;transform:translateY(6px);transition:opacity .45s,transform .45s var(--ease)}
 .gal figure:hover figcaption{opacity:1;transform:none}
+.gal .slot{display:grid;place-items:center;position:relative}
+.gal .slot::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(255,253,247,.10),rgba(20,32,46,.10))}
+.gal .slot figcaption{opacity:1;transform:none;position:static;z-index:2;color:var(--ink);
+  text-shadow:none;background:rgba(255,253,247,.9);border-radius:999px;padding:7px 14px;
+  border:1px solid var(--line)}
+.gal-note{margin-top:18px;font-size:.88rem;color:var(--ink-50);max-width:56ch}
 .gal .more{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;
   background:var(--night);color:#fff;font-weight:700;font-size:.9rem;cursor:default}
 .gal .more span{font-family:'Fraunces',serif;font-size:2rem;font-weight:400;color:var(--sun)}
@@ -312,15 +328,58 @@ details .body{padding:0 0 22px;color:var(--ink-70);font-size:.94rem;animation:fa
 <!-- ============ HERO ============ -->
 <header class="hero hero--photo" data-scene>
   <div class="phs">
-    <div class="ph on" data-cap="Terasa s pogledom" style="background-image:url('img/terasa.webp')"></div>
-    <div class="ph" data-cap="Kuhinja i blagovaonica" style="background-image:url('img/kuhinja.jpg')"></div>
-    <div class="ph" data-cap="Dnevni boravak" style="background-image:url('img/dnevni.jpg')"></div>
+    <div class="ph art art--zalazak on" data-cap="Zalazak nad morem">
+      <div class="art__sun"></div><div class="art__haze"></div>
+      <svg class="art__birds" viewBox="0 0 120 30" fill="none">
+      <path d="M6 16c4-6 8-6 12 0 4-6 8-6 12 0"/>
+      <path d="M46 9c3-4.5 6-4.5 9 0 3-4.5 6-4.5 9 0"/>
+      <path d="M82 20c2.6-4 5.2-4 7.8 0 2.6-4 5.2-4 7.8 0"/>
+    </svg>
+      <div class="art__mid" style="bottom:36%;height:17vh;min-height:104px" data-mouse="9"><svg viewBox="0 0 1440 200" preserveAspectRatio="none" fill="none">
+        <path d="M0 148c78-6 122-34 196-32 71 2 104 27 176 24 74-3 110-36 190-34 72 2 118 30 190 30 76 0 122-31 196-28 70 3 118 28 190 30 60 2 200-10 302-22v204H0z" fill="#6E8290" opacity=".5"/>
+        <path d="M0 170c96-10 150-42 236-38 78 4 120 33 198 31 80-2 122-40 204-36 74 4 122 34 196 34 80 0 126-33 204-29 66 3 128 26 402 18v210H0z" fill="#3E5A69" opacity=".72"/>
+        <path d="M0 192c120-8 170-30 268-24 86 5 128 24 210 22 84-2 126-26 208-22 78 4 126 22 202 22 82 0 132-18 214-14 70 3 200 6 338 2v122H0z" fill="#22394A" opacity=".92"/>
+      </svg></div>
+      <div class="art__sea"><div class="shimmer" style="top:10%;left:44%;width:22%;animation-delay:0s"></div><div class="shimmer" style="top:17%;left:20%;width:16%;animation-delay:1.2s"></div><div class="shimmer" style="top:25%;left:60%;width:24%;animation-delay:2.3s"></div><div class="shimmer" style="top:33%;left:32%;width:19%;animation-delay:0.7s"></div><div class="shimmer" style="top:42%;left:14%;width:21%;animation-delay:3s"></div></div>
+    </div>
+
+    <div class="ph art art--plava" data-cap="Plava ura nad gradom">
+      <div class="art__sun"></div><div class="art__haze"></div>
+      <div class="art__mid" style="bottom:40%;height:15vh;min-height:92px" data-mouse="7"><svg viewBox="0 0 1440 200" preserveAspectRatio="none" fill="none">
+        <path d="M0 160c110-6 180-26 290-22 96 4 150 20 246 18 98-2 150-24 250-20 92 4 150 20 236 20 96 0 160-16 250-12 60 3 118 6 168 4v52H0z" fill="#8FA3A8" opacity=".45"/>
+        <g fill="#5E7780" opacity=".8">
+          <path d="M120 176v-28h34v28zM170 176v-40h26v40zM212 176v-22h30v22zM470 176v-34h30v34zM512 176v-24h34v24zM880 176v-30h28v30zM918 176v-42h26v42zM1150 176v-26h32v26zM1196 176v-36h24v36z"/>
+          <path d="M120 148l17-13 17 13zM170 136l13-11 13 11zM470 142l15-12 15 12zM880 146l14-12 14 12zM1150 150l16-12 16 12z"/>
+        </g>
+        <path d="M0 178c140-4 200-14 320-11 104 3 160 11 262 10 106-1 160-13 262-11 96 2 158 11 244 11 92 0 158-8 252-6 40 1 74 2 100 3v26H0z" fill="#33505C" opacity=".92"/>
+      </svg></div>
+      <div class="art__sea"><div class="shimmer" style="top:10%;left:44%;width:22%;animation-delay:0s"></div><div class="shimmer" style="top:17%;left:20%;width:16%;animation-delay:1.2s"></div><div class="shimmer" style="top:25%;left:60%;width:24%;animation-delay:2.3s"></div><div class="shimmer" style="top:33%;left:32%;width:19%;animation-delay:0.7s"></div><div class="shimmer" style="top:42%;left:14%;width:21%;animation-delay:3s"></div></div>
+    </div>
+
+    <div class="ph art art--maslinik" data-cap="Maslinik u zlatnom satu">
+      <div class="art__sun"></div><div class="art__haze"></div>
+      <div class="art__ground"></div>
+      <div class="art__near" style="bottom:26%;height:26vh;min-height:170px" data-mouse="6"><svg viewBox="0 0 1440 260" preserveAspectRatio="none" fill="none">
+        <path d="M0 176c120-14 190-40 300-34 100 6 152 28 254 26 104-2 156-32 258-28 94 4 152 28 240 28 92 0 156-22 250-18 52 2 98 6 138 8v102H0z" fill="#9AA678" opacity=".5"/>
+        <g opacity=".92">
+          <path d="M196 232v-52" stroke="#4A4030" stroke-width="7" stroke-linecap="round"/>
+          <ellipse cx="196" cy="166" rx="62" ry="38" fill="#6E7F55"/><ellipse cx="160" cy="180" rx="40" ry="26" fill="#7C8C61"/><ellipse cx="232" cy="180" rx="42" ry="26" fill="#63744C"/>
+          <path d="M596 236v-62" stroke="#4A4030" stroke-width="8" stroke-linecap="round"/>
+          <ellipse cx="596" cy="158" rx="76" ry="45" fill="#6E7F55"/><ellipse cx="548" cy="176" rx="48" ry="30" fill="#7C8C61"/><ellipse cx="646" cy="176" rx="50" ry="30" fill="#63744C"/>
+          <path d="M1044 232v-54" stroke="#4A4030" stroke-width="7" stroke-linecap="round"/>
+          <ellipse cx="1044" cy="164" rx="64" ry="39" fill="#6E7F55"/><ellipse cx="1004" cy="180" rx="42" ry="27" fill="#7C8C61"/><ellipse cx="1086" cy="180" rx="44" ry="27" fill="#63744C"/>
+          <path d="M1330 234v-46" stroke="#4A4030" stroke-width="6" stroke-linecap="round"/>
+          <ellipse cx="1330" cy="176" rx="54" ry="33" fill="#6A7B52"/>
+        </g>
+      </svg></div>
+    </div>
+
     <div class="phs__tone"></div>
     <div class="phs__grade"></div>
   </div>
 
   <div class="phnav">
-    <div class="phcap" id="phCap">Terasa s pogledom</div>
+    <div class="phcap" id="phCap">Zalazak nad morem</div>
     <div class="phbars" id="phBars"></div>
   </div>
 
@@ -392,21 +451,14 @@ details .body{padding:0 0 22px;color:var(--ink-70);font-size:.94rem;animation:fa
   <!-- ============ GALERIJA ============ -->
   <div class="wrap" style="margin-top:clamp(56px,7vw,92px)">
     <div class="kicker bare" data-rv="fade">Galerija</div>
-    <h2 data-rv="up" style="margin:14px 0 30px">Kako to izgleda uživo</h2>
+    <h2 data-rv="up" style="margin:14px 0 30px">Galerija objekta</h2>
     <div class="gal" data-rv="up">
-      <figure onclick="lbOpen(0)">
-        <img src="img/terasa.webp" alt="Terasa s pogledom na more" loading="lazy">
-        <figcaption>Terasa</figcaption>
-      </figure>
-      <figure onclick="lbOpen(1)">
-        <img src="img/kuhinja.jpg" alt="Kuhinja i blagovaonica" loading="lazy">
-        <figcaption>Kuhinja</figcaption>
-      </figure>
-      <figure onclick="lbOpen(2)">
-        <img src="img/dnevni.jpg" alt="Dnevni boravak" loading="lazy">
-        <figcaption>Dnevni boravak</figcaption>
-      </figure>
-      <figure class="more"><span>+9</span>fotografija</figure>
+      <figure class="slot art--zalazak"><figcaption>Naslovna</figcaption></figure>
+      <figure class="slot art--plava"><figcaption>Vanjski prostor</figcaption></figure>
+      <figure class="slot art--maslinik"><figcaption>Interijer</figcaption></figure>
+      <figure class="more"><span>+9</span>mjesta za fotografije</figure>
+    </div>
+    <p class="gal-note" data-rv="fade">Ovdje idu fotografije objekta. Dodaješ ih u dashboardu pod <strong>Fotografije</strong> — prva postaje naslovna i pojavljuje se u zaglavlju.</p>
     </div>
   </div>
 </section>
@@ -602,8 +654,10 @@ details .body{padding:0 0 22px;color:var(--ink-70);font-size:.94rem;animation:fa
 
 <!-- ============ FOTO TRAKA ============ -->
 <div class="band">
-  <div class="band__img" data-speed="0.12" style="background-image:url('img/terasa.webp')"></div>
-  <div class="band__tone"></div>
+  <div class="band__img art art--zalazak" data-speed="0.12">
+    <div class="art__sun"></div><div class="art__haze"></div>
+    <div class="art__sea"></div>
+  </div>
   <div class="band__grade"></div>
   <div class="band__in">
     <div class="wrap"><div class="band__q" data-rv="up">
@@ -754,13 +808,6 @@ details .body{padding:0 0 22px;color:var(--ink-70);font-size:.94rem;animation:fa
   <a class="btn btn--fill btn--sm" href="https://wa.me/385991234567" target="_blank" rel="noopener">Javi se</a>
 </div></div>
 
-<div class="lb" id="lb" onclick="if(event.target.id==='lb')lbClose()">
-  <button class="lb__x" onclick="lbClose()" aria-label="Zatvori">✕</button>
-  <button class="lb__nav prev" onclick="lbStep(-1)" aria-label="Prethodna">‹</button>
-  <img id="lbImg" alt="">
-  <button class="lb__nav next" onclick="lbStep(1)" aria-label="Sljedeća">›</button>
-</div>
-
 <script src="motion.js"></script>
 <script>
 const $ = s => document.querySelector(s);
@@ -821,35 +868,6 @@ const $$ = s => [...document.querySelectorAll(s)];
   }));
 })();
 
-/* ============ 0b. GALERIJA — lightbox ============ */
-const GAL = [
-  {src:'img/terasa.webp', alt:'Terasa s pogledom na more'},
-  {src:'img/kuhinja.jpg', alt:'Kuhinja i blagovaonica'},
-  {src:'img/dnevni.jpg',  alt:'Dnevni boravak'}
-];
-let lbI = 0;
-function lbOpen(n){
-  lbI = n;
-  const img = document.getElementById('lbImg');
-  img.src = GAL[n].src; img.alt = GAL[n].alt;
-  document.getElementById('lb').classList.add('show');
-  document.body.style.overflow = 'hidden';
-}
-function lbClose(){
-  document.getElementById('lb').classList.remove('show');
-  document.body.style.overflow = '';
-}
-function lbStep(d){
-  lbI = (lbI + d + GAL.length) % GAL.length;
-  const img = document.getElementById('lbImg');
-  img.src = GAL[lbI].src; img.alt = GAL[lbI].alt;
-}
-addEventListener('keydown', e => {
-  if(!document.getElementById('lb').classList.contains('show')) return;
-  if(e.key === 'Escape') lbClose();
-  if(e.key === 'ArrowLeft') lbStep(-1);
-  if(e.key === 'ArrowRight') lbStep(1);
-});
 const F = ['Prijava od 15:00','Spava 6 osoba','Wi-Fi u cijeloj kući','More 120 stepenica niže',
            'Parking ispred kuće','Ana odgovara u sat vremena'];
 $('#ticker').innerHTML = [...F,...F].map(f=>`<span class="ticker__item">${f}</span><span class="ticker__dot">✦</span>`).join('');

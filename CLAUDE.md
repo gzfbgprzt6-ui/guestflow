@@ -177,7 +177,8 @@ Tablica cijena gore je početno stanje u bazi; planovi i cijene još nisu konač
 - **Stripe checkout nije spojen.** Gumbi za nadogradnju u dashboardu su statični (`toast(...)`), ne pozivaju `billing.js`. `billing.js` uopće nije importan ni u jednom HTML-u.
 - **`/api` folder ne postoji** — ni Stripe (`create-checkout-session`, `create-portal-session`, `stripe-webhook`), ni `sync-ical`, ni `track-event` serverless funkcije nisu u repozitoriju. `page_views` insert ide direktno s klijenta preko Supabase (`sb.from('page_views').insert(...)`), pa analytics tracking radi neovisno o `track-event.js`.
 - **iCal sinkronizacija nema backend** (vidi gore) — UI postoji, endpoint ne.
-- **`p.html`, `h.html` i `dashboard.html` još su na v2 dizajnu** — novi v3 (foto zaglavlje, galerija, kalendar dostupnosti, odabir termina s predlošcima, karta, okolica) živi samo u `v3/` na feature grani i nije prenesen u prave stranice.
+- **`p.html`, `h.html` i `dashboard.html` još su na v2 dizajnu.** Novi v3 postoji kao mockup u `v3/` (dostupan na `/v3/`, `/v3/guest.html`, `/v3/dashboard.html`) i **nije prenesen u prave stranice** — one i dalje prikazuju stari izgled gostima. Prijenos je sljedeći veliki zadatak.
+- **v3 mockupi nemaju fotografija.** Zaglavlje vrti tri nacrtana prizora (`.art--zalazak`, `.art--plava`, `.art--maslinik` u `v3/atmosphere.css`) — sve je CSS i SVG, nijedna vanjska slika, pa nema pitanja licence. Isti sloj kasnije preuzima prava fotografija iz `photo_urls`, bez diranja ostatka stranice. Galerija prikazuje prazna mjesta — točno ono što vidi host koji još nije dodao fotografije.
 - **Nema višejezičnosti.** `plans.maxLanguages` postoji, ali u kodu nema nijednog prijevoda ni prebacivanja jezika.
 
 ---

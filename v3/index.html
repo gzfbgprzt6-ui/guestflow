@@ -491,7 +491,7 @@
               <button class="opt" data-v="more"><b>Otvoreno more</b><small>plavo, mirno</small></button>
               <button class="opt" data-v="maslinik"><b>Maslinik</b><small>zeleno, sjenovito</small></button>
               <button class="opt" data-v="kamen"><b>Stari kamen</b><small>bež, mediteran</small></button>
-              <button class="opt" data-v="foto"><b>Vaše fotografije</b><small>2–3 slike koje se izmjenjuju</small></button>
+              <button class="opt" data-v="foto"><b>Vaše fotografije</b><small>2–3 slike koje se izmjenjuju u zaglavlju</small></button>
             </div>
           </div>
 
@@ -703,11 +703,16 @@ const COVERS = {
   foto:     'PHOTO'
 };
 /* naslovne fotografije koje se izmjenjuju u pregledu — isto što gost vidi uživo */
-const PHOTOS = ['img/terasa.webp','img/kuhinja.jpg','img/dnevni.jpg'];
+// Dok host ne doda svoje fotografije, u pregledu se izmjenjuju nasi nacrtani prizori.
+const PHOTOS = [
+  {ime:'Zalazak nad morem', bg:'linear-gradient(176deg,#FBE3B4 0%,#F3C78C 20%,#E9A98A 38%,#C98874 54%,#6E7E85 74%,#3E5C68 100%)'},
+  {ime:'Plava ura', bg:'linear-gradient(174deg,#DCEEF4 0%,#B8DFEA 26%,#8FC9DA 44%,#4E9CB0 64%,#256C80 100%)'},
+  {ime:'Maslinik', bg:'linear-gradient(175deg,#F7E6C0 0%,#EFD39B 24%,#D9C489 44%,#9DA872 66%,#5E7350 100%)'}
+];
 let photoI = 0, photoTimer = null;
 function photoBg(n){
-  return 'linear-gradient(180deg,color-mix(in srgb,' + CFG.accent + ' 26%,transparent) 0%,'
-       + 'rgba(20,32,46,.10) 40%,rgba(20,32,46,.58) 100%), url(\'' + PHOTOS[n] + '\') center/cover no-repeat';
+  return 'linear-gradient(180deg,color-mix(in srgb,' + CFG.accent + ' 22%,transparent) 0%,'
+       + 'rgba(20,32,46,.06) 40%,rgba(20,32,46,.5) 100%), ' + PHOTOS[n].bg;
 }
 function photoLoop(on){
   clearInterval(photoTimer); photoTimer = null;

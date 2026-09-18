@@ -232,3 +232,55 @@ h3{font-size:clamp(1.3rem,2vw,1.7rem);line-height:1.15}
 .foot{border-top:1px solid var(--line);padding-block:40px;color:var(--ink-50);font-size:.86rem}
 .foot__in{display:flex;flex-wrap:wrap;gap:18px;justify-content:space-between;align-items:center}
 .foot a:hover{color:var(--ink)}
+
+/* ==========================================================================
+   NACRTANI PRIZORI — stoje umjesto fotografija dok ih host ne doda
+   Sve je CSS i SVG, nijedna vanjska slika. Isti sloj koji fotografija
+   kasnije preuzme, pa zamjena ne dira ostatak stranice.
+   ========================================================================== */
+.art{position:absolute;inset:0;overflow:hidden}
+
+/* 1 — zalazak nad morem */
+.art--zalazak{background:linear-gradient(176deg,#FBE3B4 0%,#F3C78C 20%,#E9A98A 38%,#C98874 54%,#6E7E85 74%,#3E5C68 100%)}
+/* 2 — plava ura nad gradom */
+.art--plava{background:linear-gradient(174deg,#DCEEF4 0%,#B8DFEA 26%,#8FC9DA 44%,#4E9CB0 64%,#256C80 100%)}
+/* 3 — maslinik u zlatnom satu */
+.art--maslinik{background:linear-gradient(175deg,#F7E6C0 0%,#EFD39B 24%,#D9C489 44%,#9DA872 66%,#5E7350 100%)}
+
+.art__sun{position:absolute;width:clamp(110px,14vw,200px);aspect-ratio:1;border-radius:50%;
+  top:18%;left:64%;transform:translate(-50%,-50%);animation:sunPulse 9s ease-in-out infinite}
+.art--zalazak .art__sun{background:radial-gradient(circle,#FFF3D6 0%,#FFE0A3 38%,rgba(233,161,59,.5) 62%,rgba(233,161,59,0) 74%)}
+.art--plava .art__sun{background:radial-gradient(circle,#FFFFFF 0%,#FFF8E0 34%,rgba(255,244,214,.42) 60%,rgba(255,244,214,0) 74%);top:13%;left:76%}
+.art--maslinik .art__sun{background:radial-gradient(circle,#FFF6DC 0%,#FFE6AE 40%,rgba(233,161,59,.42) 64%,rgba(233,161,59,0) 76%);top:22%;left:22%}
+
+.art__haze{position:absolute;inset:0;mix-blend-mode:screen;
+  background:radial-gradient(120% 60% at 64% 32%,rgba(255,231,186,.5) 0%,rgba(255,231,186,0) 62%)}
+.art--maslinik .art__haze{background:radial-gradient(110% 58% at 24% 36%,rgba(255,236,196,.55) 0%,rgba(255,236,196,0) 64%)}
+
+.art__far,.art__mid,.art__near{position:absolute;left:-4%;right:-4%}
+.art__far svg,.art__mid svg,.art__near svg{width:100%;height:100%;display:block}
+
+/* more */
+.art__sea{position:absolute;left:0;right:0;bottom:0;height:42%;overflow:hidden}
+.art--zalazak .art__sea{background:linear-gradient(180deg,rgba(58,88,102,.4) 0%,rgba(38,68,86,.74) 26%,rgba(20,42,58,.93) 62%,rgba(16,34,48,.97) 100%)}
+/* horizont na istoj visini kao kod zalaska */
+.art--plava .art__sea{height:40%;background:linear-gradient(180deg,rgba(94,177,196,.66) 0%,rgba(52,138,162,.86) 30%,rgba(26,93,116,.95) 68%,rgba(18,70,90,.98) 100%)}
+
+/* maslinik: tlo umjesto mora */
+.art__ground{position:absolute;left:0;right:0;bottom:0;height:42%;
+  background:linear-gradient(180deg,rgba(128,141,94,.5) 0%,rgba(95,112,72,.82) 34%,rgba(63,80,52,.95) 100%)}
+
+/* sitna svjetlucanja na vodi */
+.art .shimmer{position:absolute;height:2px;border-radius:2px;filter:blur(.8px);
+  background:linear-gradient(90deg,transparent,rgba(255,226,180,.72),transparent);
+  animation:shimmer 7s ease-in-out infinite}
+.art--plava .shimmer{background:linear-gradient(90deg,transparent,rgba(255,255,255,.82),transparent)}
+
+/* ptice — jedva vidljive, daju dubinu */
+.art__birds{position:absolute;top:26%;left:14%;width:120px;opacity:.5;animation:driftX 26s linear infinite}
+.art__birds path{stroke:rgba(20,32,46,.62);stroke-width:1.6;fill:none;stroke-linecap:round}
+@keyframes driftX{from{transform:translateX(-10%)}to{transform:translateX(120%)}}
+
+@media (prefers-reduced-motion:reduce){
+  .art__sun,.art .shimmer,.art__birds{animation:none}
+}
