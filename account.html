@@ -180,6 +180,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);display:flex;a
 
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { loadPlans, getPlan, limitFor, effectivePlanId } from './plans.js'
 
 const SURL = 'https://wtojzqjhipdfbrnmprmz.supabase.co'
 const SKEY = 'sb_publishable_tmZAZTDbQ7ktc1N-8y4q4w_ztAu_62F'
@@ -187,7 +188,6 @@ const sb = createClient(SURL, SKEY)
 
 let USER = null
 let deleteStep = 0
-const LIMITS = { free: 1, pro: 5, business: 15 }
 
 async function init() {
   const { data: { session } } = await sb.auth.getSession()
@@ -203,9 +203,10 @@ async function init() {
   document.getElementById('av-email').textContent = USER.email
 
   // Plan & stats
+  await loadPlans(sb)
   const { data: sub } = await sb.from('subscriptions').select('plan,period_end').eq('user_id', USER.id).maybeSingle()
-  const plan = sub?.plan || 'free'
-  const limit = LIMITS[plan] || 1
+  const plan = effectivePlanId(sub)          // istekao plan pada na free
+  const limit = limitFor(plan, 'properties')
   const { count } = await sb.from('properties').select('id', { count: 'exact', head: true }).eq('user_id', USER.id)
   const propCount = count || 0
 

@@ -22,7 +22,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 | Fotografije | **Cloudinary** — namjerna odluka (25GB free tier), ne Supabase Storage |
 | Hosting | Vercel (Hobby plan), auto-deploy iz GitHub `main` grane |
 | Domene | `guestflow-gamma.vercel.app` (Vercel default) + `odmoria.com` (custom domena) |
-| Plaćanje | Stripe — **plansi/cijene definirani u `plans.js`, ali checkout nije spojen** (vidi "Poznati nedostaci") |
+| Plaćanje | Stripe — cijene u tablici `plans`, **checkout nije spojen** (vidi "Poznati nedostaci") |
 
 **Supabase projekt:**
 - URL: `https://wtojzqjhipdfbrnmprmz.supabase.co`
@@ -46,11 +46,14 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 ├── account.html              help.html                admin.html (gated: owner auth UID)
 ├── terms.html                privacy.html             404.html
 ├── vercel.json              # Rewrites za clean URL-ove + security headeri (NEMA cron konfiguracije)
-├── plans.js                 # ODMORIA_PLANS — jedini frontend izvor istine za limite plana
+├── plans.js                 # rezervne vrijednosti + helperi; pravi izvor istine je tablica `plans` u bazi
 ├── billing.js                # Stripe checkout/portal helperi — NIJE importan ni u jednom HTML-u (mrtav kod dok se ne spoji API)
 ├── assets/                   # odmoria-dashboard.png
 └── sql/
-    ├── admin-access.sql                    # RLS politike scope-ane na admin email
+    ├── admin-access.sql                    # RLS politike scope-ane na owner auth UID
+    ├── plan-limits.sql                     # tablica `plans` + okidaci koji limite PROVODE u bazi
+    ├── add-gap-fill-stays.sql               add-booking-id-to-availability.sql
+    ├── add-source-to-availability.sql
     └── fix-missing-columns-and-storage.sql # ALTER TABLE dopune (photo_urls, ical_*, beds/bathrooms/size_m2) + storage bucket policy
 ```
 
@@ -63,10 +66,14 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 ## Baza podataka — tablice koje se stvarno koriste u kodu
 
 ```sql
+plans           -- id (free/pro/business), name, cijene, max_* limiti, can_* zastavice
+                   IZVOR ISTINE za limite i cijene. Promjena plana = UPDATE ovdje,
+                   bez diranja koda. -1 u bilo kojem max_* znaci neograniceno.
 subscriptions   -- user_id, plan (free/pro/business), status, period_end
 properties      -- user_id, name, slug, host_name, phone, email, welcome_msg,
                    photo_urls, cover_photo_url, beds, bathrooms, size_m2,
-                   ical_booking_url, ical_airbnb_url, ical_last_sync, guest_token (legacy)
+                   ical_booking_url, ical_airbnb_url, ical_last_sync, guest_token (legacy),
+                   show_availability, allow_gap_fill_stays
 sections        -- property_id, wifi_name, wifi_pass, door_code, checkin_time, checkout_time,
                    address, parking_info, checkin_notes, checkout_notes,
                    ac_info, heating_info, hot_water_info, kitchen_info
@@ -84,7 +91,7 @@ page_views      -- property_id, view_type, timestamp
 
 Anon (nelogirani) korisnici preko RLS mogu čitati: `properties` (po slugu), `bookings` (samo `is_active=true`, nije isteklo), `sections`/`local_places`/`transport`/`attractions`/`house_rules`/`faq`/`amenities`/`availability` (javno po `property_id`), i smiju `insert` u `page_views`.
 
-**Poznati gap:** `sections.ac_info/heating_info/hot_water_info/kitchen_info` se spremaju iz dashboarda ("Upute za korištenje" kartica), ali se trenutno **ne prikazuju nigdje** — ni u `p.html` ni u `h.html`.
+`sections.ac_info/heating_info/hot_water_info/kitchen_info` spremaju se iz dashboarda ("Upute za korištenje") i **prikazuju se gostu u `h.html`** (vidi `h.html:431`). U `p.html` ih namjerno nema — javna stranica ne dira `sections`.
 
 ---
 
@@ -112,7 +119,7 @@ URL-ovi vraćenih fotografija spremaju se u `properties.photo_urls` (jsonb) i `p
 
 ---
 
-## Planovi i limiti (iz `plans.js`, stvarni izvor istine)
+## Planovi i limiti
 
 | Plan | Objekti | Fotografije | Cijena |
 |------|---------|-------------|--------|
@@ -120,7 +127,15 @@ URL-ovi vraćenih fotografija spremaju se u `properties.photo_urls` (jsonb) i `p
 | Pro | 5 | 30 | €15/mj ili €150/god |
 | Business | 15 | 50 | €49/mj ili €490/god |
 
-`plans.js` također ograničava broj lokalnih preporuka/prijevoza/atrakcija i broj jezika po planu (`maxLocalPlacesPerProperty`, `maxLanguages` itd.) — ta polja u UI-u trenutno nisu sva provedena, samo `maxProperties` se aktivno provjerava (`canCreateProperty`).
+**Kako limiti rade (od rujna 2026.):**
+
+- Stvarni izvor istine je tablica **`plans` u Supabaseu**, ne kod. Promjena limita ili cijene je `UPDATE public.plans ...` — bez izmjene koda i bez deploya.
+- `plans.js` drži iste vrijednosti kao **rezervu** i puni se iz baze pozivom `loadPlans(sb)` pri pokretanju stranice. Ako je Supabase nedostupan, stranica radi s rezervnim vrijednostima.
+- Limite **provodi baza** okidačima (`sql/plan-limits.sql`): broj objekata, fotografija po objektu, preporuka, prijevoza, atrakcija, pravila i pitanja. Provjere u pregledniku postoje samo da korisnik dobije lijepu poruku — nisu sigurnosna granica.
+- Istek plana je na jednom mjestu: `effectivePlanId(sub)` u `plans.js` i `current_plan_id(uid)` u bazi. Istekao plan koji nije `free` pada na `free`.
+- `plans.js` uvezen je u `dashboard.html`, `add-property.html`, `account.html` i `admin.html`. **Nikad ne zakucavati limite u HTML** — to su prije bile četiri razilazeće kopije.
+
+Tablica cijena gore je početno stanje u bazi; planovi i cijene još nisu konačni.
 
 ---
 
@@ -159,7 +174,6 @@ URL-ovi vraćenih fotografija spremaju se u `properties.photo_urls` (jsonb) i `p
 - **Stripe checkout nije spojen.** Gumbi za nadogradnju u dashboardu su statični (`toast(...)`), ne pozivaju `billing.js`. `billing.js` uopće nije importan ni u jednom HTML-u.
 - **`/api` folder ne postoji** — ni Stripe (`create-checkout-session`, `create-portal-session`, `stripe-webhook`), ni `sync-ical`, ni `track-event` serverless funkcije nisu u repozitoriju. `page_views` insert ide direktno s klijenta preko Supabase (`sb.from('page_views').insert(...)`), pa analytics tracking radi neovisno o `track-event.js`.
 - **iCal sinkronizacija nema backend** (vidi gore) — UI postoji, endpoint ne.
-- **`sections.ac_info/heating_info/hot_water_info/kitchen_info`** se ne prikazuju gostu nigdje (dashboard-only, vidi gore).
 - **`onboarding.html` i `add-property.html` nemaju upload fotografija** — foto se dodaje naknadno u dashboardu.
 - **`help.html`** FAQ još tvrdi da je upload fotografija "u razvoju" — netočno, Cloudinary upload radi.
 

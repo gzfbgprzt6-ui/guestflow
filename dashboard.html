@@ -867,17 +867,16 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 
 <script type="module">
 import{createClient}from'https://esm.sh/@supabase/supabase-js@2'
+import{loadPlans,getPlan,limitFor,canAdd,limitMessage,effectivePlanId}from'./plans.js'
 
 const SURL='https://wtojzqjhipdfbrnmprmz.supabase.co'
 const SKEY='sb_publishable_tmZAZTDbQ7ktc1N-8y4q4w_ztAu_62F'
 const sb=createClient(SURL,SKEY)
 
-const PLAN_LIMITS={free:1,pro:5,business:15}
-const PHOTO_LIMITS={free:5,pro:30,business:50}
 const MONTHS=['Siječanj','Veljača','Ožujak','Travanj','Svibanj','Lipanj','Srpanj','Kolovoz','Rujan','Listopad','Studeni','Prosinac']
 const TYPES=['Apartman','Villa','Kuća','Studio','Soba']
 let USER=null,PROPS=[],PROP=null,SECTION=null
-let USER_PLAN='free',PLAN_LIMIT=1
+let USER_PLAN='free',PLAN_LIMIT=1,PHOTO_LIMIT=5
 let calMonth=new Date().getMonth(),calYear=new Date().getFullYear()
 let bookedDays=[],icalDays=[]
 let rangeStart=null,hoverDs=null,filledSet=new Set()
@@ -893,11 +892,12 @@ async function init(){
   const n=USER.user_metadata?.full_name||USER.email||'?'
   document.getElementById('user-av').textContent=n[0].toUpperCase()
   document.getElementById('user-name').textContent=USER.user_metadata?.full_name||USER.email.split('@')[0]
+  await loadPlans(sb)
   const{data:sub}=await sb.from('subscriptions').select('plan,period_end').eq('user_id',USER.id).maybeSingle()
-  if(sub&&sub.period_end&&new Date(sub.period_end)<new Date()&&sub.plan!=='free')USER_PLAN='free'
-  else USER_PLAN=sub?.plan||'free'
-  PLAN_LIMIT=PLAN_LIMITS[USER_PLAN]||1
-  document.getElementById('user-plan').textContent=USER_PLAN.charAt(0).toUpperCase()+USER_PLAN.slice(1)+' plan'
+  USER_PLAN=effectivePlanId(sub)
+  PLAN_LIMIT=limitFor(USER_PLAN,'properties')
+  PHOTO_LIMIT=limitFor(USER_PLAN,'photos')
+  document.getElementById('user-plan').textContent=getPlan(USER_PLAN).name+' plan'
   buildTypePickers()
   await loadProps()
   document.getElementById('loading').style.display='none'
@@ -933,7 +933,7 @@ async function loadProps(){
 
 function showLockBanner(){
   const locked=PROPS.length-PLAN_LIMIT
-  document.getElementById('lock-banner-slot').innerHTML=`<div class="lock-banner"><div class="li">🔒</div><div><strong>${locked} objekt${locked>1?'a':''} zaključano</strong><span>Tvoj ${USER_PLAN} plan uključuje ${PLAN_LIMIT} objekt${PLAN_LIMIT>1?'a':''}. Nadogradi za pristup svima.</span></div><button class="btn small" onclick="nav('sub',document.querySelector('[data-panel=sub]'))">Nadogradi →</button></div>`
+  document.getElementById('lock-banner-slot').innerHTML=`<div class="lock-banner"><div class="li">🔒</div><div><strong>${locked} objekt${locked>1?'a':''} zaključano</strong><span>${limitMessage('properties',USER_PLAN)}</span></div><button class="btn small" onclick="nav('sub',document.querySelector('[data-panel=sub]'))">Nadogradi →</button></div>`
 }
 
 window.onPropChange=async()=>{
@@ -1302,8 +1302,12 @@ window.saveListItem=async(key)=>{
     const{error}=await sb.from(cfg.table).update(payload).eq('id',editingId[key])
     if(error){toast('Greška: '+error.message);return}
   }else{
+    // baza ovo svejedno provodi okidacem — ovdje samo da korisnik dobije
+    // jasnu poruku prije nego posalje zahtjev
+    const have=listStore[key]().length
+    if(!canAdd(USER_PLAN,cfg.table,have)){toast(limitMessage(cfg.table,USER_PLAN));return}
     payload.property_id=PROP.id
-    payload.sort_order=listStore[key]().length
+    payload.sort_order=have
     const{error}=await sb.from(cfg.table).insert(payload)
     if(error){toast('Greška: '+error.message);return}
   }
@@ -1436,11 +1440,13 @@ async function uploadToCloudinary(file){
   if(!res.ok)throw new Error(data.error?.message||'Upload nije uspio')
   return data.secure_url
 }
+function photoCountLabel(n){return n+' / '+(PHOTO_LIMIT===Infinity?'∞':PHOTO_LIMIT)}
+
 window.uploadPhotos=async(files)=>{
   if(!PROP||!files.length)return
   const urls=[...(PROP.photo_urls||[])]
-  const limit=PHOTO_LIMITS[USER_PLAN]||5
-  if(urls.length>=limit){showA('photos-alert','err',`Limit fotografija (${limit}) za tvoj plan.`);return}
+  const limit=PHOTO_LIMIT
+  if(urls.length>=limit){showA('photos-alert','err',limitMessage('photos',USER_PLAN));return}
   let uploaded=0
   for(const file of Array.from(files)){
     if(urls.length>=limit)break
@@ -1454,7 +1460,7 @@ window.uploadPhotos=async(files)=>{
     if(saveErr){toast('Greška pri spremanju: '+saveErr.message);document.getElementById('photo-input').value='';return}
     PROP.photo_urls=urls;PROP.cover_photo_url=cover
     renderPhotos(urls)
-    document.getElementById('photo-count-lbl').textContent=urls.length+' / '+(PHOTO_LIMITS[USER_PLAN]||5)
+    document.getElementById('photo-count-lbl').textContent=photoCountLabel(urls.length)
     toast(uploaded+' foto dodano ✓');renderChecklist();livePreview()
   }
   document.getElementById('photo-input').value=''
@@ -1470,7 +1476,7 @@ window.deletePhoto=async(url)=>{
   const cover=PROP.cover_photo_url===url?(urls[0]||null):PROP.cover_photo_url
   await sb.from('properties').update({photo_urls:urls,cover_photo_url:cover}).eq('id',PROP.id)
   PROP.photo_urls=urls;PROP.cover_photo_url=cover;renderPhotos(urls)
-  document.getElementById('photo-count-lbl').textContent=urls.length+' / '+(PHOTO_LIMITS[USER_PLAN]||5)
+  document.getElementById('photo-count-lbl').textContent=photoCountLabel(urls.length)
   toast('Fotografija obrisana');renderChecklist();livePreview()
 }
 function renderPhotos(urls){
@@ -1481,7 +1487,7 @@ function renderPhotos(urls){
 }
 function loadPhotos(){
   const urls=PROP?.photo_urls||[]
-  document.getElementById('photo-count-lbl').textContent=urls.length+' / '+(PHOTO_LIMITS[USER_PLAN]||5)
+  document.getElementById('photo-count-lbl').textContent=photoCountLabel(urls.length)
   renderPhotos(urls)
 }
 

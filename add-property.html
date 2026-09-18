@@ -235,6 +235,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);display:flex;a
 
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { loadPlans, getPlan, limitFor, effectivePlanId } from './plans.js'
 
 const SURL = 'https://wtojzqjhipdfbrnmprmz.supabase.co'
 const SKEY = 'sb_publishable_tmZAZTDbQ7ktc1N-8y4q4w_ztAu_62F'
@@ -244,27 +245,22 @@ let USER = null, PLAN = 'free', PROP_COUNT = 0
 let selectedType = 'Apartman'
 let newSlug = '', newToken = ''
 
-const LIMITS = { free: 1, pro: 5, business: 15 }
-
 async function init() {
   const { data: { session } } = await sb.auth.getSession()
   if (!session) { window.location.href = '/login.html'; return }
   USER = session.user
 
+  await loadPlans(sb)
+
   // Get plan
-  const { data: sub } = await sb.from('subscriptions').select('plan').eq('user_id', USER.id).maybeSingle()
-  PLAN = sub?.plan || 'free'
+  const { data: sub } = await sb.from('subscriptions').select('plan,period_end').eq('user_id', USER.id).maybeSingle()
+  PLAN = effectivePlanId(sub)
 
   // Count existing properties
   const { count } = await sb.from('properties').select('id', { count: 'exact', head: true }).eq('user_id', USER.id)
   PROP_COUNT = count || 0
 
-  // Check if plan expired
-  if (sub?.period_end && new Date(sub.period_end) < new Date() && PLAN !== 'free') {
-    PLAN = 'free'
-  }
-
-  const limit = LIMITS[PLAN] || 1
+  const limit = limitFor(PLAN, 'properties')
 
   document.getElementById('loading').style.display = 'none'
   document.getElementById('main-app').style.display = 'flex'
@@ -276,7 +272,9 @@ async function init() {
     const remaining = limit - PROP_COUNT
     const limitEl = document.getElementById('limit-info')
     const limitTxt = document.getElementById('limit-text')
-    limitTxt.textContent = `${PROP_COUNT} od ${limit} objekata iskorišteno · još ${remaining} slobodno`
+    limitTxt.textContent = limit === Infinity
+      ? `${PROP_COUNT} objekata · neograničeno na ${getPlan(PLAN).name} planu`
+      : `${PROP_COUNT} od ${limit} objekata iskorišteno · još ${remaining} slobodno`
     if (remaining === 1) {
       limitEl.className = 'limit-badge limit-warn'
     }
