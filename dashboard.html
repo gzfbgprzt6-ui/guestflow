@@ -868,6 +868,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 <script type="module">
 import{createClient}from'https://esm.sh/@supabase/supabase-js@2'
 import{loadPlans,getPlan,limitFor,canAdd,limitMessage,effectivePlanId}from'./plans.js'
+import{publicUrl,bookingUrl,legacyGuestUrl,prettyUrl}from'./links.js'
 
 const SURL='https://wtojzqjhipdfbrnmprmz.supabase.co'
 const SKEY='sb_publishable_tmZAZTDbQ7ktc1N-8y4q4w_ztAu_62F'
@@ -953,8 +954,8 @@ async function selectProp(p){
   document.getElementById('crumb-name').textContent=p.name||'—'
   document.getElementById('bannerName').textContent=p.name||'—'
   document.getElementById('bannerLocation').textContent=p.location||'—'
-  const pubUrl='odmoria.com/p/'+p.slug
-  const privUrl='odmoria.com/h/'+p.slug+'-'+(p.guest_token||'…')
+  const pubUrl=prettyUrl(publicUrl(p.slug))
+  const privUrl=prettyUrl(legacyGuestUrl(p.slug,p.guest_token||'…'))
   document.getElementById('ov-pub-url').textContent=pubUrl
   document.getElementById('ov-priv-url').textContent=privUrl
   document.getElementById('pub-url-d').textContent=pubUrl
@@ -1571,7 +1572,7 @@ window.loadBookings=async function(){
     const col=colors[Math.abs(b.guest_name?.charCodeAt(0)||0)%colors.length]
     return`<div class="bk-card">
       <div class="bk-av" style="background:${col}">${(b.guest_name||'G')[0].toUpperCase()}</div>
-      <div><h3>${esc(b.guest_name||'Gost')}</h3><p>${fmtD(b.checkin_date)} – ${fmtD(b.checkout_date)}${b.guest_note?' · '+esc(b.guest_note):''}</p><div class="url">odmoria.com/h/${b.token}</div></div>
+      <div><h3>${esc(b.guest_name||'Gost')}</h3><p>${fmtD(b.checkin_date)} – ${fmtD(b.checkout_date)}${b.guest_note?' · '+esc(b.guest_note):''}</p><div class="url">${esc(prettyUrl(bookingUrl(b.token)))}</div></div>
       <span class="bk-status ${act?'':'exp'}">${act?'Aktivan':'Istekao'}</span>
       <div class="bk-btns">${act?`<button class="btn small" onclick="cpBk('${b.token}')">Kopiraj</button><button class="btn secondary small" onclick="deactBk('${b.id}')">Deaktiviraj</button>`:`<button class="btn danger small" onclick="delBk('${b.id}')">Obriši</button>`}</div>
     </div>`
@@ -1601,7 +1602,7 @@ window.createBooking=async()=>{
     const{error:availErr}=await sb.from('availability').upsert(nights.map(d=>({property_id:ap.id,date:d,is_booked:true,source:'manual',booking_id:data.id})))
     if(availErr)toast('Rezervacija kreirana, ali kalendar dostupnosti nije ažuriran: '+availErr.message)
   }
-  const url='https://odmoria.com/h/'+data.token
+  const url=bookingUrl(data.token)
   lastBkUrl=url;lastBkPhone=ap.phone||''
   document.getElementById('bk-result-url').textContent=url.replace('https://','')
   document.getElementById('bk-result-desc').textContent='Link za '+name+' vrijedi od '+fmtD(ci)+' do '+fmtD(co)+'.'
@@ -1609,7 +1610,7 @@ window.createBooking=async()=>{
   document.getElementById('bk-result-card').style.display='block'
   await window.loadBookings();toast('Rezervacija kreirana ✓')
 }
-window.cpBk=(token)=>{navigator.clipboard?.writeText('https://odmoria.com/h/'+token);toast('Link kopiran!')}
+window.cpBk=(token)=>{navigator.clipboard?.writeText(bookingUrl(token));toast('Link kopiran!')}
 window.copyResultLink=()=>{navigator.clipboard?.writeText(lastBkUrl);toast('Link kopiran!')}
 window.shareWA=()=>{const msg='Dobrodošli! Sve informacije: '+lastBkUrl;const ph=(lastBkPhone||'').replace(/\D/g,'');window.open('https://wa.me/'+ph+'?text='+encodeURIComponent(msg),'_blank')}
 window.deactBk=async(id)=>{if(!confirm('Deaktiviraj link?'))return;const{error}=await sb.from('bookings').update({is_active:false}).eq('id',id);if(error){toast('Greška: '+error.message);return}await window.loadBookings();toast('Link deaktiviran')}
@@ -1618,7 +1619,7 @@ window.delBk=async(id)=>{if(!confirm('Trajno obriši ovu rezervaciju?'))return;a
 // ── LINKS + QR ────────────────────────────────────────
 window.copyLink=(type)=>{
   if(!PROP)return
-  const url=type==='pub'?'https://odmoria.com/p/'+PROP.slug:'https://odmoria.com/h/'+PROP.slug+'-'+(PROP.guest_token||'')
+  const url=type==='pub'?publicUrl(PROP.slug):legacyGuestUrl(PROP.slug,PROP.guest_token)
   navigator.clipboard?.writeText(url);toast(type==='pub'?'Javni link kopiran!':'Gostinski link kopiran!')
 }
 window.viewPub=()=>{if(PROP)window.open('/p.html?slug='+PROP.slug,'_blank')}
@@ -1630,7 +1631,7 @@ async function renderQr(){
   try{
     const{default:QRCode}=await import('https://esm.sh/qrcode@1.5.3')
     const canvas=document.createElement('canvas')
-    await QRCode.toCanvas(canvas,'https://odmoria.com/p/'+PROP.slug,{width:150,margin:1,color:{dark:'#5b321f',light:'#ffffff'}})
+    await QRCode.toCanvas(canvas,publicUrl(PROP.slug),{width:150,margin:1,color:{dark:'#5b321f',light:'#ffffff'}})
     box.innerHTML=''
     box.appendChild(canvas)
   }catch(e){box.innerHTML='<span class="ph">QR trenutno nije dostupan</span>'}

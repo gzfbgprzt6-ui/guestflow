@@ -269,6 +269,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);display:flex;a
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { loadPlans, getPlan, limitFor, effectivePlanId, limitMessage } from './plans.js'
+import { publicUrl, legacyGuestUrl, prettyUrl } from './links.js'
 
 const SURL = 'https://wtojzqjhipdfbrnmprmz.supabase.co'
 const SKEY = 'sb_publishable_tmZAZTDbQ7ktc1N-8y4q4w_ztAu_62F'
@@ -445,18 +446,15 @@ window.saveProperty = async () => {
   })
 
   // 3. Show success
-  const base = 'odmoria.com'
-  document.getElementById('s-pub-url').textContent = base + '/p/' + slug
-  document.getElementById('s-priv-url').textContent = base + '/h/' + slug + '-' + token
+  document.getElementById('s-pub-url').textContent = prettyUrl(publicUrl(slug))
+  document.getElementById('s-priv-url').textContent = prettyUrl(legacyGuestUrl(slug, token))
   document.getElementById('add-form').style.display = 'none'
   document.getElementById('success-wrap').style.display = 'block'
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
 window.copyUrl = (type) => {
-  const url = type === 'pub'
-    ? 'https://odmoria.com/p/' + newSlug
-    : 'https://odmoria.com/h/' + newSlug + '-' + newToken
+  const url = type === 'pub' ? publicUrl(newSlug) : legacyGuestUrl(newSlug, newToken)
   navigator.clipboard?.writeText(url)
   toast(type === 'pub' ? 'Javni link kopiran!' : 'Gostinski link kopiran!')
 }

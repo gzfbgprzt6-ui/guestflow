@@ -48,6 +48,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 ├── vercel.json              # Rewrites za clean URL-ove + security headeri (NEMA cron konfiguracije)
 ├── atmosphere.css           # DIJELJENI v3 dizajn sustav (tokeni, scena, gumbi, reveal) — koristi p.html
 ├── motion.js                # dijeljeni motion sustav (reveal, paralaksa, brojaci, rail)
+├── links.js                 # gradnja linkova (/p/, /h/) — NIKAD ne zakucavati domenu, vidi dolje
 ├── plans.js                 # rezervne vrijednosti + helperi; pravi izvor istine je tablica `plans` u bazi
 ├── billing.js                # Stripe checkout/portal helperi — NIJE importan ni u jednom HTML-u (mrtav kod dok se ne spoji API)
 ├── assets/                   # odmoria-dashboard.png
@@ -171,6 +172,18 @@ Tablica cijena gore je početno stanje u bazi; planovi i cijene još nisu konač
 **Uzorci:** numerirane/kicker "page-section" kartice, chip-red liste (male bordered kartice po stavci), tamni "spotlight" blokovi (`--brown-deep`) za Wi-Fi/kontakt podatke, tamni hero na p.html i h.html.
 
 `index.html` koristi vlastitu, srodnu ali ne bit-identičnu smeđe/kremastu paletu (`--cream:#F7F5F1`, `--brown:#5A3323` itd.) — nije nasljedio v2 token set 1:1.
+
+---
+
+## Linkovi — nikad zakucana domena
+
+Svi linkovi koje korisnik kopira ili dijeli grade se preko `links.js` (`publicUrl`, `bookingUrl`, `legacyGuestUrl`, `prettyUrl`). Adresa se uzima iz `location.origin`, pa link uvijek pokazuje na domenu s koje je kopiran — Vercel danas, vlastita domena čim se spoji, bez izmjene koda.
+
+Prije toga je `odmoria.com` bio zakucan na šest mjesta u `dashboard.html`, `onboarding.html` i `add-property.html` (kopiranje javnog i gostinskog linka, link nove rezervacije, QR kod, popis rezervacija). Kako ta domena još nije spojena, **svaki takav link vodio je u prazno** — uključujući onaj koji host šalje gostu.
+
+Ako ikad zatreba da linkovi uvijek pokazuju na jednu domenu bez obzira odakle su kopirani, upiše se u `SITE_URL` u `links.js`. Prazno znači „koristi trenutnu".
+
+**Nikad ne zakucavati domenu u HTML.**
 
 ---
 

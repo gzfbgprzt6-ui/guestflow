@@ -388,7 +388,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);display:flex;a
       <div class="card-body">
         <div class="link-result">
           <span class="link-badge badge-pub">Javna stranica</span>
-          <div class="link-url" id="pub-link-display">odmoria.com/p/...</div>
+          <div class="link-url" id="pub-link-display">—</div>
           <div class="link-desc">Fotografije, dostupnost, lokalni vodič. Bez šifri i lozinki. Sigurno za Facebook, Instagram, Booking opis.</div>
           <div class="link-btns">
             <button class="lbtn lbtn-ink" onclick="copyPub()">Kopiraj javni link</button>
@@ -397,7 +397,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);display:flex;a
         </div>
         <div class="link-result">
           <span class="link-badge badge-priv">Privatni gostinski link</span>
-          <div class="link-url" id="priv-link-display">odmoria.com/h/...</div>
+          <div class="link-url" id="priv-link-display">—</div>
           <div class="link-desc">Šifra vrata, Wi-Fi lozinka, sve upute za dolazak. Šalji samo potvrđenim gostima.</div>
           <div class="link-btns">
             <button class="lbtn lbtn-ink" onclick="copyPriv()">Kopiraj gostinski link</button>
@@ -421,6 +421,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);display:flex;a
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { loadPlans, limitFor, effectivePlanId, limitMessage } from './plans.js'
+import { publicUrl, legacyGuestUrl, prettyUrl } from './links.js'
 
 const SURL = 'https://wtojzqjhipdfbrnmprmz.supabase.co'
 const SKEY = 'sb_publishable_tmZAZTDbQ7ktc1N-8y4q4w_ztAu_62F'
@@ -648,9 +649,8 @@ async function saveStep3() {
 
 function showLinks() {
   if (!PROP_SLUG) return
-  const base = 'odmoria.com'
-  document.getElementById('pub-link-display').textContent = base + '/p/' + PROP_SLUG
-  document.getElementById('priv-link-display').textContent = base + '/h/' + PROP_SLUG + '-' + PROP_TOKEN
+  document.getElementById('pub-link-display').textContent = prettyUrl(publicUrl(PROP_SLUG))
+  document.getElementById('priv-link-display').textContent = prettyUrl(legacyGuestUrl(PROP_SLUG, PROP_TOKEN))
 }
 
 // ── WIFI PREVIEW ──────────────────────────────────────
@@ -664,12 +664,12 @@ window.updateWifiPreview = () => {
 // ── LINKS ─────────────────────────────────────────────
 window.copyPub = () => {
   if (!PROP_SLUG) return
-  navigator.clipboard?.writeText('https://odmoria.com/p/' + PROP_SLUG)
+  navigator.clipboard?.writeText(publicUrl(PROP_SLUG))
   toast('Javni link kopiran!')
 }
 window.copyPriv = () => {
   if (!PROP_SLUG) return
-  navigator.clipboard?.writeText('https://odmoria.com/h/' + PROP_SLUG + '-' + PROP_TOKEN)
+  navigator.clipboard?.writeText(legacyGuestUrl(PROP_SLUG, PROP_TOKEN))
   toast('Gostinski link kopiran!')
 }
 window.viewPub = () => {
