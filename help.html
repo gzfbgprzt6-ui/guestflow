@@ -227,8 +227,9 @@ footer a{color:var(--blue);font-weight:500}
           <span class="faq-arrow">›</span>
         </div>
         <div class="faq-a">
-          <p>Trenutno link ostaje isti (token se ne mijenja automatski). Ako želiš onemogućiti pristup prethodnom gostu, možeš promijeniti šifru vrata ili Wi-Fi lozinku u dashboardu — link ostaje ali osjetljivi podaci su drukčiji.</p>
-          <p>Generiranje novog tokena po rezervaciji dolazi u sljedećoj verziji Odmorie.</p>
+          <p><strong>Svaka rezervacija dobiva svoj link.</strong> U dashboardu otvori <em>Rezervacije</em>, upiši ime gosta i datume, i klikni „Kreiraj link". Dobiješ jedinstvenu adresu (<code>odmoria.com/h/…</code>) koja vrijedi samo za tog gosta i te datume.</p>
+          <p>Kad gost ode, klikni <strong>Deaktiviraj link</strong> — stara adresa odmah prestaje raditi, a sljedeći gost dobiva potpuno novu. Ne moraš mijenjati šifru vrata ni Wi-Fi lozinku.</p>
+          <p>Postoji i stariji, opći gostinski link vezan uz sam objekt koji ostaje isti. Za nove goste koristi linkove po rezervaciji — sigurniji su jer se sami zaključavaju.</p>
         </div>
       </div>
     </div>
@@ -283,7 +284,7 @@ footer a{color:var(--blue);font-weight:500}
           <span class="faq-arrow">›</span>
         </div>
         <div class="faq-a">
-          <ul>
+          <ul id="plan-list">
             <li><strong>Free (€0)</strong> — 1 objekt, sve osnovne funkcije, Odmoria branding, besplatno zauvijek</li>
             <li><strong>Pro (€15/mj)</strong> — do 5 objekata, ukloni branding, vlastita domena, analitika 90 dana</li>
             <li><strong>Business (€49/mj)</strong> — do 15 objekata, white-label, tim pristup (do 5), analitika 12 mj</li>
@@ -346,12 +347,13 @@ footer a{color:var(--blue);font-weight:500}
           <span class="faq-arrow">›</span>
         </div>
         <div class="faq-a">
-          <ul>
+          <ul id="photo-list">
             <li><strong>Free:</strong> 5 fotografija po objektu</li>
             <li><strong>Pro:</strong> 30 fotografija po objektu</li>
             <li><strong>Business:</strong> 50 fotografija po objektu</li>
           </ul>
-          <p>Upload fotografija dolazi u sljedećoj verziji Odmorie (trenutno je u razvoju). Za sada se fotografije nalaze na javnoj stranici kao placeholder.</p>
+          <p>Fotografije dodaješ u dashboardu pod <em>Fotografije</em> — povuci ih na okvir ili klikni i odaberi s uređaja. Možeš ih dodati i odmah pri postavljanju objekta, u koraku „Fotografije".</p>
+          <p>Prva fotografija je naslovna — nju gost vidi prvu na javnoj stranici. Redoslijed i naslovnu možeš promijeniti u bilo kojem trenutku. Najveća veličina je 5 MB po slici.</p>
         </div>
       </div>
 
@@ -505,6 +507,38 @@ const observer = new IntersectionObserver(entries => {
 }, { rootMargin: '-30% 0px -60% 0px' })
 
 document.querySelectorAll('.cat-section').forEach(s => observer.observe(s))
+</script>
+<script type="module">
+// Cijene i limiti se mijenjaju — povuci ih iz istog izvora kao ostatak aplikacije
+// (tablica `plans` u Supabaseu). Ako ne uspije, ostaje ono sto pise u HTML-u.
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { loadPlans, listPlans, formatPlanPrice } from './plans.js'
+try {
+  const sb = createClient('https://wtojzqjhipdfbrnmprmz.supabase.co',
+                          'sb_publishable_tmZAZTDbQ7ktc1N-8y4q4w_ztAu_62F')
+  await loadPlans(sb)
+  const plans = listPlans()
+  const n = (v, one, few, many) => v === Infinity ? 'neograničeno'
+    : `${v} ${v % 10 === 1 && v % 100 !== 11 ? one : (v % 10 >= 2 && v % 10 <= 4 && (v % 100 < 12 || v % 100 > 14)) ? few : many}`
+
+  const extras = {
+    free: 'sve osnovne funkcije, Odmoria oznaka u podnožju',
+    pro: 'bez naše oznake, vlastita domena, iCal sinkronizacija',
+    business: 'white-label, tim pristup, napredna analitika'
+  }
+  const planList = document.getElementById('plan-list')
+  if (planList) planList.innerHTML = plans.map(p => {
+    const cijena = p.monthlyPriceEur === 0 ? '€0' : formatPlanPrice(p.id) + '/mj'
+    return `<li><strong>${p.name} (${cijena})</strong> — ${n(p.maxProperties,'objekt','objekta','objekata')}, ${extras[p.id] || p.description || ''}</li>`
+  }).join('')
+
+  const photoList = document.getElementById('photo-list')
+  if (photoList) photoList.innerHTML = plans.map(p =>
+    `<li><strong>${p.name}:</strong> ${n(p.maxPhotosPerProperty,'fotografija','fotografije','fotografija')} po objektu</li>`
+  ).join('')
+} catch {
+  /* ostaju vrijednosti upisane u HTML-u */
+}
 </script>
 </body>
 </html>

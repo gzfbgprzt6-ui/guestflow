@@ -107,6 +107,9 @@ Ovo su dizajnirani, core dijelovi proizvoda, ne ostaci:
 
 ## Fotografije — Cloudinary (namjerna odluka)
 
+Upload postoji na tri mjesta i svugdje poštuje limit plana: `dashboard.html` (Fotografije), `onboarding.html` (korak 4) i `add-property.html` (kartica Fotografije). Prva fotografija je uvijek naslovna (`cover_photo_url`). U `add-property.html` objekt još ne postoji dok se forma ne pošalje, pa se URL-ovi skupljaju lokalno i šalju zajedno s `insert`-om.
+
+
 Upload fotografija ide direktno s klijenta na Cloudinary (unsigned upload preset), ne kroz Supabase Storage — svjesna odluka radi 25GB free storage/prometa:
 
 ```js
@@ -174,8 +177,8 @@ Tablica cijena gore je početno stanje u bazi; planovi i cijene još nisu konač
 - **Stripe checkout nije spojen.** Gumbi za nadogradnju u dashboardu su statični (`toast(...)`), ne pozivaju `billing.js`. `billing.js` uopće nije importan ni u jednom HTML-u.
 - **`/api` folder ne postoji** — ni Stripe (`create-checkout-session`, `create-portal-session`, `stripe-webhook`), ni `sync-ical`, ni `track-event` serverless funkcije nisu u repozitoriju. `page_views` insert ide direktno s klijenta preko Supabase (`sb.from('page_views').insert(...)`), pa analytics tracking radi neovisno o `track-event.js`.
 - **iCal sinkronizacija nema backend** (vidi gore) — UI postoji, endpoint ne.
-- **`onboarding.html` i `add-property.html` nemaju upload fotografija** — foto se dodaje naknadno u dashboardu.
-- **`help.html`** FAQ još tvrdi da je upload fotografija "u razvoju" — netočno, Cloudinary upload radi.
+- **`p.html`, `h.html` i `dashboard.html` još su na v2 dizajnu** — novi v3 (foto zaglavlje, galerija, kalendar dostupnosti, odabir termina s predlošcima, karta, okolica) živi samo u `v3/` na feature grani i nije prenesen u prave stranice.
+- **Nema višejezičnosti.** `plans.maxLanguages` postoji, ali u kodu nema nijednog prijevoda ni prebacivanja jezika.
 
 ---
 

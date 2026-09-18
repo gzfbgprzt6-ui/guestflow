@@ -79,6 +79,23 @@ nav{background:var(--white);border-bottom:1px solid var(--border);display:flex;a
 
 #toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;white-space:nowrap;opacity:0;transition:opacity .2s;pointer-events:none}
 #toast.show{opacity:1}
+
+/* ── fotografije ─────────────────────────────────────── */
+.ph-drop{border:2px dashed var(--border);border-radius:13px;padding:26px 18px;text-align:center;cursor:pointer;
+  color:var(--muted);transition:border-color .2s,background .2s,color .2s}
+.ph-drop:hover,.ph-drop.over{border-color:#2563EB;background:rgba(37,99,235,.04);color:#2563EB}
+.ph-drop-t{font-weight:700;font-size:.92rem;margin-top:8px;color:inherit}
+.ph-drop-s{font-size:.76rem;margin-top:3px;opacity:.8}
+.ph-drop.busy{pointer-events:none;opacity:.6}
+.ph-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:9px;margin-top:14px}
+.ph-item{position:relative;aspect-ratio:4/3;border-radius:9px;overflow:hidden;background:var(--border)}
+.ph-item img{width:100%;height:100%;object-fit:cover;display:block}
+.ph-item .ph-x{position:absolute;top:5px;right:5px;width:23px;height:23px;border:0;border-radius:50%;
+  background:rgba(15,23,42,.72);color:#fff;font-size:.8rem;cursor:pointer;display:grid;place-items:center}
+.ph-item .ph-x:hover{background:rgba(220,38,38,.92)}
+.ph-item .ph-cover{position:absolute;left:5px;bottom:5px;font-size:.58rem;font-weight:800;letter-spacing:.05em;
+  text-transform:uppercase;background:rgba(15,23,42,.78);color:#fff;border-radius:999px;padding:3px 7px}
+.ph-count{font-size:.76rem;color:var(--muted);margin-top:10px}
 </style>
 </head>
 <body>
@@ -194,6 +211,22 @@ nav{background:var(--white);border-bottom:1px solid var(--border);display:flex;a
       </div>
 
       <div class="card">
+        <div class="card-head">📷 Fotografije</div>
+        <div class="card-body">
+          <div class="ph-drop" id="ph-drop" onclick="document.getElementById('ph-input').click()">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="8.5" cy="9.5" r="1.8"/><path d="M21 16l-5-5L5 20"/>
+            </svg>
+            <div class="ph-drop-t">Dodaj fotografije</div>
+            <div class="ph-drop-s" id="ph-hint">Prva je naslovna · JPG ili PNG do 5 MB</div>
+            <input type="file" id="ph-input" accept="image/*" multiple hidden onchange="onPhotoPick(this.files)">
+          </div>
+          <div class="ph-grid" id="ph-grid"></div>
+          <div class="ph-count" id="ph-count"></div>
+        </div>
+      </div>
+
+      <div class="card">
         <div class="card-head">📞 Kontakt</div>
         <div class="card-body">
           <div class="grid2">
@@ -235,7 +268,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);display:flex;a
 
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-import { loadPlans, getPlan, limitFor, effectivePlanId } from './plans.js'
+import { loadPlans, getPlan, limitFor, effectivePlanId, limitMessage } from './plans.js'
 
 const SURL = 'https://wtojzqjhipdfbrnmprmz.supabase.co'
 const SKEY = 'sb_publishable_tmZAZTDbQ7ktc1N-8y4q4w_ztAu_62F'
@@ -290,6 +323,68 @@ window.selType = (el) => {
   selectedType = el.dataset.type
 }
 
+// ── FOTOGRAFIJE (Cloudinary) ──────────────────────────
+// Objekt jos ne postoji, pa URL-ove skupljamo lokalno i saljemo ih u insert.
+const CLOUDINARY_CLOUD = 'sck9mbg9'
+const CLOUDINARY_PRESET = 'odmoria_photos'
+const MAX_FILE_BYTES = 5 * 1024 * 1024
+let PHOTOS = []
+
+async function uploadToCloudinary(file) {
+  const fd = new FormData()
+  fd.append('file', file)
+  fd.append('upload_preset', CLOUDINARY_PRESET)
+  const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`, { method: 'POST', body: fd })
+  const data = await res.json()
+  if (!res.ok) throw new Error(data.error?.message || 'Upload nije uspio')
+  return data.secure_url
+}
+
+window.onPhotoPick = async (files) => {
+  if (!files?.length) return
+  const limit = limitFor(PLAN, 'photos')
+  const drop = document.getElementById('ph-drop')
+  const hint = document.getElementById('ph-hint')
+  if (PHOTOS.length >= limit) { showErr(limitMessage('photos', PLAN)); return }
+
+  drop.classList.add('busy')
+  let done = 0, skipped = 0
+  for (const file of Array.from(files)) {
+    if (PHOTOS.length >= limit) { skipped++; continue }
+    if (file.size > MAX_FILE_BYTES) { skipped++; continue }
+    hint.textContent = `Učitavam ${done + 1} od ${files.length}…`
+    try { PHOTOS.push(await uploadToCloudinary(file)); done++; renderPhotos() }
+    catch (e) { showErr('Upload nije uspio: ' + e.message) }
+  }
+  drop.classList.remove('busy')
+  hint.textContent = 'Prva je naslovna · JPG ili PNG do 5 MB'
+  document.getElementById('ph-input').value = ''
+  if (skipped) showErr(`${skipped} ${skipped === 1 ? 'slika preskočena' : 'slika preskočeno'} — prevelika ili preko limita plana.`)
+}
+
+window.removePhoto = (i) => { PHOTOS.splice(i, 1); renderPhotos() }
+
+function renderPhotos() {
+  const limit = limitFor(PLAN, 'photos')
+  document.getElementById('ph-grid').innerHTML = PHOTOS.map((url, i) => `
+    <div class="ph-item">
+      <img src="${url}" alt="Fotografija ${i + 1}" loading="lazy">
+      <button class="ph-x" onclick="removePhoto(${i})" aria-label="Ukloni">✕</button>
+      ${i === 0 ? '<span class="ph-cover">Naslovna</span>' : ''}
+    </div>`).join('')
+  document.getElementById('ph-count').textContent =
+    PHOTOS.length ? `${PHOTOS.length} / ${limit === Infinity ? '∞' : limit} fotografija · prva je naslovna` : ''
+}
+
+;(() => {
+  const drop = document.getElementById('ph-drop')
+  if (!drop) return
+  const stop = e => { e.preventDefault(); e.stopPropagation() }
+  ;['dragenter','dragover'].forEach(ev => drop.addEventListener(ev, e => { stop(e); drop.classList.add('over') }))
+  ;['dragleave','drop'].forEach(ev => drop.addEventListener(ev, e => { stop(e); drop.classList.remove('over') }))
+  drop.addEventListener('drop', e => window.onPhotoPick(e.dataTransfer?.files))
+})()
+
 window.saveProperty = async () => {
   const name = document.getElementById('prop-name').value.trim()
   if (!name) {
@@ -308,6 +403,7 @@ window.saveProperty = async () => {
   newSlug = slug
   newToken = token
 
+
   // 1. Create property
   const { data: prop, error: propErr } = await sb.from('properties').insert({
     user_id: USER.id, name, slug, guest_token: token,
@@ -320,13 +416,16 @@ window.saveProperty = async () => {
     price_per_night: parseFloat(document.getElementById('price').value) || null,
     max_guests: parseInt(document.getElementById('max-guests').value) || null,
     bedrooms: parseInt(document.getElementById('bedrooms').value) || null,
+    photo_urls: PHOTOS,
+    cover_photo_url: PHOTOS[0] || null,
   }).select().single()
 
   if (propErr) {
     btn.disabled = false
     txt.textContent = 'Kreiraj objekt →'
-    if (propErr.message?.includes('limit') || propErr.code === '23514') {
-      showErr('Dostignut limit objekata za tvoj plan. Nadogradi plan za više objekata.')
+    // okidac u bazi vraca gotovu poruku ("Vaš plan uključuje N objekt(a)...")
+    if (propErr.code === 'P0001' || propErr.code === '23514' || /plan uključuje|limit/i.test(propErr.message || '')) {
+      showErr(propErr.message || 'Dostignut je limit tvog plana.')
     } else {
       showErr('Greška: ' + propErr.message)
     }

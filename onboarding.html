@@ -122,6 +122,23 @@ nav{background:var(--white);border-bottom:1px solid var(--border);display:flex;a
 /* TOAST */
 #toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;white-space:nowrap;opacity:0;transition:opacity .2s;pointer-events:none}
 #toast.show{opacity:1}
+
+/* ── fotografije (korak 4) ─────────────────────────────── */
+.ph-drop{border:2px dashed var(--border);border-radius:14px;padding:30px 20px;text-align:center;
+  cursor:pointer;color:var(--muted);transition:border-color .2s,background .2s,color .2s}
+.ph-drop:hover,.ph-drop.over{border-color:var(--blue,#2563EB);background:rgba(37,99,235,.04);color:var(--blue,#2563EB)}
+.ph-drop-t{font-weight:700;font-size:.95rem;margin-top:10px;color:inherit}
+.ph-drop-s{font-size:.78rem;margin-top:4px;opacity:.8}
+.ph-drop.busy{pointer-events:none;opacity:.6}
+.ph-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:10px;margin-top:16px}
+.ph-item{position:relative;aspect-ratio:4/3;border-radius:10px;overflow:hidden;background:var(--border)}
+.ph-item img{width:100%;height:100%;object-fit:cover;display:block}
+.ph-item .ph-x{position:absolute;top:5px;right:5px;width:24px;height:24px;border:0;border-radius:50%;
+  background:rgba(15,23,42,.72);color:#fff;font-size:.85rem;line-height:1;cursor:pointer;display:grid;place-items:center}
+.ph-item .ph-x:hover{background:rgba(220,38,38,.92)}
+.ph-item .ph-cover{position:absolute;left:5px;bottom:5px;font-size:.62rem;font-weight:800;letter-spacing:.05em;
+  text-transform:uppercase;background:rgba(15,23,42,.78);color:#fff;border-radius:999px;padding:3px 8px}
+.ph-count{font-size:.78rem;color:var(--muted);margin-top:12px}
 </style>
 </head>
 <body>
@@ -153,6 +170,9 @@ nav{background:var(--white);border-bottom:1px solid var(--border);display:flex;a
           <div class="sb-dot"></div><div class="sb-label">Wi-Fi detalji</div>
         </div>
         <div class="sb-item" id="sb-4">
+          <div class="sb-dot"></div><div class="sb-label">Fotografije</div>
+        </div>
+        <div class="sb-item" id="sb-5">
           <div class="sb-dot"></div><div class="sb-label">Tvoji linkovi</div>
         </div>
       </div>
@@ -171,14 +191,15 @@ nav{background:var(--white);border-bottom:1px solid var(--border);display:flex;a
         <div class="slbl active" id="sl-1">Objekt</div>
         <div class="slbl" id="sl-2">Check-in</div>
         <div class="slbl" id="sl-3">Wi-Fi</div>
-        <div class="slbl" id="sl-4">Linkovi</div>
+        <div class="slbl" id="sl-4">Fotografije</div>
+        <div class="slbl" id="sl-5">Linkovi</div>
       </div>
     </div>
 
     <!-- STEP 1: Property basics -->
     <div id="step-1" class="card">
       <div class="card-head">
-        <div class="step-badge">Korak 1 od 4</div>
+        <div class="step-badge">Korak 1 od 5</div>
         <div class="card-title">Reci nam o svom objektu</div>
         <div class="card-sub">Naziv i lokacija — to gosti vide na javnoj stranici.</div>
       </div>
@@ -247,7 +268,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);display:flex;a
     <!-- STEP 2: Check-in -->
     <div id="step-2" class="card" style="display:none">
       <div class="card-head">
-        <div class="step-badge">Korak 2 od 4</div>
+        <div class="step-badge">Korak 2 od 5</div>
         <div class="card-title">Check-in informacije</div>
         <div class="card-sub">Šifra vrata i upute za dolazak — samo za potvrđene goste.</div>
       </div>
@@ -293,7 +314,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);display:flex;a
     <!-- STEP 3: WiFi -->
     <div id="step-3" class="card" style="display:none">
       <div class="card-head">
-        <div class="step-badge">Korak 3 od 4</div>
+        <div class="step-badge">Korak 3 od 5</div>
         <div class="card-title">Wi-Fi detalji</div>
         <div class="card-sub">Gosti kopiraju lozinku jednim tapom — bez tipkanja.</div>
       </div>
@@ -329,10 +350,38 @@ nav{background:var(--white);border-bottom:1px solid var(--border);display:flex;a
       </div>
     </div>
 
-    <!-- STEP 4: Links -->
+    <!-- STEP 4: Photos -->
     <div id="step-4" class="card" style="display:none">
       <div class="card-head">
-        <div class="step-badge">Korak 4 od 4</div>
+        <div class="step-badge">Korak 4 od 5</div>
+        <div class="card-title">Fotografije objekta</div>
+        <div class="card-sub">Prva fotografija je naslovna — nju gost vidi prvu. Možeš preskočiti i dodati ih kasnije.</div>
+      </div>
+      <div class="card-body">
+        <div class="alert alert-err" id="err-4"></div>
+
+        <div class="ph-drop" id="ph-drop" onclick="document.getElementById('ph-input').click()">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="8.5" cy="9.5" r="1.8"/><path d="M21 16l-5-5L5 20"/>
+          </svg>
+          <div class="ph-drop-t">Dodaj fotografije</div>
+          <div class="ph-drop-s" id="ph-hint">JPG ili PNG, najviše 5 MB po slici</div>
+          <input type="file" id="ph-input" accept="image/*" multiple hidden onchange="onPhotoPick(this.files)">
+        </div>
+
+        <div class="ph-grid" id="ph-grid"></div>
+        <div class="ph-count" id="ph-count"></div>
+      </div>
+      <div class="nav-btns">
+        <button class="btn btn-out" onclick="prevStep(4)">← Natrag</button>
+        <button class="btn btn-blue" id="ph-next" onclick="nextStep(4)">Preskoči za sada →</button>
+      </div>
+    </div>
+
+    <!-- STEP 5: Links -->
+    <div id="step-5" class="card" style="display:none">
+      <div class="card-head">
+        <div class="step-badge">Korak 5 od 5</div>
         <div class="card-title">Tvoji linkovi su spremni!</div>
         <div class="card-sub">Javni link dijeli svugdje. Privatni link šalji samo potvrđenim gostima.</div>
       </div>
@@ -371,12 +420,13 @@ nav{background:var(--white);border-bottom:1px solid var(--border);display:flex;a
 
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { loadPlans, limitFor, effectivePlanId, limitMessage } from './plans.js'
 
 const SURL = 'https://wtojzqjhipdfbrnmprmz.supabase.co'
 const SKEY = 'sb_publishable_tmZAZTDbQ7ktc1N-8y4q4w_ztAu_62F'
 const sb = createClient(SURL, SKEY)
 
-let USER = null, PROP_ID = null, PROP_SLUG = null, PROP_TOKEN = null
+let USER = null, PROP_ID = null, PROP_SLUG = null, PROP_TOKEN = null, PLAN = 'free'
 let selectedType = 'Apartman'
 
 // ── INIT ──────────────────────────────────────────────
@@ -384,6 +434,12 @@ async function init() {
   const { data: { session } } = await sb.auth.getSession()
   if (!session) { window.location.href = '/login.html'; return }
   USER = session.user
+
+  // Plan određuje koliko fotografija smije dodati (limit provodi i baza)
+  await loadPlans(sb)
+  const { data: sub } = await sb.from('subscriptions').select('plan,period_end').eq('user_id', USER.id).maybeSingle()
+  PLAN = effectivePlanId(sub)
+  PHOTO_LIMIT = limitFor(PLAN, 'photos')
 
   // Check if already has property — redirect to dashboard
   const { data: props } = await sb.from('properties').select('id').eq('user_id', USER.id).limit(1)
@@ -422,6 +478,9 @@ window.nextStep = async (step) => {
   if (step === 3) {
     clearErr(3)
     await saveStep3()
+  }
+  if (step === 4) {
+    clearErr(4)
     showLinks()
   }
   showStep(step + 1)
@@ -430,15 +489,15 @@ window.nextStep = async (step) => {
 window.prevStep = (step) => { showStep(step - 1) }
 
 function showStep(n) {
-  for (let i = 1; i <= 4; i++) {
+  for (let i = 1; i <= 5; i++) {
     const el = document.getElementById('step-' + i)
     if (el) el.style.display = i === n ? 'block' : 'none'
   }
   // progress
-  const pct = [25, 50, 75, 100][n - 1]
+  const pct = [20, 40, 60, 80, 100][n - 1]
   document.getElementById('progress-bar').style.width = pct + '%'
   // step labels
-  for (let i = 1; i <= 4; i++) {
+  for (let i = 1; i <= 5; i++) {
     const sl = document.getElementById('sl-' + i)
     const sb_ = document.getElementById('sb-' + i)
     sl.classList.toggle('active', i === n)
@@ -450,6 +509,93 @@ function showStep(n) {
   }
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
+
+
+// ── FOTOGRAFIJE (Cloudinary) ──────────────────────────
+const CLOUDINARY_CLOUD = 'sck9mbg9'
+const CLOUDINARY_PRESET = 'odmoria_photos'
+const MAX_FILE_BYTES = 5 * 1024 * 1024
+let PHOTOS = []
+let PHOTO_LIMIT = 5
+
+async function uploadToCloudinary(file) {
+  const fd = new FormData()
+  fd.append('file', file)
+  fd.append('upload_preset', CLOUDINARY_PRESET)
+  const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`, { method: 'POST', body: fd })
+  const data = await res.json()
+  if (!res.ok) throw new Error(data.error?.message || 'Upload nije uspio')
+  return data.secure_url
+}
+
+window.onPhotoPick = async (files) => {
+  if (!files?.length) return
+  clearErr(4)
+  const drop = document.getElementById('ph-drop')
+  const hint = document.getElementById('ph-hint')
+
+  if (PHOTOS.length >= PHOTO_LIMIT) { showErr(4, limitMessage('photos', PLAN)); return }
+
+  drop.classList.add('busy')
+  let done = 0, skipped = 0
+  for (const file of Array.from(files)) {
+    if (PHOTOS.length >= PHOTO_LIMIT) { skipped++; continue }
+    if (file.size > MAX_FILE_BYTES) { skipped++; continue }
+    hint.textContent = `Učitavam ${done + 1} od ${files.length}…`
+    try {
+      PHOTOS.push(await uploadToCloudinary(file))
+      done++
+      renderPhotos()
+    } catch (e) {
+      showErr(4, 'Upload nije uspio: ' + e.message)
+    }
+  }
+  drop.classList.remove('busy')
+  hint.textContent = 'JPG ili PNG, najviše 5 MB po slici'
+  document.getElementById('ph-input').value = ''
+  if (skipped) showErr(4, `${skipped} ${skipped === 1 ? 'slika preskočena' : 'slika preskočeno'} — prevelika ili preko limita plana.`)
+  if (done) await savePhotos()
+}
+
+window.removePhoto = async (i) => {
+  PHOTOS.splice(i, 1)
+  renderPhotos()
+  await savePhotos()
+}
+
+function renderPhotos() {
+  const grid = document.getElementById('ph-grid')
+  grid.innerHTML = PHOTOS.map((url, i) => `
+    <div class="ph-item">
+      <img src="${url}" alt="Fotografija ${i + 1}" loading="lazy">
+      <button class="ph-x" onclick="removePhoto(${i})" aria-label="Ukloni">✕</button>
+      ${i === 0 ? '<span class="ph-cover">Naslovna</span>' : ''}
+    </div>`).join('')
+
+  const limitTxt = PHOTO_LIMIT === Infinity ? '∞' : PHOTO_LIMIT
+  document.getElementById('ph-count').textContent =
+    PHOTOS.length ? `${PHOTOS.length} / ${limitTxt} fotografija · prva je naslovna` : ''
+  document.getElementById('ph-next').textContent =
+    PHOTOS.length ? 'Spremi i dalje →' : 'Preskoči za sada →'
+}
+
+async function savePhotos() {
+  if (!PROP_ID) return
+  const { error } = await sb.from('properties')
+    .update({ photo_urls: PHOTOS, cover_photo_url: PHOTOS[0] || null })
+    .eq('id', PROP_ID)
+  if (error) showErr(4, 'Spremanje nije uspjelo: ' + error.message)
+}
+
+// povlačenje slika mišem na okvir
+;(() => {
+  const drop = document.getElementById('ph-drop')
+  if (!drop) return
+  const stop = e => { e.preventDefault(); e.stopPropagation() }
+  ;['dragenter', 'dragover'].forEach(ev => drop.addEventListener(ev, e => { stop(e); drop.classList.add('over') }))
+  ;['dragleave', 'drop'].forEach(ev => drop.addEventListener(ev, e => { stop(e); drop.classList.remove('over') }))
+  drop.addEventListener('drop', e => window.onPhotoPick(e.dataTransfer?.files))
+})()
 
 // ── SAVE FUNCTIONS ────────────────────────────────────
 async function saveStep1() {
