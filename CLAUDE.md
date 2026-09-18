@@ -38,7 +38,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 ```
 /
 ├── index.html              # Landing page — AKTIVNA
-├── p.html                  # Javna stranica objekta (?slug=xxx) — AKTIVNA, v2 redizajn
+├── p.html                  # Javna stranica objekta (?slug=xxx) — AKTIVNA, **v3 dizajn**
 ├── h.html                  # Privatni gostinski hub (?token=xxx) — AKTIVNA, v2 redizajn
 ├── dashboard.html          # Glavni host dashboard — AKTIVNA, v2 redizajn
 ├── login.html               register.html            reset-password.html
@@ -46,6 +46,8 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 ├── account.html              help.html                admin.html (gated: owner auth UID)
 ├── terms.html                privacy.html             404.html
 ├── vercel.json              # Rewrites za clean URL-ove + security headeri (NEMA cron konfiguracije)
+├── atmosphere.css           # DIJELJENI v3 dizajn sustav (tokeni, scena, gumbi, reveal) — koristi p.html
+├── motion.js                # dijeljeni motion sustav (reveal, paralaksa, brojaci, rail)
 ├── plans.js                 # rezervne vrijednosti + helperi; pravi izvor istine je tablica `plans` u bazi
 ├── billing.js                # Stripe checkout/portal helperi — NIJE importan ni u jednom HTML-u (mrtav kod dok se ne spoji API)
 ├── assets/                   # odmoria-dashboard.png
@@ -142,7 +144,19 @@ Tablica cijena gore je početno stanje u bazi; planovi i cijene još nisu konač
 
 ---
 
-## Dizajn sustav (v2 — dashboard.html, p.html, h.html)
+## Dizajn sustav v3 (p.html + v3/ mockupi)
+
+**Dijeljeni:** `atmosphere.css` i `motion.js` u korijenu. Ovo je **svjesno odstupanje** od pravila „svaki HTML je self-contained" — tri stranice dijele isti sustav pa bi kopiranje 300 linija CSS-a u svaku značilo tri kopije koje se razilaze, točno onaj problem koji smo imali s limitima plana.
+
+**Fontovi:** Fraunces (naslovi, varijabilne osi SOFT/WONK) + Manrope (sučelje) + Caveat (rukopisni akcenti).
+
+**Tokeni:** `--cream:#FAF6EF --sand:#F1E7D7 --shell:#FFFCF7 --night:#14202E --terra:#D4674A --sun:#E9A13B --sea:#2E6B77 --olive:#7E8F6A`
+
+**Zaglavlje:** rotira do 3 fotografije iz `photo_urls` (naslovna je `cover_photo_url`). Ako fotografija nema, vrti tri nacrtana prizora (`.art--zalazak`, `.art--plava`, `.art--maslinik`) — sve CSS i SVG, bez vanjskih datoteka.
+
+---
+
+## Dizajn sustav (v2 — dashboard.html, h.html)
 
 **Fontovi:** DM Serif Display (naslovi) + Manrope 400–800 (sučelje).
 
@@ -177,7 +191,7 @@ Tablica cijena gore je početno stanje u bazi; planovi i cijene još nisu konač
 - **Stripe checkout nije spojen.** Gumbi za nadogradnju u dashboardu su statični (`toast(...)`), ne pozivaju `billing.js`. `billing.js` uopće nije importan ni u jednom HTML-u.
 - **`/api` folder ne postoji** — ni Stripe (`create-checkout-session`, `create-portal-session`, `stripe-webhook`), ni `sync-ical`, ni `track-event` serverless funkcije nisu u repozitoriju. `page_views` insert ide direktno s klijenta preko Supabase (`sb.from('page_views').insert(...)`), pa analytics tracking radi neovisno o `track-event.js`.
 - **iCal sinkronizacija nema backend** (vidi gore) — UI postoji, endpoint ne.
-- **`p.html`, `h.html` i `dashboard.html` još su na v2 dizajnu.** Novi v3 postoji kao mockup u `v3/` (dostupan na `/v3/`, `/v3/guest.html`, `/v3/dashboard.html`) i **nije prenesen u prave stranice** — one i dalje prikazuju stari izgled gostima. Prijenos je sljedeći veliki zadatak.
+- **`h.html` i `dashboard.html` još su na v2 dizajnu.** `p.html` je prenesen na v3; ostale dvije čekaju. Mockupi `v3/guest.html` i `v3/dashboard.html` služe kao predložak i brišu se čim se prenesu. `v3/index.html` je predložak za novi landing.
 - **v3 mockupi nemaju fotografija.** Zaglavlje vrti tri nacrtana prizora (`.art--zalazak`, `.art--plava`, `.art--maslinik` u `v3/atmosphere.css`) — sve je CSS i SVG, nijedna vanjska slika, pa nema pitanja licence. Isti sloj kasnije preuzima prava fotografija iz `photo_urls`, bez diranja ostatka stranice. Galerija prikazuje prazna mjesta — točno ono što vidi host koji još nije dodao fotografije.
 - **Nema višejezičnosti.** `plans.maxLanguages` postoji, ali u kodu nema nijednog prijevoda ni prebacivanja jezika.
 
