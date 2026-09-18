@@ -37,7 +37,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 
 ```
 /
-├── index.html              # Landing page — AKTIVNA, **v3 paleta** + konfigurator izgleda
+├── index.html              # Landing page — AKTIVNA, **prava v3 stranica** (dijeli `atmosphere.css`), konfigurator izgleda
 ├── p.html                  # Javna stranica objekta (?slug=xxx) — AKTIVNA, **v3 dizajn**
 ├── h.html                  # Privatni gostinski hub (?token=xxx) — AKTIVNA, **v3 dizajn**
 ├── dashboard.html          # Glavni host dashboard — AKTIVNA, **v3 paleta i tipografija**
@@ -51,7 +51,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 ├── links.js                 # gradnja linkova (/p/, /h/) — NIKAD ne zakucavati domenu, vidi dolje
 ├── plans.js                 # rezervne vrijednosti + helperi; pravi izvor istine je tablica `plans` u bazi
 ├── billing.js                # Stripe checkout/portal helperi — NIJE importan ni u jednom HTML-u (mrtav kod dok se ne spoji API)
-├── assets/                   # odmoria-dashboard.png
+├── assets/                   # odmoria-dashboard.png (više se nigdje ne koristi — stara naslovnica ju je prikazivala u herou)
 └── sql/
     ├── admin-access.sql                    # RLS politike scope-ane na owner auth UID
     ├── plan-limits.sql                     # tablica `plans` + okidaci koji limite PROVODE u bazi
@@ -65,7 +65,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 
 **Mockupi više ne postoje.** Mapa `v3/` i stari `*-v2.html` obrisani su kad su sve četiri prave stranice prešle na v3 — nema više `/v3/` na domeni ni dvije adrese za isto.
 
-`p.html` i `h.html` učitavaju dijeljeni `atmosphere.css`. `dashboard.html` i `index.html` imaju vlastiti CSS s v3 vrijednostima u svojim tokenima (vidi "Dashboard — v3 preko vlastitih tokena").
+`p.html`, `h.html` i `index.html` učitavaju dijeljeni `atmosphere.css` i `motion.js`. Jedino `dashboard.html` ima vlastiti potpun CSS s v3 vrijednostima u svojim starim imenima tokena (vidi "Dashboard — v3 preko vlastitih tokena").
 
 ---
 
@@ -176,7 +176,9 @@ Tablica cijena gore je početno stanje u bazi; planovi i cijene još nisu konač
 
 Dashboard **ne učitava `atmosphere.css`** — ima vlastiti potpun CSS. Dvostruko definiranje istih tokena bi se sukobilo.
 
-`index.html` je prošao isti postupak i dodatno je dobio **konfigurator izgleda** prenesen iz mockupa. Za njega su u `:root` dodani pseudonimi v3 imena (`--terra: var(--copper)` itd.) da preneseni CSS radi bez prepisivanja.
+`index.html` **nije** prošao isti postupak — nju smo prvo pokušali prebojati, ali je ostala „fiksna" i u herou je prikazivala sliku zastarjelog dashboarda. Zato je zamijenjena pravom v3 naslovnicom iz mockupa: dijeli `atmosphere.css` i `motion.js`, nema **nijednu** vanjsku sliku (svi su prizori crtani u CSS-u i SVG-u), i nosi **konfigurator izgleda** (boja, naslovnica, font) koji na Free planu drži dio opcija zaključanim i nudi nadogradnju.
+
+Cijene, nazivi planova i limiti na naslovnici **nisu zakucani** — skripta na dnu `index.html` ih puni iz tablice `plans` preko `loadPlans(sb)`, isto kao `help.html`. Vrijednosti upisane u HTML služe samo kao rezerva ako je Supabase nedostupan. Popust na godišnje plaćanje (`−2 mj.`) se izračuna iz Pro cijena, ne pretpostavlja.
 
 ---
 
