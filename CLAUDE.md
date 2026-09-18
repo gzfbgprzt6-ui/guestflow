@@ -170,6 +170,10 @@ Tablica cijena gore je početno stanje u bazi; planovi i cijene još nisu konač
 
 `--brown` sada znači tamnoplavu `#14202E`, `--copper` je terra `#D4674A`. **Imena namjerno nisu mijenjana** jer se koriste na ~200 mjesta; mijenjati ih značilo bi ~200 prilika za grešku bez ijedne vizualne koristi.
 
+**Bočna traka je svijetla** (`--paper`), s tamnom aktivnom stavkom — kao u v3 mockupu, ne tamna kao prije. Ako se ikad vraća tamna podloga, provjeriti sve `color:#fff` u prvih 100 linija CSS-a.
+
+**Traka „Imate nespremljene promjene"** (`.savebar`) javlja se na bilo koju izmjenu unutar aktivnog panela i nestaje pri spremanju ili promjeni panela. Ne uvodi novi način spremanja — samo pronađe gumb koji panel već ima (`onclick="saveXxx()"`) i pritisne ga. Paneli bez takvog gumba (liste, rezervacije) je ne pokazuju.
+
 Dashboard **ne učitava `atmosphere.css`** — ima vlastiti potpun CSS. Dvostruko definiranje istih tokena bi se sukobilo.
 
 `index.html` je prošao isti postupak i dodatno je dobio **konfigurator izgleda** prenesen iz mockupa. Za njega su u `:root` dodani pseudonimi v3 imena (`--terra: var(--copper)` itd.) da preneseni CSS radi bez prepisivanja.
