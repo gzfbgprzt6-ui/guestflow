@@ -163,6 +163,7 @@
 .cday.taken{color:var(--ink-30);text-decoration:line-through;cursor:default;background:transparent}
 .cday.taken.pickable{cursor:pointer;text-decoration:none;color:var(--terra);
   border:1px dashed var(--terra);background:transparent}
+.cday.gap{box-shadow:inset 0 0 0 1.5px var(--olive);color:var(--olive)}
 .cday.range-preview{background:var(--green-bg,#E4EEE8);color:var(--olive)}
 .cday.range-start{background:var(--terra);color:#fff;transform:scale(1.04)}
 .callbl{min-height:22px;font-size:.95rem;font-weight:700;color:var(--terra)}
@@ -456,6 +457,7 @@
             <span class="legend"><i style="background:var(--terra)"></i>Odabrano</span>
             <span class="legend"><i style="background:#E4EEE8;border:1px solid var(--olive)"></i>U rasponu</span>
             <span class="legend"><i style="border:1px dashed var(--ink-30)"></i>Zauzeto</span>
+            <span class="legend" id="gap-legend" style="display:none"><i style="box-shadow:inset 0 0 0 1.5px var(--olive)"></i>Kraći termin između rezervacija</span>
           </div>
           <button class="btn btn--sm btn--ghost" id="cal-clear" style="display:none;align-self:flex-start" onclick="clearRange()">Poništi odabir</button>
         </div>
@@ -584,7 +586,7 @@ let PROP = null, nights = 7, price = 0
 let bookedDates = [], galleryUrls = [], lbIndex = 0
 let calMonth = new Date().getMonth(), calYear = new Date().getFullYear()
 let rangeStart = null, hoverDs = null, checkinDs = null, checkoutDs = null
-let filledSet = new Set()
+let filledSet = new Set(), GAPS = new Set()
 
 const slug = new URLSearchParams(location.search).get('slug')
   || location.pathname.split('/p/')[1]?.split('/')[0]
@@ -650,8 +652,8 @@ async function loadPage() {
   renderFaq(faqs.data)
 
   if (prop.show_availability) {
-    const { data: avail } = await sb.from('availability').select('date').eq('property_id', prop.id)
-    bookedDates = (avail || []).map(r => r.date)
+    const { data: avail } = await sb.from('availability').select('date,is_booked').eq('property_id', prop.id)
+    bookedDates = (avail || []).filter(r => r.is_booked !== false).map(r => r.date)
     $('#cal-sec').style.display = ''
     renderCal()
   }
@@ -1022,6 +1024,34 @@ function isFillableGap(from, to) {
   if (!PROP?.allow_gap_fill_stays) return false
   return bookedDates.includes(addDays(from, -1)) && bookedDates.includes(to)
 }
+
+/**
+ * Razmaci izmedu dvije rezervacije koje domacin dopusta popuniti iako su
+ * kraci od najkraceg boravka. Gost ih mora vidjeti, inace ne moze pogoditi
+ * da bas taj termin prolazi.
+ */
+function fillableGaps() {
+  const minStay = parseInt(PROP?.min_stay) || 1
+  if (!PROP?.allow_gap_fill_stays || minStay < 2 || !bookedDates.length) return []
+  const set = new Set(bookedDates)
+  const out = []
+  for (const day of [...set].sort()) {
+    let cur = addDays(day, 1)
+    if (set.has(cur)) continue                 // nema razmaka iza ovog dana
+    const run = []
+    while (!set.has(cur) && run.length < 90) { run.push(cur); cur = addDays(cur, 1) }
+    if (set.has(cur) && run.length && run.length < minStay) {
+      out.push({ from: run[0], to: cur, nights: run.length })
+    }
+  }
+  return out
+}
+
+function gapDays() {
+  const d = new Set()
+  for (const g of fillableGaps()) for (const x of datesBetween(g.from, g.to).slice(0, -1)) d.add(x)
+  return d
+}
 const fmtHR = ds => { const [, m, d] = ds.split('-'); return `${+d}.${m}.` }
 const fmtFull = ds => { const [y, m, d] = ds.split('-'); return `${+d}. ${MJ_GEN[+m-1]} ${y}.` }
 const setLbl = t => { const e = $('#cal-lbl'); if (e) e.textContent = t }
@@ -1037,6 +1067,8 @@ window.calNav = d => {
 
 function renderCal() {
   filledSet = new Set()
+  GAPS = gapDays()
+  $('#gap-legend').style.display = GAPS.size ? '' : 'none'
   drawMonth(1, calYear, calMonth)
   const n = calMonth + 1
   drawMonth(2, n > 11 ? calYear + 1 : calYear, n % 12)
@@ -1056,6 +1088,7 @@ function drawMonth(slot, year, month) {
     if (ds === rangeStart || ds === checkinDs || ds === checkoutDs) cls += ' range-start'
     else if (taken) cls += pickable ? ' taken pickable' : ' taken'
     else if (isSelected(ds)) cls += ' range-preview'
+    else if (GAPS.has(ds)) cls += ' gap'
     const clickable = !taken || !!rangeStart
     h += `<div class="${cls}" data-ds="${ds}"${clickable ? ` onclick="pickDate('${ds}')"` : ''}${taken ? '' : ` onmouseover="hoverDate('${ds}')"`}>${d}</div>`
   }
@@ -1104,7 +1137,11 @@ window.pickDate = ds => {
   const n = Math.max(1, Math.round((new Date(to) - new Date(from)) / 86400000))
   const minStay = parseInt(PROP?.min_stay) || 1
   if (n < minStay && !isFillableGap(from, to)) {
-    setLbl(`Najkraći boravak je ${noci(minStay)} — pokušajte dulji raspon`)
+    // ako je gost pogodio razmak ali ga nije uzeo do kraja, reci mu tocan termin
+    const g = fillableGaps().find(g => from >= g.from && to <= g.to)
+    setLbl(g
+      ? `Ovaj razmak se uzima u cijelosti: ${fmtHR(g.from)} → ${fmtHR(g.to)} (${noci(g.nights)})`
+      : `Najkraći boravak je ${noci(minStay)} — pokušajte dulji raspon`)
     rangeStart = null; hoverDs = null; renderCal(); return
   }
   checkinDs = from; checkoutDs = to
