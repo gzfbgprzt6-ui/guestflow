@@ -171,6 +171,36 @@
 .legend{display:inline-flex;align-items:center;gap:7px}
 .legend i{width:13px;height:13px;border-radius:4px;display:block}
 
+
+/* ---------- gotove poruke za odabrani termin ---------- */
+.ask-box{margin-top:28px;border-radius:var(--r-lg);border:1px solid var(--line);background:var(--shell);
+  overflow:hidden;opacity:0;max-height:0;transition:opacity .5s var(--ease),max-height .7s var(--ease)}
+.ask-box.show{opacity:1;max-height:820px}
+.ask-top{background:var(--ink);color:#fff;padding:20px 26px;display:flex;flex-wrap:wrap;gap:14px;
+  align-items:center;justify-content:space-between}
+.ask-dates{font-family:'Fraunces',Georgia,serif;font-size:1.3rem;font-weight:500;
+  font-variation-settings:'SOFT' 20,'WONK' 1}
+.ask-n{font-size:.83rem;color:rgba(255,255,255,.6);margin-top:2px}
+.ask-body{padding:24px 26px}
+.tmpl{display:flex;flex-wrap:wrap;gap:8px}
+.tmpl button{border:1.5px solid var(--line);background:var(--cream);border-radius:999px;padding:9px 17px;
+  font-family:inherit;font-size:.82rem;font-weight:700;color:var(--ink-70);cursor:pointer;
+  transition:background .3s,color .3s,border-color .3s,transform .4s var(--ease)}
+.tmpl button:hover{transform:translateY(-2px)}
+.tmpl button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.msgprev{margin-top:18px;background:var(--cream);border:1px solid var(--line-2);border-radius:var(--r-md);
+  padding:18px 20px;font-size:.92rem;color:var(--ink-70);line-height:1.6;white-space:pre-wrap}
+.ask-actions{display:flex;flex-wrap:wrap;gap:11px;margin-top:20px;align-items:center}
+.guests{display:flex;align-items:center;gap:10px;background:var(--cream);border:1.5px solid var(--line);
+  border-radius:999px;padding:7px 9px 7px 17px;font-size:.84rem;font-weight:700}
+.guests button{width:30px;height:30px;border-radius:50%;border:0;background:var(--shell);cursor:pointer;
+  font-size:1rem;font-weight:700;color:var(--ink);transition:background .25s}
+.guests button:hover{background:var(--sand)}
+.toast{position:fixed;left:50%;bottom:92px;transform:translate(-50%,20px);z-index:80;
+  background:var(--night);color:#fff;border-radius:999px;padding:13px 24px;font-size:.87rem;
+  font-weight:700;opacity:0;pointer-events:none;transition:opacity .35s,transform .45s var(--ease)}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
 /* ---------- kontakt / upit ---------- */
 .ask{background:var(--night);color:#fff;border-radius:var(--r-lg);padding:clamp(24px,3.4vw,44px);
   position:relative;overflow:hidden}
@@ -396,6 +426,8 @@
           <iframe id="map-frame" loading="lazy" referrerpolicy="no-referrer-when-downgrade" style="display:none"></iframe>
         </div>
       </div>
+
+      </div>
     </div>
   </section>
 
@@ -462,6 +494,31 @@
           <button class="btn btn--sm btn--ghost" id="cal-clear" style="display:none;align-self:flex-start" onclick="clearRange()">Poništi odabir</button>
         </div>
       </div>
+      <div class="ask-box" id="askBox">
+        <div class="ask-top">
+          <div>
+            <div class="ask-dates" id="askDates">—</div>
+            <div class="ask-n" id="askNights"></div>
+          </div>
+          <button class="btn btn--sm btn--ghost" style="background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.24);color:#fff" onclick="clearRange()">Poništi odabir</button>
+        </div>
+        <div class="ask-body">
+          <div style="font-size:.86rem;font-weight:800;margin-bottom:12px">Kako želite pitati?</div>
+          <div class="tmpl" id="tmpl">
+            <button class="on" data-t="kratko">Kratko i jasno</button>
+            <button data-t="detalj">S detaljima</button>
+            <button data-t="fleks">Fleksibilni smo</button>
+          </div>
+          <div class="ask-actions">
+            <div class="guests">
+              <span id="gN">2</span>&nbsp;<span id="gLbl">gosta</span>
+              <button onclick="chgGuests(-1)" aria-label="Manje gostiju">−</button>
+              <button onclick="chgGuests(1)" aria-label="Više gostiju">+</button>
+            </div>
+          </div>
+          <div class="msgprev" id="msgPrev"></div>
+          <div class="ask-actions" id="askBtns"></div>
+        </div>
     </div>
   </section>
 
@@ -561,6 +618,8 @@
   <div class="lb__c" id="lb-c"></div>
 </div>
 
+<div class="toast" id="toast"></div>
+
 <script src="/motion.js"></script>
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
@@ -658,6 +717,7 @@ async function loadPage() {
     renderCal()
   }
 
+  GUESTS = Math.min(PROP.max_guests || 2, 2) || 2
   $('#ask-title').textContent = 'Javite se domaćinu'
   refreshAsk()
   updateCalc()
@@ -1158,7 +1218,7 @@ window.pickDate = ds => {
   $('#co-val').textContent = fmtFull(to)
   $('#cal-clear').style.display = ''
   setLbl(`Odabrano: ${fmtHR(from)} → ${fmtHR(to)} · ${noci(n)}${priceTxt(n)} ✓`)
-  updateCalc(); refreshAsk(); renderCal()
+  updateCalc(); refreshAsk(); refreshAskBox(); renderCal()
 }
 
 window.clearRange = () => {
@@ -1166,8 +1226,89 @@ window.clearRange = () => {
   $('#ci-val').textContent = 'Po dogovoru'
   $('#co-val').textContent = 'Po dogovoru'
   $('#cal-clear').style.display = 'none'
-  setLbl(''); updateCalc(); refreshAsk(); renderCal()
+  setLbl(''); updateCalc(); refreshAsk(); refreshAskBox(); renderCal()
 }
+
+
+// ══════════════════════════════════════════════════════
+//  GOTOVE PORUKE ZA ODABRANI TERMIN
+//  Gost odabere datume pa dobije poruku koju samo posalje.
+// ══════════════════════════════════════════════════════
+let TMPL = 'kratko', GUESTS = 2
+
+const gostiTxt = n => n + ' ' + plural(n, 'gost', 'gosta', 'gostiju')
+const osobaTxt = n => n + ' ' + plural(n, 'osoba', 'osobe', 'osoba')
+
+function buildMsg() {
+  if (!checkinDs || !checkoutDs) return ''
+  const ime = PROP.host_name ? PROP.host_name : ''
+  const pozdrav = ime ? `Dobar dan, ${ime}!` : 'Dobar dan!'
+  const d1 = fmtFull(checkinDs), d2 = fmtFull(checkoutDs)
+  const n = noci(nights)
+
+  if (TMPL === 'kratko')
+    return `${pozdrav} Zanima me ${PROP.name} od ${d1} do ${d2} (${n}). Je li slobodno?`
+
+  if (TMPL === 'detalj')
+    return `${pozdrav}\n\nZanima nas ${PROP.name} od ${d1} do ${d2} — ${n}, ${osobaTxt(GUESTS)}.\n\n` +
+           `Možete li potvrditi je li termin slobodan i koja je cijena? Hvala!`
+
+  return `${pozdrav}\n\nRazmišljamo o objektu ${PROP.name} oko termina ${d1} – ${d2} ` +
+         `(${n}, ${osobaTxt(GUESTS)}), ali smo fleksibilni par dana u oba smjera.\n\nŠto vam najbolje odgovara?`
+}
+
+function refreshAskBox() {
+  const box = $('#askBox')
+  if (!box) return
+  if (!checkinDs || !checkoutDs) { box.classList.remove('show'); return }
+  box.classList.add('show')
+  $('#askDates').textContent = `${fmtHR(checkinDs)} – ${fmtHR(checkoutDs)}`
+  $('#askNights').textContent = `${noci(nights)} · ${gostiTxt(GUESTS)}${priceTxt(nights)}`
+  $('#gN').textContent = GUESTS
+  $('#gLbl').textContent = plural(GUESTS, 'gost', 'gosta', 'gostiju')
+
+  const msg = buildMsg()
+  $('#msgPrev').textContent = msg
+  const enc = encodeURIComponent(msg)
+  let h = ''
+  if (PROP.phone) {
+    h += `<a class="btn btn--fill" href="https://wa.me/${PROP.phone.replace(/\D/g,'')}?text=${enc}" target="_blank" rel="noopener">Pošalji WhatsAppom</a>`
+  }
+  if (PROP.email) {
+    h += `<a class="btn btn--ghost" href="mailto:${esc(PROP.email)}?subject=${encodeURIComponent('Upit za ' + PROP.name)}&body=${enc}">E-mailom</a>`
+  }
+  h += `<button class="btn btn--ghost" onclick="copyMsg()">Kopiraj poruku</button>`
+  $('#askBtns').innerHTML = h
+}
+
+window.copyMsg = () => {
+  navigator.clipboard?.writeText(buildMsg())
+  toast('Poruka kopirana ✓')
+}
+
+window.chgGuests = d => {
+  GUESTS = Math.min(30, Math.max(1, GUESTS + d))
+  refreshAskBox()
+}
+
+window.toast = msg => {
+  const el = $('#toast')
+  el.textContent = msg
+  el.classList.add('show')
+  clearTimeout(el._t)
+  el._t = setTimeout(() => el.classList.remove('show'), 2200)
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const t = $('#tmpl')
+  if (!t) return
+  t.onclick = e => {
+    const b = e.target.closest('button'); if (!b) return
+    t.querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b))
+    TMPL = b.dataset.t
+    refreshAskBox()
+  }
+})
 
 // ══════════════════════════════════════════════════════
 //  IZRACUN I KONTAKT
