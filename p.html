@@ -140,9 +140,11 @@
 
 /* ---------- kalendar ---------- */
 .calcard{border:1px solid var(--line);border-radius:var(--r-lg);background:var(--shell);
-  padding:clamp(20px,2.6vw,32px);display:grid;gap:clamp(20px,3vw,40px);
-  grid-template-columns:minmax(0,420px) 1fr;align-items:start}
-@media(max-width:860px){.calcard{grid-template-columns:1fr}}
+  padding:clamp(20px,2.6vw,32px)}
+.cals{display:grid;grid-template-columns:1fr 1fr;gap:clamp(22px,3.4vw,40px)}
+@media(max-width:820px){.cals{grid-template-columns:1fr}}
+.calbox h3{font-size:1.1rem}
+.calside{margin-top:26px;padding-top:22px;border-top:1px solid var(--line)}
 .calside{display:flex;flex-direction:column;gap:16px}
 .calhint{font-size:.88rem;color:var(--ink-50);line-height:1.6}
 .calhead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
@@ -235,6 +237,65 @@
 .dock__t{font-size:.9rem;font-weight:800}
 .dock__s{font-size:.74rem;color:var(--ink-50)}
 
+
+/* ---------- traka s cinjenicama ---------- */
+.ticker__item{font-family:'Fraunces',Georgia,serif;font-size:1rem;font-weight:300;white-space:nowrap;
+  font-variation-settings:'SOFT' 24,'WONK' 1}
+
+/* ---------- puna traka usred stranice ---------- */
+.band{position:relative;overflow:hidden;height:clamp(300px,42vh,460px);margin:clamp(60px,8vw,104px) 0}
+.band__img{position:absolute;inset:-12% 0;background-size:cover;background-position:center;
+  filter:saturate(.84) contrast(1.06)}
+.band__grade{position:absolute;inset:0;background:
+  linear-gradient(94deg,rgba(20,32,46,.84) 0%,rgba(20,32,46,.52) 44%,rgba(20,32,46,.16) 78%,rgba(20,32,46,.32) 100%)}
+.band__in{position:relative;z-index:3;height:100%;display:flex;align-items:center}
+.band__q{max-width:min(620px,66vw);color:#fff}
+.band__q h3{font-size:clamp(1.9rem,4vw,3.1rem);color:#fff;margin:14px 0 0;line-height:1.14}
+.band__q .kicker{color:var(--sun)}
+@media(max-width:620px){.band__q{max-width:none}
+  .band__grade{background:linear-gradient(180deg,rgba(20,32,46,.40),rgba(20,32,46,.86))}}
+
+/* ---------- tamna sekcija: sadrzaji + dobro je znati ---------- */
+.night{background:var(--night);color:#fff;position:relative;overflow:hidden}
+.night h2{color:#fff}
+.night .kicker{color:var(--rose)}
+.night__art{position:absolute;left:-4%;right:-4%;bottom:0;height:22vh;min-height:130px;opacity:.3}
+.night__art svg{width:100%;height:100%;display:block}
+.dcols{display:grid;grid-template-columns:1fr 1fr;gap:clamp(30px,5vw,56px);margin-top:44px;position:relative}
+@media(max-width:820px){.dcols{grid-template-columns:1fr}}
+.dsub{font-size:.68rem;font-weight:800;letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(255,255,255,.45);margin-bottom:20px}
+.amens{display:flex;flex-wrap:wrap;gap:10px}
+.amen{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:999px;
+  padding:10px 17px;font-size:.86rem;font-weight:600;display:inline-flex;align-items:center;gap:8px;
+  transition:background .35s,transform .45s var(--ease),border-color .35s}
+.amen:hover{background:var(--terra);border-color:var(--terra);transform:translateY(-3px)}
+.krow{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;padding:14px 0;
+  border-bottom:1px solid rgba(255,255,255,.1);font-size:.91rem}
+.krow .k{color:rgba(255,255,255,.55);flex:none}
+.krow .v{font-weight:700;text-align:right}
+.krow.full{display:block}
+.krow.full .v{text-align:left;font-weight:600;color:rgba(255,255,255,.88)}
+
+/* ---------- preporuke s karticama po kategoriji ---------- */
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin:28px 0 4px}
+.tab{border:1.5px solid var(--line);background:var(--shell);border-radius:999px;padding:10px 20px;
+  font-family:inherit;font-size:.85rem;font-weight:700;color:var(--ink-70);cursor:pointer;
+  transition:background .3s,color .3s,border-color .3s,transform .4s var(--ease)}
+.tab:hover{transform:translateY(-2px)}
+.tab.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.places{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:15px;margin-top:24px}
+.place{display:flex;gap:15px;background:var(--shell);border:1px solid var(--line-2);
+  border-radius:var(--r-md);padding:19px;transition:transform .5s var(--ease),box-shadow .5s var(--ease)}
+.place.clickable{cursor:pointer}
+.place.clickable:hover{transform:translateY(-5px);box-shadow:0 26px 46px -32px rgba(20,32,46,.4)}
+.place .ic{font-size:1.4rem;line-height:1;flex:none}
+.place .nm{font-weight:700;line-height:1.3}
+.place .cat{font-size:.66rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--terra);margin-bottom:5px}
+.place .dt{font-size:.82rem;color:var(--ink-50);margin-top:5px}
+.place .go{font-size:.78rem;font-weight:700;color:var(--sea);margin-top:9px;display:inline-block}
+
 /* ---------- podnozje ---------- */
 .foot{background:var(--night);color:rgba(255,255,255,.62);text-align:center;
   padding:clamp(44px,6vw,74px) var(--gut) calc(clamp(44px,6vw,74px) + 70px);font-size:.84rem}
@@ -277,6 +338,8 @@
     </div>
   </header>
 
+  <div class="ticker" id="ticker-wrap" style="display:none"><div class="ticker__track" id="ticker"></div></div>
+
   <!-- ============ PISMO + CINJENICE ============ -->
   <section class="sec" id="intro-sec">
     <div class="wrap wrap-narrow letter" data-rv="up" id="letter" style="display:none">
@@ -298,15 +361,19 @@
     </div>
   </section>
 
-  <!-- ============ SADRZAJI ============ -->
-  <section class="sec" id="am-sec" style="padding-top:0;display:none">
-    <div class="wrap">
-      <div class="kicker bare" data-rv="fade">Udobnost</div>
-      <h2 data-rv="up" style="margin:14px 0 26px">Što vas očekuje</h2>
-      <div class="ams" data-rv="up" id="ams"></div>
+  <!-- ============ PUNA TRAKA ============ -->
+  <div class="band" id="band" style="display:none">
+    <div class="band__img" id="band-img" data-speed="0.12"></div>
+    <div class="band__grade"></div>
+    <div class="band__in">
+      <div class="wrap"><div class="band__q" data-rv="up">
+        <div class="kicker bare" id="band-kicker"></div>
+        <h3 id="band-title"></h3>
+      </div></div>
     </div>
-  </section>
+  </div>
 
+  <!-- ============ SADRZAJI ============ -->
   <!-- ============ LOKACIJA ============ -->
   <section class="sec" id="map-sec" style="padding-top:0;display:none">
     <div class="wrap">
@@ -331,6 +398,31 @@
     </div>
   </section>
 
+  <!-- ============ SADRZAJI + DOBRO JE ZNATI ============ -->
+  <section class="night sec" id="night-sec" style="display:none">
+    <div class="night__art">
+      <svg viewBox="0 0 1440 200" preserveAspectRatio="none" fill="none">
+        <path d="M0 170c96-10 150-42 236-38 78 4 120 33 198 31 80-2 122-40 204-36 74 4 122 34 196 34 80 0 126-33 204-29 66 3 128 26 402 18v210H0z" fill="#0C161F"/>
+      </svg>
+    </div>
+    <div class="wrap" style="position:relative">
+      <div data-rv="up">
+        <div class="kicker bare">Detalji</div>
+        <h2 style="margin-top:14px">Sve što trebate,<br><span class="italic" style="color:var(--rose)">ništa što ne trebate.</span></h2>
+      </div>
+      <div class="dcols">
+        <div data-rv="up" id="am-col" style="display:none">
+          <div class="dsub">Sadržaji</div>
+          <div class="amens" id="ams"></div>
+        </div>
+        <div data-rv="up" id="know-col" style="display:none">
+          <div class="dsub">Dobro je znati</div>
+          <div id="know"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ============ DOSTUPNOST ============ -->
   <section class="sec" id="cal-sec" style="padding-top:0;display:none">
     <div class="wrap">
@@ -339,16 +431,23 @@
       <p style="color:var(--ink-50);margin-bottom:26px;max-width:58ch" data-rv="fade">
         Odaberite dolazak pa odlazak — izračunat ćemo noći i pripremiti poruku domaćinu.</p>
       <div class="calcard" data-rv="up">
-        <div>
-          <div class="calhead">
-            <h3 id="cal-title"></h3>
-            <div class="calnav">
-              <button onclick="calNav(-1)" aria-label="Prethodni mjesec">‹</button>
-              <button onclick="calNav(1)" aria-label="Sljedeći mjesec">›</button>
+        <div class="cals">
+          <div class="calbox">
+            <div class="calhead">
+              <h3 id="cal-title-1"></h3>
+              <div class="calnav"><button onclick="calNav(-1)" aria-label="Prethodni mjesec">‹</button></div>
             </div>
+            <div class="caldow"><span>Pon</span><span>Uto</span><span>Sri</span><span>Čet</span><span>Pet</span><span>Sub</span><span>Ned</span></div>
+            <div class="caldays" id="cal-days-1"></div>
           </div>
-          <div class="caldow"><span>Pon</span><span>Uto</span><span>Sri</span><span>Čet</span><span>Pet</span><span>Sub</span><span>Ned</span></div>
-          <div class="caldays" id="cal-days"></div>
+          <div class="calbox">
+            <div class="calhead">
+              <h3 id="cal-title-2"></h3>
+              <div class="calnav"><button onclick="calNav(1)" aria-label="Sljedeći mjesec">›</button></div>
+            </div>
+            <div class="caldow"><span>Pon</span><span>Uto</span><span>Sri</span><span>Čet</span><span>Pet</span><span>Sub</span><span>Ned</span></div>
+            <div class="caldays" id="cal-days-2"></div>
+          </div>
         </div>
         <div class="calside">
           <div class="callbl" id="cal-lbl"></div>
@@ -403,8 +502,9 @@
   <section class="sec" id="loc-sec" style="padding-top:0;display:none">
     <div class="wrap">
       <div class="kicker bare" data-rv="fade">Preporuke domaćina</div>
-      <h2 data-rv="up" style="margin:14px 0 26px" id="loc-title">U blizini</h2>
-      <div id="loc-list" data-rv="up"></div>
+      <h2 data-rv="up" style="margin:14px 0 0" id="loc-title">U blizini</h2>
+      <div class="tabs" id="tabs" data-rv="fade"></div>
+      <div class="places" id="places" data-rv="up"></div>
     </div>
   </section>
 
@@ -423,15 +523,6 @@
       <div class="kicker bare" data-rv="fade">Istražite okolicu</div>
       <h2 data-rv="up" style="margin:14px 0 26px">Atrakcije i aktivnosti</h2>
       <div class="rows" id="at-list" data-rv="up"></div>
-    </div>
-  </section>
-
-  <!-- ============ PRAVILA ============ -->
-  <section class="sec" id="rl-sec" style="padding-top:0;display:none">
-    <div class="wrap wrap-narrow">
-      <div class="kicker bare" data-rv="fade">Prije dolaska</div>
-      <h2 data-rv="up" style="margin:14px 0 26px">Kućna pravila</h2>
-      <div class="rules" id="rl-list" data-rv="up"></div>
     </div>
   </section>
 
@@ -550,11 +641,12 @@ async function loadPage() {
     prop.show_faq ? sb.from('faq').select('*').eq('property_id', prop.id).order('sort_order') : {data:[]}
   ])
 
-  renderAmenities(ams.data)
+  renderTicker(prop, ams.data)
+  buildBand(prop)
+  renderDark(prop, ams.data, rules.data)
   renderPlaces(places.data, prop)
   renderTransport(txs.data)
   renderAttractions(atts.data)
-  renderRules(rules.data)
   renderFaq(faqs.data)
 
   if (prop.show_availability) {
@@ -750,25 +842,95 @@ function buildGallery(prop) {
   }
 }
 
-function renderAmenities(ams) {
-  if (!ams?.length) return
-  $('#am-sec').style.display = ''
-  $('#ams').innerHTML = ams.map(a => `<span class="chip"><span>${esc(a.icon || '✦')}</span>${esc(a.name)}</span>`).join('')
+function renderTicker(prop, ams) {
+  const f = []
+  if (prop.max_guests) f.push('Spava ' + prop.max_guests + ' ' + plural(prop.max_guests,'osoba','osobe','osoba'))
+  if (prop.bedrooms)   f.push(prop.bedrooms + ' ' + plural(prop.bedrooms,'spavaća soba','spavaće sobe','spavaćih soba'))
+  if (prop.size_m2)    f.push(prop.size_m2 + ' m² prostora')
+  if (prop.min_stay && +prop.min_stay > 1) f.push('Najmanje ' + noci(+prop.min_stay))
+  if (price > 0)       f.push('Od ' + price + ' € po noći')
+  if (prop.location)   f.push(prop.location)
+  for (const a of (ams || []).slice(0, 4)) f.push(a.name)
+  if (f.length < 3) return
+  $('#ticker-wrap').style.display = ''
+  $('#ticker').innerHTML = [...f, ...f]
+    .map(t => `<span class="ticker__item">${esc(t)}</span><span class="ticker__dot">✦</span>`).join('')
+}
+
+// Sadrzaji i "dobro je znati" dijele tamnu sekciju
+function renderDark(prop, ams, rules) {
+  let any = false
+  if (ams?.length) {
+    any = true
+    $('#am-col').style.display = ''
+    $('#ams').innerHTML = ams.map(a =>
+      `<span class="amen"><span>${esc(a.icon || '✦')}</span>${esc(a.name)}</span>`).join('')
+  }
+  const rows = []
+  if (prop.max_guests) rows.push(['Najviše gostiju', String(prop.max_guests)])
+  if (prop.min_stay && +prop.min_stay > 1) rows.push(['Najkraći boravak', noci(+prop.min_stay)])
+  if (price > 0) rows.push(['Cijena', price + ' € po noći'])
+  if (prop.type) rows.push(['Tip objekta', prop.type])
+  for (const r of (rules || [])) rows.push([null, r.rule_text])
+  if (rows.length) {
+    any = true
+    $('#know-col').style.display = ''
+    $('#know').innerHTML = rows.map(([k, v]) => k
+      ? `<div class="krow"><span class="k">${esc(k)}</span><span class="v">${esc(v)}</span></div>`
+      : `<div class="krow full"><span class="v">${esc(v)}</span></div>`).join('')
+  }
+  if (any) $('#night-sec').style.display = ''
+}
+
+// Druga fotografija kao puna traka; bez nje nacrtani prizor.
+function buildBand(prop) {
+  const photos = orderedPhotos(prop)
+  const el = $('#band'), img = $('#band-img')
+  if (photos.length > 1) {
+    // druga fotografija; prvu ne ponavljamo jer je vec u zaglavlju
+    img.style.backgroundImage = `url('${esc(photos[1])}')`
+  } else {
+    img.className = 'band__img art art--maslinik'
+    img.innerHTML = artInner('art--maslinik')
+  }
+  $('#band-kicker').textContent = prop.host_name ? 'Vaš domaćin' : 'Dobrodošli'
+  $('#band-title').textContent = prop.host_name
+    ? prop.host_name + ' vas očekuje.'
+    : (prop.location || 'Vidimo se uskoro.')
+  el.style.display = ''
 }
 
 function renderPlaces(places, prop) {
   if (!places?.length) return
   $('#loc-sec').style.display = ''
-  $('#loc-title').textContent = prop.host_name ? `Što ${esc(prop.host_name)} preporučuje` : 'U blizini'
-  const groups = {}
-  for (const p of places) (groups[p.category || 'Ostalo'] ||= []).push(p)
-  $('#loc-list').innerHTML = Object.entries(groups).map(([cat, items]) => `
-    <div class="catgrp">
-      <div class="catlbl">${esc(cat)}</div>
-      <div class="rows">${items.map(p => rowHtml({
-        icon: p.icon, name: p.name, detail: p.distance, maps: p.maps_query
-      })).join('')}</div>
-    </div>`).join('')
+  $('#loc-title').textContent = prop.host_name ? `Što ${prop.host_name} preporučuje` : 'U blizini'
+
+  const cats = [...new Set(places.map(p => (p.category || 'Ostalo').trim()))]
+  const tabs = $('#tabs')
+  tabs.innerHTML = (cats.length > 1 ? ['Sve', ...cats] : cats)
+    .map((c, i) => `<button class="tab${i === 0 ? ' on' : ''}" data-c="${esc(c)}">${esc(c)}</button>`).join('')
+  tabs.onclick = e => {
+    const b = e.target.closest('.tab'); if (!b) return
+    tabs.querySelectorAll('.tab').forEach(x => x.classList.toggle('on', x === b))
+    paintPlaces(places, b.dataset.c)
+  }
+  paintPlaces(places, cats.length > 1 ? 'Sve' : cats[0])
+}
+
+function paintPlaces(places, cat) {
+  const list = cat === 'Sve' ? places : places.filter(p => (p.category || 'Ostalo').trim() === cat)
+  $('#places').innerHTML = list.map(p => {
+    const act = p.maps_query ? `openMap('${esc(p.maps_query).replace(/'/g, "\\'")}')` : ''
+    return `<div class="place${act ? ' clickable' : ''}"${act ? ` onclick="${act}"` : ''}>
+      <span class="ic">${esc(p.icon || '✦')}</span>
+      <div style="min-width:0">
+        <div class="cat">${esc(p.category || 'Ostalo')}</div>
+        <div class="nm">${esc(p.name)}</div>
+        ${p.distance ? `<div class="dt">${esc(p.distance)}</div>` : ''}
+        ${act ? '<span class="go">Otvori na karti →</span>' : ''}
+      </div>
+    </div>`
+  }).join('')
 }
 
 function renderTransport(txs) {
@@ -800,12 +962,6 @@ function rowHtml({ icon, name, detail, desc, maps, phone }) {
     </div>
     ${act ? '<span class="go">→</span>' : ''}
   </div>`
-}
-
-function renderRules(rules) {
-  if (!rules?.length) return
-  $('#rl-sec').style.display = ''
-  $('#rl-list').innerHTML = rules.map(r => `<div class="rule"><i>✓</i><span>${esc(r.rule_text)}</span></div>`).join('')
 }
 
 function renderFaq(faqs) {
@@ -880,14 +1036,20 @@ window.calNav = d => {
 }
 
 function renderCal() {
-  $('#cal-title').textContent = MJ[calMonth] + ' ' + calYear + '.'
-  const fd = (new Date(calYear, calMonth, 1).getDay() + 6) % 7
-  const dim = new Date(calYear, calMonth + 1, 0).getDate()
   filledSet = new Set()
+  drawMonth(1, calYear, calMonth)
+  const n = calMonth + 1
+  drawMonth(2, n > 11 ? calYear + 1 : calYear, n % 12)
+}
+
+function drawMonth(slot, year, month) {
+  $('#cal-title-' + slot).textContent = MJ[month] + ' ' + year + '.'
+  const fd = (new Date(year, month, 1).getDay() + 6) % 7
+  const dim = new Date(year, month + 1, 0).getDate()
   let h = ''
   for (let i = 0; i < fd; i++) h += '<div></div>'
   for (let d = 1; d <= dim; d++) {
-    const ds = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`
+    const ds = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`
     const taken = bookedDates.includes(ds)
     const pickable = taken && rangeStart && ds > rangeStart
     let cls = 'cday'
@@ -897,7 +1059,7 @@ function renderCal() {
     const clickable = !taken || !!rangeStart
     h += `<div class="${cls}" data-ds="${ds}"${clickable ? ` onclick="pickDate('${ds}')"` : ''}${taken ? '' : ` onmouseover="hoverDate('${ds}')"`}>${d}</div>`
   }
-  $('#cal-days').innerHTML = h
+  $('#cal-days-' + slot).innerHTML = h
 }
 
 window.hoverDate = ds => {
