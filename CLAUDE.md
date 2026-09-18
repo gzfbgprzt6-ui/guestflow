@@ -39,7 +39,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 /
 ├── index.html              # Landing page — AKTIVNA
 ├── p.html                  # Javna stranica objekta (?slug=xxx) — AKTIVNA, **v3 dizajn**
-├── h.html                  # Privatni gostinski hub (?token=xxx) — AKTIVNA, v2 redizajn
+├── h.html                  # Privatni gostinski hub (?token=xxx) — AKTIVNA, **v3 dizajn**
 ├── dashboard.html          # Glavni host dashboard — AKTIVNA, v2 redizajn
 ├── login.html               register.html            reset-password.html
 ├── email-confirm.html       onboarding.html          add-property.html
@@ -162,7 +162,7 @@ Tablica cijena gore je početno stanje u bazi; planovi i cijene još nisu konač
 
 ---
 
-## Dizajn sustav (v2 — dashboard.html, h.html)
+## Dizajn sustav (v2 — dashboard.html)
 
 **Fontovi:** DM Serif Display (naslovi) + Manrope 400–800 (sučelje).
 
@@ -196,7 +196,7 @@ Ako ikad zatreba da linkovi uvijek pokazuju na jednu domenu bez obzira odakle su
 
 - `p.html` **nikad** ne čita `sections` tablicu — `door_code` i `wifi_pass` su isključivo na `h.html`.
 - `h.html` ima `<meta name="robots" content="noindex,nofollow">`.
-- Wi-Fi i kod vrata prikazuju se tek unutar prozora `[checkin_time - 1h, checkout 23:59]` (vremensko zaključavanje), uz `setInterval` koji auto-otključa kad prozor otvori.
+- Wi-Fi i kod vrata prikazuju se tek unutar prozora `[checkin_time - 1h, checkout 23:59]` (vremensko zaključavanje), uz `setInterval` koji auto-otključa kad prozor otvori. **Prije otključavanja te vrijednosti uopće ne ulaze u HTML** — ne postoje ni u skrivenom elementu ni u `window.__VALS`, pa se ne mogu izvući iz izvornog koda stranice. Ovo je testirano i mora ostati tako.
 - Postoji i stariji fallback (`slug` + `properties.guest_token`) koji **odmah** otključava bez vremenskog ograničenja — legacy put, ne koristi se za nove rezervacije.
 - Booking token se deaktivira ručno (`is_active=false`) ili istječe (`token_expires_at`).
 - Nema service role ključa u klijentskom kodu — sve stranice koriste samo publishable/anon key.
@@ -209,7 +209,7 @@ Ako ikad zatreba da linkovi uvijek pokazuju na jednu domenu bez obzira odakle su
 - **Stripe checkout nije spojen.** Gumbi za nadogradnju u dashboardu su statični (`toast(...)`), ne pozivaju `billing.js`. `billing.js` uopće nije importan ni u jednom HTML-u.
 - **`/api` folder ne postoji** — ni Stripe (`create-checkout-session`, `create-portal-session`, `stripe-webhook`), ni `sync-ical`, ni `track-event` serverless funkcije nisu u repozitoriju. `page_views` insert ide direktno s klijenta preko Supabase (`sb.from('page_views').insert(...)`), pa analytics tracking radi neovisno o `track-event.js`.
 - **iCal sinkronizacija nema backend** (vidi gore) — UI postoji, endpoint ne.
-- **`h.html` i `dashboard.html` još su na v2 dizajnu.** `p.html` je prenesen na v3; ostale dvije čekaju. Mockupi `v3/guest.html` i `v3/dashboard.html` služe kao predložak i brišu se čim se prenesu. `v3/index.html` je predložak za novi landing.
+- **`dashboard.html` i `index.html` još su na starom dizajnu.** `p.html` i `h.html` su preneseni na v3. Mockupi `v3/dashboard.html` i `v3/index.html` služe kao predložak i brišu se čim se prenesu; `v3/guest.html` više ne treba.
 - **v3 mockupi nemaju fotografija.** Zaglavlje vrti tri nacrtana prizora (`.art--zalazak`, `.art--plava`, `.art--maslinik` u `v3/atmosphere.css`) — sve je CSS i SVG, nijedna vanjska slika, pa nema pitanja licence. Isti sloj kasnije preuzima prava fotografija iz `photo_urls`, bez diranja ostatka stranice. Galerija prikazuje prazna mjesta — točno ono što vidi host koji još nije dodao fotografije.
 - **Nema višejezičnosti.** `plans.maxLanguages` postoji, ali u kodu nema nijednog prijevoda ni prebacivanja jezika.
 
