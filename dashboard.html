@@ -1579,21 +1579,32 @@ window.saveIcalUrls=async()=>{
   const{error}=await sb.from('properties').update({ical_booking_url:booking||null,ical_airbnb_url:airbnb||null}).eq('id',PROP.id)
   if(error){showA('ical-alert','err',error.message);return}
   PROP.ical_booking_url=booking||null;PROP.ical_airbnb_url=airbnb||null
-  showA('ical-alert','ok','Spremljeno ✓');toast('Sinkronizacija pokrenuta...')
-  await syncNow()
+  showA('ical-alert','ok','Spremljeno ✓')
+  // Sinkroniziraj samo ako postoji sto povuci — inace endpoint javi gresku
+  // odmah nakon sto korisnik namjerno obrise oba URL-a.
+  if(booking||airbnb){toast('Sinkronizacija pokrenuta...');await syncNow()}
 }
 window.syncNow=async()=>{
   if(!PROP)return
   toast('Sinkronizacija u tijeku...')
   try{
-    const res=await fetch('/api/sync-ical?property_id='+PROP.id)
-    const d=await res.json()
-    const total=d.results?.reduce((s,r)=>s+(r.dates||0),0)||0
-    showA('ical-alert','ok',`Sinkronizirano ${total} datuma ✓`)
-    document.getElementById('ical-sync-info').textContent='Zadnja sinkronizacija: '+new Date().toLocaleString('hr-HR')
-    document.getElementById('ical-status').textContent='Sinkronizirano'
+    // Endpoint nema service role kljuc — radi s korisnikovim tokenom,
+    // pa RLS i dalje odlucuje sto se smije procitati i upisati.
+    const{data:{session}}=await sb.auth.getSession()
+    if(!session){showA('ical-alert','err','Niste prijavljeni. Osvjezite stranicu.');return}
+    const res=await fetch('/api/sync-ical?property_id='+encodeURIComponent(PROP.id),
+      {headers:{Authorization:'Bearer '+session.access_token}})
+    const d=await res.json().catch(()=>({}))
+    if(!res.ok){showA('ical-alert','err',d.error||('Sinkronizacija nije uspjela ('+res.status+').'));return}
+    const total=(d.results||[]).reduce((s,r)=>s+(r.dates||0),0)
+    const parts=(d.results||[]).map(r=>r.error?`${r.label}: ${r.error}`:`${r.label}: ${r.dates} datuma`)
+    showA('ical-alert',d.ok?'ok':'err',(d.ok?`Sinkronizirano ${total} datuma ✓ — `:'')+parts.join(' · '))
+    const when=d.ical_last_sync?new Date(d.ical_last_sync):new Date()
+    document.getElementById('ical-sync-info').textContent='Zadnja sinkronizacija: '+when.toLocaleString('hr-HR')
+    document.getElementById('ical-status').textContent=d.ok?'Sinkronizirano':'Greška'
+    if(PROP)PROP.ical_last_sync=d.ical_last_sync||when.toISOString()
     await loadAvail()
-  }catch(e){showA('ical-alert','err','Sinkronizacija nije uspjela. Provjeri URL.')}
+  }catch(e){showA('ical-alert','err','Sinkronizacija nije uspjela: '+(e&&e.message||e))}
 }
 
 // ── BOOKINGS ──────────────────────────────────────────
