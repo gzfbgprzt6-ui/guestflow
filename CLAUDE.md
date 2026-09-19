@@ -85,8 +85,11 @@ preview/
 ├── index.html      # razdjelnik: popis stranica + što nije spojeno
 ├── landing.html     public.html      guide.html
 ├── dashboard.html   editor.html      system.html
-├── ui.css          # ljuska aplikacije, paneli, polja, GRAFIKONI + ispravci kontrasta
-└── scene.js        # nacrtani prizori (isti SVG-ovi kao u p.html), dijele ih sve stranice
+├── prvi-dan.html   # prazan račun: napredak postavljanja, pločice bez podataka
+├── greska.html     # baza ne odgovara / istekao link
+├── ui.css          # ljuska aplikacije, paneli, polja, GRAFIKONI, dijalozi,
+│                   #   tamna tema vodiča + ispravci kontrasta
+└── scene.js        # nacrtani prizori (isti SVG-ovi kao u p.html) + QR ilustracija
 ```
 
 **Stoji na živom sustavu.** Sve preview stranice učitavaju `/atmosphere.css` i
@@ -99,9 +102,31 @@ Nema druge palete i nema duplog dizajn sustava.
   i **razlikuju se od tablice `plans`**. Tablica nije dirana i neće biti dok dizajn
   ne bude odobren.
 - `vercel.json` nosi `X-Robots-Tag: noindex, nofollow` za `/preview/(.*)`.
-- Provjereno Playwrightom na 1440 / 834 / 390 px: nema vodoravnog prelijevanja,
-  nijedan tekst ne pada ispod WCAG AA, nema greške u konzoli, i svako
-  `[data-rv]` se stvarno otkrije.
+- Provjereno Playwrightom na 1440 / 834 / 390 px, devet stranica, 27 provjera:
+  nema vodoravnog prelijevanja, nijedan tekst ne pada ispod WCAG AA, nema greške
+  u konzoli, i svako `[data-rv]` se stvarno otkrije. Tamna tema vodiča provjerena
+  zasebno — i ona prolazi AA u cijelosti.
+
+### Zasloni iz prijedloga, sada u kodu
+
+Pet prijedloga više nisu opisi nego rade:
+
+- **Slanje vodiča gostu** — dijalog u dashboardu (`<dialog>`, bez biblioteke) s QR-om,
+  gotovom porukom i gumbima. Gumb „Pošalji” u tablici rezervacija vuče ime gosta iz retka.
+- **Podsjetnik gostu** — Hansov redak je istaknut, gumb „Podsjeti” otvara dijalog
+  s prijedlogom poruke **na njemačkom**, jer je rezervacija stigla s Booking.com-a.
+- **Dokaz vrijednosti** — tamni panel: „46 gostiju otvorilo je vodič 214 puta.”
+- **Prvi dan** (`prvi-dan.html`) — napredak „vodič je 40 % gotov” i popis od pet koraka.
+- **Kad nešto ne radi** (`greska.html`) — dva stanja, s telefonom domaćice umjesto bijele stranice.
+
+**Tamna tema gostinskog vodiča** pali se prekidačem u zaglavlju, prati
+`prefers-color-scheme` i pamti ručni odabir u `localStorage` (u `try/catch`, jer
+u privatnom prozoru zna baciti). Radi preko `html[data-tema="tamno"]` koji
+redefinira tokene iz `atmosphere.css`.
+
+**QR kod je ilustracija, ne pravi kod.** Crta se determinističkim uzorkom iz teksta
+linka, s tri tražila, da zaslon izgleda kako će izgledati. Pravi kod generira se
+tek kad se ovo spoji na bazu; dotad uz svaki QR stoji napomena.
 
 ### Grafikoni u dashboardu
 
@@ -137,9 +162,21 @@ jer ga koriste `p.html`, `h.html` i `index.html` — popravak tamo treba dogovor
    **unutarnjem** elementu, a `[data-rv]` na roditelju. U `p.html`, `h.html` i
    `index.html` `.wipe` se zasad nigdje ne koristi, pa još nije puklo.
 
-Uz to: `scene.js` prizore ubacuje s `insertAdjacentHTML('afterbegin', …)`, nikad preko
-`innerHTML` — inače nestane sve što je već u elementu (naslov kartice, oznaka
-„Naslovna”, gumb za brisanje).
+Uz to, tri stvari koje je lako ponoviti:
+
+- `scene.js` prizore ubacuje s `insertAdjacentHTML('afterbegin', …)`, nikad preko
+  `innerHTML` — inače nestane sve što je već u elementu (naslov kartice, oznaka
+  „Naslovna”, gumb za brisanje).
+- **Svaki IIFE na kraju datoteke počinje s `;`.** Bez njega se `})()` prethodnog
+  bloka i `(` sljedećeg spoje u poziv, blok tiho ne krene, a `node --check` to ne
+  vidi. Dogodilo se dvaput.
+- **`<dialog>` mora stajati u DOM-u prije skripti koje ga traže.** Ako je ispod
+  `<script>`, `getElementById` vraća `null`.
+
+U tamnoj temi pazi na komponente koje boju uzimaju iz tokena koji se obrnu:
+`.btn--fill`, `.btn--dark`, `.btn--light`, `.chip--glass` i sve `.tag--*` imaju
+vlastite vrijednosti pod `html[data-tema="tamno"]`, jer im je inače pozadina
+svijetla, a tekst bijel.
 
 Kad dizajn bude odobren, ovo se prenosi na prave stranice **i tek tada** se usklađuje
 `plans`. Ako bude odbijen, cijela mapa se briše — ništa drugo ne ovisi o njoj.

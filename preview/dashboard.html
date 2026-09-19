@@ -40,6 +40,8 @@
   <a href="/preview/public.html">Javna stranica</a>
   <a href="/preview/guide.html">Vodič za gosta</a>
   <a href="/preview/dashboard.html" aria-current="page">Dashboard</a>
+  <a href="/preview/prvi-dan.html">Prvi dan</a>
+  <a href="/preview/greska.html">Greške</a>
   <a href="/preview/editor.html">Uređivanje</a>
   <a href="/preview/system.html">Sustav</a>
   <span class="note">prikaz dizajna · nije spojeno na bazu</span>
@@ -283,6 +285,29 @@
       </div>
     </section>
 
+    <!-- ============ DOKAZ VRIJEDNOSTI ============ -->
+    <section class="panel mt24" data-rv="up"
+             style="background:var(--night);border-color:rgba(255,255,255,.12)">
+      <p class="kicker" style="color:#E3A08A">Vaša sezona dosad</p>
+      <h2 class="mt12" style="color:#fff;font-size:clamp(1.5rem,2.6vw,2.1rem);max-width:26ch">
+        46 gostiju otvorilo je vodič 214 puta. To su pitanja koja vam nisu stigla.
+      </h2>
+      <div class="g g3 mt24">
+        <div style="background:rgba(255,255,255,.07);border-radius:var(--r-md);padding:20px">
+          <div style="font-family:'Manrope';font-size:1.6rem;font-weight:800;letter-spacing:-.03em;color:#fff">≈ 16 h</div>
+          <p class="small mt8" style="color:rgba(255,255,255,.72)">manje odgovaranja na poruke, po procjeni domaćina</p>
+        </div>
+        <div style="background:rgba(255,255,255,.07);border-radius:var(--r-md);padding:20px">
+          <div style="font-family:'Manrope';font-size:1.6rem;font-weight:800;letter-spacing:-.03em;color:#fff">0 €</div>
+          <p class="small mt8" style="color:rgba(255,255,255,.72)">provizije — sve je išlo izravno vama</p>
+        </div>
+        <div style="background:rgba(255,255,255,.07);border-radius:var(--r-md);padding:20px">
+          <div style="font-family:'Manrope';font-size:1.6rem;font-weight:800;letter-spacing:-.03em;color:#fff">94 %</div>
+          <p class="small mt8" style="color:rgba(255,255,255,.72)">gostiju otvorilo vodič prije dolaska</p>
+        </div>
+      </div>
+    </section>
+
     <!-- ============ REZERVACIJE + SINKRONIZACIJA ============ -->
     <section class="g g-main mt24">
       <div class="panel" data-rv="up">
@@ -296,15 +321,17 @@
             <tr><td><b>Obitelj Kovač</b><div class="small">4 osobe</div></td>
                 <td>12. – 19. srp<div class="small">7 noći</div></td>
                 <td><span class="tag"><span class="dot-live"></span> Otvoren 3×</span></td>
-                <td style="text-align:right"><a href="/preview/guide.html" class="btn btn--ghost btn--sm">Link</a></td></tr>
-            <tr><td><b>Hans Müller</b><div class="small">2 osobe</div></td>
+                <td style="text-align:right"><button class="btn btn--ghost btn--sm" data-posalji>Pošalji</button></td></tr>
+            <tr style="background:rgba(233,161,59,.07)">
+                <td><b>Hans Müller</b><div class="small">2 osobe · stiže za 2 dana</div></td>
                 <td>24. – 28. srp<div class="small">4 noći</div></td>
                 <td><span class="tag tag--warn">Nije otvoren</span></td>
-                <td style="text-align:right"><a href="/preview/guide.html" class="btn btn--ghost btn--sm">Link</a></td></tr>
+                <td style="text-align:right">
+                  <button class="btn btn--fill btn--sm" data-podsjetnik>Podsjeti</button></td></tr>
             <tr><td><b>Ana Jurić</b><div class="small">3 osobe</div></td>
                 <td>3. – 10. kol<div class="small">7 noći</div></td>
                 <td><span class="tag tag--mut">Poslano danas</span></td>
-                <td style="text-align:right"><a href="/preview/guide.html" class="btn btn--ghost btn--sm">Link</a></td></tr>
+                <td style="text-align:right"><button class="btn btn--ghost btn--sm" data-posalji>Pošalji</button></td></tr>
           </tbody>
         </table></div>
       </div>
@@ -332,6 +359,67 @@
   </main>
 </div>
 
+<!-- ============ DIJALOG · Pošalji vodič gostu ============ -->
+<dialog class="dlg" id="dlgShare">
+  <div class="dlg__in" style="position:relative">
+    <button class="dlg__x" data-close aria-label="Zatvori">✕</button>
+    <p class="kicker">Pošalji vodič</p>
+    <h2 class="mt12" style="font-size:1.6rem" id="shareName">Obitelj Kovač</h2>
+    <p class="small mt8" id="shareTerm">12. – 19. srpnja · Apartman Aurora</p>
+
+    <div class="qrcard mt24">
+      <div data-qr="odmoria.com/h/xk29fm41" data-qr-size="140"></div>
+      <p class="small">Skenirajte ili pošaljite link ispod</p>
+      <div class="linkpill2">
+        <span>odmoria.com/h/xk29fm41</span>
+        <button class="btn btn--dark btn--sm" data-copy="https://odmoria.com/h/xk29fm41">
+          <span data-copy-label>Kopiraj</span></button>
+      </div>
+    </div>
+
+    <div class="msgbox mt16">
+      <span style="font-size:.66rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--terra-ink)">Gotova poruka</span>
+      <p>Bok! Šaljem vam vodič za Apartman Aurora — unutra su Wi-Fi, šifra vrata,
+         put do kuće i naše preporuke. Otvorite u browseru, ne treba ništa skidati. Vidimo se 12.!</p>
+      <button class="btn btn--ghost btn--sm mt12">Uredi poruku</button>
+    </div>
+
+    <div class="mt16" style="display:flex;flex-direction:column;gap:10px">
+      <button class="btn" style="background:var(--olive);color:#fff;width:100%">Pošalji WhatsAppom</button>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn--ghost" style="flex:1">E-mail</button>
+        <button class="btn btn--ghost" style="flex:1">SMS</button>
+      </div>
+    </div>
+    <p class="small mt16">🔒 Link vrijedi samo za ovaj boravak i ne indeksira se.
+       QR je prikaz — pravi se generira iz linka.</p>
+  </div>
+</dialog>
+
+<!-- ============ DIJALOG · Podsjetnik gostu ============ -->
+<dialog class="dlg" id="dlgRemind">
+  <div class="dlg__in" style="position:relative">
+    <button class="dlg__x" data-close aria-label="Zatvori">✕</button>
+    <span class="tag tag--warn">Stiže za 2 dana · vodič nije otvoren</span>
+    <h2 class="mt16" style="font-size:1.6rem">Hans Müller</h2>
+    <p class="small mt8">24. – 28. srpnja · 2 osobe · link poslan prije 9 dana</p>
+
+    <div class="msgbox mt24">
+      <span style="font-size:.66rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--terra-ink)">Prijedlog poruke</span>
+      <p lang="de">Hallo Hans! Ihr Gästeführer für Apartman Aurora ist bereit — WLAN, Türcode
+         und Anfahrt sind alle drin. Einfach im Browser öffnen: odmoria.com/h/… Bis Freitag!</p>
+    </div>
+    <p class="small mt12">💡 Poruka je na jeziku gosta jer je rezervacija stigla
+       s Booking.com-a na njemačkom.</p>
+
+    <div class="mt24" style="display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn btn--fill" style="flex:1" data-close>Pošalji podsjetnik</button>
+      <button class="btn btn--ghost" data-close>Ne sada</button>
+    </div>
+  </div>
+</dialog>
+
+<script src="/preview/scene.js"></script>
 <script src="/motion.js" defer></script>
 <script>
 /* ==========================================================================
@@ -629,6 +717,38 @@
   })
   applyPlan('host')
 })()
+
+/* ---- dijalozi: otvaranje, zatvaranje klikom na pozadinu i Esc ----
+   Vodeći ; je nužan: bez njega se `})()` gornjeg bloka spoji s `(` ovoga. */
+;(() => {
+  const share = document.getElementById('dlgShare');
+  const remind = document.getElementById('dlgRemind');
+  const open = d => { if (typeof d.showModal === 'function') d.showModal(); else d.setAttribute('open',''); };
+
+  document.querySelectorAll('[data-posalji]').forEach(b =>
+    b.addEventListener('click', () => {
+      const tr = b.closest('tr');
+      if (tr) {
+        const nm = tr.querySelector('b');
+        const td = tr.children[1];
+        if (nm) document.getElementById('shareName').textContent = nm.textContent;
+        if (td) document.getElementById('shareTerm').textContent =
+          td.childNodes[0].textContent.trim() + ' · Apartman Aurora';
+      }
+      open(share);
+    }));
+  document.querySelectorAll('[data-podsjetnik]').forEach(b =>
+    b.addEventListener('click', () => open(remind)));
+
+  for (const d of [share, remind]) {
+    d.querySelectorAll('[data-close]').forEach(x => x.addEventListener('click', () => d.close()));
+    // klik izvan kartice zatvara
+    d.addEventListener('click', e => { if (e.target === d) d.close(); });
+  }
+})();
+
 </script>
+
+
 </body>
 </html>

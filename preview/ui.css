@@ -267,3 +267,103 @@
    (U `atmosphere.css` postoji samo `.wipe.rv-in`, varijanta na istom elementu.)
    ========================================================================== */
 .rv-in .wipe{clip-path:inset(0 0 0 0)}
+
+/* ==========================================================================
+   DIJALOG — koristi se za slanje vodiča i za podsjetnik gostu.
+   Native <dialog>: donosi backdrop, Esc i zatvaranje bez ijedne biblioteke.
+   ========================================================================== */
+dialog.dlg{
+  border:0;padding:0;background:transparent;max-width:min(94vw,470px);width:100%;
+  color:var(--ink);
+}
+dialog.dlg::backdrop{background:rgba(20,32,46,.52);backdrop-filter:blur(3px)}
+dialog.dlg[open]{animation:dlgIn .5s var(--ease)}
+@keyframes dlgIn{from{opacity:0;transform:translateY(18px) scale(.97)}to{opacity:1;transform:none}}
+dialog.dlg::backdrop{animation:bdIn .4s var(--ease)}
+@keyframes bdIn{from{opacity:0}to{opacity:1}}
+.dlg__in{
+  background:var(--cream);border-radius:var(--r-lg);padding:clamp(22px,3.4vw,30px);
+  box-shadow:0 50px 90px -40px rgba(20,32,46,.6);max-height:88vh;overflow:auto;
+}
+.dlg__x{
+  position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:50%;
+  border:0;background:rgba(20,32,46,.06);color:var(--ink);font-size:1rem;line-height:1;
+}
+.dlg__x:hover{background:rgba(20,32,46,.12)}
+@media(prefers-reduced-motion:reduce){dialog.dlg[open],dialog.dlg::backdrop{animation:none}}
+
+/* QR — ilustracija, ne pravi kod (vidi napomenu uz njega) */
+.qr{display:block;width:140px;height:140px;background:#fff;border-radius:10px}
+.qrcard{
+  background:var(--shell);border:1px solid var(--line);border-radius:var(--r-md);
+  padding:24px;display:flex;flex-direction:column;align-items:center;gap:14px;
+}
+.linkpill2{
+  display:flex;align-items:center;gap:10px;background:var(--cream);
+  border:1px solid var(--line);border-radius:999px;padding:7px 7px 7px 16px;
+  font-family:ui-monospace,monospace;font-size:.78rem;max-width:100%;
+}
+.linkpill2 span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* gotova poruka */
+.msgbox{background:var(--sand);border-radius:var(--r-md);padding:18px 20px}
+.msgbox p{margin:8px 0 0;font-size:.88rem;line-height:1.6}
+
+/* ==========================================================================
+   POPIS KORAKA — prvi dan, prazan račun
+   ========================================================================== */
+.steps{display:flex;flex-direction:column}
+.step2{display:flex;gap:16px;align-items:center;padding:15px 0;border-bottom:1px solid var(--line-2)}
+.step2:last-child{border-bottom:0}
+.step2__d{
+  flex:none;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;
+  font-size:.7rem;font-weight:800;color:#fff;background:var(--olive);
+}
+.step2__d.todo{background:transparent;border:1.5px solid var(--line);color:transparent}
+.step2__t{flex:1;min-width:0}
+.step2.done .step2__t b{color:var(--ink-mut);font-weight:600}
+.track{height:10px;border-radius:999px;background:rgba(20,32,46,.08);overflow:hidden}
+.track i{display:block;height:100%;border-radius:999px;background:var(--terra);
+  width:0;transition:width 1.3s var(--ease)}
+
+/* pločica koja još nema podatke */
+.stat--empty .stat__v{color:var(--ink-30)}
+.stat--empty .stat__lb,.stat--empty .stat__d{color:var(--ink-30)}
+
+/* ==========================================================================
+   TAMNA TEMA GOSTINSKOG VODIČA
+   Pali se s [data-tema="tamno"] na <html>. Ne dira žive stranice.
+   ========================================================================== */
+html[data-tema="tamno"]{
+  --cream:#14202E; --shell:#1C2E3F; --sand:#243447;
+  --ink:#FFFFFF;
+  --ink-70:rgba(255,255,255,.80);
+  --ink-50:rgba(255,255,255,.62);
+  --ink-30:rgba(255,255,255,.38);
+  --ink-mut:#AEBCC7;
+  --line:rgba(255,255,255,.14);
+  --line-2:rgba(255,255,255,.09);
+  --terra-ink:#F0A88F;
+  --terra-d:#E08A6C;
+  --sea:#7FD8CE;
+}
+html[data-tema="tamno"] body{background:#14202E;color:#fff}
+/* `.btn--dark` uzima --ink kao POZADINU, a --ink je u tamnoj temi bijel —
+   bez ovoga gumb postane bijela ploha s bijelim tekstom. */
+html[data-tema="tamno"] .btn--dark{background:#33506B;color:#fff}
+html[data-tema="tamno"] .btn--dark:hover{background:var(--terra-d);color:#14202E}
+html[data-tema="tamno"] .btn--ghost{color:#fff}
+html[data-tema="tamno"] .btn--ghost:hover{box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.6)}
+/* Komponente koje boju uzimaju iz tokena koji se u tamnoj temi obrnu.
+   Sve vrijednosti dolje izmjerene su na --shell #1C2E3F. */
+html[data-tema="tamno"] .btn--fill{background:var(--terra-d);color:#14202E}      /* 6,29:1 */
+html[data-tema="tamno"] .btn--light{background:rgba(255,255,255,.92);color:#14202E} /* 14,18:1 */
+html[data-tema="tamno"] .chip--glass{
+  background:rgba(20,32,46,.62);border-color:rgba(255,255,255,.28);color:#fff}   /* 15,55:1 */
+html[data-tema="tamno"] .tag--warn{color:#FFD9A0}                                /* 7,48:1 */
+html[data-tema="tamno"] .tag{background:rgba(126,143,106,.26);color:#C6DBA8}
+html[data-tema="tamno"] .tag--mut{background:rgba(255,255,255,.10);color:#C4CFD8}
+html[data-tema="tamno"] .tag--terra{background:rgba(212,103,74,.22);color:#F3B39B}
+/* traka pregleda je iznad teme — mora ostati čitljiva u oba načina */
+html[data-tema="tamno"] .pv .badge{background:#A8462F;color:#fff}                 /* 5,86:1 */
+html[data-tema="tamno"] .sand-surface{background:#243447}

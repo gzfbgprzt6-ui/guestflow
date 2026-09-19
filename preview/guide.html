@@ -65,6 +65,30 @@
   font-weight:800;letter-spacing:.06em;color:var(--ink-mut);text-transform:uppercase}
 .tabs a b{font-size:1.1rem;font-weight:400}
 .tabs a[aria-current]{color:var(--terra-d)}
+
+/* ---------- tamna tema ----------
+   Većinu nosi ui.css preko tokena (--cream, --shell, --sand…).
+   Ovdje su samo mjesta s tvrdo upisanim bojama. */
+html[data-tema="tamno"] .host{background:#243447}
+html[data-tema="tamno"] .step .n{background:#33506B}
+html[data-tema="tamno"] .tabs{background:rgba(20,32,46,.94);border-top-color:rgba(255,255,255,.14)}
+html[data-tema="tamno"] .blk{box-shadow:0 26px 54px -44px rgba(0,0,0,.8)}
+html[data-tema="tamno"] .sec-row .val{color:#fff}
+.lock-nas{color:#7A5310}
+html[data-tema="tamno"] .lock-nas{color:#FFD9A0}
+html[data-tema="tamno"] .gh__art{opacity:.55}
+
+/* prekidač teme */
+/* Prekidač leži na nacrtanom prizoru, ali mu CSS-lanac pozadine vodi do kreme.
+   Zato nosi vlastitu tamnu plohu — bijeli tekst ostaje čitljiv i ako prizor
+   ne iscrta: 6,79:1 na kremi, 10,43:1 na prizoru. */
+.tema{
+  display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.22);
+  background:rgba(20,32,46,.72);color:#fff;border-radius:999px;padding:8px 15px;
+  font-size:.8rem;font-weight:700;cursor:pointer;backdrop-filter:blur(10px);
+  transition:background .3s var(--ease);
+}
+.tema:hover{background:rgba(20,32,46,.88)}
 </style>
 </head>
 <body class="grain">
@@ -76,6 +100,8 @@
   <a href="/preview/public.html">Javna stranica</a>
   <a href="/preview/guide.html" aria-current="page">Vodič za gosta</a>
   <a href="/preview/dashboard.html">Dashboard</a>
+  <a href="/preview/prvi-dan.html">Prvi dan</a>
+  <a href="/preview/greska.html">Greške</a>
   <a href="/preview/editor.html">Uređivanje</a>
   <a href="/preview/system.html">Sustav</a>
   <span class="note">prikaz dizajna · nije spojeno na bazu</span>
@@ -84,7 +110,12 @@
 <header class="gh" data-scene>
   <div class="gh__art art art--plava" data-art="plava"></div>
   <div class="shell gh__in" style="padding-bottom:0">
-    <span class="chip chip--glass" data-rv="fade" data-rv-now>🔒 Privatna stranica · samo za vas</span>
+    <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap" data-rv="fade" data-rv-now>
+      <span class="chip chip--glass">🔒 Privatna stranica · samo za vas</span>
+      <button class="tema" id="tema" aria-pressed="false">
+        <span id="temaIkona">🌙</span><span id="temaTekst">Tamno</span>
+      </button>
+    </div>
     <h1 class="mt16" data-rv-now>
       <span class="mask-line"><span>Dobrodošli,</span></span>
       <span class="mask-line"><span class="italic">obitelj Kovač.</span></span>
@@ -123,7 +154,7 @@
     <div class="lockbox">
       <span style="font-size:1.15rem">🔒</span>
       <div>
-        <b style="color:#7A5310">Još nije vrijeme</b>
+        <b class="lock-nas">Još nije vrijeme</b>
         <p class="small mt8" style="color:var(--ink-70)">
           Lozinka i šifra vrata prikazuju se od sat vremena prije prijave (12. srpnja u 14:00)
           do odjave. Stranica se sama osvježi — ne morate ništa raditi.
@@ -253,6 +284,32 @@
 <script src="/preview/scene.js"></script>
 <script src="/motion.js" defer></script>
 <script>
+/* ---- tamna tema: prati postavku uređaja, pamti ručni odabir ----
+   Spremanje je u try/catch jer localStorage zna baciti u privatnom prozoru. */
+;(() => {
+  const root = document.documentElement;
+  const btn = document.getElementById('tema');
+  const ic = document.getElementById('temaIkona');
+  const tx = document.getElementById('temaTekst');
+  const KEY = 'odmoria-tema';
+
+  let spremljeno = null;
+  try { spremljeno = localStorage.getItem(KEY); } catch (_) {}
+  const tamno0 = spremljeno
+    ? spremljeno === 'tamno'
+    : matchMedia('(prefers-color-scheme: dark)').matches;
+
+  function primijeni(tamno) {
+    root.dataset.tema = tamno ? 'tamno' : 'svijetlo';
+    btn.setAttribute('aria-pressed', String(tamno));
+    ic.textContent = tamno ? '☀️' : '🌙';
+    tx.textContent = tamno ? 'Svijetlo' : 'Tamno';
+    try { localStorage.setItem(KEY, tamno ? 'tamno' : 'svijetlo'); } catch (_) {}
+  }
+  primijeni(tamno0);
+  btn.addEventListener('click', () => primijeni(root.dataset.tema !== 'tamno'));
+})();
+
 /* Samo prikaz dizajna. U pravoj aplikaciji vrijednosti ne postoje u HTML-u
    dok se prozor ne otvori — ovdje su upisane jer je ovo mockup bez baze. */
 const btn=document.getElementById('demo'), st=document.getElementById('state')

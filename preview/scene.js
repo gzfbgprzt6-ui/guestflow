@@ -84,3 +84,53 @@
   set()
   addEventListener('resize', set)
 })()
+
+/* ==========================================================================
+   QR — ILUSTRACIJA, NE PRAVI KOD.
+   Crta determinističan uzorak s tri tražila, da zaslon za dijeljenje izgleda
+   kao što će izgledati. Pravi kod generira se iz linka tek kad se ovo spoji
+   na bazu; dotad uz svaki QR stoji napomena da je prikaz.
+   ========================================================================== */
+;(() => {
+  const N = 25;
+
+  function draw(el) {
+    const size = +(el.dataset.qrSize || 140);
+    const m = size / N;
+    // sjeme iz teksta, da isti link uvijek da isti uzorak
+    let seed = 2166136261;
+    for (const ch of (el.dataset.qr || 'odmoria')) {
+      seed ^= ch.charCodeAt(0);
+      seed = Math.imul(seed, 16777619) >>> 0;
+    }
+    const rnd = () => ((seed = (seed * 1103515245 + 12345) >>> 0) / 4294967296);
+
+    const r = [];
+    const box = (x, y) => r.push(
+      `<rect x="${(x*m).toFixed(2)}" y="${(y*m).toFixed(2)}" width="${m.toFixed(2)}" height="${m.toFixed(2)}"/>`
+    );
+    const inFinder = (x, y) =>
+      (x < 8 && y < 8) || (x > N-9 && y < 8) || (x < 8 && y > N-9);
+
+    for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+      if (inFinder(x, y)) continue;
+      if (rnd() > 0.54) box(x, y);
+    }
+    for (const [cx, cy] of [[0,0], [N-7,0], [0,N-7]]) {
+      for (let y = 0; y < 7; y++) for (let x = 0; x < 7; x++) {
+        const edge = x === 0 || x === 6 || y === 0 || y === 6;
+        const core = x >= 2 && x <= 4 && y >= 2 && y <= 4;
+        if (edge || core) box(cx + x, cy + y);
+      }
+    }
+
+    el.innerHTML =
+      `<svg class="qr" viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" role="img"
+            aria-label="QR kod na gostinski vodič (prikaz)">
+         <rect width="${size}" height="${size}" fill="#fff" rx="6"/>
+         <g fill="#14202E">${r.join('')}</g>
+       </svg>`;
+  }
+
+  document.querySelectorAll('[data-qr]').forEach(draw);
+})();
