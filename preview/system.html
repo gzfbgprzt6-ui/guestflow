@@ -4,41 +4,46 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>Vizualni sustav (pregled v2)</title>
-<link rel="stylesheet" href="/preview/v2.css">
+<title>Vizualni sustav (pregled)</title>
+<link rel="stylesheet" href="/atmosphere.css">
+<link rel="stylesheet" href="/preview/ui.css">
 <style>
-.tok{border-radius:var(--r-md);overflow:hidden;border:1px solid var(--line-2);background:#fff}
-.tok .chip{height:88px}
-.tok .meta{padding:12px 14px}
-.tok code{font-family:ui-monospace,monospace;font-size:.78rem;color:var(--ink-55)}
-.ratio{font-size:.76rem;font-weight:800;padding:3px 8px;border-radius:5px;display:inline-block;margin-top:6px}
-.ok{background:var(--teal-wash);color:var(--teal-d)}
-.bad{background:#FDE4DE;color:#A32E1B}
-.spec{display:flex;gap:16px;align-items:baseline;padding:16px 0;border-bottom:1px solid var(--line-2);flex-wrap:wrap}
-.spec .name{flex:none;width:190px;font-family:ui-monospace,monospace;font-size:.78rem;color:var(--ink-55)}
-.shbox{height:78px;border-radius:var(--r-md);background:#fff;display:grid;place-items:center;font-size:.8rem;color:var(--ink-55)}
+.tok{border-radius:var(--r-md);overflow:hidden;border:1px solid var(--line-2);background:var(--shell)}
+.tok .sw{height:86px}
+.tok .m{padding:14px 16px}
+.tok code{font-family:ui-monospace,monospace;font-size:.76rem;color:var(--ink-mut)}
+.cr{font-size:.74rem;font-weight:800;padding:3px 9px;border-radius:6px;display:inline-block;margin-top:8px}
+.ok{background:rgba(126,143,106,.2);color:#3F4C31}
+.no{background:rgba(212,103,74,.18);color:#9C3B22}
+.spec{display:flex;gap:20px;align-items:baseline;padding:18px 0;border-bottom:1px solid var(--line-2);flex-wrap:wrap}
+.spec .nm{flex:none;width:200px;font-family:ui-monospace,monospace;font-size:.76rem;color:var(--ink-mut)}
+.ramp{display:flex;border-radius:var(--r-sm);overflow:hidden;height:52px}
+.ramp i{flex:1;display:block}
 </style>
 </head>
-<body>
+<body class="grain">
 
-<div class="pvbar">
-  <span class="tag">Pregled v2</span>
+<div class="pv">
+  <span class="badge">Pregled</span>
   <a href="/preview/">Sve stranice</a>
   <a href="/preview/landing.html">Naslovnica</a>
   <a href="/preview/public.html">Javna stranica</a>
-  <a href="/preview/guide.html">Gostinski vodič</a>
+  <a href="/preview/guide.html">Vodič za gosta</a>
   <a href="/preview/dashboard.html">Dashboard</a>
   <a href="/preview/editor.html">Uređivanje</a>
   <a href="/preview/system.html" aria-current="page">Sustav</a>
+  <span class="note">prikaz dizajna · nije spojeno na bazu</span>
 </div>
 
 <section class="sec">
   <div class="wrap">
-    <p class="eyebrow">Temelji</p>
-    <h1 class="d2 mt12">Vizualni sustav v2</h1>
-    <p class="lead mt16" style="max-width:58ch">
-      Boje, tipografija, sjene i komponente iz kojih su sastavljene sve četiri stranice.
-      Kontrastni omjeri ispod su izračunati u pregledniku, uživo.
+    <p class="kicker" data-rv="fade">Temelji</p>
+    <h1 class="mt16" style="font-size:clamp(2.4rem,5vw,4rem)" data-rv-now>
+      <span class="mask-line"><span>Vizualni sustav</span></span></h1>
+    <p class="lead mt24" data-rv="up">
+      Iste boje, tipografija i komponente koje koriste <code>atmosphere.css</code> i
+      <code>motion.js</code> u živoj aplikaciji. Kontrastni omjeri ispod računaju se
+      u pregledniku, uživo — ništa nije prepisano ručno.
     </p>
   </div>
 </section>
@@ -46,145 +51,219 @@
 <!-- BOJE -->
 <section class="sec" style="padding-top:0">
   <div class="wrap">
-    <h2 class="h1">Paleta</h2>
-    <div class="grid g4 mt24" id="pal"></div>
+    <h2 style="font-size:clamp(1.7rem,3vw,2.3rem)" data-rv="up">Paleta</h2>
+    <div class="g g4 mt24" id="pal"></div>
 
-    <div class="card mt32" style="border-color:rgba(194,118,27,.3);background:var(--amber-wash)">
-      <h3 class="h2">Otvoreno pitanje: koralna boja</h3>
-      <p class="body mt12" style="max-width:70ch;color:var(--ink-70)">
-        Bijeli tekst na izvornoj koralnoj <code>#FF684D</code> daje <b id="r1"></b> — WCAG AA traži 4,5:1.
-        Zato je u ovom pregledu koralna razdvojena na dva tokena: <code>--coral</code> ostaje
-        za plohe i ukrase, a gumbi i tekst koriste tamniju <code>--coral-ink</code> (<b id="r2"></b> na bijelom, <b id="r2b"></b> na kremi).
-        Druga je mogućnost zadržati svijetlu koralnu i pisati po njoj tamnoplavo (<b id="r3"></b>).
+    <div class="panel mt32" style="background:rgba(233,161,59,.1);border-color:rgba(233,161,59,.34)"
+         data-rv="up">
+      <h3 style="font-size:1.2rem">Tri mjesta gdje paleta pada WCAG AA</h3>
+      <p class="lead mt12" style="font-size:.95rem;max-width:74ch">
+        Ovo vrijedi i za žive stranice. Pod <code>/preview/</code> su ispravljene u
+        <code>ui.css</code>; <code>atmosphere.css</code> nije diran jer ga koriste
+        <code>p.html</code>, <code>h.html</code> i <code>index.html</code>.
       </p>
-      <div class="row gap12 mt24 wrapf" data-contrast-demo>
-        <span style="background:#FF684D;color:#fff;padding:13px 22px;border-radius:999px;font-weight:700;font-size:.9rem">Bijelo na #FF684D</span>
-        <span style="background:#C73C27;color:#fff;padding:13px 22px;border-radius:999px;font-weight:700;font-size:.9rem">Bijelo na #C73C27</span>
-        <span style="background:#FF684D;color:#0B2235;padding:13px 22px;border-radius:999px;font-weight:700;font-size:.9rem">Tamnoplavo na #FF684D</span>
+      <hr class="hr">
+      <div class="spec"><span class="nm">.kicker i sitan tekst</span>
+        <span>terra <code>#D4674A</code> na kremi = <b id="c1"></b> → terra-ink <code>#A8462F</code> = <b id="c2"></b>
+          <span class="small">(prolazi i na pijesku: <b id="c2b"></b>)</span></span></div>
+      <div class="spec"><span class="nm">.btn--fill</span>
+        <span>bijelo na terri = <b id="c3"></b> → bijelo na terra-d <code>#B44F35</code> = <b id="c4"></b></span></div>
+      <div class="spec" style="border-bottom:0"><span class="nm">--ink-50</span>
+        <span>sitan tekst = <b id="c5"></b> → <code>#5A6774</code> = <b id="c6"></b></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- RAMPE ZA GRAFIKONE -->
+<section class="sec" style="background:var(--sand)">
+  <div class="wrap">
+    <h2 style="font-size:clamp(1.7rem,3vw,2.3rem)" data-rv="up">Boje grafikona</h2>
+    <p class="lead mt16" style="max-width:72ch" data-rv="up">
+      Grafikoni koriste <b>sekvencijalne rampe</b> — jednu nijansu, više = tamnije —
+      a nikad kategorijske boje. Razlog je mjerljiv: Odmorijina paleta je prigušena,
+      pa tirkiz (<code>#2E6B77</code>, zasićenost OKLCH C = 0,065) i maslina
+      (<code>#7E8F6A</code>, C = 0,057) padaju prag ispod kojeg boja prestaje nositi
+      identitet, a pod deuteranopijom se maslina i terracota razlikuju za ΔE 5,6 —
+      ispod praga 8. Sekvencijalna rampa traži samo monotonu svjetlinu, što ove dvije
+      zadovoljavaju.
+    </p>
+    <div class="g g2 mt32" data-rv="up">
+      <div>
+        <p class="small" style="font-weight:700">Terracota — pregledi, izvori prometa</p>
+        <div class="ramp mt8">
+          <i style="background:#F7DFD6"></i><i style="background:#EEBBA8"></i><i style="background:#E1937A"></i>
+          <i style="background:#D4674A"></i><i style="background:#A94A31"></i></div>
+        <p class="small mt8" id="r1"></p>
+      </div>
+      <div>
+        <p class="small" style="font-weight:700">More — popunjenost, noći</p>
+        <div class="ramp mt8">
+          <i style="background:#DCE8EA"></i><i style="background:#AECBD0"></i><i style="background:#7BA8B1"></i>
+          <i style="background:#2E6B77"></i><i style="background:#1E4C55"></i></div>
+        <p class="small mt8" id="r2"></p>
+      </div>
+    </div>
+    <div class="panel mt24" data-rv="up">
+      <h3 style="font-size:1.05rem">Mjere koje vrijede u svakom grafikonu</h3>
+      <div class="mt12">
+        <div class="spec"><span class="nm">stupac</span><span>≤ 24 px širine, kapica zaobljena 4 px, dno ravno uz osnovicu</span></div>
+        <div class="spec"><span class="nm">linija</span><span>2 px, zaobljeni spojevi i krajevi</span></div>
+        <div class="spec"><span class="nm">točka</span><span>r = 5 px, s 2 px prstenom u boji podloge</span></div>
+        <div class="spec"><span class="nm">ploha</span><span>ista nijansa, 10 % neprozirnosti — nikad puna</span></div>
+        <div class="spec"><span class="nm">mreža</span><span>1 px puna crta, nikad crtkana, jedan korak od podloge</span></div>
+        <div class="spec" style="border-bottom:0"><span class="nm">oznake</span>
+          <span>samo zadnja točka i najviši stupac; ostalo nosi os, oblačić i tablica</span></div>
       </div>
     </div>
   </div>
 </section>
 
 <!-- TIPOGRAFIJA -->
-<section class="sec" style="background:var(--white);border-block:1px solid var(--line-2)">
+<section class="sec">
   <div class="wrap">
-    <h2 class="h1">Tipografija</h2>
-    <p class="body mt12">Fraunces za naslove (varijabilne osi SOFT 40, WONK 1), Manrope za sučelje.</p>
-    <div class="mt24">
-      <div class="spec"><span class="name">.d1 · Fraunces 500</span><span class="d1">Sve što gost treba</span></div>
-      <div class="spec"><span class="name">.d2 · Fraunces 500</span><span class="d2">Manje pitanja za vas</span></div>
-      <div class="spec"><span class="name">.h1 · Fraunces 500</span><span class="h1">Dvije stranice, jedan objekt</span></div>
-      <div class="spec"><span class="name">.h2 · Fraunces 500</span><span class="h2">Nadolazeće rezervacije</span></div>
-      <div class="spec"><span class="name">.h3 · Fraunces 500</span><span class="h3">Dobro je znati</span></div>
-      <div class="spec"><span class="name">.lead · Manrope 400</span><span class="lead">Wi-Fi, šifra vrata i put do kuće na jednoj stranici.</span></div>
-      <div class="spec"><span class="name">.body · Manrope 400</span><span class="body">Gost dobije svoju stranicu čim potvrdite rezervaciju.</span></div>
-      <div class="spec"><span class="name">.small · Manrope 400</span><span class="small">Zadnja sinkronizacija: danas u 06:12</span></div>
-      <div class="spec"><span class="name">.eyebrow · Manrope 800</span><span class="eyebrow">Kako radi</span></div>
-      <div class="spec" style="border-bottom:0"><span class="name">.mono</span><span class="mono">odmoria.com/h/xk29fm41</span></div>
+    <h2 style="font-size:clamp(1.7rem,3vw,2.3rem)" data-rv="up">Tipografija</h2>
+    <p class="lead mt16" data-rv="up">
+      Fraunces za naslove (varijabilne osi SOFT i WONK), Manrope za sučelje,
+      Caveat za rukom pisane akcente.</p>
+    <div class="mt32" data-rv="up">
+      <div class="spec"><span class="nm">h1 · Fraunces</span><h1 style="font-size:3rem">Gost zna sve</h1></div>
+      <div class="spec"><span class="nm">h1 .italic</span><h1 class="italic" style="font-size:3rem">prije nego pita</h1></div>
+      <div class="spec"><span class="nm">h2 · Fraunces</span><h2 style="font-size:2rem">Dvije stranice</h2></div>
+      <div class="spec"><span class="nm">h3 · Fraunces</span><h3>Nadolazeće rezervacije</h3></div>
+      <div class="spec"><span class="nm">.lead · Manrope</span><span class="lead">Wi-Fi, šifra vrata i put do kuće na jednoj stranici.</span></div>
+      <div class="spec"><span class="nm">.small · Manrope</span><span class="small">Zadnja sinkronizacija: danas u 06:12</span></div>
+      <div class="spec"><span class="nm">.kicker · Manrope 800</span><span class="kicker">Kako radi</span></div>
+      <div class="spec"><span class="nm">.hand · Caveat</span><span class="hand" style="font-size:1.8rem">povucite u stranu →</span></div>
+      <div class="spec" style="border-bottom:0"><span class="nm">brojka · Manrope 800</span>
+        <span style="font-family:'Manrope';font-size:2.2rem;font-weight:800;letter-spacing:-.04em;
+              font-variant-numeric:tabular-nums">1 284</span></div>
     </div>
   </div>
 </section>
 
 <!-- KOMPONENTE -->
-<section class="sec">
+<section class="sec" style="background:var(--sand)">
   <div class="wrap">
-    <h2 class="h1">Komponente</h2>
+    <h2 style="font-size:clamp(1.7rem,3vw,2.3rem)" data-rv="up">Komponente</h2>
 
-    <h3 class="h2 mt32">Gumbi</h3>
-    <div class="row gap12 mt16 wrapf">
-      <button class="btn btn--pri">Primarni</button>
-      <button class="btn btn--teal">Potvrdni</button>
-      <button class="btn btn--sec">Sporedni</button>
-      <button class="btn btn--sm btn--pri">Mali primarni</button>
-      <button class="btn btn--sm btn--sec">Mali sporedni</button>
+    <h3 class="mt32" data-rv="up">Gumbi</h3>
+    <div class="row gap12 mt16 wrapf" data-rv="up">
+      <button class="btn btn--fill">Primarni <span class="arr">→</span></button>
+      <button class="btn btn--dark">Tamni</button>
+      <button class="btn btn--ghost">Sporedni</button>
+      <button class="btn btn--fill btn--sm">Mali primarni</button>
+      <button class="btn btn--ghost btn--sm">Mali sporedni</button>
     </div>
-    <div class="card card--dark mt16" style="display:flex;gap:12px;flex-wrap:wrap">
-      <button class="btn btn--pri">Primarni na tamnom</button>
-      <button class="btn btn--ghost-d">Prozirni na tamnom</button>
-    </div>
-
-    <h3 class="h2 mt32">Oznake</h3>
-    <div class="row gap12 mt16 wrapf">
-      <span class="pill"><span class="dot"></span> Objavljeno</span>
-      <span class="pill pill--coral">Plan Domaćin</span>
-      <span class="pill pill--amber"><span class="dot"></span> Čeka potvrdu</span>
-      <span class="pill pill--muted">8 / 50 fotografija</span>
+    <div class="panel mt16" style="background:var(--night);display:flex;gap:12px;flex-wrap:wrap" data-rv="up">
+      <button class="btn btn--fill">Primarni na tamnom</button>
+      <button class="btn btn--light">Svijetli na tamnom</button>
     </div>
 
-    <h3 class="h2 mt32">Polja</h3>
-    <div class="grid g2 mt16">
-      <label style="display:block">
-        <span style="font-size:.78rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-55)">Naziv objekta</span>
-        <input style="display:block;width:100%;margin-top:7px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:#fff;font:inherit;font-size:.94rem" value="Apartman Aurora">
-      </label>
-      <label style="display:block">
-        <span style="font-size:.78rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-55)">Šifra vrata</span>
-        <input style="display:block;width:100%;margin-top:7px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:#fff;font:inherit;font-size:.94rem" value="4271">
-      </label>
+    <h3 class="mt32" data-rv="up">Oznake</h3>
+    <div class="row gap12 mt16 wrapf" data-rv="up">
+      <span class="tag"><span class="dot-live"></span> Objavljeno</span>
+      <span class="tag tag--terra">Plan Domaćin</span>
+      <span class="tag tag--warn">Čeka potvrdu</span>
+      <span class="tag tag--mut">8 / 50 fotografija</span>
+      <span class="chip">Javna stranica</span>
     </div>
 
-    <h3 class="h2 mt32">Sjene</h3>
-    <div class="grid g4 mt16">
-      <div class="shbox" style="box-shadow:var(--sh-1)">--sh-1</div>
-      <div class="shbox" style="box-shadow:var(--sh-2)">--sh-2</div>
-      <div class="shbox" style="box-shadow:var(--sh-3)">--sh-3</div>
-      <div class="shbox" style="box-shadow:var(--sh-4)">--sh-4</div>
+    <h3 class="mt32" data-rv="up">Polja</h3>
+    <div class="g g2 mt16" data-rv="up">
+      <label class="f" style="margin-top:0"><span class="lb">Naziv objekta</span>
+        <input class="inp" value="Apartman Aurora"></label>
+      <label class="f" style="margin-top:0"><span class="lb">Šifra vrata</span>
+        <input class="inp" value="4271"></label>
     </div>
 
-    <h3 class="h2 mt32">Zaobljenja i razmaci</h3>
-    <div class="row gap16 mt16 wrapf">
-      <div class="card" style="padding:14px 18px"><code class="mono">--r-sm 10px</code></div>
-      <div class="card" style="padding:14px 18px"><code class="mono">--r-md 16px</code></div>
-      <div class="card" style="padding:14px 18px"><code class="mono">--r-lg 24px</code></div>
-      <div class="card" style="padding:14px 18px"><code class="mono">razmaci 8 / 12 / 16 / 24 / 32 / 48</code></div>
+    <h3 class="mt32" data-rv="up">Prizori umjesto fotografija</h3>
+    <p class="lead mt12" style="font-size:.95rem" data-rv="up">
+      Kad host još nije dodao fotografije, zaglavlje i galerija vrte tri nacrtana prizora.
+      Sve je CSS i SVG, nijedna vanjska datoteka.</p>
+    <div class="g g3 mt16" data-rv="up">
+      <div style="height:170px;border-radius:var(--r-md);overflow:hidden;position:relative"
+           class="art art--zalazak" data-g-art="zalazak"></div>
+      <div style="height:170px;border-radius:var(--r-md);overflow:hidden;position:relative"
+           class="art art--plava" data-g-art="plava"></div>
+      <div style="height:170px;border-radius:var(--r-md);overflow:hidden;position:relative"
+           class="art art--maslinik" data-g-art="maslinik"></div>
     </div>
+
+    <h3 class="mt32" data-rv="up">Pokret</h3>
+    <div class="mt16" data-rv="up">
+      <div class="spec"><span class="nm">[data-rv]</span><span>otkrivanje na scroll — up / fade / scale / left / right</span></div>
+      <div class="spec"><span class="nm">[data-rv-stagger]</span><span>djeca se otkrivaju u nizu, zadani korak 90 ms</span></div>
+      <div class="spec"><span class="nm">.mask-line</span><span>naslov se diže redak po redak iza maske</span></div>
+      <div class="spec"><span class="nm">[data-speed]</span><span>paralaksa na scroll</span></div>
+      <div class="spec"><span class="nm">[data-mouse]</span><span>dubina prizora na pomak miša</span></div>
+      <div class="spec"><span class="nm">[data-count]</span><span>brojač koji krene kad uđe u vidno polje</span></div>
+      <div class="spec"><span class="nm">[data-magnetic]</span><span>gumb koji se lagano privuče kursoru</span></div>
+      <div class="spec" style="border-bottom:0"><span class="nm">.wipe</span>
+        <span>otkrivanje brisanjem — <b>mora stajati na unutarnjem elementu</b>,
+          inače njegov <code>clip-path</code> spriječi da se otkrivanje uopće okine</span></div>
+    </div>
+    <p class="small mt16">Sve poštuje <code>prefers-reduced-motion</code>.</p>
   </div>
 </section>
 
+<footer class="foot">
+  <div class="wrap foot__in">
+    <span>Grana <code>claude/funny-archimedes-c0qosu</code> · nije spojeno u produkciju</span>
+    <a href="/preview/">← Sve stranice</a>
+  </div>
+</footer>
+
+<script src="/preview/scene.js"></script>
+<script src="/motion.js" defer></script>
 <script>
 const T=[
- ['--pearl','#F7F5F0','Osnovna podloga'],
- ['--pearl-2','#EFEBE3','Sekundarna podloga'],
- ['--white','#FFFFFF','Kartice'],
- ['--navy','#0B2235','Tamne sekcije, tinta'],
- ['--navy-2','#13314A','Tamne kartice'],
- ['--teal','#07736C','Potvrda, poveznice'],
- ['--teal-wash','#E4F0EE','Podloga oznaka'],
- ['--coral','#FF684D','Ukras, plohe'],
- ['--coral-ink','#C73C27','Gumbi i tekst'],
- ['--coral-wash','#FFEDE8','Podloga oznaka'],
- ['--amber','#9D5F15','Upozorenje'],
- ['--amber-wash','#FBF0DE','Podloga upozorenja'],
+ ['--cream','#FAF6EF','Osnovna podloga'],['--shell','#FFFCF7','Kartice i paneli'],
+ ['--sand','#F1E7D7','Druga podloga, traka'],['--night','#14202E','Tamne sekcije, tinta'],
+ ['--terra','#D4674A','Naglasak, plohe'],['--terra-d','#B44F35','Gumbi'],['--terra-ink','#A8462F','Tekst i oznake'],
+ ['--sea','#2E6B77','Poveznice, mirni naglasak'],['--olive','#7E8F6A','Potvrda, slobodno'],
+ ['--sun','#E9A13B','Upozorenje, sunce'],['--rose','#E3A08A','Naglasak na tamnom'],
+ ['--ink-70','#596068','Tekst odlomka'],['#5A6774','#5A6774','Sitan tekst (--ink-mut)']
 ]
-// WCAG relativna luminancija
 const lum=h=>{const c=[1,3,5].map(i=>{let v=parseInt(h.slice(i,i+2),16)/255
-  return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)})
-  return .2126*c[0]+.7152*c[1]+.0722*c[2]}
-const ratio=(a,b)=>{const l1=lum(a),l2=lum(b),[h,s]=l1>l2?[l1,l2]:[l2,l1];return (h+.05)/(s+.05)}
-const fmt=r=>r.toFixed(2).replace('.',',')+':1'
+  return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)});return .2126*c[0]+.7152*c[1]+.0722*c[2]}
+const cr=(a,b)=>{const l1=lum(a),l2=lum(b);return (Math.max(l1,l2)+.05)/(Math.min(l1,l2)+.05)}
+const f=r=>r.toFixed(2).replace('.',',')+':1'
 
 document.getElementById('pal').innerHTML=T.map(([n,hex,use])=>{
-  const rw=ratio(hex,'#FFFFFF'), rp=ratio(hex,'#F7F5F0')
-  // za svijetle tokene mjerimo tintu na njima, za tamne bijeli tekst na njima
   const light=lum(hex)>.4
-  const r=light?ratio(hex,'#0B2235'):rw
-  const lbl=light?'tamnoplavi tekst':'bijeli tekst'
+  const r=light?cr(hex,'#14202E'):cr(hex,'#FFFFFF')
+  const lbl=light?'tamna tinta':'bijeli tekst'
   const pass=r>=4.5
-  return `<div class="tok">
-    <div class="chip" style="background:${hex}"></div>
-    <div class="meta">
-      <b style="font-size:.9rem">${n}</b>
-      <div><code>${hex}</code></div>
+  return `<div class="tok" data-rv="up">
+    <div class="sw" style="background:${hex}"></div>
+    <div class="m"><b style="font-size:.9rem">${n}</b><div><code>${hex}</code></div>
       <div class="small" style="margin-top:4px">${use}</div>
-      <span class="ratio ${pass?'ok':'bad'}">${lbl} ${fmt(r)} ${pass?'AA ✓':'pada AA'}</span>
-    </div></div>`
+      <span class="cr ${pass?'ok':'no'}">${lbl} ${f(r)} ${pass?'AA ✓':'pada AA'}</span></div></div>`
 }).join('')
 
-document.getElementById('r1').textContent=fmt(ratio('#FF684D','#FFFFFF'))
-document.getElementById('r2').textContent=fmt(ratio('#C73C27','#FFFFFF'))
-document.getElementById('r2b').textContent=fmt(ratio('#C73C27','#F7F5F0'))
-document.getElementById('r3').textContent=fmt(ratio('#FF684D','#0B2235'))
+document.getElementById('c1').textContent=f(cr('#D4674A','#FAF6EF'))
+document.getElementById('c2').textContent=f(cr('#A8462F','#FAF6EF'))
+document.getElementById('c2b').textContent=f(cr('#A8462F','#F1E7D7'))
+document.getElementById('c3').textContent=f(cr('#FFFFFF','#D4674A'))
+document.getElementById('c4').textContent=f(cr('#FFFFFF','#B44F35'))
+document.getElementById('c5').textContent=f(cr('#878B8F','#FAF6EF'))
+document.getElementById('c6').textContent=f(cr('#5A6774','#FAF6EF'))
+
+/* svjetlina rampi — potvrda da rastu monotono */
+const L=h=>{const p=[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)/255)
+  const g=p.map(v=>v<=.04045?v/12.92:Math.pow((v+.055)/1.055,2.4))
+  const l=Math.cbrt(.4122214708*g[0]+.5363325363*g[1]+.0514459929*g[2])
+  const m=Math.cbrt(.2119034982*g[0]+.6806995451*g[1]+.1073969566*g[2])
+  const s=Math.cbrt(.0883024619*g[0]+.2817188376*g[1]+.6299787005*g[2])
+  return (.2104542553*l+.7936177850*m-.0040720468*s)}
+const show=(id,ramp)=>{
+  const ls=ramp.map(h=>L(h).toFixed(3))
+  const mono=ls.every((v,i)=>i===0||+v<+ls[i-1])
+  document.getElementById(id).textContent=
+    'OKLCH svjetlina '+ls.join(' › ')+(mono?' — monotono ✓':' — NIJE monotono')
+}
+show('r1',['#F7DFD6','#EEBBA8','#E1937A','#D4674A','#A94A31'])
+show('r2',['#DCE8EA','#AECBD0','#7BA8B1','#2E6B77','#1E4C55'])
 </script>
 </body>
 </html>

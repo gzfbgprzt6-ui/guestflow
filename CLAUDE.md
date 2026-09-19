@@ -75,32 +75,74 @@ Obje funkcije su namjerno **bez ijedne npm ovisnosti** — projekt nema build ko
 
 ---
 
-## `preview/` — prijedlog dizajna v2 (nije u produkciji)
+## `preview/` — prijedlog dizajna (nije u produkciji)
 
-Mapa `preview/` sadrži **web prijevod Figma sustava v2** (datoteka `6MeIi7lRUUPK4BGVX1o93n`),
-napravljen da se dizajn može pogledati u pregledniku prije odluke. **Ne dira nijednu živu stranicu.**
+Mapa `preview/` sadrži šest pravih HTML stranica koje pokazuju kako bi aplikacija
+mogla izgledati. **Ne dira nijednu živu stranicu.**
 
 ```
 preview/
-├── index.html      # razdjelnik s popisom stranica i otvorenim pitanjima
+├── index.html      # razdjelnik: popis stranica + što nije spojeno
 ├── landing.html     public.html      guide.html
 ├── dashboard.html   editor.html      system.html
-├── v2.css          # tokeni, tipografija, gumbi, oznake (dijele ih sve preview stranice)
-└── _shell.css      # bočna traka + sadržaj, dijele dashboard.html i editor.html
+├── ui.css          # ljuska aplikacije, paneli, polja, GRAFIKONI + ispravci kontrasta
+└── scene.js        # nacrtani prizori (isti SVG-ovi kao u p.html), dijele ih sve stranice
 ```
 
-- **Nema Supabase poziva, prijave ni baze** — sve su vrijednosti upisane u HTML.
-- **Cijene su prijedlog** (Besplatno / Domaćin 7,90 € / Pro 14,90 € / Partner 29,90 €) i
-  **razlikuju se od tablice `plans`**. Tablica nije dirana i neće biti dok dizajn ne bude odobren.
-- `vercel.json` nosi `X-Robots-Tag: noindex, nofollow` za `/preview/(.*)`.
-- Paleta v2 je druga od v3: `--pearl #F7F5F0`, `--navy #0B2235`, `--teal #07736C`, `--coral #FF684D`.
-- **Koralna je namjerno razdvojena na dva tokena.** Bijeli tekst na `#FF684D` daje 2,86:1 i pada
-  WCAG AA, pa `--coral` služi samo za plohe i ukrase, a gumbi i tekst koriste `--coral-ink #C73C27`
-  (5,12:1 na bijelom, 4,70:1 na kremi). `system.html` računa sve omjere uživo u pregledniku.
-- Provjereno na 1440 / 834 / 390 px: nema vodoravnog prelijevanja i nema teksta ispod AA praga.
+**Stoji na živom sustavu.** Sve preview stranice učitavaju `/atmosphere.css` i
+`/motion.js` iz korijena — istu paletu, tipografiju i pokret koje koriste `p.html`,
+`h.html` i naslovnica. `ui.css` dodaje samo ono čega u `atmosphere.css` nema.
+Nema druge palete i nema duplog dizajn sustava.
 
-Kad dizajn bude odobren, ovo se prenosi na prave stranice **i tek tada** se usklađuje `plans`.
-Ako bude odbijen, cijela mapa se briše — ništa drugo ne ovisi o njoj.
+- **Nema Supabase poziva, prijave ni baze** — sve su vrijednosti upisane u HTML.
+- **Cijene su prijedlog** (Besplatno / Domaćin 7,90 € / Pro 14,90 € / Partner 29,90 €)
+  i **razlikuju se od tablice `plans`**. Tablica nije dirana i neće biti dok dizajn
+  ne bude odobren.
+- `vercel.json` nosi `X-Robots-Tag: noindex, nofollow` za `/preview/(.*)`.
+- Provjereno Playwrightom na 1440 / 834 / 390 px: nema vodoravnog prelijevanja,
+  nijedan tekst ne pada ispod WCAG AA, nema greške u konzoli, i svako
+  `[data-rv]` se stvarno otkrije.
+
+### Grafikoni u dashboardu
+
+`preview/dashboard.html` nosi vlastiti crtač grafikona — bez biblioteke i bez build
+koraka, kao i ostatak projekta. Devet grafikona: pregledi kroz vrijeme (s rasponom
+7/30/90 dana, križićem i oblačićem), dva mala grafikona iste skale, rangirani izvori
+prometa, popunjenost po mjesecima, kada gost otvori vodič, četiri iskrice u pločicama.
+Svaki grafikon ima i **prikaz tablicom** ispod sebe.
+
+**Boje su sekvencijalne rampe, nikad kategorijske** — i to je mjereno, ne stvar ukusa:
+`--sea` (#2E6B77) ima OKLCH zasićenost 0,065 i `--olive` (#7E8F6A) 0,057, oboje ispod
+praga 0,10 nakon kojeg boja prestaje nositi identitet; uz to maslina i terracota pod
+deuteranopijom stoje na ΔE 5,6, ispod praga 8. Sekvencijalna rampa traži samo monotonu
+svjetlinu, što terracota i more rampa zadovoljavaju. Mjere su fiksne: stupac ≤ 24 px s
+kapicom 4 px, linija 2 px, točka r = 5 s 2 px prstenom u boji podloge, ploha 10 %,
+mreža 1 px puna.
+
+Dashboard ima i **prebacivanje plana** (Besplatno / Domaćin / Pro / Partner) koje
+uživo pokazuje koji su uvidi zaključani iza kojeg plana.
+
+### Dvije greške u živom kodu nađene usput (nisu popravljene)
+
+Obje su popravljene **samo pod `/preview/`**, u `ui.css`. `atmosphere.css` nije diran
+jer ga koriste `p.html`, `h.html` i `index.html` — popravak tamo treba dogovor.
+
+1. **Kontrast.** `--terra` (#D4674A) kao tekst na kremi daje **3,34:1**, a bijelo na
+   terri **3,60:1** — oboje pada WCAG AA (traži 4,5:1). Pogađa `.kicker` i svaki
+   `.btn--fill`. Pod pregledom: tekst ide na `--terra-ink` #A8462F (4,79:1 i bolje na
+   sve četiri podloge), gumbi na `--terra-d` #B44F35 (bijelo na njemu 5,11:1).
+2. **`.wipe` se sam zaključava.** `clip-path:inset(0 100% 0 0)` svodi presjek elementa
+   na nulu, pa `IntersectionObserver` u `motion.js` nikad ne okine i element ostane
+   nevidljiv **zauvijek**. Provjereno u pregledniku. `.wipe` mora stajati na
+   **unutarnjem** elementu, a `[data-rv]` na roditelju. U `p.html`, `h.html` i
+   `index.html` `.wipe` se zasad nigdje ne koristi, pa još nije puklo.
+
+Uz to: `scene.js` prizore ubacuje s `insertAdjacentHTML('afterbegin', …)`, nikad preko
+`innerHTML` — inače nestane sve što je već u elementu (naslov kartice, oznaka
+„Naslovna”, gumb za brisanje).
+
+Kad dizajn bude odobren, ovo se prenosi na prave stranice **i tek tada** se usklađuje
+`plans`. Ako bude odbijen, cijela mapa se briše — ništa drugo ne ovisi o njoj.
 
 ---
 

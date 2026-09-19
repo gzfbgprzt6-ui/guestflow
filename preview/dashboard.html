@@ -4,187 +4,631 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>Dashboard (pregled v2)</title>
-<link rel="stylesheet" href="/preview/v2.css">
-<link rel="stylesheet" href="/preview/_shell.css">
+<title>Odmoria — dashboard i analitika (pregled)</title>
+<link rel="stylesheet" href="/atmosphere.css">
+<link rel="stylesheet" href="/preview/ui.css">
 <style>
-.propcard{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
-.thumb{width:110px;height:78px;border-radius:12px;flex:none;position:relative;overflow:hidden;
-  background:linear-gradient(165deg,#28323F,#D98B5E 62%,#F3C98B)}
-.thumb--2{background:linear-gradient(165deg,#25372B,#8AA06A 62%,#D9D2A8)}
-.linkline{display:flex;align-items:center;gap:10px;background:var(--pearl);border:1px solid var(--line-2);
-  border-radius:999px;padding:8px 8px 8px 16px;font-family:ui-monospace,monospace;font-size:.8rem;max-width:100%;overflow:hidden}
-.linkline span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.mini{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;max-width:250px}
-.mini i{aspect-ratio:1;border-radius:4px;background:var(--teal-wash);display:block}
-.mini i.b{background:rgba(11,34,53,.14)}
-.mini i.p{background:transparent}
-.bars{display:flex;align-items:flex-end;gap:7px;height:96px}
-.bars i{flex:1;background:var(--teal);border-radius:5px 5px 0 0;display:block;opacity:.85}
-.bars i:last-child{background:var(--coral)}
+  body{background:var(--cream)}
+  .planbar{
+    display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+    background:var(--sand);border:1px solid var(--line);border-radius:999px;padding:6px;
+  }
+  .planbar button{
+    border:0;background:transparent;padding:8px 16px;border-radius:999px;
+    font-size:.84rem;font-weight:700;color:var(--ink-mut);cursor:pointer;
+    transition:background .3s var(--ease),color .3s var(--ease);
+  }
+  .planbar button[aria-pressed="true"]{background:var(--night);color:#fff}
+  .rangebar{display:inline-flex;background:rgba(20,32,46,.05);border-radius:999px;padding:3px}
+  .rangebar button{border:0;background:transparent;padding:7px 15px;border-radius:999px;
+    font-size:.8rem;font-weight:700;color:var(--ink-mut);cursor:pointer;transition:background .3s,color .3s}
+  .rangebar button[aria-pressed="true"]{background:var(--shell);color:var(--ink);
+    box-shadow:0 2px 8px -4px rgba(20,32,46,.5)}
+  .facets{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+  @media(max-width:700px){.facets{grid-template-columns:1fr}}
+  .facet h4{font-size:.86rem;font-weight:800;margin:0 0 2px;letter-spacing:-.01em}
+  .facet .n{font-family:'Manrope';font-size:1.5rem;font-weight:800;letter-spacing:-.03em;
+    font-variant-numeric:tabular-nums}
 </style>
 </head>
-<body>
+<body class="grain">
 
-<div class="pvbar">
-  <span class="tag">Pregled v2</span>
+<div class="pv">
+  <span class="badge">Pregled</span>
   <a href="/preview/">Sve stranice</a>
   <a href="/preview/landing.html">Naslovnica</a>
   <a href="/preview/public.html">Javna stranica</a>
-  <a href="/preview/guide.html">Gostinski vodič</a>
+  <a href="/preview/guide.html">Vodič za gosta</a>
   <a href="/preview/dashboard.html" aria-current="page">Dashboard</a>
   <a href="/preview/editor.html">Uređivanje</a>
   <a href="/preview/system.html">Sustav</a>
+  <span class="note">prikaz dizajna · nije spojeno na bazu</span>
 </div>
 
 <div class="app">
-  <aside class="side">
-    <div class="logo">Odmoria<span>.</span></div>
+  <!-- ============ BOČNA TRAKA ============ -->
+  <aside class="side"><div class="side__in">
+    <div class="brand">Odmoria<span style="color:var(--terra)">.</span></div>
     <a class="navi" aria-current="page" href="/preview/dashboard.html"><span class="ic">◧</span> Pregled</a>
     <a class="navi" href="/preview/editor.html"><span class="ic">⌂</span> Objekti <span class="cnt">2</span></a>
     <a class="navi" href="#"><span class="ic">✎</span> Rezervacije <span class="cnt">3</span></a>
     <a class="navi" href="#"><span class="ic">▦</span> Dostupnost</a>
-    <a class="navi" href="#"><span class="ic">◔</span> Statistika</a>
+    <a class="navi" href="#analitika"><span class="ic">◔</span> Analitika</a>
     <a class="navi" href="#"><span class="ic">⚙</span> Postavke</a>
-    <div class="sidefoot">
-      <div class="pill pill--coral">Plan Domaćin</div>
-      <p class="small mt8">1 od 1 objekta iskorišteno</p>
-      <a href="/preview/landing.html#cijene" class="btn btn--sm btn--sec btn--full mt12">Nadogradi na Pro</a>
+    <div class="side__foot">
+      <span class="tag tag--terra" id="planTag">Plan Domaćin</span>
+      <p class="small mt8" id="planNote">1 od 1 objekta · 8 od 50 fotografija</p>
+      <a href="/preview/landing.html#cijene" class="btn btn--ghost btn--sm mt12" style="width:100%">Usporedi planove</a>
     </div>
-  </aside>
+  </div></aside>
 
+  <!-- ============ SADRŽAJ ============ -->
   <main class="main">
-    <div class="topline">
-      <div>
-        <p class="eyebrow">Dobro jutro, Marina</p>
-        <h1 class="h1 mt8">Pregled</h1>
+    <div class="head">
+      <div data-rv="up" data-rv-now>
+        <p class="kicker bare">Dobro jutro, Marina</p>
+        <h1 style="font-size:clamp(2rem,3.4vw,2.9rem);margin-top:6px">Pregled sezone</h1>
       </div>
-      <div class="btns">
-        <a href="/preview/public.html" class="btn btn--sm btn--sec">Vidi javnu stranicu</a>
-        <a href="#" class="btn btn--sm btn--pri">Nova rezervacija</a>
+      <div class="head__act">
+        <a href="/preview/public.html" class="btn btn--ghost btn--sm">Vidi javnu stranicu</a>
+        <a href="#" class="btn btn--fill btn--sm" data-magnetic="8">Nova rezervacija <span class="arr">→</span></a>
       </div>
     </div>
 
-    <!-- brojke -->
-    <div class="grid g4">
-      <div class="stat"><b>3</b><span class="lbl">Nadolazeće rezervacije</span><span class="trend">sljedeća za 3 dana</span></div>
-      <div class="stat"><b>18</b><span class="lbl">Zauzete noći u srpnju</span><span class="trend">58 % popunjenost</span></div>
-      <div class="stat"><b>124</b><span class="lbl">Pregleda javne stranice</span><span class="trend">+31 % u 30 dana</span></div>
-      <div class="stat"><b>9</b><span class="lbl">Otvaranja vodiča</span><span class="trend">svi gosti otvorili</span></div>
+    <!-- prebacivanje plana: da se vidi što koji plan otključava -->
+    <div class="row wrapf gap12 mt8" style="margin-bottom:26px">
+      <span class="small" style="font-weight:700">Prikaži kao:</span>
+      <div class="planbar" id="planbar">
+        <button data-plan="free">Besplatno</button>
+        <button data-plan="host" aria-pressed="true">Domaćin</button>
+        <button data-plan="pro">Pro</button>
+        <button data-plan="partner">Partner</button>
+      </div>
     </div>
 
-    <!-- objekt -->
-    <div class="card mt24">
-      <div class="propcard">
-        <div class="thumb"></div>
-        <div style="min-width:180px">
-          <h2 class="h2">Apartman Aurora</h2>
-          <p class="small mt8">Rovinj, Istra · 4 gosta · 52 m² · 145 €/noć</p>
-          <div class="row gap8 mt12 wrapf">
-            <span class="pill"><span class="dot"></span> Objavljeno</span>
-            <span class="pill pill--muted">8 / 50 fotografija</span>
+    <!-- ============ BROJKE ============ -->
+    <section class="g g4" data-rv-stagger="80">
+      <div class="stat" data-rv="up">
+        <span class="stat__lb">Pregleda javne stranice</span>
+        <span class="stat__v"><span data-num="1284">0</span></span>
+        <span class="stat__d up">▲ 31 % u 30 dana</span>
+        <div class="spark chart" data-spark="views"></div>
+      </div>
+      <div class="stat" data-rv="up">
+        <span class="stat__lb">Otvaranja gostinskog vodiča</span>
+        <span class="stat__v"><span data-num="46">0</span></span>
+        <span class="stat__d up">▲ 9 novih ovaj tjedan</span>
+        <div class="spark chart" data-spark="opens"></div>
+      </div>
+      <div class="stat" data-rv="up">
+        <span class="stat__lb">Upita preko stranice</span>
+        <span class="stat__v"><span data-num="23">0</span></span>
+        <span class="stat__d flat">— isto kao lani</span>
+        <div class="spark chart" data-spark="asks"></div>
+      </div>
+      <div class="stat" data-rv="up">
+        <span class="stat__lb">Zauzetih noći u sezoni</span>
+        <span class="stat__v"><span data-num="112">0</span></span>
+        <span class="stat__d up">▲ 18 više nego lani</span>
+        <div class="spark chart" data-spark="nights"></div>
+      </div>
+    </section>
+
+    <!-- ============ PREGLEDI KROZ VRIJEME ============ -->
+    <section class="panel mt24" id="analitika" data-rv="up">
+      <div class="panel__hd">
+        <div>
+          <h3>Pregledi javne stranice</h3>
+          <p class="small mt8" id="viewsSub">Zadnjih 30 dana · ukupno 1 284</p>
+        </div>
+        <div class="rangebar" id="rangebar" style="margin-left:auto">
+          <button data-range="7">7 dana</button>
+          <button data-range="30" aria-pressed="true">30 dana</button>
+          <button data-range="90">90 dana</button>
+        </div>
+      </div>
+      <div class="chart" id="viewsChart"><div class="tipbox" id="viewsTip"></div></div>
+      <details class="tableview">
+        <summary>Prikaži kao tablicu</summary>
+        <div style="max-height:220px;overflow:auto"><table id="viewsTable"></table></div>
+      </details>
+    </section>
+
+    <!-- ============ DVA MALA GRAFIKONA (bez kategorijskih boja) ============ -->
+    <section class="panel mt24" data-rv="up">
+      <div class="panel__hd">
+        <div>
+          <h3>Javna stranica i gostinski vodič</h3>
+          <p class="small mt8">Dva odvojena grafikona, ista skala — usporedba bez oslanjanja na boju.</p>
+        </div>
+      </div>
+      <div class="facets">
+        <div class="facet">
+          <h4>Javna stranica</h4>
+          <span class="n">1 284</span>
+          <div class="chart mt8" data-facet="pub"></div>
+        </div>
+        <div class="facet">
+          <h4>Gostinski vodič</h4>
+          <span class="n">418</span>
+          <div class="chart mt8" data-facet="guide"></div>
+        </div>
+      </div>
+      <p class="small mt16">Obje osi idu do 90 pregleda dnevno, pa se visine smiju izravno uspoređivati.</p>
+    </section>
+
+    <!-- ============ IZVORI + POPUNJENOST ============ -->
+    <section class="g g-main mt24">
+      <div class="panel" data-rv="up">
+        <div class="panel__hd">
+          <div>
+            <h3>Odakle gosti dolaze</h3>
+            <p class="small mt8">Zadnjih 30 dana · udio u ukupnim pregledima</p>
           </div>
         </div>
-        <div style="margin-left:auto;display:flex;gap:10px;flex-wrap:wrap">
-          <a href="/preview/editor.html" class="btn btn--sm btn--sec">Uredi</a>
-          <a href="/preview/public.html" class="btn btn--sm btn--teal">Otvori</a>
-        </div>
-      </div>
-      <hr class="hr">
-      <div class="row gap12 wrapf">
-        <div class="linkline"><span>odmoria.com/p/apartman-aurora</span><button class="btn btn--sm btn--sec" style="padding:5px 12px">Kopiraj</button></div>
-        <span class="small">Javni link — dijelite ga gdje god želite</span>
-      </div>
-    </div>
-
-    <!-- rezervacije + dostupnost -->
-    <div class="grid g-main--wide mt24" style="gap:20px">
-      <div class="card">
-        <div class="row" style="justify-content:space-between;gap:16px">
-          <h3 class="h2">Nadolazeće rezervacije</h3>
-          <a href="#" class="small" style="color:var(--teal);font-weight:700;white-space:nowrap">Sve →</a>
-        </div>
-        <table class="tbl mt16">
-          <tr><th>Gost</th><th>Termin</th><th>Vodič</th><th></th></tr>
-          <tr>
-            <td><b>Obitelj Kovač</b><div class="small">4 osobe</div></td>
-            <td>12. – 19. srp<div class="small">7 noći</div></td>
-            <td><span class="pill"><span class="dot"></span> Otvoren</span></td>
-            <td style="text-align:right"><a href="/preview/guide.html" class="btn btn--sm btn--sec">Link</a></td>
-          </tr>
-          <tr>
-            <td><b>Hans Müller</b><div class="small">2 osobe</div></td>
-            <td>24. – 28. srp<div class="small">4 noći</div></td>
-            <td><span class="pill pill--amber"><span class="dot"></span> Nije otvoren</span></td>
-            <td style="text-align:right"><a href="/preview/guide.html" class="btn btn--sm btn--sec">Link</a></td>
-          </tr>
-          <tr>
-            <td><b>Ana Jurić</b><div class="small">3 osobe</div></td>
-            <td>3. – 10. kol<div class="small">7 noći</div></td>
-            <td><span class="pill pill--muted"><span class="dot"></span> Poslano</span></td>
-            <td style="text-align:right"><a href="/preview/guide.html" class="btn btn--sm btn--sec">Link</a></td>
-          </tr>
-        </table>
+        <div class="rank" id="srcRank"></div>
+        <details class="tableview">
+          <summary>Prikaži kao tablicu</summary>
+          <table id="srcTable"></table>
+        </details>
       </div>
 
-      <div class="card">
-        <div class="row" style="justify-content:space-between;gap:16px">
-          <h3 class="h2">Srpanj</h3>
-          <a href="#" class="small" style="color:var(--teal);font-weight:700">Uredi →</a>
+      <div class="panel" data-rv="up">
+        <div class="panel__hd"><h3>Popunjenost</h3></div>
+        <div>
+          <div class="row" style="justify-content:space-between;align-items:baseline">
+            <span class="small">Srpanj</span>
+            <b style="font-variant-numeric:tabular-nums">18 / 31 noći</b>
+          </div>
+          <div class="meter mt8"><i data-meter="58"></i></div>
+          <p class="small mt8">58 % — 13 slobodnih noći</p>
         </div>
-        <div class="mini mt16">
-          <i class="p"></i><i class="p"></i><i></i><i></i><i></i><i class="b"></i><i class="b"></i>
-          <i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i></i><i></i><i class="b"></i>
-          <i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i></i>
-          <i></i><i></i><i></i><i></i><i class="b"></i><i class="b"></i><i class="b"></i>
-          <i class="b"></i><i class="b"></i><i></i><i></i><i></i>
-        </div>
-        <div class="row gap16 mt16 wrapf">
-          <span class="small" style="display:flex;gap:7px;align-items:center"><i style="width:12px;height:12px;border-radius:4px;background:var(--teal-wash);border:1px solid var(--teal);display:block"></i> slobodno</span>
-          <span class="small" style="display:flex;gap:7px;align-items:center"><i style="width:12px;height:12px;border-radius:4px;background:rgba(11,34,53,.14);display:block"></i> zauzeto</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- sinkronizacija + statistika -->
-    <div class="grid g2 mt24" style="gap:20px">
-      <div class="card">
-        <div class="row" style="justify-content:space-between;gap:16px">
-          <h3 class="h2">Sinkronizacija kalendara</h3>
-          <span class="pill pill--muted">ručno</span>
-        </div>
-        <p class="body mt12" style="font-size:.9rem">
-          Zauzeti termini povlače se s Booking.com-a i Airbnb-a preko iCal poveznice.
-        </p>
         <hr class="hr">
-        <div class="row" style="justify-content:space-between;padding:8px 0;gap:12px">
-          <div><b style="font-size:.92rem">Booking.com</b><div class="small">zadnji put danas u 06:12</div></div>
-          <span class="pill"><span class="dot"></span> spojeno</span>
+        <div>
+          <div class="row" style="justify-content:space-between;align-items:baseline">
+            <span class="small">Kolovoz</span>
+            <b style="font-variant-numeric:tabular-nums">27 / 31 noći</b>
+          </div>
+          <div class="meter mt8"><i data-meter="87"></i></div>
+          <p class="small mt8">87 % — 4 slobodne noći</p>
         </div>
-        <div class="row" style="justify-content:space-between;padding:8px 0;gap:12px">
-          <div><b style="font-size:.92rem">Airbnb</b><div class="small">poveznica nije upisana</div></div>
-          <span class="pill pill--muted"><span class="dot"></span> nije spojeno</span>
-        </div>
-        <button class="btn btn--sm btn--teal mt16">Sinkroniziraj odmah</button>
-      </div>
-
-      <div class="card">
-        <div class="row" style="justify-content:space-between;gap:16px">
-          <h3 class="h2">Pregledi, zadnjih 7 dana</h3>
-          <span class="pill">+31 %</span>
-        </div>
-        <div class="bars mt24">
-          <i style="height:38%"></i><i style="height:52%"></i><i style="height:44%"></i>
-          <i style="height:70%"></i><i style="height:61%"></i><i style="height:86%"></i><i style="height:100%"></i>
-        </div>
-        <div class="row mt12" style="justify-content:space-between">
-          <span class="small">pon</span><span class="small">uto</span><span class="small">sri</span>
-          <span class="small">čet</span><span class="small">pet</span><span class="small">sub</span><span class="small">ned</span>
+        <hr class="hr">
+        <div>
+          <div class="row" style="justify-content:space-between;align-items:baseline">
+            <span class="small">Cijela sezona (V–IX)</span>
+            <b style="font-variant-numeric:tabular-nums">112 / 153 noći</b>
+          </div>
+          <div class="meter meter--sea mt8"><i data-meter="73"></i></div>
+          <p class="small mt8">73 % — lani u isto doba 61 %</p>
         </div>
       </div>
-    </div>
+    </section>
 
+    <!-- ============ POPUNJENOST PO MJESECIMA (zaključano) ============ -->
+    <section class="panel mt24" data-rv="up" data-gate="pro">
+      <div class="panel__hd">
+        <div>
+          <h3>Popunjenost po mjesecima</h3>
+          <p class="small mt8">Udio zauzetih noći u svakom mjesecu ove godine</p>
+        </div>
+        <span class="tag tag--mut" data-gate-tag>Pro</span>
+      </div>
+      <div data-gate-body>
+        <div class="chart" id="monthsChart"><div class="tipbox" id="monthsTip"></div></div>
+        <details class="tableview">
+          <summary>Prikaži kao tablicu</summary>
+          <table id="monthsTable"></table>
+        </details>
+      </div>
+    </section>
+
+    <!-- ============ PONAŠANJE GOSTA (zaključano) ============ -->
+    <section class="g g2 mt24">
+      <div class="panel" data-rv="up" data-gate="pro">
+        <div class="panel__hd">
+          <div>
+            <h3>Što gosti najviše otvaraju</h3>
+            <p class="small mt8">Sekcije gostinskog vodiča, 46 boravaka</p>
+          </div>
+          <span class="tag tag--mut" data-gate-tag>Pro</span>
+        </div>
+        <div data-gate-body>
+          <div class="rank" id="secRank"></div>
+          <p class="small mt16">Šifra vrata i Wi-Fi otvaraju gotovo svi — zato stoje na vrhu vodiča.</p>
+        </div>
+      </div>
+
+      <div class="panel" data-rv="up" data-gate="pro">
+        <div class="panel__hd">
+          <div>
+            <h3>Kada gost otvori vodič</h3>
+            <p class="small mt8">Koliko dana prije dolaska</p>
+          </div>
+          <span class="tag tag--mut" data-gate-tag>Pro</span>
+        </div>
+        <div data-gate-body>
+          <div class="chart" id="daysChart"><div class="tipbox" id="daysTip"></div></div>
+          <p class="small mt16">Većina otvori vodič na sam dan dolaska — upute za dolazak moraju biti prve.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ USPOREDBA OBJEKATA (Partner) ============ -->
+    <section class="panel mt24" data-rv="up" data-gate="partner">
+      <div class="panel__hd">
+        <div>
+          <h3>Usporedba objekata</h3>
+          <p class="small mt8">Svi objekti na računu, zadnjih 30 dana</p>
+        </div>
+        <span class="tag tag--mut" data-gate-tag>Partner</span>
+      </div>
+      <div data-gate-body>
+        <div class="tblwrap"><table class="tbl">
+          <thead><tr><th>Objekt</th><th>Pregledi</th><th>Upiti</th><th>Popunjenost</th><th>Prosj. noć</th></tr></thead>
+          <tbody>
+            <tr><td><b>Apartman Aurora</b><div class="small">Rovinj</div></td>
+                <td style="font-variant-numeric:tabular-nums">1 284</td><td>23</td>
+                <td><div class="meter" style="width:110px"><i data-meter="73"></i></div><span class="small">73 %</span></td>
+                <td>145 €</td></tr>
+            <tr><td><b>Kuća Maslina</b><div class="small">Bale</div></td>
+                <td style="font-variant-numeric:tabular-nums">876</td><td>14</td>
+                <td><div class="meter" style="width:110px"><i data-meter="61"></i></div><span class="small">61 %</span></td>
+                <td>190 €</td></tr>
+            <tr><td><b>Studio Punta</b><div class="small">Rovinj</div></td>
+                <td style="font-variant-numeric:tabular-nums">402</td><td>6</td>
+                <td><div class="meter" style="width:110px"><i data-meter="44"></i></div><span class="small">44 %</span></td>
+                <td>95 €</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+    </section>
+
+    <!-- ============ REZERVACIJE + SINKRONIZACIJA ============ -->
+    <section class="g g-main mt24">
+      <div class="panel" data-rv="up">
+        <div class="panel__hd">
+          <h3>Nadolazeće rezervacije</h3>
+          <a href="#" class="more">Sve rezervacije →</a>
+        </div>
+        <div class="tblwrap"><table class="tbl">
+          <thead><tr><th>Gost</th><th>Termin</th><th>Vodič</th><th></th></tr></thead>
+          <tbody>
+            <tr><td><b>Obitelj Kovač</b><div class="small">4 osobe</div></td>
+                <td>12. – 19. srp<div class="small">7 noći</div></td>
+                <td><span class="tag"><span class="dot-live"></span> Otvoren 3×</span></td>
+                <td style="text-align:right"><a href="/preview/guide.html" class="btn btn--ghost btn--sm">Link</a></td></tr>
+            <tr><td><b>Hans Müller</b><div class="small">2 osobe</div></td>
+                <td>24. – 28. srp<div class="small">4 noći</div></td>
+                <td><span class="tag tag--warn">Nije otvoren</span></td>
+                <td style="text-align:right"><a href="/preview/guide.html" class="btn btn--ghost btn--sm">Link</a></td></tr>
+            <tr><td><b>Ana Jurić</b><div class="small">3 osobe</div></td>
+                <td>3. – 10. kol<div class="small">7 noći</div></td>
+                <td><span class="tag tag--mut">Poslano danas</span></td>
+                <td style="text-align:right"><a href="/preview/guide.html" class="btn btn--ghost btn--sm">Link</a></td></tr>
+          </tbody>
+        </table></div>
+      </div>
+
+      <div class="panel" data-rv="up" data-gate="host">
+        <div class="panel__hd">
+          <h3>Sinkronizacija kalendara</h3>
+          <span class="tag tag--mut" data-gate-tag>Domaćin</span>
+        </div>
+        <div data-gate-body>
+          <p class="small">Zauzeti termini povlače se s Booking.com-a i Airbnb-a preko iCal poveznice. Pokreće se na klik.</p>
+          <hr class="hr">
+          <div class="row" style="justify-content:space-between;gap:12px;padding:6px 0">
+            <div><b style="font-size:.92rem">Booking.com</b><div class="small">danas u 06:12 · 24 noći</div></div>
+            <span class="tag"><span class="dot-live"></span> spojeno</span>
+          </div>
+          <div class="row" style="justify-content:space-between;gap:12px;padding:6px 0">
+            <div><b style="font-size:.92rem">Airbnb</b><div class="small">poveznica nije upisana</div></div>
+            <span class="tag tag--mut">nije spojeno</span>
+          </div>
+          <button class="btn btn--dark btn--sm mt16">Sinkroniziraj odmah</button>
+        </div>
+      </div>
+    </section>
   </main>
 </div>
+
+<script src="/motion.js" defer></script>
+<script>
+/* ==========================================================================
+   Mali crtač grafikona — bez biblioteke i bez build koraka.
+   Mjere prate jedan dogovor: linija 2px, kapica stupca 4px, točka r=5 s 2px
+   prstenom u boji podloge, mreža 1px puna, ploha 10 % neprozirnosti.
+   Boje su SEKVENCIJALNE rampe iz ui.css, nikad kategorijske.
+   ========================================================================== */
+(() => {
+  const NS='http://www.w3.org/2000/svg'
+  const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim()
+  const T=[css('--t-1'),css('--t-2'),css('--t-3'),css('--t-4'),css('--t-5')]
+  const S=[css('--s-1'),css('--s-2'),css('--s-3'),css('--s-4'),css('--s-5')]
+  const fmt=n=>n.toLocaleString('hr-HR')
+  /* okrugla gornja granica i korak: os nosi vrijednosti koje nisu izravno označene */
+  function nice(max){
+    if(max<=0) return {top:10,step:5}
+    const raw=max/4, mag=Math.pow(10,Math.floor(Math.log10(raw)))
+    const step=[1,2,2.5,5,10].map(m=>m*mag).find(v=>v>=raw) || 10*mag
+    return {top:Math.ceil(max/step)*step, step}
+  }
+
+  /* --- izmišljeni ali dosljedni podaci ---------------------------------- */
+  const rnd=(s=>()=>((s=s*16807%2147483647)/2147483647))(20260712)
+  const DAYS=90
+  const dan=['ned','pon','uto','sri','čet','pet','sub']
+  const serija=(base,amp,weekend)=>Array.from({length:DAYS},(_,i)=>{
+    const d=new Date(2026,6,19); d.setDate(d.getDate()-(DAYS-1-i))
+    const w=d.getDay(), boost=weekend&&(w===0||w===6)?1.35:1
+    const trend=1+ i/DAYS*0.7
+    return {d, v:Math.max(0,Math.round((base+rnd()*amp)*boost*trend))}
+  })
+  const VIEWS=serija(9,13,true)
+  const GUIDE=serija(3,5,false)
+
+  /* ---------------------------------------------------------------------
+     1. Ploha s linijom: jedna serija, bez legende (naslov kaže što je),
+        pokazivač s križićem i oblačićem, prikaz tablicom ispod.
+     --------------------------------------------------------------------- */
+  function areaChart(host,data,{color=T[3],fixedMax=null,h=230,tip=null,unit='pregleda'}={}){
+    /* 1 jedinica viewBoxa = 1 CSS piksel, pa se tekst ne rasteže ni ne smanjuje */
+    const W=Math.max(260,Math.round(host.clientWidth))||600
+    const PAD={l:40,r:14,t:16,b:26}
+    const {top,step}=nice(fixedMax ?? Math.max(...data.map(p=>p.v)))
+    const iw=W-PAD.l-PAD.r, ih=h-PAD.t-PAD.b
+    const X=i=>PAD.l+(data.length<2?iw/2:i*iw/(data.length-1))
+    const Y=v=>PAD.t+ih-(v/top)*ih
+
+    const svg=document.createElementNS(NS,'svg')
+    svg.setAttribute('viewBox',`0 0 ${W} ${h}`)
+    svg.setAttribute('role','img')
+    let s=''
+    /* mreža + oznake osi na okruglim brojevima */
+    for(let v=0;v<=top+1e-9;v+=step){
+      const y=Y(v)
+      s+=`<line class="gridline" x1="${PAD.l}" y1="${y}" x2="${W-PAD.r}" y2="${y}"/>`
+      s+=`<text class="axis" x="0" y="${y+4}">${fmt(+v.toFixed(2))}</text>`
+    }
+    /* ploha + linija */
+    const pts=data.map((p,i)=>`${X(i)},${Y(p.v)}`)
+    s+=`<path class="area" fill="${color}" d="M${PAD.l},${Y(0)} L${pts.join(' L')} L${X(data.length-1)},${Y(0)} Z"/>`
+    s+=`<path class="line" stroke="${color}" d="M${pts.join(' L')}"/>`
+    /* zadnja točka nosi vrijednost — jedina izravna oznaka */
+    const last=data[data.length-1]
+    s+=`<circle class="cap" cx="${X(data.length-1)}" cy="${Y(last.v)}" r="5" fill="${color}"/>`
+    /* datumi: samo prvi, sredina i zadnji, da se ne sudaraju */
+    const mark=[0,Math.floor(data.length/2),data.length-1]
+    mark.forEach(i=>{
+      const d=data[i].d
+      s+=`<text class="axis" x="${X(i)}" y="${h-6}" text-anchor="${i===0?'start':i===data.length-1?'end':'middle'}">${d.getDate()}.${d.getMonth()+1}.</text>`
+    })
+    /* sloj za pokazivač */
+    s+=`<line class="cross" x1="0" y1="${PAD.t}" x2="0" y2="${PAD.t+ih}"/>`
+    s+=`<rect class="hit" x="${PAD.l}" y="0" width="${iw}" height="${h}"/>`
+    svg.innerHTML=s
+    host.querySelectorAll('svg').forEach(e=>e.remove())
+    host.prepend(svg)
+
+    if(!tip) return
+    const cross=svg.querySelector('.cross'), hit=svg.querySelector('.hit')
+    const move=e=>{
+      const r=svg.getBoundingClientRect()
+      const px=(e.clientX-r.left)/r.width*W
+      let i=Math.round((px-PAD.l)/iw*(data.length-1))
+      i=Math.max(0,Math.min(data.length-1,i))
+      const p=data[i]
+      cross.setAttribute('x1',X(i)); cross.setAttribute('x2',X(i))
+      host.classList.add('is-hover')
+      tip.classList.add('on')
+      tip.style.left=(X(i)/W*100)+'%'
+      tip.style.top=(Y(p.v)/h*100)+'%'
+      tip.innerHTML=`<b>${fmt(p.v)} ${unit}</b><i>${dan[p.d.getDay()]} ${p.d.getDate()}.${p.d.getMonth()+1}.${p.d.getFullYear()}.</i>`
+    }
+    hit.addEventListener('mousemove',move)
+    hit.addEventListener('mouseleave',()=>{host.classList.remove('is-hover');tip.classList.remove('on')})
+  }
+
+  /* --- 2. iskrica u pločici (bez osi, bez oznaka) ------------------------ */
+  function spark(host,data,color){
+    const W=260,H=34,max=Math.max(...data),min=Math.min(...data)
+    const X=i=>i*W/(data.length-1)
+    const Y=v=>H-2-((v-min)/((max-min)||1))*(H-6)
+    const pts=data.map((v,i)=>`${X(i).toFixed(1)},${Y(v).toFixed(1)}`)
+    host.innerHTML=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">
+      <path class="area" fill="${color}" d="M0,${H} L${pts.join(' L')} L${W},${H} Z"/>
+      <path class="line" stroke="${color}" d="M${pts.join(' L')}"/></svg>`
+  }
+
+  /* --- 3. stupci: kapica 4px, razmak 2px u boji podloge ------------------ */
+  function colChart(host,rows,{ramp=S,h=240,tip=null,suffix='',labelMax=true}={}){
+    const W=Math.max(260,Math.round(host.clientWidth))||600
+    const PAD={l:40,r:12,t:22,b:28}
+    const {top,step}=nice(Math.max(...rows.map(r=>r.v)))
+    const iw=W-PAD.l-PAD.r, ih=h-PAD.t-PAD.b
+    const band=iw/rows.length
+    const bw=Math.min(24,band-6)            /* ≤24px i nikad ne popuni polje */
+    const maxI=rows.reduce((b,r,i)=>r.v>rows[b].v?i:b,0)
+    let s=''
+    for(let v=0;v<=top+1e-9;v+=step){
+      const y=PAD.t+ih-(v/top)*ih
+      s+=`<line class="gridline" x1="${PAD.l}" y1="${y}" x2="${W-PAD.r}" y2="${y}"/>`
+      s+=`<text class="axis" x="0" y="${y+4}">${fmt(+v.toFixed(2))}${suffix}</text>`
+    }
+    rows.forEach((r,i)=>{
+      const bh=Math.max(2,(r.v/top)*ih)
+      const x=PAD.l+band*i+(band-bw)/2, y=PAD.t+ih-bh
+      /* sekvencijalno: više = tamnije */
+      const step=ramp[Math.min(ramp.length-1,Math.floor(r.v/top*ramp.length))]
+      s+=`<rect class="bar" x="${x}" y="${y}" width="${bw}" height="${bh}" fill="${step}"
+            data-i="${i}"/>`
+      s+=`<text class="axis" x="${x+bw/2}" y="${h-8}" text-anchor="middle">${r.k}</text>`
+      if(labelMax&&i===maxI)
+        s+=`<text class="lbl" x="${x+bw/2}" y="${y-8}" text-anchor="middle">${fmt(r.v)}${suffix}</text>`
+      s+=`<rect class="hit" x="${PAD.l+band*i}" y="${PAD.t}" width="${band}" height="${ih}" data-i="${i}"/>`
+    })
+    host.querySelectorAll('svg').forEach(e=>e.remove())
+    const svg=document.createElementNS(NS,'svg')
+    svg.setAttribute('viewBox',`0 0 ${W} ${h}`); svg.setAttribute('role','img')
+    svg.innerHTML=s; host.prepend(svg)
+    if(!tip) return
+    svg.querySelectorAll('.hit').forEach(el=>{
+      el.addEventListener('mouseenter',()=>{
+        const r=rows[+el.dataset.i]
+        tip.classList.add('on')
+        tip.style.left=((PAD.l+band*(+el.dataset.i)+band/2)/W*100)+'%'
+        tip.style.top=((PAD.t+ih-(r.v/top)*ih)/h*100)+'%'
+        tip.innerHTML=`<b>${fmt(r.v)}${suffix}</b><i>${r.full||r.k}</i>`
+      })
+      el.addEventListener('mouseleave',()=>tip.classList.remove('on'))
+    })
+  }
+
+  /* --- 4. rangirana lista: dio-cjeline, sekvencijalno, svaka traka označena -- */
+  function rank(host,rows,ramp,unit=''){
+    const max=Math.max(...rows.map(r=>r.v))
+    host.innerHTML=rows.map((r,i)=>{
+      const step=ramp[Math.max(0,ramp.length-1-i)]
+      return `<div class="rank__row">
+        <span class="rank__nm">${r.k}</span>
+        <span class="rank__tr"><i style="background:${step}" data-w="${(r.v/max*100).toFixed(1)}"></i></span>
+        <span class="rank__v">${fmt(r.v)}${unit}</span></div>`
+    }).join('')
+  }
+
+  /* --- 5. tablica ispod grafikona --------------------------------------- */
+  const table=(el,head,rows)=>{
+    el.innerHTML=`<thead><tr>${head.map(h=>`<th>${h}</th>`).join('')}</tr></thead>`
+      +`<tbody>${rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody>`
+  }
+
+  /* ====================== crtanje ====================== */
+  const $=s=>document.querySelector(s)
+
+  /* iskrice */
+  spark($('[data-spark="views"]'), VIEWS.slice(-30).map(p=>p.v), T[3])
+  spark($('[data-spark="opens"]'), GUIDE.slice(-30).map(p=>p.v), T[3])
+  spark($('[data-spark="asks"]'), [2,1,3,2,4,2,3,1,2,3,2,4,3,2], T[3])
+  spark($('[data-spark="nights"]'),[4,7,9,12,16,19,22,25,27,29,30,31], T[3])
+
+  /* pregledi + raspon */
+  const viewsTip=$('#viewsTip')
+  let range=30
+  function drawViews(){
+    const d=VIEWS.slice(-range)
+    areaChart($('#viewsChart'),d,{color:T[3],tip:viewsTip,h:250})
+    $('#viewsSub').textContent=`Zadnjih ${range} dana · ukupno ${fmt(d.reduce((a,p)=>a+p.v,0))}`
+    table($('#viewsTable'),['Datum','Pregleda'],
+      [...d].reverse().map(p=>[`${p.d.getDate()}.${p.d.getMonth()+1}.${p.d.getFullYear()}.`,fmt(p.v)]))
+  }
+  $('#rangebar').addEventListener('click',e=>{
+    const b=e.target.closest('button'); if(!b) return
+    ;[...e.currentTarget.children].forEach(x=>x.setAttribute('aria-pressed',String(x===b)))
+    range=+b.dataset.range; drawViews()
+  })
+
+  /* dva mala grafikona s istom skalom */
+  const scale=Math.max(...VIEWS.slice(-30).map(p=>p.v),...GUIDE.slice(-30).map(p=>p.v))
+  function drawFacets(){
+    areaChart(document.querySelector('[data-facet="pub"]'),VIEWS.slice(-30),{color:T[3],fixedMax:scale,h:150})
+    areaChart(document.querySelector('[data-facet="guide"]'),GUIDE.slice(-30),{color:T[3],fixedMax:scale,h:150})
+  }
+
+  /* izvori prometa */
+  const SRC=[{k:'Instagram',v:412},{k:'Izravan link',v:356},{k:'Facebook',v:243},
+             {k:'Google',v:181},{k:'Ostalo',v:92}]
+  rank($('#srcRank'),SRC,T)
+  const uk=SRC.reduce((a,r)=>a+r.v,0)
+  table($('#srcTable'),['Izvor','Pregleda','Udio'],
+    SRC.map(r=>[r.k,fmt(r.v),Math.round(r.v/uk*100)+' %']))
+
+  /* popunjenost po mjesecima */
+  const MJ=[{k:'I',v:0,full:'Siječanj'},{k:'II',v:0,full:'Veljača'},{k:'III',v:6,full:'Ožujak'},
+    {k:'IV',v:11,full:'Travanj'},{k:'V',v:17,full:'Svibanj'},{k:'VI',v:24,full:'Lipanj'},
+    {k:'VII',v:18,full:'Srpanj'},{k:'VIII',v:27,full:'Kolovoz'},{k:'IX',v:26,full:'Rujan'},
+    {k:'X',v:9,full:'Listopad'},{k:'XI',v:2,full:'Studeni'},{k:'XII',v:0,full:'Prosinac'}]
+  const drawMonths=()=>colChart($('#monthsChart'),MJ,{ramp:S,tip:$('#monthsTip'),h:250})
+  table($('#monthsTable'),['Mjesec','Zauzetih noći'],MJ.map(r=>[r.full,r.v]))
+
+  /* sekcije vodiča */
+  rank($('#secRank'),[{k:'Wi-Fi i šifra',v:46},{k:'Dolazak',v:44},{k:'Upute',v:31},
+    {k:'Preporuke',v:28},{k:'Pravila',v:12}],T,' ×')
+
+  /* kada gost otvori vodič */
+  const DAYSB=[{k:'14+',v:3,full:'14 i više dana prije'},{k:'7–13',v:6,full:'7 do 13 dana prije'},
+    {k:'3–6',v:9,full:'3 do 6 dana prije'},{k:'1–2',v:11,full:'1 do 2 dana prije'},
+    {k:'0',v:17,full:'na dan dolaska'}]
+  const drawDays=()=>colChart($('#daysChart'),DAYSB,{ramp:T,tip:$('#daysTip'),h:200})
+
+  /* prvo crtanje + ponovno na promjenu širine prozora */
+  function drawAll(){drawViews();drawFacets();drawMonths();drawDays()}
+  drawAll()
+  let rt=null
+  addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(drawAll,180)})
+
+  /* brojke se broje kad uđu u vidno polje, s hrvatskim razmakom tisućica */
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches
+  const nio=new IntersectionObserver(es=>es.forEach(e=>{
+    if(!e.isIntersecting) return
+    const el=e.target, to=+el.dataset.num
+    nio.unobserve(el)
+    if(reduce){el.textContent=fmt(to);return}
+    const t0=performance.now()
+    ;(function step(t){
+      const p=Math.min((t-t0)/1400,1), eased=1-Math.pow(1-p,3)
+      el.textContent=fmt(Math.round(to*eased))
+      if(p<1) requestAnimationFrame(step)
+    })(t0)
+  }),{threshold:.6})
+  document.querySelectorAll('[data-num]').forEach(el=>nio.observe(el))
+
+  /* mjerači se pune kad uđu u vidno polje */
+  const mio=new IntersectionObserver(es=>es.forEach(e=>{
+    if(e.isIntersecting){e.target.style.width=e.target.dataset.meter+'%';mio.unobserve(e.target)}
+  }),{threshold:.4})
+  document.querySelectorAll('[data-meter]').forEach(el=>mio.observe(el))
+  const rio=new IntersectionObserver(es=>es.forEach(e=>{
+    if(e.isIntersecting){e.target.style.width=e.target.dataset.w+'%';rio.unobserve(e.target)}
+  }),{threshold:.4})
+  document.querySelectorAll('.rank__tr i').forEach(el=>rio.observe(el))
+
+  /* ====================== zaključavanje planom ====================== */
+  const RANK={free:0,host:1,pro:2,partner:3}
+  const NAME={free:'Besplatno',host:'Domaćin',pro:'Pro',partner:'Partner'}
+  const NOTE={free:'1 od 1 objekta · 5 fotografija',host:'1 od 1 objekta · 8 od 50 fotografija',
+              pro:'1 od 5 objekata · 8 od 50 fotografija',partner:'3 od 15 objekata · 41 od 50 fotografija'}
+  function applyPlan(p){
+    document.querySelectorAll('[data-gate]').forEach(sec=>{
+      const need=sec.dataset.gate
+      const ok=RANK[p]>=RANK[need]
+      const body=sec.querySelector('[data-gate-body]')
+      const tagEl=sec.querySelector('[data-gate-tag]')
+      if(tagEl){tagEl.hidden=ok; tagEl.textContent=NAME[need]}
+      if(!body) return
+      body.classList.toggle('gate__blur',!ok)
+      let over=sec.querySelector('.gate__over')
+      if(!ok&&!over){
+        sec.classList.add('gate')
+        over=document.createElement('div')
+        over.className='gate__over'
+        over.innerHTML=`<div class="in">
+          <p class="kicker bare" style="justify-content:center">Plan ${NAME[need]}</p>
+          <p class="lead mt8" style="font-size:.95rem;max-width:none">Ovaj uvid otključava plan ${NAME[need]}.</p>
+          <a href="/preview/landing.html#cijene" class="btn btn--fill btn--sm mt12">Pogledaj planove <span class="arr">→</span></a>
+        </div>`
+        sec.appendChild(over)
+      }else if(ok&&over){over.remove();sec.classList.remove('gate')}
+    })
+    document.getElementById('planTag').textContent='Plan '+NAME[p]
+    document.getElementById('planNote').textContent=NOTE[p]
+  }
+  document.getElementById('planbar').addEventListener('click',e=>{
+    const b=e.target.closest('button'); if(!b) return
+    ;[...e.currentTarget.children].forEach(x=>x.setAttribute('aria-pressed',String(x===b)))
+    applyPlan(b.dataset.plan)
+  })
+  applyPlan('host')
+})()
+</script>
 </body>
 </html>
