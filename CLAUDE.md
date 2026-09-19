@@ -54,7 +54,8 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 ├── assets/                   # odmoria-dashboard.png (više se nigdje ne koristi — stara naslovnica ju je prikazivala u herou)
 ├── api/
 │   ├── keepalive.js          # Vercel Cron, jednom dnevno — sprječava pauziranje Supabase Free projekta
-│   └── sync-ical.js          # povlači zauzete termine s Booking.com-a i Airbnb-a
+│   ├── sync-ical.js          # povlači zauzete termine s Booking.com-a i Airbnb-a
+│   └── test-calendar.js      # testni iCal feed za isprobavanje sinkronizacije bez računa na Bookingu/Airbnbu
 └── sql/
     ├── admin-access.sql                    # RLS politike scope-ane na owner auth UID
     ├── plan-limits.sql                     # tablica `plans` + okidaci koji limite PROVODE u bazi
@@ -118,6 +119,8 @@ Ovo su dizajnirani, core dijelovi proizvoda, ne ostaci:
     2. **Brisanje je scope-ano po izvoru** (`source=eq.ical_booking`). Nikad ne brisati cijelu `availability` za objekt — ručno blokirani dani (`source='manual'`) i dani vezani uz rezervacije (`booking_id`) moraju preživjeti sinkronizaciju.
     3. **URL upisuje korisnik**, pa `safeUrl()` odbija `localhost`, privatne IP raspone i ne-HTTP sheme. Bez toga ruta postaje proxy prema internoj mreži. (Ne pokriva DNS rebinding.)
   - Sinkronizacija je **ručna** (gumb u dashboardu). Automatsko periodično povlačenje ne postoji — Vercel Hobby dopušta samo jedan cron dnevno, a taj je zauzet za `keepalive`.
+  - `api/test-calendar.js` služi za isprobavanje bez računa na Bookingu/Airbnbu. Datumi se **računaju od danas** (dolazak za 10 i za 24 dana), pa test ne zastarijeva. Sadrži i jedan `STATUS:CANCELLED` događaj koji se **ne smije** upisati — ako se pojavi u kalendaru, filtriranje otkazanih je puklo. Očekivani rezultat je točno **12 noći**.
+  - Prije javnog lansiranja odlučiti ostaje li gumb „Popuni testnim kalendarom" u dashboardu — koristan je dok se proizvod isprobava, ali pravom domaćinu ne treba.
 
 ---
 
@@ -171,6 +174,12 @@ Tablica cijena gore je početno stanje u bazi; planovi i cijene još nisu konač
 **Ritam stranice** je namjeran i tamne plohe se izmjenjuju sa svijetlima: zaglavlje (tamno) → traka s činjenicama → pismo/činjenice/galerija (svijetlo) → puna foto traka (tamno) → karta (svijetlo) → sadržaji i „dobro je znati" (tamno) → kalendar (svijetlo) → upit domaćinu (tamna kartica) → preporuke i ostalo (svijetlo). **Ne slagati dvije tamne sekcije jednu do druge.**
 
 **Stranica mora izgledati puno i kad host ima malo sadržaja.** Bez fotografija idu nacrtani prizori i prazna mjesta u galeriji; s jednom fotografijom puna traka uzima nacrtani prizor umjesto da se preskoči.
+
+---
+
+## Pristupačnost — poznato
+
+`--muted` (`#6C7A88`) na `--paper` daje **4,30:1**, što pada WCAG AA za običan tekst (traži 4,5:1). Token se koristi na ~200 mjesta u dashboardu pa nije mijenjan globalno. Panel „Sinkronizacija kalendara" koristi `#5A6774` (5,66:1) kao ispravljenu vrijednost — isti pristup primijeniti pri sljedećem većem zahvatu u dashboard, ili jednom promijeniti sam token i vizualno provjeriti sve panele.
 
 ---
 
