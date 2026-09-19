@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Dashboard (pregled v2)</title>
+<link rel="stylesheet" href="/preview/v2.css">
+<link rel="stylesheet" href="/preview/_shell.css">
+<style>
+.propcard{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.thumb{width:110px;height:78px;border-radius:12px;flex:none;position:relative;overflow:hidden;
+  background:linear-gradient(165deg,#28323F,#D98B5E 62%,#F3C98B)}
+.thumb--2{background:linear-gradient(165deg,#25372B,#8AA06A 62%,#D9D2A8)}
+.linkline{display:flex;align-items:center;gap:10px;background:var(--pearl);border:1px solid var(--line-2);
+  border-radius:999px;padding:8px 8px 8px 16px;font-family:ui-monospace,monospace;font-size:.8rem;max-width:100%;overflow:hidden}
+.linkline span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mini{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;max-width:250px}
+.mini i{aspect-ratio:1;border-radius:4px;background:var(--teal-wash);display:block}
+.mini i.b{background:rgba(11,34,53,.14)}
+.mini i.p{background:transparent}
+.bars{display:flex;align-items:flex-end;gap:7px;height:96px}
+.bars i{flex:1;background:var(--teal);border-radius:5px 5px 0 0;display:block;opacity:.85}
+.bars i:last-child{background:var(--coral)}
+</style>
+</head>
+<body>
+
+<div class="pvbar">
+  <span class="tag">Pregled v2</span>
+  <a href="/preview/">Sve stranice</a>
+  <a href="/preview/landing.html">Naslovnica</a>
+  <a href="/preview/public.html">Javna stranica</a>
+  <a href="/preview/guide.html">Gostinski vodič</a>
+  <a href="/preview/dashboard.html" aria-current="page">Dashboard</a>
+  <a href="/preview/editor.html">Uređivanje</a>
+  <a href="/preview/system.html">Sustav</a>
+</div>
+
+<div class="app">
+  <aside class="side">
+    <div class="logo">Odmoria<span>.</span></div>
+    <a class="navi" aria-current="page" href="/preview/dashboard.html"><span class="ic">◧</span> Pregled</a>
+    <a class="navi" href="/preview/editor.html"><span class="ic">⌂</span> Objekti <span class="cnt">2</span></a>
+    <a class="navi" href="#"><span class="ic">✎</span> Rezervacije <span class="cnt">3</span></a>
+    <a class="navi" href="#"><span class="ic">▦</span> Dostupnost</a>
+    <a class="navi" href="#"><span class="ic">◔</span> Statistika</a>
+    <a class="navi" href="#"><span class="ic">⚙</span> Postavke</a>
+    <div class="sidefoot">
+      <div class="pill pill--coral">Plan Domaćin</div>
+      <p class="small mt8">1 od 1 objekta iskorišteno</p>
+      <a href="/preview/landing.html#cijene" class="btn btn--sm btn--sec btn--full mt12">Nadogradi na Pro</a>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topline">
+      <div>
+        <p class="eyebrow">Dobro jutro, Marina</p>
+        <h1 class="h1 mt8">Pregled</h1>
+      </div>
+      <div class="btns">
+        <a href="/preview/public.html" class="btn btn--sm btn--sec">Vidi javnu stranicu</a>
+        <a href="#" class="btn btn--sm btn--pri">Nova rezervacija</a>
+      </div>
+    </div>
+
+    <!-- brojke -->
+    <div class="grid g4">
+      <div class="stat"><b>3</b><span class="lbl">Nadolazeće rezervacije</span><span class="trend">sljedeća za 3 dana</span></div>
+      <div class="stat"><b>18</b><span class="lbl">Zauzete noći u srpnju</span><span class="trend">58 % popunjenost</span></div>
+      <div class="stat"><b>124</b><span class="lbl">Pregleda javne stranice</span><span class="trend">+31 % u 30 dana</span></div>
+      <div class="stat"><b>9</b><span class="lbl">Otvaranja vodiča</span><span class="trend">svi gosti otvorili</span></div>
+    </div>
+
+    <!-- objekt -->
+    <div class="card mt24">
+      <div class="propcard">
+        <div class="thumb"></div>
+        <div style="min-width:180px">
+          <h2 class="h2">Apartman Aurora</h2>
+          <p class="small mt8">Rovinj, Istra · 4 gosta · 52 m² · 145 €/noć</p>
+          <div class="row gap8 mt12 wrapf">
+            <span class="pill"><span class="dot"></span> Objavljeno</span>
+            <span class="pill pill--muted">8 / 50 fotografija</span>
+          </div>
+        </div>
+        <div style="margin-left:auto;display:flex;gap:10px;flex-wrap:wrap">
+          <a href="/preview/editor.html" class="btn btn--sm btn--sec">Uredi</a>
+          <a href="/preview/public.html" class="btn btn--sm btn--teal">Otvori</a>
+        </div>
+      </div>
+      <hr class="hr">
+      <div class="row gap12 wrapf">
+        <div class="linkline"><span>odmoria.com/p/apartman-aurora</span><button class="btn btn--sm btn--sec" style="padding:5px 12px">Kopiraj</button></div>
+        <span class="small">Javni link — dijelite ga gdje god želite</span>
+      </div>
+    </div>
+
+    <!-- rezervacije + dostupnost -->
+    <div class="grid g-main--wide mt24" style="gap:20px">
+      <div class="card">
+        <div class="row" style="justify-content:space-between;gap:16px">
+          <h3 class="h2">Nadolazeće rezervacije</h3>
+          <a href="#" class="small" style="color:var(--teal);font-weight:700;white-space:nowrap">Sve →</a>
+        </div>
+        <table class="tbl mt16">
+          <tr><th>Gost</th><th>Termin</th><th>Vodič</th><th></th></tr>
+          <tr>
+            <td><b>Obitelj Kovač</b><div class="small">4 osobe</div></td>
+            <td>12. – 19. srp<div class="small">7 noći</div></td>
+            <td><span class="pill"><span class="dot"></span> Otvoren</span></td>
+            <td style="text-align:right"><a href="/preview/guide.html" class="btn btn--sm btn--sec">Link</a></td>
+          </tr>
+          <tr>
+            <td><b>Hans Müller</b><div class="small">2 osobe</div></td>
+            <td>24. – 28. srp<div class="small">4 noći</div></td>
+            <td><span class="pill pill--amber"><span class="dot"></span> Nije otvoren</span></td>
+            <td style="text-align:right"><a href="/preview/guide.html" class="btn btn--sm btn--sec">Link</a></td>
+          </tr>
+          <tr>
+            <td><b>Ana Jurić</b><div class="small">3 osobe</div></td>
+            <td>3. – 10. kol<div class="small">7 noći</div></td>
+            <td><span class="pill pill--muted"><span class="dot"></span> Poslano</span></td>
+            <td style="text-align:right"><a href="/preview/guide.html" class="btn btn--sm btn--sec">Link</a></td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="row" style="justify-content:space-between;gap:16px">
+          <h3 class="h2">Srpanj</h3>
+          <a href="#" class="small" style="color:var(--teal);font-weight:700">Uredi →</a>
+        </div>
+        <div class="mini mt16">
+          <i class="p"></i><i class="p"></i><i></i><i></i><i></i><i class="b"></i><i class="b"></i>
+          <i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i></i><i></i><i class="b"></i>
+          <i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i></i>
+          <i></i><i></i><i></i><i></i><i class="b"></i><i class="b"></i><i class="b"></i>
+          <i class="b"></i><i class="b"></i><i></i><i></i><i></i>
+        </div>
+        <div class="row gap16 mt16 wrapf">
+          <span class="small" style="display:flex;gap:7px;align-items:center"><i style="width:12px;height:12px;border-radius:4px;background:var(--teal-wash);border:1px solid var(--teal);display:block"></i> slobodno</span>
+          <span class="small" style="display:flex;gap:7px;align-items:center"><i style="width:12px;height:12px;border-radius:4px;background:rgba(11,34,53,.14);display:block"></i> zauzeto</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- sinkronizacija + statistika -->
+    <div class="grid g2 mt24" style="gap:20px">
+      <div class="card">
+        <div class="row" style="justify-content:space-between;gap:16px">
+          <h3 class="h2">Sinkronizacija kalendara</h3>
+          <span class="pill pill--muted">ručno</span>
+        </div>
+        <p class="body mt12" style="font-size:.9rem">
+          Zauzeti termini povlače se s Booking.com-a i Airbnb-a preko iCal poveznice.
+        </p>
+        <hr class="hr">
+        <div class="row" style="justify-content:space-between;padding:8px 0;gap:12px">
+          <div><b style="font-size:.92rem">Booking.com</b><div class="small">zadnji put danas u 06:12</div></div>
+          <span class="pill"><span class="dot"></span> spojeno</span>
+        </div>
+        <div class="row" style="justify-content:space-between;padding:8px 0;gap:12px">
+          <div><b style="font-size:.92rem">Airbnb</b><div class="small">poveznica nije upisana</div></div>
+          <span class="pill pill--muted"><span class="dot"></span> nije spojeno</span>
+        </div>
+        <button class="btn btn--sm btn--teal mt16">Sinkroniziraj odmah</button>
+      </div>
+
+      <div class="card">
+        <div class="row" style="justify-content:space-between;gap:16px">
+          <h3 class="h2">Pregledi, zadnjih 7 dana</h3>
+          <span class="pill">+31 %</span>
+        </div>
+        <div class="bars mt24">
+          <i style="height:38%"></i><i style="height:52%"></i><i style="height:44%"></i>
+          <i style="height:70%"></i><i style="height:61%"></i><i style="height:86%"></i><i style="height:100%"></i>
+        </div>
+        <div class="row mt12" style="justify-content:space-between">
+          <span class="small">pon</span><span class="small">uto</span><span class="small">sri</span>
+          <span class="small">čet</span><span class="small">pet</span><span class="small">sub</span><span class="small">ned</span>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+</body>
+</html>

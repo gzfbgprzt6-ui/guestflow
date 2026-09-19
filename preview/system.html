@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Vizualni sustav (pregled v2)</title>
+<link rel="stylesheet" href="/preview/v2.css">
+<style>
+.tok{border-radius:var(--r-md);overflow:hidden;border:1px solid var(--line-2);background:#fff}
+.tok .chip{height:88px}
+.tok .meta{padding:12px 14px}
+.tok code{font-family:ui-monospace,monospace;font-size:.78rem;color:var(--ink-55)}
+.ratio{font-size:.76rem;font-weight:800;padding:3px 8px;border-radius:5px;display:inline-block;margin-top:6px}
+.ok{background:var(--teal-wash);color:var(--teal-d)}
+.bad{background:#FDE4DE;color:#A32E1B}
+.spec{display:flex;gap:16px;align-items:baseline;padding:16px 0;border-bottom:1px solid var(--line-2);flex-wrap:wrap}
+.spec .name{flex:none;width:190px;font-family:ui-monospace,monospace;font-size:.78rem;color:var(--ink-55)}
+.shbox{height:78px;border-radius:var(--r-md);background:#fff;display:grid;place-items:center;font-size:.8rem;color:var(--ink-55)}
+</style>
+</head>
+<body>
+
+<div class="pvbar">
+  <span class="tag">Pregled v2</span>
+  <a href="/preview/">Sve stranice</a>
+  <a href="/preview/landing.html">Naslovnica</a>
+  <a href="/preview/public.html">Javna stranica</a>
+  <a href="/preview/guide.html">Gostinski vodič</a>
+  <a href="/preview/dashboard.html">Dashboard</a>
+  <a href="/preview/editor.html">Uređivanje</a>
+  <a href="/preview/system.html" aria-current="page">Sustav</a>
+</div>
+
+<section class="sec">
+  <div class="wrap">
+    <p class="eyebrow">Temelji</p>
+    <h1 class="d2 mt12">Vizualni sustav v2</h1>
+    <p class="lead mt16" style="max-width:58ch">
+      Boje, tipografija, sjene i komponente iz kojih su sastavljene sve četiri stranice.
+      Kontrastni omjeri ispod su izračunati u pregledniku, uživo.
+    </p>
+  </div>
+</section>
+
+<!-- BOJE -->
+<section class="sec" style="padding-top:0">
+  <div class="wrap">
+    <h2 class="h1">Paleta</h2>
+    <div class="grid g4 mt24" id="pal"></div>
+
+    <div class="card mt32" style="border-color:rgba(194,118,27,.3);background:var(--amber-wash)">
+      <h3 class="h2">Otvoreno pitanje: koralna boja</h3>
+      <p class="body mt12" style="max-width:70ch;color:var(--ink-70)">
+        Bijeli tekst na izvornoj koralnoj <code>#FF684D</code> daje <b id="r1"></b> — WCAG AA traži 4,5:1.
+        Zato je u ovom pregledu koralna razdvojena na dva tokena: <code>--coral</code> ostaje
+        za plohe i ukrase, a gumbi i tekst koriste tamniju <code>--coral-ink</code> (<b id="r2"></b> na bijelom, <b id="r2b"></b> na kremi).
+        Druga je mogućnost zadržati svijetlu koralnu i pisati po njoj tamnoplavo (<b id="r3"></b>).
+      </p>
+      <div class="row gap12 mt24 wrapf" data-contrast-demo>
+        <span style="background:#FF684D;color:#fff;padding:13px 22px;border-radius:999px;font-weight:700;font-size:.9rem">Bijelo na #FF684D</span>
+        <span style="background:#C73C27;color:#fff;padding:13px 22px;border-radius:999px;font-weight:700;font-size:.9rem">Bijelo na #C73C27</span>
+        <span style="background:#FF684D;color:#0B2235;padding:13px 22px;border-radius:999px;font-weight:700;font-size:.9rem">Tamnoplavo na #FF684D</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TIPOGRAFIJA -->
+<section class="sec" style="background:var(--white);border-block:1px solid var(--line-2)">
+  <div class="wrap">
+    <h2 class="h1">Tipografija</h2>
+    <p class="body mt12">Fraunces za naslove (varijabilne osi SOFT 40, WONK 1), Manrope za sučelje.</p>
+    <div class="mt24">
+      <div class="spec"><span class="name">.d1 · Fraunces 500</span><span class="d1">Sve što gost treba</span></div>
+      <div class="spec"><span class="name">.d2 · Fraunces 500</span><span class="d2">Manje pitanja za vas</span></div>
+      <div class="spec"><span class="name">.h1 · Fraunces 500</span><span class="h1">Dvije stranice, jedan objekt</span></div>
+      <div class="spec"><span class="name">.h2 · Fraunces 500</span><span class="h2">Nadolazeće rezervacije</span></div>
+      <div class="spec"><span class="name">.h3 · Fraunces 500</span><span class="h3">Dobro je znati</span></div>
+      <div class="spec"><span class="name">.lead · Manrope 400</span><span class="lead">Wi-Fi, šifra vrata i put do kuće na jednoj stranici.</span></div>
+      <div class="spec"><span class="name">.body · Manrope 400</span><span class="body">Gost dobije svoju stranicu čim potvrdite rezervaciju.</span></div>
+      <div class="spec"><span class="name">.small · Manrope 400</span><span class="small">Zadnja sinkronizacija: danas u 06:12</span></div>
+      <div class="spec"><span class="name">.eyebrow · Manrope 800</span><span class="eyebrow">Kako radi</span></div>
+      <div class="spec" style="border-bottom:0"><span class="name">.mono</span><span class="mono">odmoria.com/h/xk29fm41</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- KOMPONENTE -->
+<section class="sec">
+  <div class="wrap">
+    <h2 class="h1">Komponente</h2>
+
+    <h3 class="h2 mt32">Gumbi</h3>
+    <div class="row gap12 mt16 wrapf">
+      <button class="btn btn--pri">Primarni</button>
+      <button class="btn btn--teal">Potvrdni</button>
+      <button class="btn btn--sec">Sporedni</button>
+      <button class="btn btn--sm btn--pri">Mali primarni</button>
+      <button class="btn btn--sm btn--sec">Mali sporedni</button>
+    </div>
+    <div class="card card--dark mt16" style="display:flex;gap:12px;flex-wrap:wrap">
+      <button class="btn btn--pri">Primarni na tamnom</button>
+      <button class="btn btn--ghost-d">Prozirni na tamnom</button>
+    </div>
+
+    <h3 class="h2 mt32">Oznake</h3>
+    <div class="row gap12 mt16 wrapf">
+      <span class="pill"><span class="dot"></span> Objavljeno</span>
+      <span class="pill pill--coral">Plan Domaćin</span>
+      <span class="pill pill--amber"><span class="dot"></span> Čeka potvrdu</span>
+      <span class="pill pill--muted">8 / 50 fotografija</span>
+    </div>
+
+    <h3 class="h2 mt32">Polja</h3>
+    <div class="grid g2 mt16">
+      <label style="display:block">
+        <span style="font-size:.78rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-55)">Naziv objekta</span>
+        <input style="display:block;width:100%;margin-top:7px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:#fff;font:inherit;font-size:.94rem" value="Apartman Aurora">
+      </label>
+      <label style="display:block">
+        <span style="font-size:.78rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-55)">Šifra vrata</span>
+        <input style="display:block;width:100%;margin-top:7px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:#fff;font:inherit;font-size:.94rem" value="4271">
+      </label>
+    </div>
+
+    <h3 class="h2 mt32">Sjene</h3>
+    <div class="grid g4 mt16">
+      <div class="shbox" style="box-shadow:var(--sh-1)">--sh-1</div>
+      <div class="shbox" style="box-shadow:var(--sh-2)">--sh-2</div>
+      <div class="shbox" style="box-shadow:var(--sh-3)">--sh-3</div>
+      <div class="shbox" style="box-shadow:var(--sh-4)">--sh-4</div>
+    </div>
+
+    <h3 class="h2 mt32">Zaobljenja i razmaci</h3>
+    <div class="row gap16 mt16 wrapf">
+      <div class="card" style="padding:14px 18px"><code class="mono">--r-sm 10px</code></div>
+      <div class="card" style="padding:14px 18px"><code class="mono">--r-md 16px</code></div>
+      <div class="card" style="padding:14px 18px"><code class="mono">--r-lg 24px</code></div>
+      <div class="card" style="padding:14px 18px"><code class="mono">razmaci 8 / 12 / 16 / 24 / 32 / 48</code></div>
+    </div>
+  </div>
+</section>
+
+<script>
+const T=[
+ ['--pearl','#F7F5F0','Osnovna podloga'],
+ ['--pearl-2','#EFEBE3','Sekundarna podloga'],
+ ['--white','#FFFFFF','Kartice'],
+ ['--navy','#0B2235','Tamne sekcije, tinta'],
+ ['--navy-2','#13314A','Tamne kartice'],
+ ['--teal','#07736C','Potvrda, poveznice'],
+ ['--teal-wash','#E4F0EE','Podloga oznaka'],
+ ['--coral','#FF684D','Ukras, plohe'],
+ ['--coral-ink','#C73C27','Gumbi i tekst'],
+ ['--coral-wash','#FFEDE8','Podloga oznaka'],
+ ['--amber','#9D5F15','Upozorenje'],
+ ['--amber-wash','#FBF0DE','Podloga upozorenja'],
+]
+// WCAG relativna luminancija
+const lum=h=>{const c=[1,3,5].map(i=>{let v=parseInt(h.slice(i,i+2),16)/255
+  return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)})
+  return .2126*c[0]+.7152*c[1]+.0722*c[2]}
+const ratio=(a,b)=>{const l1=lum(a),l2=lum(b),[h,s]=l1>l2?[l1,l2]:[l2,l1];return (h+.05)/(s+.05)}
+const fmt=r=>r.toFixed(2).replace('.',',')+':1'
+
+document.getElementById('pal').innerHTML=T.map(([n,hex,use])=>{
+  const rw=ratio(hex,'#FFFFFF'), rp=ratio(hex,'#F7F5F0')
+  // za svijetle tokene mjerimo tintu na njima, za tamne bijeli tekst na njima
+  const light=lum(hex)>.4
+  const r=light?ratio(hex,'#0B2235'):rw
+  const lbl=light?'tamnoplavi tekst':'bijeli tekst'
+  const pass=r>=4.5
+  return `<div class="tok">
+    <div class="chip" style="background:${hex}"></div>
+    <div class="meta">
+      <b style="font-size:.9rem">${n}</b>
+      <div><code>${hex}</code></div>
+      <div class="small" style="margin-top:4px">${use}</div>
+      <span class="ratio ${pass?'ok':'bad'}">${lbl} ${fmt(r)} ${pass?'AA ✓':'pada AA'}</span>
+    </div></div>`
+}).join('')
+
+document.getElementById('r1').textContent=fmt(ratio('#FF684D','#FFFFFF'))
+document.getElementById('r2').textContent=fmt(ratio('#C73C27','#FFFFFF'))
+document.getElementById('r2b').textContent=fmt(ratio('#C73C27','#F7F5F0'))
+document.getElementById('r3').textContent=fmt(ratio('#FF684D','#0B2235'))
+</script>
+</body>
+</html>

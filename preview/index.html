@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Odmoria v2 — pregled dizajna</title>
+<link rel="stylesheet" href="/preview/v2.css">
+<style>
+.tile{display:block;background:var(--white);border:1px solid var(--line-2);border-radius:var(--r-lg);
+  overflow:hidden;box-shadow:var(--sh-1);transition:transform .3s var(--ease),box-shadow .3s var(--ease)}
+.tile:hover{transform:translateY(-4px);box-shadow:var(--sh-3)}
+.tile .top{height:150px;position:relative;overflow:hidden}
+.tile .meta{padding:20px 22px}
+.t1{background:linear-gradient(160deg,#0B2235,#13314A 55%,#07736C)}
+.t2{background:linear-gradient(160deg,#28323F,#D98B5E 62%,#F3C98B)}
+.t3{background:linear-gradient(160deg,#0B2235,#0F3A44 50%,#07736C)}
+.t4{background:linear-gradient(160deg,#EFEBE3,#F7F5F0)}
+.t5{background:linear-gradient(160deg,#E4F0EE,#FFEDE8)}
+.t6{background:linear-gradient(160deg,#FF684D,#C73C27 60%,#C2761B)}
+.tile .top b{position:absolute;left:20px;bottom:16px;color:#fff;font-family:'Fraunces',serif;font-size:1.25rem}
+.t4 b,.t5 b{color:var(--navy)!important}
+</style>
+</head>
+<body>
+
+<div class="pvbar">
+  <span class="tag">Pregled v2</span>
+  <a href="/preview/" aria-current="page">Sve stranice</a>
+  <a href="/preview/landing.html">Naslovnica</a>
+  <a href="/preview/public.html">Javna stranica</a>
+  <a href="/preview/guide.html">Gostinski vodič</a>
+  <a href="/preview/dashboard.html">Dashboard</a>
+  <a href="/preview/editor.html">Uređivanje</a>
+  <a href="/preview/system.html">Sustav</a>
+</div>
+
+<section class="sec">
+  <div class="wrap">
+    <span class="pill pill--coral">Prijedlog · nije u produkciji</span>
+    <h1 class="d1 mt16">Odmoria v2</h1>
+    <p class="lead mt16" style="max-width:62ch">
+      Figma dizajn preveden u prave HTML stranice, da ga možete pogledati u pregledniku
+      na mobitelu i na računalu. Ovo su zasebne stranice pod <code class="mono">/preview/</code> —
+      <b>žive stranice aplikacije nisu dirane.</b>
+    </p>
+
+    <div class="card mt32" style="max-width:760px">
+      <h2 class="h3">Što ovdje nije spojeno</h2>
+      <hr class="hr">
+      <p class="body" style="font-size:.92rem">
+        Nema Supabase poziva, nema prijave, nema baze. Cijene su prijedlog novog modela
+        (Besplatno / Domaćin 7,90 € / Pro 14,90 € / Partner 29,90 €) i <b>razlikuju se</b> od
+        onoga što tablica <code class="mono">plans</code> danas vraća. Tablica nije dirana.
+      </p>
+      <p class="body mt12" style="font-size:.92rem">
+        Gostinski vodič prikazuje Wi-Fi lozinku i šifru vrata zamućeno, s gumbom koji
+        pokazuje otključano stanje. U pravoj aplikaciji te vrijednosti prije otključavanja
+        uopće ne ulaze u HTML — ovdje su upisane jer je ovo mockup bez baze.
+      </p>
+    </div>
+
+    <div class="grid g3 mt48">
+      <a class="tile" href="/preview/landing.html">
+        <div class="top t1"><b>Naslovnica</b></div>
+        <div class="meta"><p class="body" style="font-size:.9rem">Hero, problem/rješenje, dvije stranice, tri koraka, četiri plana, pitanja.</p></div>
+      </a>
+      <a class="tile" href="/preview/public.html">
+        <div class="top t2"><b>Javna stranica</b></div>
+        <div class="meta"><p class="body" style="font-size:.9rem">Apartman Aurora, Rovinj. Galerija, lokacija, sadržaji, kalendar, upit.</p></div>
+      </a>
+      <a class="tile" href="/preview/guide.html">
+        <div class="top t3"><b>Gostinski vodič</b></div>
+        <div class="meta"><p class="body" style="font-size:.9rem">Privatna stranica s vremenskim zaključavanjem, dolazak, upute, preporuke.</p></div>
+      </a>
+      <a class="tile" href="/preview/dashboard.html">
+        <div class="top t4"><b>Dashboard</b></div>
+        <div class="meta"><p class="body" style="font-size:.9rem">Šest stavki u bočnoj traci, brojke, rezervacije, kalendar, sinkronizacija.</p></div>
+      </a>
+      <a class="tile" href="/preview/editor.html">
+        <div class="top t5"><b>Uređivanje objekta</b></div>
+        <div class="meta"><p class="body" style="font-size:.9rem">Sedam kartica: osnovno, fotografije, pristup, dolazak, preporuke, pravila, izgled.</p></div>
+      </a>
+      <a class="tile" href="/preview/system.html">
+        <div class="top t6"><b>Vizualni sustav</b></div>
+        <div class="meta"><p class="body" style="font-size:.9rem">Paleta s izračunatim kontrastima, tipografija, gumbi, oznake, sjene.</p></div>
+      </a>
+    </div>
+
+    <div class="card mt48" style="max-width:760px;border-color:rgba(194,118,27,.3);background:var(--amber-wash)">
+      <h2 class="h3">Jedna odluka koju trebam od vas</h2>
+      <p class="body mt12" style="font-size:.92rem;color:var(--ink-70)">
+        Bijeli tekst na koralnoj <code class="mono">#FF684D</code> ima kontrast 2,86:1 i pada
+        WCAG AA. U ovom pregledu gumbi zato koriste tamniju <code class="mono">#C73C27</code> (5,12:1),
+        a svijetla koralna ostaje za ukrase. Druga mogućnost je zadržati svijetlu koralnu
+        i pisati po njoj tamnoplavo (5,67:1). Pogledajte oba na stranici sustava.
+      </p>
+      <a href="/preview/system.html" class="btn btn--sm btn--pri mt16">Usporedi na stranici sustava</a>
+    </div>
+  </div>
+</section>
+
+<footer class="sec sec--dark on-dark" style="padding-block:36px">
+  <div class="wrap"><p class="small">Grana <code class="mono">claude/funny-archimedes-c0qosu</code> · nije spojeno u produkciju</p></div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Uređivanje objekta (pregled v2)</title>
+<link rel="stylesheet" href="/preview/v2.css">
+<link rel="stylesheet" href="/preview/_shell.css">
+<style>
+.tabs{display:flex;gap:4px;overflow-x:auto;border-bottom:1px solid var(--line-2);margin-bottom:26px;padding-bottom:0}
+.tabs button{border:0;background:transparent;padding:12px 15px;font-size:.89rem;font-weight:700;
+  color:var(--ink-55);white-space:nowrap;border-bottom:2px solid transparent;margin-bottom:-1px}
+.tabs button:hover{color:var(--ink)}
+.tabs button[aria-selected="true"]{color:var(--teal-d);border-bottom-color:var(--teal)}
+.panel[hidden]{display:none}
+
+label.f{display:block;margin-top:18px}
+label.f .lb{font-size:.78rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-55)}
+.inp{display:block;width:100%;margin-top:7px;padding:12px 14px;border:1px solid var(--line);
+  border-radius:var(--r-sm);background:var(--white);font:inherit;font-size:.94rem;color:var(--ink)}
+.inp:focus{outline:2px solid var(--teal);outline-offset:1px;border-color:transparent}
+.hint{font-size:.8rem;color:var(--ink-55);margin-top:6px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:620px){.two{grid-template-columns:1fr}}
+
+.photos{display:grid;grid-template-columns:repeat(auto-fill,minmax(138px,1fr));gap:12px}
+.ph{aspect-ratio:4/3;border-radius:12px;position:relative;overflow:hidden;
+  background:linear-gradient(165deg,#28323F,#D98B5E 62%,#F3C98B)}
+.ph:nth-child(2){background:linear-gradient(165deg,#25372B,#8AA06A 62%,#D9D2A8)}
+.ph:nth-child(3){background:linear-gradient(165deg,#1B4C5A,#2E7C80 55%,#E8D9BE)}
+.ph:nth-child(4){background:linear-gradient(165deg,#4A4238,#C4B195 62%,#EFE4CE)}
+.ph:nth-child(5){background:linear-gradient(165deg,#0B2235,#3E5A69 60%,#9FB6BC)}
+.ph .cover{position:absolute;top:8px;left:8px;background:var(--coral-ink);color:#fff;font-size:.64rem;
+  font-weight:800;letter-spacing:.07em;text-transform:uppercase;padding:4px 8px;border-radius:5px}
+.ph .x{position:absolute;top:8px;right:8px;width:24px;height:24px;border-radius:50%;
+  background:rgba(11,34,53,.6);color:#fff;border:0;font-size:.8rem;line-height:1}
+.ph--add{background:var(--pearl-2);border:2px dashed var(--line);display:grid;place-items:center;color:var(--ink-55);font-size:.86rem;font-weight:700}
+
+.listrow{display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line-2)}
+.listrow .drag{color:rgba(11,34,53,.3);cursor:grab}
+.listrow .ic{width:36px;height:36px;border-radius:10px;background:var(--pearl-2);display:grid;place-items:center;flex:none}
+
+.swatches{display:flex;gap:10px;flex-wrap:wrap}
+.sw{width:40px;height:40px;border-radius:12px;border:2px solid transparent;cursor:pointer;position:relative}
+.sw[aria-pressed="true"]{border-color:var(--ink);box-shadow:0 0 0 3px rgba(11,34,53,.1)}
+.sw.lock::after{content:"🔒";position:absolute;inset:0;display:grid;place-items:center;font-size:.7rem;
+  background:rgba(247,245,240,.72);border-radius:10px}
+
+.lockcard{background:var(--amber-wash);border:1px solid rgba(194,118,27,.26);border-radius:var(--r-md);padding:18px}
+.savebar{position:sticky;bottom:0;margin:28px calc(-1*clamp(18px,3.4vw,44px)) calc(-1*clamp(20px,3vw,36px));
+  background:var(--navy);color:#fff;padding:14px clamp(18px,3.4vw,44px);
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+
+<div class="pvbar">
+  <span class="tag">Pregled v2</span>
+  <a href="/preview/">Sve stranice</a>
+  <a href="/preview/landing.html">Naslovnica</a>
+  <a href="/preview/public.html">Javna stranica</a>
+  <a href="/preview/guide.html">Gostinski vodič</a>
+  <a href="/preview/dashboard.html">Dashboard</a>
+  <a href="/preview/editor.html" aria-current="page">Uređivanje</a>
+  <a href="/preview/system.html">Sustav</a>
+</div>
+
+<div class="app">
+  <aside class="side">
+    <div class="logo">Odmoria<span>.</span></div>
+    <a class="navi" href="/preview/dashboard.html"><span class="ic">◧</span> Pregled</a>
+    <a class="navi" aria-current="page" href="/preview/editor.html"><span class="ic">⌂</span> Objekti <span class="cnt">2</span></a>
+    <a class="navi" href="#"><span class="ic">✎</span> Rezervacije <span class="cnt">3</span></a>
+    <a class="navi" href="#"><span class="ic">▦</span> Dostupnost</a>
+    <a class="navi" href="#"><span class="ic">◔</span> Statistika</a>
+    <a class="navi" href="#"><span class="ic">⚙</span> Postavke</a>
+    <div class="sidefoot">
+      <div class="pill pill--coral">Plan Domaćin</div>
+      <p class="small mt8">8 od 50 fotografija</p>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topline">
+      <div>
+        <p class="eyebrow">Objekt</p>
+        <h1 class="h1 mt8">Apartman Aurora</h1>
+      </div>
+      <div class="btns">
+        <a href="/preview/public.html" class="btn btn--sm btn--sec">Pregled</a>
+        <button class="btn btn--sm btn--pri">Spremi</button>
+      </div>
+    </div>
+
+    <div class="tabs" role="tablist">
+      <button role="tab" aria-selected="true" data-t="0">Osnovno</button>
+      <button role="tab" aria-selected="false" data-t="1">Fotografije</button>
+      <button role="tab" aria-selected="false" data-t="2">Pristup i upute</button>
+      <button role="tab" aria-selected="false" data-t="3">Dolazak</button>
+      <button role="tab" aria-selected="false" data-t="4">Preporuke</button>
+      <button role="tab" aria-selected="false" data-t="5">Pravila i pitanja</button>
+      <button role="tab" aria-selected="false" data-t="6">Izgled</button>
+    </div>
+
+    <!-- 0 OSNOVNO -->
+    <section class="panel" data-p="0">
+      <div class="grid g-main" style="gap:24px;align-items:start">
+        <div class="card card--pad-lg">
+          <h2 class="h2">Osnovni podaci</h2>
+          <p class="body mt8" style="font-size:.9rem">Ovo gost vidi na javnoj stranici.</p>
+          <label class="f"><span class="lb">Naziv objekta</span>
+            <input class="inp" value="Apartman Aurora"></label>
+          <label class="f"><span class="lb">Podnaslov</span>
+            <input class="inp" value="Jutarnje svjetlo nad starim gradom, osam minuta do mora">
+            <span class="hint">Jedna rečenica koja stoji ispod naziva.</span></label>
+          <label class="f"><span class="lb">Mjesto</span>
+            <input class="inp" value="Rovinj, Istra"></label>
+          <label class="f"><span class="lb">Poruka dobrodošlice</span>
+            <textarea class="inp" rows="5">Aurora je stan u kojem sam odrasla. Obnovila sam ga prije tri godine, ali sam ostavila kameni zid u dnevnom boravku i stara vrata na terasu.</textarea></label>
+          <div class="two" style="margin-top:18px">
+            <label class="f" style="margin-top:0"><span class="lb">Gostiju</span><input class="inp" value="4" type="number"></label>
+            <label class="f" style="margin-top:0"><span class="lb">Soba</span><input class="inp" value="2" type="number"></label>
+            <label class="f" style="margin-top:0"><span class="lb">Kreveta</span><input class="inp" value="3" type="number"></label>
+            <label class="f" style="margin-top:0"><span class="lb">Kupaonica</span><input class="inp" value="1" type="number"></label>
+            <label class="f" style="margin-top:0"><span class="lb">Površina (m²)</span><input class="inp" value="52" type="number"></label>
+            <label class="f" style="margin-top:0"><span class="lb">Cijena po noći (€)</span><input class="inp" value="145" type="number"></label>
+          </div>
+        </div>
+        <aside class="card">
+          <h3 class="h3">Javna adresa</h3>
+          <p class="small mt8">Ovo je link koji dijelite.</p>
+          <div class="mono mt12" style="background:var(--pearl);border:1px solid var(--line-2);border-radius:var(--r-sm);padding:11px 13px;word-break:break-all">odmoria.com/p/apartman-aurora</div>
+          <button class="btn btn--sm btn--sec btn--full mt12">Kopiraj link</button>
+          <hr class="hr">
+          <h3 class="h3">Kontakt za goste</h3>
+          <label class="f"><span class="lb">Ime domaćina</span><input class="inp" value="Marina"></label>
+          <label class="f"><span class="lb">Telefon</span><input class="inp" value="+385 91 234 5678"></label>
+          <label class="f"><span class="lb">E-mail</span><input class="inp" value="marina@primjer.hr"></label>
+        </aside>
+      </div>
+    </section>
+
+    <!-- 1 FOTOGRAFIJE -->
+    <section class="panel" data-p="1" hidden>
+      <div class="card card--pad-lg">
+        <div class="row" style="justify-content:space-between;gap:16px;flex-wrap:wrap">
+          <div><h2 class="h2">Fotografije</h2><p class="body mt8" style="font-size:.9rem">Prva fotografija je uvijek naslovna. Povucite da promijenite redoslijed.</p></div>
+          <span class="pill pill--muted">8 / 50</span>
+        </div>
+        <div class="photos mt24">
+          <div class="ph"><span class="cover">Naslovna</span><button class="x">×</button></div>
+          <div class="ph"><button class="x">×</button></div>
+          <div class="ph"><button class="x">×</button></div>
+          <div class="ph"><button class="x">×</button></div>
+          <div class="ph"><button class="x">×</button></div>
+          <div class="ph ph--add">+ Dodaj</div>
+        </div>
+        <hr class="hr">
+        <p class="small">JPG ili PNG, do 10 MB. Fotografije se spremaju odmah — ne treba pritisnuti Spremi.</p>
+      </div>
+    </section>
+
+    <!-- 2 PRISTUP I UPUTE -->
+    <section class="panel" data-p="2" hidden>
+      <div class="grid g2" style="gap:24px;align-items:start">
+        <div class="card card--pad-lg">
+          <span class="pill pill--coral">🔒 Vidi samo potvrđeni gost</span>
+          <h2 class="h2 mt16">Pristup</h2>
+          <p class="body mt8" style="font-size:.9rem">Ovo se nikad ne prikazuje na javnoj stranici.</p>
+          <label class="f"><span class="lb">Wi-Fi mreža</span><input class="inp" value="Aurora_5G"></label>
+          <label class="f"><span class="lb">Wi-Fi lozinka</span><input class="inp" value="maslina2026"></label>
+          <label class="f"><span class="lb">Šifra vrata</span><input class="inp" value="4271">
+            <span class="hint">Gost je vidi od sat vremena prije prijave do odjave.</span></label>
+          <div class="two" style="margin-top:18px">
+            <label class="f" style="margin-top:0"><span class="lb">Prijava od</span><input class="inp" value="15:00" type="time"></label>
+            <label class="f" style="margin-top:0"><span class="lb">Odjava do</span><input class="inp" value="10:00" type="time"></label>
+          </div>
+        </div>
+        <div class="card card--pad-lg">
+          <h2 class="h2">Upute za korištenje</h2>
+          <p class="body mt8" style="font-size:.9rem">Pitanja koja se ponavljaju svaki tjedan.</p>
+          <label class="f"><span class="lb">Klima</span><textarea class="inp" rows="2">Daljinski je u ladici ispod TV-a. MODE → pahulja za hlađenje.</textarea></label>
+          <label class="f"><span class="lb">Grijanje</span><textarea class="inp" rows="2">Ista klima, MODE → sunce.</textarea></label>
+          <label class="f"><span class="lb">Topla voda</span><textarea class="inp" rows="2">Bojler 80 l, uključen stalno.</textarea></label>
+          <label class="f"><span class="lb">Kuhinja</span><textarea class="inp" rows="2">Indukcijska ploča — držite prst 2 s da se upali.</textarea></label>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3 DOLAZAK -->
+    <section class="panel" data-p="3" hidden>
+      <div class="card card--pad-lg">
+        <h2 class="h2">Dolazak</h2>
+        <label class="f"><span class="lb">Adresa</span><input class="inp" value="Ulica Sv. Križa 14, 52210 Rovinj"></label>
+        <label class="f"><span class="lb">Parking</span><textarea class="inp" rows="3">Dvorište iza zelenih vrata, mjesto broj 3, prvo desno. Uključeno u cijenu.</textarea></label>
+        <label class="f"><span class="lb">Upute za prijavu</span><textarea class="inp" rows="3">Drugi kat lijevo, kameno stubište bez lifta. Šifra na tipkovnici, zatim kvačica.</textarea></label>
+        <label class="f"><span class="lb">Upute za odjavu</span><textarea class="inp" rows="3">Ključ u sef, poklopac zatvoriti. Otpad u kontejnere na kraju ulice.</textarea></label>
+        <hr class="hr">
+        <h3 class="h3">Prijevoz</h3>
+        <div class="mt12">
+          <div class="listrow"><span class="drag">⠿</span><div class="ic">🚌</div><div><b style="font-size:.92rem">Autobusni kolodvor</b><div class="small">linija za Pulu i Poreč, 1,2 km</div></div><button class="btn btn--sm btn--sec" style="margin-left:auto">Uredi</button></div>
+          <div class="listrow"><span class="drag">⠿</span><div class="ic">✈️</div><div><b style="font-size:.92rem">Zračna luka Pula</b><div class="small">45 min autom</div></div><button class="btn btn--sm btn--sec" style="margin-left:auto">Uredi</button></div>
+        </div>
+        <button class="btn btn--sm btn--teal mt16">+ Dodaj prijevoz</button>
+      </div>
+    </section>
+
+    <!-- 4 PREPORUKE -->
+    <section class="panel" data-p="4" hidden>
+      <div class="card card--pad-lg">
+        <div class="row" style="justify-content:space-between;gap:16px;flex-wrap:wrap">
+          <div><h2 class="h2">Vaše preporuke</h2><p class="body mt8" style="font-size:.9rem">Mjesta koja stvarno preporučujete, ne prepisani vodič.</p></div>
+          <span class="pill pill--muted">5 / 20</span>
+        </div>
+        <div class="mt16">
+          <div class="listrow"><span class="drag">⠿</span><div class="ic">🍽️</div><div><b style="font-size:.92rem">Konoba Veli Jože</b><div class="small">Restoran · 5 min pješice</div></div><button class="btn btn--sm btn--sec" style="margin-left:auto">Uredi</button></div>
+          <div class="listrow"><span class="drag">⠿</span><div class="ic">🏖️</div><div><b style="font-size:.92rem">Uvala Škaraba</b><div class="small">Plaža · 20 min pješice</div></div><button class="btn btn--sm btn--sec" style="margin-left:auto">Uredi</button></div>
+          <div class="listrow"><span class="drag">⠿</span><div class="ic">☕</div><div><b style="font-size:.92rem">Caffe Valentino</b><div class="small">Kafić · 10 min pješice</div></div><button class="btn btn--sm btn--sec" style="margin-left:auto">Uredi</button></div>
+          <div class="listrow"><span class="drag">⠿</span><div class="ic">🛥️</div><div><b style="font-size:.92rem">Crveni otok</b><div class="small">Izlet · brodić s rive, 8 €</div></div><button class="btn btn--sm btn--sec" style="margin-left:auto">Uredi</button></div>
+          <div class="listrow"><span class="drag">⠿</span><div class="ic">🛒</div><div><b style="font-size:.92rem">Gradska tržnica</b><div class="small">Trgovina · 5 min pješice</div></div><button class="btn btn--sm btn--sec" style="margin-left:auto">Uredi</button></div>
+        </div>
+        <button class="btn btn--sm btn--teal mt16">+ Dodaj preporuku</button>
+      </div>
+    </section>
+
+    <!-- 5 PRAVILA I PITANJA -->
+    <section class="panel" data-p="5" hidden>
+      <div class="grid g2" style="gap:24px;align-items:start">
+        <div class="card card--pad-lg">
+          <h2 class="h2">Kućna pravila</h2>
+          <div class="mt16">
+            <div class="listrow"><span class="drag">⠿</span><div>Tišina od 22 do 7</div><button class="x btn btn--sm btn--sec" style="margin-left:auto">Ukloni</button></div>
+            <div class="listrow"><span class="drag">⠿</span><div>Pušenje samo na terasi</div><button class="btn btn--sm btn--sec" style="margin-left:auto">Ukloni</button></div>
+            <div class="listrow"><span class="drag">⠿</span><div>Obuća se izuva na ulazu</div><button class="btn btn--sm btn--sec" style="margin-left:auto">Ukloni</button></div>
+          </div>
+          <input class="inp mt16" placeholder="Novo pravilo…">
+          <button class="btn btn--sm btn--teal mt12">+ Dodaj pravilo</button>
+        </div>
+        <div class="card card--pad-lg">
+          <h2 class="h2">Česta pitanja</h2>
+          <div class="mt16">
+            <div class="listrow"><span class="drag">⠿</span><div><b style="font-size:.92rem">Mogu li doći ranije?</b><div class="small">Ako stan nije zauzet, javite se dan prije…</div></div><button class="btn btn--sm btn--sec" style="margin-left:auto">Uredi</button></div>
+            <div class="listrow"><span class="drag">⠿</span><div><b style="font-size:.92rem">Primate li kućne ljubimce?</b><div class="small">Male pse da, uz najavu…</div></div><button class="btn btn--sm btn--sec" style="margin-left:auto">Uredi</button></div>
+          </div>
+          <button class="btn btn--sm btn--teal mt16">+ Dodaj pitanje</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6 IZGLED -->
+    <section class="panel" data-p="6" hidden>
+      <div class="grid g-main" style="gap:24px;align-items:start">
+        <div class="card card--pad-lg">
+          <h2 class="h2">Izgled javne stranice</h2>
+          <p class="body mt8" style="font-size:.9rem">Promjene se odmah vide u pregledu desno.</p>
+
+          <div style="margin-top:24px">
+            <span class="lb" style="font-size:.78rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-55)">Boja naglaska</span>
+            <div class="swatches mt12">
+              <button class="sw" aria-pressed="true" style="background:#07736C"></button>
+              <button class="sw" style="background:#FF684D"></button>
+              <button class="sw" style="background:#C2761B"></button>
+              <button class="sw" style="background:#0B2235"></button>
+              <button class="sw" style="background:#7E8F6A"></button>
+              <button class="sw" style="background:#9B5A7A"></button>
+              <button class="sw lock" style="background:#2E6B77"></button>
+              <button class="sw lock" style="background:#B44F35"></button>
+            </div>
+          </div>
+
+          <div style="margin-top:24px">
+            <span class="lb" style="font-size:.78rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-55)">Naslovnica</span>
+            <div class="grid mt12" style="grid-template-columns:repeat(4,1fr);gap:10px">
+              <button class="sw" aria-pressed="true" style="width:100%;height:56px;background:linear-gradient(165deg,#28323F,#D98B5E 62%,#F3C98B)"></button>
+              <button class="sw" style="width:100%;height:56px;background:linear-gradient(165deg,#1B4C5A,#2E7C80 55%,#E8D9BE)"></button>
+              <button class="sw" style="width:100%;height:56px;background:linear-gradient(165deg,#25372B,#8AA06A 62%,#D9D2A8)"></button>
+              <button class="sw" style="width:100%;height:56px;background:linear-gradient(165deg,#4A4238,#C4B195 62%,#EFE4CE)"></button>
+            </div>
+            <p class="hint">Ili izaberite 2–3 vlastite fotografije koje se izmjenjuju u zaglavlju.</p>
+          </div>
+
+          <div style="margin-top:24px">
+            <span class="lb" style="font-size:.78rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-55)">Tipografija</span>
+            <div class="row gap8 mt12 wrapf">
+              <button class="btn btn--sm btn--sec" style="border-color:var(--ink);font-family:'Fraunces',serif">Klasik</button>
+              <button class="btn btn--sm btn--sec">Čist</button>
+              <button class="btn btn--sm btn--sec">Rukopis</button>
+            </div>
+          </div>
+
+          <div class="lockcard mt24">
+            <b style="color:var(--amber)">Tamna podloga je dio plana Pro</b>
+            <p class="small mt8" style="color:var(--ink-70)">Na planu Domaćin dostupne su svijetle podloge i šest boja naglaska.</p>
+            <a href="/preview/landing.html#cijene" class="btn btn--sm btn--pri mt12">Pogledaj Pro</a>
+          </div>
+        </div>
+
+        <aside class="card" style="padding:14px;position:sticky;top:20px">
+          <p class="small center">Kako gost vidi</p>
+          <div class="mt12" style="border-radius:var(--r-md);overflow:hidden;border:1px solid var(--line-2)">
+            <div style="height:130px;background:linear-gradient(165deg,#28323F,#D98B5E 62%,#F3C98B);position:relative">
+              <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(11,34,53,.8),transparent 62%)"></div>
+              <div style="position:absolute;left:14px;bottom:12px;color:#fff">
+                <div style="font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;font-weight:800;opacity:.85">Rovinj, Istra</div>
+                <div style="font-family:'Fraunces',serif;font-size:1.15rem">Apartman Aurora</div>
+              </div>
+            </div>
+            <div style="background:#fff;padding:14px">
+              <div class="row gap8 wrapf">
+                <span class="pill pill--muted" style="font-size:.66rem">4 gosta</span>
+                <span class="pill pill--muted" style="font-size:.66rem">2 sobe</span>
+                <span class="pill pill--muted" style="font-size:.66rem">52 m²</span>
+              </div>
+              <div style="height:7px;background:var(--line-2);border-radius:4px;margin-top:12px"></div>
+              <div style="height:7px;background:var(--line-2);border-radius:4px;margin-top:7px;width:78%"></div>
+              <div class="btn btn--sm mt12" style="background:#07736C;color:#fff;width:100%">Pošalji upit</div>
+            </div>
+          </div>
+          <a href="/preview/public.html" class="btn btn--sm btn--sec btn--full mt12">Otvori cijelu stranicu</a>
+        </aside>
+      </div>
+    </section>
+
+    <div class="savebar">
+      <b style="font-size:.92rem">Imate nespremljene promjene</b>
+      <div style="margin-left:auto;display:flex;gap:10px">
+        <button class="btn btn--sm btn--ghost-d">Odbaci</button>
+        <button class="btn btn--sm btn--pri">Spremi</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+const tabs=[...document.querySelectorAll('.tabs button')]
+const panels=[...document.querySelectorAll('.panel')]
+tabs.forEach(t=>t.addEventListener('click',()=>{
+  tabs.forEach(x=>x.setAttribute('aria-selected',String(x===t)))
+  panels.forEach(p=>{p.hidden=p.dataset.p!==t.dataset.t})
+  window.scrollTo({top:0,behavior:'smooth'})
+}))
+document.querySelectorAll('.swatches .sw, .grid .sw').forEach(s=>s.addEventListener('click',()=>{
+  const sibs=[...s.parentElement.children]
+  sibs.forEach(x=>x.removeAttribute('aria-pressed'))
+  s.setAttribute('aria-pressed','true')
+}))
+</script>
+</body>
+</html>

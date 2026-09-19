@@ -75,6 +75,35 @@ Obje funkcije su namjerno **bez ijedne npm ovisnosti** — projekt nema build ko
 
 ---
 
+## `preview/` — prijedlog dizajna v2 (nije u produkciji)
+
+Mapa `preview/` sadrži **web prijevod Figma sustava v2** (datoteka `6MeIi7lRUUPK4BGVX1o93n`),
+napravljen da se dizajn može pogledati u pregledniku prije odluke. **Ne dira nijednu živu stranicu.**
+
+```
+preview/
+├── index.html      # razdjelnik s popisom stranica i otvorenim pitanjima
+├── landing.html     public.html      guide.html
+├── dashboard.html   editor.html      system.html
+├── v2.css          # tokeni, tipografija, gumbi, oznake (dijele ih sve preview stranice)
+└── _shell.css      # bočna traka + sadržaj, dijele dashboard.html i editor.html
+```
+
+- **Nema Supabase poziva, prijave ni baze** — sve su vrijednosti upisane u HTML.
+- **Cijene su prijedlog** (Besplatno / Domaćin 7,90 € / Pro 14,90 € / Partner 29,90 €) i
+  **razlikuju se od tablice `plans`**. Tablica nije dirana i neće biti dok dizajn ne bude odobren.
+- `vercel.json` nosi `X-Robots-Tag: noindex, nofollow` za `/preview/(.*)`.
+- Paleta v2 je druga od v3: `--pearl #F7F5F0`, `--navy #0B2235`, `--teal #07736C`, `--coral #FF684D`.
+- **Koralna je namjerno razdvojena na dva tokena.** Bijeli tekst na `#FF684D` daje 2,86:1 i pada
+  WCAG AA, pa `--coral` služi samo za plohe i ukrase, a gumbi i tekst koriste `--coral-ink #C73C27`
+  (5,12:1 na bijelom, 4,70:1 na kremi). `system.html` računa sve omjere uživo u pregledniku.
+- Provjereno na 1440 / 834 / 390 px: nema vodoravnog prelijevanja i nema teksta ispod AA praga.
+
+Kad dizajn bude odobren, ovo se prenosi na prave stranice **i tek tada** se usklađuje `plans`.
+Ako bude odbijen, cijela mapa se briše — ništa drugo ne ovisi o njoj.
+
+---
+
 ## Baza podataka — tablice koje se stvarno koriste u kodu
 
 ```sql

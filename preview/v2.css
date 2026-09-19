@@ -1,0 +1,168 @@
+/* ==========================================================================
+   Odmoria — Product Design v2 (PREGLED)
+   Web prijevod Figma sustava. Ne koristi ga nijedna živa stranica —
+   samo /preview/* dok dizajn ne bude odobren.
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..700,0..100,0..1;1,9..144,300..600,0..100,0..1&family=Manrope:wght@400;500;600;700;800&display=swap');
+
+:root{
+  /* podloge */
+  --pearl:#F7F5F0;
+  --pearl-2:#EFEBE3;
+  --white:#FFFFFF;
+  --navy:#0B2235;
+  --navy-2:#13314A;
+
+  /* tinta */
+  --ink:#0B2235;
+  --ink-70:rgba(11,34,53,.72);
+  --ink-55:rgba(11,34,53,.58);
+  --line:rgba(11,34,53,.12);
+  --line-2:rgba(11,34,53,.07);
+
+  /* akcenti */
+  --teal:#07736C;          /* 5,52:1 na pearl — prošlo AA */
+  --teal-d:#055C56;
+  --teal-wash:#E4F0EE;
+  --coral:#FF684D;         /* DEKORATIVNO: plohe, ikone, rubovi */
+  --coral-ink:#C73C27;     /* TEKST I GUMBI: bijelo na njoj 5,12:1, ona na kremi 4,70:1 */
+  --coral-wash:#FFEDE8;
+  --amber:#9D5F15;
+  --amber-wash:#FBF0DE;
+
+  /* mjere */
+  --gut:clamp(20px,4vw,48px);
+  --maxw:1200px;
+  --r-lg:24px;
+  --r-md:16px;
+  --r-sm:10px;
+  --ease:cubic-bezier(.16,1,.3,1);
+
+  /* sjene (4 effect stila iz Figme) */
+  --sh-1:0 1px 2px rgba(11,34,53,.06), 0 1px 1px rgba(11,34,53,.04);
+  --sh-2:0 4px 12px rgba(11,34,53,.07), 0 1px 3px rgba(11,34,53,.05);
+  --sh-3:0 14px 34px rgba(11,34,53,.10), 0 4px 10px rgba(11,34,53,.05);
+  --sh-4:0 28px 64px rgba(11,34,53,.16), 0 8px 20px rgba(11,34,53,.07);
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--pearl);color:var(--ink);
+  font-family:'Manrope',system-ui,-apple-system,sans-serif;
+  font-size:16px;line-height:1.6;letter-spacing:-.004em;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+button{font:inherit;cursor:pointer}
+
+/* ---------- tipografija (16 stilova iz Figme, skraćeno na 9 klasa) ---------- */
+.d1,.d2,.h1,.h2,.h3{
+  font-family:'Fraunces',Georgia,serif;font-weight:500;
+  font-variation-settings:'SOFT' 40,'WONK' 1,'opsz' 96;
+  line-height:1.06;letter-spacing:-.022em;margin:0;
+}
+.d1{font-size:clamp(2.6rem,6.2vw,4.5rem)}
+.d2{font-size:clamp(2.1rem,4.6vw,3.25rem);line-height:1.1}
+.h1{font-size:clamp(1.7rem,3vw,2.35rem);line-height:1.16}
+.h2{font-size:clamp(1.3rem,2.1vw,1.6rem);line-height:1.22;letter-spacing:-.015em}
+.h3{font-size:1.1rem;line-height:1.3;letter-spacing:-.01em}
+.lead{font-size:clamp(1.02rem,1.5vw,1.2rem);line-height:1.58;color:var(--ink-70);margin:0}
+.body{font-size:.975rem;line-height:1.62;color:var(--ink-70);margin:0}
+.small{font-size:.86rem;line-height:1.5;color:var(--ink-55);margin:0}
+.eyebrow{
+  font-size:.7rem;font-weight:800;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--teal);margin:0;
+}
+.mono{font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:.85rem;letter-spacing:.02em}
+
+/* na tamnoj podlozi */
+.on-dark{color:#fff}
+.on-dark .lead,.on-dark .body{color:rgba(255,255,255,.80)}
+.on-dark .small{color:rgba(255,255,255,.66)}
+.on-dark .eyebrow{color:#7FD8CE}
+
+/* ---------- raspored ---------- */
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 var(--gut)}
+.sec{padding:clamp(56px,8vw,104px) 0}
+.sec--dark{background:var(--navy);color:#fff}
+.grid{display:grid;gap:24px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:900px){.g3,.g4{grid-template-columns:repeat(2,1fr)}}
+/* glavni stupac + bočni: uvijek se slaže u jedan stupac ispod 860px */
+.g-main{grid-template-columns:1.4fr .6fr}
+.g-main--wide{grid-template-columns:1.5fr 1fr}
+@media(max-width:860px){.g-main,.g-main--wide{grid-template-columns:1fr}}
+@media(max-width:640px){.g2,.g3,.g4{grid-template-columns:1fr}}
+
+/* ---------- gumbi ---------- */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:9px;
+  padding:14px 24px;border-radius:999px;border:1px solid transparent;
+  font-weight:700;font-size:.94rem;letter-spacing:-.01em;
+  transition:transform .25s var(--ease),box-shadow .25s var(--ease),background .2s;
+  text-align:center;
+}
+.btn:hover{transform:translateY(-2px)}
+.btn--pri{background:var(--coral-ink);color:#fff;box-shadow:var(--sh-2)}
+.btn--pri:hover{background:#A93220;box-shadow:var(--sh-3)}
+.btn--sec{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn--sec:hover{border-color:var(--ink);background:rgba(11,34,53,.03)}
+.btn--teal{background:var(--teal);color:#fff;box-shadow:var(--sh-2)}
+.btn--teal:hover{background:var(--teal-d)}
+.btn--ghost-d{background:rgba(255,255,255,.10);color:#fff;border-color:rgba(255,255,255,.26)}
+.btn--ghost-d:hover{background:rgba(255,255,255,.18)}
+.btn--sm{padding:9px 16px;font-size:.85rem}
+.btn--full{width:100%}
+
+/* ---------- kartice ---------- */
+.card{
+  background:var(--white);border:1px solid var(--line-2);border-radius:var(--r-md);
+  padding:26px;box-shadow:var(--sh-1);
+}
+.card--pad-lg{padding:32px}
+.card--dark{background:var(--navy-2);border-color:rgba(255,255,255,.12);color:#fff}
+
+/* ---------- oznake ---------- */
+.pill{
+  display:inline-flex;align-items:center;gap:7px;padding:6px 13px;border-radius:999px;
+  font-size:.76rem;font-weight:700;letter-spacing:.01em;
+  background:var(--teal-wash);color:var(--teal-d);
+}
+.pill--coral{background:var(--coral-wash);color:var(--coral-ink)}
+.pill--amber{background:var(--amber-wash);color:var(--amber)}
+.pill--muted{background:rgba(11,34,53,.06);color:var(--ink-55)}
+.pill--dark{background:rgba(255,255,255,.12);color:#fff}
+.dot{width:7px;height:7px;border-radius:50%;background:currentColor;flex:none}
+
+/* ---------- pomoćno ---------- */
+.stack{display:flex;flex-direction:column}
+.row{display:flex;align-items:center}
+.gap8{gap:8px}.gap12{gap:12px}.gap16{gap:16px}.gap24{gap:24px}
+.wrapf{flex-wrap:wrap}
+.mt8{margin-top:8px}.mt12{margin-top:12px}.mt16{margin-top:16px}
+.mt24{margin-top:24px}.mt32{margin-top:32px}.mt48{margin-top:48px}
+.center{text-align:center}
+.hr{height:1px;background:var(--line-2);border:0;margin:24px 0}
+.on-dark .hr{background:rgba(255,255,255,.14)}
+
+/* ---------- traka pregleda (samo /preview) ---------- */
+.pvbar{
+  position:sticky;top:0;z-index:99;background:var(--navy);color:#fff;
+  padding:10px var(--gut);display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  font-size:.82rem;border-bottom:1px solid rgba(255,255,255,.14);
+}
+.pvbar a{
+  padding:5px 11px;border-radius:999px;border:1px solid rgba(255,255,255,.22);
+  color:rgba(255,255,255,.88);transition:background .2s;white-space:nowrap;
+}
+.pvbar a:hover{background:rgba(255,255,255,.14);color:#fff}
+.pvbar a[aria-current]{background:#fff;color:var(--navy);border-color:#fff;font-weight:700}
+.pvbar .tag{
+  font-weight:800;letter-spacing:.12em;text-transform:uppercase;font-size:.66rem;
+  background:var(--coral-ink);color:#fff;padding:4px 9px;border-radius:5px;
+}
