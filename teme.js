@@ -408,17 +408,32 @@ function birac(opt = {}) {
   prikazi(_odabrana, false)
 }
 
+/* Stupac u `properties` koji drži temu — na JEDNOM mjestu.
+   U ovoj bazi `theme` već postoji i nosi vrijednosti od ranije (CHECK je pao
+   na postojećim redovima), pa dok se ne utvrdi što je unutra, promjena imena
+   je izmjena ove jedne linije. */
+const STUPAC = 'theme'
+
 /* Tema objekta: `?stil=` u adresi ima prednost (da se na pravoj stranici može
    isprobati svih osam prije nego se ijedna spremi), pa ono što je spremljeno u
-   bazi, pa „jadran”. Ako stupac `theme` još ne postoji, `prop.theme` je
-   `undefined` i sve radi kao i dosad. */
+   bazi, pa „jadran”. Ako stupac ne postoji, vrijednost je `undefined` i sve
+   radi kao i dosad. */
 function zaObjekt(prop = {}) {
   const q = izAdrese(null)
   if (q) return q
-  return TEME.some(t => t.id === prop.theme) ? prop.theme : 'jadran'
+  const v = prop[STUPAC]
+  return TEME.some(t => t.id === v) ? v : 'jadran'
+}
+
+/* Smije li se u taj stupac pisati?
+   NE ako u njemu već stoji nešto što nije ime teme — to je tuđi podatak i
+   spremanje bi ga tiho pojelo. Prazno i poznato ime teme su u redu. */
+function smijePisati(prop = {}) {
+  const v = prop[STUPAC]
+  return v == null || v === '' || TEME.some(t => t.id === v)
 }
 
 ;(window.Odmoria = window.Odmoria || {}).teme =
-  { TEME, OBJEKT, zaglavlje, ubaci, primijeni, izAdrese, birac, izBaze, slikeIz, zaObjekt,
+  { TEME, OBJEKT, zaglavlje, ubaci, primijeni, izAdrese, birac, izBaze, slikeIz, zaObjekt, smijePisati, STUPAC,
     odabrana: () => _odabrana, osvjezi: () => _osvjezi() }
 })()

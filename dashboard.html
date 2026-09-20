@@ -1149,7 +1149,7 @@ window.initTeme=()=>{
     hl.value=PROP.highlight||''
     T.birac({
       objekt:()=>T.izBaze(Object.assign({},PROP,{highlight:hl.value})),
-      odabrana:T.TEME.some(t=>t.id===PROP.theme)?PROP.theme:'jadran',
+      odabrana:T.zaObjekt(PROP),
       link:'temaOtvori',
       linkBaza:'/p/'+PROP.slug,
       naPromjenu:()=>window.markDirty&&window.markDirty()
@@ -1163,7 +1163,15 @@ window.initTeme=()=>{
 window.saveTema=async()=>{
   const T=window.Odmoria&&window.Odmoria.teme
   if(!T||!PROP)return
-  const u={theme:T.odabrana(),highlight:document.getElementById('fHighlight').value.trim()||null}
+  /* U ovoj bazi stupac `theme` postoji od ranije i nosi tuđe vrijednosti.
+     Ako je u njemu nešto što nije ime teme, ne diramo ga — spremanje bi ga
+     tiho pojelo. Istaknuta brojka se svejedno spremi. */
+  const u={highlight:document.getElementById('fHighlight').value.trim()||null}
+  if(T.smijePisati(PROP)) u[T.STUPAC]=T.odabrana()
+  else showA('izgled-alert','err',
+    'Stupac „'+T.STUPAC+'” u bazi već sadrži „'+PROP[T.STUPAC]+'”, što nije ime teme. '
+    +'Tema nije spremljena da se taj podatak ne izgubi — javi vrijednost pa da se '
+    +'stupac razriješi (vidi sql/add-theme-to-properties.sql).')
   const{error}=await sb.from('properties').update(u).eq('id',PROP.id)
   if(error){
     /* Stupci dolaze iz `sql/add-theme-to-properties.sql`. Dok se ne pokrene,
