@@ -367,3 +367,58 @@ html[data-tema="tamno"] .tag--terra{background:rgba(212,103,74,.22);color:#F3B39
 /* traka pregleda je iznad teme — mora ostati čitljiva u oba načina */
 html[data-tema="tamno"] .pv .badge{background:#A8462F;color:#fff}                 /* 5,86:1 */
 html[data-tema="tamno"] .sand-surface{background:#243447}
+
+/* ==========================================================================
+   POKRET — dodatni prijelazi (parovi 7-12 iz Figme)
+   ========================================================================== */
+
+/* 7 · Harmonika se otvara.
+   `block-size: auto` se ne može animirati bez `interpolate-size`, a
+   `::details-content` je jedini način da se dohvati sadržaj <details> bez JS-a.
+   Gdje to preglednik ne podržava, harmonika se otvori naglo — kao i dosad. */
+:root{ interpolate-size: allow-keywords; }
+.acc::details-content{
+  block-size:0;overflow:hidden;
+  transition:block-size .45s var(--ease), content-visibility .45s allow-discrete;
+}
+.acc[open]::details-content{block-size:auto}
+.acc summary .ch{transition:transform .45s var(--ease)}
+
+/* 8 + 9 · Prijelazi preko View Transitions API.
+   Preglednici bez podrške jednostavno zamijene sadržaj — ništa ne puca. */
+@view-transition{ navigation:auto }
+::view-transition-old(root),::view-transition-new(root){
+  animation-duration:.5s;animation-timing-function:cubic-bezier(.16,1,.3,1);
+}
+/* naziv objekta putuje s javne stranice u vodič umjesto da nestane */
+.vt-objekt{view-transition-name:naslov-objekta}
+
+/* 10 · Navigacija se smiri čim se krene listati */
+.nav{transition:background .4s var(--ease),backdrop-filter .4s var(--ease),
+     box-shadow .4s var(--ease),height .35s var(--ease)}
+.nav.is-stuck{height:60px}
+.nav .brand{transition:font-size .35s var(--ease)}
+.nav.is-stuck .brand{font-size:1.14rem}
+
+/* 11 · Cijena se prevrne umjesto da samo zamijeni znamenke */
+@keyframes cijenaRoll{
+  0%{opacity:1;transform:none}
+  40%{opacity:0;transform:translateY(-8px)}
+  41%{transform:translateY(8px)}
+  100%{opacity:1;transform:none}
+}
+.price.roll [data-price],.price.roll [data-per]{animation:cijenaRoll .4s var(--ease)}
+
+/* 12 · Prizor diše — vrlo sporo, da daje život a ne odvlači pažnju */
+@keyframes disanje{
+  from{transform:scale(1)}
+  to{transform:scale(1.08)}
+}
+.art--dise{animation:disanje 9s ease-in-out infinite alternate;transform-origin:60% 40%}
+
+@media (prefers-reduced-motion:reduce){
+  .art--dise{animation:none}
+  .acc::details-content{transition:none}
+  .price.roll [data-price],.price.roll [data-per]{animation:none}
+  ::view-transition-old(root),::view-transition-new(root){animation:none}
+}

@@ -87,6 +87,7 @@ preview/
 ├── dashboard.html   editor.html      system.html
 ├── prvi-dan.html   # prazan račun: napredak postavljanja, pločice bez podataka
 ├── greska.html     # baza ne odgovara / istekao link
+├── admin.html      # redizajn vlasničkog panela: rast, MRR, istek, tablica s pretragom
 ├── ui.css          # ljuska aplikacije, paneli, polja, GRAFIKONI, dijalozi,
 │                   #   tamna tema vodiča + ispravci kontrasta
 └── scene.js        # nacrtani prizori (isti SVG-ovi kao u p.html) + QR ilustracija
@@ -102,7 +103,7 @@ Nema druge palete i nema duplog dizajn sustava.
   i **razlikuju se od tablice `plans`**. Tablica nije dirana i neće biti dok dizajn
   ne bude odobren.
 - `vercel.json` nosi `X-Robots-Tag: noindex, nofollow` za `/preview/(.*)`.
-- Provjereno Playwrightom na 1440 / 834 / 390 px, devet stranica, 27 provjera:
+- Provjereno Playwrightom na 1440 / 834 / 390 px, deset stranica, 30 provjera:
   nema vodoravnog prelijevanja, nijedan tekst ne pada ispod WCAG AA, nema greške
   u konzoli, i svako `[data-rv]` se stvarno otkrije. Tamna tema vodiča provjerena
   zasebno — i ona prolazi AA u cijelosti.
@@ -127,6 +128,44 @@ redefinira tokene iz `atmosphere.css`.
 **QR kod je ilustracija, ne pravi kod.** Crta se determinističkim uzorkom iz teksta
 linka, s tri tražila, da zaslon izgleda kako će izgledati. Pravi kod generira se
 tek kad se ovo spoji na bazu; dotad uz svaki QR stoji napomena.
+
+### Analitika po državama — traži izmjenu sheme
+
+`preview/dashboard.html` ima panel „Iz kojih država dolaze”, ali **to još nije
+moguće s postojećom bazom**. `page_views` ima samo `id`, `property_id`,
+`view_type` i `timestamp`, a upis ide **izravno iz preglednika** (`p.html:725`,
+`h.html:506`) u Supabase — nema poslužiteljskog koraka pa IP nitko ne vidi.
+
+Da proradi, treba oboje:
+
+```sql
+alter table page_views
+  add column country text,   -- ISO dvoslovno, iz x-vercel-ip-country
+  add column lang    text;   -- navigator.language
+```
+
+i mali `api/track.js` koji pročita zaglavlje `x-vercel-ip-country` (Vercel ga
+daje besplatno na svakom serverless pozivu) pa upiše red umjesto klijenta.
+Jezik preglednika može se skupljati i bez tog koraka, samo uz novi stupac.
+Napomena o tome stoji i u samom panelu, da se ne zaboravi.
+
+### Admin panel — redizajn u pregledu
+
+Živi `admin.html` (185 linija) ima četiri pločice i tablicu domaćina s odabirom
+plana. `preview/admin.html` je prijedlog koji **koristi isključivo podatke koji
+već postoje** (`properties`, `subscriptions`, `bookings`, `plans`) i dodaje:
+
+- procijenjeni **MRR** iz `plans` × broj aktivnih pretplata (ne iz Stripea —
+  checkout nije spojen),
+- **rast** novih domaćina po mjesecima,
+- **raspodjelu planova** rangirano,
+- **„Uskoro istječe”** — pretplate koje istječu u 14 dana, s radnjom,
+- tablicu s **pretragom, filtrom i sortiranjem**, izvozom u CSV, i gumbom
+  „Spremi” koji se budi tek kad se plan stvarno promijeni.
+
+Brojke u panelu su međusobno usklađene: raspodjela planova (14/11/6/3 = 34) stoji
+zasebno od uzorka od 12 redaka u tablici, jer je izvođenje iz uzorka davalo zbroj
+koji se ne slaže s MRR-om.
 
 ### Grafikoni u dashboardu
 
@@ -172,6 +211,18 @@ Uz to, tri stvari koje je lako ponoviti:
   vidi. Dogodilo se dvaput.
 - **`<dialog>` mora stajati u DOM-u prije skripti koje ga traže.** Ako je ispod
   `<script>`, `getElementById` vraća `null`.
+- **Figma `node.query()` puca na ne-ASCII znakove i razmake u selektoru.**
+  `[name=red-Klima uređaj]` baca `Invalid selector`. Imena nodova koje se
+  dohvaćaju moraju biti ASCII bez razmaka (`red-klima`).
+- **Pali `use_figma` poziv povuče se u cijelosti** — ništa ne ostane na canvasu,
+  pa se smije jednostavno ponoviti ispravljen.
+
+Dodatni pokret (parovi 7–12 u Figmi, u kodu pod `/preview/`): harmonika se
+otvara preko `::details-content` uz `interpolate-size: allow-keywords`, tema i
+prijelaz s javne stranice na vodič idu preko **View Transitions API**
+(`@view-transition` + `view-transition-name` na zajedničkom elementu), navigacija
+se skupi na `.is-stuck`, cijena se prevrne, a nacrtani prizor „diše” 9 s u
+petlji. Sve staje na `prefers-reduced-motion`.
 
 U tamnoj temi pazi na komponente koje boju uzimaju iz tokena koji se obrnu:
 `.btn--fill`, `.btn--dark`, `.btn--light`, `.chip--glass` i sve `.tag--*` imaju

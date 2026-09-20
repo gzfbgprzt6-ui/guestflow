@@ -102,6 +102,7 @@ html[data-tema="tamno"] .gh__art{opacity:.55}
   <a href="/preview/dashboard.html">Dashboard</a>
   <a href="/preview/prvi-dan.html">Prvi dan</a>
   <a href="/preview/greska.html">Greške</a>
+  <a href="/preview/admin.html">Admin</a>
   <a href="/preview/editor.html">Uređivanje</a>
   <a href="/preview/system.html">Sustav</a>
   <span class="note">prikaz dizajna · nije spojeno na bazu</span>
@@ -120,7 +121,7 @@ html[data-tema="tamno"] .gh__art{opacity:.55}
       <span class="mask-line"><span>Dobrodošli,</span></span>
       <span class="mask-line"><span class="italic">obitelj Kovač.</span></span>
     </h1>
-    <p class="lead mt16" data-rv="up" data-rv-delay="380">
+    <p class="lead mt16 vt-objekt" data-rv="up" data-rv-delay="380">
       Apartman Aurora · Rovinj · 12. – 19. srpnja 2026.
     </p>
   </div>
@@ -299,14 +300,23 @@ html[data-tema="tamno"] .gh__art{opacity:.55}
     ? spremljeno === 'tamno'
     : matchMedia('(prefers-color-scheme: dark)').matches;
 
-  function primijeni(tamno) {
+  function postavi(tamno) {
     root.dataset.tema = tamno ? 'tamno' : 'svijetlo';
     btn.setAttribute('aria-pressed', String(tamno));
     ic.textContent = tamno ? '☀️' : '🌙';
     tx.textContent = tamno ? 'Svijetlo' : 'Tamno';
     try { localStorage.setItem(KEY, tamno ? 'tamno' : 'svijetlo'); } catch (_) {}
   }
-  primijeni(tamno0);
+  /* Prijelaz preko View Transitions — bez njega noću bljesne bijelo.
+     Preglednik bez podrške samo zamijeni temu, kao i dosad. */
+  function primijeni(tamno) {
+    if (document.startViewTransition && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.startViewTransition(() => postavi(tamno));
+    } else {
+      postavi(tamno);
+    }
+  }
+  postavi(tamno0);                       // prvo postavljanje bez prijelaza
   btn.addEventListener('click', () => primijeni(root.dataset.tema !== 'tamno'));
 })();
 

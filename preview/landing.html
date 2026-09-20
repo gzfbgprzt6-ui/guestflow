@@ -113,6 +113,7 @@ details.q p{margin:14px 0 0;color:var(--ink-70);font-size:.95rem;max-width:70ch}
   <a href="/preview/dashboard.html">Dashboard</a>
   <a href="/preview/prvi-dan.html">Prvi dan</a>
   <a href="/preview/greska.html">Greške</a>
+  <a href="/preview/admin.html">Admin</a>
   <a href="/preview/editor.html">Uređivanje</a>
   <a href="/preview/system.html">Sustav</a>
   <span class="note">prikaz dizajna · nije spojeno na bazu</span>
@@ -134,7 +135,7 @@ details.q p{margin:14px 0 0;color:var(--ink-70);font-size:.95rem;max-width:70ch}
 
 <!-- ======================= ZAGLAVLJE ======================= -->
 <section class="hero" data-scene>
-  <div class="hero__art art art--zalazak" data-art="zalazak"></div>
+  <div class="hero__art art art--zalazak art--dise" data-art="zalazak"></div>
   <div class="wrap hero__in">
     <p class="kicker" data-rv="fade" data-rv-now>Za iznajmljivače na Jadranu</p>
     <h1 class="mt16" data-rv-now>
@@ -490,6 +491,10 @@ const tb=[...document.querySelectorAll('.toggle button')]
 tb.forEach(b=>b.addEventListener('click',()=>{
   tb.forEach(x=>x.setAttribute('aria-pressed',String(x===b)))
   const y=b.dataset.cyc==='y'
+  /* prevrtanje: klasa se skine pa vrati da se animacija ponovno okine */
+  document.querySelectorAll('.price').forEach(el=>{
+    el.classList.remove('roll'); void el.offsetWidth; el.classList.add('roll')
+  })
   document.querySelectorAll('[data-price]').forEach(p=>{p.textContent=y?p.dataset.y:p.dataset.m})
   document.querySelectorAll('[data-per]').forEach(p=>{p.textContent=y?' /god':' /mj'})
 }))

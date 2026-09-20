@@ -42,6 +42,7 @@
   <a href="/preview/dashboard.html" aria-current="page">Dashboard</a>
   <a href="/preview/prvi-dan.html">Prvi dan</a>
   <a href="/preview/greska.html">Greške</a>
+  <a href="/preview/admin.html">Admin</a>
   <a href="/preview/editor.html">Uređivanje</a>
   <a href="/preview/system.html">Sustav</a>
   <span class="note">prikaz dizajna · nije spojeno na bazu</span>
@@ -202,6 +203,58 @@
           </div>
           <div class="meter meter--sea mt8"><i data-meter="73"></i></div>
           <p class="small mt8">73 % — lani u isto doba 61 %</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ ODAKLE SU GOSTI (zaključano) ============ -->
+    <section class="panel mt24" data-rv="up" data-gate="pro">
+      <div class="panel__hd">
+        <div>
+          <h3>Iz kojih država dolaze</h3>
+          <p class="small mt8">Zadnjih 30 dana · udio u pregledima javne stranice</p>
+        </div>
+        <span class="tag tag--mut" data-gate-tag>Pro</span>
+      </div>
+      <div data-gate-body>
+        <div class="g g-main" style="align-items:start">
+          <div>
+            <div class="rank" id="drzRank"></div>
+            <details class="tableview">
+              <summary>Prikaži kao tablicu</summary>
+              <table id="drzTable"></table>
+            </details>
+          </div>
+          <div>
+            <div class="panel" style="background:var(--sand);border-color:transparent">
+              <p class="kicker bare" style="font-size:.64rem">Što ovo mijenja</p>
+              <p class="small mt12" style="color:var(--ink)">
+                Tri četvrtine gostiju dolazi s njemačkog i talijanskog govornog područja.
+                To je najjači argument za višejezični vodič — i podatak koji do sada niste imali.
+              </p>
+              <hr class="hr">
+              <p class="small">Najčešći jezik preglednika: <b>njemački (38 %)</b></p>
+            </div>
+            <div class="panel mt16" style="background:rgba(233,161,59,.10);border-color:rgba(233,161,59,.34)">
+              <p style="font-weight:700;font-size:.9rem">Ovo još nije spojeno</p>
+              <p class="small mt8">
+                Tablica <code>page_views</code> danas ima samo <code>property_id</code>,
+                <code>view_type</code> i <code>timestamp</code> — nema odakle država.
+                Treba jedan stupac i jedan poziv preko poslužitelja:
+              </p>
+              <pre class="mono mt12" style="background:var(--shell);border:1px solid var(--line);
+                   border-radius:var(--r-sm);padding:12px 14px;overflow:auto;font-size:.72rem;
+                   line-height:1.6;margin:0">alter table page_views
+  add column country text,
+  add column lang    text;</pre>
+              <p class="small mt12">
+                Upis danas ide izravno iz preglednika u Supabase, pa IP nitko ne vidi.
+                Rješenje je mali <code>api/track.js</code> koji pročita zaglavlje
+                <code>x-vercel-ip-country</code> (Vercel ga daje besplatno) i upiše red.
+                Jezik se može uzeti i bez toga, iz <code>navigator.language</code>.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -637,6 +690,16 @@
     {k:'X',v:9,full:'Listopad'},{k:'XI',v:2,full:'Studeni'},{k:'XII',v:0,full:'Prosinac'}]
   const drawMonths=()=>colChart($('#monthsChart'),MJ,{ramp:S,tip:$('#monthsTip'),h:250})
   table($('#monthsTable'),['Mjesec','Zauzetih noći'],MJ.map(r=>[r.full,r.v]))
+
+  /* iz kojih država dolaze — rangirano, sekvencijalna rampa, „Ostalo” na kraju.
+     Sedam je gornja granica prije nego lista prestane biti čitljiva, pa rep ide u „Ostalo”. */
+  const DRZ=[{k:'Njemačka',v:432},{k:'Italija',v:318},{k:'Austrija',v:186},
+             {k:'Slovenija',v:142},{k:'Hrvatska',v:98},{k:'Nizozemska',v:61},
+             {k:'Ostalo',v:47}]
+  rank($('#drzRank'),DRZ,T)
+  const drzUk=DRZ.reduce((a,r)=>a+r.v,0)
+  table($('#drzTable'),['Država','Pregleda','Udio'],
+    DRZ.map(r=>[r.k,fmt(r.v),Math.round(r.v/drzUk*100)+' %']))
 
   /* sekcije vodiča */
   rank($('#secRank'),[{k:'Wi-Fi i šifra',v:46},{k:'Dolazak',v:44},{k:'Upute',v:31},
