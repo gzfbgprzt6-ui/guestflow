@@ -364,6 +364,9 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .phone-hero small { font-size: .49rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
 .phone-hero h4 { margin: 5px 0 2px; font-family: "Fraunces", Georgia, serif; font-size: 1.5rem; font-weight: 400; line-height: 1; }
 .phone-hero p { margin: 0; color: rgba(255,255,255,.7); font-size: .52rem; }
+/* Zaglavlje teme u pregledu: ista sirina i visina kao `.phone-hero`, bez
+   radijusa i sjene koje minijatura u bircu ima. */
+#prev-tema .th--mini { height: 190px; border-radius: 0; box-shadow: none; --hs: .26; }
 .phone-content { padding: 15px; }
 .welcome-box { margin-bottom: 12px; padding: 14px; border-radius: 11px; background: var(--yellow-soft); }
 .welcome-box small { display: block; margin-bottom: 5px; color: var(--copper); font-size: .46rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
@@ -949,13 +952,14 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
         </section>
       </div>
 
-      <aside class="preview-pane" aria-label="Pregled vodiča">
+      <aside class="preview-pane tema-okruzje" aria-label="Pregled vodiča">
         <div class="preview-head"><strong>Pregled gosta</strong><span>● Uživo</span></div>
         <div class="preview-toggle"><button class="active" type="button" onclick="setPreviewMode('public',this)">Javni prikaz</button><button type="button" onclick="setPreviewMode('private',this)">Privatni vodič</button></div>
         <div class="phone">
           <span class="phone-notch"></span>
           <div class="phone-screen guest-public" id="publicPreview">
             <div class="phone-hero" id="prev-hero"><small>Dobro došli</small><h4 id="prev-name">—</h4><p id="prev-loc">—</p></div>
+            <div id="prev-tema" hidden></div>
             <div class="phone-content">
               <div class="welcome-box"><small>Poruka domaćina</small><p id="prev-welcome">—</p></div>
               <div class="phone-stats"><div class="phone-stat"><strong id="prev-guests">—</strong><span>Gosti</span></div><div class="phone-stat"><strong id="prev-rooms">—</strong><span>Sobe</span></div><div class="phone-stat"><strong id="prev-type">—</strong><span>Vrsta</span></div><div class="phone-stat"><strong id="prev-minstay">—</strong><span>Min. noći</span></div></div>
@@ -1152,12 +1156,34 @@ window.initTeme=()=>{
       odabrana:T.zaObjekt(PROP),
       link:'temaOtvori',
       linkBaza:'/p/'+PROP.slug,
-      naPromjenu:()=>window.markDirty&&window.markDirty()
+      naPromjenu:id=>{window.markDirty&&window.markDirty();telefon(id)}
     })
     /* Upisana brojka se odmah vidi u pregledu — inace se ne zna sto ce ispasti */
-    hl.addEventListener('input',()=>{window.markDirty&&window.markDirty();T.osvjezi()})
+    hl.addEventListener('input',()=>{window.markDirty&&window.markDirty();T.osvjezi();telefon()})
+    telefon()
     TEMA_SPREMNA=true
   }
+}
+
+/* Stalni „Pregled gosta" u desnom stupcu ima vlastito zakucano zaglavlje koje
+   ne zna za teme. Na zadanoj temi ostaje netaknut; na svakoj drugoj se sakrije
+   i umjesto njega ide pravi raspored te teme, smanjen na sirinu telefona. */
+function telefon(id){
+  const T=window.Odmoria&&window.Odmoria.teme
+  if(!T||!PROP)return
+  const staro=document.getElementById('prev-hero')
+  const novo=document.getElementById('prev-tema')
+  if(!staro||!novo)return
+  const t=id||T.odabrana()
+  const hl=document.getElementById('fHighlight')
+  if(t==='jadran'){
+    staro.hidden=false; novo.hidden=true; novo.innerHTML=''
+    novo.removeAttribute('data-stil')
+    return
+  }
+  staro.hidden=true; novo.hidden=false
+  novo.setAttribute('data-stil',t)
+  T.ubaci(novo,t,{objekt:T.izBaze(Object.assign({},PROP,{highlight:hl?hl.value:''})),mini:true})
 }
 
 window.saveTema=async()=>{
