@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Vaš vodič — Apartman Aurora (pregled)</title>
+<link rel="stylesheet" href="/atmosphere.css">
+<link rel="stylesheet" href="/preview/ui.css">
+<style>
+.shell{max-width:780px;margin-inline:auto;padding:0 var(--gut) 96px}
+
+/* zaglavlje */
+.gh{position:relative;overflow:hidden;padding-block:clamp(40px,7vw,72px) clamp(70px,10vw,110px)}
+.gh__art{position:absolute;inset:0;z-index:0}
+.gh__in{position:relative;z-index:2}
+.gh h1{font-size:clamp(2rem,5vw,3.4rem)}
+
+/* kartice */
+.blk{background:var(--shell);border:1px solid var(--line-2);border-radius:var(--r-lg);
+  padding:clamp(22px,3.4vw,32px);margin-top:20px;box-shadow:0 26px 54px -44px rgba(20,32,46,.5)}
+.blk--lift{margin-top:-56px;position:relative;z-index:3}
+
+/* tajne vrijednosti */
+.sec-row{display:flex;justify-content:space-between;align-items:center;gap:16px;
+  padding:17px 19px;border-radius:var(--r-md);background:var(--cream);border:1px solid var(--line-2)}
+.sec-row+.sec-row{margin-top:11px}
+.sec-row .val{font-family:ui-monospace,'SF Mono',monospace;font-size:1.3rem;font-weight:700;
+  letter-spacing:.1em;transition:filter .6s var(--ease),opacity .6s var(--ease)}
+.sec-row .val.lock{filter:blur(8px);opacity:.5;user-select:none}
+.lockbox{display:flex;gap:14px;align-items:flex-start;background:rgba(233,161,59,.12);
+  border:1px solid rgba(233,161,59,.34);border-radius:var(--r-md);padding:17px 19px;margin-top:18px}
+
+/* koraci */
+.step{display:flex;gap:18px;padding:18px 0;border-bottom:1px solid var(--line-2)}
+.step:last-child{border-bottom:0;padding-bottom:0}
+.step .n{flex:none;width:32px;height:32px;border-radius:50%;background:var(--night);color:#fff;
+  display:grid;place-items:center;font-size:.82rem;font-weight:800}
+
+/* harmonika */
+.acc{border-bottom:1px solid var(--line-2)}
+.acc:last-child{border-bottom:0}
+.acc summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:14px;
+  padding:17px 0;font-weight:700;font-size:.98rem}
+.acc summary::-webkit-details-marker{display:none}
+.acc summary .ic{flex:none;width:34px;height:34px;border-radius:11px;background:var(--sand);
+  display:grid;place-items:center;font-size:.95rem}
+.acc summary .ch{margin-left:auto;color:var(--terra-d);font-weight:800;transition:transform .4s var(--ease)}
+.acc[open] summary .ch{transform:rotate(180deg)}
+.acc p{margin:0 0 18px 48px;color:var(--ink-70);font-size:.94rem}
+
+/* preporuke */
+.rec{display:flex;gap:15px;padding:16px 0;border-bottom:1px solid var(--line-2);align-items:flex-start}
+.rec:last-child{border-bottom:0}
+.rec .ic{flex:none;width:42px;height:42px;border-radius:13px;background:var(--sand);display:grid;place-items:center}
+
+/* domaćin */
+.host{background:var(--night);color:#fff;border-radius:var(--r-lg);padding:28px;
+  display:flex;gap:20px;align-items:center;flex-wrap:wrap;margin-top:20px}
+
+/* donja traka */
+.tabs{position:sticky;bottom:0;z-index:40;background:rgba(255,252,247,.94);backdrop-filter:blur(16px);
+  border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:10px 0 13px}
+.tabs a{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:.64rem;
+  font-weight:800;letter-spacing:.06em;color:var(--ink-mut);text-transform:uppercase}
+.tabs a b{font-size:1.1rem;font-weight:400}
+.tabs a[aria-current]{color:var(--terra-d)}
+
+/* ---------- tamna tema ----------
+   Većinu nosi ui.css preko tokena (--cream, --shell, --sand…).
+   Ovdje su samo mjesta s tvrdo upisanim bojama. */
+html[data-tema="tamno"] .host{background:#243447}
+html[data-tema="tamno"] .step .n{background:#33506B}
+html[data-tema="tamno"] .tabs{background:rgba(20,32,46,.94);border-top-color:rgba(255,255,255,.14)}
+html[data-tema="tamno"] .blk{box-shadow:0 26px 54px -44px rgba(0,0,0,.8)}
+html[data-tema="tamno"] .sec-row .val{color:#fff}
+.lock-nas{color:#7A5310}
+html[data-tema="tamno"] .lock-nas{color:#FFD9A0}
+html[data-tema="tamno"] .gh__art{opacity:.55}
+
+/* prekidač teme */
+/* Prekidač leži na nacrtanom prizoru, ali mu CSS-lanac pozadine vodi do kreme.
+   Zato nosi vlastitu tamnu plohu — bijeli tekst ostaje čitljiv i ako prizor
+   ne iscrta: 6,79:1 na kremi, 10,43:1 na prizoru. */
+.tema{
+  display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.22);
+  background:rgba(20,32,46,.72);color:#fff;border-radius:999px;padding:8px 15px;
+  font-size:.8rem;font-weight:700;cursor:pointer;backdrop-filter:blur(10px);
+  transition:background .3s var(--ease);
+}
+.tema:hover{background:rgba(20,32,46,.88)}
+</style>
+</head>
+<body class="grain">
+
+<div class="pv">
+  <span class="badge">Pregled</span>
+  <a href="/preview/">Sve stranice</a>
+  <a href="/preview/landing.html">Naslovnica</a>
+  <a href="/preview/public.html">Javna stranica</a>
+  <a href="/preview/guide.html" aria-current="page">Vodič za gosta</a>
+  <a href="/preview/dashboard.html">Dashboard</a>
+  <a href="/preview/prvi-dan.html">Prvi dan</a>
+  <a href="/preview/greska.html">Greške</a>
+  <a href="/preview/admin.html">Admin</a>
+  <a href="/preview/editor.html">Uređivanje</a>
+  <a href="/preview/system.html">Sustav</a>
+  <span class="note">prikaz dizajna · nije spojeno na bazu</span>
+</div>
+
+<header class="gh" data-scene>
+  <div class="gh__art art art--plava" data-art="plava"></div>
+  <div class="shell gh__in" style="padding-bottom:0">
+    <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap" data-rv="fade" data-rv-now>
+      <span class="chip chip--glass">🔒 Privatna stranica · samo za vas</span>
+      <button class="tema" id="tema" aria-pressed="false">
+        <span id="temaIkona">🌙</span><span id="temaTekst">Tamno</span>
+      </button>
+    </div>
+    <h1 class="mt16" data-rv-now>
+      <span class="mask-line"><span>Dobrodošli,</span></span>
+      <span class="mask-line"><span class="italic">obitelj Kovač.</span></span>
+    </h1>
+    <p class="lead mt16 vt-objekt" data-rv="up" data-rv-delay="380">
+      Apartman Aurora · Rovinj · 12. – 19. srpnja 2026.
+    </p>
+  </div>
+</header>
+
+<main class="shell">
+
+  <!-- ---- PRISTUP ---- -->
+  <section class="blk blk--lift" data-rv="up">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap">
+      <div><p class="kicker">Pristup</p>
+        <h2 class="mt8" style="font-size:1.5rem">Wi-Fi i šifra vrata</h2></div>
+      <span class="tag tag--warn" id="state">Otključava se za 3 dana</span>
+    </div>
+
+    <div class="mt24">
+      <div class="sec-row">
+        <div><div class="small">Wi-Fi mreža</div><div class="val" style="font-size:1.05rem">Aurora_5G</div></div>
+        <button class="btn btn--ghost btn--sm" data-copy="Aurora_5G"><span data-copy-label>Kopiraj</span></button>
+      </div>
+      <div class="sec-row">
+        <div><div class="small">Wi-Fi lozinka</div><div class="val lock" data-secret>maslina2026</div></div>
+        <button class="btn btn--ghost btn--sm" data-lockbtn disabled style="opacity:.4">Kopiraj</button>
+      </div>
+      <div class="sec-row">
+        <div><div class="small">Šifra vrata</div><div class="val lock" data-secret>4 2 7 1</div></div>
+        <button class="btn btn--ghost btn--sm" data-lockbtn disabled style="opacity:.4">Kopiraj</button>
+      </div>
+    </div>
+
+    <div class="lockbox">
+      <span style="font-size:1.15rem">🔒</span>
+      <div>
+        <b class="lock-nas">Još nije vrijeme</b>
+        <p class="small mt8" style="color:var(--ink-70)">
+          Lozinka i šifra vrata prikazuju se od sat vremena prije prijave (12. srpnja u 14:00)
+          do odjave. Stranica se sama osvježi — ne morate ništa raditi.
+        </p>
+        <button class="btn btn--dark btn--sm mt12" id="demo">Prikaži kako izgleda otključano</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---- DOLAZAK ---- -->
+  <section class="blk" data-rv="up">
+    <p class="kicker">Dolazak</p>
+    <h2 class="mt8" style="font-size:1.5rem">Put do vrata</h2>
+    <div class="mt16" data-rv-stagger="80">
+      <div class="step" data-rv="up"><div class="n">1</div><div>
+        <b>Adresa: Ulica Sv. Križa 14, Rovinj</b>
+        <p class="small mt8">Navigacija vas vodi do ulaza u staru gradsku jezgru.
+           Zadnjih 80 m je pješačka zona.</p>
+        <a href="#" class="btn btn--ghost btn--sm mt12">Otvori u Google Maps <span class="arr">→</span></a>
+      </div></div>
+      <div class="step" data-rv="up"><div class="n">2</div><div>
+        <b>Parkirajte na mjestu broj 3</b>
+        <p class="small mt8">Dvorište iza zelenih vrata, prvo mjesto desno.
+           Uključeno u cijenu, ne trebate karticu.</p></div></div>
+      <div class="step" data-rv="up"><div class="n">3</div><div>
+        <b>Ulaz je drugi kat, lijevo</b>
+        <p class="small mt8">Kameno stubište bez lifta. Ako nosite teže torbe, javite se — pomoći ćemo.</p></div></div>
+      <div class="step" data-rv="up"><div class="n">4</div><div>
+        <b>Upišite šifru na tipkovnicu</b>
+        <p class="small mt8">Šifra se pojavi gore na dan dolaska. Nakon unosa pritisnite kvačicu.</p></div></div>
+    </div>
+    <hr class="hr">
+    <div style="display:flex;gap:32px;flex-wrap:wrap">
+      <div><div class="small">Prijava</div><b>12. srp · od 15:00</b></div>
+      <div><div class="small">Odjava</div><b>19. srp · do 10:00</b></div>
+    </div>
+  </section>
+
+  <!-- ---- UPUTE ---- -->
+  <section class="blk" data-rv="up">
+    <p class="kicker">Upute</p>
+    <h2 class="mt8" style="font-size:1.5rem">Kako što radi</h2>
+    <div class="mt12">
+      <details class="acc" open><summary><span class="ic">❄️</span> Klima uređaj <span class="ch">▾</span></summary>
+        <p>Daljinski je u ladici ispod TV-a. Tipka MODE → snježna pahulja za hlađenje, sunce za grijanje.
+           Preporučeno 24 °C. Molimo ugasite kad izlazite.</p></details>
+      <details class="acc"><summary><span class="ic">🚿</span> Topla voda <span class="ch">▾</span></summary>
+        <p>Bojler 80 l uključen je stalno, ne treba ga paliti. Ako voda zahladi,
+           dovoljno je 30 minuta da se zagrije.</p></details>
+      <details class="acc"><summary><span class="ic">🧺</span> Perilica rublja <span class="ch">▾</span></summary>
+        <p>U kupaonici ispod police. Program ECO 50° traje 2 h i dovoljan je za sve.
+           Deterdžent je u ormariću iznad.</p></details>
+      <details class="acc"><summary><span class="ic">🍳</span> Kuhinja <span class="ch">▾</span></summary>
+        <p>Ploča je indukcijska — pali se dodirom i drži prst 2 sekunde.
+           Kava, ulje, sol i začini su vaši, slobodno koristite.</p></details>
+      <details class="acc"><summary><span class="ic">🗑️</span> Otpad <span class="ch">▾</span></summary>
+        <p>Kontejneri su na kraju ulice, lijevo. Plavi je papir, žuti plastika,
+           zeleni staklo, sivi ostalo.</p></details>
+    </div>
+  </section>
+
+  <!-- ---- PREPORUKE ---- -->
+  <section class="blk" data-rv="up">
+    <p class="kicker">Naše preporuke</p>
+    <h2 class="mt8" style="font-size:1.5rem">Gdje mi jedemo i kupamo se</h2>
+    <div class="mt12" data-rv-stagger="70">
+      <div class="rec" data-rv="up"><div class="ic">🍽️</div>
+        <div><b>Konoba Veli Jože</b><div class="small">Domaća istarska kuhinja, rezervirajte dan ranije.
+          Fuži s tartufima.</div></div><span class="small" style="margin-left:auto;white-space:nowrap">5 min</span></div>
+      <div class="rec" data-rv="up"><div class="ic">🏖️</div>
+        <div><b>Uvala Škaraba</b><div class="small">Stjenovita, bez gužve, sjena borova poslije 15 h.</div></div>
+        <span class="small" style="margin-left:auto;white-space:nowrap">20 min</span></div>
+      <div class="rec" data-rv="up"><div class="ic">☕</div>
+        <div><b>Caffe Valentino</b><div class="small">Kava na stijenama iznad mora. Idite oko 19 h zbog zalaska.</div></div>
+        <span class="small" style="margin-left:auto;white-space:nowrap">10 min</span></div>
+      <div class="rec" data-rv="up"><div class="ic">🛥️</div>
+        <div><b>Izlet na Crveni otok</b><div class="small">Brodić s rive svakih sat vremena, 8 € povratno.</div></div>
+        <span class="small" style="margin-left:auto;white-space:nowrap">15 min</span></div>
+      <div class="rec" data-rv="up"><div class="ic">🛒</div>
+        <div><b>Tržnica</b><div class="small">Svako jutro do 13 h. Sir, pršut, breskve.</div></div>
+        <span class="small" style="margin-left:auto;white-space:nowrap">5 min</span></div>
+    </div>
+  </section>
+
+  <!-- ---- PRAVILA ---- -->
+  <section class="blk" data-rv="up">
+    <p class="kicker">Kućna pravila</p>
+    <h2 class="mt8" style="font-size:1.5rem">Nekoliko molbi</h2>
+    <div class="mt12">
+      <div class="rec"><div class="ic">🌙</div><div><b>Tišina od 22 do 7</b>
+        <div class="small">Susjedi su stalni stanari, zidovi su stari i tanki.</div></div></div>
+      <div class="rec"><div class="ic">🚭</div><div><b>Pušenje samo na terasi</b>
+        <div class="small">Pepeljara je na stoliću.</div></div></div>
+      <div class="rec"><div class="ic">👟</div><div><b>Obuća se izuva na ulazu</b>
+        <div class="small">Papuče su u ormaru u hodniku.</div></div></div>
+      <div class="rec"><div class="ic">🔑</div><div><b>Ključ ostavite u sefu</b>
+        <div class="small">Pri odjavi vratite ključ u sef i zatvorite poklopac.</div></div></div>
+    </div>
+  </section>
+
+  <!-- ---- DOMAĆIN ---- -->
+  <section class="host" data-rv="up">
+    <div style="width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,.12);
+                display:grid;place-items:center;font-family:'Fraunces',serif;font-size:1.4rem">M</div>
+    <div>
+      <div style="font-family:'Fraunces',serif;font-size:1.25rem;color:#fff">Marina, vaša domaćica</div>
+      <p class="small mt8" style="color:rgba(255,255,255,.7)">
+        Nešto ne radi ili vam nešto treba? Javite se bilo kad.</p>
+    </div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-left:auto">
+      <a href="#" class="btn btn--fill btn--sm">Nazovi</a>
+      <a href="#" class="btn btn--light btn--sm">WhatsApp</a>
+    </div>
+  </section>
+
+  <p class="small center mt24">Ovaj link vrijedi do 19. srpnja 2026. Ne dijelite ga dalje.</p>
+</main>
+
+<nav class="tabs">
+  <a href="#" aria-current="page"><b>🔑</b>Pristup</a>
+  <a href="#"><b>🧭</b>Dolazak</a>
+  <a href="#"><b>💡</b>Upute</a>
+  <a href="#"><b>📍</b>Preporuke</a>
+  <a href="#"><b>💬</b>Domaćin</a>
+</nav>
+
+<script src="/preview/scene.js"></script>
+<script src="/motion.js" defer></script>
+<script>
+/* ---- tamna tema: prati postavku uređaja, pamti ručni odabir ----
+   Spremanje je u try/catch jer localStorage zna baciti u privatnom prozoru. */
+;(() => {
+  const root = document.documentElement;
+  const btn = document.getElementById('tema');
+  const ic = document.getElementById('temaIkona');
+  const tx = document.getElementById('temaTekst');
+  const KEY = 'odmoria-tema';
+
+  let spremljeno = null;
+  try { spremljeno = localStorage.getItem(KEY); } catch (_) {}
+  const tamno0 = spremljeno
+    ? spremljeno === 'tamno'
+    : matchMedia('(prefers-color-scheme: dark)').matches;
+
+  function postavi(tamno) {
+    root.dataset.tema = tamno ? 'tamno' : 'svijetlo';
+    btn.setAttribute('aria-pressed', String(tamno));
+    ic.textContent = tamno ? '☀️' : '🌙';
+    tx.textContent = tamno ? 'Svijetlo' : 'Tamno';
+    try { localStorage.setItem(KEY, tamno ? 'tamno' : 'svijetlo'); } catch (_) {}
+  }
+  /* Prijelaz preko View Transitions — bez njega noću bljesne bijelo.
+     Preglednik bez podrške samo zamijeni temu, kao i dosad. */
+  function primijeni(tamno) {
+    if (document.startViewTransition && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.startViewTransition(() => postavi(tamno));
+    } else {
+      postavi(tamno);
+    }
+  }
+  postavi(tamno0);                       // prvo postavljanje bez prijelaza
+  btn.addEventListener('click', () => primijeni(root.dataset.tema !== 'tamno'));
+})();
+
+/* Samo prikaz dizajna. U pravoj aplikaciji vrijednosti ne postoje u HTML-u
+   dok se prozor ne otvori — ovdje su upisane jer je ovo mockup bez baze. */
+const btn=document.getElementById('demo'), st=document.getElementById('state')
+let open=false
+btn.addEventListener('click',()=>{
+  open=!open
+  document.querySelectorAll('[data-secret]').forEach(e=>e.classList.toggle('lock',!open))
+  document.querySelectorAll('[data-lockbtn]').forEach(e=>{e.disabled=!open;e.style.opacity=open?1:.4})
+  st.className='tag'+(open?'':' tag--warn')
+  st.textContent=open?'Otključano — dobrodošli':'Otključava se za 3 dana'
+  btn.textContent=open?'Vrati zaključano stanje':'Prikaži kako izgleda otključano'
+})
+</script>
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Prvi dan — prazan račun (pregled)</title>
+<link rel="stylesheet" href="/atmosphere.css">
+<link rel="stylesheet" href="/preview/ui.css">
+<style>
+  body{background:var(--cream)}
+  .navi.dim{opacity:.42;pointer-events:none}
+</style>
+</head>
+<body class="grain">
+
+<div class="pv">
+  <span class="badge">Pregled</span>
+  <a href="/preview/">Sve stranice</a>
+  <a href="/preview/landing.html">Naslovnica</a>
+  <a href="/preview/public.html">Javna stranica</a>
+  <a href="/preview/guide.html">Vodič za gosta</a>
+  <a href="/preview/dashboard.html">Dashboard</a>
+  <a href="/preview/prvi-dan.html" aria-current="page">Prvi dan</a>
+  <a href="/preview/greska.html">Greške</a>
+  <a href="/preview/admin.html">Admin</a>
+  <a href="/preview/editor.html">Uređivanje</a>
+  <a href="/preview/system.html">Sustav</a>
+  <span class="note">prikaz dizajna · nije spojeno na bazu</span>
+</div>
+
+<div class="app">
+  <aside class="side"><div class="side__in">
+    <div class="brand">Odmoria<span style="color:var(--terra)">.</span></div>
+    <a class="navi" aria-current="page" href="/preview/prvi-dan.html"><span class="ic">◧</span> Pregled</a>
+    <a class="navi dim" href="#"><span class="ic">⌂</span> Objekti</a>
+    <a class="navi dim" href="#"><span class="ic">✎</span> Rezervacije</a>
+    <a class="navi dim" href="#"><span class="ic">▦</span> Dostupnost</a>
+    <a class="navi dim" href="#"><span class="ic">◔</span> Analitika</a>
+    <a class="navi" href="#"><span class="ic">⚙</span> Postavke</a>
+    <div class="side__foot">
+      <span class="tag tag--mut">Plan Besplatno</span>
+      <p class="small mt8">0 od 1 objekta</p>
+    </div>
+  </div></aside>
+
+  <main class="main">
+    <div class="head">
+      <div data-rv="up" data-rv-now>
+        <p class="kicker bare">Dobro došli, Marina</p>
+        <h1 style="font-size:clamp(1.9rem,3.3vw,2.8rem);margin-top:6px">Postavimo vaš prvi objekt</h1>
+        <p class="lead mt12" style="max-width:56ch">
+          Kad ovo popunite, gost dobiva svoju stranicu. Traje desetak minuta
+          i ne mora se sve odjednom — spremi se kako idete.
+        </p>
+      </div>
+    </div>
+
+    <!-- ============ NAPREDAK ============ -->
+    <section class="panel" data-rv="up">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap">
+        <div>
+          <h2 style="font-size:1.5rem">Vaš vodič je <span data-num="40">0</span> % gotov</h2>
+          <p class="small mt8">Još tri koraka do prvog linka</p>
+        </div>
+        <span class="tag tag--terra">2 od 5</span>
+      </div>
+
+      <div class="track mt16"><i data-meter="40"></i></div>
+
+      <div class="steps mt24">
+        <div class="step2 done">
+          <span class="step2__d">✓</span>
+          <div class="step2__t"><b>Naziv i mjesto objekta</b>
+            <div class="small">Apartman Aurora, Rovinj</div></div>
+        </div>
+        <div class="step2 done">
+          <span class="step2__d">✓</span>
+          <div class="step2__t"><b>Kontakt za goste</b>
+            <div class="small">Marina · +385 91 234 5678</div></div>
+        </div>
+        <div class="step2">
+          <span class="step2__d todo">·</span>
+          <div class="step2__t"><b>Fotografije</b>
+            <div class="small">Bez njih stranica izgleda prazno — dovoljne su tri</div></div>
+          <a href="/preview/editor.html" class="btn btn--fill btn--sm">Dodaj</a>
+        </div>
+        <div class="step2">
+          <span class="step2__d todo">·</span>
+          <div class="step2__t"><b>Wi-Fi i šifra vrata</b>
+            <div class="small">Ovo je razlog zbog kojeg gost uopće otvara vodič</div></div>
+          <a href="/preview/editor.html" class="btn btn--fill btn--sm">Dodaj</a>
+        </div>
+        <div class="step2">
+          <span class="step2__d todo">·</span>
+          <div class="step2__t"><b>Upute za dolazak</b>
+            <div class="small">Adresa, parking i put do vrata</div></div>
+          <a href="/preview/editor.html" class="btn btn--fill btn--sm">Dodaj</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PRAZNE PLOČICE ============ -->
+    <section class="g g4 mt24" data-rv-stagger="70">
+      <div class="stat stat--empty" data-rv="up">
+        <span class="stat__lb">Pregleda javne stranice</span>
+        <span class="stat__v">—</span><span class="stat__d">kreće kad objavite</span></div>
+      <div class="stat stat--empty" data-rv="up">
+        <span class="stat__lb">Otvaranja vodiča</span>
+        <span class="stat__v">—</span><span class="stat__d">kreće s prvim gostom</span></div>
+      <div class="stat stat--empty" data-rv="up">
+        <span class="stat__lb">Upita</span>
+        <span class="stat__v">—</span><span class="stat__d">kreće kad objavite</span></div>
+      <div class="stat stat--empty" data-rv="up">
+        <span class="stat__lb">Zauzetih noći</span>
+        <span class="stat__v">—</span><span class="stat__d">kreće s prvom rezervacijom</span></div>
+    </section>
+
+    <!-- ============ ŠTO GOST DOBIVA ============ -->
+    <section class="panel mt24" data-rv="up"
+             style="background:var(--sand);border-color:transparent">
+      <div class="g g2" style="align-items:center;gap:clamp(20px,3vw,40px)">
+        <div>
+          <p class="kicker">Zašto se isplati</p>
+          <h3 class="mt12" style="font-size:1.35rem">Ovo gost dobije kad završite</h3>
+          <p class="lead mt12" style="font-size:.95rem">
+            Jedan link s Wi-Fi-jem, šifrom vrata, putem do kuće i vašim preporukama.
+            Bez aplikacije i bez registracije.
+          </p>
+          <a href="/preview/guide.html" class="btn btn--ghost btn--sm mt16">
+            Pogledaj primjer vodiča <span class="arr">→</span></a>
+        </div>
+        <div style="border-radius:var(--r-md);overflow:hidden;border:1px solid var(--line)">
+          <div style="height:120px;position:relative" class="art art--zalazak" data-g-art="zalazak">
+            <div style="position:absolute;inset:0;z-index:1;
+                 background:linear-gradient(to top,rgba(20,32,46,.8),transparent 62%)"></div>
+            <div style="position:absolute;left:16px;bottom:12px;z-index:2;color:#fff;
+                 font-family:'Fraunces',serif;font-size:1.05rem">Apartman Aurora</div>
+          </div>
+          <div style="background:var(--shell);padding:14px 16px">
+            <div style="display:flex;justify-content:space-between;font-size:.82rem">
+              <span class="muted">Šifra vrata</span><b style="font-family:ui-monospace,monospace">4 2 7 1</b></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script src="/preview/scene.js"></script>
+<script src="/motion.js" defer></script>
+<script>
+/* brojka postotka + traka napretka kreću kad uđu u vidno polje */
+;(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting) return;
+    const el = e.target;
+    io.unobserve(el);
+    if (el.dataset.meter !== undefined) { el.style.width = el.dataset.meter + '%'; return; }
+    const to = +el.dataset.num;
+    if (reduce) { el.textContent = to; return; }
+    const t0 = performance.now();
+    (function step(t) {
+      const p = Math.min((t - t0) / 1200, 1);
+      el.textContent = Math.round(to * (1 - Math.pow(1 - p, 3)));
+      if (p < 1) requestAnimationFrame(step);
+    })(t0);
+  }), { threshold: .5 });
+  document.querySelectorAll('[data-num],[data-meter]').forEach(el => io.observe(el));
+})();
+</script>
+</body>
+</html>

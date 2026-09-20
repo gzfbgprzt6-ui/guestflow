@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Odmoria — pregled dizajna</title>
+<link rel="stylesheet" href="/atmosphere.css">
+<link rel="stylesheet" href="/preview/ui.css">
+<style>
+.tile{display:block;background:var(--shell);border:1px solid var(--line-2);border-radius:var(--r-lg);
+  overflow:hidden;transition:transform .7s var(--ease),box-shadow .7s var(--ease)}
+.tile:hover{transform:translateY(-7px);box-shadow:0 46px 74px -48px rgba(20,32,46,.5)}
+.tile__top{height:168px;position:relative;overflow:hidden}
+.tile__top b{position:absolute;left:22px;bottom:18px;z-index:3;color:#fff;
+  font-family:'Fraunces',serif;font-size:1.35rem;letter-spacing:-.02em;font-weight:500}
+.tile__top::after{content:"";position:absolute;inset:0;z-index:2;
+  background:linear-gradient(to top,rgba(20,32,46,.78),transparent 58%)}
+.tile__m{padding:22px 24px 26px}
+.flat{background:var(--night)}
+.flat2{background:linear-gradient(150deg,#1C2E3F,#14202E)}
+</style>
+</head>
+<body class="grain">
+
+<div class="pv">
+  <span class="badge">Pregled</span>
+  <a href="/preview/" aria-current="page">Sve stranice</a>
+  <a href="/preview/landing.html">Naslovnica</a>
+  <a href="/preview/public.html">Javna stranica</a>
+  <a href="/preview/guide.html">Vodič za gosta</a>
+  <a href="/preview/dashboard.html">Dashboard</a>
+  <a href="/preview/prvi-dan.html">Prvi dan</a>
+  <a href="/preview/greska.html">Greške</a>
+  <a href="/preview/admin.html">Admin</a>
+  <a href="/preview/editor.html">Uređivanje</a>
+  <a href="/preview/system.html">Sustav</a>
+  <span class="note">prikaz dizajna · nije spojeno na bazu</span>
+</div>
+
+<section class="sec">
+  <div class="wrap">
+    <span class="chip" data-rv="fade" data-rv-now>Prijedlog · nije u produkciji</span>
+    <h1 class="mt16" style="font-size:clamp(2.6rem,6vw,4.6rem)" data-rv-now>
+      <span class="mask-line"><span>Kako bi Odmoria</span></span>
+      <span class="mask-line"><span class="italic">mogla izgledati.</span></span>
+    </h1>
+    <p class="lead mt24" style="max-width:56ch" data-rv="up" data-rv-delay="360">
+      Devet pravih HTML stranica koje možete otvoriti na mobitelu i na računalu,
+      a javna stranica dolazi u osam tema.
+      Sve stoje na istom sustavu kao žive stranice — <code>atmosphere.css</code> i
+      <code>motion.js</code> — samo dotjerane i s više pokreta.
+      <b>Žive stranice nisu dirane.</b>
+    </p>
+
+    <div class="g g3 mt48" data-rv-stagger="90">
+      <a class="tile" href="/preview/landing.html" data-rv="up">
+        <div class="tile__top art art--zalazak" data-g-art="zalazak"><b>Naslovnica</b></div>
+        <div class="tile__m"><p class="small">Zaglavlje s animiranim prizorom, problem i rješenje,
+          dvije stranice, klizač „što gost vidi”, četiri plana, pitanja.</p></div></a>
+
+      <a class="tile" href="/preview/public.html" data-rv="up">
+        <div class="tile__top art art--plava" data-g-art="plava"><b>Javna stranica</b></div>
+        <div class="tile__m"><p class="small">Apartman Aurora, Rovinj. Galerija, lokacija,
+          sadržaji, kalendar i upit — u <b>osam tema</b>, traka za izmjenu je na dnu
+          stranice.</p></div></a>
+
+      <a class="tile" href="/preview/guide.html" data-rv="up">
+        <div class="tile__top art art--maslinik" data-g-art="maslinik"><b>Vodič za gosta</b></div>
+        <div class="tile__m"><p class="small">Privatna stranica s vremenskim zaključavanjem,
+          dolazak korak po korak, upute, preporuke, pravila.</p></div></a>
+
+      <a class="tile" href="/preview/dashboard.html" data-rv="up">
+        <div class="tile__top flat"><b>Dashboard i analitika</b></div>
+        <div class="tile__m"><p class="small">Šest kartica. Devet grafikona, prebacivanje
+          plana da se vidi što koji otključava, izvori prometa, popunjenost — i kartica
+          <b>Izgled</b> s osam tema.</p></div></a>
+
+      <a class="tile" href="/preview/editor.html" data-rv="up">
+        <div class="tile__top flat2"><b>Uređivanje objekta</b></div>
+        <div class="tile__m"><p class="small">Sedam kartica: osnovno, fotografije, pristup,
+          dolazak, preporuke, pravila, izgled — s biračem od osam tema i pregledom uživo.</p></div></a>
+
+      <a class="tile" href="/preview/prvi-dan.html" data-rv="up">
+        <div class="tile__top flat2"><b>Prvi dan</b></div>
+        <div class="tile__m"><p class="small">Prazan račun: „vodič je 40 % gotov”, popis koraka
+          i pločice koje još nemaju podatke.</p></div></a>
+
+      <a class="tile" href="/preview/greska.html" data-rv="up">
+        <div class="tile__top" style="background:linear-gradient(150deg,#E9A13B,#D4674A 70%)"><b>Kad nešto ne radi</b></div>
+        <div class="tile__m"><p class="small">Baza ne odgovara i istekao link — umjesto bijele
+          stranice, telefon domaćice.</p></div></a>
+
+      <a class="tile" href="/preview/admin.html" data-rv="up">
+        <div class="tile__top flat"><b>Admin</b></div>
+        <div class="tile__m"><p class="small">Rast, raspodjela planova, procijenjeni MRR,
+          pretplate koje uskoro istječu i tablica domaćina s pretragom i sortiranjem.</p></div></a>
+
+      <a class="tile" href="/preview/public.html?stil=zlatnisat" data-rv="up">
+        <div class="tile__top" style="background:linear-gradient(150deg,#141416,#0B0B0C 70%)"><b>Osam tema</b></div>
+        <div class="tile__m"><p class="small">Svaka vodi s drugom informacijom: cijenom,
+          temperaturom bazena, popisom prostorija, tablicom, pismom domaćice. Mijenja se
+          i pismo i paleta, ne samo boja.</p></div></a>
+
+      <a class="tile" href="/preview/system.html" data-rv="up">
+        <div class="tile__top art art--zalazak" data-g-art="zalazak"><b>Vizualni sustav</b></div>
+        <div class="tile__m"><p class="small">Paleta s kontrastima računatima uživo, rampe za
+          grafikone, tipografija, komponente, popis pokreta.</p></div></a>
+    </div>
+  </div>
+</section>
+
+<!-- ŠTO NIJE SPOJENO -->
+<section class="sec" style="background:var(--sand)">
+  <div class="wrap g g2" style="gap:clamp(24px,4vw,48px);align-items:start">
+    <div class="panel" data-rv="up">
+      <p class="kicker">Važno</p>
+      <h3 class="mt12">Što ovdje nije spojeno</h3>
+      <hr class="hr">
+      <p class="lead" style="font-size:.95rem">
+        Nema Supabase poziva, prijave ni baze — sve su vrijednosti upisane u HTML.
+      </p>
+      <p class="lead mt12" style="font-size:.95rem">
+        Cijene su <b>prijedlog</b> novog modela (Besplatno / Domaćin 7,90 € / Pro 14,90 € /
+        Partner 29,90 €) i razlikuju se od onoga što tablica <code>plans</code> danas vraća.
+        Tablica nije dirana i neće biti dok dizajn ne bude odobren.
+      </p>
+      <p class="lead mt12" style="font-size:.95rem">
+        Gostinski vodič prikazuje lozinku i šifru vrata zamućeno, s gumbom koji pokazuje
+        otključano stanje. <b>U pravoj aplikaciji te vrijednosti prije otključavanja
+        uopće ne ulaze u HTML</b> — ovdje su upisane jer je ovo mockup bez baze.
+      </p>
+    </div>
+
+    <div class="panel" data-rv="up" data-rv-delay="100">
+      <p class="kicker">Nađeno usput</p>
+      <h3 class="mt12">Dvije greške u živom kodu</h3>
+      <hr class="hr">
+      <p class="lead" style="font-size:.95rem">
+        <b>Kontrast.</b> U <code>atmosphere.css</code> terra na kremi daje 3,34:1, a bijelo
+        na terri 3,60:1 — oboje pada WCAG AA. Pod pregledom je ispravljeno u
+        <code>ui.css</code>; živi <code>atmosphere.css</code> nije diran.
+      </p>
+      <p class="lead mt12" style="font-size:.95rem">
+        <b><code>.wipe</code> se sam zaključava.</b> Njegov <code>clip-path:inset(0 100% 0 0)</code>
+        svodi presjek elementa na nulu, pa <code>IntersectionObserver</code> iz
+        <code>motion.js</code> nikad ne okine i element ostane nevidljiv zauvijek.
+        Provjereno u pregledniku. U <code>p.html</code>, <code>h.html</code> i
+        <code>index.html</code> <code>.wipe</code> se zasad nigdje ne koristi, pa još nije puklo.
+      </p>
+      <a href="/preview/system.html" class="btn btn--ghost btn--sm mt16">
+        Detalji na stranici sustava <span class="arr">→</span></a>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="wrap foot__in">
+    <span>Grana <code>claude/funny-archimedes-c0qosu</code> · nije spojeno u produkciju</span>
+    <a href="/preview/landing.html">Kreni od naslovnice →</a>
+  </div>
+</footer>
+
+<script src="/preview/scene.js"></script>
+<script src="/motion.js" defer></script>
+</body>
+</html>

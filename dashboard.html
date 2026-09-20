@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..700,0..100,0..1;1,9..144,300..600,0..100,0..1&family=Manrope:wght@400;500;600;700;800&family=Caveat:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/teme.css">
 <style>
 :root {
   /* v3 paleta — iste uloge kao prije, nove vrijednosti.
@@ -319,6 +320,31 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .plan-card li::before{content:"✓";color:var(--copper);font-weight:800}
 
 .ical-card{background:var(--paper-2);border-radius:12px;padding:14px 16px;font-size:.72rem;color:var(--muted);margin-bottom:18px;line-height:1.6}
+/* ── Sinkronizacija kalendara — uzak, miran panel u duhu gostinskog huba ── */
+.sync-wrap{max-width:620px}
+.sync-card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:26px 26px 22px;box-shadow:0 18px 40px -34px rgba(20,32,46,.5)}
+.sync-head h2{font-size:1.24rem;letter-spacing:-.02em;margin-bottom:6px}
+.sync-head p{font-size:.78rem;color:#5A6774;line-height:1.65;max-width:46ch}
+.sync-list{display:flex;flex-direction:column;gap:12px;margin-top:22px}
+.sync-row{border:1px solid var(--line);border-radius:14px;padding:15px 16px;background:var(--white);transition:border-color .2s ease,background .2s ease}
+.sync-row:focus-within{border-color:var(--copper);background:var(--paper)}
+.sync-row-top{display:flex;align-items:center;gap:11px;margin-bottom:11px}
+.sync-mark{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;font-size:.8rem;font-weight:800;color:#fff;flex:none;letter-spacing:-.02em}
+.sync-mark.b{background:#14202E}
+.sync-mark.a{background:#D4674A}
+.sync-name{font-size:.86rem;font-weight:700;color:var(--ink);flex:1;letter-spacing:-.01em}
+.sync-pill{font-size:.63rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase;padding:5px 10px;border-radius:999px;white-space:nowrap}
+.sync-pill.on{background:#E8EDE2;color:#4A5B3C}
+.sync-pill.off{background:var(--paper-2);color:#5A6774}
+.sync-row .input{font-size:.76rem;padding:11px 13px}
+.sync-foot{margin-top:20px;padding-top:18px;border-top:1px solid var(--line);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.sync-when{font-size:.72rem;color:#5A6774;flex:1;min-width:180px;line-height:1.5}
+.sync-when b{color:var(--ink);font-weight:700}
+.sync-try{margin-top:16px;background:var(--paper-2);border-radius:13px;padding:14px 16px;font-size:.73rem;color:#5A6774;line-height:1.6}
+.sync-try b{color:var(--ink);display:block;margin-bottom:3px;font-size:.76rem}
+.sync-try button{display:block;background:none;border:0;padding:0;margin-top:10px;font:inherit;font-weight:700;color:#2E6B77;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.sync-try button:hover{color:#14202E}
+@media(max-width:700px){.sync-card{padding:20px 18px 18px}.sync-foot .btn{width:100%;justify-content:center}}
 
 /* Live preview */
 .preview-pane { position: sticky; top: 70px; min-height: calc(100vh - 70px); padding: 25px 21px 30px; border-left: 1px solid var(--line); background: var(--paper-2); }
@@ -455,6 +481,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
       <nav class="side-nav">
         <button class="nav-item" type="button" data-panel="basic" onclick="nav('basic',this)"><span class="nav-number">01</span><span>Osnovno</span></button>
         <button class="nav-item" type="button" data-panel="photos" onclick="nav('photos',this)"><span class="nav-number">02</span><span>Fotografije</span></button>
+        <button class="nav-item" type="button" data-panel="izgled" onclick="nav('izgled',this)"><span class="nav-number">◈</span><span>Izgled stranice</span></button>
         <button class="nav-item" type="button" data-panel="arrival" onclick="nav('arrival',this)"><span class="nav-number">03</span><span>Dolazak i check-in</span></button>
         <button class="nav-item" type="button" data-panel="wifi" onclick="nav('wifi',this)"><span class="nav-number">04</span><span>Wi-Fi</span></button>
         <button class="nav-item" type="button" data-panel="amenities" onclick="nav('amenities',this)"><span class="nav-number">05</span><span>Sadržaji</span></button>
@@ -588,6 +615,44 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
               <div class="field third"><label for="prop-email">Email za upite</label><input class="input" id="prop-email" type="email"></div>
             </div>
             <div style="margin-top:18px;display:flex;justify-content:flex-end"><button class="btn" onclick="saveBasic()">Spremi promjene</button></div>
+          </div>
+        </section>
+
+        <!-- IZGLED -->
+        <section class="editor-panel tema-okruzje" id="section-izgled" data-panel-content="izgled">
+          <div id="izgled-alert"></div>
+          <div class="card">
+            <div class="card-head"><div class="card-title-wrap"><span class="card-number">◈</span><div>
+              <h2>Tema javne stranice</h2>
+              <p>Tema ne mijenja samo boju. Svaka drugačije slaže zaglavlje i vodi s drugom
+                 informacijom — cijenom, istaknutom brojkom, popisom prostorija, pismom.</p>
+            </div></div></div>
+
+            <div class="teme" id="teme"></div>
+
+            <div style="margin-top:22px">
+              <label class="field-label" for="fHighlight">Istaknuta brojka
+                <span style="font-weight:400;opacity:.7">— koriste je teme Laguna i Ponoćni bazen</span></label>
+              <input id="fHighlight" class="input" maxlength="60"
+                     placeholder="32° · Temperatura bazena">
+              <p class="card-hint" style="margin-top:6px">Oblik <code>vrijednost · oznaka</code>.
+                 Ostavite prazno pa se izvede iz površine ili broja gostiju.</p>
+            </div>
+
+            <div style="margin-top:18px;display:flex;justify-content:flex-end;gap:10px">
+              <a class="btn btn-ghost" id="temaOtvori" target="_blank" rel="noopener">Otvori javnu stranicu</a>
+              <button class="btn" onclick="saveTema()">Spremi promjene</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <!-- `.card-title-wrap` je mreža `32px 1fr` i traži DVA djeteta;
+                 bez oznake tekst padne u stupac od 32px i lomi se riječ po riječ. -->
+            <div class="card-head"><div class="card-title-wrap"><span class="card-number">◉</span><div>
+              <h2>Kako gost vidi</h2>
+              <p>Pravi raspored s vašim podacima i vašim fotografijama.</p>
+            </div></div></div>
+            <div class="zivo" id="zivoOkvir"><div id="zivo"></div></div>
           </div>
         </section>
 
@@ -811,16 +876,45 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 
         <!-- ICAL -->
         <section class="editor-panel" id="section-ical" data-panel-content="ical">
-          <div id="ical-alert"></div>
-          <div class="card">
-            <div class="card-head"><div class="card-title-wrap"><span class="card-number">iC</span><div><h2>iCal sinkronizacija</h2><p>Poveži Booking.com i Airbnb kalendare.</p></div></div></div>
-            <div class="ical-card">Zauzeti datumi se automatski povlače svaki sat i prikazuju u kalendaru dostupnosti (ljubičasto).</div>
-            <div class="form-grid">
-              <div class="field full"><label>Booking.com iCal URL</label><input class="input" id="ical-booking" placeholder="https://ical.booking.com/v1/export?t=..."><span class="helper">Booking.com → Kalendar → Sinkronizacija → Kopiraj link</span></div>
-              <div class="field full"><label>Airbnb iCal URL</label><input class="input" id="ical-airbnb" placeholder="https://www.airbnb.com/calendar/ical/..."><span class="helper">Airbnb → Kalendar → Izvezi kalendar</span></div>
+          <div class="sync-wrap">
+            <div id="ical-alert"></div>
+            <div class="sync-card">
+              <div class="sync-head">
+                <h2>Sinkronizacija kalendara</h2>
+                <p>Zauzeti termini s Bookinga i Airbnba ulaze u vaš kalendar i tamo se zaključavaju — mijenjaju se sami, ne ručno.</p>
+              </div>
+
+              <div class="sync-list">
+                <div class="sync-row">
+                  <div class="sync-row-top">
+                    <span class="sync-mark b">B</span>
+                    <span class="sync-name">Booking.com</span>
+                    <span class="sync-pill off" id="pill-booking">Nije povezano</span>
+                  </div>
+                  <input class="input" id="ical-booking" placeholder="https://ical.booking.com/v1/export?t=…" oninput="paintSyncPills()">
+                </div>
+                <div class="sync-row">
+                  <div class="sync-row-top">
+                    <span class="sync-mark a">A</span>
+                    <span class="sync-name">Airbnb</span>
+                    <span class="sync-pill off" id="pill-airbnb">Nije povezano</span>
+                  </div>
+                  <input class="input" id="ical-airbnb" placeholder="https://www.airbnb.com/calendar/ical/….ics" oninput="paintSyncPills()">
+                </div>
+              </div>
+
+              <div class="sync-foot">
+                <span class="sync-when" id="ical-sync-info">Još nije sinkronizirano.</span>
+                <button class="btn" onclick="saveIcalUrls()">Spremi i sinkroniziraj</button>
+                <button class="btn secondary" onclick="syncNow()">Sinkroniziraj</button>
+              </div>
+
+              <div class="sync-try">
+                <b>Nemate još oglas na Bookingu ili Airbnbu?</b>
+                Isprobajte s izmišljenim terminima — dva boravka, 7 i 5 noći.
+                <button type="button" onclick="useTestCalendar()">Popuni testnim kalendarom</button>
+              </div>
             </div>
-            <div class="helper" id="ical-sync-info" style="margin:12px 0"></div>
-            <div style="display:flex;gap:10px"><button class="btn" onclick="saveIcalUrls()">Spremi i sinkroniziraj</button><button class="btn secondary" onclick="syncNow()">Sinkroniziraj odmah</button></div>
           </div>
         </section>
 
@@ -897,6 +991,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   <button type="button" onclick="saveNow()">Spremi</button>
 </div>
 
+<script src="/teme.js"></script>
 <script type="module">
 import{createClient}from'https://esm.sh/@supabase/supabase-js@2'
 import{loadPlans,getPlan,limitFor,canAdd,limitMessage,effectivePlanId}from'./plans.js'
@@ -1042,6 +1137,54 @@ window.stepCount=(key,step)=>{
   COUNTS[key]=Math.max(0,(COUNTS[key]||0)+step)
   document.querySelectorAll(`[data-count="${key}"]`).forEach(el=>el.textContent=COUNTS[key])
   livePreview()
+}
+
+/* ====================== TEMA JAVNE STRANICE ====================== */
+let TEMA_SPREMNA=false
+window.initTeme=()=>{
+  const T=window.Odmoria&&window.Odmoria.teme
+  if(!T||!PROP)return
+  const hl=document.getElementById('fHighlight')
+  if(!TEMA_SPREMNA){
+    hl.value=PROP.highlight||''
+    T.birac({
+      objekt:()=>T.izBaze(Object.assign({},PROP,{highlight:hl.value})),
+      odabrana:T.zaObjekt(PROP),
+      link:'temaOtvori',
+      linkBaza:'/p/'+PROP.slug,
+      naPromjenu:()=>window.markDirty&&window.markDirty()
+    })
+    /* Upisana brojka se odmah vidi u pregledu — inace se ne zna sto ce ispasti */
+    hl.addEventListener('input',()=>{window.markDirty&&window.markDirty();T.osvjezi()})
+    TEMA_SPREMNA=true
+  }
+}
+
+window.saveTema=async()=>{
+  const T=window.Odmoria&&window.Odmoria.teme
+  if(!T||!PROP)return
+  /* U ovoj bazi stupac `theme` postoji od ranije i nosi tuđe vrijednosti.
+     Ako je u njemu nešto što nije ime teme, ne diramo ga — spremanje bi ga
+     tiho pojelo. Istaknuta brojka se svejedno spremi. */
+  const u={highlight:document.getElementById('fHighlight').value.trim()||null}
+  if(T.smijePisati(PROP)) u[T.STUPAC]=T.odabrana()
+  else showA('izgled-alert','err',
+    'Stupac „'+T.STUPAC+'” u bazi već sadrži „'+PROP[T.STUPAC]+'”, što nije ime teme. '
+    +'Tema nije spremljena da se taj podatak ne izgubi — javi vrijednost pa da se '
+    +'stupac razriješi (vidi sql/add-theme-to-properties.sql).')
+  const{error}=await sb.from('properties').update(u).eq('id',PROP.id)
+  if(error){
+    /* Stupci dolaze iz `sql/add-theme-to-properties.sql`. Dok se ne pokrene,
+       odabir se ne pamti, ali stranica radi i `?stil=` i dalje sve pokazuje. */
+    const nema=/column .* does not exist|schema cache|theme|highlight/i.test(error.message)
+    showA('izgled-alert','err', nema
+      ? 'Baza još nema stupce za temu. Pokrenite sql/add-theme-to-properties.sql u Supabase SQL editoru, pa ponovno spremite.'
+      : error.message)
+    return
+  }
+  Object.assign(PROP,u)
+  window.clearDirty&&window.clearDirty()
+  showA('izgled-alert','ok','Spremljeno ✓');toast('Tema spremljena ✓')
 }
 
 window.saveBasic=async()=>{
@@ -1543,6 +1686,7 @@ window.nav=(id,el)=>{
     overview:['Pregled','Pregled objekta','Status, dovršenost i linkovi objekta.'],
     basic:['Postavljanje objekta','Osnovni podaci','Postavite temeljne informacije koje gost prvo vidi.'],
     photos:['Postavljanje objekta','Fotografije','Složite galeriju koja predstavlja vaš objekt.'],
+    izgled:['Postavljanje objekta','Izgled stranice','Izaberite temu koja odlučuje što gost vidi prvo.'],
     arrival:['Postavljanje objekta','Dolazak i check-in','Pripremite gosta za jednostavan i siguran dolazak.'],
     wifi:['Postavljanje objekta','Wi-Fi','Spremite pristupne podatke za privatni vodič.'],
     amenities:['Postavljanje objekta','Sadržaji','Označite sve što je gostu dostupno u objektu.'],
@@ -1565,13 +1709,40 @@ window.nav=(id,el)=>{
   window.scrollTo({top:0,behavior:'smooth'})
   if(id==='reservations')window.loadBookings()
   if(id==='ical')loadIcal()
+  if(id==='izgled')window.initTeme&&window.initTeme()
 }
 
 async function loadIcal(){
   if(!PROP)return
   document.getElementById('ical-booking').value=PROP.ical_booking_url||''
   document.getElementById('ical-airbnb').value=PROP.ical_airbnb_url||''
-  document.getElementById('ical-sync-info').textContent=PROP.ical_last_sync?('Zadnja sinkronizacija: '+new Date(PROP.ical_last_sync).toLocaleString('hr-HR')):''
+  paintSyncPills();paintSyncWhen()
+}
+// Znacka uz svaki servis prati sadrzaj polja, ne zadnju sinkronizaciju —
+// korisnik odmah vidi je li nesto upisao i prije nego spremi.
+window.paintSyncPills=()=>{
+  [['ical-booking','pill-booking'],['ical-airbnb','pill-airbnb']].forEach(([inp,pill])=>{
+    const on=!!(document.getElementById(inp)?.value||'').trim()
+    const el=document.getElementById(pill);if(!el)return
+    el.className='sync-pill '+(on?'on':'off')
+    el.textContent=on?'Povezano':'Nije povezano'
+  })
+}
+function paintSyncWhen(msg){
+  const el=document.getElementById('ical-sync-info');if(!el)return
+  if(msg){el.innerHTML=msg;return}
+  el.innerHTML=PROP&&PROP.ical_last_sync
+    ? 'Zadnja sinkronizacija: <b>'+new Date(PROP.ical_last_sync).toLocaleString('hr-HR')+'</b>'
+    : 'Još nije sinkronizirano.'
+}
+// Testni feed s ove iste instance — datumi se racunaju od danas,
+// pa termini uvijek padnu u mjesec koji je u kalendaru vidljiv.
+window.useTestCalendar=()=>{
+  const el=document.getElementById('ical-booking')
+  el.value=location.origin+'/api/test-calendar'
+  paintSyncPills()
+  el.focus()
+  toast('Upisan testni kalendar — klikni "Spremi i sinkroniziraj"')
 }
 window.saveIcalUrls=async()=>{
   if(!PROP)return
@@ -1579,21 +1750,32 @@ window.saveIcalUrls=async()=>{
   const{error}=await sb.from('properties').update({ical_booking_url:booking||null,ical_airbnb_url:airbnb||null}).eq('id',PROP.id)
   if(error){showA('ical-alert','err',error.message);return}
   PROP.ical_booking_url=booking||null;PROP.ical_airbnb_url=airbnb||null
-  showA('ical-alert','ok','Spremljeno ✓');toast('Sinkronizacija pokrenuta...')
-  await syncNow()
+  showA('ical-alert','ok','Spremljeno ✓')
+  // Sinkroniziraj samo ako postoji sto povuci — inace endpoint javi gresku
+  // odmah nakon sto korisnik namjerno obrise oba URL-a.
+  if(booking||airbnb){toast('Sinkronizacija pokrenuta...');await syncNow()}
 }
 window.syncNow=async()=>{
   if(!PROP)return
   toast('Sinkronizacija u tijeku...')
   try{
-    const res=await fetch('/api/sync-ical?property_id='+PROP.id)
-    const d=await res.json()
-    const total=d.results?.reduce((s,r)=>s+(r.dates||0),0)||0
-    showA('ical-alert','ok',`Sinkronizirano ${total} datuma ✓`)
-    document.getElementById('ical-sync-info').textContent='Zadnja sinkronizacija: '+new Date().toLocaleString('hr-HR')
-    document.getElementById('ical-status').textContent='Sinkronizirano'
+    // Endpoint nema service role kljuc — radi s korisnikovim tokenom,
+    // pa RLS i dalje odlucuje sto se smije procitati i upisati.
+    const{data:{session}}=await sb.auth.getSession()
+    if(!session){showA('ical-alert','err','Niste prijavljeni. Osvjezite stranicu.');return}
+    const res=await fetch('/api/sync-ical?property_id='+encodeURIComponent(PROP.id),
+      {headers:{Authorization:'Bearer '+session.access_token}})
+    const d=await res.json().catch(()=>({}))
+    if(!res.ok){showA('ical-alert','err',d.error||('Sinkronizacija nije uspjela ('+res.status+').'));return}
+    const total=(d.results||[]).reduce((s,r)=>s+(r.dates||0),0)
+    const parts=(d.results||[]).map(r=>r.error?`${r.label}: ${r.error}`:`${r.label}: ${r.dates} datuma`)
+    showA('ical-alert',d.ok?'ok':'err',(d.ok?`Sinkronizirano ${total} datuma ✓ — `:'')+parts.join(' · '))
+    const when=d.ical_last_sync?new Date(d.ical_last_sync):new Date()
+    if(PROP)PROP.ical_last_sync=d.ical_last_sync||when.toISOString()
+    paintSyncWhen()
+    const st=document.getElementById('ical-status');if(st)st.textContent=d.ok?'Sinkronizirano':'Greška'
     await loadAvail()
-  }catch(e){showA('ical-alert','err','Sinkronizacija nije uspjela. Provjeri URL.')}
+  }catch(e){showA('ical-alert','err','Sinkronizacija nije uspjela: '+(e&&e.message||e))}
 }
 
 // ── BOOKINGS ──────────────────────────────────────────

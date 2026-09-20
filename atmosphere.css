@@ -22,8 +22,9 @@
   --line-2:rgba(20,32,46,.06);
 
   /* akcenti */
-  --terra:#D4674A;
-  --terra-d:#B44F35;
+  --terra:#D4674A;        /* ukras i plohe — kao TEKST pada AA (3,34:1) */
+  --terra-d:#B44F35;      /* pune plohe: bijelo na njemu 5,11:1 */
+  --terra-ink:#A8462F;    /* terakota za TEKST: krema 5,44 · pijesak 4,79 · školjka 5,73 */
   --sun:#E9A13B;
   --sea:#2E6B77;
   --olive:#7E8F6A;
@@ -82,7 +83,7 @@ h3{font-size:clamp(1.3rem,2vw,1.7rem);line-height:1.15}
 .hand{font-family:'Caveat',cursive;font-weight:600;letter-spacing:0}
 .kicker{
   font-size:.7rem;font-weight:800;letter-spacing:.26em;text-transform:uppercase;
-  color:var(--terra);display:inline-flex;align-items:center;gap:13px;
+  color:var(--terra-ink);display:inline-flex;align-items:center;gap:13px;
 }
 .kicker::before{content:"";width:26px;height:1.5px;background:currentColor;opacity:.8}
 .kicker.bare::before{display:none}
@@ -134,8 +135,8 @@ h3{font-size:clamp(1.3rem,2vw,1.7rem);line-height:1.15}
   transition:transform .55s var(--ease),box-shadow .55s var(--ease),background .3s,color .3s;
   will-change:transform;
 }
-.btn--fill{background:var(--terra);color:#fff;box-shadow:0 14px 34px -14px rgba(212,103,74,.8)}
-.btn--fill:hover{background:var(--terra-d);box-shadow:0 22px 46px -16px rgba(212,103,74,.85)}
+.btn--fill{background:var(--terra-d);color:#fff;box-shadow:0 14px 34px -14px rgba(180,79,53,.75)}
+.btn--fill:hover{background:#9E4029;box-shadow:0 22px 46px -16px rgba(180,79,53,.85)}
 .btn--ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--line)}
 .btn--ghost:hover{box-shadow:inset 0 0 0 1.5px var(--ink)}
 .btn--light{background:rgba(255,255,255,.92);color:var(--ink);backdrop-filter:blur(10px)}
@@ -178,8 +179,12 @@ h3{font-size:clamp(1.3rem,2vw,1.7rem);line-height:1.15}
 .rv-in .mask-line > span,.mask-line.rv-in > span{transform:none;opacity:1}
 
 /* otkrivanje slike/plohe brisanjem */
+/* `.wipe` ide na UNUTARNJI element, a `[data-rv]` na roditelja.
+   Na istom elementu se sam zaključa: `clip-path:inset(0 100% 0 0)` svodi
+   njegov presjek na nulu, pa `IntersectionObserver` iz `motion.js` nikad ne
+   okine i element ostane nevidljiv zauvijek. Zato i `.rv-in .wipe`. */
 .wipe{clip-path:inset(0 100% 0 0);transition:clip-path 1.3s var(--ease)}
-.wipe.rv-in{clip-path:inset(0 0 0 0)}
+.wipe.rv-in,.rv-in .wipe{clip-path:inset(0 0 0 0)}
 
 @media (prefers-reduced-motion:reduce){
   *{animation-duration:.01ms !important;animation-iteration-count:1 !important;

@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Apartman Aurora — Rovinj (pregled)</title>
+<link rel="stylesheet" href="/atmosphere.css">
+<link rel="stylesheet" href="/preview/ui.css">
+<link rel="stylesheet" href="/teme.css">
+<style>
+/* Zaglavlje je preseljeno u `teme.css` (.th--*), jer ovisi o odabranoj temi. */
+
+/* ---------- traka činjenica ---------- */
+.facts{position:sticky;top:var(--pv-h,0px);z-index:60;background:var(--shell);
+  backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.facts__in{display:flex;gap:clamp(16px,3vw,44px);padding-block:16px;flex-wrap:wrap;align-items:center}
+.fact b{font-family:'Manrope';font-size:1.25rem;font-weight:800;letter-spacing:-.03em;display:block;line-height:1.1}
+.fact span{font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-mut);font-weight:700}
+
+/* ---------- galerija ---------- */
+.gal{display:grid;grid-template-columns:1.6fr 1fr 1fr;grid-auto-rows:190px;gap:14px}
+.gal>*{border-radius:var(--r-md);position:relative;overflow:hidden}
+.gal>*>*{position:absolute;inset:0;border-radius:inherit;overflow:hidden}
+.gal>*:first-child{grid-row:span 2}
+@media(max-width:820px){.gal{grid-template-columns:1fr 1fr;grid-auto-rows:150px}
+  .gal>*:first-child{grid-column:span 2;grid-row:span 1}}
+.gal__more{display:grid;place-items:center;background:var(--sand);font-weight:700;font-size:.92rem}
+
+/* ---------- puna traka ---------- */
+.band{position:relative;height:clamp(240px,34vw,380px);overflow:hidden}
+.band__cap{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:30px var(--gut);color:#fff;
+  background:linear-gradient(to top,rgba(20,32,46,.82),transparent)}
+
+/* ---------- mjesta ---------- */
+.place{display:flex;gap:16px;align-items:center;padding:18px 0;border-bottom:1px solid var(--line-2)}
+.place:last-child{border-bottom:0}
+.place__ic{flex:none;width:44px;height:44px;border-radius:14px;background:var(--sand);
+  display:grid;place-items:center;font-size:1.1rem}
+
+/* ---------- karta ---------- */
+.map{position:relative;min-height:360px;border-radius:var(--r-lg);overflow:hidden;background:var(--sand)}
+.map__grid{position:absolute;inset:0;background:
+  linear-gradient(90deg,transparent 49.5%,rgba(20,32,46,.07) 49.5% 50.5%,transparent 50.5%) 0 0/78px 78px,
+  linear-gradient(0deg,transparent 49.5%,rgba(20,32,46,.07) 49.5% 50.5%,transparent 50.5%) 0 0/78px 78px,
+  radial-gradient(120% 90% at 10% 95%,#BFD6D3,transparent 62%)}
+.pin{position:absolute;top:44%;left:47%;transform:translate(-50%,-100%);z-index:2;text-align:center}
+.pin__d{width:32px;height:32px;border-radius:50% 50% 50% 0;background:var(--terra-d);
+  transform:rotate(-45deg);margin:0 auto;box-shadow:0 14px 26px -12px rgba(20,32,46,.7)}
+.pin__d::after{content:"";position:absolute;inset:-9px;border-radius:50%;border:2px solid var(--terra);
+  opacity:0;animation:ping 2.8s var(--ease) infinite}
+
+/* ---------- sadržaji ---------- */
+.amen{display:flex;gap:11px;align-items:center;padding:14px 16px;border-radius:var(--r-sm);
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);font-size:.9rem;color:#fff}
+
+/* ---------- kalendar ---------- */
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;max-width:400px}
+.cal .hd{font-size:.64rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink-mut);text-align:center;padding-bottom:8px}
+.cal .d{aspect-ratio:1;display:grid;place-items:center;border-radius:10px;font-size:.84rem;
+  font-weight:700;background:var(--slob-bg);color:var(--slob-ink);font-variant-numeric:tabular-nums}
+.cal .d.busy{background:rgba(20,32,46,.06);color:var(--ink-30);text-decoration:line-through}
+.cal .d.pad{background:transparent}
+
+/* ---------- upit ---------- */
+.ask{background:var(--night);color:#fff;border-radius:var(--r-lg);padding:clamp(28px,4vw,48px);
+     position:relative;overflow:hidden}
+.field{display:block;width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.2);
+  border-radius:var(--r-sm);padding:14px 16px;color:#fff;font:inherit;font-size:.93rem;margin-top:11px}
+.field::placeholder{color:rgba(255,255,255,.52)}
+.field:focus{outline:0;border-color:var(--rose);background:rgba(255,255,255,.1)}
+
+/* ---------- traka tema (samo pod /preview/) ---------- */
+.stilbar{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:280;
+  display:flex;align-items:center;gap:6px;justify-content:flex-start;
+  max-width:calc(100vw - 24px);overflow-x:auto;scrollbar-width:none;
+  background:rgba(20,32,46,.93);backdrop-filter:blur(14px);
+  border:1px solid rgba(255,255,255,.2);border-radius:999px;padding:7px 10px;
+  box-shadow:0 22px 48px -22px rgba(0,0,0,.7)}
+.stilbar::-webkit-scrollbar{display:none}
+.stilbar>*{flex:none}
+.stilbar b{color:rgba(255,255,255,.62);font-size:.68rem;font-weight:800;letter-spacing:.16em;
+  text-transform:uppercase;padding:0 6px}
+.stilbar button{border:0;background:transparent;color:rgba(255,255,255,.82);cursor:pointer;
+  font-size:.78rem;font-weight:700;padding:7px 13px;border-radius:999px;white-space:nowrap;
+  transition:background .3s var(--ease),color .3s var(--ease)}
+.stilbar button:hover{background:rgba(255,255,255,.14);color:#fff}
+.stilbar button[aria-pressed="true"]{background:#fff;color:#14202E}
+@media(max-width:760px){.stilbar{bottom:10px;padding:6px}
+  .stilbar b{display:none}.stilbar button{font-size:.72rem;padding:6px 10px}}
+</style>
+</head>
+<body class="grain">
+
+<div class="pv">
+  <span class="badge">Pregled</span>
+  <a href="/preview/">Sve stranice</a>
+  <a href="/preview/landing.html">Naslovnica</a>
+  <a href="/preview/public.html" aria-current="page">Javna stranica</a>
+  <a href="/preview/guide.html">Vodič za gosta</a>
+  <a href="/preview/dashboard.html">Dashboard</a>
+  <a href="/preview/prvi-dan.html">Prvi dan</a>
+  <a href="/preview/greska.html">Greške</a>
+  <a href="/preview/admin.html">Admin</a>
+  <a href="/preview/editor.html">Uređivanje</a>
+  <a href="/preview/system.html">Sustav</a>
+  <span class="note">prikaz dizajna · nije spojeno na bazu</span>
+</div>
+
+<!-- Traka tema stoji samo pod /preview/ — u pravoj aplikaciji temu bira
+     domaćin u kartici „Izgled”, gost je ne vidi. -->
+<div class="stilbar" id="stilbar"><b>Tema:</b></div>
+
+<!-- ============ ZAGLAVLJE ============ -->
+<!-- Raspored ovisi o odabranoj temi (`?stil=`), pa ga crta `teme.js`.
+     Bez JS-a ostaje zaglavlje teme „Jadran” upisano ovdje. -->
+<div id="zaglavlje">
+  <div class="th th--jadran">
+    <div class="th__art art art--zalazak art--dise" data-art="zalazak"></div>
+    <div class="th__veil"></div>
+    <div class="th__in th__in--end">
+      <div>
+        <span class="jd-loc">📍 Rovinj, Istra</span>
+        <h1 class="jd-ime vt-objekt">Apartman<em>Aurora</em></h1>
+        <p class="jd-lead">Jutarnje svjetlo nad starim gradom, osam minuta pješice do mora.</p>
+        <div class="jd-btns">
+          <a href="#upit" class="btn btn--fill" data-magnetic="12">Pošalji upit <span class="arr">→</span></a>
+          <a href="#termini" class="btn btn--light">Slobodni termini</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ ČINJENICE ============ -->
+<div class="facts">
+  <div class="wrap facts__in">
+    <div class="fact"><b>4</b><span>gosta</span></div>
+    <div class="fact"><b>2</b><span>sobe</span></div>
+    <div class="fact"><b>3</b><span>kreveta</span></div>
+    <div class="fact"><b>1</b><span>kupaonica</span></div>
+    <div class="fact"><b>52 m²</b><span>površina</span></div>
+    <div style="margin-left:auto;display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+      <div class="fact" style="text-align:right"><b>145 €</b><span>po noći</span></div>
+      <a href="#upit" class="btn btn--dark btn--sm">Provjeri termin</a>
+    </div>
+  </div>
+</div>
+
+<!-- ============ PISMO ============ -->
+<section class="sec">
+  <div class="wrap g g-main" style="gap:clamp(28px,5vw,64px);align-items:start">
+    <div>
+      <p class="kicker" data-rv="fade">Dobrodošli</p>
+      <h2 class="mt16" style="font-size:clamp(1.8rem,3.2vw,2.6rem)" data-rv="up">
+        <span class="mask-line"><span>Nekoliko riječi od domaćice</span></span>
+      </h2>
+      <p class="lead mt24" data-rv="up">
+        Aurora je stan u kojem sam odrasla. Obnovila sam ga prije tri godine, ali sam ostavila
+        kameni zid u dnevnom boravku i stara vrata na terasu — nisu savršena, ali su naša.
+      </p>
+      <p class="lead mt16" data-rv="up">
+        Ujutro sunce pada preko krovova starog grada ravno na terasu, pa je doručak vani
+        najbolji dio dana. Do plaže Lone je osam minuta laganog hoda kroz park, a do tržnice pet.
+        Ako vam nešto zatreba, javite se — živim dvije ulice dalje.
+      </p>
+      <p class="hand mt24" style="font-size:1.6rem;color:var(--terra-d)" data-rv="fade">Marina</p>
+      <div style="display:flex;gap:14px;align-items:center;margin-top:10px" data-rv="up">
+        <div style="width:48px;height:48px;border-radius:50%;background:var(--sand);display:grid;
+                    place-items:center;font-family:'Fraunces',serif;font-size:1.2rem;color:var(--terra-d)">M</div>
+        <div><div style="font-weight:700">Marina</div>
+             <div class="small">Domaćica · odgovara obično u roku sata</div></div>
+      </div>
+    </div>
+
+    <aside class="card" data-rv="up" data-rv-delay="120">
+      <h3 style="font-size:1.2rem">Dobro je znati</h3>
+      <hr class="hr">
+      <div class="row" style="justify-content:space-between;padding:9px 0;gap:14px">
+        <span class="small">Prijava</span><b style="font-size:.92rem">15:00 – 22:00</b></div>
+      <div class="row" style="justify-content:space-between;padding:9px 0;gap:14px">
+        <span class="small">Odjava</span><b style="font-size:.92rem">do 10:00</b></div>
+      <div class="row" style="justify-content:space-between;padding:9px 0;gap:14px">
+        <span class="small">Najkraći boravak</span><b style="font-size:.92rem">3 noći</b></div>
+      <div class="row" style="justify-content:space-between;padding:9px 0;gap:14px">
+        <span class="small">Kućni ljubimci</span><b style="font-size:.92rem">po dogovoru</b></div>
+      <div class="row" style="justify-content:space-between;padding:9px 0;gap:14px">
+        <span class="small">Pušenje</span><b style="font-size:.92rem">samo na terasi</b></div>
+      <hr class="hr">
+      <p class="small">Plaćanje i rezervacija dogovaraju se izravno s domaćicom.
+         Odmoria ne naplaćuje ništa gostu.</p>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ GALERIJA ============ -->
+<section class="sec" style="padding-top:0">
+  <div class="wrap">
+    <div style="display:flex;align-items:flex-end;gap:20px;flex-wrap:wrap">
+      <div><p class="kicker" data-rv="fade">Galerija</p>
+        <h2 class="mt16" style="font-size:clamp(1.8rem,3.2vw,2.6rem)" data-rv="up">
+          <span class="mask-line"><span>Kako stan izgleda</span></span></h2></div>
+      <span class="small" style="margin-left:auto">8 fotografija</span>
+    </div>
+    <div class="gal mt32" data-rv-stagger="90">
+      <div data-rv="fade"><div class="wipe art art--zalazak" data-g-art="zalazak"></div></div>
+      <div data-rv="fade"><div class="wipe art art--plava" data-g-art="plava"></div></div>
+      <div data-rv="fade"><div class="wipe art art--maslinik" data-g-art="maslinik"></div></div>
+      <div data-rv="fade"><div class="wipe art art--plava" data-g-art="plava"></div></div>
+      <div data-rv="fade"><div class="wipe gal__more">+ 4 još</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PUNA TRAKA ============ -->
+<div class="band" data-scene>
+  <div class="art art--maslinik" data-art="maslinik" style="inset:0;position:absolute"></div>
+  <div class="band__cap">
+    <div class="wrap" style="padding:0">
+      <p style="font-family:'Fraunces',serif;font-size:clamp(1.3rem,2.4vw,1.9rem);color:#fff;
+                letter-spacing:-.02em;margin:0;max-width:24ch">
+        Terasa je okrenuta istoku — doručak u sjeni loze.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ LOKACIJA ============ -->
+<section class="sec">
+  <div class="wrap g g2" style="gap:clamp(28px,5vw,64px);align-items:center">
+    <div>
+      <p class="kicker" data-rv="fade">Lokacija</p>
+      <h2 class="mt16" style="font-size:clamp(1.8rem,3.2vw,2.6rem)" data-rv="up">
+        <span class="mask-line"><span>Osam minuta do mora,</span></span>
+        <span class="mask-line"><span class="italic">pet do tržnice.</span></span></h2>
+      <p class="lead mt16" data-rv="up">
+        Stan je u mirnoj ulici iznad starog grada. Nema gužve ispod prozora, a sve je pješice.
+      </p>
+      <div class="mt24" data-rv-stagger="80">
+        <div class="place" data-rv="up"><div class="place__ic">🏖️</div>
+          <div><b>Plaža Lone</b><div class="small">8 min pješice kroz park</div></div>
+          <span class="small" style="margin-left:auto">600 m</span></div>
+        <div class="place" data-rv="up"><div class="place__ic">🥖</div>
+          <div><b>Gradska tržnica</b><div class="small">svako jutro do 13 h</div></div>
+          <span class="small" style="margin-left:auto">400 m</span></div>
+        <div class="place" data-rv="up"><div class="place__ic">🅿️</div>
+          <div><b>Parkirno mjesto 3</b><div class="small">u dvorištu, uključeno u cijenu</div></div>
+          <span class="small" style="margin-left:auto">0 m</span></div>
+        <div class="place" data-rv="up"><div class="place__ic">🚌</div>
+          <div><b>Autobusni kolodvor</b><div class="small">linija za Pulu i Poreč</div></div>
+          <span class="small" style="margin-left:auto">1,2 km</span></div>
+      </div>
+    </div>
+    <div class="map" data-rv="scale">
+      <div class="map__grid"></div>
+      <div class="pin"><div class="pin__d"></div><div class="chip chip--glass mt12">Apartman Aurora</div></div>
+      <a href="#" class="btn btn--light btn--sm" style="position:absolute;left:18px;bottom:18px;z-index:3">
+        Otvori u Maps <span class="arr">→</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SADRŽAJI (tamno) ============ -->
+<section class="sec" style="background:var(--night)">
+  <div class="wrap">
+    <p class="kicker" style="color:#E3A08A" data-rv="fade">Sadržaji</p>
+    <h2 class="mt16" style="color:#fff" data-rv="up">
+      <span class="mask-line"><span>Što vas čeka u stanu</span></span></h2>
+    <div class="g mt32" style="grid-template-columns:repeat(auto-fill,minmax(186px,1fr));gap:12px"
+         data-rv-stagger="50">
+      <div class="amen" data-rv="up">❄️ Klima u obje sobe</div>
+      <div class="amen" data-rv="up">📶 Wi-Fi 200 Mbit</div>
+      <div class="amen" data-rv="up">🍳 Opremljena kuhinja</div>
+      <div class="amen" data-rv="up">🧺 Perilica rublja</div>
+      <div class="amen" data-rv="up">🌿 Terasa s lozom</div>
+      <div class="amen" data-rv="up">🅿️ Vlastiti parking</div>
+      <div class="amen" data-rv="up">🚿 Bojler 80 l</div>
+      <div class="amen" data-rv="up">🛏️ Posteljina i ručnici</div>
+      <div class="amen" data-rv="up">📺 Smart TV</div>
+      <div class="amen" data-rv="up">☕ Aparat za kavu</div>
+      <div class="amen" data-rv="up">🧴 Sušilo za kosu</div>
+      <div class="amen" data-rv="up">👶 Krevetić na upit</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TERMINI ============ -->
+<section class="sec" id="termini">
+  <div class="wrap g g2" style="gap:clamp(28px,5vw,64px);align-items:center">
+    <div>
+      <p class="kicker" data-rv="fade">Dostupnost</p>
+      <h2 class="mt16" style="font-size:clamp(1.8rem,3.2vw,2.6rem)" data-rv="up">
+        <span class="mask-line"><span>Srpanj 2026.</span></span></h2>
+      <p class="lead mt16" style="max-width:38ch" data-rv="up">
+        Kalendar se sam osvježava iz Booking.com-a i Airbnb-a. Za točan termin ipak
+        pošaljite upit — potvrda ide izravno od domaćice.
+      </p>
+      <div class="legend">
+        <span><i class="sq" style="background:rgba(126,143,106,.3)"></i> slobodno</span>
+        <span><i class="sq" style="background:rgba(20,32,46,.1)"></i> zauzeto</span>
+      </div>
+      <a href="#upit" class="btn btn--fill mt24" data-magnetic="10">Pošalji upit za termin <span class="arr">→</span></a>
+    </div>
+    <div class="card" data-rv="up">
+      <div class="cal">
+        <div class="hd">P</div><div class="hd">U</div><div class="hd">S</div><div class="hd">Č</div>
+        <div class="hd">P</div><div class="hd">S</div><div class="hd">N</div>
+        <div class="d pad"></div><div class="d pad"></div>
+        <div class="d">1</div><div class="d">2</div><div class="d">3</div><div class="d busy">4</div><div class="d busy">5</div>
+        <div class="d busy">6</div><div class="d busy">7</div><div class="d busy">8</div><div class="d busy">9</div>
+        <div class="d">10</div><div class="d">11</div><div class="d busy">12</div>
+        <div class="d busy">13</div><div class="d busy">14</div><div class="d busy">15</div><div class="d busy">16</div>
+        <div class="d busy">17</div><div class="d busy">18</div><div class="d">19</div>
+        <div class="d">20</div><div class="d">21</div><div class="d">22</div><div class="d">23</div>
+        <div class="d busy">24</div><div class="d busy">25</div><div class="d busy">26</div>
+        <div class="d busy">27</div><div class="d busy">28</div><div class="d">29</div><div class="d">30</div>
+        <div class="d">31</div>
+      </div>
+      <hr class="hr">
+      <p class="small"><span class="dot-live" style="display:inline-block;vertical-align:middle"></span>
+        Zadnja sinkronizacija: danas u 06:12</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ UPIT ============ -->
+<section class="sec" id="upit" style="padding-top:0">
+  <div class="wrap">
+    <div class="ask g g2" style="gap:clamp(24px,4vw,56px);align-items:center" data-rv="up">
+      <div>
+        <p class="kicker" style="color:#E3A08A">Upit</p>
+        <h2 class="mt16" style="color:#fff;font-size:clamp(1.7rem,3vw,2.4rem)">Pitajte Marinu izravno</h2>
+        <p class="lead mt16" style="color:rgba(255,255,255,.78);max-width:34ch">
+          Bez posrednika i bez provizije. Odgovor obično stigne isti dan.
+        </p>
+        <p class="small mt24" style="color:rgba(255,255,255,.66)">
+          📞 +385 91 234 5678 &nbsp;·&nbsp; ✉️ marina@primjer.hr</p>
+      </div>
+      <form onsubmit="return false">
+        <input class="field" placeholder="Vaše ime">
+        <input class="field" placeholder="E-mail ili telefon">
+        <div style="display:flex;gap:11px;margin-top:11px">
+          <input class="field" style="margin-top:0" placeholder="Dolazak" onfocus="this.type='date'">
+          <input class="field" style="margin-top:0" placeholder="Odlazak" onfocus="this.type='date'">
+        </div>
+        <textarea class="field" rows="3" placeholder="Poruka — broj gostiju, pitanja…"></textarea>
+        <button class="btn btn--fill mt16" style="width:100%">Pošalji upit <span class="arr">→</span></button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="wrap foot__in">
+    <span>Stranicu je izradila domaćica u <b>Odmoria</b> · prikaz dizajna, nije živa stranica</span>
+    <a href="/preview/landing.html" style="color:var(--terra-ink);font-weight:700">Napravi svoju →</a>
+  </div>
+</footer>
+
+<script src="/preview/scene.js"></script>
+<script src="/teme.js"></script>
+<script>
+/* Tema javne stranice. U pravoj aplikaciji dolazi iz `properties`; ovdje iz
+   `?stil=` da se svih osam može usporediti bez baze.
+   Zaglavlje se crta prije `motion.js` (defer), pa `[data-rv]` unutar njega
+   normalno prođe kroz IntersectionObserver. */
+;(()=>{
+  const T=window.Odmoria?.teme; if(!T) return
+  const bar=document.getElementById('stilbar')
+  function idi(id,pisi){
+    const t=T.primijeni(id)
+    T.ubaci(document.getElementById('zaglavlje'),t)
+    ;[...bar.querySelectorAll('button')].forEach(b=>
+      b.setAttribute('aria-pressed',String(b.dataset.stil===t)))
+    if(pisi){const u=new URL(location.href); u.searchParams.set('stil',t)
+             history.replaceState(null,'',u)}
+    document.title=`Apartman Aurora — Rovinj (${T.TEME.find(x=>x.id===t).ime})`
+  }
+  bar.insertAdjacentHTML('beforeend', T.TEME.map(t=>
+    `<button type="button" data-stil="${t.id}">${t.ime}</button>`).join(''))
+  bar.addEventListener('click',e=>{
+    const b=e.target.closest('button'); if(b) idi(b.dataset.stil,true)
+  })
+  idi(T.izAdrese('jadran'),false)
+})()
+</script>
+<script src="/motion.js" defer></script>
+</body>
+</html>

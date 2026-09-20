@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Uređivanje objekta (pregled)</title>
+<link rel="stylesheet" href="/atmosphere.css">
+<link rel="stylesheet" href="/preview/ui.css">
+<link rel="stylesheet" href="/teme.css">
+<style>
+.tabs{display:flex;gap:2px;overflow-x:auto;border-bottom:1px solid var(--line);margin-bottom:28px;
+  scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tabs button{border:0;background:transparent;padding:14px 17px;font-size:.9rem;font-weight:700;
+  color:var(--ink-mut);white-space:nowrap;border-bottom:2px solid transparent;margin-bottom:-1px;
+  cursor:pointer;transition:color .3s var(--ease),border-color .3s var(--ease)}
+.tabs button:hover{color:var(--ink)}
+.tabs button[aria-selected="true"]{color:var(--terra-d);border-bottom-color:var(--terra)}
+.pane[hidden]{display:none}
+.pane{animation:fadeUp .6s var(--ease)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:640px){.two{grid-template-columns:1fr}}
+
+.photos{display:grid;grid-template-columns:repeat(auto-fill,minmax(146px,1fr));gap:14px}
+.ph{aspect-ratio:4/3;border-radius:var(--r-md);position:relative;overflow:hidden;
+    transition:transform .5s var(--ease)}
+.ph:hover{transform:translateY(-4px)}
+.ph .cover{position:absolute;top:10px;left:10px;z-index:3;background:var(--terra-d);color:#fff;
+  font-size:.62rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:4px 9px;border-radius:6px}
+.ph .x{position:absolute;top:10px;right:10px;z-index:3;width:26px;height:26px;border-radius:50%;
+  background:rgba(20,32,46,.62);color:#fff;border:0;font-size:.8rem;line-height:1;cursor:pointer}
+.ph--add{background:var(--sand);border:2px dashed var(--line);display:grid;place-items:center;
+  color:var(--ink-mut);font-size:.88rem;font-weight:700;cursor:pointer}
+.ph--add:hover{border-color:var(--terra);color:var(--terra-d)}
+
+.lrow{display:flex;gap:14px;align-items:center;padding:14px 0;border-bottom:1px solid var(--line-2)}
+.lrow:last-child{border-bottom:0}
+.lrow .drag{color:var(--ink-30);cursor:grab;font-size:1.1rem}
+.lrow .ic{width:40px;height:40px;border-radius:12px;background:var(--sand);display:grid;
+  place-items:center;flex:none}
+
+.sw{width:44px;height:44px;border-radius:14px;border:2px solid transparent;cursor:pointer;position:relative;
+  transition:transform .4s var(--ease)}
+.sw:hover{transform:scale(1.08)}
+.sw[aria-pressed="true"]{border-color:var(--ink);box-shadow:0 0 0 3px rgba(20,32,46,.1)}
+.sw.lk::after{content:"🔒";position:absolute;inset:0;display:grid;place-items:center;font-size:.72rem;
+  background:rgba(250,246,239,.74);border-radius:12px}
+
+.prev{border-radius:var(--r-md);overflow:hidden;border:1px solid var(--line);background:var(--shell)}
+.prev__top{height:150px;position:relative}
+.prev__cap{position:absolute;left:16px;bottom:14px;z-index:2;color:#fff}
+</style>
+</head>
+<body class="grain">
+
+<div class="pv">
+  <span class="badge">Pregled</span>
+  <a href="/preview/">Sve stranice</a>
+  <a href="/preview/landing.html">Naslovnica</a>
+  <a href="/preview/public.html">Javna stranica</a>
+  <a href="/preview/guide.html">Vodič za gosta</a>
+  <a href="/preview/dashboard.html">Dashboard</a>
+  <a href="/preview/prvi-dan.html">Prvi dan</a>
+  <a href="/preview/greska.html">Greške</a>
+  <a href="/preview/admin.html">Admin</a>
+  <a href="/preview/editor.html" aria-current="page">Uređivanje</a>
+  <a href="/preview/system.html">Sustav</a>
+  <span class="note">prikaz dizajna · nije spojeno na bazu</span>
+</div>
+
+<div class="app">
+  <aside class="side"><div class="side__in">
+    <div class="brand">Odmoria<span style="color:var(--terra)">.</span></div>
+    <a class="navi" href="/preview/dashboard.html"><span class="ic">◧</span> Pregled</a>
+    <a class="navi" aria-current="page" href="/preview/editor.html"><span class="ic">⌂</span> Objekti <span class="cnt">2</span></a>
+    <a class="navi" href="#"><span class="ic">✎</span> Rezervacije <span class="cnt">3</span></a>
+    <a class="navi" href="#"><span class="ic">▦</span> Dostupnost</a>
+    <a class="navi" href="/preview/dashboard.html#analitika"><span class="ic">◔</span> Analitika</a>
+    <a class="navi" href="#"><span class="ic">⚙</span> Postavke</a>
+    <div class="side__foot">
+      <span class="tag tag--terra">Plan Domaćin</span>
+      <p class="small mt8">8 od 50 fotografija</p>
+    </div>
+  </div></aside>
+
+  <main class="main">
+    <div class="head">
+      <div>
+        <p class="kicker bare">Objekt</p>
+        <h1 style="font-size:clamp(1.9rem,3.2vw,2.7rem);margin-top:6px">Apartman Aurora</h1>
+      </div>
+      <div class="head__act">
+        <a href="/preview/public.html" class="btn btn--ghost btn--sm">Pregled</a>
+        <button class="btn btn--fill btn--sm" data-magnetic="8">Spremi</button>
+      </div>
+    </div>
+
+    <div class="tabs" role="tablist">
+      <button role="tab" aria-selected="true" data-t="0">Osnovno</button>
+      <button role="tab" aria-selected="false" data-t="1">Fotografije</button>
+      <button role="tab" aria-selected="false" data-t="2">Pristup i upute</button>
+      <button role="tab" aria-selected="false" data-t="3">Dolazak</button>
+      <button role="tab" aria-selected="false" data-t="4">Preporuke</button>
+      <button role="tab" aria-selected="false" data-t="5">Pravila i pitanja</button>
+      <button role="tab" aria-selected="false" data-t="6">Izgled</button>
+    </div>
+
+    <!-- 0 OSNOVNO -->
+    <section class="pane" data-p="0">
+      <div class="g g-main" style="align-items:start">
+        <div class="panel">
+          <h3 style="font-size:1.2rem">Osnovni podaci</h3>
+          <p class="small mt8">Ovo gost vidi na javnoj stranici.</p>
+          <label class="f"><span class="lb">Naziv objekta</span><input class="inp" value="Apartman Aurora"></label>
+          <label class="f"><span class="lb">Podnaslov</span>
+            <input class="inp" value="Jutarnje svjetlo nad starim gradom, osam minuta do mora">
+            <span class="hint">Jedna rečenica koja stoji ispod naziva.</span></label>
+          <label class="f"><span class="lb">Mjesto</span><input class="inp" value="Rovinj, Istra"></label>
+          <label class="f"><span class="lb">Poruka dobrodošlice</span>
+            <textarea class="inp" rows="5">Aurora je stan u kojem sam odrasla. Obnovila sam ga prije tri godine, ali sam ostavila kameni zid u dnevnom boravku i stara vrata na terasu.</textarea></label>
+          <div class="two mt16">
+            <label class="f" style="margin-top:0"><span class="lb">Gostiju</span><input class="inp" type="number" value="4"></label>
+            <label class="f" style="margin-top:0"><span class="lb">Soba</span><input class="inp" type="number" value="2"></label>
+            <label class="f" style="margin-top:0"><span class="lb">Kreveta</span><input class="inp" type="number" value="3"></label>
+            <label class="f" style="margin-top:0"><span class="lb">Kupaonica</span><input class="inp" type="number" value="1"></label>
+            <label class="f" style="margin-top:0"><span class="lb">Površina (m²)</span><input class="inp" type="number" value="52"></label>
+            <label class="f" style="margin-top:0"><span class="lb">Cijena po noći (€)</span><input class="inp" type="number" value="145"></label>
+          </div>
+        </div>
+        <aside class="panel">
+          <h3 style="font-size:1.05rem">Javna adresa</h3>
+          <p class="small mt8">Ovo je link koji dijelite.</p>
+          <div class="mt12" style="background:var(--cream);border:1px solid var(--line-2);
+               border-radius:var(--r-sm);padding:12px 14px;font-family:ui-monospace,monospace;
+               font-size:.8rem;word-break:break-all">odmoria.com/p/apartman-aurora</div>
+          <button class="btn btn--ghost btn--sm mt12" style="width:100%"
+                  data-copy="https://odmoria.com/p/apartman-aurora"><span data-copy-label>Kopiraj link</span></button>
+          <hr class="hr">
+          <h3 style="font-size:1.05rem">Kontakt za goste</h3>
+          <label class="f"><span class="lb">Ime domaćina</span><input class="inp" value="Marina"></label>
+          <label class="f"><span class="lb">Telefon</span><input class="inp" value="+385 91 234 5678"></label>
+          <label class="f"><span class="lb">E-mail</span><input class="inp" value="marina@primjer.hr"></label>
+        </aside>
+      </div>
+    </section>
+
+    <!-- 1 FOTOGRAFIJE -->
+    <section class="pane" data-p="1" hidden>
+      <div class="panel">
+        <div class="panel__hd">
+          <div><h3 style="font-size:1.2rem">Fotografije</h3>
+            <p class="small mt8">Prva fotografija je uvijek naslovna. Povucite da promijenite redoslijed.</p></div>
+          <span class="tag tag--mut" style="margin-left:auto">8 / 50</span>
+        </div>
+        <div class="photos">
+          <div class="ph art art--zalazak" data-g-art="zalazak"><span class="cover">Naslovna</span><button class="x">×</button></div>
+          <div class="ph art art--plava" data-g-art="plava"><button class="x">×</button></div>
+          <div class="ph art art--maslinik" data-g-art="maslinik"><button class="x">×</button></div>
+          <div class="ph art art--zalazak" data-g-art="zalazak"><button class="x">×</button></div>
+          <div class="ph art art--plava" data-g-art="plava"><button class="x">×</button></div>
+          <div class="ph ph--add">+ Dodaj</div>
+        </div>
+        <hr class="hr">
+        <p class="small">JPG ili PNG, do 10 MB. Fotografije se spremaju odmah — ne treba pritisnuti Spremi.</p>
+      </div>
+    </section>
+
+    <!-- 2 PRISTUP I UPUTE -->
+    <section class="pane" data-p="2" hidden>
+      <div class="g g2" style="align-items:start">
+        <div class="panel">
+          <span class="tag tag--terra">🔒 Vidi samo potvrđeni gost</span>
+          <h3 class="mt16" style="font-size:1.2rem">Pristup</h3>
+          <p class="small mt8">Ovo se nikad ne prikazuje na javnoj stranici.</p>
+          <label class="f"><span class="lb">Wi-Fi mreža</span><input class="inp" value="Aurora_5G"></label>
+          <label class="f"><span class="lb">Wi-Fi lozinka</span><input class="inp" value="maslina2026"></label>
+          <label class="f"><span class="lb">Šifra vrata</span><input class="inp" value="4271">
+            <span class="hint">Gost je vidi od sat vremena prije prijave do odjave.</span></label>
+          <div class="two mt16">
+            <label class="f" style="margin-top:0"><span class="lb">Prijava od</span><input class="inp" type="time" value="15:00"></label>
+            <label class="f" style="margin-top:0"><span class="lb">Odjava do</span><input class="inp" type="time" value="10:00"></label>
+          </div>
+        </div>
+        <div class="panel">
+          <h3 style="font-size:1.2rem">Upute za korištenje</h3>
+          <p class="small mt8">Pitanja koja se ponavljaju svaki tjedan.</p>
+          <label class="f"><span class="lb">Klima</span>
+            <textarea class="inp" rows="2">Daljinski je u ladici ispod TV-a. MODE → pahulja za hlađenje.</textarea></label>
+          <label class="f"><span class="lb">Grijanje</span>
+            <textarea class="inp" rows="2">Ista klima, MODE → sunce.</textarea></label>
+          <label class="f"><span class="lb">Topla voda</span>
+            <textarea class="inp" rows="2">Bojler 80 l, uključen stalno.</textarea></label>
+          <label class="f"><span class="lb">Kuhinja</span>
+            <textarea class="inp" rows="2">Indukcijska ploča — držite prst 2 s da se upali.</textarea></label>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3 DOLAZAK -->
+    <section class="pane" data-p="3" hidden>
+      <div class="panel">
+        <h3 style="font-size:1.2rem">Dolazak</h3>
+        <label class="f"><span class="lb">Adresa</span><input class="inp" value="Ulica Sv. Križa 14, 52210 Rovinj"></label>
+        <label class="f"><span class="lb">Parking</span>
+          <textarea class="inp" rows="3">Dvorište iza zelenih vrata, mjesto broj 3, prvo desno. Uključeno u cijenu.</textarea></label>
+        <label class="f"><span class="lb">Upute za prijavu</span>
+          <textarea class="inp" rows="3">Drugi kat lijevo, kameno stubište bez lifta. Šifra na tipkovnici, zatim kvačica.</textarea></label>
+        <label class="f"><span class="lb">Upute za odjavu</span>
+          <textarea class="inp" rows="3">Ključ u sef, poklopac zatvoriti. Otpad u kontejnere na kraju ulice.</textarea></label>
+        <hr class="hr">
+        <h3 style="font-size:1.05rem">Prijevoz</h3>
+        <div class="mt12">
+          <div class="lrow"><span class="drag">⠿</span><div class="ic">🚌</div>
+            <div><b style="font-size:.92rem">Autobusni kolodvor</b><div class="small">linija za Pulu i Poreč, 1,2 km</div></div>
+            <button class="btn btn--ghost btn--sm" style="margin-left:auto">Uredi</button></div>
+          <div class="lrow"><span class="drag">⠿</span><div class="ic">✈️</div>
+            <div><b style="font-size:.92rem">Zračna luka Pula</b><div class="small">45 min autom</div></div>
+            <button class="btn btn--ghost btn--sm" style="margin-left:auto">Uredi</button></div>
+        </div>
+        <button class="btn btn--dark btn--sm mt16">+ Dodaj prijevoz</button>
+      </div>
+    </section>
+
+    <!-- 4 PREPORUKE -->
+    <section class="pane" data-p="4" hidden>
+      <div class="panel">
+        <div class="panel__hd">
+          <div><h3 style="font-size:1.2rem">Vaše preporuke</h3>
+            <p class="small mt8">Mjesta koja stvarno preporučujete, ne prepisani vodič.</p></div>
+          <span class="tag tag--mut" style="margin-left:auto">5 / 20</span>
+        </div>
+        <div>
+          <div class="lrow"><span class="drag">⠿</span><div class="ic">🍽️</div>
+            <div><b style="font-size:.92rem">Konoba Veli Jože</b><div class="small">Restoran · 5 min pješice</div></div>
+            <button class="btn btn--ghost btn--sm" style="margin-left:auto">Uredi</button></div>
+          <div class="lrow"><span class="drag">⠿</span><div class="ic">🏖️</div>
+            <div><b style="font-size:.92rem">Uvala Škaraba</b><div class="small">Plaža · 20 min pješice</div></div>
+            <button class="btn btn--ghost btn--sm" style="margin-left:auto">Uredi</button></div>
+          <div class="lrow"><span class="drag">⠿</span><div class="ic">☕</div>
+            <div><b style="font-size:.92rem">Caffe Valentino</b><div class="small">Kafić · 10 min pješice</div></div>
+            <button class="btn btn--ghost btn--sm" style="margin-left:auto">Uredi</button></div>
+          <div class="lrow"><span class="drag">⠿</span><div class="ic">🛥️</div>
+            <div><b style="font-size:.92rem">Crveni otok</b><div class="small">Izlet · brodić s rive, 8 €</div></div>
+            <button class="btn btn--ghost btn--sm" style="margin-left:auto">Uredi</button></div>
+          <div class="lrow"><span class="drag">⠿</span><div class="ic">🛒</div>
+            <div><b style="font-size:.92rem">Gradska tržnica</b><div class="small">Trgovina · 5 min pješice</div></div>
+            <button class="btn btn--ghost btn--sm" style="margin-left:auto">Uredi</button></div>
+        </div>
+        <button class="btn btn--dark btn--sm mt16">+ Dodaj preporuku</button>
+      </div>
+    </section>
+
+    <!-- 5 PRAVILA I PITANJA -->
+    <section class="pane" data-p="5" hidden>
+      <div class="g g2" style="align-items:start">
+        <div class="panel">
+          <h3 style="font-size:1.2rem">Kućna pravila</h3>
+          <div class="mt16">
+            <div class="lrow"><span class="drag">⠿</span><div>Tišina od 22 do 7</div>
+              <button class="btn btn--ghost btn--sm" style="margin-left:auto">Ukloni</button></div>
+            <div class="lrow"><span class="drag">⠿</span><div>Pušenje samo na terasi</div>
+              <button class="btn btn--ghost btn--sm" style="margin-left:auto">Ukloni</button></div>
+            <div class="lrow"><span class="drag">⠿</span><div>Obuća se izuva na ulazu</div>
+              <button class="btn btn--ghost btn--sm" style="margin-left:auto">Ukloni</button></div>
+          </div>
+          <input class="inp mt16" placeholder="Novo pravilo…">
+          <button class="btn btn--dark btn--sm mt12">+ Dodaj pravilo</button>
+        </div>
+        <div class="panel">
+          <h3 style="font-size:1.2rem">Česta pitanja</h3>
+          <div class="mt16">
+            <div class="lrow"><span class="drag">⠿</span>
+              <div><b style="font-size:.92rem">Mogu li doći ranije?</b>
+                <div class="small">Ako stan nije zauzet, javite se dan prije…</div></div>
+              <button class="btn btn--ghost btn--sm" style="margin-left:auto">Uredi</button></div>
+            <div class="lrow"><span class="drag">⠿</span>
+              <div><b style="font-size:.92rem">Primate li kućne ljubimce?</b>
+                <div class="small">Male pse da, uz najavu…</div></div>
+              <button class="btn btn--ghost btn--sm" style="margin-left:auto">Uredi</button></div>
+          </div>
+          <button class="btn btn--dark btn--sm mt16">+ Dodaj pitanje</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6 IZGLED -->
+    <section class="pane" data-p="6" hidden>
+      <div class="panel">
+        <div class="row wrapf gap12" style="justify-content:space-between;align-items:flex-end">
+          <div style="max-width:52ch">
+            <h3 style="font-size:1.2rem">Tema javne stranice</h3>
+            <p class="small mt8">Tema ne mijenja samo boju. Svaka drugačije slaže zaglavlje i
+              <b>vodi s drugom informacijom</b> — jedna cijenom, druga temperaturom bazena,
+              treća popisom prostorija. Prvo što gost vidi svugdje je drugo.</p>
+          </div>
+          <div class="row wrapf gap12">
+            <span class="small" style="font-weight:700">Prikaži kao:</span>
+            <div class="planbar" id="planbarT">
+              <button data-plan="free">Besplatno</button>
+              <button data-plan="host" aria-pressed="true">Domaćin</button>
+              <button data-plan="pro">Pro</button>
+              <button data-plan="partner">Partner</button>
+            </div>
+          </div>
+        </div>
+        <div class="teme mt24" id="teme"></div>
+      </div>
+
+      <div class="panel mt24">
+        <div class="row wrapf gap12" style="justify-content:space-between;align-items:flex-end">
+          <div>
+            <p class="kicker">Kako gost vidi</p>
+            <h3 class="mt8" style="font-size:1.15rem" id="zivoIme">Jadran</h3>
+            <p class="small mt4" id="zivoVodi">vodi imenom objekta</p>
+          </div>
+          <div class="row wrapf gap8">
+            <span class="tag tag--mut" id="zivoFont">Fraunces + Manrope</span>
+            <a class="btn btn--ghost btn--sm" id="zivoLink" href="/preview/public.html">
+              Otvori cijelu stranicu <span class="arr">→</span></a>
+          </div>
+        </div>
+        <div class="zivo mt16" id="zivoOkvir"><div id="zivo"></div></div>
+        <p class="hint">Pregled je smanjen na oko 80 % stvarne veličine da stane u panel.
+          Sadržaj je isti onaj koji je upisan u karticama lijevo.</p>
+      </div>
+
+      <div class="g g-main mt24" style="align-items:start">
+        <div class="panel">
+          <span class="lb" style="font-size:.72rem;font-weight:800;letter-spacing:.14em;
+                text-transform:uppercase;color:var(--ink-mut)">Boja naglaska</span>
+          <p class="small mt8">Tema donosi vlastitu paletu. Ovime se mijenja samo naglasak
+            unutar nje — gumbi, poveznice i istaknute brojke.</p>
+          <div class="row wrapf gap12 mt16" id="colors">
+            <button class="sw" aria-pressed="true" style="background:#D4674A"></button>
+            <button class="sw" style="background:#2E6B77"></button>
+            <button class="sw" style="background:#7E8F6A"></button>
+            <button class="sw" style="background:#E9A13B"></button>
+            <button class="sw" style="background:#14202E"></button>
+            <button class="sw" style="background:#9B5A7A"></button>
+            <button class="sw lk" style="background:#B44F35"></button>
+            <button class="sw lk" style="background:#3E5A69"></button>
+          </div>
+
+          <hr class="hr">
+
+          <span class="lb" style="font-size:.72rem;font-weight:800;letter-spacing:.14em;
+                text-transform:uppercase;color:var(--ink-mut)">Naslovni prizor</span>
+          <p class="small mt8">Vrijedi za teme koje imaju sliku u zaglavlju. Ako su dodane
+            fotografije, one imaju prednost pred nacrtanim prizorom.</p>
+          <div class="g mt16" style="grid-template-columns:repeat(3,1fr);gap:12px" id="scenes">
+            <button class="sw art art--zalazak" aria-pressed="true" data-g-art="zalazak"
+                    style="width:100%;height:64px;border-radius:var(--r-sm)"></button>
+            <button class="sw art art--plava" data-g-art="plava"
+                    style="width:100%;height:64px;border-radius:var(--r-sm)"></button>
+            <button class="sw art art--maslinik" data-g-art="maslinik"
+                    style="width:100%;height:64px;border-radius:var(--r-sm)"></button>
+          </div>
+        </div>
+
+        <aside class="panel">
+          <p class="kicker">Što tema mijenja</p>
+          <ul class="small mt12" style="padding-left:18px;line-height:1.85;color:var(--ink-70)">
+            <li><b>Raspored zaglavlja</b> — koja informacija ide prva i koliko je velika.</li>
+            <li><b>Tipografiju</b> — svaka tema ima vlastiti par pisama.</li>
+            <li><b>Paletu i oblik</b> — podloge, naglasak, radijuse i sjene.</li>
+          </ul>
+          <p class="small mt12" style="color:var(--ink-70)">
+            Sve osam tema provjereno je na kontrast. Najlošiji omjer teksta i podloge
+            je 4,5:1, što je granica WCAG AA za sitan tekst.
+          </p>
+          <div class="mt20" style="background:rgba(233,161,59,.12);border:1px solid rgba(233,161,59,.34);
+               border-radius:var(--r-md);padding:18px">
+            <b class="tag--warn-ink" id="upsellIme">Četiri teme otvara plan Pro</b>
+            <p class="small mt8" style="color:var(--ink-70)" id="upsellTxt">
+              Na planu Domaćin otvorene su četiri teme.</p>
+            <a href="/preview/landing.html#cijene" class="btn btn--fill btn--sm mt12">
+              Pogledaj planove <span class="arr">→</span></a>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script src="/preview/scene.js"></script>
+<script src="/teme.js"></script>
+<script src="/motion.js" defer></script>
+<script>
+const tabs=[...document.querySelectorAll('.tabs button')]
+const panes=[...document.querySelectorAll('.pane')]
+tabs.forEach(t=>t.addEventListener('click',()=>{
+  tabs.forEach(x=>x.setAttribute('aria-selected',String(x===t)))
+  panes.forEach(p=>{p.hidden=p.dataset.p!==t.dataset.t})
+  t.scrollIntoView({block:'nearest',inline:'center',behavior:'smooth'})
+}))
+
+/* Birač tema živi u `teme.js` — ista izvedba vrti i karticu „Izgled”
+   u dashboardu, pa se dvije kopije ne mogu razići. */
+window.Odmoria?.teme?.birac()
+
+;['#colors','#scenes'].forEach(sel=>{
+  const g=document.querySelector(sel); if(!g) return
+  g.addEventListener('click',e=>{
+    const b=e.target.closest('.sw'); if(!b) return
+    ;[...g.children].forEach(x=>x.removeAttribute('aria-pressed'))
+    b.setAttribute('aria-pressed','true')
+  })
+})
+</script>
+</body>
+</html>

@@ -1,0 +1,470 @@
+/* ==========================================================================
+   Odmoria — TEME javne stranice
+   Osam tema. Svaka mijenja tri stvari, ne samo boju:
+     1. paletu i tipografiju (tokeni ispod),
+     2. oblik (radijusi, sjene, obrubi),
+     3. ŠTO STRANICA VODI — raspored zaglavlja (`.th--*` na dnu ove datoteke).
+
+   Tema se pali atributom `data-stil`. Na <html> prebojava cijelu stranicu
+   (javna stranica), a na bilo kojem omotaču samo ono unutar njega — zato
+   birač u uređivanju može pokazati temu uživo, a da sučelje oko njega ostane
+   u Odmorijinim bojama. Bez atributa vrijedi „Jadran”, tj. čisti
+   `atmosphere.css`, pa stranica bez JS-a izgleda kao i dosad.
+
+   Kontrasti: svaka tema ima vlastiti `--terra-ink` (tekst) i `--terra-d`
+   (pune plohe) izmjereni na VLASTITOJ podlozi te teme, jer vrijednosti iz
+   `ui.css` vrijede samo za kremu. Najniži izmjereni omjer je 4,54:1.
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,300..700;1,300..500&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..700&family=Cormorant+Garamond:ital,wght@0,300..700;1,300..600&family=Archivo+Black&family=Space+Grotesk:wght@300..700&family=Playfair+Display:ital,wght@0,400..900;1,400..700&family=Syne:wght@400..800&family=Spectral:ital,wght@0,200;0,300;0,400;0,600;1,200;1,300;1,400&display=swap');
+
+/* ==========================================================================
+   SAMODOSTATNOST
+   `dashboard.html` namjerno NE učitava `atmosphere.css` — ima vlastiti potpun
+   CSS s vlastitim imenima tokena. Da bi birač tema radio i tamo, ovdje su
+   osnovni tokeni i gumbi zaglavlja.
+
+   `.tema-okruzje` mora biti PREDAK elementa s `data-stil`, nikad isti element:
+   izravno pravilo na elementu pobjeđuje naslijeđenu vrijednost, pa bi tema
+   inače izgubila od ovih osnovnih boja.
+   ========================================================================== */
+.tema-okruzje{
+  --cream:#FAF6EF; --sand:#F1E7D7; --shell:#FFFCF7; --night:#14202E; --night-2:#1C2E3F;
+  --ink:#14202E; --ink-70:rgba(20,32,46,.70); --ink-50:rgba(20,32,46,.50);
+  --ink-30:rgba(20,32,46,.30); --line:rgba(20,32,46,.10); --line-2:rgba(20,32,46,.06);
+  --ink-mut:#5A6774; --terra:#D4674A; --terra-d:#B44F35; --terra-ink:#A8462F;
+  --sun:#E9A13B; --sea:#2E6B77; --olive:#7E8F6A; --rose:#E3A08A;
+  --ease:cubic-bezier(.16,1,.3,1); --ease-soft:cubic-bezier(.33,1,.68,1);
+  --r-lg:30px; --r-md:20px; --r-sm:14px;
+  color:var(--ink);
+}
+
+/* Gumbi u zaglavlju. Reproduciraju `.btn` iz `atmosphere.css`, ali pod `.th`,
+   pa vrijede i na stranici koja taj list ne učitava. Mjere idu kroz `--hs`
+   (vidi niže); pri `--hs:1` rezultat je identičan izvornome. */
+.th .btn{
+  display:inline-flex;align-items:center;justify-content:center;border:0;cursor:pointer;
+  font-family:'Manrope',system-ui,sans-serif;font-weight:700;letter-spacing:-.01em;
+  border-radius:999px;position:relative;overflow:hidden;text-decoration:none;
+  transition:background .3s,color .3s,box-shadow .55s var(--ease);
+}
+.th .btn--fill{background:var(--terra-d);color:#fff}
+.th .btn--light{background:rgba(255,255,255,.92);color:#14202E}
+.th .btn--ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--line)}
+.th .btn--dark{background:var(--ink);color:var(--cream)}
+
+/* Tokeni koje teme smiju pomaknuti, a nisu u `atmosphere.css`.
+   Stoje ovdje, PRIJE tema: da su u `<style>` same stranice, dolazili bi
+   kasnije u dokumentu i pri istoj specifičnosti nadjačali temu. */
+:root{
+  --slob-bg:rgba(126,143,106,.16);   /* slobodan dan u kalendaru */
+  --slob-ink:#3F4C31;                /* 7,15:1 na toj plohi */
+}
+
+/* ==========================================================================
+   1 · JADRAN — zadana. Namjerno prazna: to je `atmosphere.css`.
+   Vodi s IMENOM objekta.
+   ========================================================================== */
+[data-stil="jadran"]{ --th-font-naslov:'Fraunces',Georgia,serif }
+
+/* ==========================================================================
+   2 · LAGUNA — staklo i voda. Vodi s TEMPERATUROM BAZENA.
+   ========================================================================== */
+[data-stil="laguna"]{
+  --cream:#EFF6F7; --sand:#DDEBED; --shell:#F8FCFC; --night:#0E3038; --night-2:#144049;
+  --ink:#0E2A31; --ink-70:rgba(14,42,49,.72); --ink-50:rgba(14,42,49,.52); --ink-30:rgba(14,42,49,.30);
+  --line:rgba(14,42,49,.12); --line-2:rgba(14,42,49,.07);
+  --ink-mut:#41626A;                     /* 5,02:1 na #EFF6F7 */
+  --terra:#0E8C9E; --terra-d:#0B7A8A; --terra-ink:#0A6B79;   /* 5,65:1 · bijelo na punom 5,04:1 */
+  --sun:#39B3A6; --sea:#0A6B79; --olive:#5FA39B; --rose:#8FCFD4;
+  --r-lg:36px; --r-md:26px; --r-sm:18px;
+  --th-font-naslov:'Jost',system-ui,sans-serif;
+}
+[data-stil="laguna"],
+[data-stil="laguna"] body,
+[data-stil="laguna"] .btn{font-family:'Jost',system-ui,sans-serif;letter-spacing:0}
+[data-stil="laguna"] .display,
+[data-stil="laguna"] h1,[data-stil="laguna"] h2,[data-stil="laguna"] h3{
+  font-family:'Jost',system-ui,sans-serif;font-weight:300;font-variation-settings:normal;
+  letter-spacing:-.02em;
+}
+[data-stil="laguna"] .italic{font-style:normal;font-weight:500}
+[data-stil="laguna"] .panel{backdrop-filter:blur(14px);background:rgba(255,255,255,.66)}
+
+/* ==========================================================================
+   3 · ZLATNI SAT — crno i zlatno. Vodi s CIJENOM.
+   ========================================================================== */
+[data-stil="zlatnisat"]{
+  --cream:#0B0B0C; --sand:#141416; --shell:#17171A; --night:#000000; --night-2:#0E0E10;
+  --ink:#F4EFE4; --ink-70:rgba(244,239,228,.74); --ink-50:rgba(244,239,228,.54); --ink-30:rgba(244,239,228,.30);
+  --line:rgba(244,239,228,.18); --line-2:rgba(244,239,228,.09);
+  --ink-mut:#B9B1A1;                     /* 8,74:1 na #0B0B0C */
+  --terra:#C9A227; --terra-d:#C9A227; --terra-ink:#D8B44A;   /* 9,88:1 · crno na punom 8,68:1 */
+  --sun:#E3C56A; --sea:#8A8F7E; --olive:#9A9276; --rose:#D8B44A;
+  --r-lg:2px; --r-md:2px; --r-sm:0px;
+  --grid:rgba(244,239,228,.14); --surface:#0B0B0C;
+  --th-font-naslov:'Bodoni Moda',Didot,serif;
+}
+[data-stil="zlatnisat"],
+[data-stil="zlatnisat"] body,
+[data-stil="zlatnisat"] .btn{font-family:'Jost',system-ui,sans-serif}
+[data-stil="zlatnisat"] .display,
+[data-stil="zlatnisat"] h1,[data-stil="zlatnisat"] h2,[data-stil="zlatnisat"] h3{
+  font-family:'Bodoni Moda',Didot,serif;font-weight:400;font-variation-settings:normal;letter-spacing:-.01em;
+}
+[data-stil="zlatnisat"] .btn{border-radius:0;text-transform:uppercase;letter-spacing:.18em;font-size:.76rem}
+[data-stil="zlatnisat"] .btn--fill{background:var(--terra);color:#0B0B0C;box-shadow:none}
+[data-stil="zlatnisat"] .btn--ghost{box-shadow:inset 0 0 0 1px var(--line);color:var(--ink)}
+[data-stil="zlatnisat"] .btn--light{background:var(--ink);color:#0B0B0C}
+[data-stil="zlatnisat"] .btn--dark{background:var(--terra);color:#0B0B0C}
+[data-stil="zlatnisat"] .panel{background:var(--shell);border:1px solid var(--line);box-shadow:none}
+
+/* ==========================================================================
+   4 · TERAKOTA — glina i lukovi. Vodi s POPISOM PROSTORIJA.
+   ========================================================================== */
+[data-stil="terakota"]{
+  --cream:#F6EDE4; --sand:#EBDCCC; --shell:#FDF7F1; --night:#3A241C; --night-2:#4A3024;
+  --ink:#3A241C; --ink-70:rgba(58,36,28,.72); --ink-50:rgba(58,36,28,.52); --ink-30:rgba(58,36,28,.30);
+  --line:rgba(58,36,28,.14); --line-2:rgba(58,36,28,.08);
+  --ink-mut:#6A4E3F;                     /* 5,93:1 na #F6EDE4 */
+  --terra:#C05621; --terra-d:#A84B18; --terra-ink:#9C4415;   /* 5,58:1 · bijelo na punom 5,70:1 */
+  --sun:#D98E3C; --sea:#7B6A4F; --olive:#8B7A55; --rose:#DCA98A;
+  --r-lg:28px; --r-md:18px; --r-sm:12px;
+  --th-font-naslov:'Cormorant Garamond',Georgia,serif;
+}
+[data-stil="terakota"] .display,
+[data-stil="terakota"] h1,[data-stil="terakota"] h2,[data-stil="terakota"] h3{
+  font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-variation-settings:normal;letter-spacing:-.01em;
+}
+[data-stil="terakota"] .italic{font-style:italic;font-weight:400}
+
+/* ==========================================================================
+   5 · BETON — brutalist. Vodi s TABLICOM PODATAKA.
+   ========================================================================== */
+[data-stil="beton"]{
+  --cream:#E8E8E6; --sand:#D7D7D4; --shell:#F2F2F0; --night:#111213; --night-2:#1C1D1E;
+  --ink:#111213; --ink-70:rgba(17,18,19,.74); --ink-50:rgba(17,18,19,.54); --ink-30:rgba(17,18,19,.32);
+  --line:rgba(17,18,19,.24); --line-2:rgba(17,18,19,.13);
+  --ink-mut:#4A4C4E;                     /* 7,66:1 na #E8E8E6 */
+  --terra:#E8410A; --terra-d:#B02D08; --terra-ink:#B02D08;   /* 5,31:1 · bijelo na punom 6,51:1 */
+  --sun:#B02D08; --sea:#2F3335; --olive:#5A5E52; --rose:#9A9A96;
+  --r-lg:0px; --r-md:0px; --r-sm:0px;
+  --th-font-naslov:'Archivo Black',Impact,sans-serif;
+}
+[data-stil="beton"],
+[data-stil="beton"] body,
+[data-stil="beton"] .btn{font-family:'Space Grotesk',ui-monospace,sans-serif}
+[data-stil="beton"] .display,
+[data-stil="beton"] h1,[data-stil="beton"] h2,[data-stil="beton"] h3{
+  font-family:'Archivo Black',Impact,sans-serif;font-weight:400;font-variation-settings:normal;
+  letter-spacing:-.045em;text-transform:uppercase;
+}
+[data-stil="beton"] .italic{font-style:normal}
+[data-stil="beton"] .btn{border-radius:0;text-transform:uppercase;letter-spacing:.06em;font-weight:700}
+[data-stil="beton"] .btn--fill{box-shadow:6px 6px 0 var(--ink)}
+[data-stil="beton"] .btn--ghost{box-shadow:inset 0 0 0 2px var(--ink)}
+[data-stil="beton"] .panel{border:2px solid var(--ink);box-shadow:8px 8px 0 rgba(17,18,19,.14)}
+
+/* ==========================================================================
+   6 · RIVIERA '70 — plakat. Vodi s IMENOM KAO PLAKATOM.
+   ========================================================================== */
+[data-stil="riviera"]{
+  --cream:#F7E9CE; --sand:#EFD9AE; --shell:#FCF3E2; --night:#2A1B12; --night-2:#3A271A;
+  --ink:#2E1D12; --ink-70:rgba(46,29,18,.74); --ink-50:rgba(46,29,18,.54); --ink-30:rgba(46,29,18,.32);
+  --line:rgba(46,29,18,.16); --line-2:rgba(46,29,18,.09);
+  --ink-mut:#6B4B32;                     /* 5,71:1 na #F7E9CE */
+  --terra:#E2571F; --terra-d:#BE4715; --terra-ink:#963409;   /* 6,29:1 na kremi, 4,78:1 na žutoj plohi zaglavlja */
+  --sun:#E8A02A; --sea:#1E6B63; --olive:#8A7A2E; --rose:#E08C5A;
+  --r-lg:34px; --r-md:24px; --r-sm:999px;
+  --th-font-naslov:'Playfair Display',Georgia,serif;
+}
+[data-stil="riviera"],
+[data-stil="riviera"] body,
+[data-stil="riviera"] .btn{font-family:'Syne',system-ui,sans-serif}
+[data-stil="riviera"] .display,
+[data-stil="riviera"] h1,[data-stil="riviera"] h2,[data-stil="riviera"] h3{
+  font-family:'Playfair Display',Georgia,serif;font-weight:900;font-variation-settings:normal;letter-spacing:-.035em;
+}
+[data-stil="riviera"] .kicker{letter-spacing:.34em}
+
+/* ==========================================================================
+   7 · PONOĆNI BAZEN — neon u mraku. Vodi sa SLIKOM, najmanje teksta.
+   ========================================================================== */
+[data-stil="ponocni"]{
+  --cream:#080C14; --sand:#101827; --shell:#121B2B; --night:#04070C; --night-2:#0B121D;
+  --ink:#EAF6FF; --ink-70:rgba(234,246,255,.72); --ink-50:rgba(234,246,255,.52); --ink-30:rgba(234,246,255,.30);
+  --line:rgba(234,246,255,.15); --line-2:rgba(234,246,255,.08);
+  --ink-mut:#9BB4C6;                     /* 8,95:1 na #080C14 */
+  --terra:#3FE0D0; --terra-d:#2BC9BA; --terra-ink:#5BE9DA;   /* 13,1:1 · tamni tekst na punom 9,74:1 */
+  --sun:#7FD8FF; --sea:#5BE9DA; --olive:#8FB8C9; --rose:#5BE9DA;
+  --r-lg:24px; --r-md:16px; --r-sm:10px;
+  --grid:rgba(234,246,255,.12); --surface:#080C14;
+  --th-font-naslov:'Space Grotesk',system-ui,sans-serif;
+}
+[data-stil="ponocni"],
+[data-stil="ponocni"] body,
+[data-stil="ponocni"] .btn{font-family:'Space Grotesk',system-ui,sans-serif}
+[data-stil="ponocni"] .display,
+[data-stil="ponocni"] h1,[data-stil="ponocni"] h2,[data-stil="ponocni"] h3{
+  font-family:'Space Grotesk',system-ui,sans-serif;font-weight:400;font-variation-settings:normal;letter-spacing:-.04em;
+}
+[data-stil="ponocni"] .italic{font-style:normal;color:var(--terra-ink)}
+[data-stil="ponocni"] .btn--fill{background:var(--terra-d);color:#04070C;box-shadow:0 0 34px -6px rgba(63,224,208,.55)}
+[data-stil="ponocni"] .btn--light{background:var(--ink);color:#04070C}
+[data-stil="ponocni"] .btn--dark{background:var(--terra-d);color:#04070C}
+[data-stil="ponocni"] .btn--ghost{box-shadow:inset 0 0 0 1.5px var(--line);color:var(--ink)}
+[data-stil="ponocni"] .panel{background:var(--shell);border:1px solid var(--line)}
+
+/* ==========================================================================
+   8 · BOROVA ŠUMA — tiha, uredničkog ritma. Vodi s PISMOM DOMAĆICE.
+   ========================================================================== */
+[data-stil="borova"]{
+  --cream:#F2F4EE; --sand:#E2E8DC; --shell:#FAFBF7; --night:#1B2A22; --night-2:#25362C;
+  --ink:#1C2A23; --ink-70:rgba(28,42,35,.74); --ink-50:rgba(28,42,35,.54); --ink-30:rgba(28,42,35,.32);
+  --line:rgba(28,42,35,.13); --line-2:rgba(28,42,35,.07);
+  --ink-mut:#4E6155;                     /* 6,49:1 na #F2F4EE */
+  --terra:#3F6B4E; --terra-d:#35624A; --terra-ink:#2F5A3E;   /* 7,14:1 · bijelo na punom 7,01:1 */
+  --sun:#A98C3F; --sea:#3D6470; --olive:#5B7A4E; --rose:#9BB39C;
+  --r-lg:4px; --r-md:3px; --r-sm:2px;
+  --th-font-naslov:'Spectral',Georgia,serif;
+}
+[data-stil="borova"] .display,
+[data-stil="borova"] h1,[data-stil="borova"] h2,[data-stil="borova"] h3{
+  font-family:'Spectral',Georgia,serif;font-weight:300;font-variation-settings:normal;letter-spacing:-.018em;
+}
+[data-stil="borova"] .italic{font-style:italic;font-weight:200}
+[data-stil="borova"] .btn{border-radius:3px}
+
+/* Sjena punog gumba u ui.css je terakota; u temi koja nije terakota to je
+   pogrešna boja, pa je ovdje neutralna. Teme koje imaju vlastitu (zlatni sat,
+   ponoćni bazen) je i dalje nadjačaju. */
+[data-stil] .btn--fill{box-shadow:0 14px 34px -14px rgba(0,0,0,.38)}
+
+/* ==========================================================================
+   ZAGLAVLJE — osam rasporeda
+   `--hs` je mjerilo: 1 na pravoj stranici, ~0,3 u minijaturi u biraču.
+   Sve mjere idu kroz njega, pa isti HTML služi objema veličinama.
+   ========================================================================== */
+.th{
+  --hs:1;
+  position:relative;overflow:hidden;isolation:isolate;display:flex;
+  min-height:var(--th-h,86svh);background:var(--cream);color:var(--ink);
+}
+.th__art{position:absolute;inset:0;z-index:0}
+/* Fotografija objekta u pozadini zaglavlja. Kad je ima, ona ima prednost
+   pred nacrtanim prizorom — isto pravilo koje `p.html` već primjenjuje. */
+.th__foto{background-size:cover;background-position:center;background-repeat:no-repeat;
+  opacity:0;transition:opacity 1.6s var(--ease-soft)}
+.th__foto.on{opacity:1}
+@media(prefers-reduced-motion:reduce){.th__foto{transition:none}}
+.th__veil{position:absolute;inset:0;z-index:1;pointer-events:none}
+.th__in{position:relative;z-index:2;width:100%;display:flex;flex-direction:column;
+  padding:calc(var(--hs)*clamp(26px,5vw,60px)) calc(var(--hs)*clamp(20px,4vw,44px))}
+.th__in--end{justify-content:flex-end}
+.th__in--mid{justify-content:center}
+.th__in--ctr{justify-content:center;align-items:center;text-align:center}
+.th__in>*{max-width:min(100%,calc(var(--hs)*1220px));width:100%;margin-inline:auto}
+
+/* Gumbi dolaze iz `atmosphere.css` i ne znaju za `--hs`, pa su u minijaturi
+   ispadali u punoj veličini i razbijali kartice. Pri `--hs:1` ovo daje točno
+   iste vrijednosti kao izvorno pravilo, tako da prava stranica ostaje ista. */
+.th .btn{padding:calc(var(--hs)*17px) calc(var(--hs)*30px);
+  min-height:calc(var(--hs)*54px);font-size:calc(var(--hs)*.94rem);
+  gap:calc(var(--hs)*10px)}
+
+/* minijatura u biraču tema
+   Visina je fiksna (a ne `min-height`) da sve kartice u rešetki budu jednake;
+   što ne stane, obreže se po sredini. Radijus je namjerno broj, ne `--r-sm`:
+   u temi Riviera taj token je 999px, pa je minijatura ispadala kao elipsa. */
+.th--mini{--hs:.30;height:180px;min-height:0;border-radius:14px;pointer-events:none;
+  box-shadow:inset 0 0 0 1px var(--line)}
+.th--mini .th__in{padding:calc(var(--hs)*46px) calc(var(--hs)*40px)}
+.th--mini .tk-luk{max-height:calc(var(--hs)*430px)}
+
+/* ---------- 1 · JADRAN: ime vodi ---------- */
+.th--jadran .th__veil{background:linear-gradient(to top,rgba(20,32,46,.86),rgba(20,32,46,.12) 58%,transparent)}
+.jd-loc{display:inline-flex;align-items:center;gap:calc(var(--hs)*9px);align-self:flex-start;width:auto;
+  background:rgba(255,255,255,.88);border-radius:999px;color:#14202E;font-weight:700;
+  padding:calc(var(--hs)*9px) calc(var(--hs)*18px);font-size:calc(var(--hs)*.84rem)}
+.jd-ime{font-family:var(--th-font-naslov);color:#fff;line-height:.96;letter-spacing:-.03em;
+  font-size:calc(var(--hs)*clamp(2.9rem,7.2vw,6rem));margin:calc(var(--hs)*16px) 0 0}
+.jd-ime em{font-style:italic;display:block}
+.jd-lead{color:rgba(255,255,255,.86);max-width:38ch;margin:calc(var(--hs)*14px) 0 0;
+  font-size:calc(var(--hs)*1.08rem);line-height:1.6}
+.jd-btns{display:flex;gap:calc(var(--hs)*13px);flex-wrap:wrap;margin-top:calc(var(--hs)*26px)}
+
+/* ---------- 2 · LAGUNA: temperatura bazena vodi ---------- */
+.th--laguna .th__veil{background:
+  radial-gradient(90% 70% at 70% 20%,rgba(63,224,208,.16),transparent 70%),
+  linear-gradient(to bottom,rgba(6,38,46,.54),rgba(6,38,46,.78))}
+.lg-card{max-width:calc(var(--hs)*620px);background:rgba(6,38,46,.42);
+  border:1px solid rgba(255,255,255,.34);backdrop-filter:blur(calc(var(--hs)*22px));
+  border-radius:calc(var(--hs)*36px);padding:calc(var(--hs)*40px) calc(var(--hs)*44px);
+  box-shadow:0 calc(var(--hs)*40px) calc(var(--hs)*80px) calc(var(--hs)*-40px) rgba(4,30,36,.6)}
+.lg-temp{display:flex;align-items:flex-start;color:#fff;line-height:.82;
+  font-family:'Jost',sans-serif;font-weight:200;font-size:calc(var(--hs)*8.6rem);letter-spacing:-.05em}
+.lg-temp sup{font-size:.34em;font-weight:300;line-height:1;margin-top:.12em}
+.lg-lab{color:rgba(255,255,255,.9);font-size:calc(var(--hs)*.76rem);font-weight:600;
+  letter-spacing:.2em;text-transform:uppercase;margin-top:calc(var(--hs)*10px)}
+.lg-ime{color:#fff;font-family:'Jost',sans-serif;font-weight:300;letter-spacing:-.02em;
+  font-size:calc(var(--hs)*2.1rem);margin-top:calc(var(--hs)*22px)}
+.lg-ime span{display:block;font-size:.42em;font-weight:500;letter-spacing:.18em;
+  text-transform:uppercase;opacity:.86;margin-top:calc(var(--hs)*6px)}
+.lg-row{display:flex;flex-wrap:wrap;gap:calc(var(--hs)*8px);margin-top:calc(var(--hs)*20px)}
+.lg-row span{background:rgba(6,38,46,.48);border:1px solid rgba(255,255,255,.36);color:#fff;
+  border-radius:999px;padding:calc(var(--hs)*7px) calc(var(--hs)*15px);font-size:calc(var(--hs)*.82rem);font-weight:500}
+
+/* ---------- 3 · ZLATNI SAT: cijena vodi ---------- */
+.th--zlatnisat{background:#0B0B0C}
+.th--zlatnisat .th__art{opacity:.20;filter:saturate(.3) contrast(1.1)}
+.th--zlatnisat .th__veil{background:radial-gradient(70% 60% at 50% 45%,rgba(201,162,39,.12),transparent 72%),
+  linear-gradient(to bottom,rgba(11,11,12,.72),rgba(11,11,12,.94))}
+.zs-od{color:var(--terra-ink);font-size:calc(var(--hs)*.72rem);font-weight:600;
+  letter-spacing:.42em;text-transform:uppercase}
+.zs-cijena{font-family:'Bodoni Moda',Didot,serif;color:var(--ink);line-height:.86;
+  font-size:calc(var(--hs)*12.5rem);letter-spacing:-.04em;margin-top:calc(var(--hs)*8px)}
+.zs-cijena em{font-style:normal;color:var(--terra-ink);font-size:.42em;vertical-align:.34em;margin-left:.06em}
+.zs-rule{width:calc(var(--hs)*96px);height:1px;background:var(--terra);margin:calc(var(--hs)*26px) auto}
+.zs-pod{color:var(--ink-mut);font-size:calc(var(--hs)*.82rem);letter-spacing:.12em;text-transform:uppercase}
+.zs-ime{font-family:'Bodoni Moda',Didot,serif;font-size:calc(var(--hs)*2.5rem);
+  margin-top:calc(var(--hs)*30px);color:var(--ink)}
+.zs-loc{color:var(--ink-mut);font-size:calc(var(--hs)*.74rem);letter-spacing:.34em;
+  text-transform:uppercase;margin-top:calc(var(--hs)*10px)}
+.zs-btn{margin-top:calc(var(--hs)*30px)}
+
+/* ---------- 4 · TERAKOTA: popis prostorija vodi ---------- */
+.th--terakota{background:var(--cream)}
+.tk{display:grid;grid-template-columns:1.15fr .85fr;gap:calc(var(--hs)*46px);align-items:center;
+  max-width:min(100%,calc(var(--hs)*1220px));margin-inline:auto;width:100%}
+@media(max-width:860px){.th--terakota .tk{grid-template-columns:1fr}
+  .th--terakota .tk-r{order:-1}}
+.th--mini .tk{grid-template-columns:1.15fr .85fr}
+.tk-ime{font-family:var(--th-font-naslov);font-size:calc(var(--hs)*2.9rem);line-height:1.05;color:var(--ink)}
+.tk-ime span{display:block;font-family:'Manrope',sans-serif;font-size:calc(var(--hs)*.72rem);
+  font-weight:800;letter-spacing:.26em;text-transform:uppercase;color:var(--terra-ink);margin-bottom:calc(var(--hs)*12px)}
+.tk-idx{list-style:none;margin:calc(var(--hs)*28px) 0 0;padding:0;border-top:1px solid var(--line)}
+.tk-idx li{display:flex;align-items:baseline;gap:calc(var(--hs)*16px);border-bottom:1px solid var(--line);
+  padding:calc(var(--hs)*15px) 0;font-size:calc(var(--hs)*1.12rem)}
+.tk-idx b{font-family:'Manrope',sans-serif;font-size:calc(var(--hs)*.78rem);font-weight:800;
+  color:var(--terra-ink);letter-spacing:.06em;flex:none;min-width:calc(var(--hs)*30px)}
+.tk-idx em{font-style:normal;margin-left:auto;text-align:right;color:var(--ink-mut);
+  font-family:'Manrope',sans-serif;font-size:calc(var(--hs)*.84rem)}
+.tk-luk{position:relative;overflow:hidden;aspect-ratio:.72;
+  border-radius:calc(var(--hs)*999px) calc(var(--hs)*999px) calc(var(--hs)*16px) calc(var(--hs)*16px);
+  box-shadow:0 calc(var(--hs)*40px) calc(var(--hs)*70px) calc(var(--hs)*-36px) rgba(58,36,28,.55)}
+.tk-luk::after{content:"";position:absolute;inset:calc(var(--hs)*10px);z-index:3;
+  border:1px solid rgba(255,255,255,.5);border-radius:inherit;pointer-events:none}
+
+/* ---------- 5 · BETON: tablica podataka vodi ---------- */
+.th--beton{background:var(--cream)}
+.bt{max-width:min(100%,calc(var(--hs)*1220px));margin-inline:auto;width:100%}
+.bt-hd{display:flex;align-items:baseline;flex-wrap:wrap;gap:calc(var(--hs)*16px);
+  border-bottom:calc(var(--hs)*4px) solid var(--ink);padding-bottom:calc(var(--hs)*12px)}
+.bt-hd small{font-family:'Space Grotesk',monospace;font-size:calc(var(--hs)*.72rem);font-weight:700;
+  letter-spacing:.24em;text-transform:uppercase;color:var(--terra-ink)}
+.bt-hd h1{font-family:var(--th-font-naslov);font-size:calc(var(--hs)*5.4rem);line-height:.86;
+  letter-spacing:-.05em;text-transform:uppercase;color:var(--ink);margin:0}
+.bt-tab{margin-top:calc(var(--hs)*2px)}
+.bt-red{display:grid;grid-template-columns:1fr auto;gap:calc(var(--hs)*20px);align-items:baseline;
+  border-bottom:1px solid var(--line);padding:calc(var(--hs)*13px) 0}
+.bt-red dt{font-family:'Space Grotesk',monospace;font-size:calc(var(--hs)*.76rem);font-weight:700;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--ink-mut)}
+.bt-red dd{margin:0;font-family:var(--th-font-naslov);font-size:calc(var(--hs)*1.6rem);
+  letter-spacing:-.03em;text-transform:uppercase;color:var(--ink)}
+.bt-red:last-child dd{color:var(--terra-ink)}
+.bt-btn{margin-top:calc(var(--hs)*26px)}
+
+/* ---------- 6 · RIVIERA '70: ime kao plakat ---------- */
+.th--riviera{background:
+  radial-gradient(120% 90% at 50% 0%,#F3C879,transparent 62%),
+  linear-gradient(to bottom,#F7E9CE,#EFD9AE)}
+.rv{position:relative;display:grid;place-items:center;text-align:center;width:100%}
+.rv-krug{position:relative;overflow:hidden;border-radius:50%;
+  width:calc(var(--hs)*300px);height:calc(var(--hs)*300px);
+  box-shadow:0 0 0 calc(var(--hs)*10px) rgba(247,233,206,.9),
+             0 calc(var(--hs)*40px) calc(var(--hs)*80px) calc(var(--hs)*-40px) rgba(46,29,18,.6)}
+.rv-ime{font-family:var(--th-font-naslov);font-weight:900;line-height:.74;letter-spacing:-.06em;
+  font-size:calc(var(--hs)*9.5rem);color:var(--ink);margin:calc(var(--hs)*-70px) 0 0;
+  mix-blend-mode:multiply;position:relative}
+.rv-sub{font-family:'Syne',sans-serif;font-weight:700;font-size:calc(var(--hs)*.84rem);
+  letter-spacing:.42em;text-transform:uppercase;color:var(--terra-ink);margin-top:calc(var(--hs)*14px)}
+.rv-traka{margin-top:calc(var(--hs)*26px);background:var(--terra-d);color:#fff;
+  font-family:'Syne',sans-serif;font-weight:700;font-size:calc(var(--hs)*.8rem);
+  letter-spacing:.24em;text-transform:uppercase;border-radius:999px;
+  padding:calc(var(--hs)*11px) calc(var(--hs)*26px)}
+
+/* ---------- 7 · PONOĆNI BAZEN: slika vodi ---------- */
+.th--ponocni{background:#04070C}
+.th--ponocni .th__art{filter:saturate(1.25) hue-rotate(-12deg) brightness(.72)}
+.th--ponocni .th__veil{background:
+  radial-gradient(60% 46% at 50% 88%,rgba(63,224,208,.34),transparent 70%),
+  linear-gradient(to top,rgba(4,7,12,.92),rgba(4,7,12,.24) 55%,rgba(4,7,12,.55))}
+.pn{justify-content:flex-end}
+.pn-red{display:flex;align-items:flex-end;justify-content:space-between;gap:calc(var(--hs)*20px);flex-wrap:wrap}
+.pn-ime{font-family:var(--th-font-naslov);font-size:calc(var(--hs)*3.4rem);letter-spacing:-.05em;
+  color:var(--ink);line-height:1}
+.pn-ime::after{content:"";display:block;width:calc(var(--hs)*72px);height:calc(var(--hs)*2px);
+  margin-top:calc(var(--hs)*14px);background:var(--terra);
+  box-shadow:0 0 calc(var(--hs)*20px) rgba(63,224,208,.9)}
+.pn-temp{font-family:var(--th-font-naslov);font-size:calc(var(--hs)*3.4rem);letter-spacing:-.05em;
+  color:var(--terra-ink);line-height:1;text-shadow:0 0 calc(var(--hs)*34px) rgba(63,224,208,.5)}
+.pn-temp small{display:block;font-size:.22em;letter-spacing:.3em;text-transform:uppercase;
+  color:var(--ink-mut);margin-top:calc(var(--hs)*10px);text-shadow:none}
+
+/* ---------- 8 · BOROVA ŠUMA: pismo domaćice vodi ---------- */
+.th--borova{background:var(--cream)}
+.th--borova .th__art{position:absolute;inset:auto 0 0;height:32%;opacity:.34}
+.bo{max-width:min(100%,calc(var(--hs)*860px));margin-inline:auto;width:100%}
+.bo-pismo{font-family:var(--th-font-naslov);font-weight:200;font-style:italic;
+  font-size:calc(var(--hs)*2.35rem);line-height:1.34;letter-spacing:-.02em;color:var(--ink);margin:0}
+.bo-potpis{font-family:'Manrope',sans-serif;font-size:calc(var(--hs)*.78rem);font-weight:800;
+  letter-spacing:.24em;text-transform:uppercase;color:var(--terra-ink);margin-top:calc(var(--hs)*26px)}
+.bo-red{height:1px;background:var(--line);margin:calc(var(--hs)*34px) 0}
+.bo-ime{font-family:var(--th-font-naslov);font-weight:300;font-size:calc(var(--hs)*1.7rem);color:var(--ink)}
+.bo-ime span{display:block;font-family:'Manrope',sans-serif;font-size:calc(var(--hs)*.8rem);
+  color:var(--ink-mut);letter-spacing:.02em;margin-top:calc(var(--hs)*8px)}
+
+/* ==========================================================================
+   BIRAČ TEMA — kartice u dashboardu / uređivanju
+   ========================================================================== */
+.teme{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
+.tema{display:block;width:100%;text-align:left;padding:0;border:0;cursor:pointer;background:var(--shell);
+  border-radius:var(--r-md);overflow:hidden;box-shadow:inset 0 0 0 1.5px var(--line);
+  transition:transform .5s var(--ease),box-shadow .5s var(--ease)}
+.tema:hover{transform:translateY(-4px);box-shadow:inset 0 0 0 1.5px var(--ink-30),0 26px 46px -30px rgba(20,32,46,.55)}
+.tema[aria-pressed="true"]{box-shadow:inset 0 0 0 2.5px var(--terra-d),0 26px 46px -30px rgba(20,32,46,.5)}
+.tema__m{padding:14px 16px 16px;display:flex;flex-direction:column;gap:4px}
+.tema__ime{font-weight:800;font-size:.95rem;display:flex;align-items:center;gap:8px}
+.tema__ime .ck{margin-left:auto;color:var(--terra-ink);font-weight:800;opacity:0}
+.tema[aria-pressed="true"] .tema__ime .ck{opacity:1}
+.tema__vodi{font-size:.76rem;color:var(--ink-mut)}
+.tema__vodi b{color:var(--terra-ink);font-weight:800}
+.tema__font{font-size:.7rem;color:var(--ink-mut);letter-spacing:.04em}
+.tema.lk{opacity:.72}
+.tema.lk .tema__ime::after{content:"🔒";margin-left:auto;font-size:.8rem}
+
+/* pregled uživo u kartici „Izgled”: isti HTML, smanjen da stane u panel */
+.zivo{--th-h:430px;border-radius:var(--r-md);overflow:hidden;border:1px solid var(--line);
+  background:var(--cream)}
+.zivo .th{--hs:.8;min-height:var(--th-h)}
+@media(max-width:700px){.zivo{--th-h:330px}.zivo .th{--hs:.55}}
+
+/* ==========================================================================
+   TAMNE TEME — komponente koje boju uzimaju iz zakucanih vrijednosti
+   Isto grablje kao kod tamne teme vodiča: `.chip--glass` je bijelo staklo s
+   tamnim tekstom, a kalendar i karta pretpostavljaju svijetlu podlogu. Na
+   tamnoj temi oboje ispadne svijetlo na svijetlom.
+   ========================================================================== */
+[data-stil="zlatnisat"],
+[data-stil="ponocni"]{
+  --slob-bg:rgba(255,255,255,.10);
+  --slob-ink:var(--ink);                 /* 15,9:1 (zlatni sat) · 17,4:1 (ponoćni) */
+}
+[data-stil="zlatnisat"] .chip--glass,
+[data-stil="ponocni"] .chip--glass{background:rgba(0,0,0,.66);border-color:var(--line);color:var(--ink)}
+[data-stil="zlatnisat"] .cal .d.busy,
+[data-stil="ponocni"] .cal .d.busy{background:rgba(255,255,255,.05);color:var(--ink-30)}
+[data-stil="zlatnisat"] .map__grid,
+[data-stil="ponocni"] .map__grid{filter:invert(1) hue-rotate(180deg);opacity:.35}
+[data-stil="zlatnisat"] .amen,
+[data-stil="ponocni"] .amen{color:var(--ink)}
