@@ -62,11 +62,11 @@
 <div class="app">
   <aside class="side"><div class="side__in">
     <div class="brand">Odmoria<span style="color:var(--terra)">.</span></div>
-    <a class="navi" aria-current="page" href="/preview/admin.html"><span class="ic">◉</span> Admin</a>
+    <a class="navi" data-tab="domacini" aria-current="page" href="#domacini"><span class="ic">◉</span> Domaćini</a>
+    <a class="navi" data-tab="prihod" href="#prihod"><span class="ic">◔</span> Prihod</a>
+    <a class="navi" data-tab="poruke" href="#poruke"><span class="ic">✉</span> Poruke</a>
+    <a class="navi" data-tab="postavke" href="#postavke"><span class="ic">⚙</span> Postavke</a>
     <a class="navi" href="/preview/dashboard.html"><span class="ic">◧</span> Moj dashboard</a>
-    <a class="navi" href="#"><span class="ic">◔</span> Prihod</a>
-    <a class="navi" href="#"><span class="ic">✉</span> Poruke</a>
-    <a class="navi" href="#"><span class="ic">⚙</span> Postavke</a>
     <div class="side__foot">
       <span class="owner">🔐 Vlasnički pristup</span>
       <p class="small mt8">Zaštićeno i na RLS razini, ne samo ovdje.</p>
@@ -74,6 +74,7 @@
   </div></aside>
 
   <main class="main">
+    <section class="tabpanel" data-panel="domacini">
     <div class="head">
       <div data-rv="up" data-rv-now>
         <p class="kicker bare">Admin</p>
@@ -196,6 +197,179 @@
       <div class="center mt16" id="jos">
         <button class="btn btn--ghost btn--sm">Učitaj sljedećih 12</button>
       </div>
+    </section>
+    </section>
+
+    <!-- ============ PRIHOD ============ -->
+    <section class="tabpanel" data-panel="prihod" hidden>
+      <div class="head">
+        <div>
+          <p class="kicker bare">Admin</p>
+          <h1 style="font-size:clamp(1.9rem,3.2vw,2.7rem);margin-top:6px">Prihod</h1>
+        </div>
+        <div class="head__act">
+          <button class="btn btn--ghost btn--sm" id="izvozPrihod">Izvezi CSV</button>
+        </div>
+      </div>
+
+      <div class="panel" style="background:var(--night);color:#fff" data-rv="up">
+        <p class="kicker bare" style="color:var(--sun)">Odakle ove brojke</p>
+        <p class="lead mt8" style="color:rgba(255,255,255,.86);font-size:.95rem;max-width:70ch">
+          Sve je <b>procjena iz tablice <code>plans</code> × broj aktivnih pretplata</b>, ne iz
+          Stripea. Stripe checkout nije spojen, pa naplaćenog iznosa nema nigdje u bazi —
+          ovo je ono što bi se naplatilo da svi plate. Kad se checkout spoji, ovaj panel
+          čita stvarne uplate i brojke se mogu razići od ovih.
+        </p>
+      </div>
+
+      <section class="g g4 mt24" data-rv-stagger="70">
+        <div class="stat" data-rv="up"><span class="stat__lb">MRR (procjena)</span>
+          <span class="stat__v" id="pMrr">—</span><span class="stat__sub">mjesečno ponavljajuće</span></div>
+        <div class="stat" data-rv="up"><span class="stat__lb">ARR (procjena)</span>
+          <span class="stat__v" id="pArr">—</span><span class="stat__sub">MRR × 12</span></div>
+        <div class="stat" data-rv="up"><span class="stat__lb">Prosjek po plaćenom</span>
+          <span class="stat__v" id="pArpu">—</span><span class="stat__sub">ARPU</span></div>
+        <div class="stat" data-rv="up"><span class="stat__lb">Udio plaćenih</span>
+          <span class="stat__v" id="pUdio">—</span><span class="stat__sub">od svih domaćina</span></div>
+      </section>
+
+      <section class="g g-main mt24">
+        <div class="panel" data-rv="up">
+          <p class="kicker">Kroz vrijeme</p>
+          <h3 class="mt8" style="font-size:1.15rem">MRR po mjesecima</h3>
+          <p class="small mt8">Izvedeno iz broja aktivnih pretplata na kraju svakog mjeseca.</p>
+          <div id="mrrChart" class="mt16"></div>
+          <details class="acc mt12"><summary class="small">Prikaži tablicom</summary>
+            <div class="tblwrap mt8"><table id="mrrTable"></table></div></details>
+        </div>
+
+        <div class="panel" data-rv="up" data-rv-delay="90">
+          <p class="kicker">Po planu</p>
+          <h3 class="mt8" style="font-size:1.15rem">Tko donosi prihod</h3>
+          <p class="small mt8">Broj pretplata × cijena plana.</p>
+          <div id="prihodRank" class="rank mt16"></div>
+        </div>
+      </section>
+
+      <section class="panel mt24" data-rv="up">
+        <p class="kicker">Rizik</p>
+        <h3 class="mt8" style="font-size:1.15rem">Uskoro istječe</h3>
+        <p class="small mt8">Pretplate koje istječu u 14 dana i prihod koji nose.</p>
+        <div class="tblwrap mt16"><table class="tbl" id="istekTbl"></table></div>
+      </section>
+    </section>
+
+    <!-- ============ PORUKE ============ -->
+    <section class="tabpanel" data-panel="poruke" hidden>
+      <div class="head">
+        <div>
+          <p class="kicker bare">Admin</p>
+          <h1 style="font-size:clamp(1.9rem,3.2vw,2.7rem);margin-top:6px">Poruke</h1>
+        </div>
+      </div>
+
+      <div class="panel" style="background:var(--night);color:#fff" data-rv="up">
+        <p class="kicker bare" style="color:var(--sun)">Ovo još nije moguće s postojećom bazom</p>
+        <p class="lead mt8" style="color:rgba(255,255,255,.86);font-size:.95rem;max-width:72ch">
+          Upit gosta na javnoj stranici <b>nigdje se ne sprema</b> — <code>p.html</code> ga
+          slaže u WhatsApp ili <code>mailto:</code> link i gost ga pošalje sam
+          (<code>p.html:1304</code> i <code>:1307</code>). Nema ni tablice za obavijesti
+          domaćinima. Zaslon ispod pokazuje kako bi izgledalo; ništa nije spojeno.
+        </p>
+        <p class="lead mt12" style="color:rgba(255,255,255,.86);font-size:.95rem">
+          Da proradi, treba jedna tablica:
+        </p>
+        <pre class="kod mt8">create table announcements (
+  id          uuid primary key default gen_random_uuid(),
+  title       text not null,
+  body        text not null,
+  audience    text not null,      -- svi | free | host | pro | partner
+  sent_at     timestamptz,
+  created_at  timestamptz default now()
+);</pre>
+      </div>
+
+      <section class="g g-main mt24">
+        <div class="panel" data-rv="up">
+          <p class="kicker">Nova obavijest</p>
+          <h3 class="mt8" style="font-size:1.15rem">Pošalji domaćinima</h3>
+          <label class="lb mt16" for="oNas">Naslov</label>
+          <input class="inp" id="oNas" placeholder="Nova tema za javnu stranicu">
+          <label class="lb mt12" for="oTxt">Poruka</label>
+          <textarea class="inp" id="oTxt" rows="5" placeholder="Od danas birate između osam tema…"></textarea>
+          <label class="lb mt12" for="oKome">Kome</label>
+          <select class="inp" id="oKome">
+            <option value="svi">Svim domaćinima (34)</option>
+            <option value="free">Samo Besplatno (14)</option>
+            <option value="host">Samo Domaćin (11)</option>
+            <option value="pro">Samo Pro (6)</option>
+            <option value="partner">Samo Partner (3)</option>
+          </select>
+          <div class="row gap8 mt16" style="justify-content:space-between;align-items:center">
+            <span class="small" id="oBroj">Ide na 34 domaćina</span>
+            <button class="btn btn--fill btn--sm" id="oSalji">Pošalji</button>
+          </div>
+          <p class="note-inline mt12" id="oPoruka" hidden></p>
+        </div>
+
+        <div class="panel" data-rv="up" data-rv-delay="90">
+          <p class="kicker">Zadnje poslano</p>
+          <h3 class="mt8" style="font-size:1.15rem">Povijest</h3>
+          <p class="small mt8">Primjer sadržaja — nije iz baze.</p>
+          <div class="mt16" id="oPov"></div>
+        </div>
+      </section>
+    </section>
+
+    <!-- ============ POSTAVKE ============ -->
+    <section class="tabpanel" data-panel="postavke" hidden>
+      <div class="head">
+        <div>
+          <p class="kicker bare">Admin</p>
+          <h1 style="font-size:clamp(1.9rem,3.2vw,2.7rem);margin-top:6px">Postavke</h1>
+        </div>
+        <div class="head__act">
+          <button class="btn btn--fill btn--sm" id="spremiPost" disabled>Spremi</button>
+        </div>
+      </div>
+
+      <section class="panel" data-rv="up">
+        <p class="kicker">Izvor istine</p>
+        <h3 class="mt8" style="font-size:1.15rem">Planovi i limiti</h3>
+        <p class="small mt8" style="max-width:74ch">
+          Ovo je tablica <code>plans</code> u Supabaseu. Cijene i limiti se mijenjaju
+          <b>ovdje, bez izmjene koda i bez deploya</b> — <code>plans.js</code> ih pri
+          pokretanju povuče, a limite provode okidači u bazi (<code>sql/plan-limits.sql</code>).
+          <code>-1</code> znači neograničeno.
+        </p>
+        <div class="tblwrap mt16"><table class="tbl" id="planTbl"></table></div>
+        <p class="note-inline mt12" id="postPoruka" hidden></p>
+        <p class="hint">Cijene u pregledu su prijedlog i razlikuju se od onoga što tablica
+          danas vraća. Tablica se ne dira dok dizajn ne bude odobren.</p>
+      </section>
+
+      <section class="g g-main mt24">
+        <div class="panel" data-rv="up">
+          <p class="kicker">Stanje sustava</p>
+          <h3 class="mt8" style="font-size:1.15rem">Što radi, a što ne</h3>
+          <div class="mt16" id="stanje"></div>
+        </div>
+
+        <div class="panel" data-rv="up" data-rv-delay="90">
+          <p class="kicker">Vlasnički pristup</p>
+          <h3 class="mt8" style="font-size:1.15rem">Tko ovo vidi</h3>
+          <p class="lead mt8" style="font-size:.94rem">
+            Admin panel je zaštićen i na RLS razini, ne samo provjerom u pregledniku.
+            Politike u <code>sql/admin-access.sql</code> vezane su na <code>auth.uid()</code>
+            vlasničkog računa, pa tuđa sesija ne može pročitati tuđe retke ni kad bi
+            zaobišla sučelje.
+          </p>
+          <p class="lead mt12" style="font-size:.94rem">
+            U klijentskom kodu nema service role ključa — sve stranice koriste samo
+            javni publishable ključ.
+          </p>
+        </div>
+      </section>
     </section>
   </main>
 </div>
@@ -380,6 +554,133 @@
     })(t0);
   }), {threshold:.4});
   document.querySelectorAll('[data-num],[data-w],[data-h]').forEach(el => io.observe(el));
+
+/* ====================== TABOVI ======================
+   Isti obrazac kao u dashboardu: paneli u istoj stranici, `location.hash`
+   pamti gdje si bio. Otkrivanja u panelu koji je bio skriven treba ponovno
+   okinuti — `IntersectionObserver` ne vidi element pod `hidden`. */
+  const paneli = [...document.querySelectorAll('.tabpanel')];
+  const veze   = [...document.querySelectorAll('.navi[data-tab]')];
+  function prikazi(k){
+    if(!paneli.some(p=>p.dataset.panel===k)) k='domacini';
+    paneli.forEach(p=>{p.hidden = p.dataset.panel!==k});
+    veze.forEach(a=>{ a.dataset.tab===k ? a.setAttribute('aria-current','page')
+                                        : a.removeAttribute('aria-current') });
+    document.querySelectorAll('.tabpanel:not([hidden]) [data-rv]')
+      .forEach(el=>el.classList.add('rv-in'));
+    if(k==='prihod') crtajMrr();
+    scrollTo({top:0,behavior:'smooth'});
+  }
+  veze.forEach(a=>a.addEventListener('click',e=>{
+    e.preventDefault(); const k=a.dataset.tab;
+    history.replaceState(null,'','#'+k); prikazi(k);
+  }));
+  prikazi((location.hash||'#domacini').slice(1));
+
+  /* ---------------- PRIHOD ----------------
+     Sve izvedeno iz istih konstanti kao gornji panel, da se brojke ne raziđu. */
+  const eur2 = n => n.toFixed(2).replace('.',',') + ' €';
+  const eur0 = n => Math.round(n).toLocaleString('hr-HR') + ' €';
+  $('#pMrr').textContent  = eur2(MRR);
+  $('#pArr').textContent  = eur0(MRR*12);
+  $('#pArpu').textContent = eur2(MRR/PLACENI);
+  $('#pUdio').textContent = Math.round(PLACENI/34*100) + ' %';
+
+  /* MRR po mjesecima: kumulativni rast domaćina × prosjek po plaćenom.
+     Namjerno izvedeno, ne izmišljeno — inače se ne slaže s MRR-om gore. */
+  const udio = PLACENI/34, arpu = MRR/PLACENI;
+  let kum = 0;
+  const MRRMJ = MJ.map(m => { kum += m.v; return {k:m.k, v:kum*udio*arpu}; });
+  function crtajMrr(){
+    const el=$('#mrrChart'); if(!el||el.dataset.done) return; el.dataset.done='1';
+    const max=Math.max(...MRRMJ.map(m=>m.v)), W=560, H=170, P=26;
+    const x=i=>P+i*(W-P*2)/(MRRMJ.length-1), y=v=>H-P-(v/max)*(H-P*2);
+    const t=MRRMJ.map((m,i)=>`${x(i)},${y(m.v)}`).join(' ');
+    el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto" role="img"
+        aria-label="MRR po mjesecima, rastuće">
+      ${[0,.5,1].map(f=>`<line x1="${P}" x2="${W-P}" y1="${y(max*f)}" y2="${y(max*f)}"
+          stroke="var(--grid)" stroke-width="1"/>`).join('')}
+      <polygon points="${P},${H-P} ${t} ${W-P},${H-P}" fill="var(--t-4)" opacity=".10"/>
+      <polyline points="${t}" fill="none" stroke="var(--t-4)" stroke-width="2"
+        stroke-linejoin="round" stroke-linecap="round"/>
+      <circle cx="${x(MRRMJ.length-1)}" cy="${y(MRRMJ.at(-1).v)}" r="5"
+        fill="var(--t-5)" stroke="var(--surface)" stroke-width="2"/>
+      <text x="${W-P}" y="${y(MRRMJ.at(-1).v)-14}" text-anchor="end"
+        font-size="12" font-weight="700" fill="var(--ink)">${eur0(MRRMJ.at(-1).v)}</text>
+    </svg>`;
+    $('#mrrTable').innerHTML='<thead><tr><th>Mjesec</th><th>MRR</th></tr></thead><tbody>'
+      + MRRMJ.map(m=>`<tr><td>${m.k}</td><td>${eur2(m.v)}</td></tr>`).join('')+'</tbody>';
+  }
+
+  const PR = ['partner','pro','host'].map(p=>({k:PLAN[p].n, v:SVI_PLANOVI[p]*PLAN[p].c}))
+                                     .sort((a,b)=>b.v-a.v);
+  const maxP = Math.max(...PR.map(r=>r.v));
+  $('#prihodRank').innerHTML = PR.map((r,i)=>`
+    <div class="rank__row"><span class="rank__nm">${r.k}</span>
+      <span class="rank__tr"><i style="background:${T[Math.max(0,T.length-1-i)]}"
+        data-w="${(r.v/maxP*100).toFixed(1)}"></i></span>
+      <span class="rank__v">${eur2(r.v)}</span></div>`).join('');
+  document.querySelectorAll('#prihodRank .rank__tr i')
+    .forEach(el=>el.style.width=el.dataset.w+'%');
+
+  const ISTEK = HOSTS.filter(h=>h.status==='istice');
+  $('#istekTbl').innerHTML =
+    '<thead><tr><th>Domaćin</th><th>Plan</th><th>Objekata</th><th>Mjesečno</th></tr></thead><tbody>'
+    + (ISTEK.length ? ISTEK.map(h=>`<tr><td>${h.ime}</td><td>${PLAN[h.plan].n}</td>
+        <td>${h.props.length}</td><td>${eur2(PLAN[h.plan].c)}</td></tr>`).join('')
+      : '<tr><td colspan="4">Nijedna pretplata ne istječe u 14 dana.</td></tr>')
+    + '</tbody>';
+
+  $('#izvozPrihod').addEventListener('click',()=>{
+    const csv='Mjesec;MRR\n'+MRRMJ.map(m=>`${m.k};${m.v.toFixed(2)}`).join('\n');
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
+    a.download='odmoria-prihod.csv'; a.click(); URL.revokeObjectURL(a.href);
+  });
+
+  /* ---------------- PORUKE ---------------- */
+  const KOME = {svi:34, free:SVI_PLANOVI.free, host:SVI_PLANOVI.host,
+                pro:SVI_PLANOVI.pro, partner:SVI_PLANOVI.partner};
+  const oKome=$('#oKome'), oBroj=$('#oBroj');
+  const osvjeziBroj=()=>{ const n=KOME[oKome.value];
+    oBroj.textContent = 'Ide na ' + n + ' ' + (n===1?'domaćina':'domaćina'); };
+  oKome.addEventListener('change',osvjeziBroj); osvjeziBroj();
+  const javi = (el, t) => { el.textContent = t; el.hidden = false;
+    clearTimeout(el.__t); el.__t = setTimeout(()=>{el.hidden=true}, 5000); };
+  $('#oSalji').addEventListener('click',()=>
+    javi($('#oPoruka'), 'Nije spojeno — treba tablica announcements (vidi gore).'));
+  $('#oPov').innerHTML = [
+    ['Nova tema za javnu stranicu','svim domaćinima · prije 3 dana'],
+    ['Podsjetnik: iCal sinkronizacija','planovima Pro i Partner · prije 12 dana'],
+    ['Cijene se ne mijenjaju u 2026.','svim domaćinima · prije 28 dana'],
+  ].map(([n,m])=>`<div class="obav"><b>${n}</b><span>${m}</span></div>`).join('');
+
+  /* ---------------- POSTAVKE ---------------- */
+  const LIM = {free:[1,5], host:[1,50], pro:[5,50], partner:[15,100]};
+  $('#planTbl').innerHTML =
+    '<thead><tr><th>Plan</th><th>Cijena / mj</th><th>Objekata</th><th>Fotografija</th><th>Pretplata</th></tr></thead><tbody>'
+    + ['free','host','pro','partner'].map(p=>`<tr>
+        <td><b>${PLAN[p].n}</b></td>
+        <td><input class="inp inp--sm" data-cij="${p}" value="${PLAN[p].c.toFixed(2).replace('.',',')}" style="width:96px"></td>
+        <td><input class="inp inp--sm" data-lim="${p}" value="${LIM[p][0]}" style="width:72px"></td>
+        <td><input class="inp inp--sm" value="${LIM[p][1]}" style="width:72px"></td>
+        <td>${SVI_PLANOVI[p]}</td></tr>`).join('') + '</tbody>';
+  const spremi=$('#spremiPost');
+  $('#planTbl').addEventListener('input',()=>{spremi.disabled=false});
+  spremi.addEventListener('click',()=>{
+    spremi.disabled=true;
+    javi($('#postPoruka'), 'Nije spojeno — ovdje bi išao UPDATE public.plans.');
+  });
+
+  $('#stanje').innerHTML = [
+    [1,'Booking tokeni','Rade preko baze, bez backenda. Vodič se otključava po vremenu dolaska.'],
+    [1,'iCal sinkronizacija','Radi, ali samo na klik u dashboardu. Vercel Hobby dopušta jedan cron dnevno, a taj drži Supabase budnim.'],
+    [1,'Fotografije','Cloudinary, izravno s klijenta. 25 GB besplatno.'],
+    [0,'Stripe checkout','Nije spojen. Gumbi za nadogradnju ništa ne pozivaju, serverless funkcije ne postoje.'],
+    [0,'Višejezičnost','Ne postoji. Naslovnica je obećava u planu Pro — maknuti ili napraviti prije prodaje.'],
+    [0,'Analitika po državama','Traži dva stupca na page_views i mali api/track.js. Upis danas ide iz preglednika, pa IP nitko ne vidi.'],
+  ].map(([ok,n,t])=>`<div class="sys"><span class="sys__d ${ok?'ok':'no'}"></span>
+      <div><b>${n}</b><p>${t}</p></div></div>`).join('');
 })();
 </script>
 </body>

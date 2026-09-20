@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..700,0..100,0..1;1,9..144,300..600,0..100,0..1&family=Manrope:wght@400;500;600;700;800&family=Caveat:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/teme.css">
 <style>
 :root {
   /* v3 paleta — iste uloge kao prije, nove vrijednosti.
@@ -480,6 +481,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
       <nav class="side-nav">
         <button class="nav-item" type="button" data-panel="basic" onclick="nav('basic',this)"><span class="nav-number">01</span><span>Osnovno</span></button>
         <button class="nav-item" type="button" data-panel="photos" onclick="nav('photos',this)"><span class="nav-number">02</span><span>Fotografije</span></button>
+        <button class="nav-item" type="button" data-panel="izgled" onclick="nav('izgled',this)"><span class="nav-number">◈</span><span>Izgled stranice</span></button>
         <button class="nav-item" type="button" data-panel="arrival" onclick="nav('arrival',this)"><span class="nav-number">03</span><span>Dolazak i check-in</span></button>
         <button class="nav-item" type="button" data-panel="wifi" onclick="nav('wifi',this)"><span class="nav-number">04</span><span>Wi-Fi</span></button>
         <button class="nav-item" type="button" data-panel="amenities" onclick="nav('amenities',this)"><span class="nav-number">05</span><span>Sadržaji</span></button>
@@ -613,6 +615,44 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
               <div class="field third"><label for="prop-email">Email za upite</label><input class="input" id="prop-email" type="email"></div>
             </div>
             <div style="margin-top:18px;display:flex;justify-content:flex-end"><button class="btn" onclick="saveBasic()">Spremi promjene</button></div>
+          </div>
+        </section>
+
+        <!-- IZGLED -->
+        <section class="editor-panel tema-okruzje" id="section-izgled" data-panel-content="izgled">
+          <div id="izgled-alert"></div>
+          <div class="card">
+            <div class="card-head"><div class="card-title-wrap"><span class="card-number">◈</span><div>
+              <h2>Tema javne stranice</h2>
+              <p>Tema ne mijenja samo boju. Svaka drugačije slaže zaglavlje i vodi s drugom
+                 informacijom — cijenom, istaknutom brojkom, popisom prostorija, pismom.</p>
+            </div></div></div>
+
+            <div class="teme" id="teme"></div>
+
+            <div style="margin-top:22px">
+              <label class="field-label" for="fHighlight">Istaknuta brojka
+                <span style="font-weight:400;opacity:.7">— koriste je teme Laguna i Ponoćni bazen</span></label>
+              <input id="fHighlight" class="input" maxlength="60"
+                     placeholder="32° · Temperatura bazena">
+              <p class="card-hint" style="margin-top:6px">Oblik <code>vrijednost · oznaka</code>.
+                 Ostavite prazno pa se izvede iz površine ili broja gostiju.</p>
+            </div>
+
+            <div style="margin-top:18px;display:flex;justify-content:flex-end;gap:10px">
+              <a class="btn btn-ghost" id="temaOtvori" target="_blank" rel="noopener">Otvori javnu stranicu</a>
+              <button class="btn" onclick="saveTema()">Spremi promjene</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <!-- `.card-title-wrap` je mreža `32px 1fr` i traži DVA djeteta;
+                 bez oznake tekst padne u stupac od 32px i lomi se riječ po riječ. -->
+            <div class="card-head"><div class="card-title-wrap"><span class="card-number">◉</span><div>
+              <h2>Kako gost vidi</h2>
+              <p>Pravi raspored s vašim podacima i vašim fotografijama.</p>
+            </div></div></div>
+            <div class="zivo" id="zivoOkvir"><div id="zivo"></div></div>
           </div>
         </section>
 
@@ -951,6 +991,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   <button type="button" onclick="saveNow()">Spremi</button>
 </div>
 
+<script src="/teme.js"></script>
 <script type="module">
 import{createClient}from'https://esm.sh/@supabase/supabase-js@2'
 import{loadPlans,getPlan,limitFor,canAdd,limitMessage,effectivePlanId}from'./plans.js'
@@ -1096,6 +1137,46 @@ window.stepCount=(key,step)=>{
   COUNTS[key]=Math.max(0,(COUNTS[key]||0)+step)
   document.querySelectorAll(`[data-count="${key}"]`).forEach(el=>el.textContent=COUNTS[key])
   livePreview()
+}
+
+/* ====================== TEMA JAVNE STRANICE ====================== */
+let TEMA_SPREMNA=false
+window.initTeme=()=>{
+  const T=window.Odmoria&&window.Odmoria.teme
+  if(!T||!PROP)return
+  const hl=document.getElementById('fHighlight')
+  if(!TEMA_SPREMNA){
+    hl.value=PROP.highlight||''
+    T.birac({
+      objekt:()=>T.izBaze(Object.assign({},PROP,{highlight:hl.value})),
+      odabrana:T.TEME.some(t=>t.id===PROP.theme)?PROP.theme:'jadran',
+      link:'temaOtvori',
+      linkBaza:'/p/'+PROP.slug,
+      naPromjenu:()=>window.markDirty&&window.markDirty()
+    })
+    /* Upisana brojka se odmah vidi u pregledu — inace se ne zna sto ce ispasti */
+    hl.addEventListener('input',()=>{window.markDirty&&window.markDirty();T.osvjezi()})
+    TEMA_SPREMNA=true
+  }
+}
+
+window.saveTema=async()=>{
+  const T=window.Odmoria&&window.Odmoria.teme
+  if(!T||!PROP)return
+  const u={theme:T.odabrana(),highlight:document.getElementById('fHighlight').value.trim()||null}
+  const{error}=await sb.from('properties').update(u).eq('id',PROP.id)
+  if(error){
+    /* Stupci dolaze iz `sql/add-theme-to-properties.sql`. Dok se ne pokrene,
+       odabir se ne pamti, ali stranica radi i `?stil=` i dalje sve pokazuje. */
+    const nema=/column .* does not exist|schema cache|theme|highlight/i.test(error.message)
+    showA('izgled-alert','err', nema
+      ? 'Baza još nema stupce za temu. Pokrenite sql/add-theme-to-properties.sql u Supabase SQL editoru, pa ponovno spremite.'
+      : error.message)
+    return
+  }
+  Object.assign(PROP,u)
+  window.clearDirty&&window.clearDirty()
+  showA('izgled-alert','ok','Spremljeno ✓');toast('Tema spremljena ✓')
 }
 
 window.saveBasic=async()=>{
@@ -1597,6 +1678,7 @@ window.nav=(id,el)=>{
     overview:['Pregled','Pregled objekta','Status, dovršenost i linkovi objekta.'],
     basic:['Postavljanje objekta','Osnovni podaci','Postavite temeljne informacije koje gost prvo vidi.'],
     photos:['Postavljanje objekta','Fotografije','Složite galeriju koja predstavlja vaš objekt.'],
+    izgled:['Postavljanje objekta','Izgled stranice','Izaberite temu koja odlučuje što gost vidi prvo.'],
     arrival:['Postavljanje objekta','Dolazak i check-in','Pripremite gosta za jednostavan i siguran dolazak.'],
     wifi:['Postavljanje objekta','Wi-Fi','Spremite pristupne podatke za privatni vodič.'],
     amenities:['Postavljanje objekta','Sadržaji','Označite sve što je gostu dostupno u objektu.'],
@@ -1619,6 +1701,7 @@ window.nav=(id,el)=>{
   window.scrollTo({top:0,behavior:'smooth'})
   if(id==='reservations')window.loadBookings()
   if(id==='ical')loadIcal()
+  if(id==='izgled')window.initTeme&&window.initTeme()
 }
 
 async function loadIcal(){

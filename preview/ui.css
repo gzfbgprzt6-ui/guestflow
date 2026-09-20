@@ -8,10 +8,6 @@
 :root{
   /* tinta koja prolazi WCAG AA za sitan tekst (--ink-50 daje 3,1:1 i pada) */
   --ink-mut:#5A6774;              /* 5,37:1 na kremi */
-  /* terracota za TEKST i pune plohe. Prolazi 4,5:1 na sve četiri podloge koje
-     koristimo: krema 5,44 · pijesak 4,79 · školjka 5,73 · svijetla oznaka 4,89.
-     `--terra` (#D4674A) ostaje samo za ukras, a `--terra-d` za gumbe. */
-  --terra-ink:#A8462F;
 
   /* --- rampe za grafikone ---------------------------------------------
      Namjerno SEKVENCIJALNE (jedna nijansa, više = tamnije), ne kategorijske.
@@ -87,6 +83,7 @@
   font:inherit;font-size:.94rem;color:var(--ink);transition:border-color .3s,box-shadow .3s;
 }
 .inp:focus{outline:0;border-color:var(--sea);box-shadow:0 0 0 3px rgba(46,107,119,.16)}
+.inp--sm{margin-top:0;padding:8px 10px;font-size:.86rem}
 .hint{font-size:.8rem;color:var(--ink-mut);margin-top:7px}
 
 .tblwrap{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
@@ -242,16 +239,12 @@
 @media(max-width:760px){.pv .note{display:none}}
 
 /* ==========================================================================
-   ISPRAVCI KONTRASTA — vrijede samo pod /preview/
-   Mjereno na podlozi --cream #FAF6EF. Iste vrijednosti stoje i u
-   `atmosphere.css`, ali ga ne diramo jer ga koriste žive stranice.
-     .kicker terra #D4674A .......... 3,34:1  → terra-d #B44F35  4,74:1
-     .btn--fill bijelo na terri ..... 3,60:1  → na terra-d       5,11:1
-     --ink-50 sitan tekst ........... 3,19:1  → --ink-mut        5,37:1
+   ISPRAVCI KONTRASTA
+   `.kicker`, `.btn--fill` i `--terra-ink` sada stoje u `atmosphere.css` — bili
+   su ovdje dok se živi list nije smio dirati. Kopije su maknute da se dvije
+   vrijednosti ne raziđu; ostaje samo ono čega u `atmosphere.css` nema.
+     --ink-50 sitan tekst ........... 3,19:1  → --ink-mut  5,37:1
    ========================================================================== */
-.kicker{color:var(--terra-ink)}
-.btn--fill{background:var(--terra-d);box-shadow:0 14px 34px -14px rgba(180,79,53,.75)}
-.btn--fill:hover{background:#98402B;box-shadow:0 22px 46px -16px rgba(180,79,53,.8)}
 .foot,.ticker__item{color:var(--ink-mut)}
 .lead{color:var(--ink-70)}
 
@@ -435,3 +428,23 @@ html[data-tema="tamno"] .sand-surface{background:#243447}
 .planbar button[aria-pressed="true"]{background:var(--night);color:#fff}
 .mt4{margin-top:4px}
 .tag--warn-ink{color:#7A5310}          /* 5,02:1 na žutoj pozadini obavijesti */
+
+/* ==========================================================================
+   ADMIN — dopune za tabove Prihod / Poruke / Postavke
+   ========================================================================== */
+.stat__sub{display:block;font-size:.72rem;color:var(--ink-mut);margin-top:4px}
+.kod{background:rgba(0,0,0,.34);border:1px solid rgba(255,255,255,.16);border-radius:var(--r-sm);
+  padding:14px 16px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.78rem;
+  line-height:1.6;color:#EAF1F5;overflow-x:auto;white-space:pre;margin:0}
+.obav{border-bottom:1px solid var(--line-2);padding:14px 0}
+.obav:last-child{border-bottom:0}
+.obav b{display:block;font-size:.94rem}
+.obav span{font-size:.76rem;color:var(--ink-mut)}
+.sys{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--line-2)}
+.sys:last-child{border-bottom:0}
+.sys__d{flex:none;width:9px;height:9px;border-radius:50%;margin-top:7px}
+.sys__d.ok{background:var(--olive)} .sys__d.no{background:var(--terra-d)}
+.sys b{font-size:.92rem;display:block} .sys p{margin:2px 0 0;font-size:.8rem;color:var(--ink-mut)}
+.tabpanel[hidden]{display:none}
+.note-inline{background:rgba(233,161,59,.14);border:1px solid rgba(233,161,59,.36);
+  border-radius:var(--r-sm);padding:11px 14px;font-size:.86rem;color:#7A5310;margin:0}

@@ -47,6 +47,8 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 ├── terms.html                privacy.html             404.html
 ├── vercel.json              # Rewrites za clean URL-ove, security headeri + dnevni cron za keepalive
 ├── atmosphere.css           # DIJELJENI v3 dizajn sustav (tokeni, scena, gumbi, reveal) — koristi p.html
+├── teme.css                 # OSAM TEMA javne stranice — dijele ih p.html, dashboard.html i preview/
+├── teme.js                  # rasporedi zaglavlja, `izBaze(prop)` i zajednički birač tema
 ├── motion.js                # dijeljeni motion sustav (reveal, paralaksa, brojaci, rail)
 ├── links.js                 # gradnja linkova (/p/, /h/) — NIKAD ne zakucavati domenu, vidi dolje
 ├── plans.js                 # rezervne vrijednosti + helperi; pravi izvor istine je tablica `plans` u bazi
@@ -90,9 +92,6 @@ preview/
 ├── admin.html      # redizajn vlasničkog panela: rast, MRR, istek, tablica s pretragom
 ├── ui.css          # ljuska aplikacije, paneli, polja, GRAFIKONI, dijalozi,
 │                   #   tamna tema vodiča, prebacivanje plana + ispravci kontrasta
-├── teme.css        # OSAM TEMA javne stranice: tokeni, tipografija, oblik + osam
-│                   #   rasporeda zaglavlja (.th--*) i birač (.tema)
-├── teme.js         # podaci o temama, osam rasporeda zaglavlja i zajednički birač
 └── scene.js        # nacrtani prizori (isti SVG-ovi kao u p.html) + QR ilustracija
 ```
 
@@ -148,10 +147,42 @@ informacijom — to je bit, ostalo je posljedica:
 | Ponoćni bazen | samom slikom, najmanje teksta | Space Grotesk |
 | Borova šuma | pismom domaćice | Spectral |
 
-**Gdje se bira:** kartica **Izgled** u `preview/dashboard.html` i kartica
-„Izgled” u `preview/editor.html`. Obje vrte **istu** izvedbu —
+**Ovo je ŽIVO, ne samo pod `/preview/`.** `teme.css` i `teme.js` stoje u
+korijenu i dijele ih `p.html`, `dashboard.html` i preview stranice — isto kao
+`atmosphere.css` i `motion.js`.
+
+**Gdje se bira:** panel **Izgled stranice** u pravom `dashboard.html`
+(bočna traka, odmah iza Fotografija), te kartice „Izgled” u
+`preview/dashboard.html` i `preview/editor.html`. Sve vrte **istu** izvedbu —
 `Odmoria.teme.birac()` iz `teme.js`. Dvije kopije te logike razišle bi se,
 kao nekad kopije limita plana.
+
+**Podaci dolaze iz baze,** ne iz koda: `izBaze(prop)` preslika red iz
+`properties` u oblik koji rasporedi čitaju. Svako polje ima zamjenu — tema koja
+vodi cijenom bez `price_per_night` vodi imenom, tema koja vodi popisom
+prostorija izvede ga iz `bedrooms`/`bathrooms`/`size_m2`. **Nijedna ne ostane
+prazna**, jer domaćin ne mora ispuniti sve.
+
+**Fotografije imaju prednost pred nacrtanim prizorom** u svakoj temi koja ima
+pozadinu, i izmjenjuju se istim ritmom (7 s) kao rotator u `p.html`. Terakota
+ih stavlja u luk, Riviera u krug. Beton je namjerno bez fotografije — to je
+tema koja vodi tablicom.
+
+**Zadana tema „Jadran” NE dira `p.html`.** `primijeniTemu()` na njoj zove stari
+`buildHero()` i stranica ostaje piksel u piksel ista kao dosad, s rotatorom i
+`.phnav` trakom. Svaka druga tema zamijeni cijeli `<header>`. Zato zamjena mora
+sačuvati značku `.mark`, a `buildChips()` mora podnijeti da `#hero-chips` više
+ne postoji.
+
+**Dva nova stupca** (`sql/add-theme-to-properties.sql`): `properties.theme` i
+`properties.highlight`. Dok se ne pokrene, sve radi — `prop.theme` je
+`undefined`, vrijedi „Jadran”, a `?stil=` u adresi i dalje pokazuje svih osam.
+Spremanje javi točno tu poruku umjesto sirove greške iz baze.
+
+**`teme.css` je samodostatan.** `dashboard.html` namjerno ne učitava
+`atmosphere.css`, pa `.tema-okruzje` nosi osnovne tokene i `.th .btn` gumbe.
+Taj razred mora biti **predak** elementa s `data-stil`, nikad isti element:
+izravno pravilo pobjeđuje naslijeđenu vrijednost, pa bi tema inače izgubila.
 
 **Kako se pali:** atribut `data-stil`. Na `<html>` prebojava cijelu stranicu
 (`preview/public.html?stil=laguna`), a na bilo kojem omotaču samo ono unutar
@@ -269,20 +300,19 @@ je panel bio `hidden`. Isto vrijedi za svaku provjeru: elemente u skrivenim
 panelima treba filtrirati preko `offsetParent !== null`, inače izgledaju kao
 neotkriveni.
 
-### Dvije greške u živom kodu nađene usput (nisu popravljene)
+### Dvije greške u živom kodu — POPRAVLJENE u `atmosphere.css`
 
-Obje su popravljene **samo pod `/preview/`**, u `ui.css`. `atmosphere.css` nije diran
-jer ga koriste `p.html`, `h.html` i `index.html` — popravak tamo treba dogovor.
+Bile su popravljene samo pod `/preview/`; sad stoje u živom listu, a kopije iz
+`ui.css` su maknute da se dvije vrijednosti ne raziđu.
 
 1. **Kontrast.** `--terra` (#D4674A) kao tekst na kremi daje **3,34:1**, a bijelo na
-   terri **3,60:1** — oboje pada WCAG AA (traži 4,5:1). Pogađa `.kicker` i svaki
-   `.btn--fill`. Pod pregledom: tekst ide na `--terra-ink` #A8462F (4,79:1 i bolje na
-   sve četiri podloge), gumbi na `--terra-d` #B44F35 (bijelo na njemu 5,11:1).
+   terri **3,60:1** — oboje pada WCAG AA. Sad postoji `--terra-ink` #A8462F za
+   TEKST (5,44 na kremi), `.kicker` ga koristi, a `.btn--fill` je na `--terra-d`
+   #B44F35 (bijelo na njemu 5,11:1). `--terra` ostaje samo za ukras i plohe.
 2. **`.wipe` se sam zaključava.** `clip-path:inset(0 100% 0 0)` svodi presjek elementa
    na nulu, pa `IntersectionObserver` u `motion.js` nikad ne okine i element ostane
-   nevidljiv **zauvijek**. Provjereno u pregledniku. `.wipe` mora stajati na
-   **unutarnjem** elementu, a `[data-rv]` na roditelju. U `p.html`, `h.html` i
-   `index.html` `.wipe` se zasad nigdje ne koristi, pa još nije puklo.
+   nevidljiv **zauvijek**. `.wipe` mora stajati na **unutarnjem** elementu, a
+   `[data-rv]` na roditelju; pravilo je sad `.wipe.rv-in,.rv-in .wipe`.
 
 Uz to, tri stvari koje je lako ponoviti:
 

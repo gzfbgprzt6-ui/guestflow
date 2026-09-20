@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="/atmosphere.css">
+<link rel="stylesheet" href="/teme.css">
 <style>
 /* ==========================================================================
    Javna stranica objekta. NIKAD ne dohvaca tablicu `sections` —
@@ -620,6 +621,7 @@
 
 <div class="toast" id="toast"></div>
 
+<script src="/teme.js"></script>
 <script src="/motion.js"></script>
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
@@ -674,7 +676,7 @@ async function loadPage() {
   if (prop.location) { $('#hero-loc').textContent = prop.location; $('#hero-loc').style.display = '' }
   if (prop.type) $('#hero-type').textContent = prop.type
 
-  buildHero(prop)
+  primijeniTemu(prop)
   buildChips(prop)
   buildFacts(prop)
   buildGallery(prop)
@@ -787,6 +789,30 @@ function artInner(cls) {
     <div class="art__sea">${SHIM}</div>`
 }
 
+/* Tema javne stranice.
+   „Jadran” je zadana i NE dira zaglavlje — ostaje točno ono što je i dosad
+   bilo, s rotatorom fotografija i `.phnav` trakom. Svaka druga tema zamijeni
+   cijeli <header> svojim rasporedom iz `teme.js`, koji fotografije prima
+   preko `izBaze(prop)` i sam ih izmjenjuje.
+   Ako stupac `theme` u bazi još ne postoji, `prop.theme` je `undefined` i
+   vrijedi „Jadran” — ništa ne puca. */
+function primijeniTemu(prop) {
+  const T = window.Odmoria?.teme
+  const stil = T ? T.zaObjekt(prop) : 'jadran'
+  if (!T || stil === 'jadran') { buildHero(prop); return }
+
+  T.primijeni(stil)
+  const hdr = document.querySelector('header.hero')
+  if (!hdr) { buildHero(prop); return }
+  const omot = document.createElement('div')
+  omot.id = 'zaglavlje'
+  omot.style.position = 'relative'
+  const znak = hdr.querySelector('.mark')        // značka mora preživjeti zamjenu
+  hdr.replaceWith(omot)
+  T.ubaci(omot, stil, { objekt: T.izBaze(prop) })
+  if (znak) omot.appendChild(znak)
+}
+
 function buildHero(prop) {
   const photos = orderedPhotos(prop).slice(0, 3)
   const phs = $('#phs')
@@ -860,7 +886,10 @@ function buildChips(prop) {
   if (prop.bedrooms)   c.push('✦ ' + prop.bedrooms + ' ' + plural(prop.bedrooms,'spavaća soba','spavaće sobe','spavaćih soba'))
   if (price > 0)       c.push('✦ od ' + price + ' € / noć')
   if (prop.min_stay && +prop.min_stay > 1) c.push('✦ najmanje ' + noci(+prop.min_stay))
-  $('#hero-chips').innerHTML = c.map(t => `<span class="chip chip--glass">${esc(t)}</span>`).join('')
+  /* Na temama različitim od „Jadran” zaglavlje je zamijenjeno i ovog
+     elementa nema — te teme iste brojke pokazuju u vlastitom rasporedu. */
+  const hc = $('#hero-chips')
+  if (hc) hc.innerHTML = c.map(t => `<span class="chip chip--glass">${esc(t)}</span>`).join('')
 }
 
 function buildFacts(prop) {
