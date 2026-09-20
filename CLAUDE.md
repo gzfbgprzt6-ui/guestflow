@@ -174,10 +174,20 @@ tema koja vodi tablicom.
 sačuvati značku `.mark`, a `buildChips()` mora podnijeti da `#hero-chips` više
 ne postoji.
 
-**Dva nova stupca** (`sql/add-theme-to-properties.sql`): `properties.theme` i
-`properties.highlight`. Dok se ne pokrene, sve radi — `prop.theme` je
-`undefined`, vrijedi „Jadran”, a `?stil=` u adresi i dalje pokazuje svih osam.
-Spremanje javi točno tu poruku umjesto sirove greške iz baze.
+**Stupci** (`sql/add-theme-to-properties.sql`): `properties.highlight` je nov,
+a **`properties.theme` je već postojao** — svih 8 objekata imalo je
+`Beach & Sea`, ostatak starijeg koncepta tema koji nijedan `.sql` ne stvara i
+nijedan kod više ne čita ni ne upisuje. Migracija ga **preslikava** u `jadran`
+(konceptualno ista stvar), ne briše, pa se javna stranica ne mijenja ni za
+jedan piksel — provjereno: `Beach & Sea` i `jadran` daju identično zaglavlje.
+Migracija prvo skida DEFAULT sa stupca, inače bi novi objekt opet dobio staru
+vrijednost i pao na CHECK-u.
+
+Dok se migracija ne pokrene, sve radi — vrijedi „Jadran”, a `?stil=` u adresi
+pokazuje svih osam. **Spremanje odbija upisati temu ako u stupcu stoji nešto
+što nije ime teme** (`smijePisati()` u `teme.js`) — istaknuta brojka se svejedno
+spremi, a panel kaže zašto tema nije. Bez toga bi jedan klik pojeo tuđi podatak.
+Ime stupca je jedna konstanta `STUPAC` u `teme.js`.
 
 **`teme.css` je samodostatan.** `dashboard.html` namjerno ne učitava
 `atmosphere.css`, pa `.tema-okruzje` nosi osnovne tokene i `.th .btn` gumbe.
@@ -324,6 +334,11 @@ Uz to, tri stvari koje je lako ponoviti:
   vidi. Dogodilo se dvaput.
 - **`<dialog>` mora stajati u DOM-u prije skripti koje ga traže.** Ako je ispod
   `<script>`, `getElementById` vraća `null`.
+- **`add column if not exists` tiho preskoči stupac koji već postoji**, pa
+  `CHECK` odmah padne na zatečenim redovima. Tako se otkrilo da `properties.theme`
+  postoji od ranije. Prije nego se stupac preuzme, provjeriti što je u njemu
+  (`select theme, count(*) ... group by 1`) i ima li DEFAULT — i pisanje u njega
+  zaštititi, da jedan klik ne pojede tuđi podatak.
 - **Dva elementa s istim `id`-em tiho pokvare drugi.** U dashboardu su obje trake
   za prebacivanje plana (Pregled i Analitika) nosile `id="planbar"`, a
   `getElementById` veže samo prvu — traka u Analitici nije radila. Sada je

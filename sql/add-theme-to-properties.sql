@@ -1,76 +1,56 @@
 -- =====================================================================
 --  Tema javne stranice + istaknuta brojka
 --
---  POKRETATI U DVA KORAKA. Prvi je siguran i moze odmah.
+--  Pokrenuti u Supabase SQL editoru JEDNOM, cijelo odjednom.
 --
---  Zasto: `properties.theme` u ovoj bazi VEC POSTOJI i vec ima vrijednosti
---  (otkriveno tako sto je CHECK constraint pao na postojecim redovima).
---  Nijedan `.sql` u repozitoriju ga ne stvara i nijedan kod osim ovoga ga
---  ne cita, pa je ostatak necega ranijeg. Ne preuzimamo ga naslijepo —
---  `saveTema()` bi prebrisao ono sto je unutra.
+--  O stupcu `theme`: vec je postojao u bazi i svih 8 objekata imalo je
+--  istu vrijednost `Beach & Sea` — ostatak starijeg koncepta tema.
+--  Nijedan .sql u repozitoriju ga ne stvara i nijedan kod ga vise ne cita
+--  ni ne upisuje (provjereno). `Beach & Sea` je konceptualno ista stvar
+--  kao zadana tema `jadran`, pa se PRESLIKAVA, ne brise — svaki objekt
+--  ostaje na smislenoj temi i javna stranica se ne mijenja.
 -- =====================================================================
 
-
--- ---------------------------------------------------------------------
---  KORAK 1 — sigurno, ne dira `theme`
--- ---------------------------------------------------------------------
-
+-- 1. Istaknuta brojka (teme Laguna i Ponocni bazen).
 alter table public.properties
   add column if not exists highlight text;
 
 comment on column public.properties.highlight is
   'Istaknuta brojka za teme Laguna i Ponocni bazen, oblik "vrijednost · oznaka", npr. "32° · Temperatura bazena". Prazno = izvede se iz povrsine ili broja gostiju.';
 
+-- 2. Ako je na stupcu ostao stari DEFAULT, novi objekt bi opet dobio
+--    `Beach & Sea` i pao na CHECK-u ispod. Zato prvo dolje.
+alter table public.properties
+  alter column theme drop default;
 
--- ---------------------------------------------------------------------
---  PROVJERA — sto je u `theme`? Ovo samo cita.
--- ---------------------------------------------------------------------
+-- 3. Stara vrijednost -> zadana tema.
+update public.properties
+   set theme = 'jadran'
+ where theme = 'Beach & Sea';
 
-select coalesce(theme, '(prazno)') as vrijednost, count(*) as redova
-from public.properties
-group by 1
-order by 2 desc;
+-- 4. Sve ostalo nepoznato (ako se jos nesto zateklo) na NULL, sto kod
+--    cita kao `jadran`. Bez ovoga CHECK ispod pada.
+update public.properties
+   set theme = null
+ where theme is not null
+   and theme not in
+     ('jadran','laguna','zlatnisat','terakota','beton','riviera','ponocni','borova');
 
+-- 5. Tek sada CHECK — od ovog trena u stupac moze samo ime teme.
+alter table public.properties
+  drop constraint if exists properties_theme_check;
+alter table public.properties
+  add constraint properties_theme_check check (
+    theme is null or theme in
+      ('jadran','laguna','zlatnisat','terakota','beton','riviera','ponocni','borova')
+  );
 
--- ---------------------------------------------------------------------
---  KORAK 2 — tek kad se zna sto je gore. Odaberi JEDNU varijantu.
--- ---------------------------------------------------------------------
-
--- VARIJANTA A: `theme` drzi nesto drugo i mora ostati netaknut.
---   Teme dobivaju vlastiti stupac; u `teme.js`/`dashboard.html`/`p.html`
---   tada treba zamijeniti `prop.theme` s `prop.page_theme`.
---
--- alter table public.properties
---   add column if not exists page_theme text;
--- alter table public.properties
---   drop constraint if exists properties_page_theme_check;
--- alter table public.properties
---   add constraint properties_page_theme_check check (
---     page_theme is null or page_theme in
---       ('jadran','laguna','zlatnisat','terakota','beton','riviera','ponocni','borova')
---   );
-
-
--- VARIJANTA B: u `theme` je smece ili neupotrebljive vrijednosti.
---   Ocisti ih, pa `theme` postane stupac za teme (bez drugog stupca
---   slicnog imena). Prvo pogledaj ispis iz PROVJERE!
---
--- update public.properties
---    set theme = null
---  where theme is not null
---    and theme not in
---      ('jadran','laguna','zlatnisat','terakota','beton','riviera','ponocni','borova');
---
--- alter table public.properties
---   drop constraint if exists properties_theme_check;
--- alter table public.properties
---   add constraint properties_theme_check check (
---     theme is null or theme in
---       ('jadran','laguna','zlatnisat','terakota','beton','riviera','ponocni','borova')
---   );
--- comment on column public.properties.theme is
---   'Tema javne stranice: jadran | laguna | zlatnisat | terakota | beton | riviera | ponocni | borova. NULL = jadran.';
-
+comment on column public.properties.theme is
+  'Tema javne stranice: jadran | laguna | zlatnisat | terakota | beton | riviera | ponocni | borova. NULL = jadran.';
 
 -- RLS se NE dira: `properties` vec ima politike, a ovo su obicni stupci
 -- te iste tablice, pa ih zahvaca postojeci select/update scope.
+
+-- Provjera nakon pokretanja — ocekuje se 8 redova na `jadran`:
+-- select coalesce(theme,'(prazno)') as tema, count(*) from public.properties
+-- group by 1 order by 2 desc;
