@@ -84,6 +84,8 @@
 }
 .inp:focus{outline:0;border-color:var(--sea);box-shadow:0 0 0 3px rgba(46,107,119,.16)}
 .inp--sm{margin-top:0;padding:8px 10px;font-size:.86rem}
+/* Gumb koji ceka da se nesto stvarno promijeni mora to i izgledati. */
+.btn:disabled{opacity:.42;cursor:not-allowed;pointer-events:none}
 .hint{font-size:.8rem;color:var(--ink-mut);margin-top:7px}
 
 .tblwrap{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
@@ -102,6 +104,7 @@
   font-size:.75rem;font-weight:700;background:rgba(126,143,106,.16);color:#4C5B3C;
 }
 .tag--warn{background:rgba(233,161,59,.18);color:#7A5310}
+.tag--ok{background:rgba(126,143,106,.18);color:#3F4C31}   /* 7,15:1 na toj plohi */
 .tag--mut{background:rgba(20,32,46,.06);color:var(--ink-mut)}
 .tag--terra{background:rgba(212,103,74,.14);color:var(--terra-ink)}
 
@@ -353,7 +356,8 @@ html[data-tema="tamno"] .btn--fill{background:var(--terra-d);color:#14202E}     
 html[data-tema="tamno"] .btn--light{background:rgba(255,255,255,.92);color:#14202E} /* 14,18:1 */
 html[data-tema="tamno"] .chip--glass{
   background:rgba(20,32,46,.62);border-color:rgba(255,255,255,.28);color:#fff}   /* 15,55:1 */
-html[data-tema="tamno"] .tag--warn{color:#FFD9A0}                                /* 7,48:1 */
+html[data-tema="tamno"] .tag--warn{color:#FFD9A0}
+html[data-tema="tamno"] .tag--ok{color:#C6DDB4}                                /* 7,48:1 */
 html[data-tema="tamno"] .tag{background:rgba(126,143,106,.26);color:#C6DBA8}
 html[data-tema="tamno"] .tag--mut{background:rgba(255,255,255,.10);color:#C4CFD8}
 html[data-tema="tamno"] .tag--terra{background:rgba(212,103,74,.22);color:#F3B39B}

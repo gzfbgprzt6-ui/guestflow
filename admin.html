@@ -5,181 +5,539 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>Admin — Odmoria</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/atmosphere.css">
+<link rel="stylesheet" href="/ui.css">
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--black:#5A3323;--warm-white:#F7F5F1;--pure-white:#FFFFFF;--electric:#A15C3E;--electric-dk:#7E4630;--stone:#E8E2D9;--stone-mid:#C8C0B4;--ink:#1A1917;--body:#4A4540;--soft:#6B6560;--ghost:#9B9590;--green:#15803D;--green-bg:#DCFCE7;--serif:'DM Serif Display',Georgia,serif;--sans:'DM Sans',system-ui,sans-serif}
-body{font-family:var(--sans);background:var(--warm-white);color:var(--ink);-webkit-font-smoothing:antialiased;min-height:100dvh}
-#gate{position:fixed;inset:0;background:var(--warm-white);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;z-index:99;text-align:center;padding:24px}
-#gate .spin{width:26px;height:26px;border:2.5px solid var(--stone);border-top-color:var(--electric);border-radius:50%;animation:sp .7s linear infinite}
-@keyframes sp{to{transform:rotate(360deg)}}
-#gate p{font-size:13.5px;color:var(--soft)}
-#app{display:none}
-header{background:var(--black);padding:20px clamp(20px,4vw,48px);display:flex;align-items:center;justify-content:space-between;gap:16px}
-.logo{font-family:var(--serif);font-size:19px;color:#fff}
-.logo span{color:#D9A583}
-.logo em{font-style:normal;font-size:11px;color:#CBA98F;font-weight:500;letter-spacing:.08em;text-transform:uppercase;margin-left:10px;border-left:1px solid #6E4230;padding-left:10px}
-.hdr-r{display:flex;align-items:center;gap:14px}
-.hdr-r a{font-size:12.5px;color:#D9BFAE;text-decoration:none}
-.hdr-r a:hover{color:#fff}
-.btn{display:inline-flex;align-items:center;gap:6px;font-weight:500;border-radius:7px;padding:8px 16px;font-size:13px;border:none;cursor:pointer;font-family:var(--sans)}
-.btn-el{background:var(--electric);color:#fff}.btn-el:hover{background:var(--electric-dk)}
-.btn-out{background:transparent;color:#D9BFAE;border:1px solid #6E4230}.btn-out:hover{border-color:#8a5a44}
-main{max-width:1080px;margin:0 auto;padding:36px clamp(20px,4vw,48px) 80px}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1px;background:var(--stone);border:1px solid var(--stone);border-radius:14px;overflow:hidden;margin-bottom:40px}
-.stat{background:var(--pure-white);padding:22px 22px}
-.stat-label{font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--ghost);margin-bottom:8px}
-.stat-val{font-family:var(--serif);font-size:32px;color:var(--ink)}
-section.blk{padding:32px 0;border-top:1px solid var(--stone)}
-section.blk:first-of-type{border-top:none;padding-top:0}
-.blk-label{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--electric);margin-bottom:5px}
-.blk-title{font-family:var(--serif);font-size:22px;font-weight:400;color:var(--ink);margin-bottom:22px}
-table{width:100%;border-collapse:collapse;font-size:13.5px}
-th{text-align:left;font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ghost);padding:0 12px 10px;border-bottom:1px solid var(--stone)}
-td{padding:14px 12px;border-bottom:1px solid var(--stone);vertical-align:top}
-tr:last-child td{border-bottom:none}
-.host-name{font-weight:600;color:var(--ink)}
-.host-sub{font-size:12px;color:var(--ghost);margin-top:2px}
-.prop-chip{display:inline-block;background:var(--warm-white);border:1px solid var(--stone);border-radius:20px;padding:3px 10px;font-size:11.5px;color:var(--soft);margin:2px 4px 2px 0}
-.plan-sel{padding:6px 10px;border:1px solid var(--stone);border-radius:7px;font-size:12.5px;color:var(--ink);background:var(--pure-white);font-family:var(--sans);cursor:pointer}
-.pill{font-size:10.5px;font-weight:600;padding:3px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:.04em}
-.pill-active{background:var(--green-bg);color:var(--green)}
-.pill-exp{background:#FEE2E2;color:#B91C1C}
-.row-save{font-size:12px;color:var(--electric);background:none;border:none;cursor:pointer;font-weight:600;margin-left:8px;font-family:var(--sans)}
-.empty{text-align:center;padding:40px;color:var(--ghost);font-size:13px;font-weight:300}
-#denied{display:none;position:fixed;inset:0;background:var(--warm-white);align-items:center;justify-content:center;flex-direction:column;gap:14px;text-align:center;padding:24px}
-#denied h1{font-family:var(--serif);font-size:26px;font-weight:400}
-#denied p{font-size:14px;color:var(--soft);max-width:360px}
+  body{background:var(--cream)}
+  #gate,#denied{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+    flex-direction:column;gap:16px;text-align:center;padding:24px;background:var(--cream);z-index:99}
+  #denied{display:none}
+  #gate .spin{width:26px;height:26px;border:2.5px solid var(--line);border-top-color:var(--terra-d);
+    border-radius:50%;animation:sp .7s linear infinite}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  #app{display:none}
+  .owner{font-size:.68rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+    background:var(--sand);border:1px solid var(--line);border-radius:7px;padding:5px 10px;
+    display:inline-block;color:var(--ink-mut)}
+  .side__foot{margin-top:auto;padding-top:20px}
+  .empty{text-align:center;padding:40px;color:var(--ink-mut);font-size:.9rem}
+  .tabpanel[hidden]{display:none}
 </style>
 </head>
-<body>
+<body class="grain">
 
-<div id="gate"><div class="spin"></div><p>Provjera pristupa...</p></div>
+<div id="gate"><div class="spin"></div><p class="small">Provjera pristupa…</p></div>
 
 <div id="denied">
-  <h1>Nemaš pristup</h1>
-  <p>Ova stranica je dostupna samo administratoru platforme.</p>
-  <a class="btn btn-el" href="dashboard.html">Natrag na dashboard</a>
+  <h1 style="font-size:clamp(1.8rem,4vw,2.6rem)">Nemaš pristup</h1>
+  <p class="lead" style="max-width:42ch">Ova stranica je dostupna samo vlasniku platforme.</p>
+  <a class="btn btn--fill" href="/dashboard.html">Natrag na dashboard <span class="arr">→</span></a>
 </div>
 
 <div id="app">
-  <header>
-    <div class="logo">Odmor<span>ia</span><em>Admin</em></div>
-    <div class="hdr-r">
-      <a href="dashboard.html">← Moj dashboard</a>
-      <button class="btn btn-out" onclick="logout()">Odjava</button>
+<div class="app">
+  <aside class="side"><div class="side__in">
+    <div class="brand">Odmoria<span style="color:var(--terra)">.</span></div>
+    <a class="navi" data-tab="domacini" aria-current="page" href="#domacini"><span class="ic">◉</span> Domaćini</a>
+    <a class="navi" data-tab="prihod" href="#prihod"><span class="ic">◔</span> Prihod</a>
+    <a class="navi" data-tab="poruke" href="#poruke"><span class="ic">✉</span> Poruke</a>
+    <a class="navi" data-tab="postavke" href="#postavke"><span class="ic">⚙</span> Postavke</a>
+    <a class="navi" href="/dashboard.html"><span class="ic">◧</span> Moj dashboard</a>
+    <div class="side__foot">
+      <span class="owner">🔐 Vlasnički pristup</span>
+      <p class="small mt8">Zaštićeno i na RLS razini, ne samo ovdje.</p>
+      <button class="btn btn--ghost btn--sm mt12" style="width:100%" onclick="logout()">Odjava</button>
     </div>
-  </header>
+  </div></aside>
 
-  <main>
-    <div class="stats" id="stats-row"></div>
+  <main class="main">
 
-    <section class="blk">
-      <div class="blk-label">Domaćini</div>
-      <div class="blk-title">Svi korisnici i njihovi planovi</div>
-      <div id="users-table"></div>
+    <!-- ============ DOMAĆINI ============ -->
+    <section class="tabpanel" data-panel="domacini">
+      <div class="head">
+        <div>
+          <p class="kicker bare">Admin</p>
+          <h1 style="font-size:clamp(1.9rem,3.2vw,2.7rem);margin-top:6px">Svi domaćini</h1>
+        </div>
+        <div class="head__act">
+          <button class="btn btn--ghost btn--sm" id="izvoz">Izvezi CSV</button>
+          <button class="btn btn--fill btn--sm" id="osvjezi">Osvježi <span class="arr">↻</span></button>
+        </div>
+      </div>
+
+      <section class="g g4" id="brojke"></section>
+
+      <section class="g g-main mt24">
+        <div class="panel">
+          <p class="kicker">Rast</p>
+          <h3 class="mt8" style="font-size:1.15rem">Novi domaćini po mjesecima</h3>
+          <p class="small mt8">Iz <code>properties.created_at</code>, zadnjih 12 mjeseci.</p>
+          <div id="rastChart" class="mt16"></div>
+        </div>
+        <div class="panel">
+          <p class="kicker">Raspodjela</p>
+          <h3 class="mt8" style="font-size:1.15rem">Planovi</h3>
+          <div id="planRank" class="rank mt16"></div>
+        </div>
+      </section>
+
+      <section class="panel mt24" id="istekPanel" hidden>
+        <p class="kicker">Rizik</p>
+        <h3 class="mt8" style="font-size:1.15rem">Uskoro istječe</h3>
+        <p class="small mt8">Pretplate koje istječu u sljedećih 14 dana.</p>
+        <div class="tblwrap mt16"><table class="tbl" id="istekTbl"></table></div>
+      </section>
+
+      <section class="panel mt24">
+        <div class="row wrapf gap12" style="justify-content:space-between;align-items:flex-end">
+          <div>
+            <p class="kicker">Popis</p>
+            <h3 class="mt8" style="font-size:1.15rem">Domaćini i planovi</h3>
+          </div>
+          <div class="row wrapf gap8">
+            <input class="inp inp--sm" id="trazi" placeholder="Traži ime, e-mail, objekt…" style="width:min(260px,60vw);margin-top:0">
+            <select class="inp inp--sm" id="filtar" style="width:auto;margin-top:0">
+              <option value="">Svi planovi</option>
+            </select>
+          </div>
+        </div>
+        <div class="tblwrap mt16"><table class="tbl" id="tablica"></table></div>
+        <p class="small mt16" id="prazno" hidden>Nema domaćina koji odgovaraju pretrazi.</p>
+      </section>
     </section>
+
+    <!-- ============ PRIHOD ============ -->
+    <section class="tabpanel" data-panel="prihod" hidden>
+      <div class="head">
+        <div>
+          <p class="kicker bare">Admin</p>
+          <h1 style="font-size:clamp(1.9rem,3.2vw,2.7rem);margin-top:6px">Prihod</h1>
+        </div>
+      </div>
+
+      <div class="panel" style="background:var(--night);color:#fff">
+        <p class="kicker bare" style="color:var(--sun)">Odakle ove brojke</p>
+        <p class="lead mt8" style="color:rgba(255,255,255,.86);font-size:.95rem;max-width:70ch">
+          Procjena iz tablice <code>plans</code> × broj aktivnih pretplata, <b>ne iz Stripea</b>.
+          Stripe checkout nije spojen, pa naplaćenog iznosa nema nigdje u bazi — ovo je ono što
+          bi se naplatilo da svi plate. Kad se checkout spoji, brojke se mogu razići od ovih.
+        </p>
+      </div>
+
+      <section class="g g4 mt24" id="prihodBrojke"></section>
+
+      <section class="panel mt24">
+        <p class="kicker">Po planu</p>
+        <h3 class="mt8" style="font-size:1.15rem">Tko donosi prihod</h3>
+        <p class="small mt8">Broj aktivnih pretplata × cijena plana iz <code>plans</code>.</p>
+        <div id="prihodRank" class="rank mt16"></div>
+        <div class="tblwrap mt16"><table class="tbl" id="prihodTbl"></table></div>
+      </section>
+    </section>
+
+    <!-- ============ PORUKE ============ -->
+    <section class="tabpanel" data-panel="poruke" hidden>
+      <div class="head">
+        <div>
+          <p class="kicker bare">Admin</p>
+          <h1 style="font-size:clamp(1.9rem,3.2vw,2.7rem);margin-top:6px">Poruke</h1>
+        </div>
+      </div>
+
+      <div class="panel" style="background:var(--night);color:#fff">
+        <p class="kicker bare" style="color:var(--sun)">Nije spojeno — treba jedna tablica</p>
+        <p class="lead mt8" style="color:rgba(255,255,255,.86);font-size:.95rem;max-width:72ch">
+          Upit gosta na javnoj stranici <b>nigdje se ne sprema</b> — <code>p.html</code> ga složi
+          u WhatsApp ili <code>mailto:</code> link i gost ga pošalje sam. Nema ni tablice za
+          obavijesti domaćinima. Obrazac ispod pokazuje kako bi izgledalo.
+        </p>
+        <pre class="kod mt12">create table announcements (
+  id          uuid primary key default gen_random_uuid(),
+  title       text not null,
+  body        text not null,
+  audience    text not null,      -- svi | free | pro | business
+  sent_at     timestamptz,
+  created_at  timestamptz default now()
+);</pre>
+      </div>
+
+      <section class="panel mt24">
+        <p class="kicker">Nova obavijest</p>
+        <h3 class="mt8" style="font-size:1.15rem">Pošalji domaćinima</h3>
+        <label class="lb mt16" for="oNas">Naslov</label>
+        <input class="inp" id="oNas" placeholder="Nova tema za javnu stranicu">
+        <label class="lb mt12" for="oTxt">Poruka</label>
+        <textarea class="inp" id="oTxt" rows="5" placeholder="Od danas birate između osam tema…"></textarea>
+        <label class="lb mt12" for="oKome">Kome</label>
+        <select class="inp" id="oKome"></select>
+        <div class="row gap8 mt16" style="justify-content:space-between;align-items:center">
+          <span class="small" id="oBroj">—</span>
+          <button class="btn btn--fill btn--sm" id="oSalji">Pošalji</button>
+        </div>
+        <p class="note-inline mt12" id="oPoruka" hidden></p>
+      </section>
+    </section>
+
+    <!-- ============ POSTAVKE ============ -->
+    <section class="tabpanel" data-panel="postavke" hidden>
+      <div class="head">
+        <div>
+          <p class="kicker bare">Admin</p>
+          <h1 style="font-size:clamp(1.9rem,3.2vw,2.7rem);margin-top:6px">Postavke</h1>
+        </div>
+      </div>
+
+      <section class="panel">
+        <p class="kicker">Izvor istine</p>
+        <h3 class="mt8" style="font-size:1.15rem">Planovi i limiti</h3>
+        <p class="small mt8" style="max-width:74ch">
+          Ovo je tablica <code>plans</code> u Supabaseu, učitana uživo. Cijene i limiti se
+          mijenjaju <b>ondje, bez izmjene koda i bez deploya</b> — <code>plans.js</code> ih pri
+          pokretanju povuče, a limite provode okidači u bazi. <code>-1</code> znači neograničeno.
+        </p>
+        <div class="tblwrap mt16"><table class="tbl" id="planTbl"></table></div>
+        <p class="hint">Mijenja se u Supabaseu: <code>update public.plans set monthly_price_eur = …</code></p>
+      </section>
+
+      <section class="g g-main mt24">
+        <div class="panel">
+          <p class="kicker">Stanje sustava</p>
+          <h3 class="mt8" style="font-size:1.15rem">Što radi, a što ne</h3>
+          <div class="mt16" id="stanje"></div>
+        </div>
+        <div class="panel">
+          <p class="kicker">Vlasnički pristup</p>
+          <h3 class="mt8" style="font-size:1.15rem">Tko ovo vidi</h3>
+          <p class="lead mt8" style="font-size:.94rem">
+            Admin je zaštićen i na RLS razini, ne samo provjerom u pregledniku. Politike u
+            <code>sql/admin-access.sql</code> vezane su na <code>auth.uid()</code> vlasničkog
+            računa, pa tuđa sesija ne može pročitati tuđe retke ni kad bi zaobišla sučelje.
+          </p>
+          <p class="lead mt12" style="font-size:.94rem">
+            U klijentskom kodu nema service role ključa — sve stranice koriste samo javni
+            publishable ključ.
+          </p>
+        </div>
+      </section>
+    </section>
+
   </main>
+</div>
 </div>
 
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-import { ODMORIA_PLANS, normalizePlanId } from './plans.js'
+import { loadPlans, ODMORIA_PLANS, normalizePlanId, listPlans } from '/plans.js'
 
 const SURL='https://wtojzqjhipdfbrnmprmz.supabase.co'
 const SKEY='sb_publishable_tmZAZTDbQ7ktc1N-8y4q4w_ztAu_62F'
 const sb=createClient(SURL,SKEY)
 const ADMIN_UID='56549320-2c02-405c-9936-770144bd9b49'
 
+const $=s=>document.querySelector(s)
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))
+const eur2=n=>n.toFixed(2).replace('.',',')+' €'
+const eur0=n=>Math.round(n).toLocaleString('hr-HR')+' €'
+
+let HOSTS=[], SUBS={}, PLANOVI=[]
+
 init()
 
 async function init(){
   const{data:{user}}=await sb.auth.getUser()
-  if(!user){window.location.href='login.html';return}
-  if(user.id!==ADMIN_UID){
-    document.getElementById('gate').style.display='none'
-    document.getElementById('denied').style.display='flex'
-    return
-  }
-  document.getElementById('gate').style.display='none'
-  document.getElementById('app').style.display='block'
-  await loadAll()
+  if(!user){location.href='/login.html';return}
+  if(user.id!==ADMIN_UID){ $('#gate').style.display='none'; $('#denied').style.display='flex'; return }
+  $('#gate').style.display='none'; $('#app').style.display='block'
+  try{ await loadPlans(sb) }catch{}      // bez baze radi s rezervnim vrijednostima
+  PLANOVI=listPlans()
+  tabovi()
+  await ucitaj()
 }
 
-window.logout=async()=>{await sb.auth.signOut();window.location.href='login.html'}
+window.logout=async()=>{ await sb.auth.signOut(); location.href='/login.html' }
 
-async function loadAll(){
-  const[{data:props},{data:subs},{data:bookings},{data:views}]=await Promise.all([
+/* ---------- tabovi ---------- */
+function tabovi(){
+  const paneli=[...document.querySelectorAll('.tabpanel')]
+  const veze=[...document.querySelectorAll('.navi[data-tab]')]
+  const idi=k=>{
+    if(!paneli.some(p=>p.dataset.panel===k))k='domacini'
+    paneli.forEach(p=>{p.hidden=p.dataset.panel!==k})
+    veze.forEach(a=>a.dataset.tab===k?a.setAttribute('aria-current','page'):a.removeAttribute('aria-current'))
+    /* otkrivanja u panelu koji je bio skriven treba ponovno okinuti */
+    document.querySelectorAll('.tabpanel:not([hidden]) [data-rv]').forEach(el=>el.classList.add('rv-in'))
+    scrollTo({top:0,behavior:'smooth'})
+  }
+  veze.forEach(a=>a.addEventListener('click',e=>{
+    if(!a.dataset.tab)return
+    e.preventDefault(); history.replaceState(null,'','#'+a.dataset.tab); idi(a.dataset.tab)
+  }))
+  idi((location.hash||'#domacini').slice(1))
+}
+
+/* ---------- podaci ---------- */
+async function ucitaj(){
+  const [{data:props},{data:subs},{data:bookings},{data:views}]=await Promise.all([
     sb.from('properties').select('id,user_id,name,host_name,email,phone,created_at'),
     sb.from('subscriptions').select('user_id,plan,status,period_end'),
     sb.from('bookings').select('id,is_active').eq('is_active',true),
-    sb.from('page_views').select('id,timestamp').gte('timestamp',new Date(Date.now()-30*86400000).toISOString())
+    sb.from('page_views').select('id,timestamp').gte('timestamp',new Date(Date.now()-30*864e5).toISOString())
   ])
   const properties=props||[]
-  const subsByUser={}
-  ;(subs||[]).forEach(s=>subsByUser[s.user_id]=s)
+  SUBS={}; (subs||[]).forEach(s=>SUBS[s.user_id]=s)
 
-  const byUser={}
+  const po={}
   properties.forEach(p=>{
-    if(!byUser[p.user_id])byUser[p.user_id]={user_id:p.user_id,props:[],host_name:null,email:null,phone:null}
-    byUser[p.user_id].props.push(p)
-    if(!byUser[p.user_id].host_name&&p.host_name)byUser[p.user_id].host_name=p.host_name
-    if(!byUser[p.user_id].email&&p.email)byUser[p.user_id].email=p.email
-    if(!byUser[p.user_id].phone&&p.phone)byUser[p.user_id].phone=p.phone
+    if(!po[p.user_id])po[p.user_id]={user_id:p.user_id,props:[],host_name:null,email:null,phone:null,prvi:p.created_at}
+    const h=po[p.user_id]
+    h.props.push(p)
+    if(!h.host_name&&p.host_name)h.host_name=p.host_name
+    if(!h.email&&p.email)h.email=p.email
+    if(!h.phone&&p.phone)h.phone=p.phone
+    if(p.created_at&&(!h.prvi||p.created_at<h.prvi))h.prvi=p.created_at
   })
-  const hosts=Object.values(byUser).sort((a,b)=>b.props.length-a.props.length)
+  HOSTS=Object.values(po).sort((a,b)=>b.props.length-a.props.length)
 
-  renderStats(hosts.length,properties.length,(bookings||[]).length,(views||[]).length)
-  renderUsers(hosts,subsByUser)
+  brojke(properties.length,(bookings||[]).length,(views||[]).length)
+  rast()
+  raspodjela()
+  istek()
+  filtri()
+  tablica()
+  prihod()
+  postavke()
 }
 
-function renderStats(hostCount,propCount,bookingCount,viewCount){
-  const items=[
-    {l:'Domaćina',v:hostCount},
-    {l:'Objekata',v:propCount},
-    {l:'Aktivnih rezervacija',v:bookingCount},
-    {l:'Pregleda (30 dana)',v:viewCount}
-  ]
-  document.getElementById('stats-row').innerHTML=items.map(i=>`<div class="stat"><div class="stat-label">${i.l}</div><div class="stat-val">${i.v}</div></div>`).join('')
+function planOd(uid){ return normalizePlanId(SUBS[uid]?.plan) }
+function cijena(id){ return Number(ODMORIA_PLANS[id]?.monthlyPriceEur||0) }
+function istekao(uid){
+  const s=SUBS[uid]
+  return !!(s?.period_end && new Date(s.period_end)<new Date() && normalizePlanId(s.plan)!=='free')
 }
 
-function renderUsers(hosts,subsByUser){
-  const el=document.getElementById('users-table')
-  if(!hosts.length){el.innerHTML='<div class="empty">Nema registriranih domaćina još.</div>';return}
-  const planOpts=Object.keys(ODMORIA_PLANS).map(k=>`<option value="${k}">${ODMORIA_PLANS[k].name}</option>`).join('')
-  el.innerHTML=`<table>
+/* ---------- brojke ---------- */
+function brojke(objekata,rez,pregleda){
+  const placeni=HOSTS.filter(h=>planOd(h.user_id)!=='free'&&!istekao(h.user_id)).length
+  const mrr=HOSTS.reduce((z,h)=>istekao(h.user_id)?z:z+cijena(planOd(h.user_id)),0)
+  $('#brojke').innerHTML=[
+    ['Domaćina',HOSTS.length,''],
+    ['Objekata',objekata,''],
+    ['Aktivnih rezervacija',rez,''],
+    ['Pregleda (30 dana)',pregleda,''],
+  ].map(([l,v])=>`<div class="stat"><span class="stat__lb">${l}</span>
+      <span class="stat__v">${v}</span></div>`).join('')
+
+  $('#prihodBrojke').innerHTML=[
+    ['MRR (procjena)',eur2(mrr),'mjesečno ponavljajuće'],
+    ['ARR (procjena)',eur0(mrr*12),'MRR × 12'],
+    ['Prosjek po plaćenom',placeni?eur2(mrr/placeni):'—','ARPU'],
+    ['Udio plaćenih',HOSTS.length?Math.round(placeni/HOSTS.length*100)+' %':'—','od svih domaćina'],
+  ].map(([l,v,s])=>`<div class="stat"><span class="stat__lb">${l}</span>
+      <span class="stat__v">${v}</span><span class="stat__sub">${s}</span></div>`).join('')
+}
+
+/* ---------- rast po mjesecima ---------- */
+function rast(){
+  const MJ=[]
+  const d=new Date(); d.setDate(1)
+  for(let i=11;i>=0;i--){
+    const x=new Date(d.getFullYear(),d.getMonth()-i,1)
+    MJ.push({k:x.toLocaleDateString('hr-HR',{month:'short'}),
+             y:x.getFullYear(),m:x.getMonth(),v:0})
+  }
+  HOSTS.forEach(h=>{
+    if(!h.prvi)return
+    const x=new Date(h.prvi)
+    const t=MJ.find(o=>o.y===x.getFullYear()&&o.m===x.getMonth())
+    if(t)t.v++
+  })
+  const max=Math.max(1,...MJ.map(o=>o.v))
+  const W=560,H=170,P=26,bw=Math.min(24,(W-P*2)/MJ.length-6)
+  $('#rastChart').innerHTML=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto" role="img"
+      aria-label="Novi domaćini po mjesecima">
+    ${[0,.5,1].map(f=>`<line x1="${P}" x2="${W-P}" y1="${H-P-(f*(H-P*2))}" y2="${H-P-(f*(H-P*2))}"
+        stroke="var(--grid)" stroke-width="1"/>`).join('')}
+    ${MJ.map((o,i)=>{
+      const x=P+i*((W-P*2)/MJ.length)+((W-P*2)/MJ.length-bw)/2
+      const h=o.v/max*(H-P*2)
+      return `<rect x="${x}" y="${H-P-h}" width="${bw}" height="${h}" rx="4" fill="var(--t-4)"/>`
+    }).join('')}
+    ${MJ.map((o,i)=>{
+      const x=P+i*((W-P*2)/MJ.length)+((W-P*2)/MJ.length)/2
+      return `<text x="${x}" y="${H-8}" text-anchor="middle" font-size="9"
+        fill="var(--ink-mut)">${o.k.replace('.','')}</text>`
+    }).join('')}
+  </svg>`
+}
+
+/* ---------- raspodjela planova ---------- */
+function raspodjela(){
+  const br={}
+  PLANOVI.forEach(p=>br[p.id]=0)
+  HOSTS.forEach(h=>{ const id=planOd(h.user_id); br[id]=(br[id]||0)+1 })
+  const R=PLANOVI.map(p=>({k:p.name,v:br[p.id]||0})).sort((a,b)=>b.v-a.v)
+  const max=Math.max(1,...R.map(r=>r.v))
+  const T=['--t-1','--t-2','--t-3','--t-4','--t-5']
+    .map(n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim())
+  $('#planRank').innerHTML=R.map((r,i)=>`
+    <div class="rank__row"><span class="rank__nm">${esc(r.k)}</span>
+      <span class="rank__tr"><i style="background:${T[Math.max(0,T.length-1-i)]};
+        width:${(r.v/max*100).toFixed(1)}%"></i></span>
+      <span class="rank__v">${r.v}</span></div>`).join('')
+}
+
+/* ---------- uskoro istječe ---------- */
+function istek(){
+  const za14=new Date(Date.now()+14*864e5)
+  const R=HOSTS.filter(h=>{
+    const s=SUBS[h.user_id]
+    if(!s?.period_end)return false
+    const d=new Date(s.period_end)
+    return d>=new Date() && d<=za14 && normalizePlanId(s.plan)!=='free'
+  })
+  $('#istekPanel').hidden = R.length===0
+  if(!R.length)return
+  $('#istekTbl').innerHTML='<thead><tr><th>Domaćin</th><th>Plan</th><th>Istječe</th><th>Mjesečno</th></tr></thead><tbody>'
+    +R.map(h=>{const id=planOd(h.user_id)
+      return `<tr><td>${esc(h.host_name||'Bez imena')}</td><td>${esc(ODMORIA_PLANS[id]?.name||id)}</td>
+        <td>${new Date(SUBS[h.user_id].period_end).toLocaleDateString('hr-HR')}</td>
+        <td>${eur2(cijena(id))}</td></tr>`}).join('')+'</tbody>'
+}
+
+/* ---------- filtri i tablica ---------- */
+function filtri(){
+  $('#filtar').innerHTML='<option value="">Svi planovi</option>'
+    +PLANOVI.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('')
+  $('#oKome').innerHTML=`<option value="svi">Svim domaćinima (${HOSTS.length})</option>`
+    +PLANOVI.map(p=>{const n=HOSTS.filter(h=>planOd(h.user_id)===p.id).length
+      return `<option value="${p.id}">Samo ${esc(p.name)} (${n})</option>`}).join('')
+  osvjeziBroj()
+}
+
+function vidljivi(){
+  const q=$('#trazi').value.trim().toLowerCase()
+  const f=$('#filtar').value
+  return HOSTS.filter(h=>{
+    if(f&&planOd(h.user_id)!==f)return false
+    if(!q)return true
+    return (h.host_name||'').toLowerCase().includes(q)
+        || (h.email||'').toLowerCase().includes(q)
+        || h.props.some(p=>(p.name||'').toLowerCase().includes(q))
+  })
+}
+
+function tablica(){
+  const R=vidljivi()
+  $('#prazno').hidden=R.length>0
+  const opts=PLANOVI.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('')
+  $('#tablica').innerHTML=R.length?`
     <thead><tr><th>Domaćin</th><th>Objekti</th><th>Plan</th><th>Status</th><th></th></tr></thead>
-    <tbody>${hosts.map(h=>{
-      const sub=subsByUser[h.user_id]
-      const plan=normalizePlanId(sub?.plan)
-      const expired=sub?.period_end&&new Date(sub.period_end)<new Date()&&plan!=='free'
-      const statusPill=sub?`<span class="pill ${expired?'pill-exp':'pill-active'}">${expired?'Isteklo':(sub.status||'aktivan')}</span>`:`<span class="pill pill-exp">Bez pretplate</span>`
-      return`<tr data-uid="${h.user_id}">
-        <td><div class="host-name">${esc(h.host_name||'Bez imena')}</div><div class="host-sub">${esc(h.email||'—')}${h.phone?' · '+esc(h.phone):''}</div></td>
-        <td>${h.props.map(p=>`<span class="prop-chip">${esc(p.name||'Bez naziva')}</span>`).join('')}</td>
-        <td><select class="plan-sel" data-uid="${h.user_id}">${planOpts}</select></td>
-        <td>${statusPill}</td>
-        <td><button class="row-save" onclick="savePlan('${h.user_id}')">Spremi</button></td>
-      </tr>`
-    }).join('')}</tbody>
-  </table>`
-  hosts.forEach(h=>{
-    const sel=el.querySelector(`select[data-uid="${h.user_id}"]`)
-    if(sel)sel.value=normalizePlanId(subsByUser[h.user_id]?.plan)
+    <tbody>${R.map(h=>{
+      const s=SUBS[h.user_id], id=planOd(h.user_id), ist=istekao(h.user_id)
+      const pill=s
+        ? `<span class="tag ${ist?'tag--warn':'tag--ok'}">${ist?'Isteklo':esc(s.status||'aktivan')}</span>`
+        : '<span class="tag tag--warn">Bez pretplate</span>'
+      return `<tr data-uid="${esc(h.user_id)}">
+        <td><b>${esc(h.host_name||'Bez imena')}</b>
+          <div class="small">${esc(h.email||'—')}${h.phone?' · '+esc(h.phone):''}</div></td>
+        <td>${h.props.map(p=>`<span class="tag tag--mut">${esc(p.name||'Bez naziva')}</span>`).join(' ')}</td>
+        <td><select class="inp inp--sm plan-sel" data-uid="${esc(h.user_id)}" style="margin-top:0;width:auto">${opts}</select></td>
+        <td>${pill}</td>
+        <td><button class="btn btn--ghost btn--sm" data-spremi="${esc(h.user_id)}" disabled>Spremi</button></td>
+      </tr>`}).join('')}</tbody>`:''
+  R.forEach(h=>{
+    const sel=$(`select[data-uid="${CSS.escape(h.user_id)}"]`)
+    if(sel)sel.value=planOd(h.user_id)
   })
 }
 
-window.savePlan=async(userId)=>{
-  const sel=document.querySelector(`select[data-uid="${userId}"]`)
-  const plan=sel.value
-  const{error}=await sb.from('subscriptions').update({plan}).eq('user_id',userId)
-  if(error){alert('Greška: '+error.message);return}
-  await loadAll()
+/* Gumb „Spremi” budi se tek kad se plan stvarno promijeni. */
+$('#tablica').addEventListener('change',e=>{
+  const sel=e.target.closest('.plan-sel'); if(!sel)return
+  const b=$(`[data-spremi="${CSS.escape(sel.dataset.uid)}"]`)
+  if(b)b.disabled = sel.value===planOd(sel.dataset.uid)
+})
+$('#tablica').addEventListener('click',async e=>{
+  const b=e.target.closest('[data-spremi]'); if(!b)return
+  const uid=b.dataset.spremi
+  const plan=$(`select[data-uid="${CSS.escape(uid)}"]`).value
+  b.disabled=true; b.textContent='Spremam…'
+  const{error}=await sb.from('subscriptions').update({plan}).eq('user_id',uid)
+  if(error){ b.textContent='Greška'; alert('Greška: '+error.message); return }
+  await ucitaj()
+})
+$('#trazi').addEventListener('input',tablica)
+$('#filtar').addEventListener('change',tablica)
+$('#osvjezi').addEventListener('click',ucitaj)
+
+$('#izvoz').addEventListener('click',()=>{
+  const red=['Domacin;Email;Telefon;Plan;Status;Objekata;Mjesecno']
+    .concat(vidljivi().map(h=>{const id=planOd(h.user_id)
+      return [h.host_name||'',h.email||'',h.phone||'',ODMORIA_PLANS[id]?.name||id,
+              istekao(h.user_id)?'isteklo':(SUBS[h.user_id]?.status||'bez'),
+              h.props.length,cijena(id).toFixed(2)].join(';')}))
+  const a=document.createElement('a')
+  a.href=URL.createObjectURL(new Blob(['﻿'+red.join('\n')],{type:'text/csv;charset=utf-8'}))
+  a.download='odmoria-domacini.csv'; a.click(); URL.revokeObjectURL(a.href)
+})
+
+/* ---------- prihod ---------- */
+function prihod(){
+  const R=PLANOVI.filter(p=>cijena(p.id)>0).map(p=>{
+    const n=HOSTS.filter(h=>planOd(h.user_id)===p.id&&!istekao(h.user_id)).length
+    return {k:p.name,n,v:n*cijena(p.id)}
+  }).sort((a,b)=>b.v-a.v)
+  const max=Math.max(1,...R.map(r=>r.v))
+  const T=['--t-1','--t-2','--t-3','--t-4','--t-5']
+    .map(n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim())
+  $('#prihodRank').innerHTML=R.map((r,i)=>`
+    <div class="rank__row"><span class="rank__nm">${esc(r.k)}</span>
+      <span class="rank__tr"><i style="background:${T[Math.max(0,T.length-1-i)]};
+        width:${(r.v/max*100).toFixed(1)}%"></i></span>
+      <span class="rank__v">${eur2(r.v)}</span></div>`).join('')
+  $('#prihodTbl').innerHTML='<thead><tr><th>Plan</th><th>Cijena</th><th>Pretplata</th><th>Mjesečno</th></tr></thead><tbody>'
+    +(R.length?R.map(r=>`<tr><td>${esc(r.k)}</td><td>${eur2(r.v/(r.n||1))}</td>
+        <td>${r.n}</td><td>${eur2(r.v)}</td></tr>`).join('')
+      :'<tr><td colspan="4">Još nema plaćenih pretplata.</td></tr>')+'</tbody>'
 }
 
-function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+/* ---------- poruke ---------- */
+function osvjeziBroj(){
+  const v=$('#oKome').value
+  const n=v==='svi'?HOSTS.length:HOSTS.filter(h=>planOd(h.user_id)===v).length
+  $('#oBroj').textContent='Ide na '+n+' domaćina'
+}
+$('#oKome').addEventListener('change',osvjeziBroj)
+$('#oSalji').addEventListener('click',()=>{
+  const el=$('#oPoruka')
+  el.textContent='Nije spojeno — treba tablica announcements (vidi gore).'
+  el.hidden=false
+  clearTimeout(el.__t); el.__t=setTimeout(()=>{el.hidden=true},5000)
+})
+
+/* ---------- postavke ---------- */
+function postavke(){
+  $('#planTbl').innerHTML='<thead><tr><th>Plan</th><th>Mjesečno</th><th>Godišnje</th><th>Objekata</th><th>Fotografija</th><th>Pretplata</th></tr></thead><tbody>'
+    +PLANOVI.map(p=>{
+      const n=HOSTS.filter(h=>planOd(h.user_id)===p.id).length
+      const lim=v=>v===-1?'∞':(v??'—')
+      return `<tr><td><b>${esc(p.name)}</b></td>
+        <td>${eur2(Number(p.monthlyPriceEur||0))}</td>
+        <td>${p.yearlyPriceEur!=null?eur2(Number(p.yearlyPriceEur)):'—'}</td>
+        <td>${lim(p.maxProperties)}</td><td>${lim(p.maxPhotosPerProperty)}</td><td>${n}</td></tr>`
+    }).join('')+'</tbody>'
+
+  $('#stanje').innerHTML=[
+    [1,'Booking tokeni','Rade preko baze, bez backenda. Vodič se otključava po vremenu dolaska.'],
+    [1,'Teme javne stranice','Osam tema, biraju se u dashboardu pod „Izgled stranice”.'],
+    [1,'iCal sinkronizacija','Radi, ali samo na klik u dashboardu. Vercel Hobby dopušta jedan cron dnevno, a taj drži bazu budnom.'],
+    [1,'Fotografije','Cloudinary, izravno s klijenta.'],
+    [0,'Stripe checkout','Nije spojen. Gumbi za nadogradnju ništa ne pozivaju, serverless funkcije ne postoje.'],
+    [0,'Višejezičnost','Ne postoji.'],
+    [0,'Analitika po državama','Traži dva stupca na page_views i mali api/track.js.'],
+  ].map(([ok,n,t])=>`<div class="sys"><span class="sys__d ${ok?'ok':'no'}"></span>
+      <div><b>${n}</b><p>${t}</p></div></div>`).join('')
+}
 </script>
 </body>
 </html>
