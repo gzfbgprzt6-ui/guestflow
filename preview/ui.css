@@ -422,3 +422,16 @@ html[data-tema="tamno"] .sand-surface{background:#243447}
   .price.roll [data-price],.price.roll [data-per]{animation:none}
   ::view-transition-old(root),::view-transition-new(root){animation:none}
 }
+
+/* ==========================================================================
+   PREBACIVANJE PLANA — koriste ga dashboard i birač tema u uređivanju,
+   pa stoji ovdje, a ne dvaput u dvije stranice.
+   ========================================================================== */
+.planbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  background:var(--sand);border:1px solid var(--line);border-radius:999px;padding:6px}
+.planbar button{border:0;background:transparent;padding:8px 16px;border-radius:999px;
+  font-size:.84rem;font-weight:700;color:var(--ink-mut);cursor:pointer;
+  transition:background .3s var(--ease),color .3s var(--ease)}
+.planbar button[aria-pressed="true"]{background:var(--night);color:#fff}
+.mt4{margin-top:4px}
+.tag--warn-ink{color:#7A5310}          /* 5,02:1 na žutoj pozadini obavijesti */

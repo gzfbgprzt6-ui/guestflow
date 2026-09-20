@@ -64,14 +64,24 @@
      Slojevi prizora nemaju z-index, pa postojeći sadržaj ostaje iznad njih. */
   const put = (el, html) => el.insertAdjacentHTML('afterbegin', html)
 
-  /* veliki prizori: nose i veo koji ih spaja s kremom ispod */
-  document.querySelectorAll('[data-art]').forEach(el => {
-    put(el, inner(el.dataset.art, true) + '<div class="scene__veil"></div>')
-  })
-  /* mali prizori u karticama: bez vela, bez paralakse na scroll */
-  document.querySelectorAll('[data-g-art]').forEach(el => {
-    put(el, inner(el.dataset.gArt, false))
-  })
+  /* `data-crtano` čuva od dvostrukog ubacivanja kad se `crtaj()` pozove
+     ponovno nad stranicom na kojoj je dio prizora već nacrtan. */
+  function crtaj(korijen = document) {
+    /* veliki prizori: nose i veo koji ih spaja s kremom ispod */
+    korijen.querySelectorAll('[data-art]:not([data-crtano])').forEach(el => {
+      el.dataset.crtano = '1'
+      put(el, inner(el.dataset.art, true) + '<div class="scene__veil"></div>')
+    })
+    /* mali prizori u karticama: bez vela, bez paralakse na scroll */
+    korijen.querySelectorAll('[data-g-art]:not([data-crtano])').forEach(el => {
+      el.dataset.crtano = '1'
+      put(el, inner(el.dataset.gArt, false))
+    })
+  }
+
+  crtaj()
+  /* Stranice koje prizore ubacuju naknadno (izmjena teme) zovu ovo ponovno. */
+  ;(window.Odmoria = window.Odmoria || {}).crtajPrizore = crtaj
 })()
 
 /* Visina preview trake → CSS varijabla, da fiksna navigacija sjedne ispod nje.

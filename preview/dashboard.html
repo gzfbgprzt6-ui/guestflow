@@ -7,18 +7,9 @@
 <title>Odmoria — dashboard i analitika (pregled)</title>
 <link rel="stylesheet" href="/atmosphere.css">
 <link rel="stylesheet" href="/preview/ui.css">
+<link rel="stylesheet" href="/preview/teme.css">
 <style>
   body{background:var(--cream)}
-  .planbar{
-    display:flex;align-items:center;gap:10px;flex-wrap:wrap;
-    background:var(--sand);border:1px solid var(--line);border-radius:999px;padding:6px;
-  }
-  .planbar button{
-    border:0;background:transparent;padding:8px 16px;border-radius:999px;
-    font-size:.84rem;font-weight:700;color:var(--ink-mut);cursor:pointer;
-    transition:background .3s var(--ease),color .3s var(--ease);
-  }
-  .planbar button[aria-pressed="true"]{background:var(--night);color:#fff}
   .rangebar{display:inline-flex;background:rgba(20,32,46,.05);border-radius:999px;padding:3px}
   .rangebar button{border:0;background:transparent;padding:7px 15px;border-radius:999px;
     font-size:.8rem;font-weight:700;color:var(--ink-mut);cursor:pointer;transition:background .3s,color .3s}
@@ -57,6 +48,7 @@
     <a class="navi" data-tab="rezervacije" href="#rezervacije"><span class="ic">✎</span> Rezervacije <span class="cnt">3</span></a>
     <a class="navi" data-tab="dostupnost" href="#dostupnost"><span class="ic">▦</span> Dostupnost</a>
     <a class="navi" data-tab="analitika" href="#analitika"><span class="ic">◔</span> Analitika</a>
+    <a class="navi" data-tab="izgled" href="#izgled"><span class="ic">◈</span> Izgled</a>
     <a class="navi" data-tab="postavke" href="#postavke"><span class="ic">⚙</span> Postavke</a>
     <div class="side__foot">
       <span class="tag tag--terra" id="planTag">Plan Domaćin</span>
@@ -82,7 +74,7 @@
     <!-- prebacivanje plana: da se vidi što koji plan otključava -->
     <div class="row wrapf gap12 mt8" style="margin-bottom:26px">
       <span class="small" style="font-weight:700">Prikaži kao:</span>
-      <div class="planbar" id="planbar">
+      <div class="planbar" data-planbar>
         <button data-plan="free">Besplatno</button>
         <button data-plan="host" aria-pressed="true">Domaćin</button>
         <button data-plan="pro">Pro</button>
@@ -449,7 +441,7 @@
     <!-- prebacivanje plana: da se vidi što koji plan otključava -->
     <div class="row wrapf gap12 mt8" style="margin-bottom:26px">
       <span class="small" style="font-weight:700">Prikaži kao:</span>
-      <div class="planbar" id="planbar">
+      <div class="planbar" data-planbar>
         <button data-plan="free">Besplatno</button>
         <button data-plan="host" aria-pressed="true">Domaćin</button>
         <button data-plan="pro">Pro</button>
@@ -588,6 +580,54 @@
     </section>
 
   </section>
+  <section class="tabpanel" data-panel="izgled" hidden>
+    <div class="head">
+      <div>
+        <p class="kicker bare">Javna stranica</p>
+        <h1 style="font-size:clamp(2rem,3.4vw,2.9rem);margin-top:6px">Izgled</h1>
+        <p class="lead mt8" style="font-size:.95rem;max-width:62ch">
+          Osam tema. Svaka drugačije slaže zaglavlje i <b>vodi s drugom informacijom</b> —
+          jedna cijenom, druga temperaturom bazena, treća popisom prostorija. Mijenja se
+          paleta, pismo i oblik, ne samo boja naglaska.
+        </p>
+      </div>
+      <div class="head__act">
+        <div class="planbar" id="planbarT">
+          <button data-plan="free">Besplatno</button>
+          <button data-plan="host" aria-pressed="true">Domaćin</button>
+          <button data-plan="pro">Pro</button>
+          <button data-plan="partner">Partner</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" data-rv="up">
+      <div class="row wrapf gap12" style="justify-content:space-between;align-items:flex-end">
+        <div>
+          <p class="kicker">Kako gost vidi</p>
+          <h3 class="mt8" style="font-size:1.15rem" id="zivoIme">Jadran</h3>
+          <p class="small mt4" id="zivoVodi">vodi imenom objekta</p>
+        </div>
+        <div class="row wrapf gap8">
+          <span class="tag tag--mut" id="zivoFont">Fraunces + Manrope</span>
+          <a class="btn btn--ghost btn--sm" id="zivoLink" href="/preview/public.html" target="_blank" rel="noopener">
+            Otvori cijelu stranicu <span class="arr">→</span></a>
+        </div>
+      </div>
+      <div class="zivo mt16" id="zivoOkvir"><div id="zivo"></div></div>
+      <p class="hint">Pregled je smanjen na oko 80 % stvarne veličine. Sadržaj je onaj
+        upisan u objektu — mijenja se samo raspored i stil.</p>
+    </div>
+
+    <div class="panel mt24" data-rv="up">
+      <h3 style="font-size:1.1rem">Izaberi temu</h3>
+      <p class="small mt8">Minijature nisu ilustracije — isti su HTML i CSS kao prava stranica,
+        samo smanjeni. Što vidite ovdje, to gost dobije.</p>
+      <div class="teme mt20" id="teme"></div>
+      <p class="hint" id="temeNota">Na planu Domaćin otvorene su četiri teme.</p>
+    </div>
+  </section>
+
   <section class="tabpanel" data-panel="postavke" hidden>
     <div class="head">
       <div>
@@ -725,6 +765,7 @@
 </dialog>
 
 <script src="/preview/scene.js"></script>
+<script src="/preview/teme.js"></script>
 <script src="/motion.js" defer></script>
 <script>
 /* ==========================================================================
@@ -1025,12 +1066,22 @@
     document.getElementById('planTag').textContent='Plan '+NAME[p]
     document.getElementById('planNote').textContent=NOTE[p]
   }
-  document.getElementById('planbar').addEventListener('click',e=>{
+  /* Dvije trake (Pregled i Analitika) mijenjaju isti plan, pa moraju ostati
+     usklađene. Prije su obje nosile `id="planbar"`, a `getElementById` veže
+     samo prvu — traka u Analitici nije radila. */
+  const trake=[...document.querySelectorAll('[data-planbar]')]
+  trake.forEach(tr=>tr.addEventListener('click',e=>{
     const b=e.target.closest('button'); if(!b) return
-    ;[...e.currentTarget.children].forEach(x=>x.setAttribute('aria-pressed',String(x===b)))
-    applyPlan(b.dataset.plan)
-  })
+    const p=b.dataset.plan
+    trake.forEach(t=>[...t.children].forEach(x=>
+      x.setAttribute('aria-pressed',String(x.dataset.plan===p))))
+    applyPlan(p)
+  }))
   applyPlan('host')
+
+  /* ====================== birač tema ====================== */
+  /* Izvedba je u `teme.js`; ista vrti i karticu „Izgled” u uređivanju. */
+  window.Odmoria?.teme?.birac()
 })()
 
 /* ---- prebacivanje panela u bočnoj traci ---- */

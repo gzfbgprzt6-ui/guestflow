@@ -77,7 +77,7 @@ Obje funkcije su namjerno **bez ijedne npm ovisnosti** — projekt nema build ko
 
 ## `preview/` — prijedlog dizajna (nije u produkciji)
 
-Mapa `preview/` sadrži šest pravih HTML stranica koje pokazuju kako bi aplikacija
+Mapa `preview/` sadrži devet pravih HTML stranica koje pokazuju kako bi aplikacija
 mogla izgledati. **Ne dira nijednu živu stranicu.**
 
 ```
@@ -89,7 +89,10 @@ preview/
 ├── greska.html     # baza ne odgovara / istekao link
 ├── admin.html      # redizajn vlasničkog panela: rast, MRR, istek, tablica s pretragom
 ├── ui.css          # ljuska aplikacije, paneli, polja, GRAFIKONI, dijalozi,
-│                   #   tamna tema vodiča + ispravci kontrasta
+│                   #   tamna tema vodiča, prebacivanje plana + ispravci kontrasta
+├── teme.css        # OSAM TEMA javne stranice: tokeni, tipografija, oblik + osam
+│                   #   rasporeda zaglavlja (.th--*) i birač (.tema)
+├── teme.js         # podaci o temama, osam rasporeda zaglavlja i zajednički birač
 └── scene.js        # nacrtani prizori (isti SVG-ovi kao u p.html) + QR ilustracija
 ```
 
@@ -128,6 +131,72 @@ redefinira tokene iz `atmosphere.css`.
 **QR kod je ilustracija, ne pravi kod.** Crta se determinističkim uzorkom iz teksta
 linka, s tri tražila, da zaslon izgleda kako će izgledati. Pravi kod generira se
 tek kad se ovo spoji na bazu; dotad uz svaki QR stoji napomena.
+
+### Osam tema javne stranice
+
+Tema **ne mijenja samo boju**. Svaka drugačije slaže zaglavlje i vodi s drugom
+informacijom — to je bit, ostalo je posljedica:
+
+| Tema | Vodi s | Pismo |
+|------|--------|-------|
+| Jadran *(zadana)* | imenom objekta | Fraunces + Manrope |
+| Laguna | temperaturom bazena (32°) | Jost |
+| Zlatni sat | cijenom, na 12,5 rem | Bodoni Moda + Jost |
+| Terakota | numeriranim popisom prostorija | Cormorant + Manrope |
+| Beton | tablicom podataka, nula radijusa | Archivo Black + Space Grotesk |
+| Riviera ’70 | imenom kao plakatom | Playfair Display + Syne |
+| Ponoćni bazen | samom slikom, najmanje teksta | Space Grotesk |
+| Borova šuma | pismom domaćice | Spectral |
+
+**Gdje se bira:** kartica **Izgled** u `preview/dashboard.html` i kartica
+„Izgled” u `preview/editor.html`. Obje vrte **istu** izvedbu —
+`Odmoria.teme.birac()` iz `teme.js`. Dvije kopije te logike razišle bi se,
+kao nekad kopije limita plana.
+
+**Kako se pali:** atribut `data-stil`. Na `<html>` prebojava cijelu stranicu
+(`preview/public.html?stil=laguna`), a na bilo kojem omotaču samo ono unutar
+njega — zato birač pokazuje temu uživo, a sučelje oko njega ostaje u
+Odmorijinim bojama. Bez atributa vrijedi „Jadran”, tj. čisti `atmosphere.css`.
+
+**Minijature u biraču nisu slike.** Isti su HTML i CSS kao prava stranica, samo
+s `--hs:.30`. Sve mjere u `.th--*` idu kroz `--hs`, pa isti raspored služi i
+zaglavlju i minijaturi.
+
+Tri stvari koje je lako pokvariti:
+
+1. **Gumbi ne znaju za `--hs`** — dolaze iz `atmosphere.css` s fiksnim `padding`
+   i `min-height`, pa su u minijaturi ispadali u punoj veličini i razbijali
+   kartice. Zato `.th .btn` množi te iste vrijednosti s `--hs` (pri `--hs:1`
+   rezultat je identičan izvornome).
+2. **Radijus minijature mora biti broj, ne `--r-sm`** — u temi Riviera taj
+   token je 999px, pa je kartica ispadala kao elipsa.
+3. **Tokeni koje teme pomiču moraju biti u `teme.css`, prije tema** — bili su u
+   `<style>` same stranice, dolazili kasnije u dokumentu i pri istoj
+   specifičnosti nadjačavali temu. Kalendar je zato u tamnim temama ostajao
+   svijetao (1,95:1).
+
+**Kontrast je mjeren, ne procijenjen.** Svaka tema ima vlastiti `--terra-ink`
+(tekst) i `--terra-d` (pune plohe) izmjeren na **vlastitoj** podlozi, jer
+vrijednosti iz `ui.css` vrijede samo za kremu. Najniži omjer je 4,54:1.
+
+Zaglavlje se ne može mjeriti obilaskom roditelja: tekst stoji nad velom koji je
+**susjed, a ne predak**, pa CSS kaže „bijelo na kremi” (1,08:1) iako je stvarno
+6:1. Mjeri se pikselima — snimi se isječak s tekstom i bez njega, maska slova
+je razlika, podloga su ti isti pikseli iz druge snimke. Pritom se **moraju
+isključiti prijelazi** (`transition:none`), inače druga snimka uhvati tekst
+nasred `transition:color .3s` i podloga ispadne tamnija nego što jest — to je
+lažno prijavilo četiri gumba. Provjereno: 95 tekstova u osam zaglavlja prolazi,
+i 24 kombinacije teme × širine (1440/834/390) bez prelijevanja i bez greške.
+
+### Tri zakucane boje koje su tamne teme otkrile
+
+`public.html` je na tri mjesta imao boje mimo tokena, što se vidjelo tek kad je
+podloga postala tamna. Sve tri su sada tokenske:
+
+- `.facts` je imao `rgba(255,252,247,.92)` → `var(--shell)`,
+- `.cal .d` je imao `rgba(126,143,106,.16)` i `#3F4C31` → `--slob-bg` / `--slob-ink`,
+- `.chip--glass` i `.map__grid` trebaju obrat u tamnoj temi, kao i u tamnoj
+  temi vodiča.
 
 ### Analitika po državama — traži izmjenu sheme
 
@@ -225,6 +294,10 @@ Uz to, tri stvari koje je lako ponoviti:
   vidi. Dogodilo se dvaput.
 - **`<dialog>` mora stajati u DOM-u prije skripti koje ga traže.** Ako je ispod
   `<script>`, `getElementById` vraća `null`.
+- **Dva elementa s istim `id`-em tiho pokvare drugi.** U dashboardu su obje trake
+  za prebacivanje plana (Pregled i Analitika) nosile `id="planbar"`, a
+  `getElementById` veže samo prvu — traka u Analitici nije radila. Sada je
+  `[data-planbar]` i obje se drže usklađene.
 - **Figma `node.query()` puca na ne-ASCII znakove i razmake u selektoru.**
   `[name=red-Klima uređaj]` baca `Invalid selector`. Imena nodova koje se
   dohvaćaju moraju biti ASCII bez razmaka (`red-klima`).
