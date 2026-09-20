@@ -186,6 +186,20 @@ mreža 1 px puna.
 Dashboard ima i **prebacivanje plana** (Besplatno / Domaćin / Pro / Partner) koje
 uživo pokazuje koji su uvidi zaključani iza kojeg plana.
 
+### Tabovi u dashboardu
+
+Bočna traka prebacuje šest panela unutar iste stranice (`.tabpanel[data-panel]`,
+prebacivanje preko `location.hash`): **Pregled** (brojke, pregledi, izvori,
+popunjenost, dokaz vrijednosti), **Objekti**, **Rezervacije**, **Dostupnost**
+(kalendar na klik, iCal, pravila termina), **Analitika** (države, mjeseci,
+ponašanje gosta, usporedba objekata) i **Postavke**.
+
+Kad se panel otvori, njegova `[data-rv]` otkrivanja se prisilno okinu — inače
+bi ostala nevidljiva jer `IntersectionObserver` nije mogao vidjeti element dok
+je panel bio `hidden`. Isto vrijedi za svaku provjeru: elemente u skrivenim
+panelima treba filtrirati preko `offsetParent !== null`, inače izgledaju kao
+neotkriveni.
+
 ### Dvije greške u živom kodu nađene usput (nisu popravljene)
 
 Obje su popravljene **samo pod `/preview/`**, u `ui.css`. `atmosphere.css` nije diran
