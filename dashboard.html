@@ -28,7 +28,7 @@
   --line: #E3E1DC;
   --white: #fff;
   --danger: #B44F35;
-  --sidebar-width: 252px;
+  --sidebar-width: 226px;   /* uža otkad popis panela stoji vodoravno gore */
   --preview-width: 344px;
   --radius-sm: 12px;
   --radius: 18px;
@@ -76,6 +76,30 @@ h1, h2, h3, .brand, .serif { font-family: "Fraunces", Georgia, serif; font-weigh
 .nav-item.active .nav-number { border-color: rgba(255,255,255,.32); color: #fff; }
 .nav-check { width: 6px; height: 6px; border-radius: 50%; background: var(--peach); opacity: .85; }
 .nav-item-plain{display:flex;align-items:center;gap:10px;width:100%;min-height:38px;padding:8px 11px;border:0;border-radius:11px;background:transparent;color:var(--muted);cursor:pointer;font-size:.76rem;font-weight:600;text-align:left}
+
+/* ---------- vodoravni tabovi panela ----------
+   Zamjenjuju dugu listu u bočnoj traci. Ista klasa `.nav-item`, pa `nav()`
+   radi bez izmjene; ova pravila nadjačavaju izgled iz bočne trake. */
+.panelnav-wrap{position:relative;margin-bottom:22px;border-bottom:1px solid var(--line)}
+/* rub koji nagovijesti da traka ima još sadržaja kad se kliže */
+.panelnav-wrap::after{content:"";position:absolute;top:0;right:0;bottom:1px;width:38px;
+  pointer-events:none;background:linear-gradient(90deg,transparent,var(--cream))}
+.panelnav{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.panelnav::-webkit-scrollbar{display:none}
+.panelnav .nav-item{
+  display:block;width:auto;min-height:0;grid-template-columns:none;gap:0;
+  padding:12px 14px;border-radius:0;background:transparent;color:var(--muted);
+  font-size:.82rem;font-weight:600;white-space:nowrap;flex:none;
+  border-bottom:2px solid transparent;margin-bottom:-1px;transition:color 180ms ease,border-color 180ms ease;
+}
+.panelnav .nav-item:hover{background:transparent;color:var(--ink);transform:none}
+.panelnav .nav-item.active{background:transparent;color:var(--ink);border-bottom-color:var(--copper)}
+.panelnav .nav-item:focus-visible{outline:2px solid var(--copper);outline-offset:-2px;border-radius:6px}
+.panelnav__sep{flex:none;align-self:center;width:1px;height:16px;margin:0 8px;background:var(--line)}
+@media(max-width:900px){
+  .panelnav .nav-item{padding:11px 12px;font-size:.78rem}
+  .panelnav__sep{margin:0 5px}
+}
 .nav-item-plain:hover{background:var(--cream);color:var(--ink)}
 
 .sidebar-bottom { padding: 14px; border-top: 1px solid var(--line); display:flex; flex-direction:column; gap:10px }
@@ -137,8 +161,8 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .page-header { display: flex; align-items: end; justify-content: space-between; gap: 30px; margin-bottom: 28px; }
 .eyebrow { display: flex; align-items: center; gap: 9px; margin-bottom: 10px; color: var(--copper); font-size: .61rem; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; }
 .eyebrow::before { width: 23px; height: 1px; background: currentColor; content: ""; }
-.page-header h1 { margin-bottom: 6px; font-size: clamp(2.1rem, 4vw, 3.6rem); line-height: .98; letter-spacing: -.03em; }
-.page-header p { color: var(--muted); font-size: .82rem; }
+.page-header h1 { margin-bottom: 8px; font-size: clamp(1.9rem, 3.2vw, 2.7rem); line-height: 1.04; letter-spacing: -.03em; }
+.page-header p { color: var(--muted); font-size: .86rem; max-width: 62ch; line-height: 1.55; }
 .header-progress { flex: 0 0 200px; }
 .header-progress-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: .66rem; font-weight: 700; }
 .header-progress-row span:last-child { color: var(--copper); }
@@ -164,13 +188,18 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .editor-panel.active { display: block; animation: panelIn 220ms ease; }
 @keyframes panelIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
-.card { margin-bottom: 16px; padding: 27px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper); }
-.card-head { display: flex; align-items: start; justify-content: space-between; gap: 24px; margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px solid var(--line); flex-wrap:wrap }
-.card-number { display: grid; width: 32px; height: 32px; flex: 0 0 auto; place-items: center; border-radius: 9px; background: var(--yellow-soft); color: var(--copper); font-family: "Fraunces", Georgia, serif; font-size: .85rem; }
-.card-title-wrap { display: grid; gap: 6px; grid-template-columns: 32px 1fr; }
-.card-head h2 { margin-bottom: 3px; font-size: 1.4rem; line-height: 1.15; }
-.card-head p { color: var(--muted); font-size: .7rem; }
-.card-hint { max-width: 190px; color: var(--muted); font-size: .62rem; text-align: right; }
+/* ---------- kartica panela ----------
+   Izgled je preuzet iz prijedloga (`ui.css` .panel): mekši obrub, veći
+   radijus, više zraka, bez crte ispod naslova. Mijenja se SAMO izgled —
+   markup i JS su netaknuti, pa `.card-number` i dalje stoji u HTML-u,
+   samo se ne crta kao kvadratić nego kao tiha oznaka uz naslov. */
+.card { margin-bottom: 18px; padding: clamp(20px, 2.2vw, 30px); border: 1px solid rgba(20,32,46,.07); border-radius: 20px; background: var(--paper); }
+.card-head { display: flex; align-items: start; justify-content: space-between; gap: 24px; margin-bottom: 22px; flex-wrap:wrap }
+.card-number { display: inline; width: auto; height: auto; place-items: unset; border-radius: 0; background: none; color: var(--copper); font-family: "Manrope", system-ui, sans-serif; font-size: .64rem; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+.card-title-wrap { display: grid; gap: 4px; grid-template-columns: 1fr; }
+.card-head h2 { margin-bottom: 4px; font-size: 1.28rem; line-height: 1.2; letter-spacing: -.02em; }
+.card-head p { color: var(--muted); font-size: .78rem; line-height: 1.55; }
+.card-hint { max-width: 190px; color: var(--muted); font-size: .66rem; text-align: right; }
 
 .form-grid { display: grid; gap: 18px; grid-template-columns: repeat(12, minmax(0,1fr)); }
 .field { display: grid; align-content: start; gap: 8px; grid-column: span 6; }
@@ -178,15 +207,15 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .field.full { grid-column: 1 / -1; }
 .field.two-thirds { grid-column: span 8; }
 .field.one-third { grid-column: span 4; }
-.field label, .field-label { color: var(--muted); font-size: .61rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.field label, .field-label { color: var(--muted); font-size: .66rem; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
 .optional { color: var(--muted); font-size: .56rem; font-weight: 600; letter-spacing: 0; text-transform: none; }
 
-.input, .select, .textarea { width: 100%; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--paper); color: var(--ink); font-size: .82rem; transition: border 160ms ease, box-shadow 160ms ease, background 160ms ease; }
-.input, .select { min-height: 46px; padding: 11px 13px; }
-.textarea { min-height: 90px; padding: 13px; resize: vertical; line-height: 1.6; }
+.input, .select, .textarea { width: 100%; border: 1px solid var(--line); border-radius: 14px; background: var(--paper); color: var(--ink); font-size: .88rem; transition: border 160ms ease, box-shadow 160ms ease, background 160ms ease; }
+.input, .select { min-height: 48px; padding: 13px 15px; }
+.textarea { min-height: 96px; padding: 14px 15px; resize: vertical; line-height: 1.65; }
 .input:hover, .select:hover, .textarea:hover { border-color: var(--muted); }
 .input:focus, .select:focus, .textarea:focus { border-color: var(--copper); outline: 0; box-shadow: 0 0 0 3px rgba(183,96,59,.1); background: var(--white); }
-.helper { color: var(--muted); font-size: .59rem; }
+.helper { color: var(--muted); font-size: .68rem; line-height: 1.5; }
 
 .type-picker { display: grid; gap: 9px; grid-template-columns: repeat(5, 1fr); }
 .type-option { display: grid; min-height: 78px; place-items: center; padding: 11px; border: 1px solid var(--line); border-radius: 12px; background: var(--paper); color: var(--muted); cursor: pointer; font-size: .67rem; font-weight: 700; text-align: center; }
@@ -475,37 +504,9 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
     </div>
 
     <div class="sidebar-scroll">
-      <span class="nav-label">Pregled</span>
+      <!-- Popis panela je preseljen u vodoravnu traku iznad sadržaja
+           (`.panelnav`). Ovdje ostaje samo ono što se ne mijenja po panelu. -->
       <nav class="side-nav">
-        <button class="nav-item active" type="button" data-panel="overview" onclick="nav('overview',this)"><span class="nav-number">00</span><span>Pregled objekta</span></button>
-      </nav>
-
-      <span class="nav-label">Postavljanje objekta</span>
-      <nav class="side-nav">
-        <button class="nav-item" type="button" data-panel="basic" onclick="nav('basic',this)"><span class="nav-number">01</span><span>Osnovno</span></button>
-        <button class="nav-item" type="button" data-panel="photos" onclick="nav('photos',this)"><span class="nav-number">02</span><span>Fotografije</span></button>
-        <button class="nav-item" type="button" data-panel="izgled" onclick="nav('izgled',this)"><span class="nav-number">◈</span><span>Izgled stranice</span></button>
-        <button class="nav-item" type="button" data-panel="arrival" onclick="nav('arrival',this)"><span class="nav-number">03</span><span>Dolazak i check-in</span></button>
-        <button class="nav-item" type="button" data-panel="wifi" onclick="nav('wifi',this)"><span class="nav-number">04</span><span>Wi-Fi</span></button>
-        <button class="nav-item" type="button" data-panel="amenities" onclick="nav('amenities',this)"><span class="nav-number">05</span><span>Sadržaji</span></button>
-        <button class="nav-item" type="button" data-panel="guide" onclick="nav('guide',this)"><span class="nav-number">06</span><span>Lokalni vodič</span></button>
-        <button class="nav-item" type="button" data-panel="transport" onclick="nav('transport',this)"><span class="nav-number">07</span><span>Prijevoz</span></button>
-        <button class="nav-item" type="button" data-panel="attractions" onclick="nav('attractions',this)"><span class="nav-number">08</span><span>Atrakcije</span></button>
-        <button class="nav-item" type="button" data-panel="pricing" onclick="nav('pricing',this)"><span class="nav-number">09</span><span>Cijene</span></button>
-        <button class="nav-item" type="button" data-panel="rules" onclick="nav('rules',this)"><span class="nav-number">10</span><span>Pravila i FAQ</span></button>
-        <button class="nav-item" type="button" data-panel="availability" onclick="nav('availability',this)"><span class="nav-number">11</span><span>Dostupnost</span></button>
-      </nav>
-
-      <span class="nav-label">Rezervacije i dijeljenje</span>
-      <nav class="side-nav">
-        <button class="nav-item" type="button" data-panel="reservations" onclick="nav('reservations',this)"><span class="nav-number">R</span><span>Rezervacije</span></button>
-        <button class="nav-item" type="button" data-panel="ical" onclick="nav('ical',this)"><span class="nav-number">iC</span><span>iCal sinkronizacija</span></button>
-        <button class="nav-item" type="button" data-panel="links" onclick="nav('links',this)"><span class="nav-number">↗</span><span>Linkovi i QR</span></button>
-      </nav>
-
-      <span class="nav-label">Račun</span>
-      <nav class="side-nav">
-        <button class="nav-item" type="button" data-panel="sub" onclick="nav('sub',this)"><span class="nav-number">€</span><span>Pretplata</span></button>
         <button class="nav-item-plain" type="button" onclick="location.href='/account.html'">Postavke računa</button>
         <button class="nav-item-plain" type="button" onclick="location.href='/add-property.html'">+ Dodaj objekt</button>
       </nav>
@@ -540,6 +541,33 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 
     <div class="workspace">
       <div class="editor">
+        <!-- Tabovi panela. `nav()` i dalje veže `.nav-item[data-panel]`, pa je
+             ovo samo drugo mjesto za iste gumbe — logika panela nije dirana. -->
+        <div class="panelnav-wrap">
+          <nav class="panelnav" id="panelnav" aria-label="Dijelovi objekta">
+            <button class="nav-item active" type="button" data-panel="overview" onclick="nav('overview',this)">Pregled</button>
+            <span class="panelnav__sep" aria-hidden="true"></span>
+            <button class="nav-item" type="button" data-panel="basic" onclick="nav('basic',this)">Osnovno</button>
+            <button class="nav-item" type="button" data-panel="photos" onclick="nav('photos',this)">Fotografije</button>
+            <button class="nav-item" type="button" data-panel="izgled" onclick="nav('izgled',this)">Izgled</button>
+            <button class="nav-item" type="button" data-panel="arrival" onclick="nav('arrival',this)">Dolazak</button>
+            <button class="nav-item" type="button" data-panel="wifi" onclick="nav('wifi',this)">Wi-Fi</button>
+            <button class="nav-item" type="button" data-panel="amenities" onclick="nav('amenities',this)">Sadržaji</button>
+            <button class="nav-item" type="button" data-panel="guide" onclick="nav('guide',this)">Lokalni vodič</button>
+            <button class="nav-item" type="button" data-panel="transport" onclick="nav('transport',this)">Prijevoz</button>
+            <button class="nav-item" type="button" data-panel="attractions" onclick="nav('attractions',this)">Atrakcije</button>
+            <button class="nav-item" type="button" data-panel="pricing" onclick="nav('pricing',this)">Cijene</button>
+            <button class="nav-item" type="button" data-panel="rules" onclick="nav('rules',this)">Pravila i FAQ</button>
+            <button class="nav-item" type="button" data-panel="availability" onclick="nav('availability',this)">Dostupnost</button>
+            <span class="panelnav__sep" aria-hidden="true"></span>
+            <button class="nav-item" type="button" data-panel="reservations" onclick="nav('reservations',this)">Rezervacije</button>
+            <button class="nav-item" type="button" data-panel="ical" onclick="nav('ical',this)">iCal</button>
+            <button class="nav-item" type="button" data-panel="links" onclick="nav('links',this)">Linkovi i QR</button>
+            <span class="panelnav__sep" aria-hidden="true"></span>
+            <button class="nav-item" type="button" data-panel="sub" onclick="nav('sub',this)">Pretplata</button>
+          </nav>
+        </div>
+
         <div class="page-header">
           <div>
             <span class="eyebrow" id="panelEyebrow">Pregled</span>
