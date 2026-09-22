@@ -49,6 +49,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 ├── atmosphere.css           # DIJELJENI v3 dizajn sustav (tokeni, scena, gumbi, reveal) — koristi p.html
 ├── teme.css                 # OSAM TEMA javne stranice — dijele ih p.html, dashboard.html i preview/
 ├── teme.js                  # rasporedi zaglavlja, `izBaze(prop)` i zajednički birač tema
+├── ui.css                   # ljuska aplikacije, paneli, tablice, GRAFIKONI — živi admin + preview/
 ├── motion.js                # dijeljeni motion sustav (reveal, paralaksa, brojaci, rail)
 ├── links.js                 # gradnja linkova (/p/, /h/) — NIKAD ne zakucavati domenu, vidi dolje
 ├── plans.js                 # rezervne vrijednosti + helperi; pravi izvor istine je tablica `plans` u bazi
@@ -90,8 +91,6 @@ preview/
 ├── prvi-dan.html   # prazan račun: napredak postavljanja, pločice bez podataka
 ├── greska.html     # baza ne odgovara / istekao link
 ├── admin.html      # redizajn vlasničkog panela: rast, MRR, istek, tablica s pretragom
-├── ui.css          # ljuska aplikacije, paneli, polja, GRAFIKONI, dijalozi,
-│                   #   tamna tema vodiča, prebacivanje plana + ispravci kontrasta
 └── scene.js        # nacrtani prizori (isti SVG-ovi kao u p.html) + QR ilustracija
 ```
 
@@ -259,11 +258,21 @@ daje besplatno na svakom serverless pozivu) pa upiše red umjesto klijenta.
 Jezik preglednika može se skupljati i bez tog koraka, samo uz novi stupac.
 Napomena o tome stoji i u samom panelu, da se ne zaboravi.
 
-### Admin panel — redizajn u pregledu
+### Admin panel — PRENESEN na živi `admin.html`
 
-Živi `admin.html` (185 linija) ima četiri pločice i tablicu domaćina s odabirom
-plana. `preview/admin.html` je prijedlog koji **koristi isključivo podatke koji
-već postoje** (`properties`, `subscriptions`, `bookings`, `plans`) i dodaje:
+Živi `admin.html` bio je jedina stranica još na staroj paleti (DM Serif,
+smeđa) i imao je samo četiri pločice i tablicu. Sada nosi redizajn iz pregleda,
+**ali sa stvarnim podacima**: rast iz `properties.created_at`, raspodjela iz
+`subscriptions`, MRR/ARR/ARPU iz `plans` × aktivne pretplate (istekle se
+izostavljaju), „Uskoro istječe” iz `period_end`, tablica s pretragom, filtrom
+i CSV izvozom. Četiri taba: Domaćini, Prihod, Poruke, Postavke.
+
+**Cijene i nazivi planova NISU preuzeti iz pregleda.** Pregled nudi četiri
+plana s drugim cijenama — to je poslovna odluka, ne izmjena koda. Živi admin
+čita `plans` preko `plans.js`, pa pokazuje ono što je stvarno u bazi.
+
+`preview/admin.html` ostaje kao prijedlog i koristi **isključivo podatke koji
+već postoje** (`properties`, `subscriptions`, `bookings`, `plans`):
 
 - procijenjeni **MRR** iz `plans` × broj aktivnih pretplata (ne iz Stripea —
   checkout nije spojen),
@@ -485,6 +494,19 @@ Tablica cijena gore je početno stanje u bazi; planovi i cijene još nisu konač
 **Traka „Imate nespremljene promjene"** (`.savebar`) javlja se na bilo koju izmjenu unutar aktivnog panela i nestaje pri spremanju ili promjeni panela. Ne uvodi novi način spremanja — samo pronađe gumb koji panel već ima (`onclick="saveXxx()"`) i pritisne ga. Paneli bez takvog gumba (liste, rezervacije) je ne pokazuju.
 
 Dashboard **ne učitava `atmosphere.css`** — ima vlastiti potpun CSS. Dvostruko definiranje istih tokena bi se sukobilo.
+
+**Konfigurator na naslovnici vodi temama.** Prije je reklamirao „8 boja, 4
+prizora, 3 tipografije” — koncept koji više ne postoji. Sada su teme prva os,
+a minijature nisu ilustracije nego isti HTML i CSS iz `teme.js`, punjeni imenom
+koje posjetitelj upiše. Telefon desno preuzme pravi raspored odabrane teme.
+Tri zamke: slušač se veže **jednom na spremnik** (unutar `crtajTeme()` bi se
+nakupio po pritisku tipke), crtanje čeka 260 ms da se tipkanje smiri (osam
+minijatura sa SVG prizorima po znaku je preskupo), i `innerHTML` briše oznake
+zaključanosti koje postavi `lockUI()`, pa ih `crtajTeme()` mora vratiti.
+
+**Cijene na naslovnici stvarno dolaze iz baze** — provjereno: podmetnute 11/33
+pojavile su se, zakucanih 15/49 nije bilo. Ako su cijene „stare”, to je stanje
+tablice `plans`, ne greška u kodu.
 
 `index.html` **nije** prošao isti postupak — nju smo prvo pokušali prebojati, ali je ostala „fiksna" i u herou je prikazivala sliku zastarjelog dashboarda. Zato je zamijenjena pravom v3 naslovnicom iz mockupa: dijeli `atmosphere.css` i `motion.js`, nema **nijednu** vanjsku sliku (svi su prizori crtani u CSS-u i SVG-u), i nosi **konfigurator izgleda** (boja, naslovnica, font) koji na Free planu drži dio opcija zaključanim i nudi nadogradnju.
 
