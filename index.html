@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="/atmosphere.css">
+<link rel="stylesheet" href="/teme.css">
 <style>
 /* ---- specifično za landing ---- */
 .hero{position:relative;height:100svh;min-height:640px;display:flex;align-items:flex-end;overflow:hidden}
@@ -456,7 +457,7 @@
     <div style="max-width:640px" data-rv="up">
       <div class="kicker">Izgled</div>
       <h2 style="margin-top:18px">Vaš objekt, <span class="italic" style="color:var(--terra)">vaš karakter.</span></h2>
-      <p class="lead" style="margin-top:18px">Kliknite boju ili stil — stranica se mijenja dok gledate. Gost vidi vaš objekt, ne šablonu koju je već vidio sto puta.</p>
+      <p class="lead" style="margin-top:18px">Osam tema, i svaka <b>drugačije slaže zaglavlje</b> — jedna vodi cijenom, druga temperaturom bazena, treća popisom prostorija. Kliknite i gledajte. Gost vidi vaš objekt, ne šablonu koju je već vidio sto puta.</p>
     </div>
 
     <div style="margin-top:28px" data-rv="up">
@@ -473,6 +474,12 @@
     <div class="play">
       <div data-rv="left">
         <div class="cfgbox">
+
+          <div class="cfgrow">
+            <div class="cfglab">Tema <span class="cfgcount" id="cntTema">1 od 8</span></div>
+            <div class="cfghint">Ne mijenja samo boju — mijenja što gost vidi prvo, tipografiju i oblik.</div>
+            <div class="teme teme--land mt12" id="temeLand"></div>
+          </div>
 
           <div class="cfgrow">
             <div class="cfglab">Naziv i podnaslov <span class="cfgcount">uvijek dostupno</span></div>
@@ -535,7 +542,7 @@
         <div class="upsell" id="upsell">
           <div>
             <b>Ovo je dio Pro plana</b>
-            <p>8 boja, 4 prizora, 3 tipografije, tamna podloga i bez našeg potpisa — plus kalendar s Booking.com-a.</p>
+            <p>Svih osam tema, 8 boja, vlastite fotografije u zaglavlju i bez našeg potpisa — plus kalendar s Booking.com-a.</p>
           </div>
           <button class="btn btn--fill btn--sm" onclick="setPlan('pro')">Isprobaj Pro ovdje <span class="arr">→</span></button>
         </div>
@@ -620,7 +627,7 @@
         <ul>
           <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> <span data-limits>1 objekt, 5 fotografija</span></li>
           <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Javna i privatna stranica</li>
-          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Obalni stil</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Tema „Jadran”</li>
         </ul>
         <a href="/register.html" class="btn btn--ghost">Kreni besplatno</a>
       </div>
@@ -633,7 +640,7 @@
           <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> <b style="color:var(--ink);font-weight:800">Kalendar se sam osvježava</b> s Booking.com-a i Airbnb-a</li>
           <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Vodič na jeziku gosta — 5 jezika</li>
           <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Vaša domena, bez našeg potpisa</li>
-          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> <span data-limits>5 objekata · 30 fotografija</span> · svi stilovi</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> <span data-limits>5 objekata · 30 fotografija</span> · svih 8 tema</li>
         </ul>
         <a href="/register.html" class="btn btn--fill" data-magnetic="10">Uzmi Pro <span class="arr">→</span></a>
         <div style="text-align:center;font-size:.78rem;color:var(--ink-30);margin-top:14px">Jedna izbjegnuta dvostruka rezervacija plati godinu dana.</div>
@@ -727,6 +734,7 @@
   </div>
 </div></footer>
 
+<script src="/teme.js"></script>
 <script src="/motion.js"></script>
 <script>
 const $ = s => document.querySelector(s);
@@ -780,7 +788,7 @@ const FONTS = {
 };
 const FREE = {colors:1, covers:1, fonts:1, styles:1};
 
-let CFG = {plan:'free', accent:'#D4674A', cover:'zalazak', font:'klasik', style:'obalni'};
+let CFG = {plan:'free', tema:'jadran', accent:'#D4674A', cover:'zalazak', font:'klasik', style:'obalni'};
 
 function isFree(el){ return el.dataset.free === '1'; }
 
@@ -790,6 +798,7 @@ function lockUI(){
   ['#covers','#fonts','#styles'].forEach(sel =>
     $$(sel + ' .opt').forEach(el => el.classList.toggle('lk', !pro && !isFree(el))));
 
+  $('#cntTema').textContent  = pro ? '8 tema' : '1 od 8 — Free';
   $('#cntColor').textContent = pro ? '8 boja' : '1 od 8 — Free';
   $('#cntCover').textContent = pro ? '4 prizora + vaše fotografije' : '1 od 5 — Free';
   $('#cntFont').textContent  = pro ? '3 tipografije' : '1 od 3 — Free';
@@ -804,11 +813,83 @@ function lockUI(){
 
   $('#pvBrandWrap').style.opacity = pro ? '0' : '1';
   $('#pvSummary').textContent = pro
-    ? 'Pro: 8 boja · vlastite fotografije u zaglavlju · 3 tipografije · 3 podloge · bez našeg potpisa'
-    : 'Free: 1 boja · 1 prizor · 1 tipografija · s našim potpisom';
+    ? 'Pro: svih 8 tema · 8 boja · vlastite fotografije u zaglavlju · bez našeg potpisa'
+    : 'Free: 1 tema · 1 boja · 1 prizor · s našim potpisom';
+  $$('#temeLand .tema').forEach(el => el.classList.toggle('lk', !pro && el.dataset.tema !== 'jadran'));
+}
+
+/* Birač tema na naslovnici.
+   Minijature nisu ilustracije — isti su HTML i CSS kao prava stranica, iz
+   `teme.js`, pa posjetitelj vidi točno ono što će dobiti. Upisano ime i
+   podnaslov ulaze u njih, da demo bude njegov, a ne naš. */
+function objektIzCfg(){
+  return {
+    name: $('#cName').value || 'Villa Maslina',
+    location: 'Hvar, Dalmacija',
+    welcome_msg: $('#cTag').value || 'Masline, sol i tišina.',
+    max_guests: 4, bedrooms: 2, beds: 3, bathrooms: 1, size_m2: 68,
+    price_per_night: 180, min_stay: 3, host_name: 'Marina',
+    highlight: '28° · Temperatura mora',
+  };
+}
+
+function crtajTeme(){
+  const T = window.Odmoria?.teme; if (!T) return;
+  const g = $('#temeLand'); if (!g) return;
+  const o = T.izBaze(objektIzCfg());
+  g.innerHTML = T.TEME.map(t => `
+    <button class="tema" type="button" data-tema="${t.id}" aria-pressed="${t.id === CFG.tema}">
+      <div data-stil="${t.id}">${T.zaglavlje(t.id, {mini:true, objekt:o})}</div>
+      <div class="tema__m">
+        <div class="tema__ime">${t.ime}<span class="ck">✓</span></div>
+        <div class="tema__vodi">vodi <b>${t.vodi}</b></div>
+      </div>
+    </button>`).join('');
+  window.Odmoria?.crtajPrizore?.(g);
+  /* `innerHTML` je obrisao i oznake zaključanosti koje je postavio `lockUI()` */
+  const pro = CFG.plan === 'pro';
+  [...g.children].forEach(el => el.classList.toggle('lk', !pro && el.dataset.tema !== 'jadran'));
+}
+
+/* Slušač se veže JEDNOM, na spremnik — `crtajTeme()` se poziva pri svakoj
+   izmjeni imena, pa bi vezanje unutar njega nakupilo slušač po pritisku tipke. */
+$('#temeLand')?.addEventListener('click', e => {
+  const b = e.target.closest('.tema'); if (!b) return;
+  if (b.classList.contains('lk')) { setPlan('pro'); return; }   // zaključana vodi na Pro
+  CFG.tema = b.dataset.tema;
+  [...b.parentElement.children].forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+  paint();
+});
+
+/* Osam minijatura sa SVG prizorima po pritisku tipke je preskupo — čekamo
+   da se tipkanje smiri. */
+let temeTimer = null;
+function crtajTemeUskoro(){
+  clearTimeout(temeTimer);
+  temeTimer = setTimeout(() => { crtajTeme(); paint(); }, 260);
+}
+
+/* Zaglavlje u telefonu: na „Jadranu” ostaje izvorno, inače ga preuzme tema. */
+function temaUTelefon(){
+  const T = window.Odmoria?.teme; if (!T) return;
+  const top = $('#pvTop'); let hold = $('#pvTema');
+  if (!hold) {
+    hold = document.createElement('div');
+    hold.id = 'pvTema';
+    top.parentElement.insertBefore(hold, top);
+  }
+  if (CFG.tema === 'jadran') {
+    top.hidden = false; hold.hidden = true; hold.innerHTML = '';
+    hold.removeAttribute('data-stil');
+    return;
+  }
+  top.hidden = true; hold.hidden = false;
+  hold.setAttribute('data-stil', CFG.tema);
+  T.ubaci(hold, CFG.tema, {objekt: T.izBaze(objektIzCfg()), mini: true});
 }
 
 function paint(){
+  temaUTelefon();
   const st = STYLES[CFG.style], f = FONTS[CFG.font];
   const scr = $('#pvScreen');
   scr.style.background = st.bg; scr.style.color = st.ink;
@@ -832,7 +913,9 @@ function setPlan(p){
   CFG.plan = p;
   $$('#planflip button').forEach(b => b.classList.toggle('on', b.dataset.plan === p));
   if(p === 'free'){                       /* vrati na ono što Free stvarno nudi */
-    CFG = {...CFG, accent:'#D4674A', cover:'zalazak', font:'klasik', style:'obalni'};
+    CFG = {...CFG, tema:'jadran', accent:'#D4674A', cover:'zalazak', font:'klasik', style:'obalni'};
+    $$('#temeLand .tema').forEach(el =>
+      el.setAttribute('aria-pressed', String(el.dataset.tema === 'jadran')));
     $$('#sw .sw').forEach(el => el.classList.toggle('on', isFree(el)));
     ['#covers','#fonts','#styles'].forEach(sel =>
       $$(sel + ' .opt').forEach(el => el.classList.toggle('on', isFree(el))));
@@ -864,9 +947,18 @@ $$('#sw .sw').forEach(s => s.onclick = () => {
   });
 });
 /* tekst uživo */
-$('#cName').addEventListener('input', e => $('#pvName').textContent = e.target.value || 'Vaš objekt');
-$('#cTag').addEventListener('input', e => $('#pvTag').textContent = e.target.value);
+$('#cName').addEventListener('input', e => {
+  $('#pvName').textContent = e.target.value || 'Vaš objekt';
+  crtajTemeUskoro();           /* upisano ime ide i u minijature tema */
+});
+$('#cTag').addEventListener('input', e => {
+  $('#pvTag').textContent = e.target.value;
+  crtajTemeUskoro();
+});
 
+/* Birač tema mora biti nacrtan prije prvog `setPlan`, jer `lockUI()` odmah
+   zaključava kartice koje Free ne dobiva. */
+crtajTeme();
 setPlan('free');
 
 /* cijene */
