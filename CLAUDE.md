@@ -38,7 +38,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 ```
 /
 ├── index.html              # Landing page — AKTIVNA, **redizajn v2 iz Figme** (`odmoria.css`), bez konfiguratora
-├── p.html                  # Javna stranica objekta (?slug=xxx) — AKTIVNA, **v3 dizajn**
+├── p.html                  # Javna stranica objekta (?slug=xxx) — AKTIVNA, **redizajn v2 iz Figme** (`odmoria.css`), teme se NE primjenjuju
 ├── h.html                  # Privatni gostinski hub (?token=xxx) — AKTIVNA, **v3 dizajn**
 ├── dashboard.html          # Glavni host dashboard — AKTIVNA, **v3 paleta i tipografija**
 ├── login.html               register.html            reset-password.html
@@ -47,8 +47,8 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 ├── terms.html                privacy.html             404.html
 ├── vercel.json              # Rewrites za clean URL-ove, security headeri + dnevni cron za keepalive
 ├── odmoria.css              # NOVI v2 dizajn sustav (Figma „Odmoria / Product Design / v2”) — zasad samo naslovnica
-├── atmosphere.css           # DIJELJENI v3 dizajn sustav (tokeni, scena, gumbi, reveal) — koristi p.html
-├── teme.css                 # OSAM TEMA javne stranice — dijele ih p.html, dashboard.html i preview/
+├── atmosphere.css           # DIJELJENI v3 dizajn sustav (tokeni, scena, gumbi, reveal) — koristi h.html i preview/
+├── teme.css                 # OSAM TEMA javne stranice — dijele ih dashboard.html i preview/ (p.html v2 više ne)
 ├── teme.js                  # rasporedi zaglavlja, `izBaze(prop)` i zajednički birač tema
 ├── ui.css                   # ljuska aplikacije, paneli, tablice, GRAFIKONI — živi admin + preview/
 ├── motion.js                # dijeljeni motion sustav (reveal, paralaksa, brojaci, rail)
@@ -56,6 +56,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 ├── plans.js                 # rezervne vrijednosti + helperi; pravi izvor istine je tablica `plans` u bazi
 ├── billing.js                # Stripe checkout/portal helperi — NIJE importan ni u jednom HTML-u (mrtav kod dok se ne spoji API)
 ├── assets/                   # landing/villa-1600.jpg i villa-900.jpg (naslovnica); odmoria-dashboard.png se više nigdje ne koristi
+├── docs/napredak.md          # što je u redizajnu gotovo, a što nije — pregled za vlasnika
 ├── docs/odluke.md            # SVE odluke koje čekaju vlasnika (planovi, faze A/B/C, naslovnica) — čitati prije prijenosa sljedeće stranice
 ├── api/
 │   ├── keepalive.js          # Vercel Cron, jednom dnevno — sprječava pauziranje Supabase Free projekta
@@ -76,7 +77,7 @@ Obje funkcije su namjerno **bez ijedne npm ovisnosti** — projekt nema build ko
 
 **Mockupi više ne postoje.** Mapa `v3/` i stari `*-v2.html` obrisani su kad su sve četiri prave stranice prešle na v3 — nema više `/v3/` na domeni ni dvije adrese za isto.
 
-`p.html` i `h.html` učitavaju dijeljeni `atmosphere.css` i `motion.js`; `index.html` je prva stranica na novom `odmoria.css` (vidi „Redizajn v2”). Jedino `dashboard.html` ima vlastiti potpun CSS s v3 vrijednostima u svojim starim imenima tokena (vidi "Dashboard — v3 preko vlastitih tokena").
+`h.html` učitava dijeljeni `atmosphere.css` i `motion.js`; `index.html` i `p.html` su na novom `odmoria.css` (vidi „Redizajn v2”). Jedino `dashboard.html` ima vlastiti potpun CSS s v3 vrijednostima u svojim starim imenima tokena (vidi "Dashboard — v3 preko vlastitih tokena").
 
 ---
 
@@ -133,6 +134,12 @@ linka, s tri tražila, da zaslon izgleda kako će izgledati. Pravi kod generira 
 tek kad se ovo spoji na bazu; dotad uz svaki QR stoji napomena.
 
 ### Osam tema javne stranice
+
+> **Od redizajna v2 (28. 9. 2026.) `p.html` teme NE primjenjuje** — učitava
+> samo `odmoria.css`, a `teme.css`/`teme.js` više ne. Panel „Izgled stranice” u
+> dashboardu i dalje sprema temu u bazu, ali javna stranica je ne pokazuje.
+> Odluka čeka vlasnika (`docs/odluke.md`). Opis dolje vrijedi za `preview/` i
+> za stari `p.html` iz povijesti gita.
 
 Tema **ne mijenja samo boju**. Svaka drugačije slaže zaglavlje i vodi s drugom
 informacijom — to je bit, ostalo je posljedica:
@@ -244,8 +251,8 @@ podloga postala tamna. Sve tri su sada tokenske:
 
 `preview/dashboard.html` ima panel „Iz kojih država dolaze”, ali **to još nije
 moguće s postojećom bazom**. `page_views` ima samo `id`, `property_id`,
-`view_type` i `timestamp`, a upis ide **izravno iz preglednika** (`p.html:725`,
-`h.html:506`) u Supabase — nema poslužiteljskog koraka pa IP nitko ne vidi.
+`view_type` i `timestamp`, a upis ide **izravno iz preglednika** (`p.html`,
+`h.html`) u Supabase — nema poslužiteljskog koraka pa IP nitko ne vidi.
 
 Da proradi, treba oboje:
 
@@ -465,7 +472,9 @@ Tablica cijena gore je početno stanje u bazi; planovi i cijene još nisu konač
 
 ## Dizajn sustav v3
 
-**Dijeljeni:** `atmosphere.css` i `motion.js` u korijenu, koriste ih `p.html` i `h.html`. Ovo je **svjesno odstupanje** od pravila „svaki HTML je self-contained" — dvije stranice dijele isti sustav pa bi kopiranje 300 linija CSS-a u svaku značilo dvije kopije koje se razilaze, točno onaj problem koji smo imali s limitima plana.
+*(Opis v3 stanja. `p.html` i `index.html` su prešli na v2 — vidi „Redizajn v2”.)*
+
+**Dijeljeni:** `atmosphere.css` i `motion.js` u korijenu, koristio ih je `p.html`, a danas još `h.html`. Ovo je **svjesno odstupanje** od pravila „svaki HTML je self-contained" — dvije stranice dijele isti sustav pa bi kopiranje 300 linija CSS-a u svaku značilo dvije kopije koje se razilaze, točno onaj problem koji smo imali s limitima plana.
 
 **Fontovi:** Fraunces (naslovi, varijabilne osi SOFT/WONK) + Manrope (sučelje) + Caveat (rukopisni akcenti).
 
@@ -501,8 +510,9 @@ Dashboard **ne učitava `atmosphere.css`** — ima vlastiti potpun CSS. Dvostruk
 
 Figma datoteka `BVdEgki8jV7z6Oa3K6Te2h` (faze A, B, C) je vizualni izvor; postojeći
 kod je izvor funkcija i podataka. Prenosi se stranicu po stranicu, svaka na
-Preview pa potvrda: **naslovnica ✔** → `p.html` → aplikacija domaćina → vodič →
-račun/admin. Otvorena pitanja su u `docs/odluke.md`, ne u kodu.
+Preview pa potvrda: **naslovnica ✔** → **`p.html` ✔** → aplikacija domaćina → vodič →
+račun/admin. Otvorena pitanja su u `docs/odluke.md`, ne u kodu; što je gotovo, a što
+nije, u `docs/napredak.md`.
 
 **`odmoria.css`** nosi tokene iz Figme (perla #FCFCFA, petrol #103D4B, akcija
 #116D76, zaobljenja 7/10/14, razmaci 4–96, širina sadržaja 1376, rub 48/16),
@@ -529,6 +539,37 @@ ili esm.sh nisu dostupni. Ako su cijene „stare”, to je stanje tablice `plans
 Provjereno Playwrightom na 1920/1440/834/430/390/360: bez vodoravnog
 prelijevanja, nijedan tekst na punoj podlozi ispod WCAG AA, bez JS grešaka,
 izbornik (Esc zatvara), tabovi i koraci rade.
+
+**Javna stranica (`p.html`)** — izgled iz Figme, **logika ista kao prije**:
+dohvat po slugu, `orderedPhotos()`, kalendar s `fillableGaps()`/`isFillableGap()`
+(DTEND i dan odlaska smiju biti zauzeti), gotove poruke (kratko / s detaljima /
+fleksibilni), WhatsApp/e-mail/kopiranje, karta tek na klik, `page_views` upis.
+`sections` se i dalje **ne čita**. Promjene u odnosu na v3, sve prema Figmi:
+
+- Kalendar i upit su **jedan tijek**: desni panel prije odabira nudi upit bez
+  datuma, a nakon odabira poruku. Stari tamni blok s brojačem noći i usporedbom
+  „Preko platforme (~15 %)” je **maknut** (tvrdnja bez izvora; vidi odluke).
+- Zaglavlje pokazuje **jednu** naslovnu fotografiju (bez rotacije); bez fotografije
+  ide petrol gradijent. Nacrtani prizori, pokretna traka i puna foto traka su maknuti.
+  Bez fotografija galerija se ne prikazuje.
+- Ikone su Lucide, birane **po nazivu** (`AMEN_IC`, `PLACE_IC`, `TX_IC`, `AT_IC`);
+  emoji iz baze se ne prikazuju.
+- Dani u kalendaru su `<button>` s `aria-label` (datum + stanje), zauzeti bez
+  odabira nose `aria-disabled`. Na mobitelu se vidi jedan mjesec.
+- Galerija preko cijelog zaslona: sličice, strelice, Esc, povlačenje prstom,
+  fokus ostaje unutra i vraća se na gumb koji ju je otvorio.
+- Na mobitelu sažetak s cijenom zamijeni traka na dnu (`.dock`), koja se pojavi
+  tek kad prvi ekran ode sa zaslona.
+
+Tri zamke: pravilo za prvu pločicu galerije mora biti `.gal > .gal__i:first-child`
+(`:nth-child(1)` hvata i prvu pločicu u `.gal__pair`); slike u pločicama su
+`position:absolute`, inače visina slike razvuče red; i dan u kalendaru treba
+`min-width:0;padding:0`, inače na 360 px sedam stupaca izađe iz kartice.
+
+Provjereno podmetnutim klijentom (puni objekt, objekt bez ičega, nepostojeći slug)
+na 1920/1440/834/430/390/360: bez prelijevanja, bez JS grešaka; odabir raspona,
+prekratak boravak, popunjavanje razmaka, zauzet dan, predlošci poruke, gosti,
+filtar preporuka, galerija i karta rade.
 
 ---
 

@@ -1,6 +1,6 @@
 # Odmoria redizajn — odluke koje čekaju vlasnika
 
-Stanje 28. 9. 2026. Ovdje su skupljena sva otvorena pitanja iz Figme (faze A, B i C)
+Stanje 28. 9. 2026. (naslovnica i javna stranica prenesene u kod). Ovdje su skupljena sva otvorena pitanja iz Figme (faze A, B i C)
 i ona koja su se otvorila pri prijenosu naslovnice u kod. Dok odluka ne padne, kod
 radi kako je opisano u stupcu **Sada u kodu**, uvijek na sigurnu stranu: ništa se
 ne obećava što ne postoji, a ništa se ne upisuje u bazu.
@@ -55,14 +55,38 @@ i kvačica se zatvori.
 - [ ] **Demo podaci u panelu „Za domaćine”** (Ana K., Marko i Iva, Obitelj W.)
   izmišljeni su i označeni „Demo · sintetički podaci”. U redu tako?
 
-## 3. Javna stranica (`p.html`) — faza A
+## 3. Javna stranica (`p.html`) — faza A, sada u kodu
 
+- [ ] **Teme javne stranice — VAŽNO.** Nova javna stranica ima jedan izgled i
+  **ne primjenjuje temu** koju je domaćin odabrao. Panel „Izgled stranice” u
+  dashboardu i dalje radi i sprema temu, ali gost je ne vidi.
+  Mogućnosti: (a) sakriti panel dok se teme ne dizajniraju u v2,
+  (b) teme dizajnirati u v2 pa vratiti, (c) ostaviti kako je.
+  **Sada u kodu:** (c). Ako se ide na (a), to je mala izmjena u `dashboard.html`.
 - [ ] **„Stranicu pokreće Odmoria”** u podnožju: uvijek ili samo na besplatnom
-  planu?
-- [ ] **Usporedba „Preko platforme (~15 %)”** u sadašnjem `p.html`: zadržati uz
-  izvor ili ukloniti?
-- [ ] **Serif pismo:** Gelasio, ili Georgia s Gelasio rezervom (naslovnica sada
-  koristi Georgia → Gelasio)?
+  planu? **Sada u kodu:** uvijek, kao i prije.
+- [ ] **Usporedba „Preko platforme (~15 %)” i brojač noći.** Figma ih je spojila
+  u jedan tijek s kalendarom. **Sada u kodu:** uklonjeno. Vraća se samo uz izvor
+  za 15 %.
+- [ ] **Serif pismo:** Gelasio, ili Georgia s Gelasio rezervom? **Sada u kodu:**
+  Georgia → Gelasio (Gelasio se učitava, pa ga dobiju uređaji bez Georgije).
+- [ ] **Ikone sadržaja i preporuka.** Domaćin u dashboardu bira emoji; nova
+  stranica ih ne prikazuje, nego bira Lucide ikonu po nazivu („bazen” → valovi,
+  „Wi-Fi” → wifi…), a nepoznato dobije kvačicu. Treba li domaćinu u dashboardu
+  ponuditi izbor iz istog skupa ikona?
+- [ ] **Bez fotografija:** prije su se vrtjela tri nacrtana prizora i prazna
+  mjesta u galeriji. **Sada u kodu:** petrol gradijent u zaglavlju, galerija se
+  ne prikazuje. U redu, ili treba ilustracija?
+- [ ] **Maknuto jer nije u dizajnu:** izmjena 3 fotografije u zaglavlju,
+  pokretna traka s podacima, puna foto traka „Marija vas očekuje”. Nedostaje li
+  išta od toga?
+- [ ] **Rod domaćina.** Figma piše „domaćica Marija”; baza ne zna rod pa kod piše
+  samo ime (`Villa Maslina · Marija`). Dodati izbor (domaćin/domaćica) ili
+  ostaviti?
+- [ ] **Prošli datumi u kalendaru** mogu se odabrati — tako je bilo i prije.
+  Onemogućiti ih? (Mala izmjena, nije rađena jer mijenja ponašanje.)
+- [ ] **Rečenica „Točnu adresu i upute za dolazak gost dobiva u privatnom
+  vodiču”** vrijedi samo ako je domaćin upisao adresu u „Dolazak”. Zadržati?
 
 ## 4. Aplikacija domaćina i vodič — faza B (čeka pregled)
 
@@ -99,7 +123,7 @@ i kvačica se zatvori.
 - [ ] Nakon izmjena stranica 03/04 ponovno generirati kopije prototipa na 08.
 - [ ] Povlačenje prstom u galeriji — samo u kodu (Figma ga ne podržava).
 - [ ] Tablet 834 kao zaseban frame, ako bude potreban (kod ga već pokriva).
-- [ ] Redoslijed prijenosa u kod: naslovnica ✔ → javna stranica → aplikacija
+- [ ] Redoslijed prijenosa u kod: naslovnica ✔ → javna stranica ✔ → aplikacija
   domaćina → vodič → račun/admin. Svaki korak na Preview, pa potvrda.
 
 ## 7. Grana i produkcija
@@ -109,6 +133,6 @@ i kvačica se zatvori.
   `407f300` (konfigurator na naslovnici — sada zamijenjen), `91eaf02`
   (CLAUDE.md), `265e2cc` (tabovi u dashboardu). PR #1 je zatvoren bez spajanja.
   Treba odlučiti: spojiti sve zajedno, ili razdvojiti.
-- [ ] `atmosphere.css`, `teme.css`, `teme.js` i `motion.js` naslovnica više ne
-  učitava, ali ih i dalje koriste `p.html`, `h.html`, `dashboard.html` i
-  `preview/`. Brišu se tek kad zadnja stranica prijeđe na `odmoria.css`.
+- [ ] `atmosphere.css`, `teme.css`, `teme.js` i `motion.js` naslovnica i javna
+  stranica više ne učitavaju, ali ih i dalje koriste `h.html`, `dashboard.html`
+  i `preview/`. Brišu se tek kad zadnja stranica prijeđe na `odmoria.css`.
