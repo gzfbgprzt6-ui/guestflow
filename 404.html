@@ -3,32 +3,35 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
 <title>Stranica nije pronađena — Odmoria</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Manrope:wght@600;700;800&display=swap">
+<link rel="stylesheet" href="/odmoria.css">
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'DM Sans',system-ui,sans-serif;background:#F5F4F1;color:#1A1917;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;-webkit-font-smoothing:antialiased}
-.logo{font-size:20px;font-weight:800;letter-spacing:-.5px;margin-bottom:40px}
-.logo span{color:#A15C3E}
-.emoji{font-size:64px;margin-bottom:20px;display:block}
-h1{font-size:28px;font-weight:800;letter-spacing:-.02em;margin-bottom:10px}
-p{font-size:15px;color:#6B6A67;line-height:1.65;max-width:380px;margin:0 auto 28px}
-.btns{display:flex;flex-direction:column;gap:10px;align-items:center}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;font-weight:700;border-radius:10px;padding:12px 24px;font-size:14px;border:none;cursor:pointer;text-decoration:none;font-family:inherit}
-.btn-ink{background:#5A3323;color:#fff}
-.btn-out{background:#fff;color:#1A1917;border:1.5px solid #E2E0DB}
+/* 404 (Figma: Sustav / 404) */
+body{min-height:100dvh;display:grid;place-items:center;padding:24px}
+.nf{max-width:460px;display:grid;gap:16px;justify-items:center;text-align:center}
+.nf__logo{font:800 26px/1 var(--font-ui);letter-spacing:-.03em;text-decoration:none}
+.nf__logo i{color:var(--action);font-style:normal}
+.nf__ic{width:64px;height:64px;border-radius:50%;background:var(--bg-wash);color:var(--text-accent);display:grid;place-items:center}
+.nf h1{font:800 28px/1.2 var(--font-ui);letter-spacing:-.02em}
+.nf p{color:var(--text-muted)}
+.nf__btns{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+@media (max-width:420px){.nf__btns{flex-direction:column;width:100%}.nf__btns .btn{width:100%}}
 </style>
 </head>
 <body>
-<div class="logo">Odmor<span>ia</span></div>
-<span class="emoji">🏖️</span>
-<h1>Stranica nije pronađena</h1>
-<p>Ova stranica ne postoji ili je uklonjena. Ako si dobio link od domaćina, zamoli ga za novi.</p>
-<div class="btns">
-  <a href="/" class="btn btn-ink">← Na početnu</a>
-  <a href="/register.html" class="btn btn-out">Kreiraj svoju stranicu</a>
-</div>
+<main class="nf">
+  <a class="nf__logo" href="/">Odmoria<i>.</i></a>
+  <span class="nf__ic" aria-hidden="true"><svg class="ic ic--lg" viewBox="0 0 24 24"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" /> <circle cx="12" cy="10" r="3" /></svg></span>
+  <h1>Stranica nije pronađena</h1>
+  <p>Ova stranica ne postoji ili je uklonjena. Ako ste link dobili od domaćina, zamolite ga za novi.</p>
+  <div class="nf__btns">
+    <a href="/" class="btn btn--primary"><svg class="ic ic--sm" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7" /> <path d="M19 12H5" /></svg>Na početnu</a>
+    <a href="/register.html" class="btn btn--secondary">Napravite svoju stranicu<svg class="ic ic--sm" viewBox="0 0 24 24"><path d="M5 12h14" /> <path d="m12 5 7 7-7 7" /></svg></a>
+  </div>
+</main>
 </body>
 </html>

@@ -14,6 +14,7 @@ je samo pregled posla. Ništa od ovoga nije u produkciji — sve je na grani
 | B | Aplikacija domaćina (13 ekrana × desktop/mobile), privatni vodič za gosta, stanja linka, prototip B1–B3 | gotovo, **nije pregledano** |
 | C | Prijava i registracija, postavljanje objekta, račun i pretplata, admin, 404, prototip C1–C4 | gotovo, **nije pregledano** |
 | Postavljanje, dodavanje objekta, račun (`onboarding`, `add-property`, `account`) + `forms.css` | `7725bdd` | Koraci s brojevima i trakom napretka, zid limita s planovima iz baze, račun u dva taba (profil i sigurnost · pretplata i limiti, istekli plan), brisanje prema Figmi. Isti Supabase pozivi | 3 širine; svih 5 koraka s provjerom upisa u bazu; dodavanje (ima mjesta / zid limita); račun (profil, lozinka, brisanje, prekidač, #pretplata) |
+| Admin `admin.html` i `404.html` | (commit „Admin i 404 prema Figmi”) | Tamna bočna traka s oznakom ADMIN i vlasničkim pristupom, brojke, grafikon rasta i raspodjela u petrol rampi, tablice u v2; admin više ne učitava `atmosphere.css` ni `ui.css`. 404 prema Figmi | 4 širine × 4 taba, pretraga, istek, korisnik koji nije vlasnik, 404 na 2 širine |
 
 ### Kod
 
@@ -43,6 +44,7 @@ Popratno:
 - [ ] Dashboard na Previewu — prijaviti se i proći sve dijelove: Objekt
   (spremanje, fotografije), Boravci (nova rezervacija, kalendar, iCal),
   Linkovi i QR, Pretplata; na mobitelu donju traku.
+- [ ] Admin na Previewu — prijaviti se vlasničkim računom i proći sva četiri taba (Domaćini, Prihod, Poruke, Postavke); drugim računom provjeriti „Nemate pristup”.
 - [ ] Postavljanje na Previewu — novi račun prolazi svih 5 koraka; dodavanje objekta; Račun → Pretplata i limiti.
 - [ ] Prijava na Previewu — prava prijava, Google, link za prijavu i registracija novog računa (potvrda e-maila).
 - [ ] Vodič na Previewu — otvoriti pravi gostinski link (`/h/<token>`) prije i
@@ -66,11 +68,13 @@ Popratno:
 4. [x] Postavljanje i račun (`onboarding`, `add-property`, `account`) — novi izgled,
    ista logika. Otvoreno: dvije postojeće greške u postavljanju i kontakt za
    nadogradnju/brisanje (`odluke.md`, točka 5).
-5. [ ] Admin (`admin.html`) i 404.
+5. [x] Admin (`admin.html`) i 404 — novi izgled; logika admina (stvarni podaci,
+   RLS, CSV, promjena plana) netaknuta. Otvoreno: Poruke, „Javi se”, stupci (`odluke.md`, točka 5).
 6. [ ] Pomoć, Uvjeti, Privatnost — nema dizajna (zajednički predložak tekstualne
    stranice nije rađen).
-7. [ ] Kad zadnja stranica prijeđe: obrisati `atmosphere.css`, `teme.*`,
-   `motion.js`, `ui.css` i mapu `preview/` (ako se tako odluči).
+7. [ ] Čišćenje: `atmosphere.css`, `motion.js` i `ui.css` više ne koristi nijedna
+   živa stranica (samo `preview/`); `teme.css`/`teme.js` koristi još samo panel
+   „Izgled” u dashboardu. Obrisati kad se odluči o temama i o mapi `preview/`.
 
 ### Odgođeno
 

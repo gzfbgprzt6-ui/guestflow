@@ -1,6 +1,6 @@
 # Odmoria redizajn — odluke koje čekaju vlasnika
 
-Stanje 28. 9. 2026. (naslovnica, javna stranica, dashboard, vodič za gosta, prijava i registracija te postavljanje, dodavanje objekta i račun preneseni u kod). Ovdje su skupljena sva otvorena pitanja iz Figme (faze A, B i C)
+Stanje 28. 9. 2026. (sve stranice iz Figme prenesene u kod: naslovnica, javna stranica, dashboard, vodič, prijava i registracija, postavljanje, račun, admin i 404; ostaju samo Pomoć, Uvjeti i Privatnost, za koje dizajna nema). Ovdje su skupljena sva otvorena pitanja iz Figme (faze A, B i C)
 i ona koja su se otvorila pri prijenosu naslovnice u kod. Dok odluka ne padne, kod
 radi kako je opisano u stupcu **Sada u kodu**, uvijek na sigurnu stranu: ništa se
 ne obećava što ne postoji, a ništa se ne upisuje u bazu.
@@ -158,7 +158,7 @@ i kvačica se zatvori.
 - [ ] *(Za kod, ne odluka)* „Kreiraj link” mora biti onemogućen dok su datumi
   neispravni — u prototipu vodi dalje.
 
-## 5. Račun, postavljanje, admin — faza C (sve osim admina preneseno u kod)
+## 5. Račun, postavljanje, admin — faza C (sve preneseno u kod)
 
 - [ ] Proći prototipe C1 Auth Mobile, C3 Račun i C4 Admin.
 - [ ] **Ton obraćanja:** dizajn i nova naslovnica koriste „vi”, produkcijska
@@ -206,7 +206,18 @@ i kvačica se zatvori.
   (traka „4 od 5”); u kodu je samo limit („do 5 po objektu”), jer bi traka
   tražila dohvat fotografija svih objekata. Dodati?
 - [ ] **Tab „Poruke” u adminu:** odobriti tablicu `announcements` ili ukloniti
-  tab.
+  tab. **Sada u kodu:** tab postoji, obrazac se ne sprema i to piše na njemu
+  (kao i prije).
+- [ ] **Admin — „Uskoro istječe”:** Figma uz svaki red ima gumb „Javi se”
+  (e-mail domaćinu). U kodu je tablica bez gumba, jer nema dogovorene poruke ni
+  adrese pošiljatelja. Dodati kao `mailto:` na e-mail iz objekta?
+- [ ] **Admin — filtar planova:** Figma ima čipove (Svi planovi · free · pro ·
+  business); u kodu je ostao padajući izbornik (ista logika). Zamijeniti?
+- [ ] **Admin — stupci tablice:** Figma ima „Vrijedi do” i „Registriran”; kod
+  prikazuje objekte (nazive) i status pretplate, kao i prije. Koje stupce želite?
+- [ ] **Admin na mobitelu:** bočna traka postaje vodoravna traka na vrhu (Figma
+  mobile ima popis domaćina u karticama umjesto tablice — tablica se na
+  mobitelu vodoravno pomiče).
 - [ ] **Pomoć, Uvjeti, Privatnost:** zajednički predložak tekstualne stranice
   (nije dizajniran).
 

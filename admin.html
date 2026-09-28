@@ -5,63 +5,192 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>Admin — Odmoria</title>
-<link rel="stylesheet" href="/atmosphere.css">
-<link rel="stylesheet" href="/ui.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Manrope:wght@600;700;800&display=swap">
+<link rel="stylesheet" href="/odmoria.css">
 <style>
-  body{background:var(--cream)}
-  #gate,#denied{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
-    flex-direction:column;gap:16px;text-align:center;padding:24px;background:var(--cream);z-index:99}
-  #denied{display:none}
-  #gate .spin{width:26px;height:26px;border:2.5px solid var(--line);border-top-color:var(--terra-d);
-    border-radius:50%;animation:sp .7s linear infinite}
-  @keyframes sp{to{transform:rotate(360deg)}}
-  #app{display:none}
-  .owner{font-size:.68rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
-    background:var(--sand);border:1px solid var(--line);border-radius:7px;padding:5px 10px;
-    display:inline-block;color:var(--ink-mut)}
-  .side__foot{margin-top:auto;padding-top:20px}
-  .empty{text-align:center;padding:40px;color:var(--ink-mut);font-size:.9rem}
-  .tabpanel[hidden]{display:none}
+/* ==========================================================================
+   Admin — redizajn v2 (Figma: 07 Account & Admin, Admin). Razredi su isti kao
+   u staroj verziji (ui.css), pa JavaScript nije diran; ovdje su samo nove
+   vrijednosti. Grafikoni čitaju --t-1…--t-5 i --grid: sekvencijalna petrol
+   rampa (svijetlo → tamno), nikad kategorijske boje.
+   ========================================================================== */
+:root{
+  --t-1:#D6ECEE; --t-2:#A9D3D8; --t-3:#5FA9B1; --t-4:#116D76; --t-5:#0B535B;
+  --grid:rgba(16,61,75,.10); --ink-mut:#536D77;
+}
+body{background:var(--bg-page)}
+#gate,#denied{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;text-align:center;padding:24px;background:var(--bg-page);z-index:99}
+#denied{display:none}
+.spin{width:28px;height:28px;border:3px solid var(--border);border-top-color:var(--action);border-radius:50%;animation:sp .8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.state__ic{width:72px;height:72px;border-radius:50%;background:var(--bg-warm);color:var(--text-warm);display:grid;place-items:center}
+.state__ic .ic{width:32px;height:32px}
+#app{display:none}
+.tabpanel[hidden]{display:none}
+
+/* raspored */
+.app{display:grid;grid-template-columns:248px minmax(0,1fr);min-height:100vh}
+.side{position:sticky;top:0;height:100vh;background:var(--bg-inverse);color:#fff}
+.side__in{display:flex;flex-direction:column;gap:4px;height:100%;padding:24px 16px}
+.brand{display:flex;align-items:center;gap:10px;font:800 22px/1 var(--font-ui);letter-spacing:-.03em;margin:0 8px 20px}
+.brand i{color:var(--text-on-inverse-accent);font-style:normal}
+.brand .tagadm{padding:4px 8px;border-radius:6px;background:var(--text-on-inverse-accent);color:var(--bg-inverse);font:700 11px/1 var(--font-body);letter-spacing:.1em}
+.owner{display:flex;gap:10px;align-items:flex-start;padding:12px;border-radius:var(--radius-panel);background:rgba(255,255,255,.08);margin-bottom:16px}
+.owner b{display:block;font:700 15px/1.3 var(--font-ui)}
+.owner span{font-size:13px;color:rgba(255,255,255,.86)}
+.owner .ic{color:var(--text-on-inverse-accent);margin-top:2px}
+.navi{display:flex;align-items:center;gap:12px;min-height:44px;padding:0 12px;border-radius:var(--radius-control);color:#fff;text-decoration:none;font:500 15px/1.2 var(--font-ui);position:relative}
+.navi:hover{background:rgba(255,255,255,.08)}
+.navi[aria-current="page"]{background:rgba(255,255,255,.12);font-weight:700}
+.navi[aria-current="page"]::before{content:"";position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:3px;background:var(--text-on-inverse-accent)}
+.navi .ic{color:var(--text-on-inverse-accent)}
+.side :focus-visible{outline-color:var(--text-on-inverse-accent)}
+.side__foot{margin-top:auto;display:grid;gap:4px;padding-top:16px;border-top:1px solid rgba(255,255,255,.14)}
+.side__foot button.navi{border:0;background:none;cursor:pointer;width:100%;text-align:left}
+.main{min-width:0;padding:32px 40px 64px}
+
+/* zaglavlje panela */
+.head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:24px}
+.head h1{font:800 32px/1.15 var(--font-ui);letter-spacing:-.03em}
+.head__sub{color:var(--text-muted);margin-top:4px}
+.head__act{display:flex;gap:8px;flex-wrap:wrap}
+.kicker{display:block;font:700 12px/1.3 var(--font-body);letter-spacing:.15em;text-transform:uppercase;color:var(--text-accent)}
+.lead{color:var(--text-muted)}
+.small,.hint{font-size:14px;color:var(--text-muted)}
+.hint{margin-top:12px}
+.panel{background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-feature);padding:24px}
+.panel h3{font:700 20px/1.3 var(--font-ui)!important;letter-spacing:-.02em}
+.panel--dark{background:var(--bg-inverse);color:#fff;border-color:var(--bg-inverse)}
+.panel--dark .kicker{color:var(--text-on-inverse-accent)}
+.panel--dark .lead{color:rgba(255,255,255,.88)}
+code{font:500 .9em ui-monospace,monospace;background:var(--bg-wash);padding:1px 5px;border-radius:4px}
+.panel--dark code{background:rgba(255,255,255,.12)}
+.kod{margin:0;padding:14px;border-radius:var(--radius-panel);background:rgba(255,255,255,.08);color:#fff;font:13px/1.55 ui-monospace,monospace;overflow-x:auto}
+
+/* mreže */
+.g{display:grid;gap:16px}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.g-main{grid-template-columns:minmax(0,1.8fr) minmax(0,1fr)}
+.row{display:flex} .wrapf{flex-wrap:wrap} .gap8{gap:8px} .gap12{gap:12px}
+.mt8{margin-top:8px} .mt12{margin-top:12px} .mt16{margin-top:16px} .mt24{margin-top:24px}
+
+/* brojke */
+.stat{display:grid;gap:6px;align-content:start;padding:20px;background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-feature)}
+.stat__lb{font-size:14px;color:var(--text-muted)}
+.stat__v{font:800 30px/1.1 var(--font-ui);letter-spacing:-.02em}
+.stat__sub{font-size:13px;color:var(--text-muted)}
+
+/* rang (raspodjela planova, prihod) */
+.rank{display:grid;gap:16px}
+.rank__row{display:grid;grid-template-columns:1fr auto;gap:6px 12px;align-items:center}
+.rank__nm{font:700 16px/1.3 var(--font-ui)}
+.rank__v{font-size:14px;color:var(--text-muted);text-align:right}
+.rank__tr{grid-column:1 / -1;order:3;height:8px;border-radius:4px;background:var(--bg-wash);overflow:hidden}
+.rank__tr i{display:block;height:100%;border-radius:4px}
+
+/* tablice */
+.tblwrap{overflow-x:auto}
+.tbl{width:100%;border-collapse:collapse;font-size:15px}
+.tbl th{text-align:left;padding:10px 12px;font:600 14px/1.3 var(--font-ui);color:var(--text-muted);border-bottom:1px solid var(--border);white-space:nowrap}
+.tbl td{padding:14px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+.tbl td b,.tbl td strong{font-family:var(--font-ui)}
+.tag{display:inline-flex;align-items:center;padding:4px 8px;border-radius:6px;font:700 12px/1.3 var(--font-body);letter-spacing:.04em;margin:2px 2px 2px 0}
+.tag--ok{background:var(--bg-wash);color:var(--text-accent)}
+.tag--warn{background:var(--bg-warm);color:var(--text-warm)}
+.tag--mut{background:var(--bg-page);color:var(--text);box-shadow:inset 0 0 0 1px var(--border)}
+
+/* obrasci i gumbi (stara imena) */
+.lb{display:block;font:700 14px/1.3 var(--font-ui)}
+.inp{width:100%;min-height:48px;padding:0 14px;margin-top:8px;border:1px solid var(--border-control);border-radius:var(--radius-control);background:var(--bg-surface);color:var(--text);font:400 16px/1.4 var(--font-body)}
+textarea.inp{padding:12px 14px;min-height:120px;resize:vertical}
+.inp:focus{outline:0;border-color:var(--text);box-shadow:0 0 0 2px var(--text)}
+.inp--sm{min-height:40px;font-size:15px}
+.btn--fill{background:var(--action);color:#fff}
+.btn--fill:hover{background:var(--action-hover)}
+.btn--ghost{background:var(--bg-surface);border-color:var(--border-control);color:var(--text)}
+.btn--ghost:hover{background:var(--bg-wash)}
+.btn--sm{min-height:40px;padding:0 14px;font-size:14px}
+.btn:disabled{background:var(--bg-wash);border-color:var(--bg-wash);color:var(--text-muted);cursor:not-allowed}
+.arr{display:inline-block}
+.note-inline{padding:12px 14px;border-radius:var(--radius-panel);background:var(--bg-warm);color:var(--text-warm);font-weight:600}
+.empty{text-align:center;padding:40px;color:var(--text-muted)}
+
+/* stanje sustava */
+.sys{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border)}
+.sys:last-child{border-bottom:0}
+.sys__d{width:10px;height:10px;border-radius:50%;margin-top:7px;flex:none}
+.sys__d.ok{background:var(--action)}
+.sys__d.no{background:transparent;box-shadow:inset 0 0 0 2px var(--text-warm)}
+
+@media (max-width:1100px){.g4{grid-template-columns:repeat(2,minmax(0,1fr))}.g-main{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:860px){
+  .app{grid-template-columns:minmax(0,1fr)}
+  .side{position:sticky;top:0;height:auto;z-index:20}
+  .side__in{flex-direction:row;align-items:center;gap:4px;padding:10px 12px;overflow-x:auto}
+  .brand{margin:0 8px 0 4px}
+  .brand .tagadm,.owner,.side__foot .navi:last-child{display:none}
+  .side__foot{margin:0;padding:0;border:0;display:flex}
+  .navi{flex:none;min-height:44px}
+  .navi[aria-current="page"]::before{left:8px;right:8px;top:auto;bottom:4px;width:auto;height:3px}
+  .main{padding:24px 16px 48px}
+  .head h1{font-size:28px}
+}
+@media (max-width:520px){.g4{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.stat{padding:16px}.stat__v{font-size:26px}.panel{padding:16px}}
 </style>
 </head>
-<body class="grain">
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /> <path d="M16 3.128a4 4 0 0 1 0 7.744" /> <path d="M22 21v-2a4 4 0 0 0-3-3.87" /> <circle cx="9" cy="7" r="4" /></symbol>
+  <symbol id="i-chart-no-axes-column" viewBox="0 0 24 24"><path d="M5 21v-6" /> <path d="M12 21V3" /> <path d="M19 21V9" /></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" /> <rect x="2" y="4" width="20" height="16" rx="2" /></symbol>
+  <symbol id="i-settings" viewBox="0 0 24 24"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915" /> <circle cx="12" cy="12" r="3" /></symbol>
+  <symbol id="i-layout-dashboard" viewBox="0 0 24 24"><rect width="7" height="9" x="3" y="3" rx="1" /> <rect width="7" height="5" x="14" y="3" rx="1" /> <rect width="7" height="9" x="14" y="12" rx="1" /> <rect width="7" height="5" x="3" y="16" rx="1" /></symbol>
+  <symbol id="i-log-out" viewBox="0 0 24 24"><path d="m16 17 5-5-5-5" /> <path d="M21 12H9" /> <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /></symbol>
+  <symbol id="i-shield-check" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" /> <path d="m9 12 2 2 4-4" /></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2" ry="2" /> <path d="M7 11V7a5 5 0 0 1 10 0v4" /></symbol>
+  <symbol id="i-refresh-cw" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" /> <path d="M21 3v5h-5" /> <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" /> <path d="M8 16H3v5" /></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 15V3" /> <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /> <path d="m7 10 5 5 5-5" /></symbol>
+</svg>
+<a class="skip" href="#admin-main">Preskoči na sadržaj</a>
 
-<div id="gate"><div class="spin"></div><p class="small">Provjera pristupa…</p></div>
+<div id="gate" role="status"><div class="spin" aria-hidden="true"></div><p class="small">Provjera pristupa…</p></div>
 
 <div id="denied">
-  <h1 style="font-size:clamp(1.8rem,4vw,2.6rem)">Nemaš pristup</h1>
+  <span class="state__ic"><svg class="ic " aria-hidden="true"><use href="#i-lock"/></svg></span>
+  <h1 style="font:800 28px/1.2 var(--font-ui)">Nemate pristup</h1>
   <p class="lead" style="max-width:42ch">Ova stranica je dostupna samo vlasniku platforme.</p>
-  <a class="btn btn--fill" href="/dashboard.html">Natrag na dashboard <span class="arr">→</span></a>
+  <a class="btn btn--primary" href="/dashboard.html">Natrag na dashboard</a>
 </div>
 
 <div id="app">
 <div class="app">
-  <aside class="side"><div class="side__in">
-    <div class="brand">Odmoria<span style="color:var(--terra)">.</span></div>
-    <a class="navi" data-tab="domacini" aria-current="page" href="#domacini"><span class="ic">◉</span> Domaćini</a>
-    <a class="navi" data-tab="prihod" href="#prihod"><span class="ic">◔</span> Prihod</a>
-    <a class="navi" data-tab="poruke" href="#poruke"><span class="ic">✉</span> Poruke</a>
-    <a class="navi" data-tab="postavke" href="#postavke"><span class="ic">⚙</span> Postavke</a>
-    <a class="navi" href="/dashboard.html"><span class="ic">◧</span> Moj dashboard</a>
+  <aside class="side on-dark" aria-label="Admin"><nav class="side__in">
+    <div class="brand"><span>Odmoria<i>.</i></span><span class="tagadm">ADMIN</span></div>
+    <div class="owner"><svg class="ic " aria-hidden="true"><use href="#i-shield-check"/></svg><div><b>Vlasnički pristup</b><span>Zaštićeno i na RLS razini.</span></div></div>
+    <a class="navi" data-tab="domacini" aria-current="page" href="#domacini"><svg class="ic " aria-hidden="true"><use href="#i-users"/></svg>Domaćini</a>
+    <a class="navi" data-tab="prihod" href="#prihod"><svg class="ic " aria-hidden="true"><use href="#i-chart-no-axes-column"/></svg>Prihod</a>
+    <a class="navi" data-tab="poruke" href="#poruke"><svg class="ic " aria-hidden="true"><use href="#i-mail"/></svg>Poruke</a>
+    <a class="navi" data-tab="postavke" href="#postavke"><svg class="ic " aria-hidden="true"><use href="#i-settings"/></svg>Postavke</a>
     <div class="side__foot">
-      <span class="owner">🔐 Vlasnički pristup</span>
-      <p class="small mt8">Zaštićeno i na RLS razini, ne samo ovdje.</p>
-      <button class="btn btn--ghost btn--sm mt12" style="width:100%" onclick="logout()">Odjava</button>
+      <a class="navi" href="/dashboard.html"><svg class="ic " aria-hidden="true"><use href="#i-layout-dashboard"/></svg>Moj dashboard</a>
+      <button class="navi" type="button" onclick="logout()"><svg class="ic " aria-hidden="true"><use href="#i-log-out"/></svg>Odjava</button>
     </div>
-  </div></aside>
+  </nav></aside>
 
-  <main class="main">
+  <main class="main" id="admin-main">
 
     <!-- ============ DOMAĆINI ============ -->
     <section class="tabpanel" data-panel="domacini">
       <div class="head">
         <div>
-          <p class="kicker bare">Admin</p>
-          <h1 style="font-size:clamp(1.9rem,3.2vw,2.7rem);margin-top:6px">Svi domaćini</h1>
+          <h1>Domaćini</h1>
+          <p class="head__sub">Svi domaćini, planovi i pretplate koje uskoro istječu.</p>
         </div>
         <div class="head__act">
-          <button class="btn btn--ghost btn--sm" id="izvoz">Izvezi CSV</button>
-          <button class="btn btn--fill btn--sm" id="osvjezi">Osvježi <span class="arr">↻</span></button>
+          <button class="btn btn--ghost btn--sm" id="osvjezi">Osvježi<svg class="ic ic--sm" aria-hidden="true"><use href="#i-refresh-cw"/></svg></button>
+          <button class="btn btn--fill btn--sm" id="izvoz">Izvezi CSV<svg class="ic ic--sm" aria-hidden="true"><use href="#i-download"/></svg></button>
         </div>
       </div>
 
@@ -70,32 +199,31 @@
       <section class="g g-main mt24">
         <div class="panel">
           <p class="kicker">Rast</p>
-          <h3 class="mt8" style="font-size:1.15rem">Novi domaćini po mjesecima</h3>
+          <h3 class="mt8">Novi domaćini po mjesecima</h3>
           <p class="small mt8">Iz <code>properties.created_at</code>, zadnjih 12 mjeseci.</p>
           <div id="rastChart" class="mt16"></div>
         </div>
         <div class="panel">
           <p class="kicker">Raspodjela</p>
-          <h3 class="mt8" style="font-size:1.15rem">Planovi</h3>
+          <h3 class="mt8">Planovi</h3>
           <div id="planRank" class="rank mt16"></div>
         </div>
       </section>
 
       <section class="panel mt24" id="istekPanel" hidden>
         <p class="kicker">Rizik</p>
-        <h3 class="mt8" style="font-size:1.15rem">Uskoro istječe</h3>
+        <h3 class="mt8">Uskoro istječe</h3>
         <p class="small mt8">Pretplate koje istječu u sljedećih 14 dana.</p>
         <div class="tblwrap mt16"><table class="tbl" id="istekTbl"></table></div>
       </section>
 
       <section class="panel mt24">
         <div class="row wrapf gap12" style="justify-content:space-between;align-items:flex-end">
-          <div>
-            <p class="kicker">Popis</p>
-            <h3 class="mt8" style="font-size:1.15rem">Domaćini i planovi</h3>
-          </div>
+          <h3>Domaćini i planovi</h3>
           <div class="row wrapf gap8">
-            <input class="inp inp--sm" id="trazi" placeholder="Traži ime, e-mail, objekt…" style="width:min(260px,60vw);margin-top:0">
+            <label class="sr-only" for="trazi">Pretraži</label>
+            <input class="inp inp--sm" id="trazi" placeholder="Pretraži po imenu, e-mailu ili objektu" style="width:min(300px,80vw);margin-top:0">
+            <label class="sr-only" for="filtar">Plan</label>
             <select class="inp inp--sm" id="filtar" style="width:auto;margin-top:0">
               <option value="">Svi planovi</option>
             </select>
@@ -103,21 +231,17 @@
         </div>
         <div class="tblwrap mt16"><table class="tbl" id="tablica"></table></div>
         <p class="small mt16" id="prazno" hidden>Nema domaćina koji odgovaraju pretrazi.</p>
+        <p class="small mt12">„Spremi” se uključi tek kad se plan u retku promijeni. Promjena plana piše u <code>subscriptions</code> (RLS: samo vlasnik).</p>
       </section>
     </section>
 
     <!-- ============ PRIHOD ============ -->
     <section class="tabpanel" data-panel="prihod" hidden>
-      <div class="head">
-        <div>
-          <p class="kicker bare">Admin</p>
-          <h1 style="font-size:clamp(1.9rem,3.2vw,2.7rem);margin-top:6px">Prihod</h1>
-        </div>
-      </div>
+      <div class="head"><div><h1>Prihod</h1><p class="head__sub">Procjena mjesečnog i godišnjeg prihoda po planovima.</p></div></div>
 
-      <div class="panel" style="background:var(--night);color:#fff">
-        <p class="kicker bare" style="color:var(--sun)">Odakle ove brojke</p>
-        <p class="lead mt8" style="color:rgba(255,255,255,.86);font-size:.95rem;max-width:70ch">
+      <div class="panel panel--dark">
+        <p class="kicker">Odakle ove brojke</p>
+        <p class="lead mt8" style="max-width:70ch">
           Procjena iz tablice <code>plans</code> × broj aktivnih pretplata, <b>ne iz Stripea</b>.
           Stripe checkout nije spojen, pa naplaćenog iznosa nema nigdje u bazi — ovo je ono što
           bi se naplatilo da svi plate. Kad se checkout spoji, brojke se mogu razići od ovih.
@@ -128,7 +252,7 @@
 
       <section class="panel mt24">
         <p class="kicker">Po planu</p>
-        <h3 class="mt8" style="font-size:1.15rem">Tko donosi prihod</h3>
+        <h3 class="mt8">Tko donosi prihod</h3>
         <p class="small mt8">Broj aktivnih pretplata × cijena plana iz <code>plans</code>.</p>
         <div id="prihodRank" class="rank mt16"></div>
         <div class="tblwrap mt16"><table class="tbl" id="prihodTbl"></table></div>
@@ -137,16 +261,11 @@
 
     <!-- ============ PORUKE ============ -->
     <section class="tabpanel" data-panel="poruke" hidden>
-      <div class="head">
-        <div>
-          <p class="kicker bare">Admin</p>
-          <h1 style="font-size:clamp(1.9rem,3.2vw,2.7rem);margin-top:6px">Poruke</h1>
-        </div>
-      </div>
+      <div class="head"><div><h1>Poruke</h1><p class="head__sub">Obavijesti domaćinima.</p></div></div>
 
-      <div class="panel" style="background:var(--night);color:#fff">
-        <p class="kicker bare" style="color:var(--sun)">Nije spojeno — treba jedna tablica</p>
-        <p class="lead mt8" style="color:rgba(255,255,255,.86);font-size:.95rem;max-width:72ch">
+      <div class="panel panel--dark">
+        <p class="kicker">Nije spojeno — treba jedna tablica</p>
+        <p class="lead mt8" style="max-width:72ch">
           Upit gosta na javnoj stranici <b>nigdje se ne sprema</b> — <code>p.html</code> ga složi
           u WhatsApp ili <code>mailto:</code> link i gost ga pošalje sam. Nema ni tablice za
           obavijesti domaćinima. Obrazac ispod pokazuje kako bi izgledalo.
@@ -163,11 +282,11 @@
 
       <section class="panel mt24">
         <p class="kicker">Nova obavijest</p>
-        <h3 class="mt8" style="font-size:1.15rem">Pošalji domaćinima</h3>
+        <h3 class="mt8">Pošalji domaćinima</h3>
         <label class="lb mt16" for="oNas">Naslov</label>
         <input class="inp" id="oNas" placeholder="Nova tema za javnu stranicu">
         <label class="lb mt12" for="oTxt">Poruka</label>
-        <textarea class="inp" id="oTxt" rows="5" placeholder="Od danas birate između osam tema…"></textarea>
+        <textarea class="inp" id="oTxt" rows="5" placeholder="Od danas…"></textarea>
         <label class="lb mt12" for="oKome">Kome</label>
         <select class="inp" id="oKome"></select>
         <div class="row gap8 mt16" style="justify-content:space-between;align-items:center">
@@ -180,16 +299,11 @@
 
     <!-- ============ POSTAVKE ============ -->
     <section class="tabpanel" data-panel="postavke" hidden>
-      <div class="head">
-        <div>
-          <p class="kicker bare">Admin</p>
-          <h1 style="font-size:clamp(1.9rem,3.2vw,2.7rem);margin-top:6px">Postavke</h1>
-        </div>
-      </div>
+      <div class="head"><div><h1>Postavke</h1><p class="head__sub">Planovi, stanje sustava i pristup.</p></div></div>
 
       <section class="panel">
         <p class="kicker">Izvor istine</p>
-        <h3 class="mt8" style="font-size:1.15rem">Planovi i limiti</h3>
+        <h3 class="mt8">Planovi i limiti</h3>
         <p class="small mt8" style="max-width:74ch">
           Ovo je tablica <code>plans</code> u Supabaseu, učitana uživo. Cijene i limiti se
           mijenjaju <b>ondje, bez izmjene koda i bez deploya</b> — <code>plans.js</code> ih pri
@@ -202,18 +316,18 @@
       <section class="g g-main mt24">
         <div class="panel">
           <p class="kicker">Stanje sustava</p>
-          <h3 class="mt8" style="font-size:1.15rem">Što radi, a što ne</h3>
+          <h3 class="mt8">Što radi, a što ne</h3>
           <div class="mt16" id="stanje"></div>
         </div>
         <div class="panel">
           <p class="kicker">Vlasnički pristup</p>
-          <h3 class="mt8" style="font-size:1.15rem">Tko ovo vidi</h3>
-          <p class="lead mt8" style="font-size:.94rem">
+          <h3 class="mt8">Tko ovo vidi</h3>
+          <p class="lead mt8">
             Admin je zaštićen i na RLS razini, ne samo provjerom u pregledniku. Politike u
             <code>sql/admin-access.sql</code> vezane su na <code>auth.uid()</code> vlasničkog
             računa, pa tuđa sesija ne može pročitati tuđe retke ni kad bi zaobišla sučelje.
           </p>
-          <p class="lead mt12" style="font-size:.94rem">
+          <p class="lead mt12">
             U klijentskom kodu nema service role ključa — sve stranice koriste samo javni
             publishable ključ.
           </p>

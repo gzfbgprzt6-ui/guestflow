@@ -52,7 +52,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 ├── atmosphere.css           # v3 dizajn sustav — danas ga koristi SAMO preview/ (nijedna živa stranica)
 ├── teme.css                 # OSAM TEMA javne stranice — dijele ih dashboard.html i preview/ (p.html v2 više ne)
 ├── teme.js                  # rasporedi zaglavlja, `izBaze(prop)` i zajednički birač tema
-├── ui.css                   # ljuska aplikacije, paneli, tablice, GRAFIKONI — živi admin + preview/
+├── ui.css                   # ljuska aplikacije, paneli, tablice, grafikoni — danas SAMO preview/ (živi admin je na odmoria.css)
 ├── motion.js                # dijeljeni motion sustav (reveal, paralaksa, brojaci, rail)
 ├── links.js                 # gradnja linkova (/p/, /h/) — NIKAD ne zakucavati domenu, vidi dolje
 ├── plans.js                 # rezervne vrijednosti + helperi; pravi izvor istine je tablica `plans` u bazi
@@ -277,6 +277,14 @@ smeđa) i imao je samo četiri pločice i tablicu. Sada nosi redizajn iz pregled
 `subscriptions`, MRR/ARR/ARPU iz `plans` × aktivne pretplate (istekle se
 izostavljaju), „Uskoro istječe” iz `period_end`, tablica s pretragom, filtrom
 i CSV izvozom. Četiri taba: Domaćini, Prihod, Poruke, Postavke.
+
+**Redizajn v2 (28. 9. 2026.):** admin više ne učitava `atmosphere.css` ni
+`ui.css` — stoji na `odmoria.css` s vlastitim `<style>` koji istim imenima
+razreda (`.panel`, `.stat`, `.rank__*`, `.tbl`, `.tag--*`, `.navi`…) daje v2
+izgled, pa JavaScript nije diran. Grafikoni čitaju `--t-1…--t-5` i `--grid`
+iz `:root` te stranice — sada petrol rampa (#D6ECEE → #0B535B), i dalje
+sekvencijalna, nikad kategorijska. Bočna traka je tamna (petrol) s oznakom
+ADMIN; ispod 860 px postaje vodoravna traka na vrhu.
 
 **Cijene i nazivi planova NISU preuzeti iz pregleda.** Pregled nudi četiri
 plana s drugim cijenama — to je poslovna odluka, ne izmjena koda. Živi admin
