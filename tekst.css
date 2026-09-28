@@ -1,0 +1,79 @@
+/* =====================================================================
+   tekst.css — tekstualne stranice: Pomoć, Uvjeti korištenja, Privatnost.
+   Za njih u Figmi nema dizajna; predložak slijedi naslovnicu (ista traka,
+   isto podnožje, isti tokeni iz odmoria.css).
+   ===================================================================== */
+
+/* gornja traka */
+.tnav{position:sticky;top:0;z-index:30;background:rgba(252,252,250,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+.tnav__in{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:68px}
+.tnav__logo{font:800 22px/1 var(--font-ui);letter-spacing:-.03em;text-decoration:none}
+.tnav__logo i{color:var(--action);font-style:normal}
+.tnav__act{display:flex;gap:8px;align-items:center}
+
+/* zaglavlje stranice */
+.thead{padding:56px 0 32px;border-bottom:1px solid var(--border);background:var(--bg-wash)}
+.thead h1{font:800 clamp(32px,4vw,44px)/1.1 var(--font-ui);letter-spacing:-.03em;margin-top:8px}
+.thead p{color:var(--text-muted);margin-top:10px;max-width:60ch}
+
+/* tijelo dokumenta */
+.doc{max-width:760px;padding-block:40px 80px}
+.doc h2{font:700 22px/1.3 var(--font-ui);letter-spacing:-.02em;margin:40px 0 12px}
+.doc h2:first-child{margin-top:0}
+.doc p{margin-bottom:14px}
+.doc ul{list-style:disc;padding-left:22px;margin:0 0 14px}
+.doc li{margin-bottom:8px}
+.doc a{color:var(--text-accent);text-decoration:underline;text-underline-offset:3px}
+.doc strong{font-weight:700}
+.doc .note{padding:16px 20px;border-radius:var(--radius-panel);background:var(--bg-wash);font-weight:500;margin-bottom:24px}
+.doc code{font:500 .92em ui-monospace,monospace;background:var(--bg-wash);padding:1px 5px;border-radius:4px}
+
+/* podnožje */
+.tfoot{border-top:1px solid var(--border);padding-block:28px;font-size:14px;color:var(--text-muted)}
+.tfoot__in{display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space-between}
+.tfoot nav{display:flex;flex-wrap:wrap;gap:8px 20px}
+.tfoot a{color:var(--text);font-weight:600;text-decoration:none}
+.tfoot a:hover{color:var(--text-accent);text-decoration:underline}
+
+/* ---- Pomoć: pretraga, kategorije, pitanja ---- */
+.hsearch{position:relative;max-width:520px;margin-top:24px}
+.hsearch .ic{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--text-muted);pointer-events:none}
+.hsearch input{width:100%;min-height:52px;padding:0 16px 0 48px;border:1px solid var(--border-control);border-radius:var(--radius-control);background:#fff;font:400 16px/1.4 var(--font-body);color:var(--text)}
+.hsearch input::placeholder{color:var(--text-muted)}
+.hsearch input:focus-visible{outline:2px solid var(--action);outline-offset:2px;border-color:var(--action)}
+
+.hlayout{display:grid;grid-template-columns:220px minmax(0,1fr);gap:56px;padding-block:40px 80px}
+.hcats{position:sticky;top:92px;align-self:start;display:flex;flex-direction:column;gap:2px}
+.hcats a{display:block;padding:10px 12px;border-radius:var(--radius-control);font:600 15px/1.3 var(--font-ui);color:var(--text-muted);text-decoration:none}
+.hcats a:hover{background:var(--bg-wash);color:var(--text)}
+.hcats a[aria-current="true"]{background:var(--bg-wash);color:var(--text-accent)}
+
+.hsec{scroll-margin-top:92px;margin-bottom:48px}
+.hsec h2{font:700 24px/1.3 var(--font-ui);letter-spacing:-.02em}
+.hsec > p{color:var(--text-muted);margin:4px 0 8px}
+.hsec .acc summary{font-size:17px;padding:18px 0}
+.acc__a{padding:0 0 20px;color:var(--text-muted);max-width:68ch}
+.acc__a p{padding:0;margin-bottom:10px}
+.acc__a p:last-child,.acc__a ul:last-child{margin-bottom:0}
+.acc__a ul{list-style:disc;padding-left:22px;margin:0 0 10px}
+.acc__a li{margin-bottom:6px}
+.acc__a strong{color:var(--text);font-weight:700}
+.acc__a a{color:var(--text-accent);text-decoration:underline;text-underline-offset:3px}
+.acc__a code{font:500 .92em ui-monospace,monospace;background:var(--bg-wash);padding:1px 5px;border-radius:4px;color:var(--text)}
+
+.hnone{padding:24px;border-radius:var(--radius-panel);background:var(--bg-wash);margin-bottom:32px}
+.hcontact{margin-top:16px;padding:32px;border-radius:var(--radius-feature);background:var(--text);color:#fff}
+.hcontact h2{font:700 24px/1.3 var(--font-ui);letter-spacing:-.02em}
+.hcontact p{color:rgba(255,255,255,.82);margin:8px 0 20px;max-width:56ch}
+
+@media (max-width:860px){
+  .hlayout{grid-template-columns:minmax(0,1fr);gap:0;padding-top:24px}
+  .hcats{position:static;flex-direction:row;flex-wrap:wrap;gap:8px;margin-bottom:32px}
+  .hcats a{border:1px solid var(--border);padding:8px 12px;font-size:14px}
+}
+
+@media (max-width:560px){
+  .tnav__act .btn--secondary{display:none}
+  .thead{padding:36px 0 24px}
+  .hcontact{padding:24px}
+}

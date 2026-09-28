@@ -1,6 +1,6 @@
 # Odmoria redizajn — odluke koje čekaju vlasnika
 
-Stanje 28. 9. 2026. (sve stranice iz Figme prenesene u kod: naslovnica, javna stranica, dashboard, vodič, prijava i registracija, postavljanje, račun, admin i 404; ostaju samo Pomoć, Uvjeti i Privatnost, za koje dizajna nema). Ovdje su skupljena sva otvorena pitanja iz Figme (faze A, B i C)
+Stanje 28. 9. 2026. (sve stranice prenesene na v2: iz Figme naslovnica, javna stranica, dashboard, vodič, prijava i registracija, postavljanje, račun, admin i 404; bez Figme, na zajedničkom predlošku, Pomoć, Uvjeti i Privatnost — vidi točku 8). Ovdje su skupljena sva otvorena pitanja iz Figme (faze A, B i C)
 i ona koja su se otvorila pri prijenosu naslovnice u kod. Dok odluka ne padne, kod
 radi kako je opisano u stupcu **Sada u kodu**, uvijek na sigurnu stranu: ništa se
 ne obećava što ne postoji, a ništa se ne upisuje u bazu.
@@ -218,8 +218,8 @@ i kvačica se zatvori.
 - [ ] **Admin na mobitelu:** bočna traka postaje vodoravna traka na vrhu (Figma
   mobile ima popis domaćina u karticama umjesto tablice — tablica se na
   mobitelu vodoravno pomiče).
-- [ ] **Pomoć, Uvjeti, Privatnost:** zajednički predložak tekstualne stranice
-  (nije dizajniran).
+- [x] **Pomoć, Uvjeti, Privatnost:** zajednički predložak tekstualne stranice
+  napravljen bez Figme (`tekst.css`). Sadržaj i neslaganja — točka 8.
 
 ## 6. Odgođeno (nije odluka, nego posao koji čeka)
 
@@ -242,3 +242,114 @@ i kvačica se zatvori.
 - [ ] `atmosphere.css` i `motion.js` više ne učitava nijedna živa stranica —
   koristi ih samo `preview/`. `teme.css`/`teme.js` koristi još `dashboard.html`
   (panel „Izgled”). Obrisati s mapom `preview/` kad se odluči. Brišu se tek kad zadnja stranica prijeđe na `odmoria.css`.
+
+## 8. Pomoć, Uvjeti korištenja, Pravila privatnosti
+
+Za ove tri stranice u Figmi nema dizajna. Dobile su zajednički predložak
+(`tekst.css`: traka kao na naslovnici, zaglavlje na plavkastoj podlozi, tekst do
+760 px, podnožje s poveznicama).
+
+**Pravni tekst (Uvjeti, Privatnost) prenesen je doslovno** — pravni tekst mijenja
+vlasnik, ne kod. Ali na više mjesta ne odgovara onome što aplikacija radi, pa
+ga prije lansiranja treba pregledati (po mogućnosti s pravnikom). Pomoć nije
+pravni tekst, pa je u njoj netočno **uklonjeno ili ispravljeno** (popis dolje).
+
+### 8a. Uvjeti korištenja (`terms.html`) — piše, a nije tako
+
+- [ ] **Cijene su zakucane** (Pro 15 €/mj ili 150 €/god, Business 49 €/mj ili
+  490 €/god, Free do 1 objekta). Pravi izvor je tablica `plans`, a planovi i
+  cijene još nisu konačni (točka 1). Kad se cijene promijene, uvjeti će
+  proturječiti aplikaciji. Prijedlog: u uvjetima napisati „prema cjeniku na
+  stranici”, bez iznosa.
+- [ ] **„Plaćanja obrađuje Stripe. Pretplata se automatski obnavlja.”** —
+  Stripe nije spojen; nadogradnja ide „preko kontakta” (točka 5).
+- [ ] **Povrat u 14 dana** za Pro i Business — nema plaćanja, pa nema ni povrata.
+  Ostaviti za kad Stripe proradi?
+- [ ] **„Business plan s timskim pristupom”** — timski pristup ne postoji
+  (`maxTeamMembers` postoji u `plans`, ali ga ništa u kodu ne koristi).
+- [ ] **„Obavijestit ćemo vas emailom … 14 dana unaprijed”** — nema slanja
+  e-mailova iz aplikacije.
+- [ ] **Sud u Zagrebu** i **ograničenje odgovornosti na 12 mjeseci plaćanja** —
+  pravna odluka, potvrditi.
+- [ ] **Tko je pružatelj usluge?** Nema imena tvrtke/obrta, OIB-a ni adrese —
+  za uvjete i GDPR to je obavezno.
+
+### 8b. Pravila privatnosti (`privacy.html`) — piše, a nije tako
+
+- [ ] **Stripe** („obrađuje plaćanje… skladište podataka kartice”) — nije spojen.
+- [ ] **„Klikovi na WhatsApp gumb i Google Maps”** — ne bilježe se. `page_views`
+  ima samo `property_id`, `view_type` i `timestamp` (pregled javne stranice i
+  otvaranje vodiča).
+- [ ] **Popis trećih strana je nepotpun.** Nedostaju: **Cloudinary**
+  (fotografije), **Google Maps** (karta na javnoj stranici, učitava se na klik),
+  **esm.sh** (učitava Supabase biblioteku i QR generator), **Google** (prijava
+  Google računom). Google Fonts je naveden, ali uz fontove Google vidi IP
+  posjetitelja — to je poznata GDPR tema (njemačke presude); rješenje je fontove
+  držati na vlastitoj domeni.
+- [ ] **„Supabase (Irska/SAD)”** — regija projekta nije provjerena u ovom
+  radu; provjeriti u Supabase postavkama.
+- [ ] **„Svi pružatelji imaju potpisane DPA”** — to je tvrdnja o ugovorima koju
+  kod ne može potvrditi. Provjeriti za svakog (Supabase, Vercel, Cloudinary).
+- [ ] **„Ne prikupljamo … IP adresu gostiju”** — aplikacija IP ne sprema, ali ga
+  Vercel i Supabase bilježe u svojim zapisnicima. Preformulirati („ne
+  spremamo”), ili navesti rok zapisnika.
+- [ ] **Kolačići** — Supabase sesiju prijave drži u `localStorage`, ne u
+  kolačiću. Tekst „samo kolačići neophodni za sesiju” je
+  duhom točan, ali tehnički nije.
+- [ ] **Brisanje: „u roku 30 dana”** — Račun kaže „brišemo u roku 24 h”. Jedno
+  od dvoje uskladiti.
+- [ ] **`podrska@odmoria.com`** — na obje stranice je jedini kontakt, a domena
+  `odmoria.com` još nije spojena (vidi točku 5). Ako adresa ne prima poštu,
+  zahtjevi za brisanje (GDPR) nikamo ne stižu.
+- [ ] **Ime gosta u rezervaciji** — domaćin upisuje ime gosta (`bookings.guest_name`)
+  i napomenu; tekst tvrdi da „ne prikupljamo ime… gostiju”. Treba dodati da
+  domaćin to može upisati i da je on voditelj te obrade.
+- [ ] **„Zadnje ažuriranje: kolovoz 2026.”** — ostavljen datum starog teksta;
+  promijeniti kad se tekst ispravi.
+
+### 8c. Pomoć (`help.html`) — što je promijenjeno i zašto
+
+Sve rečenice su na „vi”, kao ostatak aplikacije. Pretraga radi i bez dijakritike
+(„sifra” nađe „šifra”), pogoci se sami otvore; kategorije su poveznice.
+Planovi i broj fotografija pune se iz tablice `plans` (kao prije), ali **bez
+dodatnih tvrdnji** koje su bile zakucane uz svaki plan.
+
+**Uklonjeno, jer ne postoji:**
+
+- vlastita domena (Pro/Business) — sad piše „Zasad ne”,
+- „bez naše oznake” / „Odmoria oznaka u podnožju” — javna stranica nema oznaku
+  ni na jednom planu,
+- analitika 90 dana / 12 mj, white-label, timski pristup (do 5),
+- „Upravljaj pretplatom” (Stripe portal), povrat u 14 dana, „za više od 15
+  objekata javite se za ponudu” — sad piše da online plaćanja još nema i da se
+  plan mijenja e-mailom,
+- gumb **WhatsApp** s lažnim brojem `385000000000`,
+- „odgovaramo u roku 24 sata radnim danima”.
+
+**Ispravljeno, jer je bilo netočno:**
+
+- **QR kod vodi na javnu stranicu**, ne na privatni vodič (`renderQr()` koristi
+  `publicUrl`). Stari tekst savjetovao je QR sa šiframa lijepiti na hladnjak.
+  Ako želite QR za vodič, to je nova značajka — ali takav QR u apartmanu
+  otvara šifre svakome tko ga fotografira.
+- Postavljanje ima **5 koraka** (bilo je 4).
+- „Šifre su zaštićene na razini baze” — maknuto dok se ne provjeri točka 0.
+- „Podaci su u EU (Irska)”, „Stripe ne vidi…”, „usklađeni s GDPR-om: Da” — maknuto;
+  umjesto toga piše što se stvarno čuva i gdje (Supabase, Cloudinary, Vercel).
+- „Brisanje: dashboard → ⚙️ → Opasna zona, 30 dana” → **Račun → Profil i
+  sigurnost → Brisanje računa**, zahtjev e-mailom, bez roka.
+- „Link se sam zaključava” — `token_expires_at` se pri stvaranju rezervacije ne
+  upisuje iz dashboarda (možda ga postavlja baza — nije provjereno). Pomoć zato
+  kaže samo ono što je sigurno: nakon dana odlaska vodič ne pokazuje šifre, a
+  „Deaktiviraj” zatvara link odmah.
+- Savjet „stavite javni link u opis na Bookingu” — maknut; Booking.com u pravilu
+  ne dopušta vanjske poveznice i kontakt u opisu.
+- Domena u tekstu (`odmoria.com/p/…`, `odmoria.com/register`) → samo putanja
+  (`/p/naziv-objekta`), prema pravilu „nikad ne zakucavati domenu”.
+
+**Otvoreno za Pomoć:**
+
+- [ ] Kontakt: samo e-mail. Želite li i WhatsApp ili telefon (pravi broj)?
+- [ ] Rok odgovora podrške — ako ga želite obećati, upisati.
+- [ ] Opći gostinski link (stari put `slug` + `guest_token`) Pomoć spominje uz
+  upozorenje da šifre pokazuje odmah; vidi točku 0/5 hoće li se ukinuti.

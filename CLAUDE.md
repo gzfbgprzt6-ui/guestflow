@@ -49,6 +49,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 ├── odmoria.css              # v2 dizajn sustav (Figma „Odmoria / Product Design / v2”) — naslovnica, p.html, h.html, prijava
 ├── auth.css                 # raspored četiri stranice prijave (login, register, reset-password, email-confirm)
 ├── forms.css                # obrasci za onboarding, add-property i account (ista imena razreda kao prije)
+├── tekst.css                # tekstualne stranice: help, terms, privacy (za njih nema Figme)
 ├── atmosphere.css           # v3 dizajn sustav — danas ga koristi SAMO preview/ (nijedna živa stranica)
 ├── teme.css                 # OSAM TEMA javne stranice — dijele ih dashboard.html i preview/ (p.html v2 više ne)
 ├── teme.js                  # rasporedi zaglavlja, `izBaze(prop)` i zajednički birač tema
@@ -526,7 +527,7 @@ Dashboard **ne učitava `atmosphere.css`** — ima vlastiti potpun CSS. Dvostruk
 Figma datoteka `BVdEgki8jV7z6Oa3K6Te2h` (faze A, B, C) je vizualni izvor; postojeći
 kod je izvor funkcija i podataka. Prenosi se stranicu po stranicu, svaka na
 Preview pa potvrda: **naslovnica ✔** → **`p.html` ✔** → **aplikacija domaćina ✔** → **vodič ✔** →
-račun/admin. Otvorena pitanja su u `docs/odluke.md`, ne u kodu; što je gotovo, a što
+**prijava ✔** → **postavljanje i račun ✔** → **admin i 404 ✔** → **pomoć i pravne stranice ✔**. Otvorena pitanja su u `docs/odluke.md`, ne u kodu; što je gotovo, a što
 nije, u `docs/napredak.md`.
 
 **`odmoria.css`** nosi tokene iz Figme (perla #FCFCFA, petrol #103D4B, akcija
@@ -612,6 +613,16 @@ u `add-property` i popis planova u računu pune se iz `plans` (`getPlan`,
 i „Pretplata i limiti”; `#pretplata` u adresi otvara drugi (na njega vodi
 „Pogledaj planove”). Brisanje računa i e-mail obavijesti i dalje ništa ne rade
 na poslužitelju — sad to piše uz njih (vidi `docs/odluke.md`, točka 5).
+
+**Pomoć, Uvjeti, Privatnost** (`help`, `terms`, `privacy`) nemaju dizajn u
+Figmi; dijele `tekst.css` (traka, zaglavlje, tekst do 760 px, podnožje).
+**Pravni tekst je prenesen doslovno** i na više mjesta ne odgovara aplikaciji
+(Stripe, zakucane cijene, timski pristup, nepotpun popis trećih strana) — popis
+je u `docs/odluke.md`, točka 8; mijenja ga vlasnik, ne kod. Pomoć je očišćena:
+nema vlastite domene, oznake, white-labela ni lažnog WhatsApp broja. **QR kod iz
+dashboarda vodi na javnu stranicu** (`publicUrl`), ne na vodič — Pomoć to tako i
+kaže. Pretraga u Pomoći ne ovisi o dijakritici, a planovi se pune iz `plans`
+samo s limitima (objekti, fotografije, preporuke), bez zakucanih dodataka.
 
 Provjereno podmetnutim klijentom (puni objekt, objekt bez ičega, nepostojeći slug)
 na 1920/1440/834/430/390/360: bez prelijevanja, bez JS grešaka; odabir raspona,

@@ -6,37 +6,36 @@
 <title>Pravila privatnosti — Odmoria</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'DM Sans',system-ui,sans-serif;background:#fff;color:#1A1917;-webkit-font-smoothing:antialiased;line-height:1.7}
-a{color:#A15C3E;text-decoration:none}
-nav{background:rgba(255,255,255,.93);backdrop-filter:blur(14px);border-bottom:1px solid #E2E0DB;display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:56px;position:sticky;top:0;z-index:50}
-.logo{font-size:18px;font-weight:800;letter-spacing:-.5px;color:#1A1917}
-.logo span{color:#A15C3E}
-.main{max-width:700px;margin:0 auto;padding:48px 24px 80px}
-h1{font-size:clamp(28px,5vw,40px);font-weight:800;letter-spacing:-.03em;margin-bottom:8px}
-.last-updated{font-size:13px;color:#6B6A67;margin-bottom:40px}
-h2{font-size:18px;font-weight:700;margin:32px 0 10px;padding-top:8px;border-top:1px solid #E2E0DB}
-h2:first-of-type{border-top:none;margin-top:0}
-p{font-size:15px;color:#3a3835;margin-bottom:14px}
-ul{font-size:15px;color:#3a3835;padding-left:22px;margin-bottom:14px}
-ul li{margin-bottom:7px}
-.highlight{background:#F1E3DA;border-radius:10px;padding:16px 20px;margin:20px 0;border-left:4px solid #A15C3E}
-.highlight p{margin:0;color:#A15C3E;font-weight:500}
-footer-strip{display:block;text-align:center;padding:24px;font-size:13px;color:#6B6A67;border-top:1px solid #E2E0DB}
-</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Manrope:wght@600;700;800&display=swap">
+<link rel="stylesheet" href="/odmoria.css">
+<link rel="stylesheet" href="/tekst.css">
 </head>
 <body>
-<nav>
-  <a href="/" class="logo">Odmor<span>ia</span></a>
-  <a href="/register.html" style="font-size:13px;font-weight:600;color:#6B6A67">Registracija →</a>
-</nav>
-<div class="main">
-  <h1>Pravila privatnosti</h1>
-  <div class="last-updated">Zadnje ažuriranje: kolovoz 2026.</div>
+<a class="skip" href="#sadrzaj">Preskoči na sadržaj</a>
+<header class="tnav">
+  <div class="wrap tnav__in">
+    <a href="/" class="tnav__logo">Odmoria<i>.</i></a>
+    <div class="tnav__act">
+      <a href="/login.html" class="btn btn--secondary btn--sm">Prijava</a>
+      <a href="/register.html" class="btn btn--primary btn--sm">Započni besplatno</a>
+    </div>
+  </div>
+</header>
 
-  <div class="highlight"><p>Odmoria ne prodaje vaše podatke trećim stranama i ne prikazuje oglase. Podaci se koriste isključivo za pružanje usluge.</p></div>
+<div class="thead">
+  <div class="wrap">
+    <span class="eyebrow">Pravno</span>
+    <h1>Pravila privatnosti</h1>
+    <p>Zadnje ažuriranje: kolovoz 2026.</p>
+  </div>
+</div>
+
+<main class="wrap" id="sadrzaj">
+<!-- Pravni tekst prenesen je doslovno iz prethodne verzije. Tvrdnje koje se
+     ne slažu s kodom (Stripe, analitika klikova, popis trećih strana)
+     popisane su u docs/odluke.md, točka 8 — mijenja ih vlasnik, ne kod. -->
+<article class="doc">
+  <p class="note">Odmoria ne prodaje vaše podatke trećim stranama i ne prikazuje oglase. Podaci se koriste isključivo za pružanje usluge.</p>
 
   <h2>1. Tko smo</h2>
   <p>Odmoria je servis za digitalne vodiče za goste kratkoročnih najma. Pružatelj usluge je Odmoria (kontakt: <a href="mailto:podrska@odmoria.com">podrska@odmoria.com</a>).</p>
@@ -107,7 +106,14 @@ footer-strip{display:block;text-align:center;padding:24px;font-size:13px;color:#
 
   <h2>Kontakt</h2>
   <p>Za pitanja o privatnosti pišite na <a href="mailto:podrska@odmoria.com">podrska@odmoria.com</a>.</p>
-</div>
-<footer-strip>© 2026 Odmoria · <a href="/terms.html">Uvjeti korištenja</a> · <a href="/privacy.html">Privatnost</a></footer-strip>
+</article>
+</main>
+
+<footer class="tfoot">
+  <div class="wrap tfoot__in">
+    <span>© 2026 Odmoria</span>
+    <nav aria-label="Podnožje"><a href="/help.html">Pomoć</a><a href="/terms.html">Uvjeti korištenja</a><a href="/privacy.html" aria-current="page">Privatnost</a></nav>
+  </div>
+</footer>
 </body>
 </html>
