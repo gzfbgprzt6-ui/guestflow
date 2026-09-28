@@ -2,7 +2,19 @@
   "rewrites": [
     {
       "source": "/p/:slug",
-      "destination": "/p.html"
+      "destination": "/api/stranica?slug=:slug"
+    },
+    {
+      "source": "/sitemap.xml",
+      "destination": "/api/stranica?sto=sitemap"
+    },
+    {
+      "source": "/robots.txt",
+      "destination": "/api/stranica?sto=robots"
+    },
+    {
+      "source": "/c/:token",
+      "destination": "/c.html"
     },
     {
       "source": "/h/:token",
@@ -64,6 +76,19 @@
       ]
     },
     {
+      "source": "/c/:token",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        }
+      ]
+    },
+    {
       "source": "/sw.js",
       "headers": [
         {
@@ -95,5 +120,10 @@
       "path": "/api/keepalive",
       "schedule": "0 6 * * *"
     }
-  ]
+  ],
+  "functions": {
+    "api/stranica.js": {
+      "includeFiles": "p.html"
+    }
+  }
 }
