@@ -123,11 +123,10 @@ i kvačica se zatvori.
   Izgled), jer spajanje više panela u jedan traži izmjenu trake „Imate
   nespremljene promjene” (ona zna za samo jedan gumb „Spremi” po panelu).
   Spojiti prema Figmi?
-- [ ] **Analitika** (peta stavka u Figmi) nije dodana — u kodu ne postoji, a
-  traži nove upite nad `page_views` (vidi „Analitika po danu”).
-- [ ] **Pregled:** Figma ima „Nadolazeće dolaske” s gumbom „Pošalji vodič” i
-  „Brze radnje”. U kodu je Pregled ostao kakav je bio (linkovi, četiri brojke,
-  sljedeći koraci) — samo novi izgled. Dodati?
+- [x] **Analitika** — dodana (Pregled → Analitika), vidi točku 11.
+- [x] **Pregled:** sada ima „Sljedećih 14 dana” (dolasci i odlasci) i „Na što
+  obratiti pažnju” s radnjama (vidi točku 11). „Brze radnje” iz Figme nisu
+  dodane zasebno — radnje su uz svako upozorenje.
 - [ ] **Pregled gosta (telefon desno)** — Figma ga nema; u kodu ostaje, ali samo
   na zaslonima širim od 1280 px. Zadržati?
 - [ ] **Traka „Imate nespremljene promjene”** — Figma ima i gumb „Odbaci”. Kod
@@ -153,7 +152,7 @@ i kvačica se zatvori.
 - [ ] **Vodič: tekstovi stanja linka** preuzeti su iz Figme („Link nije
   ispravan”, „Ovaj link je istekao”, „Objekt nije pronađen”) — nijedno stanje
   ne otkriva naziv ni adresu objekta.
-- [ ] **Analitika po danu** iz `page_views`: želimo li taj prikaz i na kojem planu?
+- [x] **Analitika po danu** iz `page_views` — napravljena, za sve planove (točka 11 — treba li je ograničiti po planu).
 - [ ] **Države posjetitelja:** odobriti izmjenu sheme (`country`, `lang` u
   `page_views`) i `api/track.js`, ili odustati.
 - [ ] **Gumb „Popuni testnim kalendarom”:** ostaje nakon lansiranja?
@@ -282,9 +281,10 @@ pravni tekst, pa je u njoj netočno **uklonjeno ili ispravljeno** (popis dolje).
 ### 8b. Pravila privatnosti (`privacy.html`) — piše, a nije tako
 
 - [ ] **Stripe** („obrađuje plaćanje… skladište podataka kartice”) — nije spojen.
-- [ ] **„Klikovi na WhatsApp gumb i Google Maps”** — ne bilježe se. `page_views`
-  ima samo `property_id`, `view_type` i `timestamp` (pregled javne stranice i
-  otvaranje vodiča).
+- [x] **„Klikovi na WhatsApp gumb i Google Maps”** — od rujna 2026. se
+  bilježe (točka 11): upit WhatsAppom / e-mailom / kopiranjem i otvaranje
+  karte, kao nova vrijednost `view_type` u `page_views` (bez novih stupaca,
+  bez podataka o posjetitelju). Tvrdnja je sada točna.
 - [ ] **Popis trećih strana je nepotpun.** Nedostaju: **Cloudinary**
   (fotografije), **Google Maps** (karta na javnoj stranici, učitava se na klik),
   **esm.sh** (učitava Supabase biblioteku i QR generator), **Google** (prijava
@@ -426,3 +426,87 @@ povijesti gita (zadnje stanje s mapom: commit `70d0552`).
 - Dashboard učitava Fraunces i fontove tema (`teme.css` → Google Fonts, osam
   obitelji) samo zbog minijatura u panelu „Izgled”. Ako se panel sakrije, to se
   može maknuti i dashboard se brže učitava.
+
+## 11. Analitika domaćina i admin panel (rujan 2026.)
+
+Sve je na **postojećim tablicama** (`page_views`, `availability`, `bookings`,
+`properties`, `subscriptions`, `plans`) — nijedan novi stupac ni tablica.
+Izračuni su u jednom modulu (`analitika.js` + `analitika.css`) koji dijele
+dashboard i admin.
+
+**Što se novo bilježi** (`page_views.view_type`, samo vrsta i vrijeme):
+`inquiry_whatsapp`, `inquiry_email`, `inquiry_copy` (upit s javne stranice),
+`map` (otvorena karta), `guide:dolazak` / `guide:kuca` / `guide:preporuke` /
+`guide:domacin` (dio vodiča). Svaka vrsta jednom po otvaranju stranice.
+Kad domaćin sam otvori svoju stranicu ili vodič iz aplikacije (dodaje se
+`?domacin=1`), ništa se ne bilježi — prije su se njegovi pregledi brojali.
+
+**Dashboard → Pregled** (za svakog domaćina):
+- četiri brojke: popunjenost sljedećih 30 dana, sljedeći dolazak, pregledi i
+  upiti u 30 dana s usporedbom;
+- **Na što obratiti pažnju** — automatske provjere s gumbom za radnju: iCal
+  nije sinkroniziran 3+ dana, boravak s Bookinga/Airbnba bez linka za vodič
+  („Napravi link” otvori rezervaciju s već upisanim datumima), gost dolazi za
+  ≤ 7 dana a u vodiču nema šifre/Wi-Fija/adrese, praznine kraće od
+  minimalnog boravka, linkovi aktivni nakon odlaska, prazan kalendar;
+- **Sljedećih 14 dana** — dolasci, odlasci i izmjene istog dana.
+
+**Dashboard → Analitika:** raspon 30 / 90 dana / 12 mjeseci; pregledi i
+otvaranja vodiča (ista skala), upiti po kanalu, što gosti otvaraju u vodiču,
+dan u tjednu i sat, popunjenost po mjesecima (12 mj.), odakle dolaze noćenja
+(Booking/Airbnb/Odmoria/ručno + udio izravnih), boravci ove godine s grubom
+procjenom prihoda (noći × cijena), praznine u 90 dana s „Kopiraj ponudu”,
+raspored čišćenja s „Kopiraj raspored”, usporedba objekata, izvoz boravaka u CSV.
+Svaki grafikon ima i prikaz tablicom.
+
+**Admin:** novi tabovi Pregled, Objekti i Korištenje; Domaćini, Prihod,
+Poruke i Sustav prošireni:
+- Pregled: računi, novi domaćini (mjesec prema mjesecu), plaćeni, MRR, aktivni
+  domaćini, promet, upiti; „Na što obratiti pažnju” s prečacima; rast,
+  **aktivacijski lijevak** (račun → objekt → fotografije → link → gost otvorio
+  vodič) i usvajanje mogućnosti;
+- Domaćini: segmenti (aktivni, neaktivni, istječe, isteklo, bez pretplate,
+  kandidati za nadogradnju, rizik odljeva, slabo zdravlje), pretraga, poredak,
+  stranice po 25, **zdravlje računa 0–100**, CSV, „Kopiraj e-mailove”;
+  **Detalji** domaćina: promjena plana, **produljenje pretplate** (+1 mj,
+  +1 god, bez isteka), e-mail, objekti s brojkama;
+- Objekti: dovršenost, iCal ažurnost, promet po objektu, filtri, CSV;
+- Korištenje: promet platforme 30/90/365 dana, kanali upita, dijelovi vodiča,
+  dan u tjednu, rezervacije po mjesecu, top 10 objekata;
+- Prihod: MRR u riziku, uskoro istječe, **kandidati za nadogradnju**, **rizik
+  odljeva** — s gumbom „Javi se”;
+- Poruke: e-mail segmentu **radi odmah** (otvara vaš e-mail program sa
+  skrivenom kopijom, ili kopira adrese); obavijesti u aplikaciji i dalje traže
+  tablicu `announcements`;
+- Sustav: zdravlje podataka (računi bez objekta, domaćini bez pretplate,
+  objekti bez adrese/kontakta, neispravne rezervacije).
+
+**Odluke koje čekaju:**
+
+- [ ] **Analitika po planu?** `plans.analytics_days` postoji (Free 0 / Pro 90
+  / Business 365), ali ga ništa ne koristi. **Sada u kodu:** svi planovi vide
+  sve (i 12 mjeseci). Ograničiti (npr. Free 30 dana), ili ostaviti kao razlog
+  za registraciju?
+- [ ] **Procjena prihoda** (noći × cijena po noći) — korisna ili zbunjujuća?
+  Označena je kao gruba procjena; cijena je jedna za cijelu godinu.
+- [ ] **Pragovi upozorenja:** iCal „star” nakon 3 dana (dashboard) / 7 dana
+  (admin); praznina = do 7 noći; „gost dolazi” = 7 dana unaprijed;
+  kandidat za nadogradnju = na limitu ili 100+ pregleda u 30 dana. Promijeniti?
+- [ ] **Zdravlje računa** — bodovi: fotografije 20, cijena 10, iCal 15, link za
+  gosta 20, promet u 30 dana 20, gost otvorio vodič u 90 dana 15. U redu?
+- [ ] **E-mail u adminu je kontakt iz objekta** (`properties.email`), ne adresa
+  računa — adresa računa je u `auth.users`, koju admin s javnim ključem ne
+  može čitati. Računi bez objekta zato nemaju vidljiv e-mail. Za pravu adresu
+  treba serverska funkcija sa service ključem (odobrenje).
+- [ ] **Admin ne može stvoriti red u `subscriptions`** (RLS dopušta samo
+  izmjenu). Domaćinu bez reda plan se ne može postaviti iz admina — treba
+  insert politika za vlasnika (promjena RLS-a, odobrenje) ili okidač koji red
+  stvara pri registraciji.
+- [ ] **Veliki promet:** admin povlači preglede zadnjih 90 dana (do 100.000
+  redova). Kad platforma naraste, zbrajanje treba prebaciti u bazu (pogled ili
+  RPC funkcija) — nova SQL funkcija, odobrenje.
+- [ ] **Admin na mobitelu:** tablice se vodoravno pomiču (Figma mobile ima
+  kartice). U redu za alat koji se koristi uglavnom na računalu?
+- [ ] **Stari podaci:** pregledi prije ove verzije nemaju upite ni dijelove
+  vodiča, a domaćinovi vlastiti pregledi su se brojali — usporedba s
+  razdobljem prije rujna 2026. je zato gruba.

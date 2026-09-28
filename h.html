@@ -364,6 +364,18 @@ const fmtShort = d => `${d.getDate()}. ${d.getMonth() + 1}.`
 const fmtHM = d => `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
 
 let PROP = null, SECTION = null, BOOKING = null
+
+/* Statistika za domaćina (page_views: objekt, vrsta, vrijeme — bez podataka o
+   gostu). Svaka vrsta jednom po otvaranju. `?domacin=1` dodaje dashboard kad
+   domaćin sam otvori vodič, da se njegovi pregledi ne broje. */
+const DOMACIN = new URLSearchParams(location.search).has('domacin')
+const zabiljezeno = new Set()
+function biljezi(vrsta) {
+  if (DOMACIN || !PROP || zabiljezeno.has(vrsta)) return
+  zabiljezeno.add(vrsta)
+  sb.from('page_views').insert({ property_id: PROP.id, view_type: vrsta }).then(() => {}, () => {})
+}
+
 let UNLOCKED = false, tick = null, UNLOCK_AT = null, CO_END = null
 
 const params = new URLSearchParams(location.search)
@@ -460,7 +472,7 @@ async function finish() {
   renderTop(); renderVault(); renderArrival(); renderHouse(rules.data, faqs.data)
   renderRecs(places.data, txs.data, atts.data); renderHost(); renderTiles()
 
-  sb.from('page_views').insert({ property_id: PROP.id, view_type: 'guest_hub' }).then(() => {})
+  biljezi('guest_hub')
 
   show('#boot', false)
   show('#page')
@@ -758,6 +770,7 @@ const VIEWS = {
 function route() {
   const [v, anchor] = location.hash.slice(1).split('/')
   const view = VIEWS[v] ? v : 'home'
+  if (view !== 'home') biljezi('guide:' + view)
   document.querySelectorAll('[data-view]').forEach(el => { el.hidden = el.dataset.view !== view })
   const home = view === 'home'
   show('#back', !home)

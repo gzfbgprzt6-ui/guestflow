@@ -9,17 +9,16 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Manrope:wght@600;700;800&display=swap">
 <link rel="stylesheet" href="/odmoria.css">
+<link rel="stylesheet" href="/analitika.css">
 <style>
 /* ==========================================================================
-   Admin — redizajn v2 (Figma: 07 Account & Admin, Admin). Razredi su isti kao
-   u staroj verziji (ui.css), pa JavaScript nije diran; ovdje su samo nove
-   vrijednosti. Grafikoni čitaju --t-1…--t-5 i --grid: sekvencijalna petrol
-   rampa (svijetlo → tamno), nikad kategorijske boje.
+   Admin — v2 (Figma: 07 Account & Admin, Admin), proširen u rujnu 2026.:
+   Pregled · Domaćini · Objekti · Korištenje · Prihod · Poruke · Sustav.
+   Sve iz postojećih tablica (properties, subscriptions, bookings, page_views,
+   plans) — bez novih stupaca. Grafikoni i pločice dolaze iz analitika.js/.css
+   (isti modul kao analitika domaćina u dashboardu).
    ========================================================================== */
-:root{
-  --t-1:#D6ECEE; --t-2:#A9D3D8; --t-3:#5FA9B1; --t-4:#116D76; --t-5:#0B535B;
-  --grid:rgba(16,61,75,.10); --ink-mut:#536D77;
-}
+:root{--ink-mut:#536D77}
 body{background:var(--bg-page)}
 #gate,#denied{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;text-align:center;padding:24px;background:var(--bg-page);z-index:99}
 #denied{display:none}
@@ -46,10 +45,12 @@ body{background:var(--bg-page)}
 .navi[aria-current="page"]{background:rgba(255,255,255,.12);font-weight:700}
 .navi[aria-current="page"]::before{content:"";position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:3px;background:var(--text-on-inverse-accent)}
 .navi .ic{color:var(--text-on-inverse-accent)}
+.navi .cnt{margin-left:auto;padding:2px 7px;border-radius:10px;background:var(--text-on-inverse-accent);color:var(--bg-inverse);font:700 12px/1.3 var(--font-body)}
 .side :focus-visible{outline-color:var(--text-on-inverse-accent)}
 .side__foot{margin-top:auto;display:grid;gap:4px;padding-top:16px;border-top:1px solid rgba(255,255,255,.14)}
 .side__foot button.navi{border:0;background:none;cursor:pointer;width:100%;text-align:left}
-.main{min-width:0;padding:32px 40px 64px}
+.main{min-width:0;padding:24px 40px 64px}
+.topline{display:flex;justify-content:flex-end;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px;font-size:14px;color:var(--text-muted)}
 
 /* zaglavlje panela */
 .head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:24px}
@@ -60,7 +61,7 @@ body{background:var(--bg-page)}
 .lead{color:var(--text-muted)}
 .small,.hint{font-size:14px;color:var(--text-muted)}
 .hint{margin-top:12px}
-.panel{background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-feature);padding:24px}
+.panel{background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-feature);padding:24px;min-width:0}
 .panel h3{font:700 20px/1.3 var(--font-ui)!important;letter-spacing:-.02em}
 .panel--dark{background:var(--bg-inverse);color:#fff;border-color:var(--bg-inverse)}
 .panel--dark .kicker{color:var(--text-on-inverse-accent)}
@@ -68,81 +69,87 @@ body{background:var(--bg-page)}
 code{font:500 .9em ui-monospace,monospace;background:var(--bg-wash);padding:1px 5px;border-radius:4px}
 .panel--dark code{background:rgba(255,255,255,.12)}
 .kod{margin:0;padding:14px;border-radius:var(--radius-panel);background:rgba(255,255,255,.08);color:#fff;font:13px/1.55 ui-monospace,monospace;overflow-x:auto}
+.ph{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
 
 /* mreže */
 .g{display:grid;gap:16px}
-.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
-.g-main{grid-template-columns:minmax(0,1.8fr) minmax(0,1fr)}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g-main{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr)}
 .row{display:flex} .wrapf{flex-wrap:wrap} .gap8{gap:8px} .gap12{gap:12px}
 .mt8{margin-top:8px} .mt12{margin-top:12px} .mt16{margin-top:16px} .mt24{margin-top:24px}
 
-/* brojke */
-.stat{display:grid;gap:6px;align-content:start;padding:20px;background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-feature)}
-.stat__lb{font-size:14px;color:var(--text-muted)}
-.stat__v{font:800 30px/1.1 var(--font-ui);letter-spacing:-.02em}
-.stat__sub{font-size:13px;color:var(--text-muted)}
-
-/* rang (raspodjela planova, prihod) */
-.rank{display:grid;gap:16px}
-.rank__row{display:grid;grid-template-columns:1fr auto;gap:6px 12px;align-items:center}
-.rank__nm{font:700 16px/1.3 var(--font-ui)}
-.rank__v{font-size:14px;color:var(--text-muted);text-align:right}
-.rank__tr{grid-column:1 / -1;order:3;height:8px;border-radius:4px;background:var(--bg-wash);overflow:hidden}
-.rank__tr i{display:block;height:100%;border-radius:4px}
-
 /* tablice */
-.tblwrap{overflow-x:auto}
+/* relative: skrivene oznake (.sr-only, absolute) u stanicama inače rastegnu cijelu stranicu */
+.tblwrap{overflow-x:auto;position:relative}
 .tbl{width:100%;border-collapse:collapse;font-size:15px}
 .tbl th{text-align:left;padding:10px 12px;font:600 14px/1.3 var(--font-ui);color:var(--text-muted);border-bottom:1px solid var(--border);white-space:nowrap}
-.tbl td{padding:14px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+.tbl td{padding:12px;border-bottom:1px solid var(--border);vertical-align:middle}
 .tbl td b,.tbl td strong{font-family:var(--font-ui)}
-.tag{display:inline-flex;align-items:center;padding:4px 8px;border-radius:6px;font:700 12px/1.3 var(--font-body);letter-spacing:.04em;margin:2px 2px 2px 0}
+.tbl .num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tag{display:inline-flex;align-items:center;padding:4px 8px;border-radius:6px;font:700 12px/1.3 var(--font-body);letter-spacing:.04em;margin:2px 2px 2px 0;white-space:nowrap}
 .tag--ok{background:var(--bg-wash);color:var(--text-accent)}
 .tag--warn{background:var(--bg-warm);color:var(--text-warm)}
 .tag--mut{background:var(--bg-page);color:var(--text);box-shadow:inset 0 0 0 1px var(--border)}
+.lnk{color:var(--text-accent);text-decoration:underline;text-underline-offset:3px}
 
-/* obrasci i gumbi (stara imena) */
+/* obrasci i gumbi */
 .lb{display:block;font:700 14px/1.3 var(--font-ui)}
 .inp{width:100%;min-height:48px;padding:0 14px;margin-top:8px;border:1px solid var(--border-control);border-radius:var(--radius-control);background:var(--bg-surface);color:var(--text);font:400 16px/1.4 var(--font-body)}
-textarea.inp{padding:12px 14px;min-height:120px;resize:vertical}
+textarea.inp{padding:12px 14px;min-height:140px;resize:vertical}
 .inp:focus{outline:0;border-color:var(--text);box-shadow:0 0 0 2px var(--text)}
-.inp--sm{min-height:40px;font-size:15px}
+.inp--sm{min-height:40px;font-size:15px;margin-top:0;width:auto}
 .btn--fill{background:var(--action);color:#fff}
 .btn--fill:hover{background:var(--action-hover)}
 .btn--ghost{background:var(--bg-surface);border-color:var(--border-control);color:var(--text)}
 .btn--ghost:hover{background:var(--bg-wash)}
 .btn--sm{min-height:40px;padding:0 14px;font-size:14px}
 .btn:disabled{background:var(--bg-wash);border-color:var(--bg-wash);color:var(--text-muted);cursor:not-allowed}
-.arr{display:inline-block}
 .note-inline{padding:12px 14px;border-radius:var(--radius-panel);background:var(--bg-warm);color:var(--text-warm);font-weight:600}
-.empty{text-align:center;padding:40px;color:var(--text-muted)}
+.note-ok{padding:12px 14px;border-radius:var(--radius-panel);background:var(--bg-wash);color:var(--text-accent);font-weight:600}
+.filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.pager{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:16px;font-size:14px;color:var(--text-muted)}
 
 /* stanje sustava */
 .sys{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border)}
 .sys:last-child{border-bottom:0}
+.sys p{margin:2px 0 0;color:var(--text-muted);font-size:14px}
 .sys__d{width:10px;height:10px;border-radius:50%;margin-top:7px;flex:none}
 .sys__d.ok{background:var(--action)}
 .sys__d.no{background:transparent;box-shadow:inset 0 0 0 2px var(--text-warm)}
 
-@media (max-width:1100px){.g4{grid-template-columns:repeat(2,minmax(0,1fr))}.g-main{grid-template-columns:minmax(0,1fr)}}
+/* detalji domaćina */
+.dlg{width:min(880px,calc(100vw - 32px));max-height:calc(100vh - 32px);padding:0;border:0;border-radius:var(--radius-feature);background:var(--bg-surface);color:var(--text);box-shadow:0 24px 64px rgba(10,42,51,.28)}
+.dlg::backdrop{background:rgba(10,42,51,.45)}
+.dlg__head{position:sticky;top:0;z-index:1;display:flex;justify-content:space-between;gap:16px;align-items:flex-start;padding:20px 24px;border-bottom:1px solid var(--border);background:var(--bg-surface)}
+.dlg__head h2{font:800 24px/1.2 var(--font-ui);letter-spacing:-.02em;margin-top:4px}
+.dlg__body{padding:20px 24px 28px;display:grid;gap:20px}
+.dlg__body > *{min-width:0}
+.dlg__x{width:44px;height:44px;border-radius:var(--radius-control);border:1px solid var(--border-control);background:var(--bg-surface);display:grid;place-items:center;cursor:pointer;flex:none}
+.box{padding:16px;border:1px solid var(--border);border-radius:var(--radius-panel)}
+.box h3{font:700 17px/1.3 var(--font-ui);margin-bottom:10px}
+
+@media (max-width:1100px){.g-main,.g2{grid-template-columns:minmax(0,1fr)}}
 @media (max-width:860px){
   .app{grid-template-columns:minmax(0,1fr)}
   .side{position:sticky;top:0;height:auto;z-index:20}
   .side__in{flex-direction:row;align-items:center;gap:4px;padding:10px 12px;overflow-x:auto}
   .brand{margin:0 8px 0 4px}
-  .brand .tagadm,.owner,.side__foot .navi:last-child{display:none}
+  .brand .tagadm,.owner,.side__foot .navi:last-child,.navi .cnt{display:none}
   .side__foot{margin:0;padding:0;border:0;display:flex}
   .navi{flex:none;min-height:44px}
   .navi[aria-current="page"]::before{left:8px;right:8px;top:auto;bottom:4px;width:auto;height:3px}
-  .main{padding:24px 16px 48px}
+  .main{padding:16px 16px 48px}
   .head h1{font-size:28px}
 }
-@media (max-width:520px){.g4{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.stat{padding:16px}.stat__v{font-size:26px}.panel{padding:16px}}
+@media (max-width:520px){.panel{padding:16px}.dlg__head,.dlg__body{padding-inline:16px}.filters .inp--sm{flex:1 1 100%;width:100%}}
 </style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-gauge" viewBox="0 0 24 24"><path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/></symbol>
   <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /> <path d="M16 3.128a4 4 0 0 1 0 7.744" /> <path d="M22 21v-2a4 4 0 0 0-3-3.87" /> <circle cx="9" cy="7" r="4" /></symbol>
+  <symbol id="i-house" viewBox="0 0 24 24"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol>
+  <symbol id="i-activity" viewBox="0 0 24 24"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"/></symbol>
   <symbol id="i-chart-no-axes-column" viewBox="0 0 24 24"><path d="M5 21v-6" /> <path d="M12 21V3" /> <path d="M19 21V9" /></symbol>
   <symbol id="i-mail" viewBox="0 0 24 24"><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" /> <rect x="2" y="4" width="20" height="16" rx="2" /></symbol>
   <symbol id="i-settings" viewBox="0 0 24 24"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915" /> <circle cx="12" cy="12" r="3" /></symbol>
@@ -152,13 +159,15 @@ textarea.inp{padding:12px 14px;min-height:120px;resize:vertical}
   <symbol id="i-lock" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2" ry="2" /> <path d="M7 11V7a5 5 0 0 1 10 0v4" /></symbol>
   <symbol id="i-refresh-cw" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" /> <path d="M21 3v5h-5" /> <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" /> <path d="M8 16H3v5" /></symbol>
   <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 15V3" /> <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /> <path d="m7 10 5 5 5-5" /></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></symbol>
 </svg>
 <a class="skip" href="#admin-main">Preskoči na sadržaj</a>
 
 <div id="gate" role="status"><div class="spin" aria-hidden="true"></div><p class="small">Provjera pristupa…</p></div>
 
 <div id="denied">
-  <span class="state__ic"><svg class="ic " aria-hidden="true"><use href="#i-lock"/></svg></span>
+  <span class="state__ic"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg></span>
   <h1 style="font:800 28px/1.2 var(--font-ui)">Nemate pristup</h1>
   <p class="lead" style="max-width:42ch">Ova stranica je dostupna samo vlasniku platforme.</p>
   <a class="btn btn--primary" href="/dashboard.html">Natrag na dashboard</a>
@@ -168,180 +177,289 @@ textarea.inp{padding:12px 14px;min-height:120px;resize:vertical}
 <div class="app">
   <aside class="side on-dark" aria-label="Admin"><nav class="side__in">
     <div class="brand"><span>Odmoria<i>.</i></span><span class="tagadm">ADMIN</span></div>
-    <div class="owner"><svg class="ic " aria-hidden="true"><use href="#i-shield-check"/></svg><div><b>Vlasnički pristup</b><span>Zaštićeno i na RLS razini.</span></div></div>
-    <a class="navi" data-tab="domacini" aria-current="page" href="#domacini"><svg class="ic " aria-hidden="true"><use href="#i-users"/></svg>Domaćini</a>
-    <a class="navi" data-tab="prihod" href="#prihod"><svg class="ic " aria-hidden="true"><use href="#i-chart-no-axes-column"/></svg>Prihod</a>
-    <a class="navi" data-tab="poruke" href="#poruke"><svg class="ic " aria-hidden="true"><use href="#i-mail"/></svg>Poruke</a>
-    <a class="navi" data-tab="postavke" href="#postavke"><svg class="ic " aria-hidden="true"><use href="#i-settings"/></svg>Postavke</a>
+    <div class="owner"><svg class="ic" aria-hidden="true"><use href="#i-shield-check"/></svg><div><b>Vlasnički pristup</b><span>Zaštićeno i na RLS razini.</span></div></div>
+    <a class="navi" data-tab="pregled" href="#pregled"><svg class="ic" aria-hidden="true"><use href="#i-gauge"/></svg>Pregled<span class="cnt" id="cntPaznja" hidden></span></a>
+    <a class="navi" data-tab="domacini" href="#domacini"><svg class="ic" aria-hidden="true"><use href="#i-users"/></svg>Domaćini</a>
+    <a class="navi" data-tab="objekti" href="#objekti"><svg class="ic" aria-hidden="true"><use href="#i-house"/></svg>Objekti</a>
+    <a class="navi" data-tab="koristenje" href="#koristenje"><svg class="ic" aria-hidden="true"><use href="#i-activity"/></svg>Korištenje</a>
+    <a class="navi" data-tab="prihod" href="#prihod"><svg class="ic" aria-hidden="true"><use href="#i-chart-no-axes-column"/></svg>Prihod</a>
+    <a class="navi" data-tab="poruke" href="#poruke"><svg class="ic" aria-hidden="true"><use href="#i-mail"/></svg>Poruke</a>
+    <a class="navi" data-tab="sustav" href="#sustav"><svg class="ic" aria-hidden="true"><use href="#i-settings"/></svg>Sustav</a>
     <div class="side__foot">
-      <a class="navi" href="/dashboard.html"><svg class="ic " aria-hidden="true"><use href="#i-layout-dashboard"/></svg>Moj dashboard</a>
-      <button class="navi" type="button" onclick="logout()"><svg class="ic " aria-hidden="true"><use href="#i-log-out"/></svg>Odjava</button>
+      <a class="navi" href="/dashboard.html"><svg class="ic" aria-hidden="true"><use href="#i-layout-dashboard"/></svg>Moj dashboard</a>
+      <button class="navi" type="button" onclick="logout()"><svg class="ic" aria-hidden="true"><use href="#i-log-out"/></svg>Odjava</button>
     </div>
   </nav></aside>
 
-  <main class="main" id="admin-main">
+  <main class="main an" id="admin-main">
+    <div class="topline"><span id="osvjezeno" aria-live="polite">Učitavanje…</span>
+      <button class="btn btn--ghost btn--sm" id="osvjezi" type="button">Osvježi<svg class="ic ic--sm" aria-hidden="true"><use href="#i-refresh-cw"/></svg></button></div>
 
-    <!-- ============ DOMAĆINI ============ -->
-    <section class="tabpanel" data-panel="domacini">
-      <div class="head">
-        <div>
-          <h1>Domaćini</h1>
-          <p class="head__sub">Svi domaćini, planovi i pretplate koje uskoro istječu.</p>
-        </div>
-        <div class="head__act">
-          <button class="btn btn--ghost btn--sm" id="osvjezi">Osvježi<svg class="ic ic--sm" aria-hidden="true"><use href="#i-refresh-cw"/></svg></button>
-          <button class="btn btn--fill btn--sm" id="izvoz">Izvezi CSV<svg class="ic ic--sm" aria-hidden="true"><use href="#i-download"/></svg></button>
-        </div>
-      </div>
+    <!-- ============ PREGLED ============ -->
+    <section class="tabpanel" data-panel="pregled">
+      <div class="head"><div><h1>Pregled</h1><p class="head__sub">Stanje platforme danas: rast, aktivnost, prihod i što traži vašu pažnju.</p></div></div>
+      <section class="an-kpis" id="kpiA"></section>
+      <section class="an-kpis" id="kpiB"></section>
 
-      <section class="g g4" id="brojke"></section>
+      <section class="panel" id="paznjaPanel">
+        <p class="kicker">Zahtijeva pažnju</p>
+        <h3 class="mt8">Na što obratiti pažnju</h3>
+        <div class="an-list mt16" id="paznja"></div>
+      </section>
 
       <section class="g g-main mt24">
         <div class="panel">
           <p class="kicker">Rast</p>
           <h3 class="mt8">Novi domaćini po mjesecima</h3>
-          <p class="small mt8">Iz <code>properties.created_at</code>, zadnjih 12 mjeseci.</p>
+          <p class="small mt8">Mjesec prvog objekta (<code>properties.created_at</code>), zadnjih 12 mjeseci.</p>
           <div id="rastChart" class="mt16"></div>
         </div>
         <div class="panel">
-          <p class="kicker">Raspodjela</p>
-          <h3 class="mt8">Planovi</h3>
-          <div id="planRank" class="rank mt16"></div>
+          <p class="kicker">Aktivacija</p>
+          <h3 class="mt8">Koliko ih stigne do kraja</h3>
+          <p class="small mt8">Od svih računa do gosta koji je otvorio vodič (zadnjih 90 dana).</p>
+          <div id="lijevak" class="mt16"></div>
         </div>
       </section>
 
-      <section class="panel mt24" id="istekPanel" hidden>
-        <p class="kicker">Rizik</p>
-        <h3 class="mt8">Uskoro istječe</h3>
-        <p class="small mt8">Pretplate koje istječu u sljedećih 14 dana.</p>
-        <div class="tblwrap mt16"><table class="tbl" id="istekTbl"></table></div>
+      <section class="g g-main mt24">
+        <div class="panel">
+          <p class="kicker">Promet</p>
+          <h3 class="mt8">Pregledi javnih stranica · 30 dana</h3>
+          <div id="prometChart" class="mt16"></div>
+        </div>
+        <div class="panel">
+          <p class="kicker">Usvajanje</p>
+          <h3 class="mt8">Što objekti koriste</h3>
+          <p class="small mt8">Udio objekata koji imaju pojedinu stvar.</p>
+          <div id="usvajanje" class="mt16"></div>
+        </div>
       </section>
+    </section>
 
-      <section class="panel mt24">
-        <div class="row wrapf gap12" style="justify-content:space-between;align-items:flex-end">
-          <h3>Domaćini i planovi</h3>
-          <div class="row wrapf gap8">
-            <label class="sr-only" for="trazi">Pretraži</label>
-            <input class="inp inp--sm" id="trazi" placeholder="Pretraži po imenu, e-mailu ili objektu" style="width:min(300px,80vw);margin-top:0">
-            <label class="sr-only" for="filtar">Plan</label>
-            <select class="inp inp--sm" id="filtar" style="width:auto;margin-top:0">
-              <option value="">Svi planovi</option>
-            </select>
-          </div>
+    <!-- ============ DOMAĆINI ============ -->
+    <section class="tabpanel" data-panel="domacini" hidden>
+      <div class="head">
+        <div><h1>Domaćini</h1><p class="head__sub">Svi domaćini, planovi, aktivnost i zdravlje računa.</p></div>
+        <div class="head__act">
+          <button class="btn btn--ghost btn--sm" id="hMail" type="button">Kopiraj e-mailove<svg class="ic ic--sm" aria-hidden="true"><use href="#i-copy"/></svg></button>
+          <button class="btn btn--fill btn--sm" id="izvoz" type="button">Izvezi CSV<svg class="ic ic--sm" aria-hidden="true"><use href="#i-download"/></svg></button>
+        </div>
+      </div>
+      <section class="panel">
+        <div class="filters">
+          <label class="sr-only" for="trazi">Pretraži domaćine</label>
+          <input class="inp inp--sm" id="trazi" type="search" placeholder="Ime, e-mail, telefon ili objekt" style="width:min(300px,100%)">
+          <label class="sr-only" for="segment">Segment</label>
+          <select class="inp inp--sm" id="segment"></select>
+          <label class="sr-only" for="filtar">Plan</label>
+          <select class="inp inp--sm" id="filtar"><option value="">Svi planovi</option></select>
+          <label class="sr-only" for="hSort">Poredak</label>
+          <select class="inp inp--sm" id="hSort">
+            <option value="novi">Najnoviji prvi</option><option value="objekti">Najviše objekata</option>
+            <option value="pregledi">Najviše pregleda</option><option value="zdravlje">Najslabije zdravlje prvo</option><option value="ime">Po imenu</option>
+          </select>
         </div>
         <div class="tblwrap mt16"><table class="tbl" id="tablica"></table></div>
-        <p class="small mt16" id="prazno" hidden>Nema domaćina koji odgovaraju pretrazi.</p>
-        <p class="small mt12">„Spremi” se uključi tek kad se plan u retku promijeni. Promjena plana piše u <code>subscriptions</code> (RLS: samo vlasnik).</p>
+        <p class="small mt16" id="prazno" hidden>Nema domaćina koji odgovaraju filtru.</p>
+        <div class="pager" id="hPager"></div>
+        <p class="small mt12">„Spremi” se uključi tek kad se plan u retku promijeni. Promjena piše u <code>subscriptions</code> (RLS: samo vlasnik). E-mail i telefon su kontakt iz objekta, ne nužno adresa računa.</p>
       </section>
+    </section>
+
+    <!-- ============ OBJEKTI ============ -->
+    <section class="tabpanel" data-panel="objekti" hidden>
+      <div class="head">
+        <div><h1>Objekti</h1><p class="head__sub">Kvaliteta i promet svakog objekta na platformi.</p></div>
+        <div class="head__act"><button class="btn btn--fill btn--sm" id="oIzvoz" type="button">Izvezi CSV<svg class="ic ic--sm" aria-hidden="true"><use href="#i-download"/></svg></button></div>
+      </div>
+      <section class="panel">
+        <div class="filters">
+          <label class="sr-only" for="oTrazi">Pretraži objekte</label>
+          <input class="inp inp--sm" id="oTrazi" type="search" placeholder="Objekt, mjesto ili domaćin" style="width:min(300px,100%)">
+          <label class="sr-only" for="oSeg">Filtar</label>
+          <select class="inp inp--sm" id="oSeg">
+            <option value="">Svi objekti</option><option value="bezFoto">Bez fotografija</option><option value="bezCijene">Bez cijene</option>
+            <option value="icalStar">iCal nije sinkroniziran 7+ dana</option><option value="bezPregleda">Bez pregleda 30 dana</option><option value="nepotpun">Dovršenost ispod 60 %</option>
+          </select>
+          <label class="sr-only" for="oSort">Poredak</label>
+          <select class="inp inp--sm" id="oSort">
+            <option value="pregledi">Najposjećeniji</option><option value="upiti">Najviše upita</option><option value="novi">Najnoviji</option><option value="dovrsenost">Najmanje dovršeni</option>
+          </select>
+        </div>
+        <div class="tblwrap mt16"><table class="tbl" id="oTbl"></table></div>
+        <div class="pager" id="oPager"></div>
+        <p class="small mt12">Dovršenost gleda ono što admin vidi u <code>properties</code>: fotografije, cijenu, poruku dobrodošlice, kontakt i povezan kalendar. Šifre i Wi-Fi (<code>sections</code>) admin namjerno ne čita.</p>
+      </section>
+    </section>
+
+    <!-- ============ KORIŠTENJE ============ -->
+    <section class="tabpanel" data-panel="koristenje" hidden>
+      <div class="head">
+        <div><h1>Korištenje</h1><p class="head__sub">Promet svih javnih stranica i vodiča, upiti i rezervacije.</p></div>
+        <div class="an-seg" role="group" aria-label="Razdoblje">
+          <button type="button" data-kraspon="30" aria-pressed="true">30 dana</button>
+          <button type="button" data-kraspon="90" aria-pressed="false">90 dana</button>
+          <button type="button" data-kraspon="365" aria-pressed="false">12 mjeseci</button>
+        </div>
+      </div>
+      <section class="an-kpis" id="kKpi"></section>
+      <section class="panel">
+        <p class="kicker">Promet</p><h3 class="mt8">Javne stranice i vodiči</h3>
+        <p class="small mt8" id="kSub"></p>
+        <p class="an-sub mt16">Javne stranice</p><div id="kPub"></div>
+        <p class="an-sub mt16">Privatni vodiči</p><div id="kHub"></div>
+        <div id="kTbl"></div>
+      </section>
+      <section class="g g2 mt24">
+        <div class="panel"><p class="kicker">Upiti</p><h3 class="mt8">Po kanalu</h3><div id="kKanali" class="mt16"></div></div>
+        <div class="panel"><p class="kicker">Vodič</p><h3 class="mt8">Što gosti otvaraju</h3><div id="kVodic" class="mt16"></div></div>
+      </section>
+      <section class="g g2 mt24">
+        <div class="panel"><p class="kicker">Ritam</p><h3 class="mt8">Pregledi po danu u tjednu</h3><div id="kDani" class="mt16"></div></div>
+        <div class="panel"><p class="kicker">Rezervacije</p><h3 class="mt8">Linkovi za goste po mjesecu dolaska</h3><p class="small mt8">Rezervacije napravljene u Odmoriji, zadnjih 12 mjeseci.</p><div id="kRez" class="mt16"></div></div>
+      </section>
+      <section class="panel mt24">
+        <p class="kicker">Najposjećeniji</p><h3 class="mt8">Top 10 objekata u razdoblju</h3>
+        <div class="mt16" id="kTop"></div>
+      </section>
+      <p class="an-note mt16" id="kNapomena">Upiti i dijelovi vodiča bilježe se od rujna 2026.; stariji pregledi ih nemaju.</p>
     </section>
 
     <!-- ============ PRIHOD ============ -->
     <section class="tabpanel" data-panel="prihod" hidden>
-      <div class="head"><div><h1>Prihod</h1><p class="head__sub">Procjena mjesečnog i godišnjeg prihoda po planovima.</p></div></div>
-
+      <div class="head"><div><h1>Prihod</h1><p class="head__sub">Procjena prihoda, kandidati za nadogradnju i rizik odljeva.</p></div></div>
       <div class="panel panel--dark">
         <p class="kicker">Odakle ove brojke</p>
         <p class="lead mt8" style="max-width:70ch">
           Procjena iz tablice <code>plans</code> × broj aktivnih pretplata, <b>ne iz Stripea</b>.
           Stripe checkout nije spojen, pa naplaćenog iznosa nema nigdje u bazi — ovo je ono što
-          bi se naplatilo da svi plate. Kad se checkout spoji, brojke se mogu razići od ovih.
+          bi se naplatilo da svi plate.
         </p>
       </div>
-
-      <section class="g g4 mt24" id="prihodBrojke"></section>
-
+      <section class="an-kpis mt24" id="prihodBrojke"></section>
+      <section class="g g2">
+        <div class="panel">
+          <p class="kicker">Po planu</p><h3 class="mt8">Tko donosi prihod</h3>
+          <div id="prihodRank" class="mt16"></div>
+          <div class="tblwrap mt16"><table class="tbl" id="prihodTbl"></table></div>
+        </div>
+        <div class="panel">
+          <p class="kicker">Raspodjela</p><h3 class="mt8">Domaćini po planu</h3>
+          <div id="planRank" class="mt16"></div>
+        </div>
+      </section>
+      <section class="panel mt24" id="istekPanel">
+        <p class="kicker">Istek</p><h3 class="mt8">Uskoro istječe</h3>
+        <p class="small mt8">Plaćene pretplate koje istječu u sljedećih 14 dana — nakon toga padaju na besplatni plan.</p>
+        <div class="tblwrap mt16" id="istekTbl"></div>
+      </section>
       <section class="panel mt24">
-        <p class="kicker">Po planu</p>
-        <h3 class="mt8">Tko donosi prihod</h3>
-        <p class="small mt8">Broj aktivnih pretplata × cijena plana iz <code>plans</code>.</p>
-        <div id="prihodRank" class="rank mt16"></div>
-        <div class="tblwrap mt16"><table class="tbl" id="prihodTbl"></table></div>
+        <p class="kicker">Rast prihoda</p><h3 class="mt8">Kandidati za nadogradnju</h3>
+        <p class="small mt8">Besplatni domaćini koji su na limitu objekata ili fotografija, ili imaju puno prometa.</p>
+        <div class="tblwrap mt16" id="kandTbl"></div>
+      </section>
+      <section class="panel mt24">
+        <p class="kicker">Zadržavanje</p><h3 class="mt8">Rizik odljeva</h3>
+        <p class="small mt8">Plaćeni domaćini bez prometa u 30 dana ili sa slabim zdravljem računa.</p>
+        <div class="tblwrap mt16" id="rizikTbl"></div>
       </section>
     </section>
 
     <!-- ============ PORUKE ============ -->
     <section class="tabpanel" data-panel="poruke" hidden>
-      <div class="head"><div><h1>Poruke</h1><p class="head__sub">Obavijesti domaćinima.</p></div></div>
-
-      <div class="panel panel--dark">
-        <p class="kicker">Nije spojeno — treba jedna tablica</p>
+      <div class="head"><div><h1>Poruke</h1><p class="head__sub">E-mail odabranoj skupini domaćina.</p></div></div>
+      <section class="g g-main">
+        <div class="panel">
+          <p class="kicker">Nova poruka</p><h3 class="mt8">Pošalji domaćinima</h3>
+          <label class="lb mt16" for="oKome">Kome</label>
+          <select class="inp" id="oKome"></select>
+          <label class="lb mt12" for="oNas">Naslov</label>
+          <input class="inp" id="oNas" placeholder="Nova mogućnost u Odmoriji">
+          <label class="lb mt12" for="oTxt">Poruka</label>
+          <textarea class="inp" id="oTxt" rows="6" placeholder="Dobar dan,&#10;&#10;…"></textarea>
+          <div class="row wrapf gap8 mt16" style="justify-content:space-between;align-items:center">
+            <span class="small" id="oBroj">—</span>
+            <div class="row wrapf gap8">
+              <button class="btn btn--ghost btn--sm" id="oKopiraj" type="button">Kopiraj adrese<svg class="ic ic--sm" aria-hidden="true"><use href="#i-copy"/></svg></button>
+              <button class="btn btn--fill btn--sm" id="oSalji" type="button">Otvori u e-mail programu<svg class="ic ic--sm" aria-hidden="true"><use href="#i-mail"/></svg></button>
+            </div>
+          </div>
+          <p class="note-inline mt12" id="oPoruka" role="status" hidden></p>
+        </div>
+        <div class="panel">
+          <p class="kicker">Primatelji</p><h3 class="mt8" id="oPrimTitle">—</h3>
+          <div id="oPrim" class="mt12"></div>
+        </div>
+      </section>
+      <div class="panel panel--dark mt24">
+        <p class="kicker">Obavijesti u aplikaciji — nije spojeno</p>
         <p class="lead mt8" style="max-width:72ch">
-          Upit gosta na javnoj stranici <b>nigdje se ne sprema</b> — <code>p.html</code> ga složi
-          u WhatsApp ili <code>mailto:</code> link i gost ga pošalje sam. Nema ni tablice za
-          obavijesti domaćinima. Obrazac ispod pokazuje kako bi izgledalo.
+          E-mail radi odmah, preko vašeg programa (adrese idu u skrivenu kopiju). Obavijest koja se
+          pojavi domaćinu u dashboardu i povijest poslanih poruka traže novu tablicu — treba odobrenje:
         </p>
         <pre class="kod mt12">create table announcements (
   id          uuid primary key default gen_random_uuid(),
   title       text not null,
   body        text not null,
-  audience    text not null,      -- svi | free | pro | business
+  audience    text not null,      -- segment, npr. svi | free | rizik
   sent_at     timestamptz,
   created_at  timestamptz default now()
 );</pre>
       </div>
-
-      <section class="panel mt24">
-        <p class="kicker">Nova obavijest</p>
-        <h3 class="mt8">Pošalji domaćinima</h3>
-        <label class="lb mt16" for="oNas">Naslov</label>
-        <input class="inp" id="oNas" placeholder="Nova tema za javnu stranicu">
-        <label class="lb mt12" for="oTxt">Poruka</label>
-        <textarea class="inp" id="oTxt" rows="5" placeholder="Od danas…"></textarea>
-        <label class="lb mt12" for="oKome">Kome</label>
-        <select class="inp" id="oKome"></select>
-        <div class="row gap8 mt16" style="justify-content:space-between;align-items:center">
-          <span class="small" id="oBroj">—</span>
-          <button class="btn btn--fill btn--sm" id="oSalji">Pošalji</button>
-        </div>
-        <p class="note-inline mt12" id="oPoruka" hidden></p>
-      </section>
     </section>
 
-    <!-- ============ POSTAVKE ============ -->
-    <section class="tabpanel" data-panel="postavke" hidden>
-      <div class="head"><div><h1>Postavke</h1><p class="head__sub">Planovi, stanje sustava i pristup.</p></div></div>
-
+    <!-- ============ SUSTAV ============ -->
+    <section class="tabpanel" data-panel="sustav" hidden>
+      <div class="head"><div><h1>Sustav</h1><p class="head__sub">Planovi, stanje funkcija, zdravlje podataka i pristup.</p></div></div>
       <section class="panel">
         <p class="kicker">Izvor istine</p>
         <h3 class="mt8">Planovi i limiti</h3>
         <p class="small mt8" style="max-width:74ch">
-          Ovo je tablica <code>plans</code> u Supabaseu, učitana uživo. Cijene i limiti se
-          mijenjaju <b>ondje, bez izmjene koda i bez deploya</b> — <code>plans.js</code> ih pri
-          pokretanju povuče, a limite provode okidači u bazi. <code>-1</code> znači neograničeno.
+          Tablica <code>plans</code> u Supabaseu, učitana uživo. Cijene i limiti mijenjaju se
+          <b>ondje, bez izmjene koda i bez deploya</b>; limite provode okidači u bazi. <code>-1</code> znači neograničeno.
         </p>
         <div class="tblwrap mt16"><table class="tbl" id="planTbl"></table></div>
         <p class="hint">Mijenja se u Supabaseu: <code>update public.plans set monthly_price_eur = …</code></p>
       </section>
-
-      <section class="g g-main mt24">
+      <section class="g g2 mt24">
         <div class="panel">
-          <p class="kicker">Stanje sustava</p>
-          <h3 class="mt8">Što radi, a što ne</h3>
+          <p class="kicker">Podaci</p><h3 class="mt8">Zdravlje podataka</h3>
+          <div class="mt16" id="zdravljePodataka"></div>
+        </div>
+        <div class="panel">
+          <p class="kicker">Stanje sustava</p><h3 class="mt8">Što radi, a što ne</h3>
           <div class="mt16" id="stanje"></div>
         </div>
-        <div class="panel">
-          <p class="kicker">Vlasnički pristup</p>
-          <h3 class="mt8">Tko ovo vidi</h3>
-          <p class="lead mt8">
-            Admin je zaštićen i na RLS razini, ne samo provjerom u pregledniku. Politike u
-            <code>sql/admin-access.sql</code> vezane su na <code>auth.uid()</code> vlasničkog
-            računa, pa tuđa sesija ne može pročitati tuđe retke ni kad bi zaobišla sučelje.
-          </p>
-          <p class="lead mt12">
-            U klijentskom kodu nema service role ključa — sve stranice koriste samo javni
-            publishable ključ.
-          </p>
-        </div>
+      </section>
+      <section class="panel mt24">
+        <p class="kicker">Vlasnički pristup</p>
+        <h3 class="mt8">Tko ovo vidi</h3>
+        <p class="lead mt8" style="max-width:74ch">
+          Admin je zaštićen i na RLS razini, ne samo provjerom u pregledniku. Politike u
+          <code>sql/admin-access.sql</code> vezane su na <code>auth.uid()</code> vlasničkog
+          računa, pa tuđa sesija ne može pročitati tuđe retke ni kad bi zaobišla sučelje.
+          U klijentskom kodu nema service role ključa.
+        </p>
       </section>
     </section>
-
   </main>
 </div>
 </div>
 
+<!-- Detalji domaćina. <dialog> mora biti u DOM-u prije skripte koja ga traži. -->
+<dialog class="dlg an" id="dlg" aria-labelledby="dlgT">
+  <div class="dlg__head">
+    <div><p class="kicker">Domaćin</p><h2 id="dlgT">—</h2><p class="small mt8" id="dlgSub"></p></div>
+    <button class="dlg__x" type="button" id="dlgX" aria-label="Zatvori"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
+  </div>
+  <div class="dlg__body" id="dlgBody"></div>
+</dialog>
+
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { loadPlans, ODMORIA_PLANS, normalizePlanId, listPlans } from '/plans.js'
+import * as A from '/analitika.js'
 
 const SURL='https://wtojzqjhipdfbrnmprmz.supabase.co'
 const SKEY='sb_publishable_tmZAZTDbQ7ktc1N-8y4q4w_ztAu_62F'
@@ -349,11 +467,17 @@ const sb=createClient(SURL,SKEY)
 const ADMIN_UID='56549320-2c02-405c-9936-770144bd9b49'
 
 const $=s=>document.querySelector(s)
-const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))
+const esc=A.esc
 const eur2=n=>n.toFixed(2).replace('.',',')+' €'
 const eur0=n=>Math.round(n).toLocaleString('hr-HR')+' €'
+const datum=s=>s?new Date(s).toLocaleDateString('hr-HR'):'—'
+const JE_JAVNA=t=>t==='public', JE_VODIC=t=>t==='guest_hub'
+const PO_STRANICI=25
+const MAX_PREGLEDA=100000
 
-let HOSTS=[], SUBS={}, PLANOVI=[]
+let PROPS=[], SUBS={}, SUBROWS=[], BOOKINGS=[], VIEWS=[], VIEWS_OD=null, VIEWS_PUNO=false
+let HOSTS=[], PSTAT={}, PLANOVI=[], TRAJANJE=0
+let hStr=0, oStr=0, K_RASPON=30
 
 init()
 
@@ -371,37 +495,63 @@ async function init(){
 window.logout=async()=>{ await sb.auth.signOut(); location.href='/login.html' }
 
 /* ---------- tabovi ---------- */
+let idiNa=()=>{}
 function tabovi(){
   const paneli=[...document.querySelectorAll('.tabpanel')]
   const veze=[...document.querySelectorAll('.navi[data-tab]')]
-  const idi=k=>{
-    if(!paneli.some(p=>p.dataset.panel===k))k='domacini'
+  idiNa=k=>{
+    if(!paneli.some(p=>p.dataset.panel===k))k='pregled'
     paneli.forEach(p=>{p.hidden=p.dataset.panel!==k})
     veze.forEach(a=>a.dataset.tab===k?a.setAttribute('aria-current','page'):a.removeAttribute('aria-current'))
-    /* otkrivanja u panelu koji je bio skriven treba ponovno okinuti */
-    document.querySelectorAll('.tabpanel:not([hidden]) [data-rv]').forEach(el=>el.classList.add('rv-in'))
+    history.replaceState(null,'','#'+k)
+    if(k==='koristenje')koristenje()
     scrollTo({top:0,behavior:'smooth'})
   }
-  veze.forEach(a=>a.addEventListener('click',e=>{
-    if(!a.dataset.tab)return
-    e.preventDefault(); history.replaceState(null,'','#'+a.dataset.tab); idi(a.dataset.tab)
-  }))
-  idi((location.hash||'#domacini').slice(1))
+  veze.forEach(a=>a.addEventListener('click',e=>{ if(!a.dataset.tab)return; e.preventDefault(); idiNa(a.dataset.tab) }))
+  idiNa((location.hash||'#pregled').slice(1))
 }
 
 /* ---------- podaci ---------- */
 async function ucitaj(){
-  const [{data:props},{data:subs},{data:bookings},{data:views}]=await Promise.all([
-    sb.from('properties').select('id,user_id,name,host_name,email,phone,created_at'),
-    sb.from('subscriptions').select('user_id,plan,status,period_end'),
-    sb.from('bookings').select('id,is_active').eq('is_active',true),
-    sb.from('page_views').select('id,timestamp').gte('timestamp',new Date(Date.now()-30*864e5).toISOString())
-  ])
-  const properties=props||[]
-  SUBS={}; (subs||[]).forEach(s=>SUBS[s.user_id]=s)
+  const t0=performance.now()
+  $('#osvjezeno').textContent='Učitavanje…'
+  const od=A.plusDana(A.danas(),-90)
+  try{
+    const [props,subs,bks]=await Promise.all([
+      A.sviRedovi(()=>sb.from('properties').select('id,user_id,name,slug,location,host_name,email,phone,created_at,photo_urls,price_per_night,welcome_msg,show_availability,ical_booking_url,ical_airbnb_url,ical_last_sync').order('created_at')),
+      A.sviRedovi(()=>sb.from('subscriptions').select('*').order('user_id')),
+      A.sviRedovi(()=>sb.from('bookings').select('id,property_id,checkin_date,checkout_date,is_active').order('checkin_date'))
+    ])
+    PROPS=props; SUBROWS=subs; BOOKINGS=bks
+    VIEWS=await A.sviRedovi(()=>sb.from('page_views').select('property_id,view_type,timestamp').gte('timestamp',A.uDatum(od).toISOString()).order('timestamp'),MAX_PREGLEDA)
+    VIEWS_OD=od; VIEWS_PUNO=VIEWS.length>=MAX_PREGLEDA
+  }catch(e){
+    $('#osvjezeno').textContent='Greška pri učitavanju: '+(e.message||e)
+    return
+  }
+  TRAJANJE=Math.round(performance.now()-t0)
+  izracunaj()
+  crtajSve()
+  $('#osvjezeno').textContent=`Osvježeno ${new Date().toLocaleTimeString('hr-HR',{hour:'2-digit',minute:'2-digit'})} · ${PROPS.length} objekata, ${VIEWS.length.toLocaleString('hr-HR')} pregleda (90 dana)`
+}
+
+function izracunaj(){
+  SUBS={}; SUBROWS.forEach(s=>SUBS[s.user_id]=s)
+  const t=A.danas(), sut=A.plusDana(t,1), od30=A.plusDana(sut,-30)
+  PSTAT={}
+  PROPS.forEach(p=>PSTAT[p.id]={v30:0,u30:0,g30:0,v90:0,g90:0,zadnji:null,rez:0})
+  for(const r of VIEWS){
+    const s=PSTAT[r.property_id]; if(!s)continue
+    const dan=A.tsUDan(r.timestamp)
+    if(JE_JAVNA(r.view_type))s.v90++
+    if(JE_VODIC(r.view_type))s.g90++
+    if(dan>=od30){ if(JE_JAVNA(r.view_type))s.v30++; else if(A.JE_UPIT(r.view_type))s.u30++; else if(JE_VODIC(r.view_type))s.g30++ }
+    if(!s.zadnji||r.timestamp>s.zadnji)s.zadnji=r.timestamp
+  }
+  BOOKINGS.forEach(b=>{ if(PSTAT[b.property_id])PSTAT[b.property_id].rez++ })
 
   const po={}
-  properties.forEach(p=>{
+  PROPS.forEach(p=>{
     if(!po[p.user_id])po[p.user_id]={user_id:p.user_id,props:[],host_name:null,email:null,phone:null,prvi:p.created_at}
     const h=po[p.user_id]
     h.props.push(p)
@@ -410,247 +560,543 @@ async function ucitaj(){
     if(!h.phone&&p.phone)h.phone=p.phone
     if(p.created_at&&(!h.prvi||p.created_at<h.prvi))h.prvi=p.created_at
   })
-  HOSTS=Object.values(po).sort((a,b)=>b.props.length-a.props.length)
-
-  brojke(properties.length,(bookings||[]).length,(views||[]).length)
-  rast()
-  raspodjela()
-  istek()
-  filtri()
-  tablica()
-  prihod()
-  postavke()
-}
-
-function planOd(uid){ return normalizePlanId(SUBS[uid]?.plan) }
-function cijena(id){ return Number(ODMORIA_PLANS[id]?.monthlyPriceEur||0) }
-function istekao(uid){
-  const s=SUBS[uid]
-  return !!(s?.period_end && new Date(s.period_end)<new Date() && normalizePlanId(s.plan)!=='free')
-}
-
-/* ---------- brojke ---------- */
-function brojke(objekata,rez,pregleda){
-  const placeni=HOSTS.filter(h=>planOd(h.user_id)!=='free'&&!istekao(h.user_id)).length
-  const mrr=HOSTS.reduce((z,h)=>istekao(h.user_id)?z:z+cijena(planOd(h.user_id)),0)
-  $('#brojke').innerHTML=[
-    ['Domaćina',HOSTS.length,''],
-    ['Objekata',objekata,''],
-    ['Aktivnih rezervacija',rez,''],
-    ['Pregleda (30 dana)',pregleda,''],
-  ].map(([l,v])=>`<div class="stat"><span class="stat__lb">${l}</span>
-      <span class="stat__v">${v}</span></div>`).join('')
-
-  $('#prihodBrojke').innerHTML=[
-    ['MRR (procjena)',eur2(mrr),'mjesečno ponavljajuće'],
-    ['ARR (procjena)',eur0(mrr*12),'MRR × 12'],
-    ['Prosjek po plaćenom',placeni?eur2(mrr/placeni):'—','ARPU'],
-    ['Udio plaćenih',HOSTS.length?Math.round(placeni/HOSTS.length*100)+' %':'—','od svih domaćina'],
-  ].map(([l,v,s])=>`<div class="stat"><span class="stat__lb">${l}</span>
-      <span class="stat__v">${v}</span><span class="stat__sub">${s}</span></div>`).join('')
-}
-
-/* ---------- rast po mjesecima ---------- */
-function rast(){
-  const MJ=[]
-  const d=new Date(); d.setDate(1)
-  for(let i=11;i>=0;i--){
-    const x=new Date(d.getFullYear(),d.getMonth()-i,1)
-    MJ.push({k:x.toLocaleDateString('hr-HR',{month:'short'}),
-             y:x.getFullYear(),m:x.getMonth(),v:0})
-  }
-  HOSTS.forEach(h=>{
-    if(!h.prvi)return
-    const x=new Date(h.prvi)
-    const t=MJ.find(o=>o.y===x.getFullYear()&&o.m===x.getMonth())
-    if(t)t.v++
+  const za14=A.plusDana(t,14)
+  HOSTS=Object.values(po).map(h=>{
+    const st=h.props.map(p=>PSTAT[p.id])
+    const sum=k=>st.reduce((z,s)=>z+(s[k]||0),0)
+    h.sub=SUBS[h.user_id]||null
+    h.plan=normalizePlanId(h.sub?.plan)
+    h.istekao=!!(h.sub?.period_end&&new Date(h.sub.period_end)<new Date()&&h.plan!=='free')
+    h.efektivni=h.istekao?'free':h.plan
+    h.istjece=!!(h.sub?.period_end&&h.plan!=='free'&&!h.istekao&&A.tsUDan(h.sub.period_end)<=za14)
+    h.views30=sum('v30'); h.upiti30=sum('u30'); h.vodic30=sum('g30'); h.vodic90=sum('g90'); h.rez=sum('rez')
+    h.zadnji=st.map(s=>s.zadnji).filter(Boolean).sort().pop()||null
+    h.zdravlje=zdravlje(h)
+    const P=ODMORIA_PLANS[h.efektivni]
+    const razlozi=[]
+    if(h.efektivni==='free'){
+      if(h.props.length>=(P?.maxProperties??1))razlozi.push('na limitu objekata')
+      if(h.props.some(p=>(p.photo_urls||[]).length>=(P?.maxPhotosPerProperty??5)))razlozi.push('na limitu fotografija')
+      if(h.views30>=100)razlozi.push(h.views30+' pregleda u 30 dana')
+    }
+    h.kandidat=razlozi.join(', ')
+    const rz=[]
+    if(h.efektivni!=='free'){
+      if(h.views30===0)rz.push('bez pregleda 30 dana')
+      if(h.zdravlje<40)rz.push('slabo zdravlje računa')
+      if(h.istjece)rz.push('istječe '+datum(h.sub.period_end))
+    }
+    h.rizik=rz.join(', ')
+    return h
   })
-  const max=Math.max(1,...MJ.map(o=>o.v))
-  const W=560,H=170,P=26,bw=Math.min(24,(W-P*2)/MJ.length-6)
-  $('#rastChart').innerHTML=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto" role="img"
-      aria-label="Novi domaćini po mjesecima">
-    ${[0,.5,1].map(f=>`<line x1="${P}" x2="${W-P}" y1="${H-P-(f*(H-P*2))}" y2="${H-P-(f*(H-P*2))}"
-        stroke="var(--grid)" stroke-width="1"/>`).join('')}
-    ${MJ.map((o,i)=>{
-      const x=P+i*((W-P*2)/MJ.length)+((W-P*2)/MJ.length-bw)/2
-      const h=o.v/max*(H-P*2)
-      return `<rect x="${x}" y="${H-P-h}" width="${bw}" height="${h}" rx="4" fill="var(--t-4)"/>`
-    }).join('')}
-    ${MJ.map((o,i)=>{
-      const x=P+i*((W-P*2)/MJ.length)+((W-P*2)/MJ.length)/2
-      return `<text x="${x}" y="${H-8}" text-anchor="middle" font-size="9"
-        fill="var(--ink-mut)">${o.k.replace('.','')}</text>`
-    }).join('')}
-  </svg>`
 }
 
-/* ---------- raspodjela planova ---------- */
-function raspodjela(){
-  const br={}
-  PLANOVI.forEach(p=>br[p.id]=0)
-  HOSTS.forEach(h=>{ const id=planOd(h.user_id); br[id]=(br[id]||0)+1 })
-  const R=PLANOVI.map(p=>({k:p.name,v:br[p.id]||0})).sort((a,b)=>b.v-a.v)
-  const max=Math.max(1,...R.map(r=>r.v))
-  const T=['--t-1','--t-2','--t-3','--t-4','--t-5']
-    .map(n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim())
-  $('#planRank').innerHTML=R.map((r,i)=>`
-    <div class="rank__row"><span class="rank__nm">${esc(r.k)}</span>
-      <span class="rank__tr"><i style="background:${T[Math.max(0,T.length-1-i)]};
-        width:${(r.v/max*100).toFixed(1)}%"></i></span>
-      <span class="rank__v">${r.v}</span></div>`).join('')
+/* Zdravlje računa 0–100: koliko domaćin stvarno koristi Odmoriju. */
+function zdravlje(h){
+  let s=0
+  if(h.props.some(p=>(p.photo_urls||[]).length))s+=20
+  if(h.props.some(p=>Number(p.price_per_night)>0))s+=10
+  if(h.props.some(p=>p.ical_booking_url||p.ical_airbnb_url))s+=15
+  if(h.rez>0)s+=20
+  if(h.views30>0)s+=20
+  if(h.vodic90>0)s+=15
+  return s
+}
+const zdTag=s=>s>=70?`<span class="tag tag--ok">Dobro · ${s}</span>`:s>=40?`<span class="tag tag--mut">Srednje · ${s}</span>`:`<span class="tag tag--warn">Slabo · ${s}</span>`
+function dovrsenost(p){
+  const c=[(p.photo_urls||[]).length>0,Number(p.price_per_night)>0,!!(p.welcome_msg||'').trim(),!!(p.phone||p.email),!!(p.ical_booking_url||p.ical_airbnb_url)]
+  return c.filter(Boolean).length/c.length
+}
+const cijena=id=>Number(ODMORIA_PLANS[id]?.monthlyPriceEur||0)
+const planIme=id=>ODMORIA_PLANS[id]?.name||id
+const icalStar=p=>(p.ical_booking_url||p.ical_airbnb_url)&&(!p.ical_last_sync||(Date.now()-new Date(p.ical_last_sync))/864e5>=7)
+function relTs(ts){ if(!ts)return 'nema u 90 dana'; const n=A.razlikaDana(A.tsUDan(ts),A.danas()); return n===0?'danas':n===1?'jučer':'prije '+n+' '+A.mn(n,'dan','dana','dana') }
+function statusTag(h){
+  if(!h.sub)return '<span class="tag tag--warn">Bez pretplate</span>'
+  if(h.istekao)return `<span class="tag tag--warn">Isteklo ${datum(h.sub.period_end)}</span>`
+  if(h.istjece)return `<span class="tag tag--warn">Istječe ${datum(h.sub.period_end)}</span>`
+  const st={active:'Aktivna',trialing:'Probno razdoblje',canceled:'Otkazana',cancelled:'Otkazana',past_due:'Kasni plaćanje',unpaid:'Neplaćeno'}[h.sub.status]||h.sub.status||'Aktivna'
+  return `<span class="tag ${/cancel|past_due|unpaid/.test(h.sub.status||'')?'tag--warn':'tag--ok'}">${esc(st)}</span>`
 }
 
-/* ---------- uskoro istječe ---------- */
-function istek(){
-  const za14=new Date(Date.now()+14*864e5)
-  const R=HOSTS.filter(h=>{
-    const s=SUBS[h.user_id]
-    if(!s?.period_end)return false
-    const d=new Date(s.period_end)
-    return d>=new Date() && d<=za14 && normalizePlanId(s.plan)!=='free'
-  })
-  $('#istekPanel').hidden = R.length===0
-  if(!R.length)return
-  $('#istekTbl').innerHTML='<thead><tr><th>Domaćin</th><th>Plan</th><th>Istječe</th><th>Mjesečno</th></tr></thead><tbody>'
-    +R.map(h=>{const id=planOd(h.user_id)
-      return `<tr><td>${esc(h.host_name||'Bez imena')}</td><td>${esc(ODMORIA_PLANS[id]?.name||id)}</td>
-        <td>${new Date(SUBS[h.user_id].period_end).toLocaleDateString('hr-HR')}</td>
-        <td>${eur2(cijena(id))}</td></tr>`}).join('')+'</tbody>'
+const SEG={
+  svi:['Svi domaćini',()=>true],
+  aktivni:['Aktivni (pregledi u 30 dana)',h=>h.views30>0],
+  neaktivni:['Neaktivni (bez pregleda 30 dana)',h=>h.views30===0],
+  placeni:['Plaćeni',h=>h.efektivni!=='free'],
+  besplatni:['Besplatni',h=>h.efektivni==='free'],
+  istjece:['Istječe u 14 dana',h=>h.istjece],
+  isteklo:['Isteklo',h=>h.istekao],
+  bezPretplate:['Bez pretplate',h=>!h.sub],
+  nadogradnja:['Kandidati za nadogradnju',h=>!!h.kandidat],
+  rizik:['Rizik odljeva',h=>!!h.rizik],
+  slabo:['Slabo zdravlje računa',h=>h.zdravlje<40],
 }
 
-/* ---------- filtri i tablica ---------- */
+function crtajSve(){
+  pregled(); filtri(); tablica(); objekti(); prihod(); poruke(); sustav()
+  if(!$('[data-panel="koristenje"]').hidden)koristenje()
+}
+
+/* ---------- PREGLED ---------- */
+function pregled(){
+  const t=A.danas(), sut=A.plusDana(t,1), od30=A.plusDana(sut,-30), od60=A.plusDana(sut,-60)
+  const racuni=new Set([...SUBROWS.map(s=>s.user_id),...HOSTS.map(h=>h.user_id)])
+  const now=new Date(), ovaj=A.ds(new Date(now.getFullYear(),now.getMonth(),1)), prosli=A.ds(new Date(now.getFullYear(),now.getMonth()-1,1))
+  const noviOvaj=HOSTS.filter(h=>h.prvi&&A.tsUDan(h.prvi)>=ovaj).length
+  const noviProsli=HOSTS.filter(h=>h.prvi&&A.tsUDan(h.prvi)>=prosli&&A.tsUDan(h.prvi)<ovaj).length
+  const placeni=HOSTS.filter(h=>h.efektivni!=='free').length
+  const mrr=HOSTS.reduce((z,h)=>z+cijena(h.efektivni),0)
+  const aktivni=HOSTS.filter(h=>h.views30>0).length
+  const vlasnik=new Map(PROPS.map(p=>[p.id,p.user_id]))
+  const aktivniP=new Set(VIEWS.filter(r=>{const d=A.tsUDan(r.timestamp);return d>=od60&&d<od30&&JE_JAVNA(r.view_type)}).map(r=>vlasnik.get(r.property_id)).filter(Boolean)).size
+  const c=(f,a,b)=>A.broji(VIEWS,f,a,b)
+  $('#kpiA').innerHTML=[
+    A.kpi('Računi',String(racuni.size),`${HOSTS.length} s objektom · ${PROPS.length} objekata`),
+    A.kpi('Novi domaćini ovaj mjesec',String(noviOvaj),`prošli mjesec ${noviProsli}`,A.promjena(noviOvaj,noviProsli)),
+    A.kpi('Plaćeni domaćini',String(placeni),HOSTS.length?A.posto(placeni/HOSTS.length)+' od domaćina':'—'),
+    A.kpi('MRR (procjena)',eur2(mrr),`ARR ${eur0(mrr*12)}`)
+  ].join('')
+  const v=c(JE_JAVNA,od30,sut),vP=c(JE_JAVNA,od60,od30),u=c(A.JE_UPIT,od30,sut),uP=c(A.JE_UPIT,od60,od30),g=c(JE_VODIC,od30,sut),gP=c(JE_VODIC,od60,od30)
+  $('#kpiB').innerHTML=[
+    A.kpi('Aktivni domaćini · 30 dana',String(aktivni),'imaju barem jedan pregled',A.promjena(aktivni,aktivniP)),
+    A.kpi('Pregledi javnih stranica',String(v),'zadnjih 30 dana',A.promjena(v,vP)),
+    A.kpi('Upiti gostiju',String(u),v?A.posto(u/v)+' posjeta završi upitom':'zadnjih 30 dana',A.promjena(u,uP)),
+    A.kpi('Otvaranja vodiča',String(g),'zadnjih 30 dana',A.promjena(g,gP))
+  ].join('')
+
+  // zahtijeva pažnju
+  const al=[]
+  const n=k=>HOSTS.filter(SEG[k][1]).length
+  if(n('istjece'))al.push(['warn',`${n('istjece')} ${A.mn(n('istjece'),'pretplata istječe','pretplate istječu','pretplata istječe')} u 14 dana`,'Nakon isteka domaćin pada na besplatni plan i gubi objekte iznad limita.','Prihod',"prihod"])
+  if(n('rizik'))al.push(['warn',`${n('rizik')} ${A.mn(n('rizik'),'plaćeni domaćin je','plaćena domaćina su','plaćenih domaćina je')} u riziku`,'Bez prometa u 30 dana, slabo korištenje ili pretplata pri kraju.','Pogledaj',"seg:rizik"])
+  if(n('nadogradnja'))al.push(['info',`${n('nadogradnja')} ${A.mn(n('nadogradnja'),'kandidat','kandidata','kandidata')} za nadogradnju`,'Besplatni domaćini na limitu objekata ili fotografija, ili s puno prometa.','Pogledaj',"seg:nadogradnja"])
+  const stari=PROPS.filter(icalStar).length
+  if(stari)al.push(['info',`${stari} ${A.mn(stari,'objekt ima','objekta imaju','objekata ima')} iCal koji nije sinkroniziran 7+ dana`,'Sinkronizacija je ručna; domaćin možda ne vidi nove rezervacije s platformi.','Objekti',"obj:icalStar"])
+  const bezObj=[...racuni].filter(id=>!HOSTS.some(h=>h.user_id===id)).length
+  if(bezObj)al.push(['info',`${bezObj} ${A.mn(bezObj,'račun nema','računa nemaju','računa nema')} nijedan objekt`,'Registrirali su se, ali nisu prošli postavljanje. E-mail nije vidljiv adminu (auth.users) — vidi Sustav.','Sustav',"sustav"])
+  if(n('bezPretplate'))al.push(['info',`${n('bezPretplate')} ${A.mn(n('bezPretplate'),'domaćin nema','domaćina nemaju','domaćina nema')} red u subscriptions`,'Promjena plana za njih nije moguća iz admina (RLS dopušta samo izmjenu postojećeg reda).','Pogledaj',"seg:bezPretplate"])
+  $('#paznja').innerHTML=al.length?al.map(([r,naslov,tx,btn,cilj])=>`<div class="an-item"><span class="an-ic${r==='warn'?' is-warn':''}" aria-hidden="true">${r==='warn'?'!':'i'}</span>
+      <div><strong>${esc(naslov)}</strong><p>${esc(tx)}</p></div><button class="btn btn--ghost btn--sm" type="button" data-cilj="${esc(cilj)}">${esc(btn)}</button></div>`).join('')
+    :'<div class="an-item"><span class="an-ic" aria-hidden="true">✓</span><div><strong>Sve je u redu</strong><p>Nema pretplata pred istekom, domaćina u riziku ni zastarjelih kalendara.</p></div><span></span></div>'
+  const cnt=al.filter(a=>a[0]==='warn').length
+  $('#cntPaznja').hidden=!cnt; $('#cntPaznja').textContent=cnt
+
+  // rast
+  const mj=[]
+  for(let i=11;i>=0;i--){const d=new Date(now.getFullYear(),now.getMonth()-i,1);mj.push({od:A.ds(d),do:A.ds(new Date(d.getFullYear(),d.getMonth()+1,1)),oznaka:A.mjKratko(d.getMonth()),naslov:A.mjDugo(d.getMonth())+' '+d.getFullYear()+'.',v:0})}
+  HOSTS.forEach(h=>{ if(!h.prvi)return; const d=A.tsUDan(h.prvi); const b=mj.find(x=>d>=x.od&&d<x.do); if(b)b.v++ })
+  let kum=HOSTS.filter(h=>h.prvi&&A.tsUDan(h.prvi)<mj[0].od).length
+  $('#rastChart').innerHTML=A.grafikon(mj,{aria:'Novi domaćini po mjesecima',vrijednosti:true,oznakaSvaki:1,istakni:11})
+    +A.kaoTablica(['Mjesec','Novi domaćini','Ukupno na kraju mjeseca'],mj.map(x=>{kum+=x.v;return [x.naslov,x.v,kum]}))
+
+  // aktivacija
+  const sFoto=HOSTS.filter(h=>h.props.some(p=>(p.photo_urls||[]).length)).length
+  const sRez=HOSTS.filter(h=>h.rez>0).length
+  const sVodic=HOSTS.filter(h=>h.vodic90>0).length
+  const baza=Math.max(1,racuni.size)
+  $('#lijevak').innerHTML=A.rang([
+    {k:'Registrirani računi',v:racuni.size},
+    {k:'Postavili objekt',v:HOSTS.length},
+    {k:'Dodali fotografije',v:sFoto},
+    {k:'Napravili link za gosta',v:sRez},
+    {k:'Gost otvorio vodič (90 dana)',v:sVodic}
+  ].map(x=>({...x,sub:A.posto(x.v/baza)+' računa'})))
+
+  // promet 30 dana
+  const k=A.kante(VIEWS,od30,sut,'dan',JE_JAVNA)
+  $('#prometChart').innerHTML=A.grafikon(k,{aria:'Pregledi javnih stranica, zadnjih 30 dana',istakni:k.length-1})
+    +A.kaoTablica(['Dan','Pregledi'],k.map(x=>[x.oznaka,x.v]))
+
+  // usvajanje
+  const P=Math.max(1,PROPS.length)
+  const u2=f=>PROPS.filter(f).length
+  $('#usvajanje').innerHTML=PROPS.length?A.rang([
+    {k:'Fotografije',v:u2(p=>(p.photo_urls||[]).length>0)},
+    {k:'Cijena po noći',v:u2(p=>Number(p.price_per_night)>0)},
+    {k:'Kalendar na javnoj stranici',v:u2(p=>p.show_availability)},
+    {k:'Povezan iCal (Booking/Airbnb)',v:u2(p=>p.ical_booking_url||p.ical_airbnb_url)},
+    {k:'Barem jedan link za gosta',v:u2(p=>PSTAT[p.id]?.rez>0)},
+    {k:'Poruka dobrodošlice',v:u2(p=>(p.welcome_msg||'').trim())}
+  ].sort((a,b)=>b.v-a.v),{fmt:v=>A.posto(v/P)}):A.prazno('Još nema objekata.')
+}
+
+$('#paznja').addEventListener('click',e=>{
+  const b=e.target.closest('[data-cilj]'); if(!b)return
+  const c=b.dataset.cilj
+  if(c.startsWith('seg:')){ $('#segment').value=c.slice(4); hStr=0; tablica(); idiNa('domacini') }
+  else if(c.startsWith('obj:')){ $('#oSeg').value=c.slice(4); oStr=0; objekti(); idiNa('objekti') }
+  else idiNa(c)
+})
+
+/* ---------- DOMAĆINI ---------- */
 function filtri(){
-  $('#filtar').innerHTML='<option value="">Svi planovi</option>'
-    +PLANOVI.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('')
-  $('#oKome').innerHTML=`<option value="svi">Svim domaćinima (${HOSTS.length})</option>`
-    +PLANOVI.map(p=>{const n=HOSTS.filter(h=>planOd(h.user_id)===p.id).length
-      return `<option value="${p.id}">Samo ${esc(p.name)} (${n})</option>`}).join('')
-  osvjeziBroj()
+  const sv=$('#segment').value||'svi'
+  $('#segment').innerHTML=Object.entries(SEG).map(([k,[n,f]])=>`<option value="${k}">${esc(n)} (${HOSTS.filter(f).length})</option>`).join('')
+  $('#segment').value=sv
+  const fv=$('#filtar').value
+  $('#filtar').innerHTML='<option value="">Svi planovi</option>'+PLANOVI.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('')
+  $('#filtar').value=fv
 }
 
 function vidljivi(){
   const q=$('#trazi').value.trim().toLowerCase()
   const f=$('#filtar').value
-  return HOSTS.filter(h=>{
-    if(f&&planOd(h.user_id)!==f)return false
+  const sg=SEG[$('#segment').value]?.[1]||(()=>true)
+  const R=HOSTS.filter(h=>{
+    if(f&&h.plan!==f)return false
+    if(!sg(h))return false
     if(!q)return true
-    return (h.host_name||'').toLowerCase().includes(q)
-        || (h.email||'').toLowerCase().includes(q)
-        || h.props.some(p=>(p.name||'').toLowerCase().includes(q))
+    return [h.host_name,h.email,h.phone,...h.props.map(p=>p.name),...h.props.map(p=>p.location)].some(x=>(x||'').toLowerCase().includes(q))
   })
+  const s=$('#hSort').value
+  const cmp={novi:(a,b)=>(b.prvi||'').localeCompare(a.prvi||''),objekti:(a,b)=>b.props.length-a.props.length,pregledi:(a,b)=>b.views30-a.views30,
+    zdravlje:(a,b)=>a.zdravlje-b.zdravlje,ime:(a,b)=>(a.host_name||'').localeCompare(b.host_name||'','hr')}[s]
+  return R.sort(cmp)
 }
 
 function tablica(){
   const R=vidljivi()
+  const maxStr=Math.max(0,Math.ceil(R.length/PO_STRANICI)-1)
+  hStr=Math.min(hStr,maxStr)
+  const S=R.slice(hStr*PO_STRANICI,(hStr+1)*PO_STRANICI)
   $('#prazno').hidden=R.length>0
   const opts=PLANOVI.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('')
   $('#tablica').innerHTML=R.length?`
-    <thead><tr><th>Domaćin</th><th>Objekti</th><th>Plan</th><th>Status</th><th></th></tr></thead>
-    <tbody>${R.map(h=>{
-      const s=SUBS[h.user_id], id=planOd(h.user_id), ist=istekao(h.user_id)
-      const pill=s
-        ? `<span class="tag ${ist?'tag--warn':'tag--ok'}">${ist?'Isteklo':esc(s.status||'aktivan')}</span>`
-        : '<span class="tag tag--warn">Bez pretplate</span>'
-      return `<tr data-uid="${esc(h.user_id)}">
+    <thead><tr><th scope="col">Domaćin</th><th scope="col">Objekti</th><th scope="col">Plan</th><th scope="col">Status</th><th scope="col" class="num">Pregledi 30 d</th><th scope="col" class="num">Upiti</th><th scope="col">Zdravlje</th><th scope="col"><span class="sr-only">Radnje</span></th></tr></thead>
+    <tbody>${S.map(h=>`<tr data-uid="${esc(h.user_id)}">
         <td><b>${esc(h.host_name||'Bez imena')}</b>
-          <div class="small">${esc(h.email||'—')}${h.phone?' · '+esc(h.phone):''}</div></td>
-        <td>${h.props.map(p=>`<span class="tag tag--mut">${esc(p.name||'Bez naziva')}</span>`).join(' ')}</td>
-        <td><select class="inp inp--sm plan-sel" data-uid="${esc(h.user_id)}" style="margin-top:0;width:auto">${opts}</select></td>
-        <td>${pill}</td>
-        <td><button class="btn btn--ghost btn--sm" data-spremi="${esc(h.user_id)}" disabled>Spremi</button></td>
-      </tr>`}).join('')}</tbody>`:''
-  R.forEach(h=>{
-    const sel=$(`select[data-uid="${CSS.escape(h.user_id)}"]`)
-    if(sel)sel.value=planOd(h.user_id)
-  })
+          <div class="small">${esc(h.email||'—')}${h.phone?' · '+esc(h.phone):''}</div>
+          <div class="small">od ${datum(h.prvi)} · zadnji promet ${relTs(h.zadnji)}</div></td>
+        <td>${h.props.slice(0,2).map(p=>`<span class="tag tag--mut">${esc(p.name||'Bez naziva')}</span>`).join(' ')}${h.props.length>2?` <span class="small">+${h.props.length-2}</span>`:''}</td>
+        <td><label class="sr-only" for="pl-${esc(h.user_id)}">Plan za ${esc(h.host_name||'domaćina')}</label>
+          <select class="inp inp--sm plan-sel" id="pl-${esc(h.user_id)}" data-uid="${esc(h.user_id)}" ${h.sub?'':'disabled title="Nema reda u subscriptions"'}>${opts}</select></td>
+        <td>${statusTag(h)}</td>
+        <td class="num">${h.views30}</td><td class="num">${h.upiti30}</td>
+        <td>${zdTag(h.zdravlje)}</td>
+        <td><div class="row gap8"><button class="btn btn--ghost btn--sm" data-spremi="${esc(h.user_id)}" disabled>Spremi</button>
+          <button class="btn btn--ghost btn--sm" data-detalji="${esc(h.user_id)}">Detalji</button></div></td>
+      </tr>`).join('')}</tbody>`:''
+  S.forEach(h=>{ const sel=document.getElementById('pl-'+h.user_id); if(sel)sel.value=h.plan })
+  $('#hPager').innerHTML=R.length>PO_STRANICI?`<span>${hStr*PO_STRANICI+1}–${Math.min(R.length,(hStr+1)*PO_STRANICI)} od ${R.length}</span>
+    <span class="row gap8"><button class="btn btn--ghost btn--sm" data-hstr="-1" ${hStr?'':'disabled'}>Prethodna</button><button class="btn btn--ghost btn--sm" data-hstr="1" ${hStr<maxStr?'':'disabled'}>Sljedeća</button></span>`
+    :R.length?`<span>${R.length} ${A.mn(R.length,'domaćin','domaćina','domaćina')}</span>`:''
 }
+$('#hPager').addEventListener('click',e=>{const b=e.target.closest('[data-hstr]');if(!b)return;hStr+=+b.dataset.hstr;tablica();$('#tablica').scrollIntoView({block:'start'})})
 
 /* Gumb „Spremi” budi se tek kad se plan stvarno promijeni. */
 $('#tablica').addEventListener('change',e=>{
   const sel=e.target.closest('.plan-sel'); if(!sel)return
+  const h=HOSTS.find(x=>x.user_id===sel.dataset.uid)
   const b=$(`[data-spremi="${CSS.escape(sel.dataset.uid)}"]`)
-  if(b)b.disabled = sel.value===planOd(sel.dataset.uid)
+  if(b&&h)b.disabled = sel.value===h.plan
 })
 $('#tablica').addEventListener('click',async e=>{
+  const d=e.target.closest('[data-detalji]'); if(d){ detalji(d.dataset.detalji); return }
   const b=e.target.closest('[data-spremi]'); if(!b)return
   const uid=b.dataset.spremi
-  const plan=$(`select[data-uid="${CSS.escape(uid)}"]`).value
+  const plan=document.getElementById('pl-'+uid).value
   b.disabled=true; b.textContent='Spremam…'
-  const{error}=await sb.from('subscriptions').update({plan}).eq('user_id',uid)
-  if(error){ b.textContent='Greška'; alert('Greška: '+error.message); return }
+  const msg=await spremiPretplatu(uid,{plan})
+  if(msg){ b.textContent='Greška'; alert(msg); return }
   await ucitaj()
 })
-$('#trazi').addEventListener('input',tablica)
-$('#filtar').addEventListener('change',tablica)
+;['#trazi','#segment','#filtar','#hSort'].forEach(s=>$(s).addEventListener(s==='#trazi'?'input':'change',()=>{hStr=0;tablica()}))
 $('#osvjezi').addEventListener('click',ucitaj)
 
-$('#izvoz').addEventListener('click',()=>{
-  const red=['Domacin;Email;Telefon;Plan;Status;Objekata;Mjesecno']
-    .concat(vidljivi().map(h=>{const id=planOd(h.user_id)
-      return [h.host_name||'',h.email||'',h.phone||'',ODMORIA_PLANS[id]?.name||id,
-              istekao(h.user_id)?'isteklo':(SUBS[h.user_id]?.status||'bez'),
-              h.props.length,cijena(id).toFixed(2)].join(';')}))
-  const a=document.createElement('a')
-  a.href=URL.createObjectURL(new Blob(['﻿'+red.join('\n')],{type:'text/csv;charset=utf-8'}))
-  a.download='odmoria-domacini.csv'; a.click(); URL.revokeObjectURL(a.href)
-})
-
-/* ---------- prihod ---------- */
-function prihod(){
-  const R=PLANOVI.filter(p=>cijena(p.id)>0).map(p=>{
-    const n=HOSTS.filter(h=>planOd(h.user_id)===p.id&&!istekao(h.user_id)).length
-    return {k:p.name,n,v:n*cijena(p.id)}
-  }).sort((a,b)=>b.v-a.v)
-  const max=Math.max(1,...R.map(r=>r.v))
-  const T=['--t-1','--t-2','--t-3','--t-4','--t-5']
-    .map(n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim())
-  $('#prihodRank').innerHTML=R.map((r,i)=>`
-    <div class="rank__row"><span class="rank__nm">${esc(r.k)}</span>
-      <span class="rank__tr"><i style="background:${T[Math.max(0,T.length-1-i)]};
-        width:${(r.v/max*100).toFixed(1)}%"></i></span>
-      <span class="rank__v">${eur2(r.v)}</span></div>`).join('')
-  $('#prihodTbl').innerHTML='<thead><tr><th>Plan</th><th>Cijena</th><th>Pretplata</th><th>Mjesečno</th></tr></thead><tbody>'
-    +(R.length?R.map(r=>`<tr><td>${esc(r.k)}</td><td>${eur2(r.v/(r.n||1))}</td>
-        <td>${r.n}</td><td>${eur2(r.v)}</td></tr>`).join('')
-      :'<tr><td colspan="4">Još nema plaćenih pretplata.</td></tr>')+'</tbody>'
+/* Upis u subscriptions. Vraća poruku greške ili null. RLS dopušta vlasniku samo
+   izmjenu postojećeg reda — ako ga nema, update prođe bez greške i bez učinka. */
+async function spremiPretplatu(uid,promjena){
+  const{data,error}=await sb.from('subscriptions').update(promjena).eq('user_id',uid).select()
+  if(error)return 'Greška: '+error.message
+  if(Array.isArray(data)&&!data.length)return 'Promjena nije upisana: domaćin nema red u subscriptions (ili RLS nije dopustio izmjenu).'
+  return null
 }
 
-/* ---------- poruke ---------- */
+const csvEsc=x=>{const v=String(x??'');return /[;"\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}
+function preuzmi(ime,redovi){
+  const a=document.createElement('a')
+  a.href=URL.createObjectURL(new Blob(['﻿'+redovi.map(r=>r.map(csvEsc).join(';')).join('\n')],{type:'text/csv;charset=utf-8'}))
+  a.download=ime; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000)
+}
+$('#izvoz').addEventListener('click',()=>{
+  preuzmi('odmoria-domacini.csv',[['Domacin','Email','Telefon','Plan','Status','Istek','Objekata','Pregledi 30d','Upiti 30d','Zdravlje','Prvi objekt','Mjesecno']]
+    .concat(vidljivi().map(h=>[h.host_name||'',h.email||'',h.phone||'',planIme(h.plan),h.istekao?'isteklo':(h.sub?.status||'bez'),h.sub?.period_end||'',
+      h.props.length,h.views30,h.upiti30,h.zdravlje,h.prvi?A.tsUDan(h.prvi):'',cijena(h.efektivni).toFixed(2)])))
+})
+async function kopiraj(txt,poruka,el){
+  try{ await navigator.clipboard.writeText(txt); obavijest(el,poruka,true) }catch{ obavijest(el,'Kopiranje nije uspjelo.',false) }
+}
+function obavijest(el,txt,ok){ if(!el){alert(txt);return} el.textContent=txt; el.className=ok?'note-ok mt12':'note-inline mt12'; el.hidden=false; clearTimeout(el.__t); el.__t=setTimeout(()=>{el.hidden=true},5000) }
+$('#hMail').addEventListener('click',()=>{
+  const m=[...new Set(vidljivi().map(h=>h.email).filter(Boolean))]
+  if(!m.length){alert('U odabranom skupu nema e-mail adresa.');return}
+  kopiraj(m.join(', '),`Kopirano ${m.length} adresa.`,null)
+})
+
+/* ---------- detalji domaćina ---------- */
+const dlg=$('#dlg')
+$('#dlgX').addEventListener('click',()=>dlg.close())
+dlg.addEventListener('click',e=>{ if(e.target===dlg)dlg.close() })
+function detalji(uid){
+  const h=HOSTS.find(x=>x.user_id===uid); if(!h)return
+  $('#dlgT').textContent=h.host_name||'Bez imena'
+  $('#dlgSub').textContent=[h.email,h.phone,'prvi objekt '+datum(h.prvi)].filter(Boolean).join(' · ')
+  const opts=PLANOVI.map(p=>`<option value="${p.id}" ${p.id===h.plan?'selected':''}>${esc(p.name)} (${eur2(cijena(p.id))}/mj)</option>`).join('')
+  const pe=h.sub?.period_end?A.tsUDan(h.sub.period_end):''
+  $('#dlgBody').innerHTML=`
+    <div class="an-kpis" style="margin:0">${[
+      A.kpi('Objekti',String(h.props.length)),A.kpi('Pregledi · 30 dana',String(h.views30)),
+      A.kpi('Upiti · 30 dana',String(h.upiti30)),A.kpi('Linkovi za goste',String(h.rez))].join('')}</div>
+    <div class="g g2">
+      <div class="box"><h3>Pretplata</h3>
+        ${h.sub?`<p class="small">Sada: <b>${esc(planIme(h.plan))}</b> · ${statusTag(h)}${pe?' · istek '+datum(h.sub.period_end):' · bez isteka'}</p>
+        <label class="lb mt12" for="dPlan">Plan</label><select class="inp" id="dPlan">${opts}</select>
+        <label class="lb mt12" for="dIstek">Vrijedi do</label><input class="inp" id="dIstek" type="date" value="${pe}">
+        <div class="row wrapf gap8 mt12">
+          <button class="btn btn--ghost btn--sm" type="button" data-prod="1">+1 mjesec</button>
+          <button class="btn btn--ghost btn--sm" type="button" data-prod="12">+1 godina</button>
+          <button class="btn btn--ghost btn--sm" type="button" data-prod="0">Bez isteka</button>
+        </div>
+        <button class="btn btn--fill btn--sm mt16" type="button" id="dSpremi">Spremi pretplatu</button>
+        <p id="dPoruka" role="status" hidden></p>`
+        :'<p class="note-inline">Domaćin nema red u <code>subscriptions</code>. Admin smije samo mijenjati postojeći red (RLS), pa se plan ovdje ne može postaviti.</p>'}
+      </div>
+      <div class="box"><h3>Zdravlje računa</h3>
+        <p>${zdTag(h.zdravlje)}</p>
+        <ul class="small mt8" style="display:grid;gap:4px">
+          ${[[h.props.some(p=>(p.photo_urls||[]).length),'Fotografije (20)'],[h.props.some(p=>Number(p.price_per_night)>0),'Cijena (10)'],
+             [h.props.some(p=>p.ical_booking_url||p.ical_airbnb_url),'Povezan iCal (15)'],[h.rez>0,'Linkovi za goste (20)'],
+             [h.views30>0,'Promet u 30 dana (20)'],[h.vodic90>0,'Gost otvorio vodič u 90 dana (15)']]
+            .map(([ok,t])=>`<li><span aria-hidden="true">${ok?'✓':'✗'}</span> <span class="sr-only">${ok?'Ima:':'Nema:'}</span>${t}</li>`).join('')}
+        </ul>
+        ${h.kandidat?`<p class="mt12"><span class="tag tag--ok">Kandidat za nadogradnju</span> <span class="small">${esc(h.kandidat)}</span></p>`:''}
+        ${h.rizik?`<p class="mt12"><span class="tag tag--warn">Rizik odljeva</span> <span class="small">${esc(h.rizik)}</span></p>`:''}
+        <div class="row wrapf gap8 mt16">
+          ${h.email?`<a class="btn btn--ghost btn--sm" href="mailto:${esc(h.email)}?subject=${encodeURIComponent('Odmoria')}">Pošalji e-mail<svg class="ic ic--sm" aria-hidden="true"><use href="#i-mail"/></svg></a>`:''}
+          ${h.email?`<button class="btn btn--ghost btn--sm" type="button" id="dKopiraj">Kopiraj e-mail</button>`:''}
+        </div>
+      </div>
+    </div>
+    <div class="box"><h3>Objekti</h3>
+      ${A.tablica(['Objekt','Mjesto','Dodan','Foto','Cijena','Pregledi 30 d','Upiti','Vodič 30 d','Linkovi','Dovršenost'],
+        h.props.map(p=>{const s=PSTAT[p.id];return [p.name||'Bez naziva',p.location||'—',datum(p.created_at),(p.photo_urls||[]).length,Number(p.price_per_night)?eur0(Number(p.price_per_night)):'—',s.v30,s.u30,s.g30,s.rez,A.posto(dovrsenost(p))]}))}
+      <p class="small mt12">${h.props.filter(p=>p.slug).map(p=>`<a class="lnk" href="/p.html?slug=${encodeURIComponent(p.slug)}&domacin=1" target="_blank" rel="noopener">Javna stranica: ${esc(p.name||p.slug)} ↗</a>`).join(' · ')}</p>
+    </div>`
+  dlg.showModal()
+  const dKop=$('#dKopiraj'); if(dKop)dKop.addEventListener('click',()=>kopiraj(h.email,'E-mail je kopiran.',null))
+  dlg.querySelectorAll('[data-prod]').forEach(b=>b.addEventListener('click',()=>{
+    const m=+b.dataset.prod, inp=$('#dIstek')
+    if(!m){inp.value='';return}
+    const baza=inp.value&&inp.value>A.danas()?A.uDatum(inp.value):new Date()
+    const d=new Date(baza.getFullYear(),baza.getMonth()+m,baza.getDate())
+    inp.value=A.ds(d)
+  }))
+  const sp=$('#dSpremi')
+  if(sp)sp.addEventListener('click',async()=>{
+    const plan=$('#dPlan').value, ist=$('#dIstek').value
+    sp.disabled=true; sp.textContent='Spremam…'
+    const msg=await spremiPretplatu(uid,{plan,period_end:ist?new Date(ist+'T23:59:59').toISOString():null})
+    sp.disabled=false; sp.textContent='Spremi pretplatu'
+    if(msg){ obavijest($('#dPoruka'),msg,false); return }
+    await ucitaj(); detalji(uid); obavijest($('#dPoruka'),'Pretplata je spremljena.',true)
+  })
+}
+
+/* ---------- OBJEKTI ---------- */
+function vidljiviObjekti(){
+  const q=$('#oTrazi').value.trim().toLowerCase(), sg=$('#oSeg').value
+  const vl=Object.fromEntries(HOSTS.map(h=>[h.user_id,h]))
+  const F={bezFoto:p=>!(p.photo_urls||[]).length,bezCijene:p=>!(Number(p.price_per_night)>0),icalStar,bezPregleda:p=>!PSTAT[p.id].v30,nepotpun:p=>dovrsenost(p)<.6}
+  const R=PROPS.filter(p=>(!sg||F[sg](p))&&(!q||[p.name,p.location,vl[p.user_id]?.host_name,p.slug].some(x=>(x||'').toLowerCase().includes(q))))
+  const s=$('#oSort').value
+  const cmp={pregledi:(a,b)=>PSTAT[b.id].v30-PSTAT[a.id].v30,upiti:(a,b)=>PSTAT[b.id].u30-PSTAT[a.id].u30,novi:(a,b)=>(b.created_at||'').localeCompare(a.created_at||''),dovrsenost:(a,b)=>dovrsenost(a)-dovrsenost(b)}[s]
+  return R.sort(cmp)
+}
+function objekti(){
+  const R=vidljiviObjekti()
+  const vl=Object.fromEntries(HOSTS.map(h=>[h.user_id,h]))
+  const maxStr=Math.max(0,Math.ceil(R.length/PO_STRANICI)-1); oStr=Math.min(oStr,maxStr)
+  const S=R.slice(oStr*PO_STRANICI,(oStr+1)*PO_STRANICI)
+  $('#oTbl').innerHTML=R.length?`<thead><tr><th scope="col">Objekt</th><th scope="col">Domaćin</th><th scope="col" class="num">Foto</th><th scope="col" class="num">Cijena</th><th scope="col">iCal</th>
+      <th scope="col" class="num">Pregledi 30 d</th><th scope="col" class="num">Upiti</th><th scope="col" class="num">Vodič</th><th scope="col" class="num">Linkovi</th><th scope="col">Dovršenost</th></tr></thead>
+    <tbody>${S.map(p=>{const s=PSTAT[p.id],h=vl[p.user_id],d=dovrsenost(p)
+      const ic=!(p.ical_booking_url||p.ical_airbnb_url)?'<span class="small">—</span>':icalStar(p)?`<span class="tag tag--warn">${p.ical_last_sync?'Prije '+Math.floor((Date.now()-new Date(p.ical_last_sync))/864e5)+' d':'Nikad'}</span>`:'<span class="tag tag--ok">Ažurno</span>'
+      return `<tr><td><b>${esc(p.name||'Bez naziva')}</b><div class="small">${esc(p.location||'—')} · dodan ${datum(p.created_at)}</div>
+          ${p.slug?`<a class="lnk small" href="/p.html?slug=${encodeURIComponent(p.slug)}&domacin=1" target="_blank" rel="noopener">Otvori stranicu ↗</a>`:''}</td>
+        <td>${h?`<button class="btn btn--text btn--sm" style="padding:0;min-height:32px" data-detalji="${esc(h.user_id)}">${esc(h.host_name||'Bez imena')}</button>`:'—'}</td>
+        <td class="num">${(p.photo_urls||[]).length}</td><td class="num">${Number(p.price_per_night)?eur0(Number(p.price_per_night)):'—'}</td><td>${ic}</td>
+        <td class="num">${s.v30}</td><td class="num">${s.u30}</td><td class="num">${s.g30}</td><td class="num">${s.rez}</td>
+        <td><span class="tag ${d>=.8?'tag--ok':d>=.6?'tag--mut':'tag--warn'}">${A.posto(d)}</span></td></tr>`}).join('')}</tbody>`
+    :`<tbody><tr><td>${A.prazno('Nema objekata koji odgovaraju filtru.')}</td></tr></tbody>`
+  $('#oPager').innerHTML=R.length>PO_STRANICI?`<span>${oStr*PO_STRANICI+1}–${Math.min(R.length,(oStr+1)*PO_STRANICI)} od ${R.length}</span>
+    <span class="row gap8"><button class="btn btn--ghost btn--sm" data-ostr="-1" ${oStr?'':'disabled'}>Prethodna</button><button class="btn btn--ghost btn--sm" data-ostr="1" ${oStr<maxStr?'':'disabled'}>Sljedeća</button></span>`
+    :R.length?`<span>${R.length} ${A.mn(R.length,'objekt','objekta','objekata')}</span>`:''
+}
+$('#oPager').addEventListener('click',e=>{const b=e.target.closest('[data-ostr]');if(!b)return;oStr+=+b.dataset.ostr;objekti();$('#oTbl').scrollIntoView({block:'start'})})
+$('#oTbl').addEventListener('click',e=>{const d=e.target.closest('[data-detalji]');if(d)detalji(d.dataset.detalji)})
+;['#oTrazi','#oSeg','#oSort'].forEach(s=>$(s).addEventListener(s==='#oTrazi'?'input':'change',()=>{oStr=0;objekti()}))
+$('#oIzvoz').addEventListener('click',()=>{
+  const vl=Object.fromEntries(HOSTS.map(h=>[h.user_id,h]))
+  preuzmi('odmoria-objekti.csv',[['Objekt','Mjesto','Domacin','Dodan','Fotografija','Cijena','iCal','Zadnja sinkronizacija','Pregledi 30d','Upiti 30d','Vodic 30d','Linkovi','Dovrsenost']]
+    .concat(vidljiviObjekti().map(p=>{const s=PSTAT[p.id];return [p.name||'',p.location||'',vl[p.user_id]?.host_name||'',p.created_at?A.tsUDan(p.created_at):'',(p.photo_urls||[]).length,
+      p.price_per_night||'',(p.ical_booking_url||p.ical_airbnb_url)?'da':'ne',p.ical_last_sync||'',s.v30,s.u30,s.g30,s.rez,Math.round(dovrsenost(p)*100)+'%']})))
+})
+
+/* ---------- KORIŠTENJE ---------- */
+document.querySelectorAll('[data-kraspon]').forEach(b=>b.addEventListener('click',()=>{
+  K_RASPON=+b.dataset.kraspon
+  document.querySelectorAll('[data-kraspon]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)))
+  koristenje()
+}))
+let kVrti=false
+async function koristenje(){
+  if(kVrti||!PROPS.length&&!VIEWS.length&&!VIEWS_OD)return
+  const r=K_RASPON, t=A.danas(), sut=A.plusDana(t,1), od=A.plusDana(sut,-r), odP=A.plusDana(od,-r)
+  // treba i prethodno razdoblje za usporedbu; dohvati više ako još nije
+  if(VIEWS_OD&&odP<VIEWS_OD){
+    kVrti=true; $('#kSub').textContent='Učitavam dulje razdoblje…'
+    try{
+      const vise=await A.sviRedovi(()=>sb.from('page_views').select('property_id,view_type,timestamp').gte('timestamp',A.uDatum(odP).toISOString()).lt('timestamp',A.uDatum(VIEWS_OD).toISOString()).order('timestamp'),MAX_PREGLEDA)
+      VIEWS=vise.concat(VIEWS); VIEWS_OD=odP; VIEWS_PUNO=VIEWS_PUNO||vise.length>=MAX_PREGLEDA
+    }catch(e){}
+    kVrti=false
+  }
+  const rTxt=r===365?'12 mjeseci':r+' dana'
+  const c=(f,a,b)=>A.broji(VIEWS,f,a,b)
+  const v=c(JE_JAVNA,od,sut),u=c(A.JE_UPIT,od,sut),g=c(JE_VODIC,od,sut),m=c(x=>x==='map',od,sut)
+  $('#kKpi').innerHTML=[
+    A.kpi('Pregledi javnih stranica',String(v),'prema prethodnom razdoblju',A.promjena(v,c(JE_JAVNA,odP,od))),
+    A.kpi('Upiti gostiju',String(u),v?A.posto(u/v)+' posjeta završi upitom':'—',A.promjena(u,c(A.JE_UPIT,odP,od))),
+    A.kpi('Otvaranja vodiča',String(g),'prema prethodnom razdoblju',A.promjena(g,c(JE_VODIC,odP,od))),
+    A.kpi('Otvorene karte',String(m),'gosti koji traže lokaciju')
+  ].join('')
+  const korak=r<=30?'dan':r<=90?'tjedan':'mjesec'
+  const kP=A.kante(VIEWS,od,sut,korak,JE_JAVNA), kV=A.kante(VIEWS,od,sut,korak,JE_VODIC)
+  const maks=Math.max(1,...kP.map(x=>x.v),...kV.map(x=>x.v))
+  $('#kSub').textContent=`Zadnjih ${rTxt}, ${korak==='dan'?'po danu':korak==='tjedan'?'po tjednu':'po mjesecu'}; obje serije na istoj skali.${VIEWS_PUNO?' Dohvat je ograničen na '+MAX_PREGLEDA.toLocaleString('hr-HR')+' redova — brojke su donja granica.':''}`
+  $('#kPub').innerHTML=A.grafikon(kP,{aria:'Pregledi javnih stranica',maks,istakni:kP.length-1})
+  $('#kHub').innerHTML=A.grafikon(kV,{aria:'Otvaranja vodiča',maks,istakni:kV.length-1,visina:110})
+  $('#kTbl').innerHTML=A.kaoTablica(['Razdoblje','Javne stranice','Vodiči'],kP.map((x,i)=>[x.oznaka,x.v,kV[i].v]))
+  const kan=Object.entries(A.KANAL).map(([k,n])=>({k:n,v:c(x=>x===k,od,sut)})).filter(x=>x.v).sort((a,b)=>b.v-a.v)
+  $('#kKanali').innerHTML=kan.length?A.rang(kan.map(x=>({...x,sub:A.posto(x.v/u)}))):A.prazno('Nema upita u razdoblju.')
+  const dio=Object.entries(A.DIO_VODICA).map(([k,n])=>({k:n,v:c(x=>x===k,od,sut)})).filter(x=>x.v).sort((a,b)=>b.v-a.v)
+  $('#kVodic').innerHTML=dio.length?A.rang(dio):A.prazno('Nema podataka o dijelovima vodiča u razdoblju.')
+  const uR=VIEWS.filter(x=>{const d=A.tsUDan(x.timestamp);return d>=od&&d<sut})
+  const dj=A.poDanuISatu(uR,JE_JAVNA)
+  $('#kDani').innerHTML=dj.dani.some(Boolean)?A.grafikon(A.DANI_TJEDNA.map((k,i)=>({oznaka:k,v:dj.dani[i]})),{aria:'Pregledi po danu u tjednu',oznakaSvaki:1,vrijednosti:true,visina:130}):A.prazno('Nema pregleda u razdoblju.')
+  const now=new Date(), mj=[]
+  for(let i=11;i>=0;i--){const d=new Date(now.getFullYear(),now.getMonth()-i,1);mj.push({od:A.ds(d),do:A.ds(new Date(d.getFullYear(),d.getMonth()+1,1)),oznaka:A.mjKratko(d.getMonth()),naslov:A.mjDugo(d.getMonth())+' '+d.getFullYear()+'.',v:0})}
+  BOOKINGS.forEach(b=>{const d=b.checkin_date;if(!d)return;const k=mj.find(x=>d>=x.od&&d<x.do);if(k)k.v++})
+  $('#kRez').innerHTML=A.grafikon(mj,{aria:'Linkovi za goste po mjesecu dolaska',vrijednosti:true,oznakaSvaki:1,istakni:11,visina:130})
+    +A.kaoTablica(['Mjesec','Rezervacije'],mj.map(x=>[x.naslov,x.v]))
+  const vl=Object.fromEntries(HOSTS.map(h=>[h.user_id,h]))
+  const po=new Map()
+  for(const x of uR){ let s=po.get(x.property_id); if(!s)po.set(x.property_id,s={v:0,u:0,g:0}); if(JE_JAVNA(x.view_type))s.v++; else if(A.JE_UPIT(x.view_type))s.u++; else if(JE_VODIC(x.view_type))s.g++ }
+  const top=PROPS.map(p=>({p,...(po.get(p.id)||{v:0,u:0,g:0})})).filter(x=>x.v||x.g).sort((a,b)=>b.v-a.v).slice(0,10)
+  $('#kTop').innerHTML=top.length?A.tablica(['Objekt','Domaćin','Pregledi','Upiti','Stopa upita','Vodič'],top.map(x=>[x.p.name||'Bez naziva',vl[x.p.user_id]?.host_name||'—',x.v,x.u,x.v?A.posto(x.u/x.v):'—',x.g])):A.prazno('Nema prometa u razdoblju.')
+}
+
+/* ---------- PRIHOD ---------- */
+function prihod(){
+  const placeni=HOSTS.filter(h=>h.efektivni!=='free')
+  const mrr=placeni.reduce((z,h)=>z+cijena(h.efektivni),0)
+  const rizikMrr=HOSTS.filter(h=>h.rizik).reduce((z,h)=>z+cijena(h.efektivni),0)
+  const istMrr=HOSTS.filter(h=>h.istjece).reduce((z,h)=>z+cijena(h.efektivni),0)
+  $('#prihodBrojke').innerHTML=[
+    A.kpi('MRR (procjena)',eur2(mrr),'mjesečno ponavljajuće'),
+    A.kpi('ARR (procjena)',eur0(mrr*12),'MRR × 12'),
+    A.kpi('Prosjek po plaćenom',placeni.length?eur2(mrr/placeni.length):'—','ARPU'),
+    A.kpi('MRR u riziku',eur2(rizikMrr),istMrr?`od toga ${eur2(istMrr)} istječe u 14 dana`:'domaćini u riziku odljeva')
+  ].join('')
+  const R=PLANOVI.filter(p=>cijena(p.id)>0).map(p=>{
+    const n=HOSTS.filter(h=>h.efektivni===p.id).length
+    return {k:p.name,n,v:n*cijena(p.id),c:cijena(p.id)}
+  }).sort((a,b)=>b.v-a.v)
+  $('#prihodRank').innerHTML=R.some(r=>r.v)?A.rang(R.map(r=>({k:r.k,v:r.v,sub:r.n+' '+A.mn(r.n,'pretplata','pretplate','pretplata')})),{fmt:eur2}):A.prazno('Još nema plaćenih pretplata.')
+  $('#prihodTbl').innerHTML='<thead><tr><th>Plan</th><th class="num">Cijena</th><th class="num">Pretplata</th><th class="num">Mjesečno</th></tr></thead><tbody>'
+    +R.map(r=>`<tr><td>${esc(r.k)}</td><td class="num">${eur2(r.c)}</td><td class="num">${r.n}</td><td class="num">${eur2(r.v)}</td></tr>`).join('')+'</tbody>'
+  const br={}; PLANOVI.forEach(p=>br[p.id]=0); HOSTS.forEach(h=>{br[h.efektivni]=(br[h.efektivni]||0)+1})
+  $('#planRank').innerHTML=A.rang(PLANOVI.map(p=>({k:p.name,v:br[p.id]||0,sub:HOSTS.length?A.posto((br[p.id]||0)/HOSTS.length):''})).sort((a,b)=>b.v-a.v))
+  const mailBtn=(h,subj)=>h.email?`<a class="btn btn--ghost btn--sm" href="mailto:${esc(h.email)}?subject=${encodeURIComponent(subj)}">Javi se</a>`:'<span class="small">nema e-maila</span>'
+  const red=(h,extra,subj)=>`<tr><td><b>${esc(h.host_name||'Bez imena')}</b><div class="small">${esc(h.email||'—')}</div></td><td>${esc(planIme(h.efektivni))}</td><td>${extra}</td>
+    <td><div class="row gap8">${mailBtn(h,subj)}<button class="btn btn--ghost btn--sm" data-detalji="${esc(h.user_id)}">Detalji</button></div></td></tr>`
+  const tbl=(rows,glava)=>rows.length?`<table class="tbl"><thead><tr><th>Domaćin</th><th>Plan</th><th>${glava}</th><th><span class="sr-only">Radnje</span></th></tr></thead><tbody>${rows.join('')}</tbody></table>`:null
+  const ist=HOSTS.filter(h=>h.istjece).sort((a,b)=>a.sub.period_end.localeCompare(b.sub.period_end))
+  $('#istekTbl').innerHTML=tbl(ist.map(h=>red(h,`${datum(h.sub.period_end)} · ${eur2(cijena(h.efektivni))}/mj`,'Vaša Odmoria pretplata uskoro istječe')),'Istječe')||A.prazno('Nijedna pretplata ne istječe u sljedećih 14 dana.')
+  const kand=HOSTS.filter(h=>h.kandidat).sort((a,b)=>b.views30-a.views30)
+  $('#kandTbl').innerHTML=tbl(kand.map(h=>red(h,esc(h.kandidat),'Odmoria — više prostora za vaše objekte')),'Zašto')||A.prazno('Trenutačno nema kandidata.')
+  const riz=HOSTS.filter(h=>h.rizik).sort((a,b)=>a.zdravlje-b.zdravlje)
+  $('#rizikTbl').innerHTML=tbl(riz.map(h=>red(h,esc(h.rizik)+' · '+zdTag(h.zdravlje),'Kako vam možemo pomoći s Odmorijom?')),'Zašto')||A.prazno('Nijedan plaćeni domaćin nije u riziku.')
+}
+$('[data-panel="prihod"]').addEventListener('click',e=>{const d=e.target.closest('[data-detalji]');if(d)detalji(d.dataset.detalji)})
+
+/* ---------- PORUKE ---------- */
+function primatelji(){ const f=SEG[$('#oKome').value]?.[1]||(()=>true); return HOSTS.filter(f) }
+function poruke(){
+  const sv=$('#oKome').value||'svi'
+  $('#oKome').innerHTML=Object.entries(SEG).map(([k,[n,f]])=>`<option value="${k}">${esc(n)} (${HOSTS.filter(f).length})</option>`).join('')
+  $('#oKome').value=sv
+  osvjeziBroj()
+}
 function osvjeziBroj(){
-  const v=$('#oKome').value
-  const n=v==='svi'?HOSTS.length:HOSTS.filter(h=>planOd(h.user_id)===v).length
-  $('#oBroj').textContent='Ide na '+n+' domaćina'
+  const P=primatelji(), m=[...new Set(P.map(h=>h.email).filter(Boolean))]
+  const bez=P.filter(h=>!h.email).length
+  $('#oBroj').textContent=`${m.length} ${A.mn(m.length,'adresa','adrese','adresa')}${bez?` · ${bez} bez e-maila`:''}`
+  $('#oPrimTitle').textContent=`${P.length} ${A.mn(P.length,'domaćin','domaćina','domaćina')}`
+  $('#oPrim').innerHTML=P.length?`<ul class="small" style="display:grid;gap:6px">${P.slice(0,12).map(h=>`<li><b>${esc(h.host_name||'Bez imena')}</b> · ${esc(h.email||'nema e-maila')}</li>`).join('')}</ul>${P.length>12?`<p class="small mt8">i još ${P.length-12}…</p>`:''}`:A.prazno('Nema primatelja u ovoj skupini.')
 }
 $('#oKome').addEventListener('change',osvjeziBroj)
+$('#oKopiraj').addEventListener('click',()=>{
+  const m=[...new Set(primatelji().map(h=>h.email).filter(Boolean))]
+  if(!m.length){obavijest($('#oPoruka'),'U odabranoj skupini nema e-mail adresa.',false);return}
+  kopiraj(m.join(', '),`Kopirano ${m.length} adresa — zalijepite ih u polje „Skrivena kopija” (BCC).`,$('#oPoruka'))
+})
 $('#oSalji').addEventListener('click',()=>{
+  const m=[...new Set(primatelji().map(h=>h.email).filter(Boolean))]
   const el=$('#oPoruka')
-  el.textContent='Nije spojeno — treba tablica announcements (vidi gore).'
-  el.hidden=false
-  clearTimeout(el.__t); el.__t=setTimeout(()=>{el.hidden=true},5000)
+  if(!m.length){obavijest(el,'U odabranoj skupini nema e-mail adresa.',false);return}
+  if(!$('#oNas').value.trim()||!$('#oTxt').value.trim()){obavijest(el,'Upišite naslov i poruku.',false);return}
+  const url=`mailto:?bcc=${encodeURIComponent(m.join(','))}&subject=${encodeURIComponent($('#oNas').value.trim())}&body=${encodeURIComponent($('#oTxt').value)}`
+  if(url.length>1900){obavijest(el,`Previše primatelja za jedan link (${m.length}). Kopirajte adrese i zalijepite ih u skrivenu kopiju, a naslov i poruku prepišite.`,false);return}
+  location.href=url
+  obavijest(el,`Otvaram e-mail program s ${m.length} ${A.mn(m.length,'primateljem','primatelja','primatelja')} u skrivenoj kopiji.`,true)
 })
 
-/* ---------- postavke ---------- */
-function postavke(){
-  $('#planTbl').innerHTML='<thead><tr><th>Plan</th><th>Mjesečno</th><th>Godišnje</th><th>Objekata</th><th>Fotografija</th><th>Pretplata</th></tr></thead><tbody>'
-    +PLANOVI.map(p=>{
-      const n=HOSTS.filter(h=>planOd(h.user_id)===p.id).length
-      const lim=v=>v===-1?'∞':(v??'—')
-      return `<tr><td><b>${esc(p.name)}</b></td>
-        <td>${eur2(Number(p.monthlyPriceEur||0))}</td>
-        <td>${p.yearlyPriceEur!=null?eur2(Number(p.yearlyPriceEur)):'—'}</td>
-        <td>${lim(p.maxProperties)}</td><td>${lim(p.maxPhotosPerProperty)}</td><td>${n}</td></tr>`
-    }).join('')+'</tbody>'
-
+/* ---------- SUSTAV ---------- */
+function sustav(){
+  const lim=v=>v===Infinity?'∞':(v??'—')
+  $('#planTbl').innerHTML='<thead><tr><th>Plan</th><th class="num">Mjesečno</th><th class="num">Godišnje</th><th class="num">Objekata</th><th class="num">Fotografija</th><th class="num">Preporuka</th><th class="num">Domaćina</th></tr></thead><tbody>'
+    +PLANOVI.map(p=>`<tr><td><b>${esc(p.name)}</b></td><td class="num">${eur2(Number(p.monthlyPriceEur||0))}</td>
+        <td class="num">${p.yearlyPriceEur!=null?eur2(Number(p.yearlyPriceEur)):'—'}</td><td class="num">${lim(p.maxProperties)}</td>
+        <td class="num">${lim(p.maxPhotosPerProperty)}</td><td class="num">${lim(p.maxLocalPlacesPerProperty)}</td>
+        <td class="num">${HOSTS.filter(h=>h.efektivni===p.id).length}</td></tr>`).join('')+'</tbody>'
+  const racuni=new Set([...SUBROWS.map(s=>s.user_id),...HOSTS.map(h=>h.user_id)])
+  const bezObj=[...racuni].filter(id=>!HOSTS.some(h=>h.user_id===id)).length
+  const bezSub=HOSTS.filter(h=>!h.sub).length
+  const bezSluga=PROPS.filter(p=>!p.slug).length
+  const krivi=BOOKINGS.filter(b=>!b.checkin_date||!b.checkout_date||b.checkout_date<=b.checkin_date).length
+  const bezKont=PROPS.filter(p=>!p.phone&&!p.email).length
+  const zd=[
+    [!bezObj,'Računi bez objekta',bezObj?`${bezObj} — registrirani, ali bez objekta. Njihov e-mail je u auth.users, koji admin ne čita.`:'Nema.'],
+    [!bezSub,'Domaćini bez reda u subscriptions',bezSub?`${bezSub} — admin im ne može promijeniti plan (RLS dopušta samo izmjenu).`:'Nema.'],
+    [!bezSluga,'Objekti bez adrese (slug)',bezSluga?`${bezSluga} — javna stranica im se ne može otvoriti.`:'Nema.'],
+    [!bezKont,'Objekti bez kontakta',bezKont?`${bezKont} — gost nema kako poslati upit.`:'Nema.'],
+    [!krivi,'Rezervacije s neispravnim datumima',krivi?`${krivi} — odlazak nije nakon dolaska.`:'Nema.'],
+    [!VIEWS_PUNO,'Dohvat pregleda',VIEWS_PUNO?`Ograničen na ${MAX_PREGLEDA.toLocaleString('hr-HR')} redova — brojke su donja granica.`:`${VIEWS.length.toLocaleString('hr-HR')} redova od ${datum(VIEWS_OD)}; učitavanje ${TRAJANJE} ms.`],
+  ]
+  $('#zdravljePodataka').innerHTML=zd.map(([ok,n,t])=>`<div class="sys"><span class="sys__d ${ok?'ok':'no'}"></span><div><b>${esc(n)}</b><p>${esc(t)}</p></div></div>`).join('')
   $('#stanje').innerHTML=[
     [1,'Booking tokeni','Rade preko baze, bez backenda. Vodič se otključava po vremenu dolaska.'],
-    [1,'Teme javne stranice','Osam tema, biraju se u dashboardu pod „Izgled stranice”.'],
+    [1,'Analitika','Pregledi, upiti (WhatsApp, e-mail, kopirano), karta i dijelovi vodiča u page_views; domaćinovi vlastiti pregledi se ne broje.'],
     [1,'iCal sinkronizacija','Radi, ali samo na klik u dashboardu. Vercel Hobby dopušta jedan cron dnevno, a taj drži bazu budnom.'],
     [1,'Fotografije','Cloudinary, izravno s klijenta.'],
-    [0,'Stripe checkout','Nije spojen. Gumbi za nadogradnju ništa ne pozivaju, serverless funkcije ne postoje.'],
+    [0,'Teme javne stranice','Biraju se u dashboardu, ali nova javna stranica ih ne prikazuje — planirano za plaćene planove.'],
+    [0,'Stripe checkout','Nije spojen. Nadogradnja ide e-mailom; serverske funkcije ne postoje.'],
+    [0,'Obavijesti u aplikaciji','Traže tablicu announcements. E-mail skupini radi (tab Poruke).'],
     [0,'Višejezičnost','Ne postoji.'],
     [0,'Analitika po državama','Traži dva stupca na page_views i mali api/track.js.'],
-  ].map(([ok,n,t])=>`<div class="sys"><span class="sys__d ${ok?'ok':'no'}"></span>
-      <div><b>${n}</b><p>${t}</p></div></div>`).join('')
+  ].map(([ok,n,t])=>`<div class="sys"><span class="sys__d ${ok?'ok':'no'}"></span><div><b>${esc(n)}</b><p>${esc(t)}</p></div></div>`).join('')
 }
 </script>
 </body>

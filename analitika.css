@@ -1,0 +1,89 @@
+/* ==========================================================================
+   analitika.css — pločice, grafikoni, popisi i tablice analitike.
+   Dijele ga dashboard.html i admin.html (HTML dolazi iz analitika.js).
+   Boje su v2 vrijednosti (iste u odmoria.css i u dashboardu): jedna
+   sekvencijalna petrol rampa, nikad kategorijske boje.
+   ========================================================================== */
+.an{--an-ink:#103D4B;--an-mut:#536D77;--an-bar:#116D76;--an-bar-hi:#0B535B;--an-soft:#EDF5F6;
+  --an-line:#E0E8EB;--an-grid:rgba(16,61,75,.10);--an-warm:#F5E9CE;--an-warm-ink:#7A5A1E;--an-paper:#fff}
+
+/* pločice */
+.an-kpis{display:grid;gap:16px;grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:16px}
+.an-kpi{display:grid;gap:6px;align-content:start;min-width:0;padding:18px 20px;border:1px solid var(--an-line);border-radius:14px;background:var(--an-paper)}
+.an-kpi__l{font-size:14px;color:var(--an-mut)}
+.an-kpi__v{font:800 26px/1.15 "Manrope",system-ui,sans-serif;letter-spacing:-.02em;color:var(--an-ink);overflow-wrap:anywhere}
+.an-kpi__s{font-size:13px;line-height:1.4;color:var(--an-mut)}
+.an-delta{display:inline-block;padding:1px 6px;border-radius:6px;background:var(--an-soft);color:var(--an-bar);font:700 12px/1.5 "DM Sans",system-ui,sans-serif}
+.an-delta.is-down{background:var(--an-warm);color:var(--an-warm-ink)}
+
+/* traka s rasponom */
+.an-bar-top{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:16px}
+.an-seg{display:inline-flex;border:1px solid #768B94;border-radius:7px;overflow:hidden;background:var(--an-paper)}
+.an-seg button{min-height:40px;padding:0 14px;border:0;border-left:1px solid var(--an-line);background:none;color:var(--an-ink);cursor:pointer;font:700 14px/1 "Manrope",system-ui,sans-serif}
+.an-seg button:first-child{border-left:0}
+.an-seg button[aria-pressed="true"]{background:var(--an-ink);color:#fff}
+.an-note{font-size:13px;color:var(--an-mut);margin:8px 0 0}
+
+/* stupčasti grafikon (HTML, ne SVG — tekst ostaje čitljiv) */
+.an-bars{margin:0;display:grid;gap:6px;padding-top:18px}
+.an-plot{position:relative;display:flex;align-items:flex-end;gap:3px;border-bottom:1px solid var(--an-grid);
+  background:linear-gradient(var(--an-grid) 1px,transparent 1px) 0 0/100% 50%}
+.an-max{position:absolute;top:0;left:0;transform:translateY(-100%);padding:0 4px 2px 0;font-size:12px;line-height:1.3;color:var(--an-mut)}
+.an-col{position:relative;flex:1 1 0;min-width:0;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center}
+.an-col i{display:block;width:100%;max-width:24px;border-radius:4px 4px 0 0;background:var(--an-bar)}
+.an-col.is-zero i{height:2px!important;border-radius:1px;background:var(--an-grid)}
+.an-col.is-now i{background:var(--an-bar-hi)}
+.an-col b{font:700 11px/1.2 "DM Sans",system-ui,sans-serif;color:var(--an-ink);margin-bottom:3px;white-space:nowrap}
+.an-x{display:flex;gap:3px;font-size:12px;line-height:1.3;color:var(--an-mut)}
+.an-x span{flex:1 1 0;min-width:0;text-align:center;white-space:nowrap;overflow:visible}
+
+/* rang */
+.an-rank{display:grid;gap:14px}
+.an-rank__r{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 12px;align-items:center}
+.an-rank__k{font:700 15px/1.3 "Manrope",system-ui,sans-serif;color:var(--an-ink);min-width:0}
+.an-rank__k small{display:block;font:400 13px/1.3 "DM Sans",system-ui,sans-serif;color:var(--an-mut)}
+.an-rank__v{font-size:14px;color:var(--an-mut);text-align:right;white-space:nowrap}
+.an-rank__t{grid-column:1/-1;height:8px;border-radius:4px;background:var(--an-soft);overflow:hidden}
+.an-rank__t i{display:block;height:100%;border-radius:4px;background:var(--an-bar)}
+
+/* tablice */
+.an-tblwrap{overflow-x:auto;position:relative}
+.an-tbl{width:100%;border-collapse:collapse;font-size:14px}
+.an-tbl th,.an-tbl td{padding:9px 10px;border-bottom:1px solid var(--an-line);text-align:left;vertical-align:top}
+.an-tbl thead th{font:600 13px/1.3 "Manrope",system-ui,sans-serif;color:var(--an-mut);white-space:nowrap}
+.an-tbl tbody th{font-weight:600}
+.an-details{margin-top:12px}
+.an-details summary{cursor:pointer;color:var(--an-bar);font:700 14px/1.4 "Manrope",system-ui,sans-serif;min-height:32px;display:inline-flex;align-items:center}
+
+/* popisi: upozorenja, dolasci, praznine */
+.an-list{display:grid;gap:8px}
+.an-item{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 14px;border:1px solid var(--an-line);border-radius:10px;background:var(--an-paper)}
+.an-item p{margin:0;font-size:14px;color:var(--an-mut)}
+.an-item strong{display:block;font:700 15px/1.35 "Manrope",system-ui,sans-serif;color:var(--an-ink)}
+.an-ic{display:grid;place-items:center;width:32px;height:32px;border-radius:8px;background:var(--an-soft);color:var(--an-bar);font:800 14px/1 "Manrope",system-ui,sans-serif}
+.an-ic.is-warn{background:var(--an-warm);color:var(--an-warm-ink)}
+.an-day{display:grid;grid-template-columns:92px minmax(0,1fr);gap:12px;padding:12px 0;border-bottom:1px solid var(--an-line)}
+.an-day:last-child{border-bottom:0}
+.an-day__d{font:700 14px/1.4 "Manrope",system-ui,sans-serif;color:var(--an-ink)}
+.an-day__d small{display:block;font:400 13px/1.3 "DM Sans",system-ui,sans-serif;color:var(--an-mut)}
+.an-ev{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:baseline;font-size:15px;line-height:1.45}
+.an-ev + .an-ev{margin-top:4px}
+.an-tag{display:inline-block;padding:2px 7px;border-radius:6px;font:700 11px/1.5 "DM Sans",system-ui,sans-serif;letter-spacing:.05em;text-transform:uppercase;background:var(--an-soft);color:var(--an-bar)}
+.an-tag.is-out{background:#F2F4F5;color:#3E5660}
+.an-tag.is-warn{background:var(--an-warm);color:var(--an-warm-ink)}
+.an-src{font-size:13px;color:var(--an-mut)}
+.an-empty{margin:0;padding:24px;border:1px dashed var(--an-line);border-radius:10px;background:#FCFCFA;text-align:center;color:var(--an-mut);font-size:14px}
+
+.an-grid2{display:grid;gap:16px;grid-template-columns:repeat(2,minmax(0,1fr))}
+.an-grid2 > *{min-width:0}
+.an-sub{font:700 16px/1.3 "Manrope",system-ui,sans-serif;color:var(--an-ink);margin:0 0 12px}
+
+@media (max-width:1100px){.an-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:760px){.an-grid2{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:480px){
+  .an-kpis{gap:12px}.an-kpi{padding:14px}.an-kpi__v{font-size:22px}
+  .an-item{grid-template-columns:auto minmax(0,1fr)}
+  .an-item > :last-child:not(:nth-child(2)){grid-column:1/-1;justify-self:start}
+  .an-day{grid-template-columns:minmax(0,1fr);gap:6px}
+  .an-plot{gap:1px}.an-x{gap:1px;font-size:11px}
+}

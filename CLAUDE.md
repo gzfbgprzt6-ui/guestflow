@@ -52,6 +52,8 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 ├── tekst.css                # tekstualne stranice: help, terms, privacy (za njih nema Figme)
 ├── teme.css                 # OSAM TEMA javne stranice — danas samo panel „Izgled” u dashboardu (p.html v2 ih ne primjenjuje); ostaje za teme na v2
 ├── teme.js                  # rasporedi zaglavlja, `izBaze(prop)` i zajednički birač tema
+├── analitika.js             # izračuni i grafikoni analitike (boravci, popunjenost, praznine, pregledi) — dijele ga dashboard i admin
+├── analitika.css            # pločice, stupčasti grafikoni (HTML, ne SVG), popisi, tablice analitike
 ├── links.js                 # gradnja linkova (/p/, /h/) — NIKAD ne zakucavati domenu, vidi dolje
 ├── plans.js                 # rezervne vrijednosti + helperi; pravi izvor istine je tablica `plans` u bazi
 ├── billing.js                # Stripe checkout/portal helperi — NIJE importan ni u jednom HTML-u (mrtav kod dok se ne spoji API)
@@ -223,29 +225,53 @@ i mali `api/track.js` koji pročita zaglavlje `x-vercel-ip-country` (Vercel ga
 daje besplatno na svakom serverless pozivu) pa upiše red umjesto klijenta.
 Jezik preglednika može se skupljati i bez tog koraka, samo uz novi stupac.
 
-### Admin panel — PRENESEN na živi `admin.html`
+### Analitika domaćina i admin (rujan 2026.)
 
-Živi `admin.html` bio je jedina stranica još na staroj paleti (DM Serif,
-smeđa) i imao je samo četiri pločice i tablicu. Sada nosi redizajn iz pregleda,
-**ali sa stvarnim podacima**: rast iz `properties.created_at`, raspodjela iz
-`subscriptions`, MRR/ARR/ARPU iz `plans` × aktivne pretplate (istekle se
-izostavljaju), „Uskoro istječe” iz `period_end`, tablica s pretragom, filtrom
-i CSV izvozom. Četiri taba: Domaćini, Prihod, Poruke, Postavke.
+Sve na **postojećim tablicama** — nijedan novi stupac. Izračuni su u
+`analitika.js` (čiste funkcije: `boravci()`, `popunjenost()`, `praznine()`,
+`nociPoIzvoru()`, `dogadjaji()`, `boravciBezLinka()`, `kante()`, `broji()`,
+`sviRedovi()`), prikaz u `analitika.css`. Dijele ih `dashboard.html` i
+`admin.html` — **jedna kopija logike**, kao `plans.js`.
 
-**Redizajn v2 (28. 9. 2026.):** admin više ne učitava `atmosphere.css` ni
-`ui.css` — stoji na `odmoria.css` s vlastitim `<style>` koji istim imenima
-razreda (`.panel`, `.stat`, `.rank__*`, `.tbl`, `.tag--*`, `.navi`…) daje v2
-izgled, pa JavaScript nije diran. Grafikoni čitaju `--t-1…--t-5` i `--grid`
-iz `:root` te stranice — sada petrol rampa (#D6ECEE → #0B535B), i dalje
-sekvencijalna, nikad kategorijska. Bočna traka je tamna (petrol) s oznakom
-ADMIN; ispod 860 px postaje vodoravna traka na vrhu.
+**Mjerenje** (`p.html`, `h.html`, funkcija `biljezi(vrsta)`): pregled,
+upit (klik na `wa.me` / `mailto:` / „Kopiraj poruku”), karta i dio vodiča
+upisuju se u `page_views.view_type`, **svaka vrsta jednom po otvaranju**.
+`?domacin=1` (dodaju ga `viewPub()`/`viewGuest()` u dashboardu, pregled u
+onboardingu i poveznice u adminu) isključuje bilježenje — domaćin ne smije
+napuhati vlastitu statistiku. `biljezi` i njegove konstante stoje **uz `let
+PROP`**, iznad prvog poziva (vidi zamku sa `STATES`).
 
-**Cijene i nazivi planova NISU preuzeti iz pregleda.** Pregled je nudio četiri
-plana s drugim cijenama — to je poslovna odluka, ne izmjena koda. Živi admin
-čita `plans` preko `plans.js`, pa pokazuje ono što je stvarno u bazi.
+**Boravci** se slažu iz `availability`: uzastopne noći istog izvora i iste
+rezervacije (`booking_id`) = jedan boravak. Rezervacija bez noći u kalendaru
+dodaje se kao `bezKalendara` (vidi se u dolascima, ne ulazi u popunjenost);
+rezervacija koja se preklapa s boravkom s Bookinga/Airbnba samo mu da ime
+gosta. Popunjenost čita **samo kalendar**. `loadAvail()` zato čita
+`select('*')` i puni `AVAIL_ROWS` (s `booking_id` ako stupac postoji).
+
+**Dashboard:** Pregled (brojke, „Na što obratiti pažnju” s radnjama,
+„Sljedećih 14 dana”) i novi podtab **Analitika** u grupi Pregled
+(`nav('analytics')`, `renderAnalytics()`). Pregledi se dohvaćaju za 2 × raspon
+(zbog usporedbe) i pamte po objektu u `AN`.
+
+**Admin** (`admin.html`, 7 tabova): Pregled, Domaćini, Objekti, Korištenje,
+Prihod, Poruke, Sustav. Na `odmoria.css` + `analitika.css` + vlastiti
+`<style>`. Učitava `properties` (bez tajnih stupaca), `subscriptions`,
+`bookings` i `page_views` zadnjih 90 dana (do 100.000 redova, po 1000 —
+Supabase više ne vraća odjednom); dulji raspon u Korištenju povuče se tek na
+klik. **Admin namjerno ne čita `sections`** (šifre). Promjena plana i isteka
+ide kroz `spremiPretplatu()` s `.select()` — ako nema reda u `subscriptions`,
+update prođe bez greške i bez učinka, pa se to javlja. E-mail domaćina je
+kontakt iz objekta, ne adresa računa (`auth.users` nije čitljiv).
+**Cijene i planovi uvijek iz `plans`** — preview-ove četiri cijene nisu preuzete.
 
 ### Zamke koje su se već dogodile
 
+- **`.sr-only` (position:absolute) u tablici koja se vodoravno pomiče rastegne
+  cijelu stranicu** — apsolutni element se računa prema dokumentu, ne prema
+  omotaču. Omotač tablice (`.tblwrap`, `.an-tblwrap`) zato ima
+  `position:relative`. Na mobitelu je admin zbog toga imao 1071 px širine.
+- **Grid dijete s tablicom treba `min-width:0`** — inače široka tablica
+  rastegne cijeli stupac (dogodilo se u prozoru s detaljima domaćina).
 - **Svaki IIFE na kraju datoteke počinje s `;`.** Bez njega se `})()` prethodnog
   bloka i `(` sljedećeg spoje u poziv, blok tiho ne krene, a `node --check` to ne
   vidi. Dogodilo se dvaput.
@@ -291,7 +317,8 @@ faq             -- property_id, question, answer
 availability    -- property_id, date, is_booked, source (manual/ical_booking/ical_airbnb)
 bookings        -- property_id, guest_name, guest_note, token (16 znakova), checkin_date,
                    checkout_date, token_expires_at, is_active
-page_views      -- property_id, view_type, timestamp
+page_views      -- property_id, view_type, timestamp. view_type: public, guest_hub, inquiry_whatsapp,
+                   inquiry_email, inquiry_copy, map, guide:<dolazak|kuca|preporuke|domacin>
 ```
 
 Anon (nelogirani) korisnici preko RLS mogu čitati: `properties` (po slugu), `bookings` (samo `is_active=true`, nije isteklo), `sections`/`local_places`/`transport`/`attractions`/`house_rules`/`faq`/`amenities`/`availability` (javno po `property_id`), i smiju `insert` u `page_views`.

@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..700,0..100,0..1;1,9..144,300..600,0..100,0..1&family=Manrope:wght@400;500;600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Gelasio:wght@400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/teme.css">
+<link rel="stylesheet" href="/analitika.css">
 <style>
 /* ==========================================================================
    Dashboard domaćina — redizajn v2 (Figma: 05 Host App).
@@ -577,6 +578,7 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
         <div class="panelnav-wrap" id="panelnav-wrap" hidden>
           <nav class="panelnav" id="panelnav" aria-label="Dijelovi objekta">
             <button class="nav-item active" type="button" data-panel="overview" data-group="pregled" onclick="nav('overview',this)">Pregled</button>
+            <button class="nav-item" type="button" data-panel="analytics" data-group="pregled" onclick="nav('analytics',this)">Analitika</button>
             <span class="panelnav__sep" aria-hidden="true"></span>
             <button class="nav-item" type="button" data-panel="basic" data-group="objekt" onclick="nav('basic',this)">Osnovno</button>
             <button class="nav-item" type="button" data-panel="photos" data-group="objekt" onclick="nav('photos',this)">Fotografije</button>
@@ -603,7 +605,7 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
           <div>
             <span class="eyebrow" id="panelEyebrow">Pregled</span>
             <h1 id="panelTitle">Pregled objekta</h1>
-            <p id="panelSubtitle">Status, dovršenost i linkovi objekta.</p>
+            <p id="panelSubtitle">Što se događa ovih dana i na što obratiti pažnju.</p>
           </div>
           <div class="header-progress">
             <div class="header-progress-row"><span>Dovršenost vodiča</span><span id="progressPct">0%</span></div>
@@ -622,8 +624,24 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
           <span class="status-pill" id="statusPill">Objavljeno</span>
         </div>
 
-        <!-- 00 OVERVIEW -->
-        <section class="editor-panel active" id="section-overview" data-panel-content="overview">
+        <!-- 00 OVERVIEW — operativni pregled: brojke, upozorenja, sljedećih 14 dana
+             (izračuni u analitika.js, podaci iz postojećih tablica) -->
+        <section class="editor-panel active an" id="section-overview" data-panel-content="overview">
+          <div class="an-kpis" id="ov-kpis" aria-live="polite">
+            <div class="an-kpi"><span class="an-kpi__l">Popunjenost · sljedećih 30 dana</span><span class="an-kpi__v">—</span></div>
+            <div class="an-kpi"><span class="an-kpi__l">Sljedeći dolazak</span><span class="an-kpi__v">—</span></div>
+            <div class="an-kpi"><span class="an-kpi__l">Pregledi javne stranice · 30 dana</span><span class="an-kpi__v">—</span></div>
+            <div class="an-kpi"><span class="an-kpi__l">Upiti · 30 dana</span><span class="an-kpi__v">—</span></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div class="card-title-wrap"><span class="card-number">!</span><div><h2>Na što obratiti pažnju</h2><p>Automatske provjere kalendara, linkova za goste i vodiča.</p></div></div></div>
+            <div class="an-list" id="ov-alerts"><p class="an-empty">Provjeravam…</p></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div class="card-title-wrap"><span class="card-number">14</span><div><h2>Sljedećih 14 dana</h2><p>Dolasci i odlasci iz kalendara, s Bookinga, Airbnba i iz vaših rezervacija.</p></div></div>
+              <button class="btn secondary small" type="button" onclick="openAnalytics()">Cijela analitika</button></div>
+            <div id="ov-upcoming"></div>
+          </div>
           <div class="card">
             <div class="card-head"><div class="card-title-wrap"><span class="card-number">✓</span><div><h2 id="ov-title">Objekt je objavljen</h2><p>Vaši linkovi rade i promjene se prikazuju odmah nakon spremanja.</p></div></div></div>
             <div class="link-blocks">
@@ -631,16 +649,86 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
               <article class="link-block"><small>Privatni vodič</small><h3>Pošaljite gostu</h3><p>Dolazak, Wi-Fi, kod vrata i kućna pravila.</p><div class="link-url"><span id="ov-priv-url">—</span><button type="button" onclick="copyLink('guest')">Kopiraj</button></div></article>
             </div>
           </div>
-          <div class="metrics">
-            <div class="metric metric--tile"><span>Pregledi (30d)</span><strong id="stat-views">—</strong></div>
-            <div class="metric metric--tile"><span>Aktivne rezervacije</span><strong id="stat-bookings">—</strong></div>
-            <div class="metric metric--tile"><span>iCal status</span><strong id="ical-status">—</strong></div>
-            <div class="metric metric--tile"><span>Provizija</span><strong style="color:var(--green)">0 €</strong></div>
-          </div>
           <div class="card">
             <div class="card-head"><div class="card-title-wrap"><span class="card-number">i</span><div><h2>Sljedeći koraci</h2><p>Dovršite ove dijelove kako bi vodič bio potpun.</p></div></div></div>
             <div id="checklist-items" style="display:grid;gap:10px"></div>
           </div>
+        </section>
+
+        <!-- 00b ANALITIKA -->
+        <section class="editor-panel an" id="section-analytics" data-panel-content="analytics">
+          <div class="an-bar-top">
+            <div class="an-seg" role="group" aria-label="Razdoblje">
+              <button type="button" data-raspon="30" aria-pressed="true">30 dana</button>
+              <button type="button" data-raspon="90" aria-pressed="false">90 dana</button>
+              <button type="button" data-raspon="365" aria-pressed="false">12 mjeseci</button>
+            </div>
+            <button class="btn secondary small" type="button" onclick="izvozBoravaka()">Izvezi boravke (CSV)</button>
+          </div>
+          <div class="an-kpis" id="an-kpis" aria-live="polite"></div>
+
+          <div class="card">
+            <div class="card-head"><div class="card-title-wrap"><span class="card-number">01</span><div><h2>Posjećenost</h2><p id="an-views-sub">Javna stranica i privatni vodič, na istoj skali.</p></div></div></div>
+            <p class="an-sub">Javna stranica</p><div id="an-views-pub"></div>
+            <p class="an-sub" style="margin-top:20px">Privatni vodič</p><div id="an-views-hub"></div>
+            <div id="an-views-tbl"></div>
+          </div>
+
+          <div class="an-grid2">
+            <div class="card">
+              <div class="card-head"><div class="card-title-wrap"><span class="card-number">02</span><div><h2>Upiti po kanalu</h2><p>Klik na WhatsApp, e-mail ili kopiranje poruke na javnoj stranici.</p></div></div></div>
+              <div id="an-channels"></div>
+            </div>
+            <div class="card">
+              <div class="card-head"><div class="card-title-wrap"><span class="card-number">03</span><div><h2>Što gosti otvaraju u vodiču</h2><p>Koji dio vodiča gosti najčešće traže.</p></div></div></div>
+              <div id="an-guide"></div>
+            </div>
+          </div>
+
+          <div class="an-grid2">
+            <div class="card">
+              <div class="card-head"><div class="card-title-wrap"><span class="card-number">04</span><div><h2>Kada gledaju stranicu</h2><p>Pregledi javne stranice po danu u tjednu.</p></div></div></div>
+              <div id="an-weekday"></div>
+            </div>
+            <div class="card">
+              <div class="card-head"><div class="card-title-wrap"><span class="card-number">05</span><div><h2>Kada gosti otvaraju vodič</h2><p>Po satu u danu — kada su gosti najčešće na vezi.</p></div></div></div>
+              <div id="an-hours"></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><div class="card-title-wrap"><span class="card-number">06</span><div><h2>Popunjenost po mjesecima</h2><p>Zauzete noći iz kalendara (ručno, rezervacije, Booking.com, Airbnb) za sljedećih 12 mjeseci.</p></div></div></div>
+            <div id="an-occ"></div>
+          </div>
+
+          <div class="an-grid2">
+            <div class="card">
+              <div class="card-head"><div class="card-title-wrap"><span class="card-number">07</span><div><h2>Odakle dolaze noćenja</h2><p id="an-src-sub">Ova godina, po izvoru.</p></div></div></div>
+              <div id="an-sources"></div>
+            </div>
+            <div class="card">
+              <div class="card-head"><div class="card-title-wrap"><span class="card-number">08</span><div><h2>Boravci ove godine</h2><p>Broj, duljina i gruba procjena prihoda.</p></div></div></div>
+              <div id="an-stays"></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><div class="card-title-wrap"><span class="card-number">09</span><div><h2>Praznine u kalendaru</h2><p>Kratki slobodni termini između dva boravka u sljedećih 90 dana — teško se popunjavaju sami.</p></div></div></div>
+            <div class="an-list" id="an-gaps"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><div class="card-title-wrap"><span class="card-number">10</span><div><h2>Raspored čišćenja</h2><p>Odlasci u sljedećih 30 dana i izmjene gostiju istog dana.</p></div></div>
+              <button class="btn secondary small" type="button" onclick="kopirajCiscenje()">Kopiraj raspored</button></div>
+            <div id="an-clean"></div>
+          </div>
+
+          <div class="card" id="an-compare-card" hidden>
+            <div class="card-head"><div class="card-title-wrap"><span class="card-number">11</span><div><h2>Usporedba objekata</h2><p>Svi vaši objekti, zadnjih 30 dana i sljedećih 30 dana.</p></div></div></div>
+            <div id="an-compare"></div>
+          </div>
+
+          <p class="an-note">Pregledi koje otvorite sami iz aplikacije ne broje se. Upiti i dijelovi vodiča bilježe se od rujna 2026.; bilježi se samo vrsta i vrijeme, bez podataka o posjetitelju.</p>
         </section>
 
         <!-- 01 BASIC -->
@@ -1069,6 +1157,7 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
 import{createClient}from'https://esm.sh/@supabase/supabase-js@2'
 import{loadPlans,getPlan,listPlans,limitFor,canAdd,limitMessage,effectivePlanId}from'./plans.js'
 import{publicUrl,bookingUrl,legacyGuestUrl,prettyUrl}from'./links.js'
+import * as A from'./analitika.js'
 
 const SURL='https://wtojzqjhipdfbrnmprmz.supabase.co'
 const SKEY='sb_publishable_tmZAZTDbQ7ktc1N-8y4q4w_ztAu_62F'
@@ -1079,7 +1168,7 @@ const TYPES=['Apartman','Villa','Kuća','Studio','Soba']
 let USER=null,PROPS=[],PROP=null,SECTION=null
 let USER_PLAN='free',PLAN_LIMIT=1,PHOTO_LIMIT=5
 let calMonth=new Date().getMonth(),calYear=new Date().getFullYear()
-let bookedDays=[],icalDays=[]
+let bookedDays=[],icalDays=[],AVAIL_ROWS=[]
 let rangeStart=null,hoverDs=null,filledSet=new Set()
 let lastBkUrl='',lastBkPhone=''
 let localCount=0
@@ -1161,7 +1250,6 @@ async function selectProp(p){
   document.getElementById('ov-priv-url').textContent=privUrl
   document.getElementById('pub-url-d').textContent=pubUrl
   document.getElementById('priv-url-d').textContent=privUrl
-  document.getElementById('ical-status').textContent=p.ical_last_sync?'Sinkronizirano':'—'
   fillPropForm()
   loadPhotos()
   await loadSection()
@@ -1379,14 +1467,278 @@ window.updateWifiPrev=()=>{
 }
 
 // ── OVERVIEW STATS + CHECKLIST ──────────────────────────
+// Pregled i Analitika čitaju samo postojeće tablice (availability, bookings,
+// page_views). Izračuni su u analitika.js — isti modul koristi i admin.
+let AN={prop:null,bookings:[],views:[],viewsOd:null}
+let AN_RASPON=30
+const JE_JAVNA=t=>t==='public', JE_VODIC=t=>t==='guest_hub', JE_DIO=t=>typeof t==='string'&&t.startsWith('guide:')
+
+async function anPodaci(dana){
+  if(!PROP)return null
+  const pid=PROP.id
+  if(AN.prop!==pid)AN={prop:pid,bookings:[],views:[],viewsOd:null}
+  const od=A.plusDana(A.danas(),-dana)
+  const{data:bk}=await sb.from('bookings').select('id,guest_name,checkin_date,checkout_date,is_active,token,token_expires_at').eq('property_id',pid).order('checkin_date',{ascending:false}).limit(1000)
+  if(AN.prop!==pid)return null
+  AN.bookings=bk||[]
+  if(!AN.viewsOd||od<AN.viewsOd){
+    try{
+      const v=await A.sviRedovi(()=>sb.from('page_views').select('view_type,timestamp').eq('property_id',pid).gte('timestamp',A.uDatum(od).toISOString()).order('timestamp'))
+      if(AN.prop!==pid)return null
+      AN.views=v;AN.viewsOd=od
+    }catch(e){AN.views=[];AN.viewsOd=null}
+  }
+  return AN
+}
+
+function anBoravci(d){return A.boravci(AVAIL_ROWS,d.bookings)}
+const izvorTxt=s=>s.source==='odmoria'?'rezervacija u Odmoriji':s.source==='manual'?'ručno označeno':A.IZVOR[s.source]
+function relDan(ds){const n=A.razlikaDana(A.danas(),ds);return n===0?'danas':n===1?'sutra':n===-1?'jučer':n>1?'za '+n+' '+A.mn(n,'dan','dana','dana'):'prije '+(-n)+' '+A.mn(-n,'dan','dana','dana')}
+
 async function loadOverviewStats(){
   if(!PROP)return
-  const since=new Date();since.setDate(since.getDate()-30)
-  const{count:views}=await sb.from('page_views').select('*',{count:'exact',head:true}).eq('property_id',PROP.id).gte('timestamp',since.toISOString())
-  document.getElementById('stat-views').textContent=views??0
-  const{count:bk}=await sb.from('bookings').select('*',{count:'exact',head:true}).eq('property_id',PROP.id).eq('is_active',true)
-  document.getElementById('stat-bookings').textContent=bk??0
   document.getElementById('ov-title').textContent=(PROP.name||'Objekt')+' je objavljen'
+  await renderOverviewOps()
+}
+
+async function renderOverviewOps(){
+  const d=await anPodaci(60)
+  if(!d)return
+  const t=A.danas(),sut=A.plusDana(t,1)
+  const noci=new Set(AVAIL_ROWS.map(r=>r.date))
+  const S=anBoravci(d)
+
+  // brojke
+  const p30=A.popunjenost(noci,t,A.plusDana(t,30))
+  const sljedeci=S.find(x=>x.start>=t)
+  const sada=S.find(x=>x.start<t&&x.end>t)
+  const od30=A.plusDana(sut,-30),od60=A.plusDana(sut,-60)
+  const v=A.broji(d.views,JE_JAVNA,od30,sut),vP=A.broji(d.views,JE_JAVNA,od60,od30)
+  const u=A.broji(d.views,A.JE_UPIT,od30,sut),uP=A.broji(d.views,A.JE_UPIT,od60,od30)
+  document.getElementById('ov-kpis').innerHTML=[
+    A.kpi('Popunjenost · sljedećih 30 dana',A.posto(p30.udio),`${p30.zauzeto} od 30 noći zauzeto`),
+    A.kpi('Sljedeći dolazak',sljedeci?A.fmtSDanom(sljedeci.start):'—',
+      sljedeci?`${A.imeBoravka(sljedeci)} · ${A.noci(sljedeci.nights)} · ${izvorTxt(sljedeci)} · ${relDan(sljedeci.start)}`
+      :sada?`U tijeku: ${A.imeBoravka(sada)}, odlazak ${A.fmtKratko(sada.end)}`:'Nema najavljenih dolazaka'),
+    A.kpi('Pregledi javne stranice · 30 dana',String(v),'u odnosu na prethodnih 30 dana',A.promjena(v,vP)),
+    A.kpi('Upiti · 30 dana',String(u),v?`${A.posto(u/v)} posjeta završi upitom`:'WhatsApp, e-mail ili kopirana poruka',A.promjena(u,uP))
+  ].join('')
+
+  // upozorenja
+  const al=[]
+  const ima=x=>x&&String(x).trim()
+  const icalOn=ima(PROP.ical_booking_url)||ima(PROP.ical_airbnb_url)
+  if(icalOn){
+    const zadnja=PROP.ical_last_sync&&new Date(PROP.ical_last_sync)
+    const stara=zadnja?Math.floor((Date.now()-zadnja)/864e5):null
+    if(!zadnja)al.push(['warn','Kalendar s Bookinga ili Airbnba još nije povučen','Dok ne sinkronizirate, zauzeti termini s platformi ne vide se ni vama ni gostima.','Sinkroniziraj',"nav('ical',document.querySelector('.panelnav [data-panel=ical]'))"])
+    else if(stara>=3)al.push(['warn',`Zadnja sinkronizacija bila je prije ${stara} ${A.mn(stara,'dan','dana','dana')}`,'Nove rezervacije s platformi ne vide se dok ne sinkronizirate — sinkronizacija je ručna.','Sinkroniziraj',"nav('ical',document.querySelector('.panelnav [data-panel=ical]'))"])
+  }else if(!AVAIL_ROWS.length&&PROP.show_availability){
+    al.push(['info','Kalendar je prazan','Gosti na javnoj stranici vide sve termine kao slobodne. Povežite Booking.com ili Airbnb, ili označite zauzete dane.','Poveži kalendar',"nav('ical',document.querySelector('.panelnav [data-panel=ical]'))"])
+  }
+  const bez=A.boravciBezLinka(S,d.bookings,t,A.plusDana(t,30))
+  if(bez.length){
+    const b=bez[0]
+    al.push(['warn',`${bez.length} ${A.mn(bez.length,'boravak','boravka','boravaka')} s platformi nema link za vodič`,
+      `Prvi: ${A.fmtSDanom(b.start)} – ${A.fmtKratko(b.end)} (${A.IZVOR[b.source]}, ${A.noci(b.nights)}). Gost bez linka ne dobiva šifru ni upute.`,
+      'Napravi link',`napraviLinkZa('${b.start}','${b.end}','${A.IZVOR[b.source]}')`])
+  }
+  const dolazak7=S.find(x=>x.start>=t&&x.start<=A.plusDana(t,7))
+  if(dolazak7){
+    const fali=[!ima(SECTION?.door_code)&&'šifre vrata',!ima(SECTION?.wifi_pass)&&'Wi-Fi lozinke',!ima(SECTION?.address)&&'adrese'].filter(Boolean)
+    if(fali.length)al.push(['warn',`Gost dolazi ${relDan(dolazak7.start)}, a u vodiču nema ${fali.join(', ').replace(/, ([^,]*)$/,' ni $1')}`,
+      'Upišite to prije dolaska — vodič se otključa sat vremena prije prijave.','Dopuni vodič',
+      `nav('${!ima(SECTION?.wifi_pass)&&ima(SECTION?.door_code)?'wifi':'arrival'}',document.querySelector('.panelnav [data-panel=${!ima(SECTION?.wifi_pass)&&ima(SECTION?.door_code)?'wifi':'arrival'}]'))`])
+  }
+  const minB=Math.max(1,Number(PROP.min_stay)||1)
+  const gaps=A.praznine(noci,t,A.plusDana(t,60),7)
+  const kratke=gaps.filter(g=>g.nights<minB)
+  if(kratke.length&&!PROP.allow_gap_fill_stays){
+    al.push(['warn',`${kratke.length} ${A.mn(kratke.length,'praznina je kraća','praznine su kraće','praznina je kraće')} od minimalnog boravka (${A.noci(minB)})`,
+      `Npr. ${A.fmtKratko(kratke[0].start)} – ${A.fmtKratko(kratke[0].end)} (${A.noci(kratke[0].nights)}). Gosti ih ne mogu tražiti na javnoj stranici — uključite popunjavanje praznina.`,
+      'Otvori cijene',"nav('pricing',document.querySelector('.panelnav [data-panel=pricing]'))"])
+  }else if(gaps.length){
+    al.push(['info',`${gaps.length} ${A.mn(gaps.length,'kratka praznina','kratke praznine','kratkih praznina')} u sljedećih 60 dana`,
+      `Npr. ${A.fmtKratko(gaps[0].start)} – ${A.fmtKratko(gaps[0].end)} (${A.noci(gaps[0].nights)}). Ponudite je bivšim gostima ili na društvenim mrežama.`,
+      'Pogledaj praznine','openAnalytics()'])
+  }
+  const staro=d.bookings.filter(b=>b.is_active&&b.checkout_date&&b.checkout_date<t&&!(b.token_expires_at&&new Date(b.token_expires_at)<new Date()))
+  if(staro.length)al.push(['info',`${staro.length} ${A.mn(staro.length,'link je još aktivan','linka su još aktivna','linkova je još aktivno')} nakon odlaska gosta`,
+    'Vodič tada više ne pokazuje šifre, ali se i dalje otvara. Deaktivirajte link kad gost ode.','Rezervacije',"nav('reservations',document.querySelector('.panelnav [data-panel=reservations]'))"])
+  document.getElementById('ov-alerts').innerHTML=al.length?al.map(([r,n,tx,btn,on])=>`<div class="an-item">
+      <span class="an-ic${r==='warn'?' is-warn':''}" aria-hidden="true">${r==='warn'?'!':'i'}</span>
+      <div><strong>${A.esc(n)}</strong><p>${A.esc(tx)}</p></div>
+      <button class="btn secondary small" type="button" onclick="${on}">${A.esc(btn)}</button></div>`).join('')
+    :`<div class="an-item"><span class="an-ic" aria-hidden="true">✓</span><div><strong>Sve je u redu</strong><p>Kalendar je ažuran, svi nadolazeći gosti imaju link, a vodič ima šifru i Wi-Fi.</p></div><span></span></div>`
+
+  // sljedećih 14 dana
+  const ev=A.dogadjaji(S,t,A.plusDana(t,15))
+  let h=''
+  if(sada&&!ev.some(e=>e.dan===t))h+=`<div class="an-day"><div class="an-day__d">Sada<small>u tijeku</small></div><div><div class="an-ev"><span class="an-tag">Boravi</span><b>${A.esc(A.imeBoravka(sada))}</b><span class="an-src">odlazak ${A.fmtSDanom(sada.end)} · ${A.esc(izvorTxt(sada))}</span></div></div></div>`
+  h+=ev.map(e=>{
+    const red=(x,vr)=>`<div class="an-ev"><span class="an-tag${vr==='o'?' is-out':''}">${vr==='o'?'Odlazak':'Dolazak'}</span><b>${A.esc(A.imeBoravka(x))}</b><span class="an-src">${vr==='d'?A.noci(x.nights)+' · ':''}${A.esc(izvorTxt(x))}</span>${vr==='d'&&A.JE_PLATFORMA(x.source)&&!x.booking?'<span class="an-tag is-warn">bez linka</span>':''}</div>`
+    return `<div class="an-day"><div class="an-day__d">${A.fmtSDanom(e.dan)}<small>${relDan(e.dan)}</small></div><div>
+      ${e.odlasci.map(x=>red(x,'o')).join('')}${e.dolasci.map(x=>red(x,'d')).join('')}
+      ${e.odlasci.length&&e.dolasci.length?'<div class="an-ev"><span class="an-tag is-warn">Izmjena istog dana</span><span class="an-src">čišćenje između odlaska i dolaska</span></div>':''}</div></div>`
+  }).join('')
+  document.getElementById('ov-upcoming').innerHTML=h||A.prazno('Nema dolazaka ni odlazaka u sljedećih 14 dana.')
+}
+
+window.openAnalytics=()=>nav('analytics',document.querySelector('.panelnav .nav-item[data-panel="analytics"]'))
+window.napraviLinkZa=(ci,co,izvor)=>{
+  nav('reservations',document.querySelector('.panelnav .nav-item[data-panel="reservations"]'))
+  window.showAddBooking()
+  document.getElementById('bk-ci').value=ci
+  document.getElementById('bk-co').value=co
+  const n=document.getElementById('bk-name');n.value='';n.placeholder='Ime gosta ('+izvor+')'
+  setTimeout(()=>n.focus(),50)
+}
+
+document.querySelectorAll('[data-raspon]').forEach(b=>b.addEventListener('click',()=>{
+  AN_RASPON=+b.dataset.raspon
+  document.querySelectorAll('[data-raspon]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)))
+  renderAnalytics()
+}))
+
+async function renderAnalytics(){
+  const r=AN_RASPON
+  const d=await anPodaci(r*2)
+  if(!d)return
+  const $=id=>document.getElementById(id)
+  const t=A.danas(),sut=A.plusDana(t,1),od=A.plusDana(sut,-r),odP=A.plusDana(od,-r)
+  const noci=new Set(AVAIL_ROWS.map(x=>x.date))
+  const S=anBoravci(d)
+  const rTxt=r===365?'12 mjeseci':r+' dana'
+
+  // brojke s usporedbom
+  const c=(f,a,b)=>A.broji(d.views,f,a,b)
+  const v=c(JE_JAVNA,od,sut),vP=c(JE_JAVNA,odP,od)
+  const u=c(A.JE_UPIT,od,sut),uP=c(A.JE_UPIT,odP,od)
+  const g=c(JE_VODIC,od,sut),gP=c(JE_VODIC,odP,od)
+  const m=c(x=>x==='map',od,sut)
+  $('an-kpis').innerHTML=[
+    A.kpi('Pregledi javne stranice',String(v),'prema prethodnom razdoblju',A.promjena(v,vP)),
+    A.kpi('Upiti',String(u),v?`${A.posto(u/v)} posjeta završi upitom`:'WhatsApp, e-mail, kopirana poruka',A.promjena(u,uP)),
+    A.kpi('Otvaranja vodiča',String(g),'gosti s privatnim linkom',A.promjena(g,gP)),
+    A.kpi('Otvorena karta',String(m),'gosti koji traže lokaciju')
+  ].join('')
+
+  // posjećenost — ista skala za obje serije
+  const korak=r<=30?'dan':r<=90?'tjedan':'mjesec'
+  const kP=A.kante(d.views,od,sut,korak,JE_JAVNA),kV=A.kante(d.views,od,sut,korak,JE_VODIC)
+  const maks=Math.max(1,...kP.map(x=>x.v),...kV.map(x=>x.v))
+  $('an-views-sub').textContent=`Zadnjih ${rTxt}, ${korak==='dan'?'po danu':korak==='tjedan'?'po tjednu':'po mjesecu'}. Obje serije na istoj skali.`
+  $('an-views-pub').innerHTML=A.grafikon(kP,{aria:`Pregledi javne stranice, zadnjih ${rTxt}`,maks,istakni:kP.length-1})
+  $('an-views-hub').innerHTML=A.grafikon(kV,{aria:`Otvaranja vodiča, zadnjih ${rTxt}`,maks,istakni:kV.length-1,visina:110})
+  $('an-views-tbl').innerHTML=A.kaoTablica([korak==='dan'?'Dan':korak==='tjedan'?'Tjedan od':'Mjesec','Javna stranica','Vodič'],kP.map((x,i)=>[x.oznaka,x.v,kV[i].v]))
+
+  // kanali i dijelovi vodiča
+  const kan=Object.entries(A.KANAL).map(([k,n])=>({k:n,v:c(x=>x===k,od,sut)})).filter(x=>x.v).sort((a,b)=>b.v-a.v)
+  $('an-channels').innerHTML=kan.length?A.rang(kan.map(x=>({...x,sub:u?A.posto(x.v/u)+' upita':''}))):A.prazno(`Nema upita u zadnjih ${rTxt}.`)
+  const dio=Object.entries(A.DIO_VODICA).map(([k,n])=>({k:n,v:c(x=>x===k,od,sut)})).filter(x=>x.v).sort((a,b)=>b.v-a.v)
+  $('an-guide').innerHTML=dio.length?A.rang(dio,{fmt:x=>x+' '+A.mn(x,'otvaranje','otvaranja','otvaranja')}):A.prazno('Još nema podataka — gosti još nisu otvarali dijelove vodiča u ovom razdoblju.')
+
+  // dan u tjednu i sat
+  const uRasponu=d.views.filter(x=>{const dd=A.tsUDan(x.timestamp);return dd>=od&&dd<sut})
+  const dj=A.poDanuISatu(uRasponu,JE_JAVNA),sv=A.poDanuISatu(uRasponu,x=>JE_VODIC(x)||JE_DIO(x))
+  $('an-weekday').innerHTML=dj.dani.some(Boolean)
+    ?A.grafikon(A.DANI_TJEDNA.map((k,i)=>({oznaka:k,v:dj.dani[i]})),{aria:'Pregledi po danu u tjednu',oznakaSvaki:1,vrijednosti:true,visina:130})
+    :A.prazno(`Nema pregleda u zadnjih ${rTxt}.`)
+  $('an-hours').innerHTML=sv.sati.some(Boolean)
+    ?A.grafikon(sv.sati.map((x,i)=>({oznaka:String(i),naslov:i+':00–'+(i+1)+':00',v:x})),{aria:'Otvaranja vodiča po satu',oznakaSvaki:3,visina:130})
+    :A.prazno('Nema otvaranja vodiča u ovom razdoblju.')
+
+  // popunjenost po mjesecima
+  const now=new Date()
+  const mj=A.popunjenostPoMjesecima(noci,now.getFullYear(),now.getMonth(),12)
+  $('an-occ').innerHTML=(AVAIL_ROWS.length
+      ?A.grafikon(mj.map(x=>({oznaka:x.oznaka,naslov:x.dugo,v:Math.round(x.udio*100)})),{aria:'Popunjenost po mjesecima, sljedećih 12 mjeseci',fmt:x=>x+' %',vrijednosti:true,istakni:0,oznakaSvaki:1,maks:100})
+      :A.prazno('Kalendar je prazan. Označite zauzete dane ili povežite Booking.com i Airbnb (Boravci → iCal).'))
+    +A.kaoTablica(['Mjesec','Zauzeto','Noći u mjesecu','Popunjenost'],mj.map(x=>[x.dugo,x.zauzeto,x.ukupno,A.posto(x.udio)]))
+
+  // izvori i boravci ove godine
+  const y=now.getFullYear(),g0=`${y}-01-01`,g1=`${y+1}-01-01`
+  const iz=A.nociPoIzvoru(S,g0,g1)
+  const uk=Object.values(iz).reduce((a,b)=>a+b,0)
+  $('an-src-sub').textContent=`${y}. godina, zauzete noći po izvoru.`
+  const direkt=(iz.odmoria||0)+(iz.manual||0)
+  $('an-sources').innerHTML=uk
+    ?A.rang(Object.entries(iz).sort((a,b)=>b[1]-a[1]).map(([k,n])=>({k:A.IZVOR[k],v:n,sub:A.posto(n/uk)})),{fmt:A.noci})
+      +`<p class="an-note">Izravno (rezervacije u Odmoriji i ručno označeno): <b>${A.posto(direkt/uk)}</b> noći. Platforme: ${A.posto(1-direkt/uk)}.</p>`
+    :A.prazno('Ove godine u kalendaru još nema zauzetih noći.')
+  const ov=S.filter(x=>!x.bezKalendara&&x.start>=g0&&x.start<g1)
+  const sumN=ov.reduce((a,x)=>a+x.nights,0)
+  const cijena=Number(PROP.price_per_night)||0
+  const naj=mj.slice().sort((a,b)=>b.udio-a.udio)[0]
+  $('an-stays').innerHTML=ov.length?A.tablica(['Pokazatelj','Vrijednost'],[
+      ['Boravaka',ov.length],
+      ['Zauzetih noći',sumN],
+      ['Prosječan boravak',A.noci(Math.round(sumN/ov.length*10)/10).replace('.',',')],
+      ['Najdulji boravak',A.noci(Math.max(...ov.map(x=>x.nights)))],
+      ['Najpopunjeniji od sljedećih 12 mj.',naj&&naj.zauzeto?`${naj.dugo} (${A.posto(naj.udio)})`:'—'],
+      ...(cijena?[['Procjena prihoda',`${A.eur(sumN*cijena)} (noći × ${A.eur(cijena)})`]]:[])
+    ])+(cijena?'<p class="an-note">Procjena koristi cijenu po noći iz postavki; stvarni iznos ovisi o dogovoru s gostom i o platformi.</p>':'')
+    :A.prazno('Ove godine još nema boravaka u kalendaru.')
+
+  // praznine
+  const minB=Math.max(1,Number(PROP.min_stay)||1)
+  const gp=A.praznine(noci,t,A.plusDana(t,90),7)
+  $('an-gaps').innerHTML=gp.length?gp.map(x=>`<div class="an-item">
+      <span class="an-ic${x.nights<minB?' is-warn':''}" aria-hidden="true">${x.nights}</span>
+      <div><strong>${A.fmtSDanom(x.start)} – ${A.fmtSDanom(x.end)}</strong><p>${A.noci(x.nights)}${x.nights<minB?` · kraće od minimalnog boravka (${A.noci(minB)})${PROP.allow_gap_fill_stays?', ali popunjavanje praznina je uključeno':''}`:''}</p></div>
+      <button class="btn secondary small" type="button" onclick="kopirajPonudu('${x.start}','${x.end}',${x.nights})">Kopiraj ponudu</button></div>`).join('')
+    :A.prazno('Nema kratkih praznina u sljedećih 90 dana.')
+
+  // raspored čišćenja
+  const cl=A.dogadjaji(S,t,A.plusDana(t,31)).filter(e=>e.odlasci.length)
+  window.__ciscenje=cl
+  $('an-clean').innerHTML=cl.length?cl.map(e=>`<div class="an-day"><div class="an-day__d">${A.fmtSDanom(e.dan)}<small>${relDan(e.dan)}</small></div><div>
+      ${e.odlasci.map(x=>`<div class="an-ev"><span class="an-tag is-out">Odlazak</span><b>${A.esc(A.imeBoravka(x))}</b><span class="an-src">${A.esc(izvorTxt(x))}</span></div>`).join('')}
+      ${e.dolasci.length?`<div class="an-ev"><span class="an-tag is-warn">Isti dan dolazi</span><b>${A.esc(e.dolasci.map(A.imeBoravka).join(', '))}</b><span class="an-src">čišćenje mora stati između odjave i prijave</span></div>`:''}</div></div>`).join('')
+    :A.prazno('Nema odlazaka u sljedećih 30 dana.')
+
+  // usporedba objekata
+  const card=$('an-compare-card')
+  card.hidden=PROPS.length<2
+  if(PROPS.length>1)renderUsporedba()
+}
+
+async function renderUsporedba(){
+  const ids=PROPS.map(p=>p.id)
+  const t=A.danas(),sut=A.plusDana(t,1),od=A.plusDana(sut,-30),do30=A.plusDana(t,30)
+  let pv=[],av=[]
+  try{
+    ;[pv,av]=await Promise.all([
+      A.sviRedovi(()=>sb.from('page_views').select('property_id,view_type,timestamp').in('property_id',ids).gte('timestamp',A.uDatum(od).toISOString()).order('timestamp')),
+      A.sviRedovi(()=>sb.from('availability').select('property_id,date').in('property_id',ids).gte('date',t).lt('date',do30).order('date'))
+    ])
+  }catch(e){document.getElementById('an-compare').innerHTML=A.prazno('Usporedba trenutno nije dostupna.');return}
+  const red=PROPS.map(p=>{
+    const v=pv.filter(x=>x.property_id===p.id)
+    const noci=new Set(av.filter(x=>x.property_id===p.id).map(x=>x.date))
+    return [p.name||'Bez naziva',A.broji(v,JE_JAVNA,od,sut),A.broji(v,A.JE_UPIT,od,sut),A.broji(v,JE_VODIC,od,sut),A.posto(A.popunjenost(noci,t,do30).udio)]
+  })
+  document.getElementById('an-compare').innerHTML=A.tablica(['Objekt','Pregledi','Upiti','Otvaranja vodiča','Popunjenost (sljedećih 30 dana)'],red)
+}
+
+window.kopirajPonudu=async(a,b,n)=>{
+  const txt=`Slobodan termin u objektu ${PROP.name}: ${A.fmtKratko(a)} – ${A.fmtKratko(b)} (${A.noci(n)}). Pogledajte i javite se: ${publicUrl(PROP.slug)}`
+  try{await navigator.clipboard.writeText(txt);toast('Ponuda je kopirana — zalijepite je u poruku ili objavu')}catch{toast('Kopiranje nije uspjelo')}
+}
+window.kopirajCiscenje=async()=>{
+  const cl=window.__ciscenje||[]
+  if(!cl.length){toast('Nema odlazaka u sljedećih 30 dana');return}
+  const txt=`Raspored čišćenja — ${PROP.name}\n`+cl.map(e=>`${A.fmtSDanom(e.dan)}: odlazak${e.dolasci.length?' + dolazak isti dan':''}`).join('\n')
+  try{await navigator.clipboard.writeText(txt);toast('Raspored je kopiran')}catch{toast('Kopiranje nije uspjelo')}
+}
+window.izvozBoravaka=async()=>{
+  const d=await anPodaci(AN_RASPON*2);if(!d)return
+  const S=anBoravci(d)
+  const csvEsc=x=>{const v=String(x??'');return /[;"\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}
+  const red=['Dolazak;Odlazak;Noći;Izvor;Gost'].concat(S.map(x=>[x.start,x.end,x.nights,A.IZVOR[x.source],x.booking?.guest_name||''].map(csvEsc).join(';')))
+  const a=document.createElement('a')
+  a.href=URL.createObjectURL(new Blob(['﻿'+red.join('\n')],{type:'text/csv;charset=utf-8'}))
+  a.download=(PROP.slug||'objekt')+'-boravci.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)
 }
 
 function renderChecklist(){
@@ -1631,7 +1983,9 @@ window.moveListItem=async(key,id,dir)=>{
 // ── AVAILABILITY CALENDAR ────────────────────────────────
 async function loadAvail(){
   if(!PROP)return
-  const{data}=await sb.from('availability').select('date,source').eq('property_id',PROP.id)
+  // '*' da analitika dobije i booking_id (ako stupac postoji), a kalendar radi i bez njega
+  const{data}=await sb.from('availability').select('*').eq('property_id',PROP.id)
+  AVAIL_ROWS=data||[]
   bookedDays=(data||[]).map(r=>r.date)
   icalDays=(data||[]).filter(r=>r.source&&r.source!=='manual').map(r=>r.date)
   renderCal()
@@ -1790,7 +2144,8 @@ window.nav=(id,el)=>{
   if(p)p.classList.add('active')
   if(el)el.classList.add('active')
   const meta={
-    overview:['Pregled','Pregled objekta','Status, dovršenost i linkovi objekta.'],
+    overview:['Pregled','Pregled objekta','Što se događa ovih dana i na što obratiti pažnju.'],
+    analytics:['Pregled','Analitika','Posjećenost, upiti, popunjenost i praznine u kalendaru.'],
     basic:['Objekt','Osnovni podaci','Postavite temeljne informacije koje gost prvo vidi.'],
     photos:['Objekt','Fotografije','Složite galeriju koja predstavlja vaš objekt.'],
     izgled:['Objekt','Izgled stranice','Izaberite temu koja odlučuje što gost vidi prvo.'],
@@ -1817,6 +2172,8 @@ window.nav=(id,el)=>{
   if(id==='reservations')window.loadBookings()
   if(id==='ical')loadIcal()
   if(id==='izgled')window.initTeme&&window.initTeme()
+  if(id==='analytics')renderAnalytics()
+  if(id==='overview'&&PROP)renderOverviewOps()
   syncGroup(id)
 }
 
@@ -1977,8 +2334,9 @@ window.copyLink=(type)=>{
   const url=type==='pub'?publicUrl(PROP.slug):legacyGuestUrl(PROP.slug,PROP.guest_token)
   navigator.clipboard?.writeText(url);toast(type==='pub'?'Javni link kopiran!':'Gostinski link kopiran!')
 }
-window.viewPub=()=>{if(PROP)window.open('/p.html?slug='+PROP.slug,'_blank')}
-window.viewGuest=()=>{if(PROP)window.open('/h.html?slug='+PROP.slug+'&token='+(PROP.guest_token||''),'_blank')}
+/* ?domacin=1: vlastiti pregledi domaćina ne ulaze u statistiku (p.html, h.html) */
+window.viewPub=()=>{if(PROP)window.open('/p.html?slug='+PROP.slug+'&domacin=1','_blank')}
+window.viewGuest=()=>{if(PROP)window.open('/h.html?slug='+PROP.slug+'&token='+(PROP.guest_token||'')+'&domacin=1','_blank')}
 async function renderQr(){
   if(!PROP)return
   const box=document.getElementById('qr-code')

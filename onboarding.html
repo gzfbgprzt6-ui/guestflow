@@ -552,10 +552,10 @@ window.copyPriv = () => {
   toast('Privatni link je kopiran.')
 }
 window.viewPub = () => {
-  if (PROP_SLUG) window.open('/p.html?slug=' + PROP_SLUG, '_blank')
+  if (PROP_SLUG) window.open('/p.html?slug=' + PROP_SLUG + '&domacin=1', '_blank')
 }
 window.viewPriv = () => {
-  if (PROP_SLUG) window.open('/h.html?slug=' + PROP_SLUG + '&token=' + PROP_TOKEN, '_blank')
+  if (PROP_SLUG) window.open('/h.html?slug=' + PROP_SLUG + '&token=' + PROP_TOKEN + '&domacin=1', '_blank')
 }
 window.goToDashboard = () => { window.location.href = '/dashboard.html' }
 

@@ -637,6 +637,26 @@ const noci = n => n + ' ' + plural(n, 'noć', 'noći', 'noći')
 const eur = n => n.toLocaleString('hr-HR', { maximumFractionDigits: 2 }) + ' €'
 
 let PROP = null, nights = 7, price = 0
+
+/* Statistika za domaćina (page_views: objekt, vrsta, vrijeme — bez podataka o
+   posjetitelju): pregled, upit WhatsAppom / e-mailom / kopiranjem, karta.
+   Svaka vrsta jednom po otvaranju. `?domacin=1` dodaje dashboard kad domaćin
+   sam otvori stranicu, da se njegovi pregledi ne broje. */
+const DOMACIN = new URLSearchParams(location.search).has('domacin')
+const zabiljezeno = new Set()
+function biljezi(vrsta) {
+  if (DOMACIN || !PROP || zabiljezeno.has(vrsta)) return
+  zabiljezeno.add(vrsta)
+  sb.from('page_views').insert({ property_id: PROP.id, view_type: vrsta }).then(() => {}, () => {})
+}
+document.addEventListener('click', e => {
+  const a = e.target.closest && e.target.closest('a[href]')
+  if (!a) return
+  const h = a.getAttribute('href') || ''
+  if (h.startsWith('https://wa.me/')) biljezi('inquiry_whatsapp')
+  else if (h.startsWith('mailto:')) biljezi('inquiry_email')
+  else if (a.id === 'adr-link') biljezi('map')
+})
 let bookedDates = [], galleryUrls = [], lbIndex = 0
 let calMonth = new Date().getMonth(), calYear = new Date().getFullYear()
 let rangeStart = null, hoverDs = null, checkinDs = null, checkoutDs = null
@@ -746,7 +766,7 @@ async function loadPage() {
     `Bez posrednika i bez provizije. Termin i plaćanje dogovarate direktno s domaćinom (${prop.host_name}).`
   refreshAsk()
 
-  sb.from('page_views').insert({ property_id: prop.id, view_type: 'public' }).then(() => {})
+  biljezi('public')
 
   show('#boot', false)
   show('#page')
@@ -932,6 +952,7 @@ function renderFaq(faqs) {
 //  KARTA — učitava se tek na klik (bez praćenja unaprijed)
 // ══════════════════════════════════════════════════════
 window.loadMap = () => {
+  biljezi('map')
   const f = $('#map-frame')
   if (!f.dataset.src || f.src) return
   f.src = f.dataset.src
@@ -1221,7 +1242,7 @@ function refreshAskBox() {
 }
 
 window.copyMsg = async () => {
-  try { await navigator.clipboard.writeText(buildMsg()); toast('Poruka je kopirana.') }
+  try { await navigator.clipboard.writeText(buildMsg()); toast('Poruka je kopirana.'); biljezi('inquiry_copy') }
   catch { toast('Kopiranje nije uspjelo — označite poruku i kopirajte je ručno.') }
 }
 
