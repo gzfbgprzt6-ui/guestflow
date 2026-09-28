@@ -143,3 +143,7 @@ ul{margin:0;padding:0;list-style:none}
     .sec > .wrap > *{animation:o-dizi linear both;animation-timeline:view();animation-range:entry 0% entry 40%}
   }
 }
+
+/* Popust na cijenu plana (plan_promotions): precrtana redovna + oznaka ponude */
+.cijena-stara{font-size:.62em;font-weight:500;color:var(--text-muted);text-decoration:line-through;margin-right:.35em;letter-spacing:0}
+.ponuda{display:inline-flex;align-items:center;gap:4px;width:fit-content;padding:3px 8px;border-radius:6px;background:var(--bg-warm);color:var(--text-warm);font:700 12px/1.3 var(--font-body);letter-spacing:.02em}

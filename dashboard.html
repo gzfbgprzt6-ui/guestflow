@@ -353,6 +353,8 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
 .iq__msg { margin: 0; padding: 10px 12px; border-radius: var(--radius); background: var(--paper-2); font-size: 14px; white-space: pre-line; }
 .iq__act { display: flex; flex-wrap: wrap; gap: 8px; }
 .iq__link { font: 600 14px/1.4 ui-monospace, monospace; color: var(--copper); overflow-wrap: anywhere; }
+.cijena-stara { font-size: .6em; font-weight: 500; color: var(--muted); text-decoration: line-through; margin-right: .35em; }
+.ponuda { display: inline-block; margin: 0 0 10px; padding: 3px 8px; border-radius: 6px; background: var(--yellow-soft); color: var(--warm-ink); font: 700 12px/1.3 var(--font-body); }
 .sub-note { margin-top: 16px; font-size: 14px; color: var(--muted); }
 .sub-note a { color: var(--copper); text-decoration: underline; }
 .plan-card ul { list-style: none; margin: 0 0 16px; padding: 0; display: grid; gap: 8px; }
@@ -1219,7 +1221,7 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
 <script src="/teme.js"></script>
 <script type="module">
 import{createClient}from'https://esm.sh/@supabase/supabase-js@2'
-import{loadPlans,getPlan,listPlans,limitFor,canAdd,limitMessage,effectivePlanId}from'./plans.js'
+import{loadPlans,getPlan,listPlans,limitFor,canAdd,limitMessage,effectivePlanId,popustZa,cijenaPlana,formatEur,rokPopusta,trajanjePopusta}from'./plans.js'
 import{publicUrl,bookingUrl,legacyGuestUrl,prettyUrl}from'./links.js'
 import * as A from'./analitika.js'
 
@@ -1246,7 +1248,7 @@ async function init(){
   const n=USER.user_metadata?.full_name||USER.email||'?'
   document.getElementById('user-av').textContent=n[0].toUpperCase()
   document.getElementById('user-name').textContent=USER.user_metadata?.full_name||USER.email.split('@')[0]
-  await loadPlans(sb)
+  await loadPlans(sb,{userId:USER.id})
   const{data:sub}=await sb.from('subscriptions').select('plan,period_end').eq('user_id',USER.id).maybeSingle()
   USER_PLAN=effectivePlanId(sub)
   PLAN_LIMIT=limitFor(USER_PLAN,'properties')
@@ -1332,15 +1334,16 @@ async function selectProp(p){
 /* Nazivi, cijene i limiti iz tablice `plans` (plans.js), kao u account.html */
 function renderSubPanel(){
   const lim=(n,a,b,c)=>n===Infinity?'Neograničeno '+c:`${n} ${n%10===1&&n%100!==11?a:n%10>=2&&n%10<=4&&(n%100<12||n%100>14)?b:c}`
-  const cijena=p=>p.monthlyPriceEur>0?p.monthlyPriceEur+' €/mj':'Besplatno'
+  const cijena=p=>p.monthlyPriceEur>0?formatEur(cijenaPlana(p.id,'month'))+'/mj':'Besplatno'
   const P=getPlan(USER_PLAN)
   document.getElementById('sub-plan-name').textContent=P.name+' plan'
   document.getElementById('sub-plan-desc').textContent=lim(P.maxProperties,'objekt','objekta','objekata')+' · '+cijena(P)
   document.getElementById('sub-plans').innerHTML=listPlans().map(p=>{
     const cur=p.id===P.id
     return `<div class="plan-card${cur?' current':''}"><div class="tier">${esc(p.name)}</div>`
-      +`<div class="price">${p.monthlyPriceEur} €</div>`
-      +`<div class="note">${p.monthlyPriceEur>0?'mjesečno'+(p.yearlyPriceEur>0?' · '+p.yearlyPriceEur+' €/god':''):'bez pretplate'}</div>`
+      +(pop=>`<div class="price">${pop?`<s class="cijena-stara">${formatEur(pop.redovna)}</s>${formatEur(pop.cijena)}`:p.monthlyPriceEur+' €'}</div>`
+        +`<div class="note">${p.monthlyPriceEur>0?'mjesečno'+(p.yearlyPriceEur>0?' · '+formatEur(cijenaPlana(p.id,'year'))+'/god':''):'bez pretplate'}</div>`
+        +(pop?`<div class="ponuda">${pop.osobni?'Vaš popust':esc(pop.naziv)} · −${pop.posto} %${trajanjePopusta(pop)?' '+trajanjePopusta(pop):''}${rokPopusta(pop)?' · '+rokPopusta(pop):''}</div>`:''))(popustZa(p.id,'month'))
       +`<ul><li>${lim(p.maxProperties,'objekt','objekta','objekata')}</li>`
       +`<li>${lim(p.maxPhotosPerProperty,'fotografija','fotografije','fotografija')} po objektu</li>`
       +`<li>${lim(p.maxLocalPlacesPerProperty,'preporuka','preporuke','preporuka')} po objektu</li>`

@@ -650,3 +650,101 @@ podrške jednostavno pokaže sve.
 **Sitno:**
 - [ ] `favicon.ico` ne postoji (preglednik ga traži na svakoj stranici → 404
   u zapisniku). Treba ikona.
+
+## 14. Popusti na pretplate (rujan 2026.)
+
+**Admin → Popusti.** Vlasnik platforme postavi ponudu i ona se odmah
+prikazuje svugdje gdje piše cijena (naslovnica, Pomoć, Račun, dodavanje
+objekta, Pretplata u dashboardu): stara cijena precrtana, nova istaknuta,
+oznaka s nazivom, postotkom, trajanjem i rokom („Ljetna akcija · −25 % prva
+3 mj. · do 8. 10.”). Kad rok istekne, ponuda sama prestane vrijediti, nitko je
+ne gasi.
+
+Ponuda ima:
+- **postotak** (1–100 %) ili **novu cijenu** u € (nova cijena vrijedi za
+  jedno razdoblje, mjesečno *ili* godišnje, jer 9,99 € mjesečno ≠ 9,99 € godišnje;
+  baza to i provodi);
+- **plan** (jedan ili svi plaćeni) i **razdoblje** (mjesečno, godišnje, oba);
+- **od–do** (može početi u budućnosti = „zakazana”; bez roka = dok je ne
+  zaustavite);
+- **trajanje nakon kupnje** (npr. „prva 3 mjeseca”, ili cijelo vrijeme);
+- **za koga**: svi domaćini ili **samo jedan** (osobni popust; brže iz
+  Domaćini → detalji → „Osobni popust”).
+
+Stanja u popisu: Aktivna · Zakazana · Zaustavljena · Istekla, uz gumbe
+Zaustavi / Pokreni / Obriši. Pregled uživo pokazuje novu cijenu prije spremanja.
+
+**Naplata — iskreno:** danas se **ništa ne naplaćuje**, jer Stripe nije
+spojen (nadogradnja ide e-mailom). Zato je iznos već sada zaključan na
+jednom mjestu: funkcija u bazi **`cijena_plana(plan, razdoblje, korisnik)`**.
+Kad se spoji Stripe, poslužiteljska funkcija za plaćanje **mora** uzeti
+iznos od nje (ne iz preglednika) — tako prikazana i naplaćena cijena ne mogu
+se razići, a nitko ne može sam sebi „izračunati” popust. Prijavljeni i
+anonimni smiju samo `cijena_plana_za_mene` (uvijek za sebe); tuđi osobni
+popust nije vidljiv ni izračunljiv. Provjereno na lokalnom Postgresu.
+
+- **Treba pokrenuti** `sql/add-plan-promotions.sql` (nova tablica
+  `plan_promotions` + dvije funkcije). Dok se ne pokrene, tab Popusti to kaže
+  i ne dopušta spremanje, a sve stranice pokazuju redovne cijene.
+- MRR i prihod u adminu računaju **samo osobne** popuste (općenita akcija
+  vrijedi za nove kupnje; tko je već platio, plaća svoju cijenu).
+
+Otvorene odluke:
+- [ ] **Vrijedi li akcija i za produljenje** postojećih pretplata ili samo za
+  nove kupnje? Prijedlog: samo nove (tako je i u MRR-u).
+- [ ] **Kako se preslikava u Stripe:** postotak/iznos → Stripe *coupon*
+  (`duration: once / repeating / forever` prema „trajanju nakon kupnje”), ili
+  jednostavno checkout s iznosom iz `cijena_plana`. Prijedlog: coupon, jer
+  Stripe tada sam vraća punu cijenu nakon N mjeseci.
+- [ ] **Kodovi za popust** („LJETO25”) koje domaćin upiše sam — lako se doda
+  kao stupac `kod` na istu tablicu. Želite li?
+- [ ] Umjesto trajnih popusta razmisliti o **probnom Pro** (npr. 14 dana) —
+  obično bolje pretvara nego popust (vidi 15).
+
+## 15. Preporuke — što bi još trebalo (rujan 2026.)
+
+Poredano po važnosti. Ništa od ovoga nije započeto; svaka stavka čeka vaše „da”.
+
+### Za vas (platforma) — prije pravog lansiranja
+1. [ ] **Stripe naplata** — checkout + portal + webhook (`billing.js` je već
+   pripremljen). Bez toga nema prihoda, a popusti su samo prikaz.
+2. [ ] **Supabase Pro** (ili drugi plan bez pauziranja) i **sigurnosne
+   kopije** baze. Keepalive je samo zakrpa.
+3. [ ] **Slanje e-mailova** (npr. Resend): obavijest domaćinu o upitu, potvrda
+   gostu, podsjetnici za istek plana, dobrodošlica i 3–4 e-maila „kako
+   postaviti vodič” za nove račune.
+4. [ ] **Pravni tekst i podaci tvrtke** (točka 8) — obavezno prije naplate.
+5. [ ] **Praćenje grešaka** (npr. Sentry, besplatni plan) — da znate kad
+   nekome pukne stranica prije nego vam se javi.
+6. [ ] **Domena odmoria.com** i poslovna e-mail adresa.
+7. [ ] **Probni Pro 14 dana** za nove račune, **preporuke** („dovedi
+   domaćina, oboje dobivate mjesec besplatno”) i **sezonski plan** (stupac
+   `season_price_eur` već postoji — domaćini na Jadranu rade 4–5 mjeseci).
+8. [ ] **Zapisnik admin radnji** (tko je kome promijenio plan ili dao popust).
+9. [ ] **Automatska iCal sinkronizacija** preko `pg_cron` u bazi (Vercel
+   Hobby dopušta samo jedan cron, a taj je keepalive).
+
+### Za domaćina
+1. [ ] **Automatska sinkronizacija s Bookingom/Airbnbom** (isto kao 9 gore) —
+   najveći rizik danas je dvostruka rezervacija.
+2. [ ] **Automatske poruke gostu**: dan prije dolaska (link + upute), jutro
+   odlaska (checklist), dan nakon (zahvala + molba za recenziju).
+3. [ ] **Vodič na jeziku gosta** (EN/DE/IT) — većina gostiju na Jadranu je
+   iz Njemačke, Austrije, Italije; `maxLanguages` u planu već postoji.
+4. [ ] **Pomoć za eVisitor i boravišnu pristojbu** — obrazac za podatke
+   gosta u vodiču, izvoz za eVisitor. Jedinstvena prednost u Hrvatskoj.
+5. [ ] **Recenzije** na javnoj stranici (gost ostavi nakon boravka).
+6. [ ] **Dodatne usluge u vodiču** (kasni odlazak, transfer, izleti) — gost
+   pošalje zahtjev domaćinu; bez plaćanja u aplikaciji.
+7. [ ] **Link za čistačicu** — samo raspored dolazaka/odlazaka, bez šifri.
+8. [ ] **QR plakat za ispis** (A4 za objekt) i **SEO** javne stranice
+   (schema.org `LodgingBusiness`, dijeljenje s fotografijom).
+
+### Za gosta
+1. [ ] **Vodič automatski na jeziku preglednika** (uz 3 gore).
+2. [ ] **Radi bez interneta** (PWA) — gost po dolasku često nema signal.
+3. [ ] **Wi-Fi QR** — skenira i spoji se bez tipkanja lozinke.
+4. [ ] **Fotografije ulaza i pin na karti** za dolazak; „Dodaj u kalendar” (.ics).
+5. [ ] **Hitni brojevi** (112, hitna, najbliža ljekarna/bolnica).
+6. [ ] **Kratka ocjena na kraju boravka** — domaćin sazna problem prije
+   recenzije na Bookingu.

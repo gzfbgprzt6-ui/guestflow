@@ -352,7 +352,7 @@
 // Cijene i limiti dolaze iz istog izvora kao ostatak aplikacije (tablica
 // `plans`). Ako ne uspije, ostaje ono što piše u HTML-u.
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-import { loadPlans, listPlans, formatPlanPrice } from './plans.js'
+import { loadPlans, listPlans, formatPlanPrice, popustZa, formatEur, rokPopusta } from './plans.js'
 try {
   const sb = createClient('https://wtojzqjhipdfbrnmprmz.supabase.co',
                           'sb_publishable_tmZAZTDbQ7ktc1N-8y4q4w_ztAu_62F')
@@ -364,7 +364,10 @@ try {
 
   const planList = document.getElementById('plan-list')
   if (planList && plans.length) planList.innerHTML = plans.map(p => {
-    const cijena = p.monthlyPriceEur === 0 ? '0 €' : formatPlanPrice(p.id) + '/mj'
+    const pop = popustZa(p.id, 'month')
+    const cijena = p.monthlyPriceEur === 0 ? '0 €'
+      : pop ? `${formatEur(pop.cijena)}/mj, ${pop.naziv} ${rokPopusta(pop)} — inače ${formatEur(pop.redovna)}`.replace(/\s+—/, ' —')
+      : formatPlanPrice(p.id) + '/mj'
     return `<li><strong>${esc(p.name)} (${esc(cijena)})</strong> — ${n(p.maxProperties, 'objekt', 'objekta', 'objekata')}, ` +
       `${n(p.maxPhotosPerProperty, 'fotografija', 'fotografije', 'fotografija')} i ` +
       `${n(p.maxLocalPlacesPerProperty, 'preporuka', 'preporuke', 'preporuka')} po objektu</li>`

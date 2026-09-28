@@ -208,7 +208,7 @@
 
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-import { loadPlans, getPlan, limitFor, effectivePlanId, limitMessage } from './plans.js'
+import { loadPlans, getPlan, limitFor, effectivePlanId, limitMessage, popustZa, formatEur } from './plans.js'
 import { publicUrl, legacyGuestUrl, prettyUrl } from './links.js'
 
 const SURL = 'https://wtojzqjhipdfbrnmprmz.supabase.co'
@@ -224,7 +224,7 @@ async function init() {
   if (!session) { window.location.href = '/login.html'; return }
   USER = session.user
 
-  await loadPlans(sb)
+  await loadPlans(sb, { userId: USER.id })
 
   // Get plan
   const { data: sub } = await sb.from('subscriptions').select('plan,period_end').eq('user_id', USER.id).maybeSingle()
@@ -267,7 +267,8 @@ function fillPlans(limit) {
   document.querySelectorAll('.pc-card[data-plan]').forEach(card => {
     const p = getPlan(card.dataset.plan); if (!p) return
     card.querySelector('[data-name]').textContent = p.name
-    card.querySelector('[data-price]').textContent = `${p.monthlyPriceEur} €`
+    const pop = popustZa(card.dataset.plan, 'month')
+    card.querySelector('[data-price]').innerHTML = pop ? `<s class="cijena-stara">${formatEur(pop.redovna)}</s>${formatEur(pop.cijena)}` : `${p.monthlyPriceEur} €`
     const obj = p.maxProperties < 0 || p.maxProperties === Infinity ? 'neograničeno objekata' : broj(p.maxProperties, 'objekt', 'objekta', 'objekata')
     const fot = p.maxPhotosPerProperty < 0 || p.maxPhotosPerProperty === Infinity ? 'neograničeno fotografija' : `${p.maxPhotosPerProperty} fotografija`
     card.querySelector('[data-limits]').textContent = `${obj} · ${fot} po objektu`

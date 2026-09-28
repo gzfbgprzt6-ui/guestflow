@@ -643,7 +643,7 @@
    ostatak aplikacije (plans.js). Ako baza nije dostupna, ostaju vrijednosti
    upisane u HTML-u. */
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-import { loadPlans, getPlan } from '/plans.js'
+import { loadPlans, getPlan, popustZa, cijenaPlana, formatEur, rokPopusta, trajanjePopusta } from '/plans.js'
 try {
   const sb = createClient('https://wtojzqjhipdfbrnmprmz.supabase.co',
                           'sb_publishable_tmZAZTDbQ7ktc1N-8y4q4w_ztAu_62F')
@@ -659,9 +659,13 @@ try {
     const ime = card.querySelector('[data-name]')
     if (ime && plan.name) ime.textContent = plan.name
     const n = card.querySelector('[data-price]'), per = card.querySelector('[data-period]')
-    if (n) n.textContent = `${plan.monthlyPriceEur} €`
+    // popust (plan_promotions) — precrtana redovna cijena i naziv ponude s rokom
+    const pop = popustZa(card.dataset.plan, 'month'), popG = popustZa(card.dataset.plan, 'year')
+    if (n) n.innerHTML = pop ? `<s class="cijena-stara">${formatEur(pop.redovna)}</s>${formatEur(pop.cijena)}` : `${plan.monthlyPriceEur} €`
     if (per && plan.monthlyPriceEur > 0)
-      per.textContent = plan.yearlyPriceEur > 0 ? `mjesečno · ili ${plan.yearlyPriceEur} € godišnje` : 'mjesečno'
+      per.textContent = plan.yearlyPriceEur > 0 ? `mjesečno · ili ${formatEur(cijenaPlana(card.dataset.plan, 'year'))} godišnje` : 'mjesečno'
+    const akcija = pop || popG
+    if (per && akcija) per.insertAdjacentHTML('beforebegin', `<span class="ponuda">${akcija.naziv.replace(/[<>&"]/g, '')} · −${akcija.posto} %${trajanjePopusta(akcija) ? ' ' + trajanjePopusta(akcija) : ''}${rokPopusta(akcija) ? ' · ' + rokPopusta(akcija) : ''}</span>`)
     const lim = card.querySelector('[data-limits]')
     if (lim) lim.textContent =
       `${rijec(plan.maxProperties, 'objekt', 'objekta', 'objekata')} · ` +

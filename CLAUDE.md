@@ -74,6 +74,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
     ├── add-theme-to-properties.sql      # properties.theme → ime teme, properties.highlight
     ├── sections-security.sql            # funkcija vodic_gosta + zatvaranje sections/bookings (KORACI 0–4, redom!)
     ├── add-country-to-page-views.sql    # page_views.country + indeks
+    ├── add-plan-promotions.sql          # tablica plan_promotions + cijena_plana() — popusti na pretplate
     ├── add-inquiries.sql                # tablica inquiries (upiti gostiju): gost samo insert, vlasnik čita, 20/sat
     └── fix-missing-columns-and-storage.sql # ALTER TABLE dopune (photo_urls, ical_*, beds/bathrooms/size_m2) + storage bucket policy
 ```
@@ -257,8 +258,8 @@ gosta. Popunjenost čita **samo kalendar**. `loadAvail()` zato čita
 (`nav('analytics')`, `renderAnalytics()`). Pregledi se dohvaćaju za 2 × raspon
 (zbog usporedbe) i pamte po objektu u `AN`.
 
-**Admin** (`admin.html`, 7 tabova): Pregled, Domaćini, Objekti, Korištenje,
-Prihod, Poruke, Sustav. Na `odmoria.css` + `analitika.css` + vlastiti
+**Admin** (`admin.html`, 8 tabova): Pregled, Domaćini, Objekti, Korištenje,
+Prihod, Popusti, Poruke, Sustav. Na `odmoria.css` + `analitika.css` + vlastiti
 `<style>`. Učitava `properties` (bez tajnih stupaca), `subscriptions`,
 `bookings` i `page_views` zadnjih 90 dana (do 100.000 redova, po 1000 —
 Supabase više ne vraća odjednom); dulji raspon u Korištenju povuče se tek na
@@ -351,6 +352,9 @@ bookings        -- property_id, guest_name, guest_note, token (16 znakova), chec
                    checkout_date, token_expires_at, is_active
 inquiries       -- property_id, guest_name, guest_email, guest_phone, checkin_date, checkout_date, guests,
                    message, status (novi/prihvacen/odbijen), booking_id, created_at (sql/add-inquiries.sql)
+plan_promotions -- id, naziv, plan_id (null = svi plaćeni), vrsta (posto/cijena), vrijednost,
+                   razdoblje (mjesec/godina/oba), trajanje_mjeseci, user_id (null = svi),
+                   pocinje, zavrsava, aktivan  (sql/add-plan-promotions.sql)
 page_views      -- property_id, view_type, timestamp, country (ISO, iz /api/track; stupac iz sql/add-country-to-page-views.sql). view_type: public, guest_hub, inquiry_whatsapp,
                    inquiry_email, inquiry_copy, map, guide:<dolazak|kuca|preporuke|domacin>
 ```
@@ -410,6 +414,17 @@ URL-ovi vraćenih fotografija spremaju se u `properties.photo_urls` (jsonb) i `p
 - Limite **provodi baza** okidačima (`sql/plan-limits.sql`): broj objekata, fotografija po objektu, preporuka, prijevoza, atrakcija, pravila i pitanja. Provjere u pregledniku postoje samo da korisnik dobije lijepu poruku — nisu sigurnosna granica.
 - Istek plana je na jednom mjestu: `effectivePlanId(sub)` u `plans.js` i `current_plan_id(uid)` u bazi. Istekao plan koji nije `free` pada na `free`.
 - `plans.js` uvezen je u `dashboard.html`, `add-property.html`, `account.html` i `admin.html`. **Nikad ne zakucavati limite u HTML** — to su prije bile četiri razilazeće kopije.
+
+**Popusti (od rujna 2026.):** tablica `plan_promotions`, uređuje se u adminu
+(tab Popusti). `plans.js` ih učitava u `loadPlans(sb, {userId})` (tiho
+preskoči ako tablice nema) i daje `popustZa(plan, interval)`, `cijenaPlana()`,
+`rokPopusta()`, `trajanjePopusta()`, `formatEur()`. Stranice s cijenom
+prikazuju precrtanu staru cijenu (`.cijena-stara`) i oznaku `.ponuda`.
+**Naplata smije uzeti iznos samo iz funkcije `cijena_plana(plan, razdoblje,
+korisnik)` u bazi** (izvršava je samo `service_role`; klijent ima
+`cijena_plana_za_mene`) — nikad iz preglednika. Ista logika u JS-u i SQL-u:
+najniža cijena od ponuda koje sada vrijede. Fiksna nova cijena ne smije imati
+razdoblje `oba` (CHECK u bazi). MRR u adminu računa samo osobne popuste.
 
 Tablica cijena gore je početno stanje u bazi; planovi i cijene još nisu konačni.
 

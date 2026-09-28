@@ -121,17 +121,106 @@ function fromRow(row) {
  * Ucita planove iz baze. Ako baza nije dostupna (npr. Supabase spava),
  * ostaju rezervne vrijednosti pa stranica i dalje radi.
  */
-export async function loadPlans(sb) {
+export async function loadPlans(sb, opts = {}) {
+  if (opts.userId) KORISNIK = opts.userId;   // za osobne popuste (vidi popustZa)
   if (loaded) return ODMORIA_PLANS;
   try {
     const { data, error } = await sb.from("plans").select("*").order("sort_order");
-    if (error || !data?.length) return ODMORIA_PLANS;
-    for (const row of data) ODMORIA_PLANS[row.id] = fromRow(row);
-    loaded = true;
+    if (!error && data?.length) {
+      for (const row of data) ODMORIA_PLANS[row.id] = fromRow(row);
+      loaded = true;
+    }
   } catch {
     /* rezervne vrijednosti ostaju */
   }
+  await loadPromocije(sb);
   return ODMORIA_PLANS;
+}
+
+// ---------------------------------------------------------------------------
+//  Popusti (tablica plan_promotions, sql/add-plan-promotions.sql)
+//  ISTA pravila kao funkcija cijena_plana() u bazi — prikazana cijena i buduća
+//  naplata (Stripe, koji zove cijena_plana) moraju se slagati. RLS vraća samo
+//  ponude koje upravo vrijede (općenite i osobne tog korisnika); admin dobije
+//  sve, pa se ovdje uvijek još filtrira po vremenu i korisniku.
+//  Dok tablica ne postoji, popusta nema i sve radi kao prije.
+// ---------------------------------------------------------------------------
+let PROMOCIJE = [];
+let KORISNIK = null;
+
+async function loadPromocije(sb) {
+  try {
+    const { data, error } = await sb.from("plan_promotions").select("*");
+    if (!error && Array.isArray(data)) PROMOCIJE = data;
+  } catch {
+    /* bez popusta */
+  }
+}
+
+export function listPromocije() {
+  return PROMOCIJE.slice();
+}
+
+export function vrijediSada(p, sad = new Date()) {
+  return p.aktivan !== false && new Date(p.pocinje) <= sad && (!p.zavrsava || new Date(p.zavrsava) > sad);
+}
+
+/**
+ * Najbolji popust koji upravo vrijedi za plan i razdoblje ('month' | 'year').
+ * Vraća {id, naziv, redovna, cijena, posto, zavrsava, osobni} ili null.
+ */
+export function popustZa(planId, interval = "month", userId = KORISNIK, { samoOsobni = false } = {}) {
+  const plan = getPlan(planId);
+  const raz = interval === "year" ? "godina" : "mjesec";
+  const redovna = raz === "godina" ? plan.yearlyPriceEur : plan.monthlyPriceEur;
+  if (!(redovna > 0)) return null;
+  let best = null;
+  for (const p of PROMOCIJE) {
+    if (!vrijediSada(p)) continue;
+    if (p.plan_id && p.plan_id !== plan.id) continue;
+    if (p.razdoblje && p.razdoblje !== "oba" && p.razdoblje !== raz) continue;
+    if (p.vrsta === "cijena" && (!p.razdoblje || p.razdoblje === "oba") && raz !== "mjesec") continue; // stari zapis: fiksna cijena = mjesečna
+    if (p.user_id && p.user_id !== userId) continue;
+    if (samoOsobni && !p.user_id) continue;
+    const v = Number(p.vrijednost);
+    const c = p.vrsta === "posto" ? Math.round(redovna * (1 - v / 100) * 100) / 100 : Math.min(redovna, v);
+    if (!best || c < best.cijena)
+      best = { id: p.id, naziv: p.naziv, redovna, cijena: c, posto: Math.round((1 - c / redovna) * 100), zavrsava: p.zavrsava || null, osobni: !!p.user_id, mjeseci: p.trajanje_mjeseci || null };
+  }
+  return best && best.cijena < redovna ? best : null;
+}
+
+/** Cijena koju korisnik stvarno plaća (s popustom ako vrijedi). */
+export function cijenaPlana(planId, interval = "month") {
+  const pop = popustZa(planId, interval);
+  if (pop) return pop.cijena;
+  const plan = getPlan(planId);
+  return interval === "year" ? plan.yearlyPriceEur : plan.monthlyPriceEur;
+}
+
+/** 11,25 € / 15 € — decimale samo kad trebaju */
+export function formatEur(n) {
+  const cijeli = Math.round(n * 100) % 100 === 0;
+  return new Intl.NumberFormat("hr-HR", { style: "currency", currency: "EUR", minimumFractionDigits: cijeli ? 0 : 2, maximumFractionDigits: 2 }).format(n);
+}
+
+/** Za admin: zamijeni popis ponuda nakon izmjene (bez ponovnog učitavanja stranice) */
+export function postaviPromocije(lista) {
+  PROMOCIJE = Array.isArray(lista) ? lista : [];
+}
+
+/** „prva 3 mj.” — koliko dugo popust traje nakon kupnje */
+export function trajanjePopusta(pop) {
+  const m = pop?.mjeseci;
+  if (!m) return "";
+  return m === 1 ? "prvi mjesec" : `prva ${m} mj.`;
+}
+
+/** „do 12. 10.” ili prazno kad ponuda nema rok */
+export function rokPopusta(pop) {
+  if (!pop?.zavrsava) return "";
+  const d = new Date(pop.zavrsava);
+  return `do ${d.getDate()}. ${d.getMonth() + 1}.`;
 }
 
 export function plansLoaded() {

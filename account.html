@@ -183,7 +183,7 @@
 
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-import { loadPlans, getPlan, limitFor, effectivePlanId, listPlans } from './plans.js'
+import { loadPlans, getPlan, limitFor, effectivePlanId, listPlans, popustZa, formatEur, rokPopusta, trajanjePopusta } from './plans.js'
 
 const SURL = 'https://wtojzqjhipdfbrnmprmz.supabase.co'
 const SKEY = 'sb_publishable_tmZAZTDbQ7ktc1N-8y4q4w_ztAu_62F'
@@ -205,7 +205,7 @@ async function init() {
   document.getElementById('av-email').textContent = USER.email
 
   // Plan & stats
-  await loadPlans(sb)
+  await loadPlans(sb, { userId: USER?.id })
   const { data: sub } = await sb.from('subscriptions').select('plan,period_end').eq('user_id', USER.id).maybeSingle()
   const plan = effectivePlanId(sub)          // istekao plan pada na free
   const limit = limitFor(plan, 'properties')
@@ -236,7 +236,7 @@ async function init() {
   document.getElementById('plans').innerHTML = listPlans().map(p => `
     <div class="plan${p.id === plan ? ' cur' : ''}">
       <div class="plan__n">${p.name}${p.id === plan ? ' <span class="badge badge--status">Vaš plan</span>' : ''}</div>
-      <div class="plan__p">${p.monthlyPriceEur} € <small>${p.monthlyPriceEur > 0 ? 'mjesečno' : 'bez pretplate'}</small></div>
+      ${(pop => `<div class="plan__p">${pop ? `<s class="cijena-stara">${formatEur(pop.redovna)}</s>${formatEur(pop.cijena)}` : p.monthlyPriceEur + ' €'} <small>${p.monthlyPriceEur > 0 ? 'mjesečno' : 'bez pretplate'}</small></div>${pop ? `<span class="ponuda">${pop.osobni ? 'Vaš popust' : pop.naziv.replace(/[<>&"]/g, '')} · −${pop.posto} %${trajanjePopusta(pop) ? ' ' + trajanjePopusta(pop) : ''}${rokPopusta(pop) ? ' · ' + rokPopusta(pop) : ''}</span>` : ''}`)(popustZa(p.id, 'month'))}
       <ul><li>${lim(p.maxProperties, 'objekt', 'objekta', 'objekata')}</li>
           <li>${p.maxPhotosPerProperty === Infinity ? 'Neograničeno fotografija' : p.maxPhotosPerProperty + ' fotografija'} po objektu</li>
           <li>Javna stranica i privatni vodič</li></ul>
