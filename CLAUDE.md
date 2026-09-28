@@ -74,6 +74,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
     ├── add-theme-to-properties.sql      # properties.theme → ime teme, properties.highlight
     ├── sections-security.sql            # funkcija vodic_gosta + zatvaranje sections/bookings (KORACI 0–4, redom!)
     ├── add-country-to-page-views.sql    # page_views.country + indeks
+    ├── add-inquiries.sql                # tablica inquiries (upiti gostiju): gost samo insert, vlasnik čita, 20/sat
     └── fix-missing-columns-and-storage.sql # ALTER TABLE dopune (photo_urls, ical_*, beds/bathrooms/size_m2) + storage bucket policy
 ```
 
@@ -267,6 +268,34 @@ update prođe bez greške i bez učinka, pa se to javlja. E-mail domaćina je
 kontakt iz objekta, ne adresa računa (`auth.users` nije čitljiv).
 **Cijene i planovi uvijek iz `plans`** — preview-ove četiri cijene nisu preuzete.
 
+### Upiti gostiju i rezervacije (rujan 2026.)
+
+- **Upit** (`p.html`, `posaljiUpit()`): gost nakon odabira termina upiše ime i
+  e-mail/telefon; upis ide izravno u `inquiries` (anon smije samo `insert`).
+  Skriveno polje `web` hvata botove. Kanal u analitici: `inquiry_form`.
+- **Dashboard → Boravci → Upiti** (`ucitajUpite()`, `renderUpiti()`,
+  `prihvatiUpit()`): „Prihvati i napravi link” zove **`napraviRezervaciju()`**
+  — istu funkciju koju koristi obrazac rezervacije (rezervacija + zauzete
+  noći s `booking_id` + `token_expires_at` = dan nakon odlaska). Nikad dvije
+  kopije te logike. Poruka gostu: `porukaGostu()`, broj za wa.me: `waBroj()`.
+- Nove upite broji `osvjeziBrojUpita()` (značke `[data-iq-count]`, naslov
+  kartice); provjera svaku minutu dok je kartica vidljiva.
+- **`.nav-count` ima `display:inline-grid` pa treba `.nav-count[hidden]{display:none}`**
+  — inače atribut `hidden` ne skriva značku i pokaže se „0”.
+- **Traka za spremanje:** `DIRTY` + `pitajPrijeOdlaska()`; `nav()` i
+  `onPropChange()` pitaju prije odlaska, `beforeunload` upozori. Svaki gumb
+  čiji `onclick` počinje sa `save` gasi stanje. Pazi: `change` na polju okida
+  se tek na blur, dakle pri kliku na navigaciju — testovi prvo `blur()`.
+
+### Pokret (animacije)
+
+Suptilno i samo pod `prefers-reduced-motion: no-preference`. Otkrivanje pri
+listanju je **`animation-timeline: view()`** unutar `@supports` na
+`.sec > .wrap > *` (odmoria.css) — ne IntersectionObserver, pa ništa ne može
+ostati nevidljivo. Posljedica: na snimci cijele stranice (Playwright
+`fullPage`) elementi ispod prvog zaslona su prozirni — za snimke koristiti
+`reducedMotion: 'reduce'`. Brojke u pločicama broji `A.odbroji(el)`.
+
 ### Zamke koje su se već dogodile
 
 - **`.sr-only` (position:absolute) u tablici koja se vodoravno pomiče rastegne
@@ -320,6 +349,8 @@ faq             -- property_id, question, answer
 availability    -- property_id, date, is_booked, source (manual/ical_booking/ical_airbnb)
 bookings        -- property_id, guest_name, guest_note, token (16 znakova), checkin_date,
                    checkout_date, token_expires_at, is_active
+inquiries       -- property_id, guest_name, guest_email, guest_phone, checkin_date, checkout_date, guests,
+                   message, status (novi/prihvacen/odbijen), booking_id, created_at (sql/add-inquiries.sql)
 page_views      -- property_id, view_type, timestamp, country (ISO, iz /api/track; stupac iz sql/add-country-to-page-views.sql). view_type: public, guest_hub, inquiry_whatsapp,
                    inquiry_email, inquiry_copy, map, guide:<dolazak|kuca|preporuke|domacin>
 ```

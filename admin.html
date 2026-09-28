@@ -671,6 +671,7 @@ function pregled(){
     A.kpi('Upiti gostiju',String(u),v?A.posto(u/v)+' posjeta završi upitom':'zadnjih 30 dana',A.promjena(u,uP)),
     A.kpi('Otvaranja vodiča',String(g),'zadnjih 30 dana',A.promjena(g,gP))
   ].join('')
+  A.odbroji($('#kpiA'));A.odbroji($('#kpiB'))
 
   // zahtijeva pažnju
   const al=[]
@@ -978,6 +979,7 @@ async function koristenje(){
     A.kpi('Otvaranja vodiča',String(g),'prema prethodnom razdoblju',A.promjena(g,c(JE_VODIC,odP,od))),
     A.kpi('Otvorene karte',String(m),'gosti koji traže lokaciju')
   ].join('')
+  A.odbroji($('#kKpi'))
   const korak=r<=30?'dan':r<=90?'tjedan':'mjesec'
   const kP=A.kante(VIEWS,od,sut,korak,JE_JAVNA), kV=A.kante(VIEWS,od,sut,korak,JE_VODIC)
   const maks=Math.max(1,...kP.map(x=>x.v),...kV.map(x=>x.v))

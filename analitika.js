@@ -54,7 +54,7 @@ export function promjena(sad, prije) {
 
 // ---------- vrste pregleda ----------
 export const JE_UPIT = t => typeof t === 'string' && t.startsWith('inquiry_')
-export const KANAL = { inquiry_whatsapp: 'WhatsApp', inquiry_email: 'E-mail', inquiry_copy: 'Kopirana poruka' }
+export const KANAL = { inquiry_form: 'Obrazac u Odmoriji', inquiry_whatsapp: 'WhatsApp', inquiry_email: 'E-mail', inquiry_copy: 'Kopirana poruka' }
 export const DIO_VODICA = { 'guide:dolazak': 'Dolazak', 'guide:kuca': 'Wi-Fi i kuća', 'guide:preporuke': 'Preporuke', 'guide:domacin': 'Domaćin' }
 
 // ---------- boravci i noći ----------
@@ -320,3 +320,26 @@ export function kpi(oznaka, vrijednost, podnaslov = '', delta = null) {
 }
 
 export const prazno = tekst => `<p class="an-empty">${esc(tekst)}</p>`
+
+/**
+ * Brojke u pločicama (`.an-kpi__v`) izbroje od nule do vrijednosti (~0,7 s).
+ * Samo cijeli brojevi i postoci; ostalo (npr. „361,00 €”, datumi) ostaje kako
+ * jest. Bez animacije ako korisnik ima uključen reduced-motion.
+ */
+export function odbroji(korijen) {
+  if (!korijen || typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches) return
+  korijen.querySelectorAll('.an-kpi__v').forEach(el => {
+    const txt = el.textContent.trim()
+    const m = txt.match(/^(\d{1,3}(?:\.\d{3})*|\d+)(\s?%)?$/)
+    if (!m) return
+    const cilj = Number(m[1].replace(/\./g, '')), suf = m[2] || ''
+    if (!cilj) return
+    const t0 = performance.now(), traje = 700
+    const korak = t => {
+      const k = Math.min(1, (t - t0) / traje), e = 1 - Math.pow(1 - k, 3)
+      el.textContent = k < 1 ? Math.round(cilj * e).toLocaleString('hr-HR') + suf : txt
+      if (k < 1) requestAnimationFrame(korak)
+    }
+    requestAnimationFrame(korak)
+  })
+}

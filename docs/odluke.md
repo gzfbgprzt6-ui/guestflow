@@ -341,6 +341,12 @@ pravni tekst, pa je u njoj netočno **uklonjeno ili ispravljeno** (popis dolje).
   izvodi **država** posjetitelja (Vercel, `x-vercel-ip-country`) i sprema uz
   pregled; sam IP se ne sprema. Pravila privatnosti to trebaju navesti
   (npr. „bilježimo državu iz koje je stranica otvorena, bez IP adrese”).
+- [ ] **Upiti gostiju (novo, točka 13)** — gost sada može ostaviti **ime,
+  e-mail i/ili telefon** u upitu, a to se sprema u bazu dok ga domaćin ne
+  obriše. Tvrdnje „ne prikupljamo ime, email, telefon gostiju” i „gosti ne
+  ostavljaju email” u Pravilima privatnosti i u Pomoći **više nisu točne**.
+  Treba: navesti upite, svrhu (odgovor na upit), tko ih vidi (samo domaćin),
+  rok čuvanja i da je domaćin voditelj obrade za te podatke.
 - [ ] **Kolačići** — Supabase sesiju prijave drži u `localStorage`, ne u
   kolačiću. Tekst „samo kolačići neophodni za sesiju” je
   duhom točan, ali tehnički nije.
@@ -426,10 +432,26 @@ treba kad se krene.
   zaglavlje i tokene iz `odmoria.css`, pa svaku temu treba ponovno složiti —
   najbolje prvo u Figmi, kao i ostatak v2. „Jadran” = današnji v2 izgled.
 - [ ] **Koliko tema i koje.** Svih osam ili manji izbor (npr. 3–4 najjače)?
-- [ ] **Koji plan otključava teme.** Npr. besplatni plan ima samo zadanu temu,
-  plaćeni sve. Za to treba zastavica u tablici `plans` (npr. `can_choose_theme`
-  ili `max_themes`) — **nova kolona, treba odobrenje**; do tada se ne dira.
-  Provjera mora biti i u bazi (okidač, kao ostali limiti), ne samo u pregledniku.
+- [ ] **Kako se teme otključavaju — vaš prijedlog (28. 9. 2026.): jednokratna
+  kupnja, npr. 2 €, za svaki plan** (ne samo najviši). Što to traži i o čemu
+  odlučiti:
+  - **Stripe** mora biti spojen (danas nije) — jednokratno plaćanje
+    (Checkout u načinu `payment`) + webhook koji upiše kupnju. To je ista
+    serverska funkcija koja fali i za pretplate, pa bi se radile zajedno.
+  - **Gdje se pamti kupnja:** nova tablica, npr. `theme_purchases`
+    (`user_id` ili `property_id`, `theme` ili „sve”, iznos, Stripe ID, vrijeme)
+    — **nova tablica, treba odobrenje**. Provjera u bazi (okidač na
+    `properties.theme`), ne samo u pregledniku.
+  - **Po objektu ili po računu?** Domaćin s 3 objekta — plaća li 2 € jednom
+    ili po objektu? Prijedlog: jednom po računu, vrijedi za sve objekte.
+  - **Jedna tema ili sve?** 2 € za jednu temu ili paket svih osam?
+  - **Naknade:** Stripe za europske kartice uzima ~1,5 % + 0,25 €, dakle
+    ~0,28 € od 2 € (~14 %); s karticama izvan EU i više. Uz PDV (25 % ako se
+    prodaje privatnim osobama u HR) od 2 € ostaje oko 1,30 €. Možda 3–5 € ili
+    „besplatno uz Pro, 2–3 € uz Free”?
+  - **Što ako se tema promijeni** — plaća li se svaka nova tema? Prijedlog:
+    jednom plaćeno = sve teme zauvijek.
+  **Sada u kodu:** panel „Izgled” piše „Uskoro”; ništa se ne naplaćuje.
 - [ ] **Što kad plan istekne.** Prijedlog: stranica se vraća na zadanu temu, a
   odabir ostaje spremljen i vraća se nakon obnove.
 - [ ] **Istaknuta brojka** (`highlight`, npr. „32°” za bazen) — ostaje dio tema.
@@ -569,3 +591,62 @@ Poruke i Sustav prošireni:
 - [ ] **Jezik preglednika** (`navigator.language`) bi pokazao i jezik gostiju
   (npr. Nijemci iz Austrije) — još jedan stupac. Želite li?
 - [ ] **Pravila privatnosti** — dodati rečenicu o državi (točka 8b).
+
+## 13. Upiti gostiju, rezervacije i spremanje (rujan 2026.)
+
+**Upit spremljen u Odmoriji** — gost na javnoj stranici odabere termin, upiše
+ime i prezime te e-mail ili telefon i pošalje upit. Domaćin ga vidi u
+dashboardu (**Boravci → Upiti**, značka s brojem novih, upozorenje u Pregledu,
+naslov kartice preglednika, provjera svaku minutu) i jednim klikom:
+**„Prihvati i napravi link”** → nastane rezervacija, dani se označe kao
+zauzeti (vezani uz rezervaciju), upit postane „prihvaćen”, a na kartici su
+gumbi **WhatsAppom / E-mailom** s gotovom porukom i privatnim linkom na gostov
+broj ili adresu. Ako se termin preklapa sa zauzetim danima, to piše na
+kartici i traži se potvrda. „Odbij” nudi gotovu poruku „termin nije
+slobodan”. WhatsApp i e-mail izravno domaćinu ostali su kao druga mogućnost.
+
+- **Treba pokrenuti** `sql/add-inquiries.sql` (nova tablica `inquiries`;
+  provjerena na lokalnom Postgresu: gost smije samo poslati, ne i čitati;
+  vlasnik vidi samo svoje; provjere oblika; najviše 20 upita na sat po
+  objektu; status i vezu gost ne može podmetnuti). Dok se ne pokrene, obrazac
+  kaže da upit nije moguće poslati i nudi WhatsApp/e-mail, a panel Upiti
+  objašnjava što treba.
+- [ ] **Obavijest domaćinu e-mailom** kad stigne upit — traži slanje e-mailova
+  (npr. Supabase Database Webhook + servis kao Resend/Postmark). Danas domaćin
+  upit vidi tek kad otvori dashboard. Želite li?
+- [ ] **Potvrda gostu** da je upit stigao (e-mail) — isto.
+- [ ] **Rok čuvanja upita** — prijedlog: odbijeni i neodgovoreni brišu se
+  nakon 12 mjeseci (zakazani zadatak u bazi). Pravila privatnosti (8b).
+- [ ] **Upiti bez datuma** (s dna javne stranice) i dalje idu samo
+  WhatsAppom/e-mailom. Dodati obrazac i ondje?
+- [ ] Admin ne vidi upite (RLS: samo vlasnik). Treba li admin broj upita?
+
+**Obrazac rezervacije** (Boravci → Rezervacije): „Ime i prezime gosta” je
+obavezno (vidi se u pozdravu vodiča). Novo: **telefon i e-mail gosta** samo za
+slanje linka — ne spremaju se. Link sada stvarno **vrijedi do dan nakon
+odlaska** (`token_expires_at`), kako je i pisalo uz obrazac. Ako se termin
+preklapa sa zauzetim danima, traži se potvrda.
+- Ispravljena greška: gumb „WhatsApp” nakon izrade linka otvarao je razgovor s
+  **domaćinovim vlastitim brojem**; sada ide na gostov broj (ili na izbor
+  kontakta ako broj nije upisan), s gotovom porukom.
+- [ ] Lokalni broj s 0 (npr. 091…) tretira se kao hrvatski (+385). Strani
+  gosti trebaju upisati broj s pozivnim brojem države.
+
+**Nespremljene promjene** (dashboard): traka „Imate nespremljene promjene”
+sada ima i **Odbaci**; pri prelasku na drugi dio ili drugi objekt pita
+**„Spremi i nastavi / Ne spremaj / Ostani”** (prije je traka tiho nestala, a
+promjene ostale nespremljene), a pri zatvaranju kartice preglednik upozori.
+
+**Animacije** — suptilne, samo ako korisnik nije isključio animacije u
+sustavu: otkrivanje pri listanju (javna stranica, naslovnica), fotografija u
+zaglavlju polako „sjedne”, pločice vodiča ulaze redom, šifre pri
+otključavanju kratko zasvijetle, u dashboardu i adminu brojke izbroje,
+stupci rastu, trake se pune, kartice se lagano podignu. Otkrivanje je vezano
+uz položaj na stranici (ne uz IntersectionObserver), pa preglednik bez
+podrške jednostavno pokaže sve.
+- [ ] Više ili manje pokreta? Lako se pojača ili utiša na jednom mjestu
+  (`odmoria.css`, `analitika.css`).
+
+**Sitno:**
+- [ ] `favicon.ico` ne postoji (preglednik ga traži na svakoj stranici → 404
+  u zapisniku). Treba ikona.

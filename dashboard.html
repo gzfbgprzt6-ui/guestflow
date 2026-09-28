@@ -338,6 +338,21 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
 .plan-card .tier { font: 700 12px/1.3 var(--font-body); letter-spacing: .15em; text-transform: uppercase; color: var(--copper); margin-bottom: 10px; }
 .plan-card .price { font: 800 32px/1.1 var(--font-ui); letter-spacing: -.03em; margin-bottom: 2px; }
 .plan-card .note { font-size: 13px; color: var(--muted); margin-bottom: 14px; }
+.nav-count { display: inline-grid; place-items: center; min-width: 20px; height: 20px; margin-left: 6px; padding: 0 6px; border-radius: 10px; background: var(--copper); color: #fff; font: 700 12px/1 var(--font-body); }
+.nav-count[hidden] { display: none; }   /* display:inline-grid inače nadjača atribut hidden */
+.side-link .nav-count { margin-left: auto; }
+.bottom-nav .nav-count { position: absolute; top: 2px; right: calc(50% - 26px); margin: 0; }
+.bottom-nav button { position: relative; }
+.iq { display: grid; gap: 10px; padding: 18px; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--paper); }
+.iq.is-new { border-color: var(--copper); box-shadow: inset 3px 0 0 var(--copper); }
+.iq__h { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
+.iq__h strong { display: block; font: 700 17px/1.3 var(--font-ui); }
+.iq__t { font-size: 13px; color: var(--muted); }
+.iq__row { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; font-size: 15px; }
+.iq__row a { color: var(--copper); text-decoration: underline; text-underline-offset: 3px; overflow-wrap: anywhere; }
+.iq__msg { margin: 0; padding: 10px 12px; border-radius: var(--radius); background: var(--paper-2); font-size: 14px; white-space: pre-line; }
+.iq__act { display: flex; flex-wrap: wrap; gap: 8px; }
+.iq__link { font: 600 14px/1.4 ui-monospace, monospace; color: var(--copper); overflow-wrap: anywhere; }
 .sub-note { margin-top: 16px; font-size: 14px; color: var(--muted); }
 .sub-note a { color: var(--copper); text-decoration: underline; }
 .plan-card ul { list-style: none; margin: 0 0 16px; padding: 0; display: grid; gap: 8px; }
@@ -428,6 +443,13 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
 .savebar .sb-txt { font: 700 15px/1.3 var(--font-ui); white-space: nowrap; }
 .savebar button { min-height: 44px; padding: 0 18px; border: 0; border-radius: var(--radius-sm); background: #fff; color: var(--ink); cursor: pointer; font: 700 15px/1 var(--font-ui); }
 .savebar button:hover { background: var(--paper-2); }
+.savebar .sb-odbaci { background: transparent; color: #fff; box-shadow: inset 0 0 0 1px rgba(255,255,255,.4); }
+.savebar .sb-odbaci:hover { background: rgba(255,255,255,.12); }
+.dirty-dlg { width: min(440px, calc(100vw - 32px)); padding: 24px; border: 0; border-radius: var(--radius-lg); background: var(--paper); color: var(--ink); box-shadow: 0 24px 64px rgba(10,42,51,.28); }
+.dirty-dlg::backdrop { background: rgba(10,42,51,.45); }
+.dirty-dlg h2 { font: 800 22px/1.25 var(--font-ui); margin: 0 0 8px; }
+.dirty-dlg p { color: var(--muted); margin: 0 0 20px; }
+.dirty-dlg__act { display: flex; flex-wrap: wrap; gap: 8px; }
 
 /* donja navigacija (mobitel) */
 .bottom-nav { display: none; }
@@ -498,6 +520,14 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
   .link-url { flex-wrap: wrap; }
   .link-url span { white-space: normal; overflow-wrap: anywhere; }
 }
+@media (prefers-reduced-motion: no-preference) {
+  .card, .iq, .bk-card { transition: box-shadow .2s ease, border-color .2s ease; }
+  .card:hover { box-shadow: 0 10px 28px rgba(16,61,75,.06); }
+  .iq, .bk-card { animation: an-dizi .4s cubic-bezier(.2,.7,.2,1) both; }
+  .side-link, .nav-item { transition: background-color .2s ease, color .2s ease; }
+  .nav-count:not([hidden]) { animation: an-dizi .35s cubic-bezier(.2,.7,.2,1) both; }
+  .btn:active { transform: translateY(1px); }
+}
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; } }
 </style>
 </head>
@@ -538,7 +568,7 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
       <nav class="side-nav" aria-label="Glavni dijelovi">
         <button class="side-link" type="button" data-group="pregled" onclick="openGroup('pregled')"><svg class="ic" aria-hidden="true"><use href="#i-layout-dashboard"/></svg>Pregled</button>
         <button class="side-link" type="button" data-group="objekt" onclick="openGroup('objekt')"><svg class="ic" aria-hidden="true"><use href="#i-house"/></svg>Objekt</button>
-        <button class="side-link" type="button" data-group="boravci" onclick="openGroup('boravci')"><svg class="ic" aria-hidden="true"><use href="#i-calendar-days"/></svg>Boravci</button>
+        <button class="side-link" type="button" data-group="boravci" onclick="openGroup('boravci')"><svg class="ic" aria-hidden="true"><use href="#i-calendar-days"/></svg>Boravci<span class="nav-count" data-iq-count hidden></span></button>
         <button class="side-link" type="button" data-group="linkovi" onclick="openGroup('linkovi')"><svg class="ic" aria-hidden="true"><use href="#i-link"/></svg>Linkovi i QR</button>
       </nav>
     </div>
@@ -592,6 +622,7 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
             <button class="nav-item" type="button" data-panel="rules" data-group="objekt" onclick="nav('rules',this)">Pravila i FAQ</button>
             <button class="nav-item" type="button" data-panel="izgled" data-group="objekt" onclick="nav('izgled',this)">Izgled</button>
             <span class="panelnav__sep" aria-hidden="true"></span>
+            <button class="nav-item" type="button" data-panel="inquiries" data-group="boravci" onclick="nav('inquiries',this)">Upiti<span class="nav-count" data-iq-count hidden></span></button>
             <button class="nav-item" type="button" data-panel="reservations" data-group="boravci" onclick="nav('reservations',this)">Rezervacije</button>
             <button class="nav-item" type="button" data-panel="availability" data-group="boravci" onclick="nav('availability',this)">Kalendar</button>
             <button class="nav-item" type="button" data-panel="ical" data-group="boravci" onclick="nav('ical',this)">iCal</button>
@@ -1006,25 +1037,41 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
         </section>
 
         <!-- RESERVATIONS -->
+        <!-- UPITI GOSTIJU (tablica inquiries, sql/add-inquiries.sql) -->
+        <section class="editor-panel an" id="section-inquiries" data-panel-content="inquiries">
+          <div class="card">
+            <div class="card-head"><div class="card-title-wrap"><span class="card-number">✉</span><div><h2>Upiti gostiju</h2><p>Gosti ih šalju s vaše javne stranice. Prihvatite upit — nastane rezervacija, dani se označe kao zauzeti i dobijete link koji odmah pošaljete gostu.</p></div></div>
+              <div class="an-seg" role="group" aria-label="Koji upiti">
+                <button type="button" data-iqf="novi" aria-pressed="true">Novi</button>
+                <button type="button" data-iqf="prihvacen" aria-pressed="false">Prihvaćeni</button>
+                <button type="button" data-iqf="odbijen" aria-pressed="false">Odbijeni</button>
+                <button type="button" data-iqf="svi" aria-pressed="false">Svi</button>
+              </div></div>
+            <div class="an-list" id="iq-list" aria-live="polite"></div>
+          </div>
+        </section>
+
         <section class="editor-panel" id="section-reservations" data-panel-content="reservations">
           <div class="card">
             <div class="card-head"><div class="card-title-wrap"><span class="card-number">R</span><div><h2>Rezervacije</h2><p>Generiraj privatni gostinski link za potvrđenog gosta.</p></div></div><button class="btn small" type="button" onclick="showAddBooking()">+ Nova rezervacija</button></div>
             <div class="card" id="add-booking-card" style="display:none;background:var(--cream)">
               <div id="bk-alert"></div>
               <div class="form-grid">
-                <div class="field"><label>Ime gosta</label><input class="input" id="bk-name" placeholder="Ana Kovač"></div>
+                <div class="field"><label for="bk-name">Ime i prezime gosta</label><input class="input" id="bk-name" placeholder="Ana Kovač" autocomplete="off" required></div>
                 <div class="field"><label>Napomena <span class="optional">opcionalno</span></label><input class="input" id="bk-note" placeholder="2 odrasle"></div>
                 <div class="field"><label>Check-in</label><input class="input" id="bk-ci" type="date"></div>
                 <div class="field"><label>Check-out</label><input class="input" id="bk-co" type="date"></div>
+                <div class="field"><label for="bk-phone">Telefon gosta <span class="optional">za WhatsApp</span></label><input class="input" id="bk-phone" type="tel" placeholder="+385 91 123 4567" autocomplete="off"></div>
+                <div class="field"><label for="bk-mail">E-mail gosta <span class="optional">za slanje</span></label><input class="input" id="bk-mail" type="email" placeholder="ana@primjer.hr" autocomplete="off"></div>
               </div>
-              <div class="helper" style="margin-top:10px">Generirat će se jedinstven link koji vrijedi do dan nakon check-outa. Ne sprema se e-mail, telefon ni podaci o naplati gosta.</div>
+              <div class="helper" style="margin-top:10px">Nastaje jedinstven link koji vrijedi do dan nakon odlaska. Telefon i e-mail služe samo za slanje linka odavde i ne spremaju se.</div>
               <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px"><button class="btn secondary small" onclick="hideAddBooking()">Odustani</button><button class="btn small" onclick="createBooking()">Kreiraj link →</button></div>
             </div>
             <div class="bk-result" id="bk-result-card" style="display:none;margin-bottom:16px">
               <div class="lbl">Link generiran</div>
               <div class="url" id="bk-result-url"></div>
               <div class="helper" id="bk-result-desc" style="margin-bottom:14px"></div>
-              <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn small" onclick="copyResultLink()">Kopiraj link</button><button class="btn secondary small" onclick="shareWA()">WhatsApp →</button><button class="btn ghost small" onclick="hideResult()">Zatvori</button></div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn small" onclick="copyResultLink()">Kopiraj link</button><button class="btn secondary small" onclick="shareWA()">WhatsAppom</button><button class="btn secondary small" onclick="shareMail()">E-mailom</button><button class="btn ghost small" onclick="hideResult()">Zatvori</button></div>
             </div>
             <div class="bk-list" id="bookings-list"></div>
           </div>
@@ -1144,18 +1191,30 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
 <nav class="bottom-nav" aria-label="Glavni dijelovi">
   <button type="button" data-group="pregled" onclick="openGroup('pregled')"><span class="pill"><svg class="ic" aria-hidden="true"><use href="#i-layout-dashboard"/></svg></span>Pregled</button>
   <button type="button" data-group="objekt" onclick="openGroup('objekt')"><span class="pill"><svg class="ic" aria-hidden="true"><use href="#i-house"/></svg></span>Objekt</button>
-  <button type="button" data-group="boravci" onclick="openGroup('boravci')"><span class="pill"><svg class="ic" aria-hidden="true"><use href="#i-calendar-days"/></svg></span>Boravci</button>
+  <button type="button" data-group="boravci" onclick="openGroup('boravci')"><span class="pill"><svg class="ic" aria-hidden="true"><use href="#i-calendar-days"/></svg></span>Boravci<span class="nav-count" data-iq-count hidden></span></button>
   <button type="button" data-group="linkovi" onclick="openGroup('linkovi')"><span class="pill"><svg class="ic" aria-hidden="true"><use href="#i-link"/></svg></span>Linkovi</button>
   <button type="button" onclick="toggleSide()" aria-label="Više: objekti, pretplata, račun"><span class="pill"><svg class="ic" aria-hidden="true"><use href="#i-ellipsis"/></svg></span>Više</button>
 </nav>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<div class="savebar" id="savebar">
+<div class="savebar" id="savebar" role="status" aria-live="polite">
   <span class="sb-dot"></span>
   <span class="sb-txt">Imate nespremljene promjene.</span>
+  <button type="button" class="sb-odbaci" onclick="odbaciPromjene()">Odbaci</button>
   <button type="button" onclick="saveNow()">Spremi</button>
 </div>
+
+<!-- Pitanje pri odlasku s nespremljenim promjenama (panel ili objekt) -->
+<dialog class="dirty-dlg" id="dirty-dlg" aria-labelledby="dirty-t">
+  <h2 id="dirty-t">Spremiti promjene?</h2>
+  <p>U ovom dijelu imate promjene koje još nisu spremljene.</p>
+  <div class="dirty-dlg__act">
+    <button type="button" class="btn" id="dirty-spremi">Spremi i nastavi</button>
+    <button type="button" class="btn secondary" id="dirty-odbaci">Ne spremaj</button>
+    <button type="button" class="btn ghost" id="dirty-ostani">Ostani</button>
+  </div>
+</dialog>
 
 <script src="/teme.js"></script>
 <script type="module">
@@ -1234,6 +1293,7 @@ function showLockBanner(){
 
 window.onPropChange=async()=>{
   const sel=document.getElementById('prop-sel')
+  if(window.jeNespremljeno&&window.jeNespremljeno()){const novi=sel.value;sel.value=PROP?.id||'';window.pitajPrijeOdlaska(()=>{sel.value=novi;window.onPropChange()});return}
   const opt=sel.options[sel.selectedIndex]
   if(opt?.textContent?.startsWith('🔒')){toast('Ovaj objekt je zaključan — nadogradi plan 🔒');sel.value=PROP?.id||'';return}
   const p=PROPS.find(x=>x.id===sel.value)
@@ -1261,6 +1321,7 @@ async function selectProp(p){
   await loadAvail()
   await loadListSections()
   await loadAmenities()
+  await ucitajUpite()
   await loadOverviewStats()
   renderChecklist()
   livePreview()
@@ -1532,10 +1593,15 @@ async function renderOverviewOps(){
     A.kpi('Pregledi javne stranice · 30 dana',String(v),'u odnosu na prethodnih 30 dana',A.promjena(v,vP)),
     A.kpi('Upiti · 30 dana',String(u),v?`${A.posto(u/v)} posjeta završi upitom`:'WhatsApp, e-mail ili kopirana poruka',A.promjena(u,uP))
   ].join('')
+  A.odbroji(document.getElementById('ov-kpis'))
 
   // upozorenja
   const al=[]
   const ima=x=>x&&String(x).trim()
+  const noviUpiti=UPITI.filter(u=>u.status==='novi')
+  if(noviUpiti.length){const u=noviUpiti[noviUpiti.length-1]
+    al.push(['warn',`${noviUpiti.length} ${A.mn(noviUpiti.length,'novi upit gosta','nova upita gostiju','novih upita gostiju')}`,
+      `${u.guest_name}${u.checkin_date?`, ${A.fmtKratko(u.checkin_date)} – ${A.fmtKratko(u.checkout_date)}`:''}. Prihvatite upit i gost odmah dobiva link za vodič.`,'Pogledaj upite','openInquiries()'])}
   const icalOn=ima(PROP.ical_booking_url)||ima(PROP.ical_airbnb_url)
   if(icalOn){
     const zadnja=PROP.ical_last_sync&&new Date(PROP.ical_last_sync)
@@ -1594,6 +1660,125 @@ async function renderOverviewOps(){
 }
 
 window.openAnalytics=()=>nav('analytics',document.querySelector('.panelnav .nav-item[data-panel="analytics"]'))
+
+// ── UPITI GOSTIJU (tablica inquiries, sql/add-inquiries.sql) ────────────
+// Gost pošalje upit s javne stranice; ovdje ga domaćin prihvati (rezervacija +
+// zauzeti dani + link) ili odbije, i jednim klikom javi gostu. Dok tablica ne
+// postoji, panel to kaže umjesto greške.
+let UPITI=[],UPITI_OK=null,IQ_FILTAR='novi',IQ_ISTAKNI=null,UPITI_TOKENI={}
+const NASLOV=document.title
+async function ucitajUpite(){
+  if(!PROP)return
+  const pid=PROP.id
+  const{data,error}=await sb.from('inquiries').select('*').eq('property_id',pid).order('created_at',{ascending:false}).limit(200)
+  if(PROP?.id!==pid)return
+  if(error){UPITI=[];UPITI_OK=false}
+  else{
+    UPITI=data||[];UPITI_OK=true
+    const ids=UPITI.map(u=>u.booking_id).filter(Boolean)
+    if(ids.length){const{data:bk}=await sb.from('bookings').select('id,token').in('id',ids);(bk||[]).forEach(b=>UPITI_TOKENI[b.id]=b.token)}
+  }
+  osvjeziBrojUpita()
+}
+function osvjeziBrojUpita(){
+  const n=UPITI.filter(u=>u.status==='novi').length
+  document.querySelectorAll('[data-iq-count]').forEach(el=>{el.hidden=!n;el.textContent=n;el.setAttribute('aria-label',n+' '+A.mn(n,'novi upit','nova upita','novih upita'))})
+  document.title=(n?'('+n+') ':'')+NASLOV
+}
+function kontaktHtml(u){
+  const r=[]
+  if(u.guest_email)r.push(`<a href="mailto:${A.esc(u.guest_email)}">${A.esc(u.guest_email)}</a>`)
+  if(u.guest_phone)r.push(`<a href="tel:${A.esc(String(u.guest_phone).replace(/[^\d+]/g,''))}">${A.esc(u.guest_phone)}</a>`)
+  return r.join(' · ')
+}
+function slanjeHtml(u,txt,subj){
+  return (u.guest_phone?`<a class="btn small" href="${A.esc(waLink(u.guest_phone,txt))}" target="_blank" rel="noopener">WhatsAppom</a>`:'')
+    +(u.guest_email?`<a class="btn ${u.guest_phone?'secondary ':''}small" href="${A.esc(mailLink(u.guest_email,subj,txt))}">E-mailom</a>`:'')
+}
+function renderUpiti(){
+  const el=document.getElementById('iq-list');if(!el)return
+  if(UPITI_OK===false){el.innerHTML=A.prazno('Upiti se još ne spremaju. Kad se u Supabaseu pokrene sql/add-inquiries.sql, gosti će s vaše javne stranice moći poslati upit s imenom i kontaktom, a vi ćete ga vidjeti ovdje.');return}
+  const L=UPITI.filter(u=>IQ_FILTAR==='svi'||u.status===IQ_FILTAR||u.id===IQ_ISTAKNI)
+  if(!L.length){el.innerHTML=A.prazno(IQ_FILTAR==='novi'?'Nema novih upita. Gost ga šalje s javne stranice nakon što odabere termin.':'Nema upita u ovom popisu.');return}
+  el.innerHTML=L.map(u=>{
+    const n=u.checkin_date&&u.checkout_date?A.razlikaDana(u.checkin_date,u.checkout_date):0
+    const prije=Math.max(0,Math.round((Date.now()-new Date(u.created_at))/6e4))
+    const kad=prije<60?`prije ${prije} min`:prije<1440?`prije ${Math.round(prije/60)} h`:new Date(u.created_at).toLocaleDateString('hr-HR')
+    const status={novi:['Novi',''],prihvacen:['Prihvaćen',''],odbijen:['Odbijen',' is-out']}[u.status]||['?','']
+    let termin='<span class="an-src">bez datuma</span>',slobodno=''
+    if(n){
+      termin=`<b>${A.fmtSDanom(u.checkin_date)} – ${A.fmtSDanom(u.checkout_date)}</b><span class="an-src">${A.noci(n)}${u.guests?' · '+u.guests+' '+A.mn(u.guests,'gost','gosta','gostiju'):''}</span>`
+      if(u.status==='novi'){const z=zauzeteNoci(u.checkin_date,u.checkout_date);slobodno=z?`<span class="an-tag is-warn">${z} ${A.mn(z,'noć je','noći su','noći je')} već zauzeto</span>`:'<span class="an-tag">Termin je slobodan</span>'}
+      if(u.checkin_date<A.danas()&&u.status==='novi')slobodno+=' <span class="an-tag is-out">termin je prošao</span>'
+    }
+    let akcije=''
+    const tok=u.booking_id&&UPITI_TOKENI[u.booking_id]
+    if(u.status==='novi'){
+      const odg=`Dobar dan${u.guest_name?', '+u.guest_name.split(' ')[0]:''}! Hvala na upitu za ${PROP.name}${n?` od ${A.fmtKratko(u.checkin_date)} do ${A.fmtKratko(u.checkout_date)}`:''}. `
+      akcije=`${n?`<button class="btn small" type="button" onclick="prihvatiUpit('${u.id}')">Prihvati i napravi link</button>`:`<button class="btn small" type="button" onclick="napraviLinkZa('','','upit bez datuma');document.getElementById('bk-name').value=${A.esc(JSON.stringify(u.guest_name))}">Napravi link</button>`}
+        <button class="btn secondary small" type="button" onclick="odbijUpit('${u.id}')">Odbij</button>
+        ${u.guest_phone?`<a class="btn ghost small" href="${A.esc(waLink(u.guest_phone,odg))}" target="_blank" rel="noopener">Odgovori WhatsAppom</a>`:''}
+        ${u.guest_email?`<a class="btn ghost small" href="${A.esc(mailLink(u.guest_email,'Upit za '+PROP.name,odg))}">Odgovori e-mailom</a>`:''}`
+    }else if(u.status==='prihvacen'&&tok){
+      const url=bookingUrl(tok)
+      akcije=`<div style="flex-basis:100%"><div class="iq__link">${A.esc(prettyUrl(url))}</div></div>
+        ${slanjeHtml(u,porukaGostu(u.guest_name,u.checkin_date,u.checkout_date,url),'Vaš boravak — '+PROP.name)}
+        <button class="btn secondary small" type="button" onclick="navigator.clipboard?.writeText('${A.esc(url)}');toast('Link kopiran!')">Kopiraj link</button>`
+    }else if(u.status==='odbijen'){
+      const txt=`Dobar dan${u.guest_name?', '+u.guest_name.split(' ')[0]:''}! Hvala na upitu za ${PROP.name}. Nažalost, termin${n?` od ${A.fmtKratko(u.checkin_date)} do ${A.fmtKratko(u.checkout_date)}`:''} nije slobodan. Slobodne termine vidite na ${publicUrl(PROP.slug)}`
+      akcije=`${slanjeHtml(u,txt,'Upit za '+PROP.name)}<button class="btn ghost small" type="button" onclick="obrisiUpit('${u.id}')">Obriši</button>`
+    }
+    return `<article class="iq${u.status==='novi'?' is-new':''}" id="iq-${u.id}">
+      <div class="iq__h"><div><strong>${A.esc(u.guest_name)}</strong><span class="iq__t">${kad}</span></div><span class="an-tag${status[1]}">${status[0]}</span></div>
+      <div class="iq__row">${termin} ${slobodno}</div>
+      <div class="iq__row">${kontaktHtml(u)}</div>
+      ${u.message?`<p class="iq__msg">${A.esc(u.message)}</p>`:''}
+      <div class="iq__act">${akcije}</div></article>`
+  }).join('')
+}
+document.querySelectorAll('[data-iqf]').forEach(b=>b.addEventListener('click',()=>{
+  IQ_FILTAR=b.dataset.iqf;IQ_ISTAKNI=null
+  document.querySelectorAll('[data-iqf]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)))
+  renderUpiti()
+}))
+window.prihvatiUpit=async id=>{
+  const u=UPITI.find(x=>x.id===id);if(!u)return
+  const z=zauzeteNoci(u.checkin_date,u.checkout_date)
+  if(z&&!confirm(`${z} ${A.mn(z,'noć','noći','noći')} u tom terminu već je zauzeto. Svejedno prihvatiti upit?`))return
+  const napomena=[u.guests?u.guests+' '+A.mn(u.guests,'gost','gosta','gostiju'):'','upit s javne stranice'].filter(Boolean).join(' · ')
+  const r=await napraviRezervaciju({name:u.guest_name,note:napomena,ci:u.checkin_date,co:u.checkout_date})
+  if(r.error){toast('Greška: '+r.error);return}
+  const{error}=await sb.from('inquiries').update({status:'prihvacen',booking_id:r.booking.id}).eq('id',id)
+  if(error)toast('Rezervacija je napravljena, ali upit nije označen: '+error.message)
+  else if(r.upozorenje)toast(r.upozorenje)
+  else toast('Upit prihvaćen — pošaljite gostu link ✓')
+  UPITI_TOKENI[r.booking.id]=r.booking.token
+  IQ_ISTAKNI=id
+  await loadAvail();await ucitajUpite();renderUpiti()
+  document.getElementById('iq-'+id)?.scrollIntoView({block:'center',behavior:'smooth'})
+}
+window.odbijUpit=async id=>{
+  if(!confirm('Odbiti upit? Nakon toga možete gostu jednim klikom javiti da termin nije slobodan.'))return
+  const{error}=await sb.from('inquiries').update({status:'odbijen'}).eq('id',id)
+  if(error){toast('Greška: '+error.message);return}
+  IQ_ISTAKNI=id;await ucitajUpite();renderUpiti()
+}
+window.obrisiUpit=async id=>{
+  if(!confirm('Trajno obrisati ovaj upit i gostove podatke?'))return
+  const{error}=await sb.from('inquiries').delete().eq('id',id)
+  if(error){toast('Greška: '+error.message);return}
+  await ucitajUpite();renderUpiti()
+}
+window.openInquiries=()=>{IQ_FILTAR='novi';document.querySelectorAll('[data-iqf]').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.iqf==='novi')));nav('inquiries',document.querySelector('.panelnav .nav-item[data-panel="inquiries"]'))}
+// novi upiti dok je dashboard otvoren: jednom u minuti, samo dok je kartica vidljiva
+setInterval(async()=>{
+  if(document.hidden||!PROP||UPITI_OK===false)return
+  const prije=UPITI.filter(u=>u.status==='novi').length
+  await ucitajUpite()
+  const sad=UPITI.filter(u=>u.status==='novi').length
+  if(sad>prije)toast(sad-prije===1?'Stigao je novi upit gosta':'Stiglo je '+(sad-prije)+' novih upita')
+  if(document.getElementById('section-inquiries')?.classList.contains('active'))renderUpiti()
+},60000)
 window.napraviLinkZa=(ci,co,izvor)=>{
   nav('reservations',document.querySelector('.panelnav .nav-item[data-panel="reservations"]'))
   window.showAddBooking()
@@ -1631,6 +1816,7 @@ async function renderAnalytics(){
     A.kpi('Otvaranja vodiča',String(g),'gosti s privatnim linkom',A.promjena(g,gP)),
     A.kpi('Otvorena karta',String(m),'gosti koji traže lokaciju')
   ].join('')
+  A.odbroji($('an-kpis'))
 
   // posjećenost — ista skala za obje serije
   const korak=r<=30?'dan':r<=90?'tjedan':'mjesec'
@@ -2162,6 +2348,8 @@ function loadPhotos(){
 
 // ── iCAL ──────────────────────────────────────────────
 window.nav=(id,el)=>{
+  const trenutni=document.querySelector('.editor-panel.active')?.dataset.panelContent
+  if(window.jeNespremljeno&&window.jeNespremljeno()&&trenutni!==id){window.pitajPrijeOdlaska(()=>window.nav(id,el));return}
   window.clearDirty && window.clearDirty()   // promjena panela gasi traku
   document.querySelectorAll('.editor-panel').forEach(p=>p.classList.remove('active'))
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'))
@@ -2183,6 +2371,7 @@ window.nav=(id,el)=>{
     pricing:['Objekt','Cijene','Prikažite informativnu cijenu na javnoj stranici.'],
     rules:['Objekt','Pravila i FAQ','Postavite očekivanja za ugodan boravak.'],
     availability:['Boravci','Kalendar','Označite slobodne i zauzete datume.'],
+    inquiries:['Boravci','Upiti gostiju','Upiti s javne stranice — prihvatite ih i pošaljite link u jednom koraku.'],
     reservations:['Boravci','Rezervacije','Generiraj privatni gostinski link za potvrđenog gosta.'],
     ical:['Boravci','iCal sinkronizacija','Poveži Booking.com i Airbnb kalendare.'],
     links:['Linkovi i QR','Linkovi i QR','Podijelite javnu stranicu i privatni vodič.'],
@@ -2198,6 +2387,7 @@ window.nav=(id,el)=>{
   if(id==='ical')loadIcal()
   if(id==='izgled')window.initTeme&&window.initTeme()
   if(id==='analytics')renderAnalytics()
+  if(id==='inquiries')ucitajUpite().then(renderUpiti)
   if(id==='overview'&&PROP)renderOverviewOps()
   syncGroup(id)
 }
@@ -2205,7 +2395,7 @@ window.nav=(id,el)=>{
 // ── GRUPE (Figma: Pregled · Objekt · Boravci · Linkovi i QR + Pretplata) ──
 // Paneli su isti kao prije; grupa samo odlučuje koji se podtabovi vide i što
 // je istaknuto u bočnoj traci. Zadnji otvoreni podtab grupe se pamti.
-const GROUP_FIRST={pregled:'overview',objekt:'basic',boravci:'reservations',linkovi:'links',pretplata:'sub'}
+const GROUP_FIRST={pregled:'overview',objekt:'basic',boravci:'inquiries',linkovi:'links',pretplata:'sub'}
 const lastInGroup={}
 function syncGroup(id){
   const btn=document.querySelector(`.panelnav .nav-item[data-panel="${id}"]`)
@@ -2325,31 +2515,62 @@ window.showAddBooking=()=>{
 }
 window.hideAddBooking=()=>{document.getElementById('add-booking-card').style.display='none'}
 window.hideResult=()=>{document.getElementById('bk-result-card').style.display='none'}
-window.createBooking=async()=>{
-  const ap=PROP||PROPS.find((_,i)=>i<PLAN_LIMIT);if(!ap)return
-  const name=v('bk-name')||'Gost'
-  const note=v('bk-note')
-  const ci=v('bk-ci'),co=v('bk-co')
-  if(!ci||!co){showA('bk-alert','err','Upiši datume.');return}
-  if(ci>=co){showA('bk-alert','err','Check-out mora biti nakon check-in.');return}
-  const{data,error}=await sb.from('bookings').insert({property_id:ap.id,guest_name:name,guest_note:note,checkin_date:ci,checkout_date:co}).select().single()
-  if(error){showA('bk-alert','err','Greška: '+error.message);return}
+/* Rezervacija + zauzeti dani + link. Zajedničko za obrazac i prihvaćanje upita.
+   Link vrijedi do dan nakon odlaska (token_expires_at), kako i piše uz obrazac. */
+async function napraviRezervaciju({name,note,ci,co}){
+  const ap=PROP||PROPS.find((_,i)=>i<PLAN_LIMIT);if(!ap)return{error:'Nema objekta.'}
+  const istek=new Date(A.plusDana(co,1)+'T23:59:00').toISOString()
+  const{data,error}=await sb.from('bookings').insert({property_id:ap.id,guest_name:name,guest_note:note||null,checkin_date:ci,checkout_date:co,token_expires_at:istek}).select().single()
+  if(error)return{error:error.message}
   const nights=datesBetween(ci,co).slice(0,-1)
+  let upozorenje=''
   if(nights.length){
     const{error:availErr}=await sb.from('availability').upsert(nights.map(d=>({property_id:ap.id,date:d,is_booked:true,source:'manual',booking_id:data.id})))
-    if(availErr)toast('Rezervacija kreirana, ali kalendar dostupnosti nije ažuriran: '+availErr.message)
+    if(availErr)upozorenje='Rezervacija je spremljena, ali kalendar nije ažuriran: '+availErr.message
   }
-  const url=bookingUrl(data.token)
-  lastBkUrl=url;lastBkPhone=ap.phone||''
-  document.getElementById('bk-result-url').textContent=url.replace('https://','')
+  return{booking:data,url:bookingUrl(data.token),upozorenje}
+}
+/* Koliko je noći u terminu već zauzeto u kalendaru */
+function zauzeteNoci(ci,co){
+  const zauz=new Set(AVAIL_ROWS.map(r=>r.date));let n=0
+  for(let d=ci;d<co;d=A.plusDana(d,1))if(zauz.has(d))n++
+  return n
+}
+/* wa.me traži međunarodni broj bez +; lokalni broj s 0 tretira se kao hrvatski */
+function waBroj(t){let d=String(t||'').replace(/\D/g,'');if(d.startsWith('00'))d=d.slice(2);else if(d.startsWith('0'))d='385'+d.slice(1);return d}
+function porukaGostu(ime,ci,co,url){
+  return `Dobar dan${ime?', '+ime.split(' ')[0]:''}! Potvrđujem vaš boravak u objektu ${PROP.name} od ${A.fmtKratko(ci)} do ${A.fmtKratko(co)}.\n\nSve upute za dolazak, Wi-Fi i šifru vrata naći ćete ovdje:\n${url}\n\nŠifra vrata i Wi-Fi pojavit će se na toj stranici sat vremena prije prijave. Veselimo se vašem dolasku!${PROP.host_name?'\n'+PROP.host_name:''}`
+}
+const waLink=(tel,txt)=>'https://wa.me/'+waBroj(tel)+'?text='+encodeURIComponent(txt)
+const mailLink=(mail,subj,txt)=>'mailto:'+encodeURIComponent(mail||'')+'?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(txt)
+
+let lastBk=null
+window.createBooking=async()=>{
+  const name=v('bk-name')
+  const note=v('bk-note')
+  const ci=v('bk-ci'),co=v('bk-co')
+  if(name.length<2){showA('bk-alert','err','Upišite ime i prezime gosta — vidi ga u pozdravu vodiča.');document.getElementById('bk-name').focus();return}
+  if(!ci||!co){showA('bk-alert','err','Upiši datume.');return}
+  if(ci>=co){showA('bk-alert','err','Check-out mora biti nakon check-in.');return}
+  const zauz=zauzeteNoci(ci,co)
+  if(zauz&&!confirm(`${zauz} ${A.mn(zauz,'noć','noći','noći')} u tom terminu već je zauzeto u kalendaru. Svejedno napraviti rezervaciju?`))return
+  const r=await napraviRezervaciju({name,note,ci,co})
+  if(r.error){showA('bk-alert','err','Greška: '+r.error);return}
+  if(r.upozorenje)toast(r.upozorenje)
+  lastBkUrl=r.url;lastBk={ime:name,ci,co,tel:v('bk-phone'),mail:v('bk-mail')}
+  lastBkPhone=lastBk.tel
+  document.getElementById('bk-result-url').textContent=r.url.replace('https://','')
   document.getElementById('bk-result-desc').textContent='Link za '+name+' vrijedi od '+fmtD(ci)+' do '+fmtD(co)+'.'
   document.getElementById('add-booking-card').style.display='none'
   document.getElementById('bk-result-card').style.display='block'
-  await window.loadBookings();toast('Rezervacija kreirana ✓')
+  ;['bk-name','bk-note','bk-phone','bk-mail'].forEach(id=>{const e=document.getElementById(id);if(e)e.value=''})
+  await window.loadBookings();await loadAvail();toast('Rezervacija kreirana ✓')
 }
 window.cpBk=(token)=>{navigator.clipboard?.writeText(bookingUrl(token));toast('Link kopiran!')}
 window.copyResultLink=()=>{navigator.clipboard?.writeText(lastBkUrl);toast('Link kopiran!')}
-window.shareWA=()=>{const msg='Dobrodošli! Sve informacije: '+lastBkUrl;const ph=(lastBkPhone||'').replace(/\D/g,'');window.open('https://wa.me/'+ph+'?text='+encodeURIComponent(msg),'_blank')}
+/* Bez gostova broja wa.me otvara WhatsApp s izborom kontakta (prije je otvarao domaćinov vlastiti broj) */
+window.shareWA=()=>{const b=lastBk||{};const msg=porukaGostu(b.ime,b.ci,b.co,lastBkUrl);window.open(b.tel?waLink(b.tel,msg):'https://wa.me/?text='+encodeURIComponent(msg),'_blank')}
+window.shareMail=()=>{const b=lastBk||{};location.href=mailLink(b.mail,'Vaš boravak — '+PROP.name,porukaGostu(b.ime,b.ci,b.co,lastBkUrl))}
 window.deactBk=async(id)=>{if(!confirm('Deaktiviraj link?'))return;const{error}=await sb.from('bookings').update({is_active:false}).eq('id',id);if(error){toast('Greška: '+error.message);return}await window.loadBookings();toast('Link deaktiviran')}
 window.delBk=async(id)=>{if(!confirm('Trajno obriši ovu rezervaciju?'))return;await sb.from('availability').delete().eq('booking_id',id);const{error}=await sb.from('bookings').delete().eq('id',id);if(error){toast('Greška: '+error.message);return}await window.loadBookings();toast('Rezervacija obrisana')}
 
@@ -2426,16 +2647,39 @@ function activeSaveBtn(){
   if(!panel)return null
   return [...panel.querySelectorAll('button')].find(b=>/^save[A-Z]/.test((b.getAttribute('onclick')||'').trim()))
 }
+let DIRTY=false
 function markDirty(){
   if(!activeSaveBtn())return          // paneli bez gumba (npr. liste) spremaju se sami
+  DIRTY=true
   document.getElementById('savebar').classList.add('show')
 }
-window.clearDirty=()=>document.getElementById('savebar').classList.remove('show')
+window.markDirty=markDirty
+window.clearDirty=()=>{DIRTY=false;document.getElementById('savebar').classList.remove('show')}
+window.jeNespremljeno=()=>DIRTY
 window.saveNow=()=>{
   const b=activeSaveBtn()
   if(b)b.click()
   window.clearDirty()
 }
+/* Odbaci: ponovno učitaj objekt iz baze — sva polja se vrate na spremljeno */
+window.odbaciPromjene=async()=>{
+  window.clearDirty()
+  if(PROP)await selectProp(PROP)
+  toast('Promjene su odbačene')
+}
+/* Pita prije odlaska s nespremljenim promjenama; `dalje` je radnja koja slijedi */
+window.pitajPrijeOdlaska=dalje=>{
+  if(!DIRTY){dalje();return}
+  const d=document.getElementById('dirty-dlg')
+  const zatvori=()=>{d.close();['dirty-spremi','dirty-odbaci','dirty-ostani'].forEach(id=>document.getElementById(id).onclick=null)}
+  document.getElementById('dirty-spremi').onclick=()=>{zatvori();window.saveNow();dalje()}
+  document.getElementById('dirty-odbaci').onclick=async()=>{zatvori();await window.odbaciPromjene();dalje()}
+  document.getElementById('dirty-ostani').onclick=zatvori
+  d.showModal()
+}
+addEventListener('beforeunload',e=>{if(DIRTY){e.preventDefault();e.returnValue=''}})
+// i vlastiti gumb „Spremi” u panelu (ne samo onaj na traci) gasi stanje
+document.addEventListener('click',e=>{const b=e.target.closest('button');if(b&&/^save[A-Z]/.test((b.getAttribute('onclick')||'').trim()))window.clearDirty()})
 document.addEventListener('input',e=>{
   if(e.target.closest('.editor-panel'))markDirty()
 })

@@ -121,3 +121,25 @@ ul{margin:0;padding:0;list-style:none}
   html{scroll-behavior:auto}
   *,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important}
 }
+
+/* =====================================================================
+   POKRET (rujan 2026.) — suptilno, i samo kad korisnik nije isključio
+   animacije. Otkrivanje pri listanju vezano je uz položaj elementa
+   (animation-timeline: view()), ne uz IntersectionObserver: preglednik
+   bez podrške jednostavno pokaže sve, i ništa ne može ostati zaglavljeno
+   nevidljivo (zamka `.wipe` iz v3).
+   ===================================================================== */
+@keyframes o-dizi{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes o-zoom{from{transform:scale(1.06)}to{transform:none}}
+@keyframes o-otkljucaj{0%{box-shadow:0 0 0 0 rgba(17,109,118,.45)}100%{box-shadow:0 0 0 14px rgba(17,109,118,0)}}
+@media (prefers-reduced-motion:no-preference){
+  .btn{transition:background-color .2s var(--ease),color .2s var(--ease),border-color .2s var(--ease),transform .15s var(--ease),box-shadow .2s var(--ease)}
+  .btn:active{transform:translateY(1px) scale(.99)}
+  .btn--primary:hover{box-shadow:0 6px 18px rgba(17,109,118,.22)}
+  /* zaglavlje: fotografija polako „sjedne”, naslov se podigne */
+  .hero img{animation:o-zoom 1.8s var(--ease) both}
+  .hero h1{animation:o-dizi .8s var(--ease) .1s both}
+  @supports (animation-timeline:view()){
+    .sec > .wrap > *{animation:o-dizi linear both;animation-timeline:view();animation-range:entry 0% entry 40%}
+  }
+}

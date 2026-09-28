@@ -152,6 +152,15 @@
 .stepper .ask__lbl{min-width:52px}
 .stepper output{min-width:24px;text-align:center;font:700 18px/1 var(--font-ui)}
 .stepper button{width:44px;height:44px;border-radius:var(--radius-control);border:1px solid var(--border-control);background:var(--bg-surface);display:grid;place-items:center;cursor:pointer;color:var(--text)}
+.iqf{display:grid;gap:12px}
+.fld{display:grid;gap:6px;font:600 14px/1.3 var(--font-ui);min-width:0}
+.fld input{width:100%;min-height:48px;padding:0 14px;border:1px solid var(--border-control);border-radius:var(--radius-control);background:var(--bg-surface);font:400 16px/1.4 var(--font-body);color:var(--text)}
+.fld input:focus-visible{outline:2px solid var(--action);outline-offset:1px}
+.iqf .t-meta a{color:var(--text-accent);text-decoration:underline}
+.iqf__hp{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden}
+.iqf__err{margin:0;padding:10px 12px;border-radius:var(--radius-control);background:var(--bg-warm);color:var(--text-warm);font-weight:600;font-size:14px}
+.iqf__ok{display:grid;gap:6px;padding:16px;border-radius:var(--radius-panel);background:var(--bg-wash)}
+.iqf__ok b{font:700 17px/1.3 var(--font-ui)}
 .msgprev{padding:12px 14px;border-radius:var(--radius-panel);background:var(--bg-wash);font-size:15px;line-height:1.5;white-space:pre-line}
 
 /* preporuke, prijevoz, atrakcije */
@@ -522,6 +531,22 @@
             </div>
             <span class="ask__lbl">Poruka</span>
             <div class="msgprev" id="msgPrev"></div>
+            <!-- Upit spremljen u Odmoriji (tablica inquiries, sql/add-inquiries.sql):
+                 domaćin ga vidi u dashboardu i jednim klikom pošalje privatni link. -->
+            <form class="iqf" id="iqf" novalidate onsubmit="posaljiUpit(event)">
+              <span class="ask__lbl">Pošaljite upit ovdje</span>
+              <label class="fld"><span>Ime i prezime</span><input id="iq-ime" name="ime" autocomplete="name" maxlength="100" required></label>
+              <div class="pair">
+                <label class="fld"><span>E-mail</span><input id="iq-mail" name="mail" type="email" autocomplete="email" maxlength="200"></label>
+                <label class="fld"><span>Telefon</span><input id="iq-tel" name="tel" type="tel" autocomplete="tel" maxlength="30"></label>
+              </div>
+              <input class="iqf__hp" name="web" tabindex="-1" autocomplete="off" aria-hidden="true">
+              <p class="t-meta">Dovoljan je e-mail ili telefon. Vidi ih samo domaćin, da vam odgovori na upit (<a href="/privacy.html">privatnost</a>).</p>
+              <p class="iqf__err" id="iq-err" role="alert" hidden></p>
+              <button class="btn btn--primary btn--block" type="submit" id="iq-btn">Pošalji upit domaćinu</button>
+            </form>
+            <div class="iqf__ok" id="iq-ok" role="status" hidden></div>
+            <span class="ask__lbl">Ili pošaljite poruku sami</span>
             <div id="askBtns" style="display:grid;gap:12px"></div>
           </div>
           <p class="t-meta">Odmoria ne naplaćuje proviziju. Upit nije rezervacija — termin potvrđuje domaćin.</p>
@@ -665,6 +690,7 @@ document.addEventListener('click', e => {
 let bookedDates = [], galleryUrls = [], lbIndex = 0
 let calMonth = new Date().getMonth(), calYear = new Date().getFullYear()
 let rangeStart = null, hoverDs = null, checkinDs = null, checkoutDs = null
+let IQ_POSLANO = ''   // termin za koji je upit već poslan (obrazac u Upitu)
 let filledSet = new Set(), GAPS = new Set()
 
 const slug = new URLSearchParams(location.search).get('slug')
@@ -1237,13 +1263,49 @@ function refreshAskBox() {
 
   const msg = buildMsg()
   $('#msgPrev').textContent = msg
+  // novi termin nakon poslanog upita → obrazac ponovno
+  if (IQ_POSLANO && IQ_POSLANO !== checkinDs + '|' + checkoutDs) { IQ_POSLANO = ''; show('#iqf'); show('#iq-ok', false) }
   let h = ''
-  if (PROP.phone) h += `<a class="btn btn--primary btn--block" href="${esc(waUrl(PROP.phone, msg))}" target="_blank" rel="noopener">Pošalji WhatsAppom ${ico('message-circle')}</a>`
+  if (PROP.phone) h += `<a class="btn btn--secondary btn--block" href="${esc(waUrl(PROP.phone, msg))}" target="_blank" rel="noopener">WhatsAppom ${ico('message-circle')}</a>`
   const sec = []
   if (PROP.email) sec.push(`<a class="btn btn--secondary" href="${esc(mailUrl(PROP.email, msg))}">E-mailom ${ico('mail')}</a>`)
   sec.push(`<button class="btn btn--secondary" type="button" onclick="copyMsg()">Kopiraj poruku ${ico('copy')}</button>`)
   h += `<div class="pair">${sec.join('')}</div>`
   $('#askBtns').innerHTML = h
+}
+
+// ── upit spremljen u Odmoriji ─────────────────────────
+window.posaljiUpit = async e => {
+  e.preventDefault()
+  const f = e.target
+  const ime = $('#iq-ime').value.trim(), mail = $('#iq-mail').value.trim(), tel = $('#iq-tel').value.trim()
+  const greska = t => { $('#iq-err').textContent = t; show('#iq-err', !!t) }
+  if (f.web.value) return hvala(ime, mail || tel)                 // botovi popune skriveno polje
+  if (ime.length < 2) return greska('Upišite ime i prezime.')
+  if (!mail && !tel) return greska('Upišite e-mail ili telefon, da vam domaćin može odgovoriti.')
+  if (mail && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail)) return greska('E-mail adresa nije ispravna.')
+  if (tel && !/^[+0-9 ()/.-]{6,30}$/.test(tel)) return greska('Telefon smije sadržavati samo brojke, razmake i znak +.')
+  if (!checkinDs || !checkoutDs) return greska('Odaberite dolazak i odlazak u kalendaru.')
+  greska('')
+  const btn = $('#iq-btn'); btn.disabled = true; btn.textContent = 'Šaljem…'
+  const { error } = await sb.from('inquiries').insert({
+    property_id: PROP.id, guest_name: ime, guest_email: mail || null, guest_phone: tel || null,
+    checkin_date: checkinDs, checkout_date: checkoutDs, guests: GUESTS, message: buildMsg()
+  })
+  btn.disabled = false; btn.textContent = 'Pošalji upit domaćinu'
+  if (error) {
+    return greska(/Previše upita/.test(error.message || '')
+      ? 'Previše upita u kratkom vremenu. Pokušajte kasnije ili pišite domaćinu izravno.'
+      : 'Upit trenutačno nije moguće poslati. Pošaljite poruku izravno — WhatsAppom ili e-mailom ispod.')
+  }
+  biljezi('inquiry_form')
+  hvala(ime, mail || tel)
+}
+function hvala(ime, kontakt) {
+  IQ_POSLANO = checkinDs + '|' + checkoutDs
+  const tko = PROP.host_name ? 'Domaćin ' + PROP.host_name : 'Domaćin'
+  $('#iq-ok').innerHTML = `<b>Upit je poslan ✓</b><span>${esc(tko)} javit će vam se na ${esc(kontakt)}. Kad potvrdi termin, dobit ćete privatni link s uputama za dolazak.</span>`
+  show('#iqf', false); show('#iq-ok')
 }
 
 window.copyMsg = async () => {

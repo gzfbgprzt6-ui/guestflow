@@ -18,7 +18,7 @@ const SUPABASE_URL = process.env.SUPABASE_URL || 'https://wtojzqjhipdfbrnmprmz.s
 const SUPABASE_ANON = process.env.SUPABASE_ANON_KEY || 'sb_publishable_tmZAZTDbQ7ktc1N-8y4q4w_ztAu_62F';
 
 // iste vrste kao u p.html / h.html (funkcija biljezi) i analitika.js
-const VRSTE = /^(public|guest_hub|inquiry_whatsapp|inquiry_email|inquiry_copy|map|guide:(dolazak|kuca|preporuke|domacin))$/;
+const VRSTE = /^(public|guest_hub|inquiry_form|inquiry_whatsapp|inquiry_email|inquiry_copy|map|guide:(dolazak|kuca|preporuke|domacin))$/;
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 function upisi(red, signal) {
