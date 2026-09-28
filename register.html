@@ -6,73 +6,126 @@
 <title>Registracija — Odmoria</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
-<style>
-:root{--black:#5A3323;--warm-white:#F7F5F1;--pure-white:#FFFFFF;--electric:#A15C3E;--stone:#E8E2D9;--ink:#1A1917;--soft:#6B6560;--ghost:#9B9590;--serif:'DM Serif Display',Georgia,serif;--sans:'DM Sans',system-ui,sans-serif}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--sans);background:var(--warm-white);color:var(--ink);-webkit-font-smoothing:antialiased;min-height:100dvh;display:grid;place-items:center;padding:20px}
-.card{background:var(--pure-white);border:1px solid var(--stone);border-radius:16px;padding:36px 32px;width:100%;max-width:400px}
-.logo{font-family:var(--serif);font-size:22px;color:var(--black);margin-bottom:28px}
-h1{font-family:var(--serif);font-size:26px;font-weight:400;color:var(--black);margin-bottom:6px;letter-spacing:-.01em}
-.sub{font-size:14px;color:var(--soft);font-weight:300;margin-bottom:28px;line-height:1.5}
-.free-pill{display:inline-flex;align-items:center;gap:7px;background:var(--warm-white);border:1px solid var(--stone);border-radius:20px;padding:5px 12px;font-size:12px;font-weight:500;color:var(--ink);margin-bottom:20px}
-.free-dot{width:6px;height:6px;border-radius:50%;background:#16A34A}
-.fg{margin-bottom:14px}
-.fl{display:block;font-size:11px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--ghost);margin-bottom:5px}
-.fi{width:100%;padding:10px 13px;border:1px solid var(--stone);border-radius:8px;font-size:14px;color:var(--ink);font-family:var(--sans);transition:border-color .15s}
-.fi:focus{outline:none;border-color:var(--electric)}
-.btn-main{width:100%;padding:12px;border-radius:8px;background:var(--black);color:#fff;font-size:14px;font-weight:500;border:none;cursor:pointer;font-family:var(--sans);transition:background .12s;margin-top:4px}
-.btn-main:hover{background:#6B3F2D}
-.divider{display:flex;align-items:center;gap:12px;margin:18px 0;color:var(--ghost);font-size:13px}
-.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--stone)}
-.btn-google{width:100%;padding:11px;border-radius:8px;background:var(--pure-white);border:1px solid var(--stone);font-size:14px;font-weight:400;color:var(--ink);cursor:pointer;font-family:var(--sans);display:flex;align-items:center;justify-content:center;gap:10px;transition:border-color .15s}
-.btn-google:hover{border-color:var(--stone-mid)}
-.alert{border-radius:8px;padding:11px 13px;font-size:13.5px;margin-bottom:14px;display:none;line-height:1.5}
-.alert-err{background:#FEF2F2;border:1px solid #FECACA;color:#B91C1C}
-.alert-ok{background:#F0FDF4;border:1px solid #BBF7D0;color:#15803D}
-.legal{font-size:12px;color:var(--ghost);font-weight:300;text-align:center;margin-top:14px;line-height:1.6}
-.legal a{color:var(--electric)}
-.bottom-link{text-align:center;font-size:13.5px;color:var(--soft);margin-top:20px;font-weight:300}
-.bottom-link a{color:var(--electric);font-weight:500}
-</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Manrope:wght@600;700;800&display=swap">
+<link rel="stylesheet" href="/odmoria.css">
+<link rel="stylesheet" href="/auth.css">
 </head>
 <body>
-<div class="card">
-  <div class="logo">Odmoria</div>
-  <div class="free-pill"><span class="free-dot"></span>Free plan — 1 objekt, zauvijek besplatno.</div>
-  <h1>Kreiraj račun.</h1>
-  <p class="sub">Postavi prvi gostinski vodič za manje od 10 minuta.</p>
-  <div class="alert" id="alert"></div>
-  <div class="fg"><label class="fl">Ime</label><input class="fi" id="name" placeholder="Ana" autocomplete="given-name"></div>
-  <div class="fg"><label class="fl">Email</label><input class="fi" id="email" type="email" placeholder="tvoj@email.com" autocomplete="email"></div>
-  <div class="fg"><label class="fl">Lozinka</label><input class="fi" id="pass" type="password" placeholder="Min. 8 znakova" autocomplete="new-password"></div>
-  <button class="btn-main" onclick="register()">Kreiraj račun →</button>
-  <div class="divider">ili</div>
-  <button class="btn-google" onclick="loginGoogle()"><span>G</span> Nastavi s Googleom</button>
-  <div class="legal">Kreiranjem računa prihvaćaš <a href="/terms.html">Uvjete</a> i <a href="/privacy.html">Pravila privatnosti</a>.</div>
-  <div class="bottom-link">Već imaš račun? <a href="/login.html">Prijavi se</a></div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" /> <circle cx="12" cy="12" r="3" /></symbol>
+  <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49" /> <path d="M14.084 14.158a3 3 0 0 1-4.242-4.242" /> <path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143" /> <path d="m2 2 20 20" /></symbol>
+  <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14" /> <path d="m12 5 7 7-7 7" /></symbol>
+  <symbol id="i-circle-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /> <line x1="12" x2="12" y1="8" y2="12" /> <line x1="12" x2="12.01" y1="16" y2="16" /></symbol>
+  <symbol id="i-circle-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /> <path d="m16 9-5.5 5.5L8 12" /></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" /> <rect x="2" y="4" width="20" height="16" rx="2" /></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" /></symbol>
+</svg>
+<div class="auth">
+  <main class="auth__main">
+    <div class="auth__box" id="form-box">
+      <a class="auth__logo" href="/">Odmoria<i>.</i></a>
+      <span class="badge badge--status" style="justify-self:start"><svg class="ic ic--sm"><use href="#i-check"/></svg>Besplatno za početak · bez kartice</span>
+      <h1 class="auth__title">Napravite račun.</h1>
+      <p class="auth__lead">Zatim vas vodimo kroz postavljanje prvog objekta.</p>
+      <div class="alert" id="alert" role="alert" hidden></div>
+      <form class="form" onsubmit="event.preventDefault();register()" novalidate>
+        <div class="fg">
+          <label for="name">Ime</label>
+          <input class="inp" id="name" autocomplete="given-name">
+        </div>
+        <div class="fg">
+          <label for="email">E-mail</label>
+          <input class="inp" id="email" type="email" autocomplete="email" inputmode="email" required>
+        </div>
+        <div class="fg">
+          <label for="pass">Lozinka</label>
+          <div class="pw">
+            <input class="inp" id="pass" type="password" autocomplete="new-password" required minlength="8" aria-describedby="pass-hint">
+            <button class="pw__eye" type="button" onclick="togglePw('pass',this)" aria-label="Prikaži lozinku" aria-pressed="false"><svg class="ic"><use href="#i-eye"/></svg></button>
+          </div>
+          <span class="hint" id="pass-hint">Najmanje 8 znakova.</span>
+        </div>
+        <button class="btn btn--primary btn--block" type="submit" id="reg-btn">Napravi račun<svg class="ic ic--sm"><use href="#i-arrow-right"/></svg></button>
+      </form>
+      <div class="or">ili</div>
+      <button class="btn btn--secondary btn--block" type="button" onclick="loginGoogle()">Nastavi s Google računom</button>
+      <p class="legal">Izradom računa prihvaćate <a href="/terms.html">Uvjete korištenja</a> i <a href="/privacy.html">Pravila privatnosti</a>.</p>
+      <p class="bottom">Već imate račun?<a href="/login.html">Prijavite se</a></p>
+    </div>
+
+    <!-- nakon registracije -->
+    <div class="auth__box" id="sent-box" hidden>
+      <a class="auth__logo" href="/">Odmoria<i>.</i></a>
+      <div class="state" role="status">
+        <span class="state__ic"><svg class="ic"><use href="#i-mail"/></svg></span>
+        <h1>Provjerite e-mail</h1>
+        <p>Račun je napravljen. Poslali smo link za potvrdu na <b id="sent-to"></b> — otvorite ga, pa vas vodimo dalje.</p>
+        <a class="btn btn--secondary" href="/login.html">Na prijavu</a>
+      </div>
+    </div>
+  </main>
+  <aside class="auth__art" aria-hidden="true">
+    <div>
+      <span class="eyebrow">0% provizije na rezervacije.</span>
+      <h2>Javna stranica, alat za domaćine i privatni vodič — na jednom mjestu.</h2>
+      <p>Gost plaća vama. Vi birate alat koji vam odgovara.</p>
+    </div>
+  </aside>
 </div>
 
+<script>
+function togglePw(id, b) {
+  const i = document.getElementById(id), on = i.type === 'password'
+  i.type = on ? 'text' : 'password'
+  b.setAttribute('aria-pressed', on)
+  b.setAttribute('aria-label', on ? 'Sakrij lozinku' : 'Prikaži lozinku')
+  b.querySelector('use').setAttribute('href', on ? '#i-eye-off' : '#i-eye')
+}
+</script>
 <script type="module">
 import{createClient}from'https://esm.sh/@supabase/supabase-js@2'
 const sb=createClient('https://wtojzqjhipdfbrnmprmz.supabase.co','sb_publishable_tmZAZTDbQ7ktc1N-8y4q4w_ztAu_62F')
 
-function showA(type,msg){const el=document.getElementById('alert');el.className='alert alert-'+type;el.textContent=msg;el.style.display='block'}
+const $ = id => document.getElementById(id)
+function showA(type,msg){
+  const el=$('alert')
+  el.className='alert alert--'+type
+  el.innerHTML=`<svg class="ic"><use href="#i-${type==='err'?'circle-alert':'circle-check'}"/></svg><span></span>`
+  el.querySelector('span').textContent=msg
+  el.hidden=false
+}
+function hrErr(e){
+  const m=(e&&e.message)||''
+  if(/already registered|already exists/i.test(m))return 'Račun s tim e-mailom već postoji. Prijavite se ili zatražite link za prijavu.'
+  if(/password/i.test(m)&&/least|short|weak/i.test(m))return 'Lozinka je preslaba. Upotrijebite najmanje 8 znakova.'
+  if(/invalid.*email|email.*invalid/i.test(m))return 'E-mail adresa nije ispravna.'
+  if(/rate limit|too many/i.test(m))return 'Previše pokušaja. Pričekajte malo pa pokušajte ponovno.'
+  return 'Registracija nije uspjela: '+m
+}
 
 window.register=async()=>{
-  const name=document.getElementById('name').value.trim()
-  const email=document.getElementById('email').value.trim()
-  const pass=document.getElementById('pass').value
-  if(!email||!pass){showA('err','Upiši email i lozinku.');return}
-  if(pass.length<8){showA('err','Lozinka mora imati najmanje 8 znakova.');return}
+  const name=$('name').value.trim()
+  const email=$('email').value.trim()
+  const pass=$('pass').value
+  ;['email','pass'].forEach(id=>$(id).removeAttribute('aria-invalid'))
+  if(!email||!pass){
+    if(!email)$('email').setAttribute('aria-invalid','true')
+    if(!pass)$('pass').setAttribute('aria-invalid','true')
+    showA('err','Upišite e-mail i lozinku.');return
+  }
+  if(pass.length<8){$('pass').setAttribute('aria-invalid','true');showA('err','Lozinka mora imati najmanje 8 znakova.');return}
+  const b=$('reg-btn');b.disabled=true
   const{error}=await sb.auth.signUp({email,password:pass,options:{data:{full_name:name},emailRedirectTo:location.origin+'/email-confirm.html'}})
-  if(error){showA('err',error.message);return}
-  showA('ok','✓ Račun kreiran! Provjeri email za potvrdu, zatim se prijavi.')
+  b.disabled=false
+  if(error){showA('err',hrErr(error));return}
+  $('sent-to').textContent=email
+  $('form-box').hidden=true
+  $('sent-box').hidden=false
 }
 
 window.loginGoogle=async()=>{
   const{error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.origin+'/dashboard.html'}})
-  if(error)showA('err',error.message)
+  if(error)showA('err',hrErr(error))
 }
 </script>
 </body>

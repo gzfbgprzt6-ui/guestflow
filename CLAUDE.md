@@ -46,7 +46,8 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 ├── account.html              help.html                admin.html (gated: owner auth UID)
 ├── terms.html                privacy.html             404.html
 ├── vercel.json              # Rewrites za clean URL-ove, security headeri + dnevni cron za keepalive
-├── odmoria.css              # NOVI v2 dizajn sustav (Figma „Odmoria / Product Design / v2”) — zasad samo naslovnica
+├── odmoria.css              # v2 dizajn sustav (Figma „Odmoria / Product Design / v2”) — naslovnica, p.html, h.html, prijava
+├── auth.css                 # raspored četiri stranice prijave (login, register, reset-password, email-confirm)
 ├── atmosphere.css           # v3 dizajn sustav — danas ga koristi SAMO preview/ (nijedna živa stranica)
 ├── teme.css                 # OSAM TEMA javne stranice — dijele ih dashboard.html i preview/ (p.html v2 više ne)
 ├── teme.js                  # rasporedi zaglavlja, `izBaze(prop)` i zajednički birač tema
@@ -581,6 +582,16 @@ doslovno. Četiri stanja linka (neispravan, istekao, deaktiviran = istekao,
 objekt nije pronađen) nikad ne pokazuju naziv objekta. Zamka: tablica poruka
 `STATES` mora biti definirana **prije** prvog poziva `showErr()` — link bez
 tokena inače pukne na `const` prije inicijalizacije.
+
+**Prijava i registracija** (`login`, `register`, `reset-password`,
+`email-confirm`) dijele `auth.css`: obrazac lijevo, fotografija vile desno (ispod
+900 px samo obrazac). Supabase pozivi su isti kao prije (`signInWithPassword`,
+`signInWithOtp`, `signInWithOAuth`, `signUp` s `emailRedirectTo` na
+`/email-confirm.html`, `updateUser`). Greške Supabasea prevodi `hrErr()`.
+**Zamka:** funkcija koju zove `onsubmit` ne smije se zvati `submit` — unutar
+`<form>` to ime pokazuje na ugrađeni `form.submit()`, pa gumb tiho pošalje
+obrazac umjesto da spremi lozinku (dogodilo se na `reset-password.html`).
+Tijek „zaboravljena lozinka” ne postoji — vidi `docs/odluke.md`, točka 5.
 
 Provjereno podmetnutim klijentom (puni objekt, objekt bez ičega, nepostojeći slug)
 na 1920/1440/834/430/390/360: bez prelijevanja, bez JS grešaka; odabir raspona,

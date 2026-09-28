@@ -23,6 +23,7 @@ je samo pregled posla. Ništa od ovoga nije u produkciji — sve je na grani
 | Javna stranica `p.html` | `f74eb84` | Novi izgled prema fazi A; sva logika ista (kalendar, razmaci, poruke, karta, galerija, statistika) | 6 širina, puni i prazan objekt, nepostojeći link, cijeli tijek upita, galerija 1–6 fotografija |
 | Dashboard `dashboard.html` | `62f3305` | Novi izgled prema fazi B i navigacija po grupama (Pregled · Objekt · Boravci · Linkovi i QR + Pretplata), donja traka na mobitelu. Logika panela netaknuta | svih 17 panela na 4 širine, pamćenje podtaba, traka za spremanje, donja traka |
 | Vodič za gosta `h.html` | `a93d16b` | Početna s pristupom i pločicama, podstranice Dolazak · Wi-Fi i kuća · Preporuke · Domaćin, četiri stanja linka. Logika provjere linka i zaključavanja netaknuta | zaključano / otključano / samo se otključa (ubrzani sat), šifre ne ulaze u HTML ni `__VALS` prije otključavanja, 5 stanja linka, 3 širine |
+| Prijava i registracija (`login`, `register`, `reset-password`, `email-confirm`) + `auth.css` | (commit „Prijava i registracija prema Figmi”) | Podijeljen ekran s fotografijom, prikaz lozinke, prevedene greške, zasloni „Provjerite e-mail”, „E-mail je potvrđen”, „Link nije valjan”. Isti Supabase pozivi | 3 širine × 4 stranice, kriva i dobra lozinka, link za prijavu, registracija (postoji / uspjeh), nova lozinka (razlikuju se / spremljeno / bez sesije), potvrda e-maila (uspjeh / istek) |
 
 Popratno:
 
@@ -41,6 +42,7 @@ Popratno:
 - [ ] Dashboard na Previewu — prijaviti se i proći sve dijelove: Objekt
   (spremanje, fotografije), Boravci (nova rezervacija, kalendar, iCal),
   Linkovi i QR, Pretplata; na mobitelu donju traku.
+- [ ] Prijava na Previewu — prava prijava, Google, link za prijavu i registracija novog računa (potvrda e-maila).
 - [ ] Vodič na Previewu — otvoriti pravi gostinski link (`/h/<token>`) prije i
   poslije otključavanja; proći sve pločice i gumb natrag.
 - [ ] **Sigurnost tablice `sections`** — `odluke.md`, točka 0. Najvažnije prije
@@ -57,12 +59,13 @@ Popratno:
 2. [x] Privatni vodič (`h.html`) — izgled prema fazi B, podstranice preko
    adrese; vremensko zaključavanje nepromijenjeno i provjereno. Otvoreno:
    sigurnost tablice `sections` (vidi `odluke.md`, točka 0).
-3. [ ] Prijava, registracija, postavljanje, račun (`login`, `register`,
-   `reset-password`, `email-confirm`, `onboarding`, `add-property`, `account`).
-4. [ ] Admin (`admin.html`) i 404.
-5. [ ] Pomoć, Uvjeti, Privatnost — nema dizajna (zajednički predložak tekstualne
+3. [x] Prijava, registracija, nova lozinka, potvrda e-maila — novi izgled,
+   isti Supabase pozivi. Otvoreno: tijek „zaboravljena lozinka” (`odluke.md`, točka 5).
+4. [ ] Postavljanje i račun (`onboarding`, `add-property`, `account`).
+5. [ ] Admin (`admin.html`) i 404.
+6. [ ] Pomoć, Uvjeti, Privatnost — nema dizajna (zajednički predložak tekstualne
    stranice nije rađen).
-6. [ ] Kad zadnja stranica prijeđe: obrisati `atmosphere.css`, `teme.*`,
+7. [ ] Kad zadnja stranica prijeđe: obrisati `atmosphere.css`, `teme.*`,
    `motion.js`, `ui.css` i mapu `preview/` (ako se tako odluči).
 
 ### Odgođeno

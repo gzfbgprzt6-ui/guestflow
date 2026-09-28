@@ -3,59 +3,57 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Email potvrđen — Odmoria</title>
+<title>Potvrda e-maila — Odmoria</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'DM Sans',system-ui,sans-serif;background:#F7F5F1;color:#1A1917;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;-webkit-font-smoothing:antialiased}
-.logo{font-size:20px;font-weight:800;letter-spacing:-.5px;margin-bottom:44px;color:#0F172A}
-.logo span{color:#A15C3E}
-.card{background:#fff;border:1px solid #E2E8F0;border-radius:16px;padding:48px 40px;max-width:420px;width:100%;text-align:center;box-shadow:0 4px 24px rgba(0,0,0,.06)}
-.icon-wrap{width:64px;height:64px;border-radius:50%;margin:0 auto 22px;display:flex;align-items:center;justify-content:center;background:#E7F5EE}
-.spin{width:64px;height:64px;border:4px solid #E2E8F0;border-top-color:#A15C3E;border-radius:50%;animation:sp .8s linear infinite;margin:0 auto 22px}
-@keyframes sp{to{transform:rotate(360deg)}}
-h1{font-size:22px;font-weight:800;letter-spacing:-.02em;margin-bottom:8px}
-p{font-size:14px;color:#64748B;line-height:1.65;margin-bottom:24px}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;font-weight:700;border-radius:10px;padding:12px 28px;font-size:15px;border:none;cursor:pointer;transition:all .15s;font-family:inherit;background:#A15C3E;color:#fff;text-decoration:none;width:100%}
-.btn:hover{background:#1343B0}
-.err-card{background:#FEF2F2;border:1px solid #FECACA;border-radius:12px;padding:16px;margin-bottom:20px;display:none}
-.err-card h3{font-size:15px;font-weight:700;color:#B91C1C;margin-bottom:6px}
-.err-card p{color:#B91C1C;margin:0}
-</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Manrope:wght@600;700;800&display=swap">
+<link rel="stylesheet" href="/odmoria.css">
+<link rel="stylesheet" href="/auth.css">
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" /> <circle cx="12" cy="12" r="3" /></symbol>
+  <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49" /> <path d="M14.084 14.158a3 3 0 0 1-4.242-4.242" /> <path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143" /> <path d="m2 2 20 20" /></symbol>
+  <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14" /> <path d="m12 5 7 7-7 7" /></symbol>
+  <symbol id="i-circle-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /> <line x1="12" x2="12" y1="8" y2="12" /> <line x1="12" x2="12.01" y1="16" y2="16" /></symbol>
+  <symbol id="i-circle-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /> <path d="m16 9-5.5 5.5L8 12" /></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" /> <rect x="2" y="4" width="20" height="16" rx="2" /></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" /></symbol>
+</svg>
+<div class="auth">
+  <main class="auth__main">
+    <div class="auth__box">
+      <a class="auth__logo" href="/">Odmoria<i>.</i></a>
 
-<div class="logo">Odmor<span>ia</span></div>
+      <div class="state" id="state-loading" role="status">
+        <span class="boot-ring" aria-hidden="true"></span>
+        <h1>Potvrđujemo e-mail…</h1>
+        <p>Još trenutak, postavljamo vaš račun.</p>
+      </div>
 
-<div class="card">
-  <div id="state-loading">
-    <div class="spin"></div>
-    <h1>Potvrđujem email...</h1>
-    <p>Još trenutak, postavljamo tvoj račun.</p>
-  </div>
+      <div class="state" id="state-success" role="status" hidden>
+        <span class="state__ic"><svg class="ic"><use href="#i-circle-check"/></svg></span>
+        <h1>E-mail je potvrđen</h1>
+        <p>Račun je aktivan. Sljedeći korak: postavite svoj prvi objekt.</p>
+        <a href="/onboarding.html" class="btn btn--primary">Postavi prvi objekt<svg class="ic ic--sm"><use href="#i-arrow-right"/></svg></a>
+      </div>
 
-  <div id="state-success" style="display:none">
-    <div class="icon-wrap">
-      <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="13" stroke="#0F6E3F" stroke-width="1.5"/><path d="M8 14l4 4 8-8" stroke="#0F6E3F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div class="state" id="state-error" role="alert" hidden>
+        <span class="state__ic state__ic--err"><svg class="ic"><use href="#i-circle-alert"/></svg></span>
+        <h1>Link nije valjan</h1>
+        <p id="err-text">Link za potvrdu je istekao ili je već iskorišten. Registrirajte se ponovno ili se prijavite.</p>
+        <a href="/register.html" class="btn btn--primary">Registriraj se ponovno</a>
+        <a href="/login.html" class="btn btn--secondary">Prijavi se</a>
+      </div>
     </div>
-    <h1>Email potvrđen!</h1>
-    <p>Tvoj Odmoria račun je aktivan. Postavi svoj prvi objekt — traje manje od 10 minuta.</p>
-    <a href="/onboarding.html" class="btn">Postavi prvi objekt →</a>
-  </div>
-
-  <div id="state-error" style="display:none">
-    <div style="font-size:48px;margin-bottom:20px">😕</div>
-    <div class="err-card" id="err-msg" style="display:block">
-      <h3>Nešto nije u redu</h3>
-      <p id="err-text">Link je možda istekao.</p>
+  </main>
+  <aside class="auth__art" aria-hidden="true">
+    <div>
+      <span class="eyebrow">0% provizije na rezervacije.</span>
+      <h2>Javna stranica, alat za domaćine i privatni vodič — na jednom mjestu.</h2>
+      <p>Gost plaća vama. Vi birate alat koji vam odgovara.</p>
     </div>
-    <h1>Link nije valjan</h1>
-    <p>Link za potvrdu je istekao ili je već korišten. Registriraj se ponovo ili se prijavi.</p>
-    <a href="/register.html" class="btn" style="margin-bottom:10px">Registriraj se ponovo</a>
-    <a href="/login.html" class="btn" style="background:#fff;color:#1E293B;border:1.5px solid #E2E8F0;margin-top:8px">Prijavi se</a>
-  </div>
+  </aside>
 </div>
 
 <script type="module">
@@ -68,38 +66,27 @@ const sb = createClient(
 
 function show(id) {
   ['state-loading','state-success','state-error'].forEach(s => {
-    document.getElementById(s).style.display = s === id ? 'block' : 'none'
+    document.getElementById(s).hidden = s !== id
   })
 }
 
-// Supabase appends tokens to URL hash on email confirmation
-// Listen for the session change
-const { data: { session }, error } = await sb.auth.getSession()
+// Supabase dodaje tokene u adresu kad se e-mail potvrdi — slušamo promjenu sesije
+const { data: { session } } = await sb.auth.getSession()
 
 if (session) {
   show('state-success')
-  // Auto-redirect after 2.5s
   setTimeout(() => window.location.href = '/onboarding.html', 2500)
 } else {
-  // Try to exchange hash token
   sb.auth.onAuthStateChange((event, session) => {
-    if (event === 'SIGNED_IN' && session) {
-      show('state-success')
-      setTimeout(() => window.location.href = '/onboarding.html', 2500)
-    } else if (event === 'USER_UPDATED' && session) {
+    if ((event === 'SIGNED_IN' || event === 'USER_UPDATED') && session) {
       show('state-success')
       setTimeout(() => window.location.href = '/onboarding.html', 2500)
     }
   })
 
-  // Fallback — if no hash event fires in 4s, show error
+  // ako se u 4 s ništa ne dogodi, link nije prošao
   setTimeout(() => {
-    const el = document.getElementById('state-success')
-    if (el.style.display === 'none') {
-      show('state-error')
-      document.getElementById('err-text').textContent =
-        'Nismo uspjeli potvrditi email. Link je možda istekao.'
-    }
+    if (document.getElementById('state-success').hidden) show('state-error')
   }, 4000)
 }
 </script>

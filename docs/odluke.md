@@ -1,6 +1,6 @@
 # Odmoria redizajn — odluke koje čekaju vlasnika
 
-Stanje 28. 9. 2026. (naslovnica, javna stranica, dashboard i vodič za gosta preneseni u kod). Ovdje su skupljena sva otvorena pitanja iz Figme (faze A, B i C)
+Stanje 28. 9. 2026. (naslovnica, javna stranica, dashboard, vodič za gosta te prijava i registracija preneseni u kod). Ovdje su skupljena sva otvorena pitanja iz Figme (faze A, B i C)
 i ona koja su se otvorila pri prijenosu naslovnice u kod. Dok odluka ne padne, kod
 radi kako je opisano u stupcu **Sada u kodu**, uvijek na sigurnu stranu: ništa se
 ne obećava što ne postoji, a ništa se ne upisuje u bazu.
@@ -157,11 +157,28 @@ i kvačica se zatvori.
 - [ ] *(Za kod, ne odluka)* „Kreiraj link” mora biti onemogućen dok su datumi
   neispravni — u prototipu vodi dalje.
 
-## 5. Račun, postavljanje, admin — faza C (čeka pregled)
+## 5. Račun, postavljanje, admin — faza C (prijava i registracija prenesene u kod)
 
 - [ ] Proći prototipe C1 Auth Mobile, C3 Račun i C4 Admin.
 - [ ] **Ton obraćanja:** dizajn i nova naslovnica koriste „vi”, produkcijska
-  prijava „ti”. Jedno za cijelu aplikaciju.
+  prijava „ti”. Jedno za cijelu aplikaciju. **Sada u kodu:** naslovnica, javna
+  stranica, vodič, prijava, registracija, nova lozinka i potvrda e-maila su na
+  „vi”; postavljanje, dodavanje objekta, račun i dijelovi dashboarda još su na „ti”.
+- [ ] **Zaboravljena lozinka ne postoji kao tijek.** Nigdje se ne šalje e-mail za
+  novu lozinku (`resetPasswordForEmail`) — „Zaboravili ste lozinku?” šalje link
+  za prijavu (kao i prije, i kao u Figmi). Stranica `reset-password.html` radi,
+  ali do nje se iz aplikacije ne može doći. Dodati „Pošalji link za novu
+  lozinku” (i u Postavkama računa), ili ostaviti samo link za prijavu?
+- [ ] **„Otvori aplikaciju za e-mail”** (Figma, zaslon „Provjerite e-mail”) nije
+  dodan — nema pouzdanog načina da web stranica otvori pretinac (samo `mailto:`,
+  koji otvara novu poruku). Umjesto njega stoje „Pošalji ponovno” i „Natrag na
+  prijavu”.
+- [ ] **Poruke grešaka** iz Supabasea stižu na engleskom; najčešće su prevedene
+  („E-mail ili lozinka nisu točni.”, „Račun s tim e-mailom već postoji.”),
+  ostale se prikazuju uz hrvatski uvod. Treba li prevesti još koju?
+- [ ] **Registracija nakon uspjeha** prikazuje „Provjerite e-mail” s adresom
+  umjesto zelene poruke iznad obrasca. Pretpostavlja da je potvrda e-maila u
+  Supabaseu uključena — ako nije, korisnik je već prijavljen i tekst ne stoji.
 - [ ] **Korak 5 postavljanja:** link po boravku umjesto starog zajedničkog.
 - [ ] **Tab „Poruke” u adminu:** odobriti tablicu `announcements` ili ukloniti
   tab.
