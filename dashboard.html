@@ -1105,7 +1105,7 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
             <div class="sync-card">
               <div class="sync-head">
                 <h2>Sinkronizacija kalendara</h2>
-                <p>Zauzeti termini s Bookinga i Airbnba ulaze u vaš kalendar i tamo se zaključavaju — mijenjaju se sami, ne ručno.</p>
+                <p>Zauzeti termini s Bookinga i Airbnba ulaze u vaš kalendar i tamo se zaključavaju. Kalendari se osvježavaju sami (automatska sinkronizacija); gumbom ih osvježite odmah.</p>
               </div>
 
               <div class="sync-list">
@@ -1724,7 +1724,7 @@ async function renderOverviewOps(){
     const zadnja=PROP.ical_last_sync&&new Date(PROP.ical_last_sync)
     const stara=zadnja?Math.floor((Date.now()-zadnja)/864e5):null
     if(!zadnja)al.push(['warn','Kalendar s Bookinga ili Airbnba još nije povučen','Dok ne sinkronizirate, zauzeti termini s platformi ne vide se ni vama ni gostima.','Sinkroniziraj',"nav('ical',document.querySelector('.panelnav [data-panel=ical]'))"])
-    else if(stara>=3)al.push(['warn',`Zadnja sinkronizacija bila je prije ${stara} ${A.mn(stara,'dan','dana','dana')}`,'Nove rezervacije s platformi ne vide se dok ne sinkronizirate — sinkronizacija je ručna.','Sinkroniziraj',"nav('ical',document.querySelector('.panelnav [data-panel=ical]'))"])
+    else if(stara>=3)al.push(['warn',`Zadnja sinkronizacija bila je prije ${stara} ${A.mn(stara,'dan','dana','dana')}`,'Automatska sinkronizacija očito ne radi (ili još nije uključena) — nove rezervacije s platformi ne vide se dok ne sinkronizirate.','Sinkroniziraj',"nav('ical',document.querySelector('.panelnav [data-panel=ical]'))"])
   }else if(!AVAIL_ROWS.length&&PROP.show_availability){
     al.push(['info','Kalendar je prazan','Gosti na javnoj stranici vide sve termine kao slobodne. Povežite Booking.com ili Airbnb, ili označite zauzete dane.','Poveži kalendar',"nav('ical',document.querySelector('.panelnav [data-panel=ical]'))"])
   }

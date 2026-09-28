@@ -46,7 +46,15 @@ module.exports = async (req, res) => {
     }
 
     const rows = await r.json();
-    res.status(200).json({ ok: true, rows: Array.isArray(rows) ? rows.length : 0, ms });
+    // Isti dnevni poziv usput sinkronizira iCal kalendare (Vercel Hobby ima
+    // samo dnevni cron). Češće: Supabase pg_cron → /api/sync-all
+    // (sql/auto-ical-sync.sql). Bez poslužiteljskog ključa se preskače.
+    let ical = null;
+    if (process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      try { ical = await require('./_ical.js').syncAll({ rokMs: 40000 }); }
+      catch (e) { ical = { ok: false, error: String(e && e.message || e) }; }
+    }
+    res.status(200).json({ ok: true, rows: Array.isArray(rows) ? rows.length : 0, ms, ical });
   } catch (e) {
     res.status(200).json({ ok: false, error: String(e && e.message || e) });
   } finally {

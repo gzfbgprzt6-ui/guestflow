@@ -124,6 +124,12 @@
   "functions": {
     "api/stranica.js": {
       "includeFiles": "p.html"
+    },
+    "api/sync-all.js": {
+      "maxDuration": 60
+    },
+    "api/keepalive.js": {
+      "maxDuration": 60
     }
   }
 }
