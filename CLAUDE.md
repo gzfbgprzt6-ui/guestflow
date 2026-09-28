@@ -40,7 +40,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 ├── index.html              # Landing page — AKTIVNA, **redizajn v2 iz Figme** (`odmoria.css`), bez konfiguratora
 ├── p.html                  # Javna stranica objekta (?slug=xxx) — AKTIVNA, **redizajn v2 iz Figme** (`odmoria.css`), teme se NE primjenjuju
 ├── h.html                  # Privatni gostinski hub (?token=xxx) — AKTIVNA, **v3 dizajn**
-├── dashboard.html          # Glavni host dashboard — AKTIVNA, **v3 paleta i tipografija**
+├── dashboard.html          # Glavni host dashboard — AKTIVNA, **redizajn v2** (vlastiti CSS, ista imena tokena), navigacija po grupama
 ├── login.html               register.html            reset-password.html
 ├── email-confirm.html       onboarding.html          add-property.html
 ├── account.html              help.html                admin.html (gated: owner auth UID)
@@ -77,7 +77,7 @@ Obje funkcije su namjerno **bez ijedne npm ovisnosti** — projekt nema build ko
 
 **Mockupi više ne postoje.** Mapa `v3/` i stari `*-v2.html` obrisani su kad su sve četiri prave stranice prešle na v3 — nema više `/v3/` na domeni ni dvije adrese za isto.
 
-`h.html` učitava dijeljeni `atmosphere.css` i `motion.js`; `index.html` i `p.html` su na novom `odmoria.css` (vidi „Redizajn v2”). Jedino `dashboard.html` ima vlastiti potpun CSS s v3 vrijednostima u svojim starim imenima tokena (vidi "Dashboard — v3 preko vlastitih tokena").
+`h.html` učitava dijeljeni `atmosphere.css` i `motion.js`; `index.html` i `p.html` su na novom `odmoria.css` (vidi „Redizajn v2”). Jedino `dashboard.html` ima vlastiti potpun CSS s v2 vrijednostima u svojim starim imenima tokena (vidi "Dashboard — v2 preko istih imena tokena").
 
 ---
 
@@ -490,17 +490,22 @@ Tablica cijena gore je početno stanje u bazi; planovi i cijene još nisu konač
 
 ## Pristupačnost — poznato
 
-`--muted` (`#6C7A88`) na `--paper` daje **4,30:1**, što pada WCAG AA za običan tekst (traži 4,5:1). Token se koristi na ~200 mjesta u dashboardu pa nije mijenjan globalno. Panel „Sinkronizacija kalendara" koristi `#5A6774` (5,66:1) kao ispravljenu vrijednost — isti pristup primijeniti pri sljedećem većem zahvatu u dashboard, ili jednom promijeniti sam token i vizualno provjeriti sve panele.
+**Riješeno u redizajnu v2:** dashboardov `--muted` je sada `#536D77` (5,6:1 na
+bijelom), pa stari problem od 4,30:1 više ne postoji.
 
 ---
 
-## Dashboard — v3 preko vlastitih tokena
+## Dashboard — v2 preko istih imena tokena
 
-`dashboard.html` **nije prepisan**, nego preslikan: imena tokena su ostala ista (`--cream`, `--brown`, `--copper`…), samo su im vrijednosti zamijenjene v3 paletom, a DM Serif Display zamijenjen Fraunces-om. Time je 830 linija provjerene logike (kalendar, fotografije, rezervacije, iCal) ostalo netaknuto.
+`dashboard.html` **nije prepisan**, nego preslikan drugi put (v3 → v2): imena tokena i razreda su ostala ista (`--cream`, `--brown`, `--copper`, `.card`, `.nav-item`…), a cijeli `<style>` je zamijenjen v2 vrijednostima iz Figme (05 Host App). JavaScript panela nije diran — 830 linija provjerene logike (kalendar, fotografije, rezervacije, iCal) ostalo je isto.
 
-`--brown` sada znači tamnoplavu `#14202E`, `--copper` je terra `#D4674A`. **Imena namjerno nisu mijenjana** jer se koriste na ~200 mjesta; mijenjati ih značilo bi ~200 prilika za grešku bez ijedne vizualne koristi.
+Značenje tokena u v2: `--brown` = petrol `#103D4B` (tamne plohe), `--copper` = akcija `#116D76`, `--paper` = bijela kartica, `--cream` = perla podloga, `--paper-2` = wash `#EDF5F6`, `--peach` = menta na tamnom. **Imena namjerno nisu mijenjana** — ~200 mjesta. Pisma su Manrope (sučelje) i DM Sans (tekst); Fraunces se i dalje učitava samo zbog minijatura tema u panelu „Izgled”.
 
-**Bočna traka je svijetla** (`--paper`), s tamnom aktivnom stavkom — kao u v3 mockupu, ne tamna kao prije. Ako se ikad vraća tamna podloga, provjeriti sve `color:#fff` u prvih 100 linija CSS-a.
+**Navigacija po grupama** (Figma HostSidebar): bočna traka ima `.side-link[data-group]` — Pregled, Objekt, Boravci, Linkovi i QR, a dolje Pretplata. Svi paneli i dalje imaju svoj gumb `.nav-item[data-panel][data-group]` u `.panelnav`; `syncGroup(id)` na kraju `nav()` pokazuje samo podtabove aktivne grupe (traka se skriva kad grupa ima jedan panel) i pamti zadnji podtab grupe, pa `openGroup(g)` vraća tamo gdje je korisnik stao. Na mobitelu (≤ 780 px) ista je stvar donja traka `.bottom-nav`; „Više” otvara bočnu traku. **Bočna traka ne smije koristiti razred `.nav-item`** — `nav()` s njega skida `active` sa svega.
+
+Elementi `#completion-card`, `#user-av` i `.user-row` i dalje postoje jer ih JS puni, ali su skriveni: dovršenost vodiča je u Pregledu i u zaglavlju panela. `#user-plan` je sada značka uz „Pretplata”, a `#user-name` sitni redak uz „Postavke računa”.
+
+Pregled gosta (telefon desno) vidi se tek iznad 1280 px; Figma ga nema, pa je to otvorena odluka.
 
 **Traka „Imate nespremljene promjene"** (`.savebar`) javlja se na bilo koju izmjenu unutar aktivnog panela i nestaje pri spremanju ili promjeni panela. Ne uvodi novi način spremanja — samo pronađe gumb koji panel već ima (`onclick="saveXxx()"`) i pritisne ga. Paneli bez takvog gumba (liste, rezervacije) je ne pokazuju.
 
@@ -510,7 +515,7 @@ Dashboard **ne učitava `atmosphere.css`** — ima vlastiti potpun CSS. Dvostruk
 
 Figma datoteka `BVdEgki8jV7z6Oa3K6Te2h` (faze A, B, C) je vizualni izvor; postojeći
 kod je izvor funkcija i podataka. Prenosi se stranicu po stranicu, svaka na
-Preview pa potvrda: **naslovnica ✔** → **`p.html` ✔** → aplikacija domaćina → vodič →
+Preview pa potvrda: **naslovnica ✔** → **`p.html` ✔** → **aplikacija domaćina ✔** → vodič →
 račun/admin. Otvorena pitanja su u `docs/odluke.md`, ne u kodu; što je gotovo, a što
 nije, u `docs/napredak.md`.
 

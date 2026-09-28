@@ -1,6 +1,6 @@
 # Odmoria redizajn — odluke koje čekaju vlasnika
 
-Stanje 28. 9. 2026. (naslovnica i javna stranica prenesene u kod). Ovdje su skupljena sva otvorena pitanja iz Figme (faze A, B i C)
+Stanje 28. 9. 2026. (naslovnica, javna stranica i dashboard preneseni u kod). Ovdje su skupljena sva otvorena pitanja iz Figme (faze A, B i C)
 i ona koja su se otvorila pri prijenosu naslovnice u kod. Dok odluka ne padne, kod
 radi kako je opisano u stupcu **Sada u kodu**, uvijek na sigurnu stranu: ništa se
 ne obećava što ne postoji, a ništa se ne upisuje u bazu.
@@ -88,11 +88,32 @@ i kvačica se zatvori.
 - [ ] **Rečenica „Točnu adresu i upute za dolazak gost dobiva u privatnom
   vodiču”** vrijedi samo ako je domaćin upisao adresu u „Dolazak”. Zadržati?
 
-## 4. Aplikacija domaćina i vodič — faza B (čeka pregled)
+## 4. Aplikacija domaćina i vodič — faza B (dashboard prenesen u kod, vodič nije)
 
 - [ ] Proći prototipe B1 Host Desktop, B2 Host Mobile i B3 Guest Mobile.
 - [ ] **Navigacija:** 5 glavnih dijelova u bočnoj traci + podtabovi, umjesto 17
-  panela.
+  panela. **Sada u kodu:** bočna traka ima Pregled · Objekt · Boravci ·
+  Linkovi i QR, a dolje Pretplata, Postavke računa i Odjava. Na mobitelu je
+  donja traka (Pregled, Objekt, Boravci, Linkovi, Više).
+- [ ] **Podtabovi Objekta: 11 umjesto 5.** Figma ih ima pet (Osnovno ·
+  Fotografije · Cijene i sadržaji · Dolazak i upute · Vodič za goste). Kod
+  zasad drži postojeće panele jedan po jedan (Osnovno, Fotografije, Cijene,
+  Sadržaji, Dolazak, Wi-Fi, Lokalni vodič, Prijevoz, Atrakcije, Pravila i FAQ,
+  Izgled), jer spajanje više panela u jedan traži izmjenu trake „Imate
+  nespremljene promjene” (ona zna za samo jedan gumb „Spremi” po panelu).
+  Spojiti prema Figmi?
+- [ ] **Analitika** (peta stavka u Figmi) nije dodana — u kodu ne postoji, a
+  traži nove upite nad `page_views` (vidi „Analitika po danu”).
+- [ ] **Pregled:** Figma ima „Nadolazeće dolaske” s gumbom „Pošalji vodič” i
+  „Brze radnje”. U kodu je Pregled ostao kakav je bio (linkovi, četiri brojke,
+  sljedeći koraci) — samo novi izgled. Dodati?
+- [ ] **Pregled gosta (telefon desno)** — Figma ga nema; u kodu ostaje, ali samo
+  na zaslonima širim od 1280 px. Zadržati?
+- [ ] **Traka „Imate nespremljene promjene”** — Figma ima i gumb „Odbaci”. Kod
+  ima samo „Spremi” (odbacivanje bi tražilo ponovno učitavanje panela).
+- [ ] **Kalendar dostupnosti:** Figma ima veće ćelije s oznakom izvora
+  („Ručno”, „iCal”, ime gosta). U kodu su ćelije veće i u novim bojama, ali bez
+  oznake u ćeliji. Dodati oznake?
 - [ ] **Stari zajednički privatni link** (`slug` + `guest_token`, otključava
   odmah): ukloniti iz sučelja?
 - [ ] **„Deaktiviran” zasebno od „Istekao”**, sa zasebnom porukom u vodiču?
@@ -124,7 +145,7 @@ i kvačica se zatvori.
 - [ ] Povlačenje prstom u galeriji — samo u kodu (Figma ga ne podržava).
 - [ ] Tablet 834 kao zaseban frame, ako bude potreban (kod ga već pokriva).
 - [ ] Redoslijed prijenosa u kod: naslovnica ✔ → javna stranica ✔ → aplikacija
-  domaćina → vodič → račun/admin. Svaki korak na Preview, pa potvrda.
+  domaćina ✔ → vodič → račun/admin. Svaki korak na Preview, pa potvrda.
 
 ## 7. Grana i produkcija
 

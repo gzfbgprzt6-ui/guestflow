@@ -20,7 +20,8 @@ je samo pregled posla. Ništa od ovoga nije u produkciji — sve je na grani
 | --- | --- | --- | --- |
 | `odmoria.css` | `059026a` | Zajednički dizajn sustav iz Figme (tokeni, gumbi, oznake, harmonika, fokus) | — |
 | Naslovnica `index.html` | `059026a` | Nova naslovnica prema fazi A; planovi i dalje iz tablice `plans` | 6 širina, kontrast AA, izbornik, tabovi, planovi iz baze i rezerva |
-| Javna stranica `p.html` | (ovaj commit) | Novi izgled prema fazi A; sva logika ista (kalendar, razmaci, poruke, karta, galerija, statistika) | 6 širina, puni i prazan objekt, nepostojeći link, cijeli tijek upita, galerija 1–6 fotografija |
+| Javna stranica `p.html` | `f74eb84` | Novi izgled prema fazi A; sva logika ista (kalendar, razmaci, poruke, karta, galerija, statistika) | 6 širina, puni i prazan objekt, nepostojeći link, cijeli tijek upita, galerija 1–6 fotografija |
+| Dashboard `dashboard.html` | (commit „Dashboard prema Figmi”) | Novi izgled prema fazi B i navigacija po grupama (Pregled · Objekt · Boravci · Linkovi i QR + Pretplata), donja traka na mobitelu. Logika panela netaknuta | svih 17 panela na 4 širine, pamćenje podtaba, traka za spremanje, donja traka |
 
 Popratno:
 
@@ -36,14 +37,18 @@ Popratno:
 - [ ] Naslovnica na Previewu — desktop i mobitel, s pravim fontovima.
 - [ ] Javna stranica na Previewu — otvoriti pravi objekt (`/p/<slug>`) i proći:
   galerija, kalendar (odabir, poništi), poruka WhatsAppom/e-mailom, karta.
+- [ ] Dashboard na Previewu — prijaviti se i proći sve dijelove: Objekt
+  (spremanje, fotografije), Boravci (nova rezervacija, kalendar, iCal),
+  Linkovi i QR, Pretplata; na mobitelu donju traku.
 - [ ] Figma faza B — prototipi B1 Host Desktop, B2 Host Mobile, B3 Guest Mobile.
 - [ ] Figma faza C — prototipi C1 Auth Mobile, C3 Račun, C4 Admin.
 - [ ] `odluke.md` — proći i upisati odluke (najvažnije: planovi i cijene, teme).
 
 ### Prijenos u kod — sljedeći koraci
 
-1. [ ] Aplikacija domaćina (`dashboard.html`) — najveća stranica; čeka pregled
-   faze B.
+1. [x] Aplikacija domaćina (`dashboard.html`) — izgled i navigacija prenesen;
+   otvoreno: spajanje podtabova Objekta u 5, Analitika, „Nadolazeći dolasci”
+   i „Brze radnje” u Pregledu (vidi `odluke.md`, točka 4).
 2. [ ] Privatni vodič (`h.html`) — vremensko zaključavanje Wi-Fi/koda mora ostati
    točno kakvo jest.
 3. [ ] Prijava, registracija, postavljanje, račun (`login`, `register`,
