@@ -22,7 +22,7 @@ je samo pregled posla. Ništa od ovoga nije u produkciji — sve je na grani
 | Naslovnica `index.html` | `059026a` | Nova naslovnica prema fazi A; planovi i dalje iz tablice `plans` | 6 širina, kontrast AA, izbornik, tabovi, planovi iz baze i rezerva |
 | Javna stranica `p.html` | `f74eb84` | Novi izgled prema fazi A; sva logika ista (kalendar, razmaci, poruke, karta, galerija, statistika) | 6 širina, puni i prazan objekt, nepostojeći link, cijeli tijek upita, galerija 1–6 fotografija |
 | Dashboard `dashboard.html` | `62f3305` | Novi izgled prema fazi B i navigacija po grupama (Pregled · Objekt · Boravci · Linkovi i QR + Pretplata), donja traka na mobitelu. Logika panela netaknuta | svih 17 panela na 4 širine, pamćenje podtaba, traka za spremanje, donja traka |
-| Vodič za gosta `h.html` | (commit „Vodič prema Figmi”) | Početna s pristupom i pločicama, podstranice Dolazak · Wi-Fi i kuća · Preporuke · Domaćin, četiri stanja linka. Logika provjere linka i zaključavanja netaknuta | zaključano / otključano / samo se otključa (ubrzani sat), šifre ne ulaze u HTML ni `__VALS` prije otključavanja, 5 stanja linka, 3 širine |
+| Vodič za gosta `h.html` | `a93d16b` | Početna s pristupom i pločicama, podstranice Dolazak · Wi-Fi i kuća · Preporuke · Domaćin, četiri stanja linka. Logika provjere linka i zaključavanja netaknuta | zaključano / otključano / samo se otključa (ubrzani sat), šifre ne ulaze u HTML ni `__VALS` prije otključavanja, 5 stanja linka, 3 širine |
 
 Popratno:
 
