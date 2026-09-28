@@ -14,6 +14,11 @@
    Kontrasti: svaka tema ima vlastiti `--terra-ink` (tekst) i `--terra-d`
    (pune plohe) izmjereni na VLASTITOJ podlozi te teme, jer vrijednosti iz
    `ui.css` vrijede samo za kremu. Najniži izmjereni omjer je 4,54:1.
+
+   STANJE (rujan 2026.): teme su pisane za stari v3 izgled javne stranice.
+   `atmosphere.css` i `ui.css` spomenuti ovdje su obrisani (povijest gita);
+   nova `p.html` (v2) teme NE primjenjuje. Datoteka ostaje za panel „Izgled”
+   u dashboardu i kao temelj za teme na v2 — vidi docs/odluke.md, točka 9.
    ========================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,300..700;1,300..500&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..700&family=Cormorant+Garamond:ital,wght@0,300..700;1,300..600&family=Archivo+Black&family=Space+Grotesk:wght@300..700&family=Playfair+Display:ital,wght@0,400..900;1,400..700&family=Syne:wght@400..800&family=Spectral:ital,wght@0,200;0,300;0,400;0,600;1,200;1,300;1,400&display=swap');

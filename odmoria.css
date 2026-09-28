@@ -1,8 +1,9 @@
 /* =====================================================================
    odmoria.css — dizajnerski sustav v2 („06 v2”, Figma: Odmoria / Product
    Design / v2). Isti tokeni kao Figma varijable (Color / Spacing / Radius).
-   Za sada ga koristi samo naslovnica; p.html, h.html i dashboard prelaze
-   na njega redom, stranicu po stranicu. Do tada atmosphere.css ostaje.
+   Koriste ga sve žive stranice (dashboard ima vlastiti CSS s istim
+   vrijednostima). Stari v3 sustav (atmosphere.css, motion.js, ui.css) je
+   obrisan — ostao je u povijesti gita.
    ===================================================================== */
 
 :root{

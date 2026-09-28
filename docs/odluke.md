@@ -1,6 +1,6 @@
 # Odmoria redizajn — odluke koje čekaju vlasnika
 
-Stanje 28. 9. 2026. (sve stranice prenesene na v2: iz Figme naslovnica, javna stranica, dashboard, vodič, prijava i registracija, postavljanje, račun, admin i 404; bez Figme, na zajedničkom predlošku, Pomoć, Uvjeti i Privatnost — vidi točku 8). Ovdje su skupljena sva otvorena pitanja iz Figme (faze A, B i C)
+Stanje 28. 9. 2026. (čišćenje gotovo — točke 7, 9, 10; sve stranice prenesene na v2: iz Figme naslovnica, javna stranica, dashboard, vodič, prijava i registracija, postavljanje, račun, admin i 404; bez Figme, na zajedničkom predlošku, Pomoć, Uvjeti i Privatnost — vidi točku 8). Ovdje su skupljena sva otvorena pitanja iz Figme (faze A, B i C)
 i ona koja su se otvorila pri prijenosu naslovnice u kod. Dok odluka ne padne, kod
 radi kako je opisano u stupcu **Sada u kodu**, uvijek na sigurnu stranu: ništa se
 ne obećava što ne postoji, a ništa se ne upisuje u bazu.
@@ -36,8 +36,8 @@ i kvačica se zatvori.
 - [ ] **Nazivi, cijene, limiti i funkcije planova.**
   Baza (`plans`) danas ima free/pro/business, 0/15/49 € mjesečno i 0/150/490 €
   godišnje, limite 1·5 / 5·30 / 15·50. Figma koristi radne nazive
-  Besplatno/Domaćin/Pro i piše „TBD”. `preview/` predlaže četiri plana
-  (7,90/14,90/29,90 €).
+  Besplatno/Domaćin/Pro i piše „TBD”. Obrisani `preview/` predlagao je četiri
+  plana (7,90/14,90/29,90 €) — ostao je u povijesti gita.
   **Sada u kodu:** naslovnica čita naziv, cijenu i limite iz `plans` (kao i
   prije). Promjena cijene = `UPDATE public.plans`, bez izmjene koda.
 - [ ] **Smiju li se cijene uopće javno prikazati** dok Stripe nije spojen?
@@ -47,7 +47,9 @@ i kvačica se zatvori.
   vodič, bez provizije, „Sve iz besplatnog plana”. Maknute su tvrdnje kojih u
   kodu nema: „5 jezika”, „kalendar se sam osvježava”, „vlastita domena”.
 - [ ] **iCal: funkcija Pro plana ili za sve?**
-- [ ] **Tijek nadogradnje dok Stripe nije spojen.** Gumbi su danas `toast(...)`.
+- [ ] **Tijek nadogradnje dok Stripe nije spojen.** Pretplata u dashboardu i
+  Račun sada nude „Javite nam se” (`mailto:podrska@odmoria.com`) — prije je
+  dashboard pisao „Preusmjeravanje na Stripe...”, a Stripea nema.
   Svi CTA-ovi na naslovnici vode na `/register.html` („Započni besplatno”);
   pod Pro karticom piše „Nadogradite kad vam zatreba.”
 - [x] **Cijene zakucane u `add-property.html`** (15 € / 49 €) — sada se čitaju iz
@@ -58,8 +60,8 @@ i kvačica se zatvori.
 
 - [ ] **Konfigurator izgleda (teme) na naslovnici — maknut.** Odobreni dizajn
   pokazuje jedan izgled, a teme su po uputi odgođene. Stara naslovnica s
-  konfiguratorom sačuvana je u povijesti gita (commit `407f300`). Vraća se ako
-  teme ostaju prodajni argument.
+  konfiguratorom sačuvana je u povijesti gita (commit `407f300`). Vraća se
+  zajedno s temama (točka 9).
 - [ ] **„Pogledaj primjer za gosta”** danas vodi na sidro `#izlog` na istoj
   stranici. Pravi primjer traži demo objekt u bazi (novi red u `properties` —
   treba odobrenje) ili statičnu demo stranicu.
@@ -76,12 +78,12 @@ i kvačica se zatvori.
 
 ## 3. Javna stranica (`p.html`) — faza A, sada u kodu
 
-- [ ] **Teme javne stranice — VAŽNO.** Nova javna stranica ima jedan izgled i
-  **ne primjenjuje temu** koju je domaćin odabrao. Panel „Izgled stranice” u
-  dashboardu i dalje radi i sprema temu, ali gost je ne vidi.
-  Mogućnosti: (a) sakriti panel dok se teme ne dizajniraju u v2,
-  (b) teme dizajnirati u v2 pa vratiti, (c) ostaviti kako je.
-  **Sada u kodu:** (c). Ako se ide na (a), to je mala izmjena u `dashboard.html`.
+- [x] **Teme javne stranice.** Nova javna stranica ima jedan izgled i
+  **ne primjenjuje temu** koju je domaćin odabrao.
+  **Odluka (28. 9. 2026.):** teme se čuvaju i vraćaju kasnije, kao veći izbor
+  za one koji plaćaju — nije hitno. Plan je u točki 9. Do tada panel „Izgled”
+  u dashboardu ostaje i nosi napomenu „Uskoro … javna stranica teme zasad ne
+  prikazuje”.
 - [ ] **„Stranicu pokreće Odmoria”** u podnožju: uvijek ili samo na besplatnom
   planu? **Sada u kodu:** uvijek, kao i prije.
 - [ ] **Usporedba „Preko platforme (~15 %)” i brojač noći.** Figma ih je spojila
@@ -146,7 +148,8 @@ i kvačica se zatvori.
   jer taj zaslon nosi i Wi-Fi mrežu i lozinku (kao Figma okvir „Wi-Fi i kuća”).
 - [ ] **Vodič: preporuke u jednom popisu.** Mjesta, prijevoz i atrakcije su jedan
   popis s filtrima (kategorije domaćina + „Prijevoz” + „Izleti”), kao u Figmi.
-- [ ] **Vodič: tamna tema** iz `preview/` nije prenesena (Figma je nema). Treba li?
+- [ ] **Vodič: tamna tema** iz obrisanog `preview/` nije prenesena (Figma je
+  nema; izvedba je u povijesti gita). Treba li?
 - [ ] **Vodič: tekstovi stanja linka** preuzeti su iz Figme („Link nije
   ispravan”, „Ovaj link je istekao”, „Objekt nije pronađen”) — nijedno stanje
   ne otkriva naziv ni adresu objekta.
@@ -154,7 +157,7 @@ i kvačica se zatvori.
 - [ ] **Države posjetitelja:** odobriti izmjenu sheme (`country`, `lang` u
   `page_views`) i `api/track.js`, ili odustati.
 - [ ] **Gumb „Popuni testnim kalendarom”:** ostaje nakon lansiranja?
-- [ ] **Izgled (teme) i istaknuta brojka:** dizajn u sljedećem krugu.
+- [ ] **Izgled (teme) i istaknuta brojka:** vidi točku 9.
 - [ ] *(Za kod, ne odluka)* „Kreiraj link” mora biti onemogućen dok su datumi
   neispravni — u prototipu vodi dalje.
 
@@ -239,9 +242,11 @@ i kvačica se zatvori.
   `407f300` (konfigurator na naslovnici — sada zamijenjen), `91eaf02`
   (CLAUDE.md), `265e2cc` (tabovi u dashboardu). PR #1 je zatvoren bez spajanja.
   Treba odlučiti: spojiti sve zajedno, ili razdvojiti.
-- [ ] `atmosphere.css` i `motion.js` više ne učitava nijedna živa stranica —
-  koristi ih samo `preview/`. `teme.css`/`teme.js` koristi još `dashboard.html`
-  (panel „Izgled”). Obrisati s mapom `preview/` kad se odluči. Brišu se tek kad zadnja stranica prijeđe na `odmoria.css`.
+- [x] **Čišćenje (28. 9. 2026.).** Obrisani su `atmosphere.css`, `motion.js`,
+  `ui.css`, cijela mapa `preview/`, `assets/odmoria-dashboard.png` i `/preview`
+  rute u `vercel.json`. `README.md` je napisan ispočetka (spominjao je Stripe
+  funkcije i SQL datoteke koje ne postoje). **Ostaju `teme.css` i `teme.js`**
+  (točka 9). Što je iz prijedloga ostalo nepreneseno — točka 10.
 
 ## 8. Pomoć, Uvjeti korištenja, Pravila privatnosti
 
@@ -353,3 +358,71 @@ dodatnih tvrdnji** koje su bile zakucane uz svaki plan.
 - [ ] Rok odgovora podrške — ako ga želite obećati, upisati.
 - [ ] Opći gostinski link (stari put `slug` + `guest_token`) Pomoć spominje uz
   upozorenje da šifre pokazuje odmah; vidi točku 0/5 hoće li se ukinuti.
+
+## 9. Teme za one koji plaćaju — podsjetnik za kasnije
+
+Tvoja ideja: **osam tema ostaje**, da domaćin koji plaća ima veći izbor u
+personalizaciji svoje javne (oglasne) stranice. Nije hitno — ovo je popis što
+treba kad se krene.
+
+**Što postoji danas**
+
+- `teme.css` + `teme.js`: osam tema (Jadran, Laguna, Zlatni sat, Terakota,
+  Beton, Riviera ’70, Ponoćni bazen, Borova šuma). Svaka ne mijenja samo boju,
+  nego i ono čime stranica vodi (ime, cijena, temperatura bazena, popis
+  prostorija, tablica, pismo domaćice…). Opis je u `CLAUDE.md`.
+- Panel **Objekt → Izgled** u dashboardu: birač s minijaturama, istaknuta
+  brojka, spremanje u `properties.theme` i `properties.highlight`
+  (`sql/add-theme-to-properties.sql` — provjeriti je li pokrenut).
+- Panel nosi napomenu „Uskoro”, jer nova javna stranica temu ne prikazuje.
+
+**Što treba napraviti**
+
+- [ ] **Teme prenijeti na v2.** Pisane su za stari v3 izgled (krema/terakota,
+  Fraunces) i stari raspored zaglavlja `p.html`. Nova `p.html` ima drugačije
+  zaglavlje i tokene iz `odmoria.css`, pa svaku temu treba ponovno složiti —
+  najbolje prvo u Figmi, kao i ostatak v2. „Jadran” = današnji v2 izgled.
+- [ ] **Koliko tema i koje.** Svih osam ili manji izbor (npr. 3–4 najjače)?
+- [ ] **Koji plan otključava teme.** Npr. besplatni plan ima samo zadanu temu,
+  plaćeni sve. Za to treba zastavica u tablici `plans` (npr. `can_choose_theme`
+  ili `max_themes`) — **nova kolona, treba odobrenje**; do tada se ne dira.
+  Provjera mora biti i u bazi (okidač, kao ostali limiti), ne samo u pregledniku.
+- [ ] **Što kad plan istekne.** Prijedlog: stranica se vraća na zadanu temu, a
+  odabir ostaje spremljen i vraća se nakon obnove.
+- [ ] **Istaknuta brojka** (`highlight`, npr. „32°” za bazen) — ostaje dio tema.
+- [ ] **Konfigurator na naslovnici** (commit `407f300`) — vratiti kao prodajni
+  argument kad teme prorade.
+- [ ] **Kontrast** mjeriti za svaku temu na v2 podlozi (stare mjere vrijede samo
+  za v3).
+- [ ] Dok se ovo ne napravi: panel „Izgled” ostaje s napomenom, ili ga sakriti?
+  **Sada u kodu:** ostaje s napomenom.
+
+## 10. Iz starog prijedloga (`preview/`) — nije preneseno
+
+Mapa je obrisana, ali ove ideje nisu odbačene, samo nisu dio v2. Sve je u
+povijesti gita (zadnje stanje s mapom: commit `70d0552`).
+
+- [ ] **Četiri plana** Besplatno / Domaćin 7,90 € / Pro 14,90 € / Partner
+  29,90 € (točka 1).
+- [ ] **Tamna tema vodiča** (prati postavku uređaja, pamti ručni odabir).
+- [ ] **Zaslon „Prvi dan”** — prazan račun s napretkom „vodič je 40 % gotov” i
+  pet koraka.
+- [ ] **Zaslon „Kad nešto ne radi”** — baza ne odgovara / istekao link, s
+  telefonom domaćina umjesto bijele stranice.
+- [ ] **Podsjetnik gostu** s porukom na jeziku gosta (npr. njemački za
+  rezervaciju s Bookinga).
+- [ ] **Grafikoni analitike** (pregledi kroz vrijeme, izvori prometa,
+  popunjenost, kada gost otvori vodič) i **države posjetitelja** (točka 4).
+- [ ] **Prebacivanje plana uživo** koje pokazuje što je zaključano iza kojeg plana.
+
+**Ostalo što je ostavljeno namjerno:**
+
+- `billing.js` — Stripe pomoćnik, nigdje uključen. Ostaje dok se ne spoji
+  Stripe; ako se odustane od Stripea, briše se.
+- `api/test-calendar.js` i gumb „Popuni testnim kalendarom” — točka 4.
+- `sql/fix-missing-columns-and-storage.sql` sadrži staru politiku Supabase
+  Storagea (fotografije su danas na Cloudinaryju). Bezopasno; ne dira se bez
+  dogovora (RLS/konfiguracija).
+- Dashboard učitava Fraunces i fontove tema (`teme.css` → Google Fonts, osam
+  obitelji) samo zbog minijatura u panelu „Izgled”. Ako se panel sakrije, to se
+  može maknuti i dashboard se brže učitava.

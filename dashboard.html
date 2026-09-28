@@ -337,6 +337,8 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
 .plan-card .tier { font: 700 12px/1.3 var(--font-body); letter-spacing: .15em; text-transform: uppercase; color: var(--copper); margin-bottom: 10px; }
 .plan-card .price { font: 800 32px/1.1 var(--font-ui); letter-spacing: -.03em; margin-bottom: 2px; }
 .plan-card .note { font-size: 13px; color: var(--muted); margin-bottom: 14px; }
+.sub-note { margin-top: 16px; font-size: 14px; color: var(--muted); }
+.sub-note a { color: var(--copper); text-decoration: underline; }
 .plan-card ul { list-style: none; margin: 0 0 16px; padding: 0; display: grid; gap: 8px; }
 .plan-card li { font-size: 15px; display: flex; gap: 8px; align-items: flex-start; }
 .plan-card li::before { content: "✓"; color: var(--copper); font-weight: 800; }
@@ -686,6 +688,7 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
               <h2>Tema javne stranice</h2>
               <p>Tema ne mijenja samo boju. Svaka drugačije slaže zaglavlje i vodi s drugom
                  informacijom — cijenom, istaknutom brojkom, popisom prostorija, pismom.</p>
+              <p class="sub-note" style="margin-top:8px"><strong>Uskoro.</strong> Nova javna stranica teme zasad ne prikazuje. Odabir se sprema i vrijedit će kad se teme uključe.</p>
             </div></div></div>
 
             <div class="teme" id="teme"></div>
@@ -1001,11 +1004,12 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
           <div class="card">
             <div class="card-head"><div class="card-title-wrap"><span class="card-number">€</span><div><h2 id="sub-plan-name">Free plan</h2><p id="sub-plan-desc">1 objekt · Besplatno</p></div></div><span class="status-pill">Aktivan</span></div>
           </div>
-          <div class="sub-plans">
-            <div class="plan-card" id="plan-card-free"><div class="tier">Starter</div><div class="price">€0</div><div class="note">zauvijek</div><ul><li>1 objekt</li><li>Javna + privatni link</li><li>5 fotografija</li><li>QR kod</li></ul><button class="btn secondary" style="width:100%;justify-content:center" onclick="toast('Već koristiš ovaj plan')">Aktivan plan</button></div>
-            <div class="plan-card" id="plan-card-pro"><div class="tier" style="color:var(--copper)">Pro</div><div class="price">€15</div><div class="note">na mjesec · €150/god</div><ul><li>Do 5 objekata</li><li>30 fotografija</li><li>iCal sinkronizacija</li><li>Bez brandinga</li></ul><button class="btn" style="width:100%;justify-content:center" onclick="toast('Preusmjeravanje na Stripe...')">Nadogradi na Pro</button></div>
-            <div class="plan-card" id="plan-card-business"><div class="tier">Business</div><div class="price">€49</div><div class="note">na mjesec · €490/god</div><ul><li>Do 15 objekata</li><li>Tim pristup</li><li>White-label</li><li>API pristup</li></ul><button class="btn secondary" style="width:100%;justify-content:center" onclick="toast('podrska@odmoria.com')">Kontaktiraj nas</button></div>
+          <!-- Kartice puni renderSubPanel() iz tablice `plans` (plans.js); ovo je samo
+               prvi prikaz. Nikad ne upisivati cijene ni mogućnosti koje ne postoje. -->
+          <div class="sub-plans" id="sub-plans">
+            <div class="plan-card current"><div class="tier">Free</div><div class="price">0 €</div><div class="note">bez pretplate</div><ul><li>1 objekt</li><li>5 fotografija po objektu</li><li>Javna stranica i privatni vodič</li></ul></div>
           </div>
+          <p class="sub-note">Online plaćanje još nije spojeno. Za promjenu plana pišite na <a href="mailto:podrska@odmoria.com">podrska@odmoria.com</a> s adrese svog računa.</p>
         </section>
       </div>
 
@@ -1063,7 +1067,7 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
 <script src="/teme.js"></script>
 <script type="module">
 import{createClient}from'https://esm.sh/@supabase/supabase-js@2'
-import{loadPlans,getPlan,limitFor,canAdd,limitMessage,effectivePlanId}from'./plans.js'
+import{loadPlans,getPlan,listPlans,limitFor,canAdd,limitMessage,effectivePlanId}from'./plans.js'
 import{publicUrl,bookingUrl,legacyGuestUrl,prettyUrl}from'./links.js'
 
 const SURL='https://wtojzqjhipdfbrnmprmz.supabase.co'
@@ -1171,15 +1175,26 @@ async function selectProp(p){
   renderSubPanel()
 }
 
+/* Nazivi, cijene i limiti iz tablice `plans` (plans.js), kao u account.html */
 function renderSubPanel(){
-  const names={free:'Free plan',pro:'Pro plan',business:'Business plan'}
-  const descs={free:'1 objekt · Besplatno',pro:'Do 5 objekata · 15 €/mj',business:'Do 15 objekata · 49 €/mj'}
-  document.getElementById('sub-plan-name').textContent=names[USER_PLAN]||names.free
-  document.getElementById('sub-plan-desc').textContent=descs[USER_PLAN]||descs.free
-  ;['free','pro','business'].forEach(p=>{
-    const card=document.getElementById('plan-card-'+p)
-    if(card)card.classList.toggle('current',p===USER_PLAN)
-  })
+  const lim=(n,a,b,c)=>n===Infinity?'Neograničeno '+c:`${n} ${n%10===1&&n%100!==11?a:n%10>=2&&n%10<=4&&(n%100<12||n%100>14)?b:c}`
+  const cijena=p=>p.monthlyPriceEur>0?p.monthlyPriceEur+' €/mj':'Besplatno'
+  const P=getPlan(USER_PLAN)
+  document.getElementById('sub-plan-name').textContent=P.name+' plan'
+  document.getElementById('sub-plan-desc').textContent=lim(P.maxProperties,'objekt','objekta','objekata')+' · '+cijena(P)
+  document.getElementById('sub-plans').innerHTML=listPlans().map(p=>{
+    const cur=p.id===P.id
+    return `<div class="plan-card${cur?' current':''}"><div class="tier">${esc(p.name)}</div>`
+      +`<div class="price">${p.monthlyPriceEur} €</div>`
+      +`<div class="note">${p.monthlyPriceEur>0?'mjesečno'+(p.yearlyPriceEur>0?' · '+p.yearlyPriceEur+' €/god':''):'bez pretplate'}</div>`
+      +`<ul><li>${lim(p.maxProperties,'objekt','objekta','objekata')}</li>`
+      +`<li>${lim(p.maxPhotosPerProperty,'fotografija','fotografije','fotografija')} po objektu</li>`
+      +`<li>${lim(p.maxLocalPlacesPerProperty,'preporuka','preporuke','preporuka')} po objektu</li>`
+      +`<li>Javna stranica i privatni vodič</li></ul>`
+      +(cur?`<span class="btn secondary" style="width:100%;justify-content:center" aria-disabled="true">Vaš plan</span>`
+           :`<a class="btn secondary" style="width:100%;justify-content:center;text-decoration:none" href="mailto:podrska@odmoria.com?subject=${encodeURIComponent('Promjena plana: '+p.name)}">Javite nam se</a>`)
+      +`</div>`
+  }).join('')
 }
 
 function fillPropForm(){

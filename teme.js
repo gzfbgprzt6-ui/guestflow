@@ -380,7 +380,7 @@ function birac(opt = {}) {
     tekst(opt.vodi || 'zivoVodi', 'vodi ' + t.vodi)
     tekst(opt.font || 'zivoFont', t.font)
     const lnk = $(opt.link || 'zivoLink')
-    if (lnk) lnk.href = (opt.linkBaza || '/preview/public.html') + '?stil=' + t.id
+    if (lnk) lnk.href = (opt.linkBaza || '/p.html') + '?stil=' + t.id
     stanje()
     if (javi && opt.naPromjenu) opt.naPromjenu(t.id)
   }

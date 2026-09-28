@@ -47,10 +47,6 @@
     {
       "source": "/email-confirm",
       "destination": "/email-confirm.html"
-    },
-    {
-      "source": "/preview",
-      "destination": "/preview/index.html"
     }
   ],
   "headers": [
@@ -64,15 +60,6 @@
         {
           "key": "Cache-Control",
           "value": "no-store"
-        }
-      ]
-    },
-    {
-      "source": "/preview/(.*)",
-      "headers": [
-        {
-          "key": "X-Robots-Tag",
-          "value": "noindex, nofollow"
         }
       ]
     },

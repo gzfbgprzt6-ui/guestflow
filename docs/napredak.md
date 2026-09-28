@@ -25,6 +25,7 @@ je samo pregled posla. Ništa od ovoga nije u produkciji — sve je na grani
 | Javna stranica `p.html` | `f74eb84` | Novi izgled prema fazi A; sva logika ista (kalendar, razmaci, poruke, karta, galerija, statistika) | 6 širina, puni i prazan objekt, nepostojeći link, cijeli tijek upita, galerija 1–6 fotografija |
 | Dashboard `dashboard.html` | `62f3305` | Novi izgled prema fazi B i navigacija po grupama (Pregled · Objekt · Boravci · Linkovi i QR + Pretplata), donja traka na mobitelu. Logika panela netaknuta | svih 17 panela na 4 širine, pamćenje podtaba, traka za spremanje, donja traka |
 | Vodič za gosta `h.html` | `a93d16b` | Početna s pristupom i pločicama, podstranice Dolazak · Wi-Fi i kuća · Preporuke · Domaćin, četiri stanja linka. Logika provjere linka i zaključavanja netaknuta | zaključano / otključano / samo se otključa (ubrzani sat), šifre ne ulaze u HTML ni `__VALS` prije otključavanja, 5 stanja linka, 3 širine |
+| Čišćenje | *(ovaj commit)* | Obrisan stari v3 sustav i `preview/`; teme ostaju s napomenom „Uskoro” u panelu Izgled. Pretplata u dashboardu više nema zakucane cijene ni lažne mogućnosti (White-label, API, timski pristup, „Preusmjeravanje na Stripe”) — kartice iz `plans`, nadogradnja e-mailom | svih 17 panela dashboarda na 4 širine, Pretplata (baza i rezerva), Izgled, nijedna stranica ne traži obrisanu datoteku |
 | Pomoć, Uvjeti, Privatnost (`help`, `terms`, `privacy`) + `tekst.css` | `e8efa90` | Zajednički predložak bez Figme. Pomoć: pretraga bez dijakritike, kategorije, harmonika, planovi iz baze bez zakucanih dodataka, netočne tvrdnje maknute. Pravni tekst doslovno, neslaganja popisana | 3 širine × 3 stranice, pretraga (pogodak, bez dijakritike, bez rezultata), planovi iz baze i rezerva |
 | Prijava i registracija (`login`, `register`, `reset-password`, `email-confirm`) + `auth.css` | `936d294` | Podijeljen ekran s fotografijom, prikaz lozinke, prevedene greške, zasloni „Provjerite e-mail”, „E-mail je potvrđen”, „Link nije valjan”. Isti Supabase pozivi | 3 širine × 4 stranice, kriva i dobra lozinka, link za prijavu, registracija (postoji / uspjeh), nova lozinka (razlikuju se / spremljeno / bez sesije), potvrda e-maila (uspjeh / istek) |
 
@@ -77,9 +78,11 @@ Popratno:
    `tekst.css`. Pravni tekst doslovno prenesen; Pomoć očišćena od netočnih
    tvrdnji. Otvoreno: pravni tekst ne odgovara aplikaciji na više mjesta
    (`odluke.md`, točka 8).
-7. [ ] Čišćenje: `atmosphere.css`, `motion.js` i `ui.css` više ne koristi nijedna
-   živa stranica (samo `preview/`); `teme.css`/`teme.js` koristi još samo panel
-   „Izgled” u dashboardu. Obrisati kad se odluči o temama i o mapi `preview/`.
+7. [x] Čišćenje — obrisani `atmosphere.css`, `motion.js`, `ui.css`, mapa
+   `preview/`, neiskorištena slika i `/preview` rute; README napisan ispočetka.
+   Zadnje stanje **s** tim datotekama je commit `70d0552` (za vraćanje:
+   `git show 70d0552:preview/public.html`). Teme ostaju — `odluke.md`, točka 9.
+8. [ ] **Teme za plaćene planove** — podsjetnik, nije hitno (`odluke.md`, točka 9).
 
 ### Odgođeno
 

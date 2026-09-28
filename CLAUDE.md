@@ -46,19 +46,16 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 ├── account.html              help.html                admin.html (gated: owner auth UID)
 ├── terms.html                privacy.html             404.html
 ├── vercel.json              # Rewrites za clean URL-ove, security headeri + dnevni cron za keepalive
-├── odmoria.css              # v2 dizajn sustav (Figma „Odmoria / Product Design / v2”) — naslovnica, p.html, h.html, prijava
+├── odmoria.css              # v2 dizajn sustav (Figma „Odmoria / Product Design / v2”) — sve žive stranice osim dashboarda
 ├── auth.css                 # raspored četiri stranice prijave (login, register, reset-password, email-confirm)
 ├── forms.css                # obrasci za onboarding, add-property i account (ista imena razreda kao prije)
 ├── tekst.css                # tekstualne stranice: help, terms, privacy (za njih nema Figme)
-├── atmosphere.css           # v3 dizajn sustav — danas ga koristi SAMO preview/ (nijedna živa stranica)
-├── teme.css                 # OSAM TEMA javne stranice — dijele ih dashboard.html i preview/ (p.html v2 više ne)
+├── teme.css                 # OSAM TEMA javne stranice — danas samo panel „Izgled” u dashboardu (p.html v2 ih ne primjenjuje); ostaje za teme na v2
 ├── teme.js                  # rasporedi zaglavlja, `izBaze(prop)` i zajednički birač tema
-├── ui.css                   # ljuska aplikacije, paneli, tablice, grafikoni — danas SAMO preview/ (živi admin je na odmoria.css)
-├── motion.js                # dijeljeni motion sustav (reveal, paralaksa, brojaci, rail)
 ├── links.js                 # gradnja linkova (/p/, /h/) — NIKAD ne zakucavati domenu, vidi dolje
 ├── plans.js                 # rezervne vrijednosti + helperi; pravi izvor istine je tablica `plans` u bazi
 ├── billing.js                # Stripe checkout/portal helperi — NIJE importan ni u jednom HTML-u (mrtav kod dok se ne spoji API)
-├── assets/                   # landing/villa-1600.jpg i villa-900.jpg (naslovnica); odmoria-dashboard.png se više nigdje ne koristi
+├── assets/                   # landing/villa-1600.jpg i villa-900.jpg (naslovnica i prijava)
 ├── docs/napredak.md          # što je u redizajnu gotovo, a što nije — pregled za vlasnika
 ├── docs/odluke.md            # SVE odluke koje čekaju vlasnika (planovi, faze A/B/C, naslovnica) — čitati prije prijenosa sljedeće stranice
 ├── api/
@@ -71,78 +68,48 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
     ├── add-gap-fill-stays.sql               add-min-gap-stay.sql
     ├── add-booking-id-to-availability.sql
     ├── add-source-to-availability.sql
+    ├── add-theme-to-properties.sql      # properties.theme → ime teme, properties.highlight
     └── fix-missing-columns-and-storage.sql # ALTER TABLE dopune (photo_urls, ical_*, beds/bathrooms/size_m2) + storage bucket policy
 ```
 
-**Napomena:** `api/` sadrži samo `keepalive.js` i `sync-ical.js`. Stripe serverless funkcije (`create-checkout-session`, `create-portal-session`, `stripe-webhook`) **ne postoje** — vidi "Poznati nedostaci".
+**Napomena:** `api/` sadrži samo `keepalive.js`, `sync-ical.js` i `test-calendar.js`. Stripe serverless funkcije (`create-checkout-session`, `create-portal-session`, `stripe-webhook`) **ne postoje** — vidi "Poznati nedostaci".
 
 Obje funkcije su namjerno **bez ijedne npm ovisnosti** — projekt nema build korak ni `package.json`, pa se Supabase zove izravno preko REST API-ja (`fetch`), a iCal se parsira ručno. CommonJS (`module.exports`), jer bez `package.json` Vercel `.js` u `api/` tretira kao CJS.
 
 **Mockupi više ne postoje.** Mapa `v3/` i stari `*-v2.html` obrisani su kad su sve četiri prave stranice prešle na v3 — nema više `/v3/` na domeni ni dvije adrese za isto.
 
-`index.html`, `p.html` i `h.html` su na novom `odmoria.css` (vidi „Redizajn v2”); `atmosphere.css` i `motion.js` koristi još samo `preview/`. Jedino `dashboard.html` ima vlastiti potpun CSS s v2 vrijednostima u svojim starim imenima tokena (vidi "Dashboard — v2 preko istih imena tokena").
+Sve žive stranice su na `odmoria.css` (vidi „Redizajn v2”). Jedino `dashboard.html` ima vlastiti potpun CSS s v2 vrijednostima u svojim starim imenima tokena (vidi "Dashboard — v2 preko istih imena tokena").
 
 ---
 
-## `preview/` — prijedlog dizajna (nije u produkciji)
+## Obrisano pri čišćenju (rujan 2026.)
 
-Mapa `preview/` sadrži devet pravih HTML stranica koje pokazuju kako bi aplikacija
-mogla izgledati. **Ne dira nijednu živu stranicu.**
+Kad su sve žive stranice prešle na `odmoria.css`, obrisano je ono što više
+nitko nije učitavao: **`atmosphere.css`, `motion.js`, `ui.css`** (stari v3
+sustav), cijela mapa **`preview/`** (devet stranica prijedloga iz v3 +
+`scene.js`), `assets/odmoria-dashboard.png` te `/preview` rute i zaglavlje u
+`vercel.json`. Sve je u povijesti gita (zadnje stanje s njima: commit
+`70d0552`), pa se prijedlog može otvoriti i kasnije.
 
-```
-preview/
-├── index.html      # razdjelnik: popis stranica + što nije spojeno
-├── landing.html     public.html      guide.html
-├── dashboard.html   editor.html      system.html
-├── prvi-dan.html   # prazan račun: napredak postavljanja, pločice bez podataka
-├── greska.html     # baza ne odgovara / istekao link
-├── admin.html      # redizajn vlasničkog panela: rast, MRR, istek, tablica s pretragom
-└── scene.js        # nacrtani prizori (isti SVG-ovi kao u p.html) + QR ilustracija
-```
+Iz prijedloga **nije preneseno** (i dalje su samo ideje, popisane u
+`docs/odluke.md`): cijene Domaćin 7,90 € / Pro 14,90 € / Partner 29,90 €,
+tamna tema vodiča, zaslon „Prvi dan”, zaslon „Kad nešto ne radi”, podsjetnik
+gostu na njegovom jeziku, grafikoni analitike i analitika po državama.
 
-**Stoji na živom sustavu.** Sve preview stranice učitavaju `/atmosphere.css` i
-`/motion.js` iz korijena — istu paletu, tipografiju i pokret koje koriste `p.html`,
-`h.html` i naslovnica. `ui.css` dodaje samo ono čega u `atmosphere.css` nema.
-Nema druge palete i nema duplog dizajn sustava.
+**Ostaju `teme.css` i `teme.js`** — vlasnik želi teme vratiti kasnije kao
+mogućnost za one koji plaćaju (vidi niže i `docs/odluke.md`, točka 9).
 
-- **Nema Supabase poziva, prijave ni baze** — sve su vrijednosti upisane u HTML.
-- **Cijene su prijedlog** (Besplatno / Domaćin 7,90 € / Pro 14,90 € / Partner 29,90 €)
-  i **razlikuju se od tablice `plans`**. Tablica nije dirana i neće biti dok dizajn
-  ne bude odobren.
-- `vercel.json` nosi `X-Robots-Tag: noindex, nofollow` za `/preview/(.*)`.
-- Provjereno Playwrightom na 1440 / 834 / 390 px, deset stranica, 30 provjera:
-  nema vodoravnog prelijevanja, nijedan tekst ne pada ispod WCAG AA, nema greške
-  u konzoli, i svako `[data-rv]` se stvarno otkrije. Tamna tema vodiča provjerena
-  zasebno — i ona prolazi AA u cijelosti.
+---
 
-### Zasloni iz prijedloga, sada u kodu
-
-Pet prijedloga više nisu opisi nego rade:
-
-- **Slanje vodiča gostu** — dijalog u dashboardu (`<dialog>`, bez biblioteke) s QR-om,
-  gotovom porukom i gumbima. Gumb „Pošalji” u tablici rezervacija vuče ime gosta iz retka.
-- **Podsjetnik gostu** — Hansov redak je istaknut, gumb „Podsjeti” otvara dijalog
-  s prijedlogom poruke **na njemačkom**, jer je rezervacija stigla s Booking.com-a.
-- **Dokaz vrijednosti** — tamni panel: „46 gostiju otvorilo je vodič 214 puta.”
-- **Prvi dan** (`prvi-dan.html`) — napredak „vodič je 40 % gotov” i popis od pet koraka.
-- **Kad nešto ne radi** (`greska.html`) — dva stanja, s telefonom domaćice umjesto bijele stranice.
-
-**Tamna tema gostinskog vodiča** pali se prekidačem u zaglavlju, prati
-`prefers-color-scheme` i pamti ručni odabir u `localStorage` (u `try/catch`, jer
-u privatnom prozoru zna baciti). Radi preko `html[data-tema="tamno"]` koji
-redefinira tokene iz `atmosphere.css`.
-
-**QR kod je ilustracija, ne pravi kod.** Crta se determinističkim uzorkom iz teksta
-linka, s tri tražila, da zaslon izgleda kako će izgledati. Pravi kod generira se
-tek kad se ovo spoji na bazu; dotad uz svaki QR stoji napomena.
-
-### Osam tema javne stranice
+## Teme javne stranice — čuvaju se za kasnije
 
 > **Od redizajna v2 (28. 9. 2026.) `p.html` teme NE primjenjuje** — učitava
 > samo `odmoria.css`, a `teme.css`/`teme.js` više ne. Panel „Izgled stranice” u
-> dashboardu i dalje sprema temu u bazu, ali javna stranica je ne pokazuje.
-> Odluka čeka vlasnika (`docs/odluke.md`). Opis dolje vrijedi za `preview/` i
-> za stari `p.html` iz povijesti gita.
+> dashboardu i dalje sprema temu u bazu i nosi napomenu „Uskoro”. **Vlasnik
+> želi teme vratiti kasnije, kao veći izbor za one koji plaćaju** — plan je u
+> `docs/odluke.md`, točka 9. Opis dolje vrijedi za stari v3 `p.html` iz
+> povijesti gita; teme su pisane na tokenima obrisanog `atmosphere.css`, pa ih
+> za v2 treba ponovno prenijeti.
 
 Tema **ne mijenja samo boju**. Svaka drugačije slaže zaglavlje i vodi s drugom
 informacijom — to je bit, ostalo je posljedica:
@@ -158,13 +125,10 @@ informacijom — to je bit, ostalo je posljedica:
 | Ponoćni bazen | samom slikom, najmanje teksta | Space Grotesk |
 | Borova šuma | pismom domaćice | Spectral |
 
-**Ovo je ŽIVO, ne samo pod `/preview/`.** `teme.css` i `teme.js` stoje u
-korijenu i dijele ih `p.html`, `dashboard.html` i preview stranice — isto kao
-`atmosphere.css` i `motion.js`.
+`teme.css` i `teme.js` stoje u korijenu; danas ih učitava samo `dashboard.html`.
 
 **Gdje se bira:** panel **Izgled stranice** u pravom `dashboard.html`
-(bočna traka, odmah iza Fotografija), te kartice „Izgled” u
-`preview/dashboard.html` i `preview/editor.html`. Sve vrte **istu** izvedbu —
+(grupa Objekt, podtab Izgled). Vrti **jednu** izvedbu —
 `Odmoria.teme.birac()` iz `teme.js`. Dvije kopije te logike razišle bi se,
 kao nekad kopije limita plana.
 
@@ -206,7 +170,7 @@ Taj razred mora biti **predak** elementa s `data-stil`, nikad isti element:
 izravno pravilo pobjeđuje naslijeđenu vrijednost, pa bi tema inače izgubila.
 
 **Kako se pali:** atribut `data-stil`. Na `<html>` prebojava cijelu stranicu
-(`preview/public.html?stil=laguna`), a na bilo kojem omotaču samo ono unutar
+(stari `p.html?stil=laguna`), a na bilo kojem omotaču samo ono unutar
 njega — zato birač pokazuje temu uživo, a sučelje oko njega ostaje u
 Odmorijinim bojama. Bez atributa vrijedi „Jadran”, tj. čisti `atmosphere.css`.
 
@@ -240,19 +204,9 @@ nasred `transition:color .3s` i podloga ispadne tamnija nego što jest — to je
 lažno prijavilo četiri gumba. Provjereno: 95 tekstova u osam zaglavlja prolazi,
 i 24 kombinacije teme × širine (1440/834/390) bez prelijevanja i bez greške.
 
-### Tri zakucane boje koje su tamne teme otkrile
-
-`public.html` je na tri mjesta imao boje mimo tokena, što se vidjelo tek kad je
-podloga postala tamna. Sve tri su sada tokenske:
-
-- `.facts` je imao `rgba(255,252,247,.92)` → `var(--shell)`,
-- `.cal .d` je imao `rgba(126,143,106,.16)` i `#3F4C31` → `--slob-bg` / `--slob-ink`,
-- `.chip--glass` i `.map__grid` trebaju obrat u tamnoj temi, kao i u tamnoj
-  temi vodiča.
-
 ### Analitika po državama — traži izmjenu sheme
 
-`preview/dashboard.html` ima panel „Iz kojih država dolaze”, ali **to još nije
+Stari prijedlog dashboarda imao je panel „Iz kojih država dolaze”, ali **to nije
 moguće s postojećom bazom**. `page_views` ima samo `id`, `property_id`,
 `view_type` i `timestamp`, a upis ide **izravno iz preglednika** (`p.html`,
 `h.html`) u Supabase — nema poslužiteljskog koraka pa IP nitko ne vidi.
@@ -268,7 +222,6 @@ alter table page_views
 i mali `api/track.js` koji pročita zaglavlje `x-vercel-ip-country` (Vercel ga
 daje besplatno na svakom serverless pozivu) pa upiše red umjesto klijenta.
 Jezik preglednika može se skupljati i bez tog koraka, samo uz novi stupac.
-Napomena o tome stoji i u samom panelu, da se ne zaboravi.
 
 ### Admin panel — PRENESEN na živi `admin.html`
 
@@ -287,77 +240,12 @@ iz `:root` te stranice — sada petrol rampa (#D6ECEE → #0B535B), i dalje
 sekvencijalna, nikad kategorijska. Bočna traka je tamna (petrol) s oznakom
 ADMIN; ispod 860 px postaje vodoravna traka na vrhu.
 
-**Cijene i nazivi planova NISU preuzeti iz pregleda.** Pregled nudi četiri
+**Cijene i nazivi planova NISU preuzeti iz pregleda.** Pregled je nudio četiri
 plana s drugim cijenama — to je poslovna odluka, ne izmjena koda. Živi admin
 čita `plans` preko `plans.js`, pa pokazuje ono što je stvarno u bazi.
 
-`preview/admin.html` ostaje kao prijedlog i koristi **isključivo podatke koji
-već postoje** (`properties`, `subscriptions`, `bookings`, `plans`):
+### Zamke koje su se već dogodile
 
-- procijenjeni **MRR** iz `plans` × broj aktivnih pretplata (ne iz Stripea —
-  checkout nije spojen),
-- **rast** novih domaćina po mjesecima,
-- **raspodjelu planova** rangirano,
-- **„Uskoro istječe”** — pretplate koje istječu u 14 dana, s radnjom,
-- tablicu s **pretragom, filtrom i sortiranjem**, izvozom u CSV, i gumbom
-  „Spremi” koji se budi tek kad se plan stvarno promijeni.
-
-Brojke u panelu su međusobno usklađene: raspodjela planova (14/11/6/3 = 34) stoji
-zasebno od uzorka od 12 redaka u tablici, jer je izvođenje iz uzorka davalo zbroj
-koji se ne slaže s MRR-om.
-
-### Grafikoni u dashboardu
-
-`preview/dashboard.html` nosi vlastiti crtač grafikona — bez biblioteke i bez build
-koraka, kao i ostatak projekta. Devet grafikona: pregledi kroz vrijeme (s rasponom
-7/30/90 dana, križićem i oblačićem), dva mala grafikona iste skale, rangirani izvori
-prometa, popunjenost po mjesecima, kada gost otvori vodič, četiri iskrice u pločicama.
-Svaki grafikon ima i **prikaz tablicom** ispod sebe.
-
-**Boje su sekvencijalne rampe, nikad kategorijske** — i to je mjereno, ne stvar ukusa:
-`--sea` (#2E6B77) ima OKLCH zasićenost 0,065 i `--olive` (#7E8F6A) 0,057, oboje ispod
-praga 0,10 nakon kojeg boja prestaje nositi identitet; uz to maslina i terracota pod
-deuteranopijom stoje na ΔE 5,6, ispod praga 8. Sekvencijalna rampa traži samo monotonu
-svjetlinu, što terracota i more rampa zadovoljavaju. Mjere su fiksne: stupac ≤ 24 px s
-kapicom 4 px, linija 2 px, točka r = 5 s 2 px prstenom u boji podloge, ploha 10 %,
-mreža 1 px puna.
-
-Dashboard ima i **prebacivanje plana** (Besplatno / Domaćin / Pro / Partner) koje
-uživo pokazuje koji su uvidi zaključani iza kojeg plana.
-
-### Tabovi u dashboardu
-
-Bočna traka prebacuje šest panela unutar iste stranice (`.tabpanel[data-panel]`,
-prebacivanje preko `location.hash`): **Pregled** (brojke, pregledi, izvori,
-popunjenost, dokaz vrijednosti), **Objekti**, **Rezervacije**, **Dostupnost**
-(kalendar na klik, iCal, pravila termina), **Analitika** (države, mjeseci,
-ponašanje gosta, usporedba objekata) i **Postavke**.
-
-Kad se panel otvori, njegova `[data-rv]` otkrivanja se prisilno okinu — inače
-bi ostala nevidljiva jer `IntersectionObserver` nije mogao vidjeti element dok
-je panel bio `hidden`. Isto vrijedi za svaku provjeru: elemente u skrivenim
-panelima treba filtrirati preko `offsetParent !== null`, inače izgledaju kao
-neotkriveni.
-
-### Dvije greške u živom kodu — POPRAVLJENE u `atmosphere.css`
-
-Bile su popravljene samo pod `/preview/`; sad stoje u živom listu, a kopije iz
-`ui.css` su maknute da se dvije vrijednosti ne raziđu.
-
-1. **Kontrast.** `--terra` (#D4674A) kao tekst na kremi daje **3,34:1**, a bijelo na
-   terri **3,60:1** — oboje pada WCAG AA. Sad postoji `--terra-ink` #A8462F za
-   TEKST (5,44 na kremi), `.kicker` ga koristi, a `.btn--fill` je na `--terra-d`
-   #B44F35 (bijelo na njemu 5,11:1). `--terra` ostaje samo za ukras i plohe.
-2. **`.wipe` se sam zaključava.** `clip-path:inset(0 100% 0 0)` svodi presjek elementa
-   na nulu, pa `IntersectionObserver` u `motion.js` nikad ne okine i element ostane
-   nevidljiv **zauvijek**. `.wipe` mora stajati na **unutarnjem** elementu, a
-   `[data-rv]` na roditelju; pravilo je sad `.wipe.rv-in,.rv-in .wipe`.
-
-Uz to, tri stvari koje je lako ponoviti:
-
-- `scene.js` prizore ubacuje s `insertAdjacentHTML('afterbegin', …)`, nikad preko
-  `innerHTML` — inače nestane sve što je već u elementu (naslov kartice, oznaka
-  „Naslovna”, gumb za brisanje).
 - **Svaki IIFE na kraju datoteke počinje s `;`.** Bez njega se `})()` prethodnog
   bloka i `(` sljedećeg spoje u poziv, blok tiho ne krene, a `node --check` to ne
   vidi. Dogodilo se dvaput.
@@ -377,21 +265,6 @@ Uz to, tri stvari koje je lako ponoviti:
   dohvaćaju moraju biti ASCII bez razmaka (`red-klima`).
 - **Pali `use_figma` poziv povuče se u cijelosti** — ništa ne ostane na canvasu,
   pa se smije jednostavno ponoviti ispravljen.
-
-Dodatni pokret (parovi 7–12 u Figmi, u kodu pod `/preview/`): harmonika se
-otvara preko `::details-content` uz `interpolate-size: allow-keywords`, tema i
-prijelaz s javne stranice na vodič idu preko **View Transitions API**
-(`@view-transition` + `view-transition-name` na zajedničkom elementu), navigacija
-se skupi na `.is-stuck`, cijena se prevrne, a nacrtani prizor „diše” 9 s u
-petlji. Sve staje na `prefers-reduced-motion`.
-
-U tamnoj temi pazi na komponente koje boju uzimaju iz tokena koji se obrnu:
-`.btn--fill`, `.btn--dark`, `.btn--light`, `.chip--glass` i sve `.tag--*` imaju
-vlastite vrijednosti pod `html[data-tema="tamno"]`, jer im je inače pozadina
-svijetla, a tekst bijel.
-
-Kad dizajn bude odobren, ovo se prenosi na prave stranice **i tek tada** se usklađuje
-`plans`. Ako bude odbijen, cijela mapa se briše — ništa drugo ne ovisi o njoj.
 
 ---
 
@@ -481,21 +354,12 @@ Tablica cijena gore je početno stanje u bazi; planovi i cijene još nisu konač
 
 ---
 
-## Dizajn sustav v3
+## Dizajn sustav v3 — obrisan
 
-*(Opis v3 stanja. `p.html` i `index.html` su prešli na v2 — vidi „Redizajn v2”.)*
-
-**Dijeljeni:** `atmosphere.css` i `motion.js` u korijenu; koristili su ih `p.html` i `h.html`, a danas samo `preview/`. Ovo je **svjesno odstupanje** od pravila „svaki HTML je self-contained" — dvije stranice dijele isti sustav pa bi kopiranje 300 linija CSS-a u svaku značilo dvije kopije koje se razilaze, točno onaj problem koji smo imali s limitima plana.
-
-**Fontovi:** Fraunces (naslovi, varijabilne osi SOFT/WONK) + Manrope (sučelje) + Caveat (rukopisni akcenti).
-
-**Tokeni:** `--cream:#FAF6EF --sand:#F1E7D7 --shell:#FFFCF7 --night:#14202E --terra:#D4674A --sun:#E9A13B --sea:#2E6B77 --olive:#7E8F6A`
-
-**Zaglavlje:** rotira do 3 fotografije iz `photo_urls` (naslovna je `cover_photo_url`). Ako fotografija nema, vrti tri nacrtana prizora (`.art--zalazak`, `.art--plava`, `.art--maslinik`) — sve CSS i SVG, bez vanjskih datoteka.
-
-**Ritam stranice** je namjeran i tamne plohe se izmjenjuju sa svijetlima: zaglavlje (tamno) → traka s činjenicama → pismo/činjenice/galerija (svijetlo) → puna foto traka (tamno) → karta (svijetlo) → sadržaji i „dobro je znati" (tamno) → kalendar (svijetlo) → upit domaćinu (tamna kartica) → preporuke i ostalo (svijetlo). **Ne slagati dvije tamne sekcije jednu do druge.**
-
-**Stranica mora izgledati puno i kad host ima malo sadržaja.** Bez fotografija idu nacrtani prizori i prazna mjesta u galeriji; s jednom fotografijom puna traka uzima nacrtani prizor umjesto da se preskoči.
+Stari sustav (`atmosphere.css`, `motion.js`, `ui.css`; Fraunces + Manrope +
+Caveat, krema/terakota/more) obrisan je u rujnu 2026. Njegovi tokeni žive još
+samo kao osnova u `teme.css` (`.tema-okruzje`). Jedno pravilo iz v3 vrijedi i
+dalje: **stranica mora izgledati puno i kad domaćin ima malo sadržaja.**
 
 ---
 
@@ -520,7 +384,7 @@ Pregled gosta (telefon desno) vidi se tek iznad 1280 px; Figma ga nema, pa je to
 
 **Traka „Imate nespremljene promjene"** (`.savebar`) javlja se na bilo koju izmjenu unutar aktivnog panela i nestaje pri spremanju ili promjeni panela. Ne uvodi novi način spremanja — samo pronađe gumb koji panel već ima (`onclick="saveXxx()"`) i pritisne ga. Paneli bez takvog gumba (liste, rezervacije) je ne pokazuju.
 
-Dashboard **ne učitava `atmosphere.css`** — ima vlastiti potpun CSS. Dvostruko definiranje istih tokena bi se sukobilo.
+Dashboard **ne učitava `odmoria.css`** — ima vlastiti potpun CSS s istim vrijednostima. Dvostruko definiranje istih tokena bi se sukobilo.
 
 ## Redizajn v2 — prijenos iz Figme u kod (u tijeku)
 
@@ -534,8 +398,8 @@ nije, u `docs/napredak.md`.
 #116D76, zaobljenja 7/10/14, razmaci 4–96, širina sadržaja 1376, rub 48/16),
 gumbe, oznake, harmoniku i fokus. Pisma: Manrope (sučelje, naslovi), DM Sans
 (tekst), Georgia → Gelasio (ime objekta). Ikone su Lucide, kao inline SVG sprite
-na dnu `<body>` svake stranice. `atmosphere.css`/`teme.*`/`motion.js` ostaju dok
-ih koristi i jedna stranica.
+na dnu `<body>` svake stranice. Stari v3 sustav je obrisan; `teme.*` ostaje za
+teme na v2 (vidi `docs/odluke.md`, točka 9).
 
 **Naslovnica (`index.html`)** — nema konfiguratora tema (odgođeno, vidi
 `docs/odluke.md`). Fotografija je samo `assets/landing/villa-*.jpg` (AI vila iz
@@ -658,7 +522,7 @@ Ako ikad zatreba da linkovi uvijek pokazuju na jednu domenu bez obzira odakle su
 
 ## Poznati nedostaci (stanje repozitorija, ne backlog-želje)
 
-- **Stripe checkout nije spojen.** Gumbi za nadogradnju u dashboardu su statični (`toast(...)`), ne pozivaju `billing.js`. `billing.js` uopće nije importan ni u jednom HTML-u.
+- **Stripe checkout nije spojen.** Nadogradnja u dashboardu (Pretplata) i u Računu ide e-mailom (`mailto:`), kartice planova pune se iz `plans`; ništa ne poziva `billing.js`. `billing.js` uopće nije importan ni u jednom HTML-u.
 - **Stripe serverless funkcije ne postoje** (`create-checkout-session`, `create-portal-session`, `stripe-webhook`). `track-event.js` također ne postoji, ali ne treba — `page_views` insert ide direktno s klijenta preko Supabase (`sb.from('page_views').insert(...)`), pa analytics radi neovisno.
 - **Automatska iCal sinkronizacija** — sinkronizira se samo na klik u dashboardu, ne po rasporedu (vidi gore).
 - **Nema višejezičnosti.** `plans.maxLanguages` postoji, ali u kodu nema nijednog prijevoda ni prebacivanja jezika.
