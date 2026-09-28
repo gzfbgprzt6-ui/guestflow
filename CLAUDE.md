@@ -39,7 +39,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 /
 ├── index.html              # Landing page — AKTIVNA, **redizajn v2 iz Figme** (`odmoria.css`), bez konfiguratora
 ├── p.html                  # Javna stranica objekta (?slug=xxx) — AKTIVNA, **redizajn v2 iz Figme** (`odmoria.css`), teme se NE primjenjuju
-├── h.html                  # Privatni gostinski hub (?token=xxx) — AKTIVNA, **v3 dizajn**
+├── h.html                  # Privatni gostinski hub (?token=xxx) — AKTIVNA, **redizajn v2** (`odmoria.css`), podstranice preko #adrese
 ├── dashboard.html          # Glavni host dashboard — AKTIVNA, **redizajn v2** (vlastiti CSS, ista imena tokena), navigacija po grupama
 ├── login.html               register.html            reset-password.html
 ├── email-confirm.html       onboarding.html          add-property.html
@@ -47,7 +47,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 ├── terms.html                privacy.html             404.html
 ├── vercel.json              # Rewrites za clean URL-ove, security headeri + dnevni cron za keepalive
 ├── odmoria.css              # NOVI v2 dizajn sustav (Figma „Odmoria / Product Design / v2”) — zasad samo naslovnica
-├── atmosphere.css           # DIJELJENI v3 dizajn sustav (tokeni, scena, gumbi, reveal) — koristi h.html i preview/
+├── atmosphere.css           # v3 dizajn sustav — danas ga koristi SAMO preview/ (nijedna živa stranica)
 ├── teme.css                 # OSAM TEMA javne stranice — dijele ih dashboard.html i preview/ (p.html v2 više ne)
 ├── teme.js                  # rasporedi zaglavlja, `izBaze(prop)` i zajednički birač tema
 ├── ui.css                   # ljuska aplikacije, paneli, tablice, GRAFIKONI — živi admin + preview/
@@ -77,7 +77,7 @@ Obje funkcije su namjerno **bez ijedne npm ovisnosti** — projekt nema build ko
 
 **Mockupi više ne postoje.** Mapa `v3/` i stari `*-v2.html` obrisani su kad su sve četiri prave stranice prešle na v3 — nema više `/v3/` na domeni ni dvije adrese za isto.
 
-`h.html` učitava dijeljeni `atmosphere.css` i `motion.js`; `index.html` i `p.html` su na novom `odmoria.css` (vidi „Redizajn v2”). Jedino `dashboard.html` ima vlastiti potpun CSS s v2 vrijednostima u svojim starim imenima tokena (vidi "Dashboard — v2 preko istih imena tokena").
+`index.html`, `p.html` i `h.html` su na novom `odmoria.css` (vidi „Redizajn v2”); `atmosphere.css` i `motion.js` koristi još samo `preview/`. Jedino `dashboard.html` ima vlastiti potpun CSS s v2 vrijednostima u svojim starim imenima tokena (vidi "Dashboard — v2 preko istih imena tokena").
 
 ---
 
@@ -412,7 +412,7 @@ page_views      -- property_id, view_type, timestamp
 
 Anon (nelogirani) korisnici preko RLS mogu čitati: `properties` (po slugu), `bookings` (samo `is_active=true`, nije isteklo), `sections`/`local_places`/`transport`/`attractions`/`house_rules`/`faq`/`amenities`/`availability` (javno po `property_id`), i smiju `insert` u `page_views`.
 
-`sections.ac_info/heating_info/hot_water_info/kitchen_info` spremaju se iz dashboarda ("Upute za korištenje") i **prikazuju se gostu u `h.html`** (vidi `h.html:431`). U `p.html` ih namjerno nema — javna stranica ne dira `sections`.
+`sections.ac_info/heating_info/hot_water_info/kitchen_info` spremaju se iz dashboarda ("Upute za korištenje") i **prikazuju se gostu u `h.html`** (`renderHouse()` u `h.html`, zaslon „Wi-Fi i kuća”). U `p.html` ih namjerno nema — javna stranica ne dira `sections`.
 
 ---
 
@@ -474,7 +474,7 @@ Tablica cijena gore je početno stanje u bazi; planovi i cijene još nisu konač
 
 *(Opis v3 stanja. `p.html` i `index.html` su prešli na v2 — vidi „Redizajn v2”.)*
 
-**Dijeljeni:** `atmosphere.css` i `motion.js` u korijenu, koristio ih je `p.html`, a danas još `h.html`. Ovo je **svjesno odstupanje** od pravila „svaki HTML je self-contained" — dvije stranice dijele isti sustav pa bi kopiranje 300 linija CSS-a u svaku značilo dvije kopije koje se razilaze, točno onaj problem koji smo imali s limitima plana.
+**Dijeljeni:** `atmosphere.css` i `motion.js` u korijenu; koristili su ih `p.html` i `h.html`, a danas samo `preview/`. Ovo je **svjesno odstupanje** od pravila „svaki HTML je self-contained" — dvije stranice dijele isti sustav pa bi kopiranje 300 linija CSS-a u svaku značilo dvije kopije koje se razilaze, točno onaj problem koji smo imali s limitima plana.
 
 **Fontovi:** Fraunces (naslovi, varijabilne osi SOFT/WONK) + Manrope (sučelje) + Caveat (rukopisni akcenti).
 
@@ -515,7 +515,7 @@ Dashboard **ne učitava `atmosphere.css`** — ima vlastiti potpun CSS. Dvostruk
 
 Figma datoteka `BVdEgki8jV7z6Oa3K6Te2h` (faze A, B, C) je vizualni izvor; postojeći
 kod je izvor funkcija i podataka. Prenosi se stranicu po stranicu, svaka na
-Preview pa potvrda: **naslovnica ✔** → **`p.html` ✔** → **aplikacija domaćina ✔** → vodič →
+Preview pa potvrda: **naslovnica ✔** → **`p.html` ✔** → **aplikacija domaćina ✔** → **vodič ✔** →
 račun/admin. Otvorena pitanja su u `docs/odluke.md`, ne u kodu; što je gotovo, a što
 nije, u `docs/napredak.md`.
 
@@ -571,6 +571,17 @@ Tri zamke: pravilo za prvu pločicu galerije mora biti `.gal > .gal__i:first-chi
 `position:absolute`, inače visina slike razvuče red; i dan u kalendaru treba
 `min-width:0;padding:0`, inače na 360 px sedam stupaca izađe iz kartice.
 
+**Vodič za gosta (`h.html`)** — početna (pozdrav, „Vaš pristup”, riječ domaćina,
+pločice „Sve za boravak”) i podstranice koje se otvaraju preko adrese:
+`#dolazak`, `#kuca` (i `#kuca/pravila`, `#kuca/odlazak`), `#preporuke`,
+`#domacin`; `route()` na `hashchange`/`popstate` pokazuje jedan `[data-view]`.
+Pločica se prikaže samo ako iza nje ima sadržaja. Provjera linka
+(`loadHub`, `unlockMoment`, stari put `slug` + `guest_token`) prepisana je
+doslovno. Četiri stanja linka (neispravan, istekao, deaktiviran = istekao,
+objekt nije pronađen) nikad ne pokazuju naziv objekta. Zamka: tablica poruka
+`STATES` mora biti definirana **prije** prvog poziva `showErr()` — link bez
+tokena inače pukne na `const` prije inicijalizacije.
+
 Provjereno podmetnutim klijentom (puni objekt, objekt bez ičega, nepostojeći slug)
 na 1920/1440/834/430/390/360: bez prelijevanja, bez JS grešaka; odabir raspona,
 prekratak boravak, popunjavanje razmaka, zauzet dan, predlošci poruke, gosti,
@@ -594,7 +605,8 @@ Ako ikad zatreba da linkovi uvijek pokazuju na jednu domenu bez obzira odakle su
 
 - `p.html` **nikad** ne čita `sections` tablicu — `door_code` i `wifi_pass` su isključivo na `h.html`.
 - `h.html` ima `<meta name="robots" content="noindex,nofollow">`.
-- Wi-Fi i kod vrata prikazuju se tek unutar prozora `[checkin_time - 1h, checkout 23:59]` (vremensko zaključavanje), uz `setInterval` koji auto-otključa kad prozor otvori. **Prije otključavanja te vrijednosti uopće ne ulaze u HTML** — ne postoje ni u skrivenom elementu ni u `window.__VALS`, pa se ne mogu izvući iz izvornog koda stranice. Ovo je testirano i mora ostati tako.
+- Wi-Fi i kod vrata prikazuju se tek unutar prozora `[checkin_time - 1h, checkout 23:59]` (vremensko zaključavanje), uz `setInterval` koji auto-otključa kad prozor otvori. **Prije otključavanja te vrijednosti uopće ne ulaze u HTML** — ne postoje ni u skrivenom elementu ni u `window.__VALS`, pa se ne mogu izvući iz izvornog koda stranice. Ovo je testirano i mora ostati tako. U v2 vodiču sve prolazi kroz `vaultItems()` → `secretHtml()` (zapečaćeno = samo `••••`); testirano i ubrzanim satom (`page.clock`) da se vrijednosti pojave same u trenutku otključavanja.
+- **Ali:** red iz `sections` (sa šiframa) dohvaća se iz baze i prije otključavanja — ne ulazi u HTML, ali stigne u preglednik. Ako RLS dopušta anonimno čitanje `sections` po `property_id`, šifre se mogu dohvatiti API-jem bez linka i bez vremena. U `sql/` nema pravila za `sections`, pa to treba provjeriti u Supabaseu (vidi `docs/odluke.md`, točka 0). **Zato vodič ne smije tvrditi da se šifre „ne šalju u preglednik”.**
 - Postoji i stariji fallback (`slug` + `properties.guest_token`) koji **odmah** otključava bez vremenskog ograničenja — legacy put, ne koristi se za nove rezervacije.
 - Booking token se deaktivira ručno (`is_active=false`) ili istječe (`token_expires_at`).
 - Nema service role ključa u klijentskom kodu — sve stranice koriste samo publishable/anon key.

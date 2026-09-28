@@ -7,396 +7,340 @@
 <title>Vaš vodič — Odmoria</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="/atmosphere.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Gelasio:wght@400;500&family=Manrope:wght@600;700;800&display=swap">
+<link rel="stylesheet" href="/odmoria.css">
 <style>
 /* ==========================================================================
-   PRIVATNI GOSTINSKI VODIC
-   Jedina stranica koja smije citati `sections` i prikazati wifi_pass i
-   door_code. Oboje je vremenski zakljucano: vidi se tek od sat vremena
-   prije dolaska pa do kraja dana odjave.
+   Privatni vodič za gosta — redizajn v2 (Figma: 06 Private Guide).
+   Wi-Fi lozinka i šifra vrata prikazuju se TEK unutar prozora
+   [prijava − 1 h, dan odjave 23:59]. Prije toga ne ulaze ni u HTML ni u
+   window.__VALS — vidi renderVault(). Ovo mora ostati tako.
    ========================================================================== */
-.boot{position:fixed;inset:0;z-index:60;display:grid;place-items:center;background:var(--cream);gap:18px}
-.boot__ring{width:38px;height:38px;border-radius:50%;border:3px solid var(--line);
-  border-top-color:var(--terra);animation:spin .9s linear infinite}
+
+.t-ed{font:400 clamp(30px,2.9vw,40px)/1.15 var(--font-editorial);letter-spacing:-.01em}
+
+/* učitavanje i stanja linka */
+.boot{min-height:100vh;display:grid;place-items:center;padding:var(--s5)}
+.boot__ring{width:32px;height:32px;border-radius:50%;border:3px solid var(--border);border-top-color:var(--action);animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.boot p{font-size:.86rem;color:var(--ink-50)}
-.oops{max-width:440px;text-align:center;padding:0 var(--gut)}
-.oops h1{font-size:clamp(1.8rem,5vw,2.6rem);margin-bottom:12px}
-.oops p{color:var(--ink-70);font-size:.98rem;line-height:1.6}
+.state{max-width:420px;text-align:center;display:grid;gap:16px;justify-items:center}
+.state__logo{font:800 22px/1 var(--font-ui);letter-spacing:-.03em}
+.state__logo i{color:var(--action);font-style:normal}
+.state__ic{width:72px;height:72px;border-radius:50%;background:var(--bg-wash);color:var(--text-accent);display:grid;place-items:center}
+.state__ic .ic{width:32px;height:32px}
+.state h1{font:700 28px/1.25 var(--font-ui);letter-spacing:-.02em}
 
-.hero{position:relative;height:100svh;min-height:600px;display:flex;align-items:flex-end;overflow:hidden;background:var(--night)}
-.hero__in{position:relative;z-index:5;width:100%;padding-bottom:clamp(40px,7vh,86px)}
-.hero h1{font-size:clamp(2.7rem,7.4vw,5.6rem);color:#fff;text-shadow:0 8px 40px rgba(20,32,46,.45)}
-.hero .kicker{color:var(--sun)}
-.mark{position:absolute;top:20px;left:var(--gut);z-index:6;display:flex;align-items:center;gap:9px;
-  background:rgba(255,255,255,.9);backdrop-filter:blur(12px);border-radius:999px;padding:9px 16px;
-  font-size:.74rem;font-weight:700}
-.greet{display:flex;width:fit-content;align-items:center;gap:10px;background:rgba(20,32,46,.62);
-  backdrop-filter:blur(10px);color:#fff;border-radius:999px;padding:9px 19px;font-size:.84rem;
-  font-weight:700;margin-bottom:22px}
-.phs{position:absolute;inset:0;overflow:hidden;background:var(--night)}
-.ph{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;
-  filter:saturate(.84) contrast(1.06) brightness(.97);transform:scale(1.05);transition:opacity 1.7s var(--ease)}
-.ph.on{opacity:1;animation:kenburns 9.5s linear forwards}
-@keyframes kenburns{from{transform:scale(1.04) translate3d(0,0,0)}to{transform:scale(1.15) translate3d(-1.6%,-1.2%,0)}}
-.ph.art{transform:none;filter:none}
-.ph.art.on{animation:none}
-.phs__tone{position:absolute;inset:0;background:var(--terra);mix-blend-mode:soft-light;opacity:.20}
-.phs__grade{position:absolute;inset:0;background:
-  radial-gradient(108% 64% at 68% 14%,rgba(255,224,168,.32) 0%,rgba(255,224,168,0) 62%),
-  linear-gradient(178deg,rgba(20,32,46,.44) 0%,rgba(20,32,46,.04) 22%,rgba(20,32,46,.34) 54%,
-    rgba(20,32,46,.76) 78%,rgba(20,32,46,.95) 100%)}
-.phs:has(.ph.art.on) .phs__tone{opacity:.08}
-.phs:has(.ph.art.on) .phs__grade{background:
-  radial-gradient(100% 58% at 66% 14%,rgba(255,228,176,.20) 0%,rgba(255,228,176,0) 60%),
-  linear-gradient(178deg,rgba(20,32,46,.20) 0%,rgba(20,32,46,0) 24%,rgba(20,32,46,.10) 50%,
-    rgba(20,32,46,.52) 76%,rgba(20,32,46,.88) 100%)}
-.hl{display:flex;flex-wrap:wrap;gap:9px;margin-top:24px}
-.chip--glass{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.26);color:#fff;backdrop-filter:blur(10px)}
-@media(max-width:620px){.ph{background-position:50% 58%}.hl .chip:nth-child(n+4){display:none}}
+/* zaglavlje */
+.ghead{position:sticky;top:0;z-index:30;background:rgba(252,252,250,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+.ghead__in{display:flex;align-items:center;gap:12px;min-height:68px}
+.ghead__back{display:grid;place-items:center;width:44px;height:44px;margin-left:-8px;border:0;border-radius:var(--radius-control);background:none;color:var(--text);cursor:pointer}
+.ghead__back:hover{background:var(--bg-wash)}
+.ghead__id{min-width:0;flex:1;display:grid}
+.ghead__t{font:700 17px/1.3 var(--font-ui);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ghead__s{font-size:14px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
-.letter{text-align:center}
-.letter p{font-family:'Fraunces',Georgia,serif;font-weight:300;font-size:clamp(1.2rem,2.4vw,1.75rem);
-  line-height:1.5;font-variation-settings:'SOFT' 30,'WONK' 1}
-.sig{margin-top:24px;font-family:'Caveat',cursive;font-size:1.7rem;color:var(--terra)}
+/* prvi ekran */
+.hero{position:relative;min-height:360px;display:flex;align-items:flex-end;color:#fff;padding-block:48px;
+  background:linear-gradient(180deg,#A3C4DA 0%,#5E8FA3 30%,#173D4B 62%,#22393F 100%) center/cover no-repeat}
+.hero::after{content:"";position:absolute;inset:0;background:var(--scrim);pointer-events:none}
+.hero > *{position:relative;z-index:1}
+.hero .eyebrow{color:#fff}
+.hero__name{font:400 clamp(40px,5.4vw,72px)/1.05 var(--font-editorial);letter-spacing:-.02em;margin-top:12px;overflow-wrap:anywhere}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.chip{display:inline-flex;align-items:center;min-height:36px;padding:0 14px;border-radius:18px;border:1px solid rgba(255,255,255,.55);background:rgba(10,42,51,.45);font:500 15px/1 var(--font-body)}
 
-.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:1px;
-  background:var(--line);border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden}
-.fact{background:var(--shell);padding:22px 16px;text-align:center}
-.fact .ic{color:var(--terra);margin-bottom:9px}
-.fact .v{font-family:'Fraunces',Georgia,serif;font-size:1.55rem;font-weight:400;line-height:1.1}
-.fact .k{font-size:.74rem;color:var(--ink-50);margin-top:5px}
+/* početna: dva stupca */
+.home{display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:64px;align-items:start;padding-block:40px 64px}
+.home__side{display:grid;gap:16px;position:sticky;top:92px}
+.letter{display:grid;gap:16px;margin-bottom:40px}
+.letter__txt{font:400 24px/1.5 var(--font-editorial);white-space:pre-line}
+.letter__sig{color:var(--text-muted)}
+.tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:20px}
+.tile{display:grid;gap:6px;align-content:start;min-height:118px;padding:18px 16px;border:1px solid var(--border);border-radius:var(--radius-panel);background:var(--bg-surface);text-decoration:none;color:var(--text)}
+.tile:hover{border-color:var(--border-control)}
+.tile .ic{color:var(--text-accent);margin-bottom:6px}
+.tile b{font:700 17px/1.3 var(--font-ui)}
+.tile span{font-size:14px;color:var(--text-muted)}
 
-/* ---------- trezor ---------- */
-.vault{position:relative;overflow:hidden;background:var(--night);color:#fff;border-radius:var(--r-lg);
-  padding:clamp(24px,3.6vw,48px)}
-.vault::after{content:"";position:absolute;width:480px;height:480px;border-radius:50%;
-  background:radial-gradient(circle,var(--terra) 0%,transparent 70%);opacity:.24;right:-170px;top:-190px}
-.vault > *{position:relative}
-.vault h2{color:#fff}
-.vault .kicker{color:var(--rose)}
-.vhead{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:flex-start}
-.lockstate{display:inline-flex;align-items:center;gap:10px;border-radius:999px;padding:10px 18px;
-  font-size:.79rem;font-weight:700;white-space:nowrap}
-.lockstate.open{background:rgba(126,143,106,.2);color:#BFD3AB;border:1px solid rgba(126,143,106,.36)}
-.lockstate.shut{background:rgba(212,103,74,.16);color:#EDA890;border:1px solid rgba(212,103,74,.34)}
-.codes{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:16px;margin-top:30px}
-.code{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);
-  border-radius:var(--r-md);padding:24px}
-.code .k{font-size:.66rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.5)}
-.code .v{font-family:ui-monospace,'SF Mono',monospace;font-size:clamp(1.15rem,2.4vw,1.55rem);
-  font-weight:700;margin-top:11px;word-break:break-all;transition:filter .6s var(--ease)}
-.code.sealed .v{filter:blur(10px);user-select:none}
-.code .copy{margin-top:16px;display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);
-  border:1px solid rgba(255,255,255,.18);color:#fff;border-radius:999px;padding:9px 16px;
-  font-size:.76rem;font-weight:700;cursor:pointer;transition:background .3s,transform .45s var(--ease)}
-.code .copy:hover{background:rgba(255,255,255,.2);transform:translateY(-2px)}
-.code.sealed .copy{opacity:.3;pointer-events:none}
-.count{margin-top:26px;display:flex;flex-wrap:wrap;align-items:center;gap:12px;
-  background:rgba(212,103,74,.1);border:1px solid rgba(212,103,74,.26);border-radius:var(--r-sm);
-  padding:16px 20px;font-size:.89rem;color:rgba(255,255,255,.85)}
-.count b{font-family:'Fraunces',Georgia,serif;font-size:1.35rem;color:var(--terra);font-weight:500}
+/* pristup (Wi-Fi i šifra) */
+.access{padding:24px;display:grid;gap:12px;border-radius:var(--radius-feature)}
+.access__head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.access__head h2{font:700 20px/1.3 var(--font-ui)}
+.when{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:var(--radius-panel);background:var(--bg-wash)}
+.when .ic{color:var(--text-accent);margin-top:2px}
+.when b{display:block;font:700 16px/1.35 var(--font-ui)}
+.when span{font-size:14px;color:var(--text-muted)}
+.when--warm{background:var(--bg-warm)}
+.when--warm .ic,.when--warm span{color:var(--text-warm)}
+.secret{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:var(--radius-panel);border:1px solid var(--border);background:var(--bg-wash)}
+.secret.open{background:var(--bg-surface);border-color:var(--border-control)}
+.secret > .ic{color:var(--text);flex:none}
+.secret__tx{flex:1;min-width:0;display:grid;gap:2px}
+.secret__k{font-size:14px;color:var(--text-muted)}
+.secret__v{font:800 22px/1.25 var(--font-ui);letter-spacing:.01em;overflow-wrap:anywhere}
+.secret.sealed .secret__v{letter-spacing:.4em;font-size:20px}
+.secret__lock{display:inline-flex;align-items:center;gap:6px;font-size:14px;color:var(--text-muted);flex:none}
+.copybtn{flex:none;display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 12px;border:1px solid var(--border-control);border-radius:var(--radius-control);background:var(--bg-surface);color:var(--text);cursor:pointer;font:700 14px/1 var(--font-ui)}
+.copybtn:hover{background:var(--bg-wash)}
+.access__note{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--text-muted)}
+.access__note .ic{color:var(--text-accent)}
+.helpcard{background:var(--bg-inverse);color:#fff;border-radius:var(--radius-feature);padding:20px 20px 20px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.helpcard b{display:block;font:700 17px/1.3 var(--font-ui)}
+.helpcard span{font-size:14px;color:rgba(255,255,255,.88)}
 
-/* ---------- dolazak ---------- */
-.arrive{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(20px,3vw,40px);align-items:start}
-@media(max-width:860px){.arrive{grid-template-columns:1fr}}
-.step{display:flex;gap:16px;padding:18px 0}
-.step + .step{border-top:1px solid var(--line)}
-.step__n{flex:none;width:30px;height:30px;border-radius:50%;background:var(--sand);color:var(--terra);
-  display:grid;place-items:center;font-size:.8rem;font-weight:800}
-.step__t{font-weight:700}
-.step__s{font-size:.9rem;color:var(--ink-70);margin-top:4px;line-height:1.55}
-.mapcard{border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;background:var(--shell)}
-.mapcard__top{padding:20px clamp(16px,2.2vw,24px);display:flex;flex-wrap:wrap;gap:12px;
-  justify-content:space-between;align-items:center}
-.mapcard__adr{font-weight:700;display:flex;align-items:center;gap:10px;font-size:.94rem}
-.mapcard__adr svg{color:var(--terra);flex:none}
-.mapwrap{position:relative;height:clamp(200px,26vh,300px);background:var(--sand)}
-.mapwrap iframe{width:100%;height:100%;border:0;display:block}
-.mapwrap__veil{position:absolute;inset:0;display:grid;place-items:center;gap:10px;cursor:pointer;
-  background:linear-gradient(160deg,#E6EFE9,#D6E4DC);color:var(--sea);font-weight:700;font-size:.88rem}
+/* podstranice */
+.view{max-width:760px;margin-inline:auto;padding-block:24px 64px}
+.view__lbl{margin:8px 0 16px}
+.blk{margin-top:32px}
+.blk h2,.blk h3.h{display:flex;align-items:center;gap:10px;font:700 22px/1.3 var(--font-ui);letter-spacing:-.02em;margin-bottom:10px}
+.blk h2 .ic,.blk h3.h .ic{color:var(--text-accent)}
+.blk p{white-space:pre-line}
+.btnrow{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.btnrow .btn{min-height:48px;padding:0 12px;white-space:nowrap}
+.map{position:relative;height:280px;margin-top:12px;border-radius:var(--radius-feature);overflow:hidden;border:1px solid var(--border)}
+.map iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.rules .rule{padding:14px 0;border-bottom:1px solid var(--border)}
+.rules .rule--kv{display:flex;justify-content:space-between;gap:16px}
+.rules .rule--kv span{color:var(--text-muted)}
+.rules .rule--kv b{font:700 16px/1.5 var(--font-ui);text-align:right}
+.outcard{margin-top:32px;padding:20px;border-radius:var(--radius-feature);background:var(--bg-wash)}
+.outcard h3{display:flex;align-items:center;gap:10px;font:700 18px/1.3 var(--font-ui);margin-bottom:6px}
+.outcard .ic{color:var(--text-accent)}
+.outcard p{white-space:pre-line}
+.acc summary .t{display:flex;align-items:center;gap:10px}
+.acc summary .t .ic{color:var(--text-accent);transform:none}
+.acc p{white-space:pre-line}
 
-.acc details{border-bottom:1px solid var(--line);padding:18px 0}
-.acc summary{cursor:pointer;font-weight:700;font-size:1rem;list-style:none;
-  display:flex;justify-content:space-between;gap:16px;align-items:center}
-.acc summary::-webkit-details-marker{display:none}
-.acc summary::after{content:"+";color:var(--terra);font-size:1.3rem;font-weight:400;transition:transform .3s}
-.acc details[open] summary::after{transform:rotate(45deg)}
-.acc p{margin-top:12px;color:var(--ink-70);line-height:1.65;font-size:.95rem;white-space:pre-line}
-.acc .ic{margin-right:10px}
+.fchips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}
+.fchip{min-height:44px;padding:0 16px;border-radius:var(--radius-control);border:1px solid var(--border-control);background:var(--bg-surface);font:500 15px/1 var(--font-body);color:var(--text);cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.fchip[aria-pressed="true"]{border:2px solid var(--action);background:var(--bg-wash);font-weight:600}
+.fchip .ic{display:none}
+.fchip[aria-pressed="true"] .ic{display:block;color:var(--text-accent)}
+.lrow{display:flex;gap:16px;align-items:center;min-height:80px;padding:14px 0;border-bottom:1px solid var(--border)}
+.lrow__ic{width:44px;height:44px;border-radius:var(--radius-panel);background:var(--bg-wash);color:var(--text-accent);display:grid;place-items:center;flex:none}
+.lrow__tx{flex:1;min-width:0;display:grid;gap:2px}
+.lrow__nm{font:700 16px/1.35 var(--font-ui)}
+.lrow__dt{font-size:14px;color:var(--text-muted)}
+.lrow__go{display:inline-flex;align-items:center;gap:4px;min-height:44px;padding:0 4px;font:700 14px/1 var(--font-ui);color:var(--text-accent);text-decoration:none;flex:none}
+.lrow__go:hover{text-decoration:underline}
 
-.night{background:var(--night);color:#fff;position:relative;overflow:hidden}
-.night h2{color:#fff}
-.night .kicker{color:var(--rose)}
-.night__art{position:absolute;left:-4%;right:-4%;bottom:0;height:22vh;min-height:130px;opacity:.3}
-.night__art svg{width:100%;height:100%;display:block}
-.dcols{display:grid;grid-template-columns:1fr 1fr;gap:clamp(30px,5vw,56px);margin-top:44px;position:relative}
-@media(max-width:820px){.dcols{grid-template-columns:1fr}}
-.dsub{font-size:.68rem;font-weight:800;letter-spacing:.2em;text-transform:uppercase;
-  color:rgba(255,255,255,.45);margin-bottom:20px}
-.krow{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;padding:14px 0;
-  border-bottom:1px solid rgba(255,255,255,.1);font-size:.91rem}
-.krow .k{color:rgba(255,255,255,.55);flex:none}
-.krow .v{font-weight:700;text-align:right}
-.krow.full{display:block}
-.krow.full .v{text-align:left;font-weight:600;color:rgba(255,255,255,.88)}
+.host{display:flex;align-items:center;gap:16px;padding:24px;border-radius:var(--radius-feature)}
+.host__av{width:56px;height:56px;border-radius:50%;background:var(--bg-inverse);color:#fff;display:grid;place-items:center;font:700 22px/1 var(--font-ui);flex:none}
+.host__n{font:700 20px/1.3 var(--font-ui)}
+.host__btns{display:grid;gap:12px;margin-top:20px}
 
-.tabs{display:flex;flex-wrap:wrap;gap:8px;margin:28px 0 4px}
-.tab{border:1.5px solid var(--line);background:var(--shell);border-radius:999px;padding:10px 20px;
-  font-family:inherit;font-size:.85rem;font-weight:700;color:var(--ink-70);cursor:pointer;
-  transition:background .3s,color .3s,border-color .3s,transform .4s var(--ease)}
-.tab:hover{transform:translateY(-2px)}
-.tab.on{background:var(--ink);color:#fff;border-color:var(--ink)}
-.places{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:15px;margin-top:24px}
-.place{display:flex;gap:15px;background:var(--shell);border:1px solid var(--line-2);
-  border-radius:var(--r-md);padding:19px;transition:transform .5s var(--ease),box-shadow .5s var(--ease)}
-.place.clickable{cursor:pointer}
-.place.clickable:hover{transform:translateY(-5px);box-shadow:0 26px 46px -32px rgba(20,32,46,.4)}
-.place .ic{font-size:1.4rem;line-height:1;flex:none}
-.place .nm{font-weight:700;line-height:1.3}
-.place .cat{font-size:.66rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--terra);margin-bottom:5px}
-.place .dt{font-size:.82rem;color:var(--ink-50);margin-top:5px}
-.place .go{font-size:.78rem;font-weight:700;color:var(--sea);margin-top:9px;display:inline-block}
-.rows{display:grid;gap:11px}
-.row{display:flex;align-items:flex-start;gap:14px;background:var(--shell);border:1px solid var(--line-2);
-  border-radius:var(--r-sm);padding:16px 18px;transition:border-color .3s,transform .45s var(--ease)}
-.row.clickable{cursor:pointer}
-.row.clickable:hover{border-color:var(--terra);transform:translateX(3px)}
-.row .ic{font-size:1.25rem;line-height:1;flex:none;margin-top:1px}
-.row .nm{font-weight:700}
-.row .dt{font-size:.82rem;color:var(--ink-50);margin-top:3px}
-.row .ds{font-size:.85rem;color:var(--ink-70);margin-top:7px;line-height:1.5}
-.row .go{margin-left:auto;flex:none;color:var(--ink-30)}
-.faq details{border-bottom:1px solid var(--line);padding:18px 0}
-.faq summary{cursor:pointer;font-weight:700;font-size:1.02rem;list-style:none;
-  display:flex;justify-content:space-between;gap:16px;align-items:center}
-.faq summary::-webkit-details-marker{display:none}
-.faq summary::after{content:"+";color:var(--terra);font-size:1.3rem;font-weight:400;transition:transform .3s}
-.faq details[open] summary::after{transform:rotate(45deg)}
-.faq p{margin-top:12px;color:var(--ink-70);line-height:1.65;font-size:.95rem}
+.gfoot{padding-block:24px 32px;font-size:13px;color:var(--text-muted)}
+.gfoot a{color:var(--text);font-weight:600}
 
-.host{display:flex;flex-wrap:wrap;align-items:center;gap:20px;background:var(--shell);
-  border:1px solid var(--line);border-radius:var(--r-lg);padding:clamp(22px,3vw,34px)}
-.host__av{width:62px;height:62px;border-radius:50%;background:var(--sand);color:var(--terra);
-  display:grid;place-items:center;font-family:'Fraunces',Georgia,serif;font-size:1.6rem;flex:none}
-.host__n{font-weight:800;font-size:1.08rem}
-.host__r{font-size:.84rem;color:var(--ink-50)}
-.host__b{display:flex;gap:10px;margin-left:auto;flex-wrap:wrap}
+/* traka „Trebate nešto?” na mobitelu */
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:40;display:none;background:var(--bg-surface);border-top:1px solid var(--border);box-shadow:0 -8px 24px rgba(16,61,75,.08)}
+.dock__in{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 16px calc(10px + env(safe-area-inset-bottom))}
+.dock__in span{font-size:14px}
+.dock__in .btn{flex:none;white-space:nowrap}
 
-.dock{position:fixed;left:0;right:0;bottom:0;z-index:40;padding:12px var(--gut);pointer-events:none;
-  transform:translateY(130%);transition:transform .6s var(--ease)}
-.dock.up{transform:none}
-.dock__in{pointer-events:auto;max-width:var(--maxw);margin:0 auto;background:var(--shell);
-  border:1px solid var(--line);border-radius:999px;padding:11px 12px 11px 22px;
-  display:flex;align-items:center;gap:16px;justify-content:space-between;
-  box-shadow:0 22px 50px -26px rgba(20,32,46,.5)}
-.dock__t{font-size:.9rem;font-weight:800}
-.dock__s{font-size:.74rem;color:var(--ink-50)}
-
-.foot{background:var(--night);color:rgba(255,255,255,.62);text-align:center;
-  padding:clamp(44px,6vw,74px) var(--gut) calc(clamp(44px,6vw,74px) + 70px);font-size:.84rem}
-.foot a{color:#fff}
-.toast{position:fixed;left:50%;bottom:92px;transform:translate(-50%,20px);z-index:80;
-  background:var(--night);color:#fff;border-radius:999px;padding:13px 24px;font-size:.87rem;
-  font-weight:700;opacity:0;pointer-events:none;transition:opacity .35s,transform .45s var(--ease)}
+.toast{position:fixed;left:50%;bottom:24px;z-index:90;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:var(--bg-inverse);color:#fff;padding:12px 18px;border-radius:var(--radius-control);font:600 15px/1.3 var(--font-ui);transition:opacity .2s,transform .2s;max-width:calc(100vw - 32px)}
 .toast.show{opacity:1;transform:translate(-50%,0)}
+
+[hidden]{display:none!important}
+[id]{scroll-margin-top:84px}
+
+@media (max-width:1000px){
+  .home{grid-template-columns:minmax(0,1fr);gap:32px;padding-top:24px}
+  .home__side{position:static;order:-1}
+  .home__side .helpcard{display:none}
+  .tiles{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:760px){
+  .hero{min-height:300px;padding-block:32px}
+  .chip{min-height:32px;font-size:14px}
+  .letter__txt{font-size:21px}
+  .access{padding:16px}
+  .secret__v{font-size:19px}
+  .dock{display:block}
+  body.has-dock{padding-bottom:76px}
+  .btnrow{grid-template-columns:1fr 1fr}
+}
+@media (max-width:380px){
+  .tiles{grid-template-columns:minmax(0,1fr)}
+  .btnrow{grid-template-columns:minmax(0,1fr)}
+}
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2" ry="2" /> <path d="M7 11V7a5 5 0 0 1 10 0v4" /></symbol>
+  <symbol id="i-lock-open" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2" ry="2" /> <path d="M7 11V7a5 5 0 0 1 9.9-1" /></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /> <path d="M12 6v6l4 2" /></symbol>
+  <symbol id="i-key-round" viewBox="0 0 24 24"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z" /> <circle cx="16.5" cy="7.5" r=".5" fill="currentColor" /></symbol>
+  <symbol id="i-wifi" viewBox="0 0 24 24"><path d="M12 20h.01" /> <path d="M2 8.82a15 15 0 0 1 20 0" /> <path d="M5 12.859a10 10 0 0 1 14 0" /> <path d="M8.5 16.429a5 5 0 0 1 7 0" /></symbol>
+  <symbol id="i-map-pin" viewBox="0 0 24 24"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" /> <circle cx="12" cy="10" r="3" /></symbol>
+  <symbol id="i-umbrella" viewBox="0 0 24 24"><path d="M12 13v7a2 2 0 0 0 4 0" /> <path d="M12 2v2" /> <path d="M20.992 13a1 1 0 0 0 .97-1.274 10.284 10.284 0 0 0-19.923 0A1 1 0 0 0 3 13z" /></symbol>
+  <symbol id="i-book-open" viewBox="0 0 24 24"><path d="M12 5v16" /> <path d="M20.001 19A2 2 0 0022 17V5a2 2 0 00-1.999-2L16 3.002A5 5 0 0012 5a5 5 0 00-4-2H4a2 2 0 00-2 2v12a2 2 0 001.999 2H8a5 5 0 014 2 5 5 0 014-2z" /></symbol>
+  <symbol id="i-door-open" viewBox="0 0 24 24"><path d="M10 21H2" /> <path d="M10 3H7a2 2 0 00-2 2v16" /> <path d="M14 12h.01" /> <path d="M19 21V5a2 2 0 00-1.675-1.974l-6.163-1.013A1 1 0 0010 3v18a1 1 0 001.124.992z" /> <path d="M22 21h-3" /></symbol>
+  <symbol id="i-message-circle" viewBox="0 0 24 24"><path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719" /></symbol>
+  <symbol id="i-arrow-left" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7" /> <path d="M19 12H5" /></symbol>
+  <symbol id="i-arrow-up-right" viewBox="0 0 24 24"><path d="M7 7h10v10" /> <path d="M7 17 17 7" /></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect width="14" height="14" x="8" y="8" rx="2" ry="2" /> <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" /></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384" /></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" /> <rect x="2" y="4" width="20" height="16" rx="2" /></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" /></symbol>
+  <symbol id="i-chevron-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6" /></symbol>
+  <symbol id="i-shield-check" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" /> <path d="m9 12 2 2 4-4" /></symbol>
+  <symbol id="i-flame" viewBox="0 0 24 24"><path d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4" /></symbol>
+  <symbol id="i-droplets" viewBox="0 0 24 24"><path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z" /> <path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97" /></symbol>
+  <symbol id="i-utensils" viewBox="0 0 24 24"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2" /> <path d="M7 2v20" /> <path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7" /></symbol>
+  <symbol id="i-car" viewBox="0 0 24 24"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2" /> <circle cx="7" cy="17" r="2" /> <path d="M9 17h6" /> <circle cx="17" cy="17" r="2" /></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /> <path d="M12 16v-4" /> <path d="M12 8h.01" /></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" /> <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" /></symbol>
+  <symbol id="i-house" viewBox="0 0 24 24"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8" /> <path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /></symbol>
+  <symbol id="i-plane" viewBox="0 0 24 24"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z" /></symbol>
+  <symbol id="i-bus" viewBox="0 0 24 24"><path d="M8 6v6" /> <path d="M15 6v6" /> <path d="M2 12h19.6" /> <path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3" /> <circle cx="7" cy="18" r="2" /> <path d="M9 18h5" /> <circle cx="16" cy="18" r="2" /></symbol>
+  <symbol id="i-ship" viewBox="0 0 24 24"><path d="M12 2v2" /> <path d="M12 9.189V13" /> <path d="M19 12V6a2 2 0 00-2-2H7a2 2 0 00-2 2v6" /> <path d="M19.38 19A11.6 11.6 0 0021 13l-8.188-3.639a2 2 0 00-1.624 0L3 13.001a11.6 11.6 0 002.81 7.76" /> <path d="M2 20c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1s1.2 1 2.5 1c2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1" /></symbol>
+  <symbol id="i-trees" viewBox="0 0 24 24"><path d="M10 10v.2A3 3 0 0 1 8.9 16H5a3 3 0 0 1-1-5.8V10a3 3 0 0 1 6 0Z" /> <path d="M7 16v6" /> <path d="M13 19v3" /> <path d="M12 19h8.3a1 1 0 0 0 .7-1.7L18 14h.3a1 1 0 0 0 .7-1.7L16 9h.2a1 1 0 0 0 .8-1.7L13 3l-1.4 1.5" /></symbol>
+  <symbol id="i-landmark" viewBox="0 0 24 24"><path d="M10 18v-7" /> <path d="M11.119 2.205a2 2 0 0 1 1.762 0l7.84 3.846A.5.5 0 0 1 20.5 7h-17a.5.5 0 0 1-.22-.949z" /> <path d="M14 18v-7" /> <path d="M18 18v-7" /> <path d="M3 22h18" /> <path d="M6 18v-7" /></symbol>
+  <symbol id="i-shopping-basket" viewBox="0 0 24 24"><path d="m15 11-1 9" /> <path d="m19 11-4-7" /> <path d="M2 11h20" /> <path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4" /> <path d="M4.5 15.5h15" /> <path d="m5 11 4-7" /> <path d="m9 11 1 9" /></symbol>
+  <symbol id="i-coffee" viewBox="0 0 24 24"><path d="M10 2v2" /> <path d="M14 2v2" /> <path d="M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1" /> <path d="M6 2v2" /></symbol>
+  <symbol id="i-camera" viewBox="0 0 24 24"><path d="M13.997 4a2 2 0 0 1 1.76 1.05l.486.9A2 2 0 0 0 18.003 7H20a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h1.997a2 2 0 0 0 1.759-1.048l.489-.904A2 2 0 0 1 10.004 4z" /> <circle cx="12" cy="13" r="3" /></symbol>
+  <symbol id="i-fish" viewBox="0 0 24 24"><path d="M6.5 12c.94-3.46 4.94-6 8.5-6 3.56 0 6.06 2.54 7 6-.94 3.47-3.44 6-7 6s-7.56-2.53-8.5-6Z" /> <path d="M18 12v.5" /> <path d="M16 17.93a9.77 9.77 0 0 1 0-11.86" /> <path d="M7 10.67C7 8 5.58 5.97 2.73 5.5c-1 1.5-1 5 .23 6.5-1.24 1.5-1.24 5-.23 6.5C5.58 18.03 7 16 7 13.33" /> <path d="M10.46 7.26C10.2 5.88 9.17 4.24 8 3h5.8a2 2 0 0 1 1.98 1.67l.23 1.4" /> <path d="m16.01 17.93-.23 1.4A2 2 0 0 1 13.8 21H9.5a5.96 5.96 0 0 0 1.49-3.98" /></symbol>
+  <symbol id="i-wine" viewBox="0 0 24 24"><path d="M8 22h8" /> <path d="M7 10h10" /> <path d="M12 15v7" /> <path d="M12 15a5 5 0 0 0 5-5c0-2-.5-4-2-8H9c-1.5 4-2 6-2 8a5 5 0 0 0 5 5Z" /></symbol>
+  <symbol id="i-snowflake" viewBox="0 0 24 24"><path d="m10 20-1.25-2.5L6 18" /> <path d="M10 4 8.75 6.5 6 6" /> <path d="m14 20 1.25-2.5L18 18" /> <path d="m14 4 1.25 2.5L18 6" /> <path d="m17 21-3-6h-4" /> <path d="m17 3-3 6 1.5 3" /> <path d="M2 12h6.5L10 9" /> <path d="m20 10-1.5 2 1.5 2" /> <path d="M22 12h-6.5L14 15" /> <path d="m4 10 1.5 2L4 14" /> <path d="m7 21 3-6-1.5-3" /> <path d="m7 3 3 6h4" /></symbol>
+</svg>
 
-<div class="boot" id="boot"><div class="boot__ring"></div><p>Učitavam vaš vodič…</p></div>
+<a class="skip" href="#sadrzaj">Preskoči na sadržaj</a>
 
-<div class="boot oops" id="oops" style="display:none">
-  <div>
-    <h1>Link nije ispravan</h1>
-    <p id="oops-msg">Ovaj link ne postoji ili je istekao. Zamolite domaćina za novi.</p>
+<div class="boot" id="boot" role="status" aria-live="polite"><div class="boot__ring" aria-hidden="true"></div><span class="sr-only">Učitavam vaš vodič…</span></div>
+
+<!-- stanje linka: neispravan / istekao / objekt nije pronađen -->
+<div class="boot" id="oops" hidden>
+  <div class="state">
+    <span class="state__logo">Odmoria<i>.</i></span>
+    <span class="state__ic" id="oops-ic"><svg class="ic"><use href="#i-link"/></svg></span>
+    <h1 id="oops-title">Link nije ispravan</h1>
+    <p class="t-muted" id="oops-msg">Adresa je nepotpuna ili pogrešno kopirana. Otvorite link iz poruke domaćina ponovno.</p>
+    <p class="t-meta">Iz sigurnosnih razloga ova stranica ne otkriva naziv ni adresu smještaja.</p>
   </div>
 </div>
 
-<div id="page" style="display:none">
+<div id="page" hidden>
 
-  <header class="hero" data-scene>
-    <div class="phs" id="phs"></div>
-    <div class="mark">
-      <svg width="17" height="17" viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="10" fill="#14202E"/><path d="M6.5 21.5c4-9.5 15-9.5 19 0" stroke="#D4674A" stroke-width="2.6" stroke-linecap="round"/><circle cx="16" cy="11" r="2.6" fill="#E9A13B"/></svg>
-      Vaš privatni vodič
+<header class="ghead">
+  <div class="wrap ghead__in">
+    <button class="ghead__back" type="button" id="back" hidden onclick="goHome()" aria-label="Natrag na početak vodiča"><svg class="ic"><use href="#i-arrow-left"/></svg></button>
+    <div class="ghead__id">
+      <span class="ghead__t" id="h-title"></span>
+      <span class="ghead__s" id="h-sub">Vaš privatni vodič</span>
     </div>
-    <div class="hero__in wrap">
-      <div class="greet" id="greet" style="display:none" data-rv="fade" data-rv-now>
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 3v2M18.4 5.6l-1.4 1.4M21 12h-2M5 12H3M7 7L5.6 5.6"/><circle cx="12" cy="14" r="4.2"/></svg>
-        <span id="greet-txt"></span>
-      </div>
-      <div class="kicker" id="hero-loc" style="display:none" data-rv="fade" data-rv-now></div>
-      <h1 style="margin-top:12px"><span class="mask-line" data-rv-now><span id="hero-name"></span></span></h1>
-      <div class="hl" id="hero-chips" data-rv="up" data-rv-now></div>
-    </div>
-  </header>
+    <span class="badge badge--locked" id="h-badge"><svg class="ic ic--sm"><use href="#i-lock"/></svg>Privatno</span>
+  </div>
+</header>
 
-  <section class="sec">
-    <div class="wrap wrap-narrow letter" id="letter" style="display:none" data-rv="up">
-      <div class="kicker bare" style="justify-content:center">Riječ domaćina</div>
-      <p style="margin-top:24px" id="welcome"></p>
-      <div class="sig" id="sig"></div>
-    </div>
-    <div class="wrap" id="facts-wrap" style="margin-top:52px;display:none">
-      <div class="facts" data-rv="up" id="facts"></div>
+<main id="sadrzaj">
+
+<!-- ============ POČETNA ============ -->
+<div data-view="home">
+  <section class="hero" id="hero" aria-labelledby="hero-name">
+    <div class="wrap">
+      <span class="eyebrow">Vaš boravak</span>
+      <h1 class="hero__name" id="hero-name"></h1>
+      <div class="chips" id="hero-chips"></div>
     </div>
   </section>
 
-  <!-- ============ TREZOR ============ -->
-  <section class="sec" id="vault-sec" style="padding-top:0;display:none">
-    <div class="wrap">
-      <div class="vault" data-rv="up">
-        <div class="vhead">
-          <div>
-            <div class="kicker bare">Vaš pristup</div>
-            <h2 style="margin-top:12px">Wi-Fi i šifra vrata</h2>
-          </div>
-          <div class="lockstate" id="lockstate"></div>
+  <div class="wrap home">
+    <div>
+      <div class="letter" id="letter" hidden>
+        <span class="eyebrow">Riječ domaćina</span>
+        <p class="letter__txt" id="welcome"></p>
+        <p class="letter__sig" id="sig" hidden></p>
+      </div>
+      <h2 class="t-small-head" style="font-size:22px" id="tiles-h">Sve za boravak</h2>
+      <nav class="tiles" id="tiles" aria-labelledby="tiles-h"></nav>
+    </div>
+
+    <aside class="home__side">
+      <section class="card access" id="access" hidden aria-labelledby="access-h">
+        <div class="access__head">
+          <h2 id="access-h">Vaš pristup</h2>
+          <span class="badge" id="lockstate"></span>
         </div>
-        <div class="codes" id="codes"></div>
-        <div class="count" id="countdown" style="display:none"></div>
+        <div id="when-home"></div>
+        <div id="codes-home" style="display:grid;gap:12px"></div>
+        <p class="access__note"><svg class="ic ic--sm"><use href="#i-shield-check"/></svg><span id="access-note"></span></p>
+      </section>
+      <div class="helpcard on-dark" id="helpcard" hidden>
+        <div><b>Trebate nešto?</b><span id="help-sub">Javite se domaćinu.</span></div>
+        <a class="btn btn--inverse btn--sm" id="help-btn" href="#domacin">Javi se<svg class="ic ic--sm"><use href="#i-message-circle"/></svg></a>
       </div>
-    </div>
-  </section>
+    </aside>
+  </div>
+</div>
 
-  <!-- ============ DOLAZAK ============ -->
-  <section class="sec" id="arrive-sec" style="padding-top:0;display:none">
-    <div class="wrap">
-      <div class="kicker bare" data-rv="fade">Dolazak</div>
-      <h2 data-rv="up" style="margin:14px 0 26px">Kako do nas</h2>
-      <div class="arrive">
-        <div class="mapcard" id="mapcard" data-rv="up" style="display:none">
-          <div class="mapcard__top">
-            <div class="mapcard__adr">
-              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11a7 7 0 1 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>
-              <span id="adr"></span>
-            </div>
-            <a class="btn btn--sm btn--dark" id="adr-link" target="_blank" rel="noopener">Google Maps</a>
-          </div>
-          <div class="mapwrap">
-            <div class="mapwrap__veil" id="map-veil" onclick="loadMap()">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4 3 6.5v13L9 17l6 2.5 6-2.5v-13L15 7 9 4.5z"/><path d="M9 4.5V17M15 7v12.5"/></svg>
-              Prikaži kartu
-            </div>
-            <iframe id="map-frame" loading="lazy" referrerpolicy="no-referrer-when-downgrade" style="display:none"></iframe>
-          </div>
-        </div>
-        <div id="steps" data-rv="up"></div>
-      </div>
+<!-- ============ DOLAZAK ============ -->
+<div class="wrap view" data-view="dolazak" hidden>
+  <p class="eyebrow view__lbl" id="arr-lbl"></p>
+  <div id="when-arr"></div>
+  <div id="codes-arr" style="display:grid;gap:12px;margin-top:12px"></div>
+  <div class="blk" id="arr-adr" hidden>
+    <h2 tabindex="-1"><svg class="ic"><use href="#i-map-pin"/></svg>Kako do nas</h2>
+    <p id="adr"></p>
+    <div class="btnrow">
+      <a class="btn btn--secondary" id="adr-link" target="_blank" rel="noopener">Google Maps<svg class="ic ic--sm"><use href="#i-arrow-up-right"/></svg></a>
+      <button class="btn btn--secondary" type="button" id="map-btn" onclick="loadMap()">Prikaži kartu</button>
     </div>
-  </section>
+    <div class="map" id="map" hidden><iframe id="map-frame" title="Karta" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
+  </div>
+  <div id="arr-steps"></div>
+</div>
 
-  <!-- ============ UPUTE ZA UREDJAJE ============ -->
-  <section class="sec" id="dev-sec" style="padding-top:0;display:none">
-    <div class="wrap wrap-narrow">
-      <div class="kicker bare" data-rv="fade">Upute za korištenje</div>
-      <h2 data-rv="up" style="margin:14px 0 8px">Kako što radi</h2>
-      <p style="color:var(--ink-50);margin-bottom:18px">Male stvari koje nitko ne voli pogađati.</p>
-      <div class="acc" id="dev-list" data-rv="up"></div>
-    </div>
-  </section>
+<!-- ============ WI-FI I KUĆA ============ -->
+<div class="wrap view" data-view="kuca" hidden>
+  <p class="eyebrow view__lbl" id="kuca-lbl"></p>
+  <div id="codes-wifi" style="display:grid;gap:12px"></div>
+  <div class="blk" id="dev-blk" hidden>
+    <h2 id="uredaji" tabindex="-1">Kako što radi</h2>
+    <div id="dev-list"></div>
+  </div>
+  <div class="blk" id="rules-blk" hidden>
+    <h2 id="pravila" tabindex="-1">Kućna pravila</h2>
+    <div class="rules" id="rules"></div>
+  </div>
+  <div class="outcard" id="out-blk" hidden>
+    <h3 id="odlazak" tabindex="-1"><svg class="ic"><use href="#i-door-open"/></svg>Prije nego krenete</h3>
+    <p id="out-text"></p>
+  </div>
+  <div class="blk" id="faq-blk" hidden>
+    <h2 id="pitanja" tabindex="-1">Česta pitanja</h2>
+    <div id="faq-list"></div>
+  </div>
+</div>
 
-  <!-- ============ DOBRO JE ZNATI + PRAVILA ============ -->
-  <section class="night sec" id="night-sec" style="display:none">
-    <div class="night__art">
-      <svg viewBox="0 0 1440 200" preserveAspectRatio="none" fill="none">
-        <path d="M0 170c96-10 150-42 236-38 78 4 120 33 198 31 80-2 122-40 204-36 74 4 122 34 196 34 80 0 126-33 204-29 66 3 128 26 402 18v210H0z" fill="#0C161F"/>
-      </svg>
-    </div>
-    <div class="wrap" style="position:relative">
-      <div data-rv="up">
-        <div class="kicker bare">Detalji</div>
-        <h2 style="margin-top:14px">Sve što trebate,<br><span class="italic" style="color:var(--rose)">ništa što ne trebate.</span></h2>
-      </div>
-      <div class="dcols">
-        <div data-rv="up" id="know-col" style="display:none">
-          <div class="dsub">Dobro je znati</div>
-          <div id="know"></div>
-        </div>
-        <div data-rv="up" id="rule-col" style="display:none">
-          <div class="dsub">Kućna pravila</div>
-          <div id="rules"></div>
-        </div>
-      </div>
-    </div>
-  </section>
+<!-- ============ PREPORUKE ============ -->
+<div class="wrap view" data-view="preporuke" hidden>
+  <div class="fchips" id="fchips" role="group" aria-label="Vrsta preporuke"></div>
+  <div id="places"></div>
+</div>
 
-  <!-- ============ PREPORUKE ============ -->
-  <section class="sec" id="loc-sec" style="display:none">
-    <div class="wrap">
-      <div class="kicker bare" data-rv="fade">Preporuke domaćina</div>
-      <h2 data-rv="up" style="margin:14px 0 0" id="loc-title">U blizini</h2>
-      <div class="tabs" id="tabs" data-rv="fade"></div>
-      <div class="places" id="places" data-rv="up"></div>
-    </div>
-  </section>
+<!-- ============ DOMAĆIN ============ -->
+<div class="wrap view" data-view="domacin" hidden>
+  <div class="card host">
+    <span class="host__av" id="host-av" aria-hidden="true"></span>
+    <div><div class="host__n" id="host-name"></div><div class="t-muted">Vaš domaćin</div></div>
+  </div>
+  <div class="host__btns" id="host-btns"></div>
+</div>
 
-  <section class="sec" id="tx-sec" style="padding-top:0;display:none">
-    <div class="wrap">
-      <div class="kicker bare" data-rv="fade">Kako stići</div>
-      <h2 data-rv="up" style="margin:14px 0 26px">Prijevoz</h2>
-      <div class="rows" id="tx-list" data-rv="up"></div>
-    </div>
-  </section>
+</main>
 
-  <section class="sec" id="at-sec" style="padding-top:0;display:none">
-    <div class="wrap">
-      <div class="kicker bare" data-rv="fade">Istražite okolicu</div>
-      <h2 data-rv="up" style="margin:14px 0 26px">Atrakcije i aktivnosti</h2>
-      <div class="rows" id="at-list" data-rv="up"></div>
-    </div>
-  </section>
-
-  <section class="sec" id="out-sec" style="padding-top:0;display:none">
-    <div class="wrap wrap-narrow">
-      <div class="kicker bare" data-rv="fade">Odlazak</div>
-      <h2 data-rv="up" style="margin:14px 0 20px">Prije nego krenete</h2>
-      <p id="out-text" style="color:var(--ink-70);line-height:1.7;white-space:pre-line" data-rv="up"></p>
-    </div>
-  </section>
-
-  <section class="sec" id="faq-sec" style="padding-top:0;display:none">
-    <div class="wrap wrap-narrow">
-      <div class="kicker bare" data-rv="fade">Dobro je znati</div>
-      <h2 data-rv="up" style="margin:14px 0 20px">Česta pitanja</h2>
-      <div class="faq" id="faq-list" data-rv="up"></div>
-    </div>
-  </section>
-
-  <section class="sec" id="host-sec" style="padding-top:0;display:none">
-    <div class="wrap">
-      <div class="host" data-rv="up">
-        <div class="host__av" id="host-av"></div>
-        <div>
-          <div class="host__n" id="host-name"></div>
-          <div class="host__r">Vaš domaćin</div>
-        </div>
-        <div class="host__b" id="host-btns"></div>
-      </div>
-    </div>
-  </section>
-
-  <footer class="foot">
-    <div style="display:flex;align-items:center;justify-content:center;gap:9px">
-      <svg width="16" height="16" viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="10" fill="#fff" fill-opacity=".14"/><path d="M6.5 21.5c4-9.5 15-9.5 19 0" stroke="#D4674A" stroke-width="2.6" stroke-linecap="round"/><circle cx="16" cy="11" r="2.6" fill="#E9A13B"/></svg>
-      Ova stranica ne prikuplja vaše podatke · <a href="/">Odmoria</a>
-    </div>
-  </footer>
+<footer class="wrap gfoot">Ova stranica ne prikuplja vaše podatke · <a href="/">Odmoria</a></footer>
 </div>
 
 <div class="dock" id="dock"><div class="dock__in">
-  <div>
-    <div class="dock__t" id="dock-name"></div>
-    <div class="dock__s">Trebate nešto? Javite se domaćinu.</div>
-  </div>
-  <a class="btn btn--fill btn--sm" id="dock-btn" href="#">Javi se</a>
+  <span>Trebate nešto? Javite se domaćinu.</span>
+  <a class="btn btn--primary btn--sm" id="dock-btn" href="#domacin">Javi se<svg class="ic ic--sm"><use href="#i-message-circle"/></svg></a>
 </div></div>
 
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script src="/motion.js"></script>
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
@@ -404,7 +348,9 @@ const sb = createClient('https://wtojzqjhipdfbrnmprmz.supabase.co',
                         'sb_publishable_tmZAZTDbQ7ktc1N-8y4q4w_ztAu_62F')
 
 const $ = s => document.querySelector(s)
-const esc = s => (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')
+const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')
+const ico = (n, cls = '') => `<svg class="ic ${cls}" aria-hidden="true"><use href="#i-${n}"/></svg>`
+const show = (sel, on = true) => { const e = typeof sel === 'string' ? $(sel) : sel; if (e) e.hidden = !on }
 const MJ_GEN = ['siječnja','veljače','ožujka','travnja','svibnja','lipnja','srpnja','kolovoza','rujna','listopada','studenoga','prosinca']
 
 function plural(n, one, few, many) {
@@ -414,31 +360,43 @@ function plural(n, one, few, many) {
   return many
 }
 const fmtD = d => { if (!d) return ''; const x = new Date(d); return `${x.getDate()}. ${MJ_GEN[x.getMonth()]}` }
+const fmtShort = d => `${d.getDate()}. ${d.getMonth() + 1}.`
+const fmtHM = d => `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
 
 let PROP = null, SECTION = null, BOOKING = null
-let UNLOCKED = false, tick = null
+let UNLOCKED = false, tick = null, UNLOCK_AT = null, CO_END = null
 
 const params = new URLSearchParams(location.search)
 let token = params.get('token')
 if (!token) token = location.pathname.split('/h/')[1]?.split('/')[0]
 
-if (!token) showErr('Link nije ispravan.')
-else loadHub()
-
-function showErr(msg) {
-  $('#boot').style.display = 'none'
-  $('#oops').style.display = 'grid'
-  if (msg) $('#oops-msg').textContent = msg
+const STATES = {
+  invalid: ['link', 'Link nije ispravan', 'Adresa je nepotpuna ili pogrešno kopirana. Otvorite link iz poruke domaćina ponovno.'],
+  // deaktiviran link namjerno dobiva istu poruku kao istekao (zasebna poruka je otvorena odluka)
+  expired: ['clock', 'Ovaj link je istekao', 'Boravak je završio ili je link zamijenjen novim. Zamolite domaćina za novi link.'],
+  missing: ['house', 'Objekt nije pronađen', 'Smještaj više nije objavljen. Zamolite domaćina za novi link.']
+}
+function showErr(kind) {
+  const [ic, t, m] = STATES[kind] || STATES.invalid
+  $('#oops-ic').innerHTML = ico(ic)
+  $('#oops-title').textContent = t
+  $('#oops-msg').textContent = m
+  document.title = t + ' — Odmoria'
+  show('#boot', false)
+  show('#oops')
 }
 
+if (!token) showErr('invalid')
+else loadHub().catch(() => showErr('invalid'))
+
 // ══════════════════════════════════════════════════════
-//  PROVJERA LINKA I VREMENSKO ZAKLJUCAVANJE
+//  PROVJERA LINKA I VREMENSKO ZAKLJUČAVANJE (logika nepromijenjena)
 // ══════════════════════════════════════════════════════
 async function loadHub() {
   const { data: bk } = await sb.from('bookings').select('*').eq('token', token).maybeSingle()
 
   if (!bk) {
-    // stariji put: slug + properties.guest_token — otkljucava odmah, bez vremenskog uvjeta
+    // stariji put: slug + properties.guest_token — otključava odmah, bez vremenskog uvjeta
     const slug = params.get('slug')
     if (slug) {
       const { data: prop } = await sb.from('properties').select('*').eq('slug', slug).maybeSingle()
@@ -450,27 +408,28 @@ async function loadHub() {
         return
       }
     }
-    showErr('Ovaj link ne postoji ili je istekao. Zamolite domaćina za novi.')
+    showErr('invalid')
     return
   }
 
   const now = new Date()
   const expires = bk.token_expires_at ? new Date(bk.token_expires_at) : null
   if (!bk.is_active || (expires && expires < now)) {
-    showErr('Ovaj link je istekao. Zamolite domaćina za novi.')
+    showErr('expired')
     return
   }
   BOOKING = bk
 
   const { data: prop } = await sb.from('properties').select('*').eq('id', bk.property_id).maybeSingle()
-  if (!prop) { showErr('Objekt nije pronađen.'); return }
+  if (!prop) { showErr('missing'); return }
   PROP = prop
 
   await loadSection()
 
-  // Sifre se vide od sat vremena prije dolaska do kraja dana odjave.
+  // Šifre se vide od sat vremena prije dolaska do kraja dana odjave.
   const unlockAt = unlockMoment(bk, SECTION)
   const coEnd = new Date(bk.checkout_date + 'T23:59:00')
+  UNLOCK_AT = unlockAt; CO_END = coEnd
   UNLOCKED = now >= unlockAt && now <= coEnd
   if (!UNLOCKED && now < unlockAt) startCountdown(unlockAt)
 
@@ -498,206 +457,180 @@ async function finish() {
     sb.from('faq').select('*').eq('property_id', PROP.id).order('sort_order')
   ])
 
-  buildHero(); renderTop(); renderVault(); renderArrival(); renderDevices()
-  renderDark(rules.data); renderPlaces(places.data)
-  renderTransport(txs.data); renderAttractions(atts.data)
-  renderCheckout(); renderFaq(faqs.data); renderHost()
+  renderTop(); renderVault(); renderArrival(); renderHouse(rules.data, faqs.data)
+  renderRecs(places.data, txs.data, atts.data); renderHost(); renderTiles()
 
   sb.from('page_views').insert({ property_id: PROP.id, view_type: 'guest_hub' }).then(() => {})
 
-  $('#boot').style.display = 'none'
-  $('#page').style.display = ''
-  watchDock()
+  show('#boot', false)
+  show('#page')
+  route()
 }
 
 // ══════════════════════════════════════════════════════
-//  ZAGLAVLJE
+//  POČETNA
 // ══════════════════════════════════════════════════════
-const ART = ['art--zalazak', 'art--plava', 'art--maslinik']
-const SHIM = [[10,44,22,0],[17,20,16,1.2],[25,60,24,2.3],[33,32,19,.7],[42,14,21,3]]
-  .map(([t,l,w,d]) => `<div class="shimmer" style="top:${t}%;left:${l}%;width:${w}%;animation-delay:${d}s"></div>`).join('')
-
-const SVG = {
-  'art--zalazak':  `<svg viewBox="0 0 1440 200" preserveAspectRatio="none" fill="none">
-        <path d="M0 148c78-6 122-34 196-32 71 2 104 27 176 24 74-3 110-36 190-34 72 2 118 30 190 30 76 0 122-31 196-28 70 3 118 28 190 30 60 2 200-10 302-22v204H0z" fill="#6E8290" opacity=".5"/>
-        <path d="M0 170c96-10 150-42 236-38 78 4 120 33 198 31 80-2 122-40 204-36 74 4 122 34 196 34 80 0 126-33 204-29 66 3 128 26 402 18v210H0z" fill="#3E5A69" opacity=".72"/>
-        <path d="M0 192c120-8 170-30 268-24 86 5 128 24 210 22 84-2 126-26 208-22 78 4 126 22 202 22 82 0 132-18 214-14 70 3 200 6 338 2v122H0z" fill="#22394A" opacity=".92"/>
-      </svg>`,
-  'art--plava':    `<svg viewBox="0 0 1440 200" preserveAspectRatio="none" fill="none">
-        <path d="M0 160c110-6 180-26 290-22 96 4 150 20 246 18 98-2 150-24 250-20 92 4 150 20 236 20 96 0 160-16 250-12 60 3 118 6 168 4v52H0z" fill="#8FA3A8" opacity=".45"/>
-        <g fill="#5E7780" opacity=".8">
-          <path d="M120 176v-28h34v28zM170 176v-40h26v40zM212 176v-22h30v22zM470 176v-34h30v34zM512 176v-24h34v24zM880 176v-30h28v30zM918 176v-42h26v42zM1150 176v-26h32v26zM1196 176v-36h24v36z"/>
-          <path d="M120 148l17-13 17 13zM170 136l13-11 13 11zM470 142l15-12 15 12zM880 146l14-12 14 12zM1150 150l16-12 16 12z"/>
-        </g>
-        <path d="M0 178c140-4 200-14 320-11 104 3 160 11 262 10 106-1 160-13 262-11 96 2 158 11 244 11 92 0 158-8 252-6 40 1 74 2 100 3v26H0z" fill="#33505C" opacity=".92"/>
-      </svg>`,
-  'art--maslinik': `<svg viewBox="0 0 1440 260" preserveAspectRatio="none" fill="none">
-        <path d="M0 176c120-14 190-40 300-34 100 6 152 28 254 26 104-2 156-32 258-28 94 4 152 28 240 28 92 0 156-22 250-18 52 2 98 6 138 8v102H0z" fill="#9AA678" opacity=".5"/>
-        <g opacity=".92">
-          <path d="M196 232v-52" stroke="#4A4030" stroke-width="7" stroke-linecap="round"/>
-          <ellipse cx="196" cy="166" rx="62" ry="38" fill="#6E7F55"/><ellipse cx="160" cy="180" rx="40" ry="26" fill="#7C8C61"/><ellipse cx="232" cy="180" rx="42" ry="26" fill="#63744C"/>
-          <path d="M596 236v-62" stroke="#4A4030" stroke-width="8" stroke-linecap="round"/>
-          <ellipse cx="596" cy="158" rx="76" ry="45" fill="#6E7F55"/><ellipse cx="548" cy="176" rx="48" ry="30" fill="#7C8C61"/><ellipse cx="646" cy="176" rx="50" ry="30" fill="#63744C"/>
-          <path d="M1044 232v-54" stroke="#4A4030" stroke-width="7" stroke-linecap="round"/>
-          <ellipse cx="1044" cy="164" rx="64" ry="39" fill="#6E7F55"/><ellipse cx="1004" cy="180" rx="42" ry="27" fill="#7C8C61"/><ellipse cx="1086" cy="180" rx="44" ry="27" fill="#63744C"/>
-          <path d="M1330 234v-46" stroke="#4A4030" stroke-width="6" stroke-linecap="round"/>
-          <ellipse cx="1330" cy="176" rx="54" ry="33" fill="#6A7B52"/>
-        </g>
-      </svg>`
-}
-
-function artInner(cls) {
-  if (cls === 'art--maslinik') {
-    return `<div class="art__sun"></div><div class="art__haze"></div><div class="art__ground"></div>
-      <div class="art__near" style="bottom:26%;height:26vh;min-height:170px">${SVG[cls]}</div>`
-  }
-  const lift = cls === 'art--plava' ? 'bottom:40%;height:15vh;min-height:92px' : 'bottom:36%;height:17vh;min-height:104px'
-  return `<div class="art__sun"></div><div class="art__haze"></div>
-    <div class="art__mid" style="${lift}">${SVG[cls]}</div>
-    <div class="art__sea">${SHIM}</div>`
-}
-
 function orderedPhotos() {
   let urls = [...(PROP.photo_urls || [])].filter(Boolean)
   if (PROP.cover_photo_url) urls = [PROP.cover_photo_url, ...urls.filter(u => u !== PROP.cover_photo_url)]
   return urls
 }
 
-function buildHero() {
-  const photos = orderedPhotos().slice(0, 3)
-  const slides = photos.length
-    ? photos.map((u, i) => `<div class="ph${i === 0 ? ' on' : ''}" style="background-image:url('${esc(u)}')"></div>`)
-    : ART.map((c, i) => `<div class="ph art ${c}${i === 0 ? ' on' : ''}">${artInner(c)}</div>`)
-  $('#phs').innerHTML = slides.join('') + '<div class="phs__tone"></div><div class="phs__grade"></div>'
-
-  const all = [...document.querySelectorAll('.ph')]
-  if (all.length < 2 || matchMedia('(prefers-reduced-motion:reduce)').matches) return
-  let i = 0
-  setInterval(() => {
-    const prev = all[i]
-    prev.style.transform = getComputedStyle(prev).transform
-    prev.classList.remove('on')
-    setTimeout(() => { if (!prev.classList.contains('on')) prev.style.transform = '' }, 1800)
-    i = (i + 1) % all.length
-    const s = all[i]
-    s.classList.remove('on'); void s.offsetWidth; s.classList.add('on')
-  }, 7000)
-}
-
 function renderTop() {
-  $('#hero-name').textContent = PROP.name || 'Vaš smještaj'
-  $('#dock-name').textContent = PROP.name || 'Vaš smještaj'
-  document.title = (PROP.name || 'Vaš vodič') + ' — vaš vodič'
-  if (PROP.location) { $('#hero-loc').textContent = PROP.location; $('#hero-loc').style.display = '' }
+  const name = PROP.name || 'Vaš smještaj'
+  document.title = name + ' — vaš vodič'
+  $('#h-title').textContent = name
 
-  if (BOOKING) {
-    const ime = BOOKING.guest_name && BOOKING.guest_name !== 'Gost' ? BOOKING.guest_name : null
-    $('#greet-txt').textContent = ime ? `Dobrodošli, ${ime}!` : 'Dobrodošli!'
-    $('#greet').style.display = ''
+  const ime = BOOKING && BOOKING.guest_name && BOOKING.guest_name !== 'Gost' ? BOOKING.guest_name : null
+  $('#hero-name').textContent = ime ? `Dobro došli, ${ime}.` : 'Dobro došli.'
+  const cover = orderedPhotos()[0]
+  if (cover) {
+    const u = cover.replace(/['"()\\\s]/g, c => '%' + c.charCodeAt(0).toString(16).toUpperCase().padStart(2, '0'))
+    $('#hero').style.backgroundImage = `url('${u}')`
   }
 
   const c = []
-  if (BOOKING) c.push('✦ ' + fmtD(BOOKING.checkin_date) + ' – ' + fmtD(BOOKING.checkout_date))
-  if (SECTION.checkin_time) c.push('✦ Prijava od ' + SECTION.checkin_time)
-  if (PROP.max_guests) c.push('✦ ' + PROP.max_guests + ' ' + plural(PROP.max_guests,'gost','gosta','gostiju'))
-  $('#hero-chips').innerHTML = c.map(t => `<span class="chip chip--glass">${esc(t)}</span>`).join('')
+  if (BOOKING) c.push(datesTxt())
+  if (SECTION.checkin_time) c.push('Prijava od ' + SECTION.checkin_time)
+  if (SECTION.checkout_time) c.push('Odjava do ' + SECTION.checkout_time)
+  if (PROP.max_guests) c.push(PROP.max_guests + ' ' + plural(PROP.max_guests, 'gost', 'gosta', 'gostiju'))
+  $('#hero-chips').innerHTML = c.map(t => `<span class="chip">${esc(t)}</span>`).join('')
 
   if (PROP.welcome_msg || PROP.host_name) {
-    $('#letter').style.display = ''
+    show('#letter')
     $('#welcome').textContent = PROP.welcome_msg || 'Nadamo se da ćete uživati u boravku.'
-    $('#sig').textContent = PROP.host_name ? '— ' + PROP.host_name : ''
-  }
-
-  const IC = {
-    guests:'<circle cx="9" cy="8" r="3.2"/><path d="M2.5 20c1-4 3.8-6 6.5-6s5.5 2 6.5 6"/><circle cx="17.5" cy="9" r="2.4"/><path d="M15.5 13.2c2.2.4 3.8 2 4.6 4.8"/>',
-    bed:'<path d="M3 18v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6"/><path d="M3 18h18M6 10V7a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v3"/>',
-    bath:'<path d="M4 12h16v3a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z"/><path d="M7 12V6a2 2 0 0 1 4 0"/><path d="M6 19l-1 2M18 19l1 2"/>',
-    size:'<rect x="3" y="3" width="18" height="18" rx="2.5"/><path d="M8 3v18M3 8h18"/>',
-    clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/>'
-  }
-  const f = []
-  if (PROP.max_guests) f.push([IC.guests, PROP.max_guests, plural(PROP.max_guests,'gost','gosta','gostiju')])
-  if (PROP.bedrooms)   f.push([IC.bed, PROP.bedrooms, plural(PROP.bedrooms,'spavaća soba','spavaće sobe','spavaćih soba')])
-  if (PROP.beds)       f.push([IC.bed, PROP.beds, plural(PROP.beds,'krevet','kreveta','kreveta')])
-  if (PROP.bathrooms)  f.push([IC.bath, PROP.bathrooms, plural(PROP.bathrooms,'kupaonica','kupaonice','kupaonica')])
-  if (PROP.size_m2)    f.push([IC.size, PROP.size_m2 + ' m²', 'unutarnji prostor'])
-  if (SECTION.checkin_time) f.push([IC.clock, SECTION.checkin_time, SECTION.checkout_time ? 'prijava, odjava do ' + SECTION.checkout_time : 'prijava'])
-  if (f.length) {
-    $('#facts-wrap').style.display = ''
-    $('#facts').innerHTML = f.map(([ic, v, k]) =>
-      `<div class="fact"><svg class="ic" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ic}</svg><div class="v">${esc(String(v))}</div><div class="k">${esc(k)}</div></div>`).join('')
+    if (PROP.host_name) { $('#sig').textContent = '— ' + PROP.host_name; show('#sig') }
   }
 }
 
+function datesTxt() {
+  const a = new Date(BOOKING.checkin_date), b = new Date(BOOKING.checkout_date)
+  return a.getMonth() === b.getMonth()
+    ? `${a.getDate()}. – ${b.getDate()}. ${MJ_GEN[b.getMonth()]}`
+    : `${fmtD(BOOKING.checkin_date)} – ${fmtD(BOOKING.checkout_date)}`
+}
+
+// pločice „Sve za boravak” — samo one iza kojih ima sadržaja
+let TILES = []
+function renderTiles() {
+  const s = SECTION
+  const kontakt = [PROP.host_name, PROP.phone ? 'WhatsApp' : PROP.email ? 'e-mail' : null].filter(Boolean).join(' · ')
+  TILES = [
+    ['#dolazak', 'map-pin', 'Dolazak', 'Adresa, parking, upute', !$('#arr-adr').hidden || !!$('#arr-steps').innerHTML || !!(s.door_code)],
+    ['#kuca', 'wifi', 'Wi-Fi i kuća', 'Mreža, lozinka, uređaji', !!(s.wifi_name || s.wifi_pass || !$('#dev-blk').hidden)],
+    ['#preporuke', 'umbrella', 'Preporuke', 'Plaže, hrana, izleti', !!$('#places').innerHTML],
+    ['#kuca/pravila', 'book-open', 'Kućna pravila', 'I česta pitanja', !$('#rules-blk').hidden || !$('#faq-blk').hidden],
+    ['#kuca/odlazak', 'door-open', 'Odlazak', 'Prije nego krenete', !$('#out-blk').hidden],
+    ['#domacin', 'message-circle', 'Domaćin', kontakt || 'Kontakt', !!(PROP.host_name || PROP.phone || PROP.email)]
+  ].filter(t => t[4])
+  $('#tiles').innerHTML = TILES.map(([h, ic, t, sub]) =>
+    `<a class="tile" href="${h}">${ico(ic)}<b>${esc(t)}</b><span>${esc(sub)}</span></a>`).join('')
+  show('#tiles-h', TILES.length > 0)
+}
+
 // ══════════════════════════════════════════════════════
-//  TREZOR — jedino mjesto gdje se prikazuju sifre
+//  PRISTUP — jedino mjesto gdje se prikazuju šifre
 // ══════════════════════════════════════════════════════
 function vaultItems() {
   const s = SECTION, items = []
-  if (s.wifi_name) items.push({ k: 'Wi-Fi mreža', v: s.wifi_name, copy: true, sensitive: false })
-  if (s.wifi_pass) items.push({ k: 'Wi-Fi lozinka', v: s.wifi_pass, copy: true, sensitive: true })
-  if (s.door_code) items.push({ k: 'Šifra vrata', v: s.door_code, copy: true, sensitive: true })
+  if (s.wifi_name) items.push({ id: 'wifi_name', k: 'Wi-Fi mreža', ic: 'wifi', v: s.wifi_name, sensitive: false })
+  if (s.wifi_pass) items.push({ id: 'wifi_pass', k: 'Wi-Fi lozinka', ic: 'wifi', v: s.wifi_pass, sensitive: true })
+  if (s.door_code) items.push({ id: 'door_code', k: 'Šifra vrata', ic: 'key-round', v: s.door_code, sensitive: true })
   return items
+}
+
+function secretHtml(it, i) {
+  const sealed = it.sensitive && !UNLOCKED
+  // zapečaćena vrijednost NE ulazi u HTML — samo točkice
+  return `<div class="secret${sealed ? ' sealed' : ' open'}">
+    ${ico(it.ic)}
+    <div class="secret__tx"><span class="secret__k">${esc(it.k)}</span><span class="secret__v">${sealed ? '••••' : esc(it.v)}</span></div>
+    ${sealed
+      ? `<span class="secret__lock">${ico('lock', 'ic--sm')}Zaključano</span>`
+      : `<button class="copybtn" type="button" onclick="copyVal(${i})" aria-label="Kopiraj: ${esc(it.k)}">Kopiraj${ico('copy', 'ic--sm')}</button>`}
+  </div>`
+}
+
+function whenHtml(warm) {
+  if (UNLOCKED || !UNLOCK_AT || new Date() > UNLOCK_AT) return ''
+  const diff = UNLOCK_AT - new Date()
+  const d = Math.floor(diff / 86400000), h = Math.floor((diff % 86400000) / 3600000), m = Math.floor((diff % 3600000) / 60000)
+  const rel = d > 0 ? `${d} ${plural(d, 'dan', 'dana', 'dana')}${h ? ' ' + h + ' h' : ''}` : h > 0 ? `${h} h ${m} min` : `${m} min`
+  return warm
+    ? `<div class="when when--warm">${ico('lock')}<div><b>Otključava se za ${rel}</b><span>Šifra vrata i Wi-Fi pojavit će se ovdje sat prije prijave.</span></div></div>`
+    : `<div class="when">${ico('clock')}<div><b>Otključava se ${fmtShort(UNLOCK_AT)} u ${fmtHM(UNLOCK_AT)}</b><span>Sat vremena prije prijave. Stranica se otključa sama — ne trebate je osvježavati.</span></div></div>`
 }
 
 function renderVault() {
   const items = vaultItems()
-  if (!items.length) return
-  $('#vault-sec').style.display = ''
-  $('#lockstate').className = 'lockstate ' + (UNLOCKED ? 'open' : 'shut')
-  $('#lockstate').textContent = UNLOCKED ? '🔓 Otključano' : '🔒 Otključava se prije dolaska'
-  $('#codes').innerHTML = items.map((it, i) => {
-    const sealed = it.sensitive && !UNLOCKED
-    return `<div class="code${sealed ? ' sealed' : ''}">
-      <div class="k">${esc(it.k)}</div>
-      <div class="v">${sealed ? '••••••••' : esc(it.v)}</div>
-      ${it.copy ? `<button class="copy" onclick="copyVal(${i})">Kopiraj</button>` : ''}
-    </div>`
-  }).join('')
-  // zapecacene vrijednosti ne ostaju nigdje dostupne
+  // zapečaćene vrijednosti ne ostaju nigdje dostupne
   window.__VALS = items.map(it => (it.sensitive && !UNLOCKED) ? '' : it.v)
+  if (!items.length) { show('#access', false); return }
+  show('#access')
+
+  const ls = $('#lockstate')
+  ls.className = 'badge ' + (UNLOCKED ? 'badge--status' : 'badge--locked')
+  ls.innerHTML = UNLOCKED ? ico('lock-open', 'ic--sm') + 'Otključano'
+    : ico('lock', 'ic--sm') + (UNLOCK_AT && new Date() < UNLOCK_AT ? 'Otključava se prije dolaska' : 'Zaključano')
+  $('#access-note').textContent = UNLOCKED
+    ? (CO_END ? `Vrijedi do ${fmtShort(CO_END)} u 23:59.` : 'Podijelite samo s osobama koje borave s vama.')
+    : 'Šifra i lozinka prikazuju se tek kad se pristup otključa.'
+
+  // početna: šifra vrata i Wi-Fi lozinka (mreža je u „Wi-Fi i kuća”)
+  const idx = id => items.findIndex(x => x.id === id)
+  const home = ['door_code', 'wifi_pass'].map(idx).filter(i => i >= 0)
+  const homeList = home.length ? home : items.map((_, i) => i)
+  $('#codes-home').innerHTML = homeList.map(i => secretHtml(items[i], i)).join('')
+  $('#when-home').innerHTML = whenHtml(false)
+
+  // Dolazak: samo šifra vrata
+  const dc = idx('door_code')
+  $('#codes-arr').innerHTML = dc >= 0 ? secretHtml(items[dc], dc) : ''
+  $('#when-arr').innerHTML = dc >= 0 ? whenHtml(true) : ''
+  $('#arr-lbl').textContent = UNLOCKED
+    ? (CO_END ? `Otključano · vrijedi do ${fmtShort(CO_END)} u 23:59` : 'Otključano')
+    : (UNLOCK_AT && new Date() < UNLOCK_AT ? `Zaključano do ${fmtShort(UNLOCK_AT)} u ${fmtHM(UNLOCK_AT)}` : '')
+  show('#arr-lbl', !!$('#arr-lbl').textContent)
+
+  // Wi-Fi i kuća: mreža i lozinka
+  const wifi = ['wifi_name', 'wifi_pass'].map(idx).filter(i => i >= 0)
+  $('#codes-wifi').innerHTML = wifi.map(i => secretHtml(items[i], i)).join('')
+  $('#kuca-lbl').textContent = $('#arr-lbl').textContent
+  show('#kuca-lbl', !!$('#kuca-lbl').textContent && wifi.length > 0)
 }
 
-window.copyVal = i => {
+window.copyVal = async i => {
   const v = (window.__VALS || [])[i]
   if (!v) return
-  navigator.clipboard?.writeText(v)
-  toast('Kopirano ✓')
+  try { await navigator.clipboard.writeText(v); toast('Kopirano.') }
+  catch { toast('Kopiranje nije uspjelo — označite tekst i kopirajte ga ručno.') }
 }
 
 function startCountdown(unlockAt) {
-  const el = $('#countdown')
   const paint = () => {
     const diff = unlockAt - new Date()
     if (diff <= 0) {
       clearInterval(tick)
       UNLOCKED = true
-      el.style.display = 'none'
-      renderVault(); renderArrival()
-      toast('Šifra i Wi-Fi su sada dostupni 🔓')
+      renderVault(); renderArrival(); renderTiles()
+      toast('Šifra i Wi-Fi su sada dostupni.')
       return
     }
-    const h = Math.floor(diff / 3600000)
-    const m = Math.floor((diff % 3600000) / 60000)
-    el.style.display = ''
-    el.innerHTML = `<span>Otključava se za</span> <b>${h > 0 ? h + ' h ' + m + ' min' : m + ' min'}</b>
-      <span style="color:rgba(255,255,255,.6)">— sat vremena prije vašeg dolaska.</span>`
+    // osvježi samo odbrojavanje; vrijednosti ostaju zapečaćene
+    $('#when-home').innerHTML = whenHtml(false)
+    if ($('#when-arr').innerHTML) $('#when-arr').innerHTML = whenHtml(true)
   }
-  paint()
   tick = setInterval(paint, 30000)
 }
 
 // ══════════════════════════════════════════════════════
-//  OSTALE SEKCIJE
+//  DOLAZAK
 // ══════════════════════════════════════════════════════
 function renderArrival() {
   const s = SECTION, steps = []
-  if (s.checkin_time) steps.push(['Dođite od ' + s.checkin_time, s.checkout_time ? 'Odjava je do ' + s.checkout_time + '.' : ''])
-  if (s.parking_info) steps.push(['Parkirajte', s.parking_info])
-  if (s.checkin_notes) steps.push(['Uđite', s.checkin_notes])
-  if (s.door_code) steps.push(['Šifra vrata', UNLOCKED
-    ? 'Šifra je gore, u odjeljku „Wi-Fi i šifra vrata".'
-    : 'Prikazat će se sat vremena prije dolaska.'])
+  if (s.checkin_time) steps.push(['clock', 'Prijava', 'Od ' + s.checkin_time + '.' + (s.checkout_time ? ' Odjava je do ' + s.checkout_time + '.' : '')])
+  if (s.checkin_notes) steps.push(['door-open', 'Upute za dolazak', s.checkin_notes])
+  if (s.parking_info) steps.push(['car', 'Parking', s.parking_info])
 
   const adr = s.address ? s.address + (PROP.location ? ', ' + PROP.location : '') : PROP.location
   if (adr) {
@@ -705,159 +638,150 @@ function renderArrival() {
     $('#adr').textContent = adr
     $('#adr-link').href = 'https://www.google.com/maps/search/?api=1&query=' + q
     $('#map-frame').dataset.src = 'https://www.google.com/maps?q=' + q + '&output=embed'
-    $('#mapcard').style.display = ''
+    show('#arr-adr')
   }
-  if (steps.length) {
-    $('#steps').innerHTML = steps.map(([t, sub], i) =>
-      `<div class="step"><div class="step__n">${i+1}</div><div><div class="step__t">${esc(t)}</div>${sub ? `<div class="step__s">${esc(sub)}</div>` : ''}</div></div>`).join('')
-  }
-  if (steps.length || adr) $('#arrive-sec').style.display = ''
+  $('#arr-steps').innerHTML = steps.map(([ic, t, sub]) =>
+    `<div class="blk"><h3 class="h">${ico(ic)}${esc(t)}</h3><p>${esc(sub)}</p></div>`).join('')
 }
 
 window.loadMap = () => {
   const f = $('#map-frame')
-  if (!f.dataset.src || f.src) return
-  f.src = f.dataset.src
-  f.style.display = 'block'
-  $('#map-veil').style.display = 'none'
+  if (!f.dataset.src) return
+  if (!f.src) f.src = f.dataset.src
+  show('#map')
+  show('#map-btn', false)
 }
-window.openMap = q => window.open('https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(q), '_blank', 'noopener')
 
-function renderDevices() {
+// ══════════════════════════════════════════════════════
+//  WI-FI I KUĆA — uređaji, pravila, odlazak, pitanja
+// ══════════════════════════════════════════════════════
+function renderHouse(rules, faqs) {
   const s = SECTION
-  const d = [['❄️','Klima uređaj',s.ac_info],['🌡️','Grijanje',s.heating_info],
-             ['🚿','Topla voda',s.hot_water_info],['🍽️','Kuhinja',s.kitchen_info]].filter(x => x[2])
-  if (!d.length) return
-  $('#dev-sec').style.display = ''
-  $('#dev-list').innerHTML = d.map(([ic, t, v]) =>
-    `<details><summary><span><span class="ic">${ic}</span>${esc(t)}</span></summary><p>${esc(v)}</p></details>`).join('')
-}
+  const d = [['snowflake', 'Klima-uređaj', s.ac_info], ['flame', 'Grijanje', s.heating_info],
+             ['droplets', 'Topla voda', s.hot_water_info], ['utensils', 'Kuhinja', s.kitchen_info]].filter(x => x[2])
+  if (d.length) {
+    show('#dev-blk')
+    $('#dev-list').innerHTML = d.map(([ic, t, v]) =>
+      `<div class="blk" style="margin-top:16px"><h3 class="h" style="font-size:18px;margin-bottom:4px">${ico(ic)}${esc(t)}</h3><p>${esc(v)}</p></div>`).join('')
+  }
 
-function renderDark(rules) {
-  let any = false
   const rows = []
-  if (SECTION.checkin_time) rows.push(['Prijava', SECTION.checkin_time])
-  if (SECTION.checkout_time) rows.push(['Odjava', 'do ' + SECTION.checkout_time])
-  if (PROP.max_guests) rows.push(['Najviše gostiju', String(PROP.max_guests)])
-  if (BOOKING) rows.push(['Vaš termin', fmtD(BOOKING.checkin_date) + ' – ' + fmtD(BOOKING.checkout_date)])
-  if (rows.length) {
-    any = true
-    $('#know-col').style.display = ''
-    $('#know').innerHTML = rows.map(([k, v]) =>
-      `<div class="krow"><span class="k">${esc(k)}</span><span class="v">${esc(v)}</span></div>`).join('')
+  if (s.checkin_time) rows.push(`<div class="rule rule--kv"><span>Prijava</span><b>od ${esc(s.checkin_time)}</b></div>`)
+  if (s.checkout_time) rows.push(`<div class="rule rule--kv"><span>Odjava</span><b>do ${esc(s.checkout_time)}</b></div>`)
+  if (PROP.max_guests) rows.push(`<div class="rule rule--kv"><span>Najviše gostiju</span><b>${esc(String(PROP.max_guests))}</b></div>`)
+  for (const r of (rules || [])) if (r.rule_text) rows.push(`<div class="rule">${esc(r.rule_text)}</div>`)
+  if (rows.length) { show('#rules-blk'); $('#rules').innerHTML = rows.join('') }
+
+  if (s.checkout_notes) { show('#out-blk'); $('#out-text').textContent = s.checkout_notes }
+
+  if (faqs?.length) {
+    show('#faq-blk')
+    $('#faq-list').innerHTML = faqs.map((f, i) =>
+      `<details class="acc"${i === 0 ? ' open' : ''}><summary><span>${esc(f.question)}</span>${ico('chevron-down')}</summary><p>${esc(f.answer)}</p></details>`).join('')
   }
-  if (rules?.length) {
-    any = true
-    $('#rule-col').style.display = ''
-    $('#rules').innerHTML = rules.map(r => `<div class="krow full"><span class="v">${esc(r.rule_text)}</span></div>`).join('')
-  }
-  if (any) $('#night-sec').style.display = ''
 }
 
-function renderPlaces(places) {
-  if (!places?.length) return
-  $('#loc-sec').style.display = ''
-  $('#loc-title').textContent = PROP.host_name ? `Što ${PROP.host_name} preporučuje` : 'U blizini'
-  const cats = [...new Set(places.map(p => (p.category || 'Ostalo').trim()))]
-  const tabs = $('#tabs')
-  tabs.innerHTML = (cats.length > 1 ? ['Sve', ...cats] : cats)
-    .map((c, i) => `<button class="tab${i === 0 ? ' on' : ''}" data-c="${esc(c)}">${esc(c)}</button>`).join('')
-  tabs.onclick = e => {
-    const btn = e.target.closest('.tab'); if (!btn) return
-    tabs.querySelectorAll('.tab').forEach(x => x.classList.toggle('on', x === btn))
-    paintPlaces(places, btn.dataset.c)
-  }
-  paintPlaces(places, cats.length > 1 ? 'Sve' : cats[0])
+// ══════════════════════════════════════════════════════
+//  PREPORUKE — mjesta, prijevoz i atrakcije u jednom popisu
+// ══════════════════════════════════════════════════════
+const pick = (txt, map, def) => {
+  const t = String(txt || '').toLowerCase()
+  for (const [re, ic] of map) if (re.test(t)) return ic
+  return def
 }
+const PLACE_IC = [[/plaž|kupal/,'umbrella'],[/restoran|konob|pizz|hran|jelo|grill/,'utensils'],[/trgov|market|dućan|pekar|shop/,'shopping-basket'],
+  [/kafić|kav|bar|slastič/,'coffee'],[/šetn|park|prirod|staz/,'trees'],[/ljekarn|apotek/,'info']]
+const TX_IC = [[/zrač|aerodrom|airport/,'plane'],[/autobus|kolodvor|bus/,'bus'],[/trajekt|luk|brod|katamaran/,'ship'],[/taksi|taxi|auto|rent/,'car']]
+const AT_IC = [[/nacional|park prirode|slap|priroda|planin/,'trees'],[/grad|muzej|crkv|katedral|tvrđav|povijes/,'landmark'],
+  [/brod|izlet|otok|kajak|ronj/,'ship'],[/vino|vinarij|kušanj/,'wine'],[/ribolov|rib/,'fish']]
+const mapsUrl = q => 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(q)
 
-function paintPlaces(places, cat) {
-  const list = cat === 'Sve' ? places : places.filter(p => (p.category || 'Ostalo').trim() === cat)
-  $('#places').innerHTML = list.map(p => {
-    const act = p.maps_query ? `openMap('${esc(p.maps_query).replace(/'/g, "\\'")}')` : ''
-    return `<div class="place${act ? ' clickable' : ''}"${act ? ` onclick="${act}"` : ''}>
-      <span class="ic">${esc(p.icon || '✦')}</span>
-      <div style="min-width:0">
-        <div class="cat">${esc(p.category || 'Ostalo')}</div>
-        <div class="nm">${esc(p.name)}</div>
-        ${p.distance ? `<div class="dt">${esc(p.distance)}</div>` : ''}
-        ${act ? '<span class="go">Otvori na karti →</span>' : ''}
-      </div>
-    </div>`
+let RECS = []
+function renderRecs(places, txs, atts) {
+  RECS = [
+    ...(places || []).map(p => ({ cat: (p.category || 'Ostalo').trim(), ic: pick((p.category || '') + ' ' + p.name, PLACE_IC, 'map-pin'),
+      name: p.name, dt: [p.category, p.distance].filter(Boolean).join(' · '), maps: p.maps_query })),
+    ...(txs || []).map(t => ({ cat: 'Prijevoz', ic: pick(t.name, TX_IC, 'car'), name: t.name,
+      dt: ['Prijevoz', t.details].filter(Boolean).join(' · '), maps: t.maps_query, phone: t.phone })),
+    ...(atts || []).map(a => ({ cat: 'Izleti', ic: pick((a.type || '') + ' ' + a.name, AT_IC, 'camera'), name: a.name,
+      dt: [a.type || 'Izlet', a.distance, a.price].filter(Boolean).join(' · '), desc: a.description, maps: a.maps_query }))
+  ]
+  if (!RECS.length) return
+  const cats = [...new Set(RECS.map(r => r.cat))]
+  const ch = $('#fchips')
+  if (cats.length > 1) {
+    ch.innerHTML = ['Sve', ...cats].map((c, i) =>
+      `<button type="button" class="fchip" data-c="${esc(c)}" aria-pressed="${i === 0}">${ico('check', 'ic--sm')}${esc(c)}</button>`).join('')
+    ch.onclick = e => {
+      const b = e.target.closest('.fchip'); if (!b) return
+      ch.querySelectorAll('.fchip').forEach(x => x.setAttribute('aria-pressed', x === b))
+      paintRecs(b.dataset.c)
+    }
+  } else show(ch, false)
+  paintRecs('Sve')
+}
+function paintRecs(cat) {
+  const list = cat === 'Sve' ? RECS : RECS.filter(r => r.cat === cat)
+  $('#places').innerHTML = list.map(r => {
+    const go = r.maps
+      ? `<a class="lrow__go" href="${esc(mapsUrl(r.maps))}" target="_blank" rel="noopener" aria-label="${esc(r.name)} na karti">Karta${ico('arrow-up-right', 'ic--sm')}</a>`
+      : r.phone ? `<a class="lrow__go" href="tel:${esc(String(r.phone).replace(/[^\d+]/g, ''))}">Nazovi${ico('phone', 'ic--sm')}</a>` : ''
+    return `<div class="lrow"><span class="lrow__ic">${ico(r.ic)}</span>
+      <div class="lrow__tx"><span class="lrow__nm">${esc(r.name)}</span>${r.dt ? `<span class="lrow__dt">${esc(r.dt)}</span>` : ''}${r.desc ? `<span class="lrow__dt">${esc(r.desc)}</span>` : ''}</div>${go}</div>`
   }).join('')
 }
 
-function rowHtml({ icon, name, detail, desc, maps, phone }) {
-  const act = maps ? `openMap('${esc(maps).replace(/'/g, "\\'")}')` : phone ? `location.href='tel:${esc(phone)}'` : ''
-  return `<div class="row${act ? ' clickable' : ''}"${act ? ` onclick="${act}"` : ''}>
-    <span class="ic">${esc(icon || '✦')}</span>
-    <div style="flex:1;min-width:0">
-      <div class="nm">${esc(name)}</div>
-      ${detail ? `<div class="dt">${esc(detail)}</div>` : ''}
-      ${desc ? `<div class="ds">${esc(desc)}</div>` : ''}
-    </div>
-    ${act ? '<span class="go">→</span>' : ''}
-  </div>`
-}
-
-function renderTransport(txs) {
-  if (!txs?.length) return
-  $('#tx-sec').style.display = ''
-  $('#tx-list').innerHTML = txs.map(t => rowHtml({
-    icon: t.icon, name: t.name,
-    detail: [t.details, t.phone].filter(Boolean).join(' · '),
-    maps: t.maps_query, phone: t.phone })).join('')
-}
-
-function renderAttractions(atts) {
-  if (!atts?.length) return
-  $('#at-sec').style.display = ''
-  $('#at-list').innerHTML = atts.map(a => rowHtml({
-    icon: a.icon || '🎯', name: a.name,
-    detail: [a.type, a.distance, a.price].filter(Boolean).join(' · '),
-    desc: a.description, maps: a.maps_query })).join('')
-}
-
-function renderCheckout() {
-  if (!SECTION.checkout_notes) return
-  $('#out-sec').style.display = ''
-  $('#out-text').textContent = SECTION.checkout_notes
-}
-
-function renderFaq(faqs) {
-  if (!faqs?.length) return
-  $('#faq-sec').style.display = ''
-  $('#faq-list').innerHTML = faqs.map(f =>
-    `<details><summary>${esc(f.question)}</summary><p>${esc(f.answer)}</p></details>`).join('')
-}
-
+// ══════════════════════════════════════════════════════
+//  DOMAĆIN
+// ══════════════════════════════════════════════════════
 function renderHost() {
-  if (!PROP.host_name && !PROP.phone && !PROP.email) return
-  $('#host-sec').style.display = ''
+  if (!PROP.host_name && !PROP.phone && !PROP.email) { show('#dock', false); return }
   $('#host-av').textContent = (PROP.host_name || 'D')[0].toUpperCase()
   $('#host-name').textContent = PROP.host_name || 'Domaćin'
   const phone = (PROP.phone || '').replace(/\D/g, '')
   let h = ''
-  if (phone) h += `<a class="btn btn--fill btn--sm" href="https://wa.me/${phone}" target="_blank" rel="noopener">WhatsApp</a>`
-  if (PROP.phone) h += `<a class="btn btn--ghost btn--sm" href="tel:${esc(PROP.phone)}">Nazovi</a>`
-  if (PROP.email) h += `<a class="btn btn--ghost btn--sm" href="mailto:${esc(PROP.email)}">E-mail</a>`
+  if (phone) h += `<a class="btn btn--primary" href="https://wa.me/${phone}" target="_blank" rel="noopener">WhatsApp${ico('message-circle')}</a>`
+  if (PROP.phone) h += `<a class="btn btn--secondary" href="tel:${esc(PROP.phone)}">Nazovi${ico('phone')}</a>`
+  if (PROP.email) h += `<a class="btn btn--secondary" href="mailto:${esc(PROP.email)}">E-mail${ico('mail')}</a>`
   $('#host-btns').innerHTML = h
-  const first = phone ? 'https://wa.me/' + phone : PROP.phone ? 'tel:' + PROP.phone : PROP.email ? 'mailto:' + PROP.email : null
-  if (first) $('#dock-btn').href = first
-  else $('#dock-btn').style.display = 'none'
+  if (PROP.host_name) $('#help-sub').textContent = `${PROP.host_name} odgovara${phone ? ' na WhatsApp' : ''}.`
+  show('#helpcard')
+  document.body.classList.add('has-dock')
 }
 
-function watchDock() {
-  const hero = document.querySelector('.hero'), dock = $('#dock')
-  if (!hero || !('IntersectionObserver' in window)) { dock.classList.add('up'); return }
-  new IntersectionObserver(([e]) => dock.classList.toggle('up', !e.isIntersecting), { threshold: 0 }).observe(hero)
+// ══════════════════════════════════════════════════════
+//  PODSTRANICE — #dolazak, #kuca(/pravila|/odlazak|/uredaji), #preporuke, #domacin
+// ══════════════════════════════════════════════════════
+const VIEWS = {
+  dolazak: ['Dolazak'], kuca: ['Wi-Fi i kuća'], preporuke: ['Preporuke domaćina'], domacin: ['Domaćin']
 }
+function route() {
+  const [v, anchor] = location.hash.slice(1).split('/')
+  const view = VIEWS[v] ? v : 'home'
+  document.querySelectorAll('[data-view]').forEach(el => { el.hidden = el.dataset.view !== view })
+  const home = view === 'home'
+  show('#back', !home)
+  show('#h-badge', home)
+  $('#h-title').textContent = home ? (PROP.name || 'Vaš smještaj') : VIEWS[view][0]
+  $('#h-sub').textContent = home ? 'Vaš privatni vodič' : (PROP.name || 'Vaš smještaj') + ' · privatni vodič'
+  show('#dock', view !== 'domacin' && !!(PROP.host_name || PROP.phone || PROP.email))
+  const target = anchor && document.getElementById(anchor)
+  if (target) { target.scrollIntoView({ block: 'start' }); target.focus({ preventScroll: true }) }
+  else scrollTo(0, 0)
+}
+addEventListener('hashchange', route)
+window.goHome = () => {
+  history.pushState(null, '', location.pathname + location.search)
+  route()
+}
+addEventListener('popstate', route)
 
 window.toast = msg => {
   const el = $('#toast')
   el.textContent = msg
   el.classList.add('show')
   clearTimeout(el._t)
-  el._t = setTimeout(() => el.classList.remove('show'), 2200)
+  el._t = setTimeout(() => el.classList.remove('show'), 2600)
 }
 </script>
 </body>

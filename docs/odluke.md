@@ -1,6 +1,6 @@
 # Odmoria redizajn — odluke koje čekaju vlasnika
 
-Stanje 28. 9. 2026. (naslovnica, javna stranica i dashboard preneseni u kod). Ovdje su skupljena sva otvorena pitanja iz Figme (faze A, B i C)
+Stanje 28. 9. 2026. (naslovnica, javna stranica, dashboard i vodič za gosta preneseni u kod). Ovdje su skupljena sva otvorena pitanja iz Figme (faze A, B i C)
 i ona koja su se otvorila pri prijenosu naslovnice u kod. Dok odluka ne padne, kod
 radi kako je opisano u stupcu **Sada u kodu**, uvijek na sigurnu stranu: ništa se
 ne obećava što ne postoji, a ništa se ne upisuje u bazu.
@@ -12,6 +12,24 @@ Oznaka `[ ]` znači da odluka još nije donesena. Kad padne, upiše se ispod sta
 i kvačica se zatvori.
 
 ---
+
+## 0. Sigurnost — provjeriti prije lansiranja
+
+- [ ] **Tko smije čitati tablicu `sections`?** U njoj su `door_code` i
+  `wifi_pass`. `CLAUDE.md` kaže da je anonimni korisnik smije čitati po
+  `property_id`, a u `sql/` nema datoteke koja postavlja njezina pravila (RLS),
+  pa se iz repozitorija ne može provjeriti. `property_id` nije tajan — javna
+  stranica ga dobije uz ostale podatke objekta.
+  **Ako je tako, šifra vrata i Wi-Fi lozinka mogu se dohvatiti izravno preko
+  API-ja, bez linka gosta i bez vremenskog zaključavanja** — zaključavanje u
+  `h.html` radi samo u pregledniku (vrijednosti ne ulaze u HTML, ali stignu u
+  preglednik u odgovoru baze).
+  Popravak je na strani baze (npr. funkcija koja vraća šifre samo za važeći
+  token i samo u prozoru prijava − 1 h … odjava 23:59) i traži tvoje izričito
+  odobrenje jer mijenja RLS. Ništa nije dirano.
+  **Sada u kodu:** Figma je pod karticom „Vaš pristup” imala rečenicu „Šifre se
+  ne šalju u preglednik prije otključavanja” — to trenutačno **nije istina**, pa
+  vodič piše „Šifra i lozinka prikazuju se tek kad se pristup otključa.”
 
 ## 1. Najvažnije — planovi i cijene
 
@@ -88,7 +106,7 @@ i kvačica se zatvori.
 - [ ] **Rečenica „Točnu adresu i upute za dolazak gost dobiva u privatnom
   vodiču”** vrijedi samo ako je domaćin upisao adresu u „Dolazak”. Zadržati?
 
-## 4. Aplikacija domaćina i vodič — faza B (dashboard prenesen u kod, vodič nije)
+## 4. Aplikacija domaćina i vodič — faza B (oboje preneseno u kod)
 
 - [ ] Proći prototipe B1 Host Desktop, B2 Host Mobile i B3 Guest Mobile.
 - [ ] **Navigacija:** 5 glavnih dijelova u bočnoj traci + podtabovi, umjesto 17
@@ -117,6 +135,20 @@ i kvačica se zatvori.
 - [ ] **Stari zajednički privatni link** (`slug` + `guest_token`, otključava
   odmah): ukloniti iz sučelja?
 - [ ] **„Deaktiviran” zasebno od „Istekao”**, sa zasebnom porukom u vodiču?
+  **Sada u kodu:** ista poruka („Ovaj link je istekao”), kao i prije.
+- [ ] **Vodič: podstranice.** Figma ima zasebne zaslone (Dolazak, Wi-Fi i kuća,
+  Preporuke, Domaćin). U kodu su to dijelovi iste stranice koji se otvaraju
+  preko adrese (`#dolazak`, `#kuca`, `#preporuke`, `#domacin`) s gumbom natrag;
+  pločice „Kućna pravila” i „Odlazak” vode na isti zaslon „Wi-Fi i kuća”, na
+  svoj odjeljak. U redu?
+- [ ] **Vodič: pločica „Kako što radi”** iz Figme u kodu se zove „Wi-Fi i kuća”,
+  jer taj zaslon nosi i Wi-Fi mrežu i lozinku (kao Figma okvir „Wi-Fi i kuća”).
+- [ ] **Vodič: preporuke u jednom popisu.** Mjesta, prijevoz i atrakcije su jedan
+  popis s filtrima (kategorije domaćina + „Prijevoz” + „Izleti”), kao u Figmi.
+- [ ] **Vodič: tamna tema** iz `preview/` nije prenesena (Figma je nema). Treba li?
+- [ ] **Vodič: tekstovi stanja linka** preuzeti su iz Figme („Link nije
+  ispravan”, „Ovaj link je istekao”, „Objekt nije pronađen”) — nijedno stanje
+  ne otkriva naziv ni adresu objekta.
 - [ ] **Analitika po danu** iz `page_views`: želimo li taj prikaz i na kojem planu?
 - [ ] **Države posjetitelja:** odobriti izmjenu sheme (`country`, `lang` u
   `page_views`) i `api/track.js`, ili odustati.
@@ -145,7 +177,7 @@ i kvačica se zatvori.
 - [ ] Povlačenje prstom u galeriji — samo u kodu (Figma ga ne podržava).
 - [ ] Tablet 834 kao zaseban frame, ako bude potreban (kod ga već pokriva).
 - [ ] Redoslijed prijenosa u kod: naslovnica ✔ → javna stranica ✔ → aplikacija
-  domaćina ✔ → vodič → račun/admin. Svaki korak na Preview, pa potvrda.
+  domaćina ✔ → vodič ✔ → račun/admin. Svaki korak na Preview, pa potvrda.
 
 ## 7. Grana i produkcija
 
@@ -154,6 +186,6 @@ i kvačica se zatvori.
   `407f300` (konfigurator na naslovnici — sada zamijenjen), `91eaf02`
   (CLAUDE.md), `265e2cc` (tabovi u dashboardu). PR #1 je zatvoren bez spajanja.
   Treba odlučiti: spojiti sve zajedno, ili razdvojiti.
-- [ ] `atmosphere.css`, `teme.css`, `teme.js` i `motion.js` naslovnica i javna
-  stranica više ne učitavaju, ali ih i dalje koriste `h.html`, `dashboard.html`
-  i `preview/`. Brišu se tek kad zadnja stranica prijeđe na `odmoria.css`.
+- [ ] `atmosphere.css` i `motion.js` više ne učitava nijedna živa stranica —
+  koristi ih samo `preview/`. `teme.css`/`teme.js` koristi još `dashboard.html`
+  (panel „Izgled”). Obrisati s mapom `preview/` kad se odluči. Brišu se tek kad zadnja stranica prijeđe na `odmoria.css`.
