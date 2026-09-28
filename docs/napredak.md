@@ -1,8 +1,10 @@
 # Odmoria redizajn — što je gotovo, a što nije
 
 Stanje 28. 9. 2026. Otvorene odluke su zasebno u [`odluke.md`](odluke.md); ovdje
-je samo pregled posla. Ništa od ovoga nije u produkciji — sve je na grani
-`claude/funny-archimedes-c0qosu` i čeka pregled na Vercel Previewu.
+je samo pregled posla. **Sve niže je spojeno u `main` i u produkciji**
+(28. 9. 2026., commit `7bca527`, na izričitu potvrdu vlasnika). SQL datoteke
+iz tablice treba pokrenuti u Supabaseu — dok se ne pokrenu, stranice rade na
+starom putu (vidi „Čeka tvoj pregled”).
 
 ## Gotovo (prošli smo)
 
@@ -58,7 +60,7 @@ Popratno:
 - [ ] Pomoć, Uvjeti, Privatnost na Previewu — i **pravni tekst** prema
   `odluke.md`, točka 8 (Stripe, cijene, treće strane, kontakt).
 - [ ] **Analitika i admin na Previewu** — Pregled i Analitika u dashboardu s pravim podacima; admin svih 7 tabova, detalji domaćina (pažljivo: „Spremi pretplatu” stvarno mijenja bazu).
-- [ ] **Sigurnost šifri** — kod je gotov; **vi pokrećete SQL korake** redom (`odluke.md`, točka 0): KORAK 0 → KORAK 1 → spajanje u `main` → KORAK 2 → KORAK 4.
+- [ ] **Sigurnost šifri** — kod je gotov; **vi pokrećete SQL korake** redom (`odluke.md`, točka 0): KORAK 0 → KORAK 1 → (spajanje u `main` ✔ gotovo) → KORAK 2 → KORAK 4.
 - [ ] **Upiti gostiju** — pokrenuti `sql/add-inquiries.sql` (`odluke.md`, točka 13).
 - [ ] **Popusti** — pokrenuti `sql/add-plan-promotions.sql` pa u adminu proći tab Popusti (`odluke.md`, točka 14). Naplate još nema dok se ne spoji Stripe.
 - [ ] **Preporuke** — proći popis u `odluke.md`, točka 15, i reći što želite.
@@ -98,6 +100,5 @@ Popratno:
 - [ ] Fotografije u Figmi (4 datoteke na `seed:*` pravokutnike) — ti ih povlačiš
   ručno, jer ovo okruženje ne može slati slike u Figmu.
 - [ ] Licenca za `living.jpg`, `bedroom.jpg`, `kitchen.jpg`.
-- [ ] Spajanje u `main` — tek na tvoju izričitu potvrdu. Grana nosi i pet
-  starijih commitova (admin v3, tabovi u dashboardu, stara naslovnica s
-  konfiguratorom); vidi točku 7 u `odluke.md`.
+- [x] Spajanje u `main` — 28. 9. 2026. (`7bca527`). Na `main` je bio stariji
+  squash iste grane bez ičega novog, pa je zadržan sadržaj grane.
