@@ -37,7 +37,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 
 ```
 /
-├── index.html              # Landing page — AKTIVNA, **prava v3 stranica** (dijeli `atmosphere.css`), konfigurator izgleda
+├── index.html              # Landing page — AKTIVNA, **redizajn v2 iz Figme** (`odmoria.css`), bez konfiguratora
 ├── p.html                  # Javna stranica objekta (?slug=xxx) — AKTIVNA, **v3 dizajn**
 ├── h.html                  # Privatni gostinski hub (?token=xxx) — AKTIVNA, **v3 dizajn**
 ├── dashboard.html          # Glavni host dashboard — AKTIVNA, **v3 paleta i tipografija**
@@ -46,6 +46,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 ├── account.html              help.html                admin.html (gated: owner auth UID)
 ├── terms.html                privacy.html             404.html
 ├── vercel.json              # Rewrites za clean URL-ove, security headeri + dnevni cron za keepalive
+├── odmoria.css              # NOVI v2 dizajn sustav (Figma „Odmoria / Product Design / v2”) — zasad samo naslovnica
 ├── atmosphere.css           # DIJELJENI v3 dizajn sustav (tokeni, scena, gumbi, reveal) — koristi p.html
 ├── teme.css                 # OSAM TEMA javne stranice — dijele ih p.html, dashboard.html i preview/
 ├── teme.js                  # rasporedi zaglavlja, `izBaze(prop)` i zajednički birač tema
@@ -54,7 +55,8 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 ├── links.js                 # gradnja linkova (/p/, /h/) — NIKAD ne zakucavati domenu, vidi dolje
 ├── plans.js                 # rezervne vrijednosti + helperi; pravi izvor istine je tablica `plans` u bazi
 ├── billing.js                # Stripe checkout/portal helperi — NIJE importan ni u jednom HTML-u (mrtav kod dok se ne spoji API)
-├── assets/                   # odmoria-dashboard.png (više se nigdje ne koristi — stara naslovnica ju je prikazivala u herou)
+├── assets/                   # landing/villa-1600.jpg i villa-900.jpg (naslovnica); odmoria-dashboard.png se više nigdje ne koristi
+├── docs/odluke.md            # SVE odluke koje čekaju vlasnika (planovi, faze A/B/C, naslovnica) — čitati prije prijenosa sljedeće stranice
 ├── api/
 │   ├── keepalive.js          # Vercel Cron, jednom dnevno — sprječava pauziranje Supabase Free projekta
 │   ├── sync-ical.js          # povlači zauzete termine s Booking.com-a i Airbnb-a
@@ -74,7 +76,7 @@ Obje funkcije su namjerno **bez ijedne npm ovisnosti** — projekt nema build ko
 
 **Mockupi više ne postoje.** Mapa `v3/` i stari `*-v2.html` obrisani su kad su sve četiri prave stranice prešle na v3 — nema više `/v3/` na domeni ni dvije adrese za isto.
 
-`p.html`, `h.html` i `index.html` učitavaju dijeljeni `atmosphere.css` i `motion.js`. Jedino `dashboard.html` ima vlastiti potpun CSS s v3 vrijednostima u svojim starim imenima tokena (vidi "Dashboard — v3 preko vlastitih tokena").
+`p.html` i `h.html` učitavaju dijeljeni `atmosphere.css` i `motion.js`; `index.html` je prva stranica na novom `odmoria.css` (vidi „Redizajn v2”). Jedino `dashboard.html` ima vlastiti potpun CSS s v3 vrijednostima u svojim starim imenima tokena (vidi "Dashboard — v3 preko vlastitih tokena").
 
 ---
 
@@ -495,22 +497,38 @@ Tablica cijena gore je početno stanje u bazi; planovi i cijene još nisu konač
 
 Dashboard **ne učitava `atmosphere.css`** — ima vlastiti potpun CSS. Dvostruko definiranje istih tokena bi se sukobilo.
 
-**Konfigurator na naslovnici vodi temama.** Prije je reklamirao „8 boja, 4
-prizora, 3 tipografije” — koncept koji više ne postoji. Sada su teme prva os,
-a minijature nisu ilustracije nego isti HTML i CSS iz `teme.js`, punjeni imenom
-koje posjetitelj upiše. Telefon desno preuzme pravi raspored odabrane teme.
-Tri zamke: slušač se veže **jednom na spremnik** (unutar `crtajTeme()` bi se
-nakupio po pritisku tipke), crtanje čeka 260 ms da se tipkanje smiri (osam
-minijatura sa SVG prizorima po znaku je preskupo), i `innerHTML` briše oznake
-zaključanosti koje postavi `lockUI()`, pa ih `crtajTeme()` mora vratiti.
+## Redizajn v2 — prijenos iz Figme u kod (u tijeku)
 
-**Cijene na naslovnici stvarno dolaze iz baze** — provjereno: podmetnute 11/33
-pojavile su se, zakucanih 15/49 nije bilo. Ako su cijene „stare”, to je stanje
-tablice `plans`, ne greška u kodu.
+Figma datoteka `BVdEgki8jV7z6Oa3K6Te2h` (faze A, B, C) je vizualni izvor; postojeći
+kod je izvor funkcija i podataka. Prenosi se stranicu po stranicu, svaka na
+Preview pa potvrda: **naslovnica ✔** → `p.html` → aplikacija domaćina → vodič →
+račun/admin. Otvorena pitanja su u `docs/odluke.md`, ne u kodu.
 
-`index.html` **nije** prošao isti postupak — nju smo prvo pokušali prebojati, ali je ostala „fiksna" i u herou je prikazivala sliku zastarjelog dashboarda. Zato je zamijenjena pravom v3 naslovnicom iz mockupa: dijeli `atmosphere.css` i `motion.js`, nema **nijednu** vanjsku sliku (svi su prizori crtani u CSS-u i SVG-u), i nosi **konfigurator izgleda** (boja, naslovnica, font) koji na Free planu drži dio opcija zaključanim i nudi nadogradnju.
+**`odmoria.css`** nosi tokene iz Figme (perla #FCFCFA, petrol #103D4B, akcija
+#116D76, zaobljenja 7/10/14, razmaci 4–96, širina sadržaja 1376, rub 48/16),
+gumbe, oznake, harmoniku i fokus. Pisma: Manrope (sučelje, naslovi), DM Sans
+(tekst), Georgia → Gelasio (ime objekta). Ikone su Lucide, kao inline SVG sprite
+na dnu `<body>` svake stranice. `atmosphere.css`/`teme.*`/`motion.js` ostaju dok
+ih koristi i jedna stranica.
 
-Cijene, nazivi planova i limiti na naslovnici **nisu zakucani** — skripta na dnu `index.html` ih puni iz tablice `plans` preko `loadPlans(sb)`, isto kao `help.html`. Vrijednosti upisane u HTML služe samo kao rezerva ako je Supabase nedostupan. Popust na godišnje plaćanje (`−2 mj.`) se izračuna iz Pro cijena, ne pretpostavlja.
+**Naslovnica (`index.html`)** — nema konfiguratora tema (odgođeno, vidi
+`docs/odluke.md`). Fotografija je samo `assets/landing/villa-*.jpg` (AI vila iz
+handoffa); sličice u izlogu su CSS izrezi iste slike jer ostale fotografije nemaju
+dokaz licence. Tekst nad fotografijom uvijek stoji **na dnu**, gdje je scrim
+najtamniji — na mobitelu je to `justify-content:flex-end`, inače ime objekta
+padne na nebo. Demo panel „Za domaćine” ima ARIA tabove (strelice, Home/End) i
+izmišljene podatke s oznakom „Demo · sintetički podaci”. Nijedna tvrdnja o planu
+nije jača od koda: nema „5 jezika”, automatske sinkronizacije ni vlastite domene.
+
+Cijene, nazivi planova i limiti **nisu zakucani** — skripta na dnu `index.html`
+ih puni iz tablice `plans` preko `loadPlans(sb)`, isto kao `help.html`.
+Provjereno podmetnutim klijentom: 20/50 €, 41 fotografija i neograničeno (-1)
+pojave se s ispravnim padežima. Vrijednosti u HTML-u su rezerva ako Supabase
+ili esm.sh nisu dostupni. Ako su cijene „stare”, to je stanje tablice `plans`.
+
+Provjereno Playwrightom na 1920/1440/834/430/390/360: bez vodoravnog
+prelijevanja, nijedan tekst na punoj podlozi ispod WCAG AA, bez JS grešaka,
+izbornik (Esc zatvara), tabovi i koraci rade.
 
 ---
 
@@ -543,7 +561,6 @@ Ako ikad zatreba da linkovi uvijek pokazuju na jednu domenu bez obzira odakle su
 - **Stripe checkout nije spojen.** Gumbi za nadogradnju u dashboardu su statični (`toast(...)`), ne pozivaju `billing.js`. `billing.js` uopće nije importan ni u jednom HTML-u.
 - **Stripe serverless funkcije ne postoje** (`create-checkout-session`, `create-portal-session`, `stripe-webhook`). `track-event.js` također ne postoji, ali ne treba — `page_views` insert ide direktno s klijenta preko Supabase (`sb.from('page_views').insert(...)`), pa analytics radi neovisno.
 - **Automatska iCal sinkronizacija** — sinkronizira se samo na klik u dashboardu, ne po rasporedu (vidi gore).
-- **Landing obećava višejezičnost koje nema.** U Pro planu na `index.html` piše „Vodič na jeziku gosta — 5 jezika". To treba maknuti ili implementirati prije nego se krene prodavati.
 - **Nema višejezičnosti.** `plans.maxLanguages` postoji, ali u kodu nema nijednog prijevoda ni prebacivanja jezika.
 
 ---

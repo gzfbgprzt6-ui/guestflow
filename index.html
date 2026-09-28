@@ -3,980 +3,645 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Odmoria — gost zna sve, prije nego pita</title>
-<meta name="description" content="Digitalni vodič za goste vašeg apartmana. Wi-Fi, šifra vrata, upute i preporuke na jednom linku. Bez provizije.">
+<title>Odmoria — vlastita stranica smještaja, bez provizije</title>
+<meta name="description" content="Javna stranica vašeg smještaja, alat za boravke i privatni vodič za goste. 0% provizije na rezervacije.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="/atmosphere.css">
-<link rel="stylesheet" href="/teme.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Manrope:wght@600;700;800&display=swap">
+<link rel="stylesheet" href="/odmoria.css">
 <style>
-/* ---- specifično za landing ---- */
-.hero{position:relative;height:100svh;min-height:640px;display:flex;align-items:flex-end;overflow:hidden}
-.hero__in{position:relative;z-index:5;width:100%;padding-bottom:clamp(40px,7vh,84px)}
-.hero h1{max-width:13ch}
-.hero .lead{margin-top:26px;max-width:30em;font-size:clamp(1rem,1.35vw,1.2rem)}
-.hero__cta{display:flex;flex-wrap:wrap;gap:14px;margin-top:36px}
-.hero__trust{display:flex;flex-wrap:wrap;gap:10px 28px;margin-top:30px;font-size:.87rem;font-weight:600;color:var(--ink-70)}
-.hero__trust span{display:flex;align-items:center;gap:9px}
-.hero__trust svg{color:var(--olive);flex:none}
+/* ---- samo naslovnica; zajedničko je u odmoria.css ---- */
+.sec{padding-block:var(--s9)}
+.sec--wash{background:var(--bg-wash)}
+.sec--dark{background:var(--bg-inverse);color:var(--text-inverse)}
+.head{display:grid;gap:var(--s4);max-width:760px}
+.head .t-lead{max-width:720px}
 
-.islands{position:absolute;left:-4%;right:-4%;bottom:36%;height:17vh;min-height:104px}
-.islands svg{width:100%;height:100%}
-.olive{position:absolute;top:-30px;right:-40px;width:clamp(240px,30vw,430px);opacity:.9;
-  transform:translate(var(--mx,0),var(--my,0)) rotate(6deg);transition:transform .4s var(--ease-soft)}
-.scroll-cue{display:flex;align-items:center;gap:13px;margin-top:38px;font-size:.85rem;font-weight:600;color:var(--ink-50)}
-.cue{width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.85);backdrop-filter:blur(10px);
-  display:grid;place-items:center;animation:cueBob 2.6s var(--ease-soft) infinite;box-shadow:0 10px 24px -14px rgba(20,32,46,.6)}
-@keyframes cueBob{0%,100%{transform:translateY(0)}50%{transform:translateY(7px)}}
+/* traka provizije */
+.bar{background:var(--bg-inverse);color:#fff;font-size:14px}
+.bar .wrap{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:4px 16px;padding-block:12px;text-align:center}
+.bar strong{color:var(--text-on-inverse-accent);font:600 16px/1.4 var(--font-body)}
+.bar a{display:inline-flex;align-items:center;gap:4px;font-weight:600;text-underline-offset:3px;min-height:28px}
 
-/* rail s prikazima */
-.rail-head{display:flex;flex-wrap:wrap;gap:18px;align-items:flex-end;justify-content:space-between}
-.screencard{width:clamp(230px,24vw,278px)}
-.screenframe{border-radius:30px;padding:9px;background:var(--ink);box-shadow:0 40px 70px -40px rgba(20,32,46,.6)}
-.screeninner{border-radius:23px;overflow:hidden;background:var(--cream);position:relative;padding-bottom:14px}
-.sc-top{height:154px;position:relative;background:linear-gradient(165deg,#F3C78C,#D4674A 46%,#2E6B77 86%)}
-.sc-top::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(20,18,16,.8),transparent 60%)}
-.sc-ov{position:absolute;left:14px;right:14px;bottom:12px;color:#fff;z-index:2}
-.sc-loc{font-size:.52rem;font-weight:800;letter-spacing:.2em;text-transform:uppercase;opacity:.85}
-.sc-name{font-family:'Fraunces',serif;font-size:1.3rem;font-variation-settings:'SOFT' 20,'WONK' 1;margin-top:2px}
-.sc-body{padding:13px 14px;display:flex;flex-direction:column;gap:7px}
-.sc-row{display:flex;align-items:center;justify-content:space-between;gap:9px;background:var(--shell);
-  border:1px solid var(--line-2);border-radius:11px;padding:9px 11px}
-.sc-k{font-size:.56rem;font-weight:800;letter-spacing:.1em;color:var(--ink-30)}
-.sc-v{font-size:.68rem;font-weight:700;font-family:ui-monospace,monospace}
-.sc-cta{margin-top:3px;background:var(--terra);color:#fff;text-align:center;font-size:.68rem;font-weight:800;
-  padding:10px;border-radius:999px}
-.screencap{margin-top:16px;font-size:.84rem;color:var(--ink-50);font-weight:600;max-width:24em}
-.screencap b{color:var(--ink);font-weight:800;display:block;font-size:.95rem;margin-bottom:3px}
+/* navigacija */
+.nav{position:sticky;top:0;z-index:30;background:rgba(252,252,250,.94);backdrop-filter:saturate(1.4) blur(8px);border-bottom:1px solid transparent}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:var(--s5);min-height:88px}
+.logo{font:800 30px/1 var(--font-ui);letter-spacing:-.04em;text-decoration:none;color:var(--text)}
+.logo span{color:var(--text-accent)}
+.nav__links{display:flex;gap:var(--s6)}
+.nav__links a,.nav__login{font:500 15px/1.4 var(--font-body);text-decoration:none;padding:10px 0}
+.nav__links a:hover,.nav__login:hover{color:var(--text-accent)}
+.nav__cta{display:flex;align-items:center;gap:var(--s5)}
+.nav__menu{display:none;width:44px;height:44px;align-items:center;justify-content:center;border:1px solid var(--border-control);border-radius:var(--radius-control);background:var(--bg-surface);color:var(--text);cursor:pointer}
+.drawer{display:none}
 
-/* pitanja */
-.ask{position:relative;min-height:340px}
-.ask .b{position:absolute;background:var(--shell);border:1px solid var(--line);border-radius:20px 20px 20px 6px;
-  padding:13px 17px;font-size:.9rem;font-weight:600;box-shadow:0 16px 34px -22px rgba(20,32,46,.45);
-  opacity:0;transform:translateY(30px)}
-.ask.rv-in .b{opacity:1;transition:opacity .75s var(--ease),transform .95s var(--ease)}
-.ask .b i{display:block;font-size:.66rem;color:var(--ink-30);font-weight:700;font-style:normal;margin-top:4px}
-.ask.rv-in .b:nth-child(1){transform:rotate(-3deg);transition-delay:.05s}
-.ask.rv-in .b:nth-child(2){transform:rotate(2.2deg);transition-delay:.17s}
-.ask.rv-in .b:nth-child(3){transform:rotate(-1.6deg);transition-delay:.29s}
-.ask.rv-in .b:nth-child(4){transform:rotate(3deg);transition-delay:.41s}
-.ask.rv-in .b:nth-child(5){transform:rotate(-2.4deg);transition-delay:.53s}
-.ask .b:nth-child(1){left:0;top:0}
-.ask .b:nth-child(2){left:26%;top:70px}
-.ask .b:nth-child(3){left:4%;top:142px}
-.ask .b:nth-child(4){left:30%;top:212px}
-.ask .b:nth-child(5){left:2%;top:280px}
+/* hero */
+.hero .wrap{display:grid;grid-template-columns:minmax(0,560px) minmax(0,1fr);gap:var(--s8);align-items:center;padding-block:56px 72px}
+.hero__copy{display:grid;gap:var(--s5)}
+.hero__ctas{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s4)}
+.assure{display:flex;flex-wrap:wrap;gap:8px 20px;font-size:14px}
+.assure li{display:flex;align-items:center;gap:6px}
+.assure .ic{color:var(--text-accent)}
+.product{display:grid;gap:var(--s4);justify-items:end}
+.browser{width:100%;overflow:hidden;background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-feature);box-shadow:var(--shadow-panel)}
+.browser__bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 16px;border-bottom:1px solid var(--border)}
+.dots{display:flex;gap:6px}.dots i{width:10px;height:10px;border-radius:50%;background:var(--border)}
+.photo{position:relative;background:#2E6F86 center/cover no-repeat;background-image:url(/assets/landing/villa-1600.jpg)}
+.photo::after{content:"";position:absolute;inset:0;background:var(--scrim)}
+.photo > *{position:relative;z-index:1}
+.browser .photo{min-height:440px;display:flex;align-items:flex-end;justify-content:space-between;gap:var(--s4);padding:28px}
+.photo__copy{display:grid;gap:8px;color:#fff}
+.photo__copy .eyebrow{color:#fff}
+.photo__name{font:400 40px/1.15 var(--font-editorial);letter-spacing:-.02em}
+.browser__info{display:flex;align-items:center;gap:var(--s4);padding:20px 24px}
+.browser__info div{flex:1;display:grid;gap:4px}
+.note{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-panel)}
+.note__ic{display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:var(--bg-warm);color:var(--text-warm)}
 
-/* tamna sekcija */
-.night{position:relative;color:#fff;overflow:hidden;background:var(--night)}
-.night h2,.night h3{color:#fff}
-.night .kicker{color:var(--rose)}
-.night .lead{color:rgba(255,255,255,.62)}
-.pagecards{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin-top:54px;align-items:start}
-@media(max-width:860px){.pagecards{grid-template-columns:1fr}}
-.pgc{background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.12);border-radius:var(--r-lg);
-  padding:30px;transition:transform .7s var(--ease),background .5s}
-.pgc:hover{transform:translateY(-8px);background:rgba(255,255,255,.085)}
-.pgc--b{margin-top:38px}
-.pgtag{font-size:.62rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;padding:6px 13px;border-radius:999px}
-.pgtag--pub{background:rgba(126,143,106,.22);color:#B9CBA3}
-.pgtag--priv{background:rgba(212,103,74,.2);color:#EDA890}
-.pgc ul{list-style:none;padding:0;margin:20px 0 0;display:flex;flex-direction:column;gap:11px}
-.pgc li{display:flex;gap:11px;align-items:center;font-size:.9rem;color:rgba(255,255,255,.78)}
-.lockrow{margin-top:24px;display:flex;align-items:center;gap:12px;background:rgba(212,103,74,.1);
-  border:1px solid rgba(212,103,74,.26);border-radius:var(--r-sm);padding:14px 17px;font-size:.85rem;color:rgba(255,255,255,.85)}
-.lockrow svg{animation:jiggle 5s var(--ease) infinite}
-@keyframes jiggle{0%,58%,100%{transform:none}64%,88%{transform:translateY(-2px) rotate(-12deg)}}
+/* koristi */
+.benefits{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s7);padding-block:var(--s6);border-block:1px solid var(--border)}
+.benefit{display:flex;gap:var(--s4)}
+.benefit b{font:700 12px/1.6 var(--font-body);letter-spacing:.15em;color:var(--text-accent)}
+.benefit div{display:grid;gap:6px}
 
-/* ---------- KONFIGURATOR ---------- */
-.play{display:grid;grid-template-columns:1fr 420px;gap:50px;align-items:start;margin-top:48px}
-@media(max-width:1040px){.play{grid-template-columns:1fr;gap:40px}.play__pv{order:-1}}
+/* izlog */
+.show__head{display:flex;justify-content:space-between;align-items:flex-end;gap:var(--s8);margin-bottom:var(--s7)}
+.show__head .t-lead{max-width:440px}
+.show__body{display:grid;grid-template-columns:minmax(0,780px) minmax(0,1fr);gap:56px;align-items:center}
+.gallery{display:grid;gap:var(--s4)}
+.gallery .photo{min-height:460px;border-radius:var(--radius-feature);overflow:hidden}
+.gallery .photo::after{display:none}
+.thumbs{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s4)}
+.thumbs .photo{min-height:170px;border-radius:var(--radius-panel)}
+.thumbs .photo:nth-child(1){background-position:12% 40%;background-size:260%}
+.thumbs .photo:nth-child(2){background-position:88% 70%;background-size:240%}
+.thumbs .photo:nth-child(3){background-position:55% 95%;background-size:220%}
+.show__copy{display:grid;gap:var(--s5);align-content:start}
+.show__copy .checks{font-size:18px}
 
-/* preklopnik plana */
-.planflip{display:inline-flex;background:var(--sand);border-radius:999px;padding:5px;gap:4px;position:relative}
-.planflip button{border:0;background:transparent;font-family:inherit;font-size:.88rem;font-weight:800;
-  color:var(--ink-50);padding:12px 26px;border-radius:999px;cursor:pointer;
-  transition:background .5s var(--ease),color .35s,box-shadow .5s var(--ease);display:flex;align-items:center;gap:8px}
-.planflip button.on{background:var(--shell);color:var(--ink);box-shadow:0 8px 22px -10px rgba(20,32,46,.35)}
-.planflip button[data-plan="pro"].on{background:var(--ink);color:#fff}
+/* upravljački centar */
+.points{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s5);margin-block:var(--s6) var(--s6)}
+.point{display:grid;gap:8px;align-content:start}
+.point .ic{color:var(--text-accent)}
+.demo{overflow:hidden;background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-feature);box-shadow:var(--shadow-panel)}
+.demo__bar{display:flex;align-items:center;justify-content:space-between;gap:var(--s4);padding-inline:24px;border-bottom:1px solid var(--border)}
+.tabs{display:flex;gap:8px}
+.tab{display:flex;align-items:center;gap:8px;min-height:56px;padding:0 16px;border:0;border-bottom:3px solid transparent;background:none;font:500 15px/1.4 var(--font-body);color:var(--text-muted);cursor:pointer}
+.tab[aria-selected="true"]{border-bottom-color:var(--action);color:var(--text);font:700 14px/1.2 var(--font-ui)}
+.tab[aria-selected="true"] .ic{color:var(--text-accent)}
+.demo__body{display:grid;grid-template-columns:1fr 1fr;gap:var(--s5);padding:24px;background:var(--bg-page)}
+.demo__body[hidden]{display:none}
+.panel{display:grid;gap:12px;align-content:start;padding:16px;background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-panel)}
+.select{display:inline-flex;align-items:center;gap:8px;justify-self:start;min-height:44px;padding:0 12px;background:var(--bg-surface);border:1px solid var(--border-control);border-radius:var(--radius-control);font-weight:600}
+.select .ic{color:var(--text-accent)}
+.brow{display:flex;align-items:center;gap:12px;padding-top:8px;border-top:1px solid var(--border)}
+.brow div{flex:1;display:grid;gap:2px}
+.cal{display:grid;grid-template-columns:repeat(7,44px);gap:4px}
+.cal span{display:grid;place-items:center;height:44px;border-radius:6px;background:var(--bg-surface);border:1px solid var(--border);font-size:15px}
+.cal span.x{background:var(--bg-page);border:1px dashed var(--border-control);color:var(--text-muted);text-decoration:line-through}
+.cal span.today{border:1.5px solid var(--action)}
+.cal span.e{visibility:hidden}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--text-muted)}
+.legend i{display:inline-block;width:14px;height:14px;margin-right:6px;vertical-align:-2px;border-radius:3px;border:1px solid var(--border-control);background:var(--bg-surface)}
+.legend i.x{border-style:dashed;background:var(--bg-page)}
+.progress{height:8px;border-radius:4px;background:var(--bg-wash);overflow:hidden}
+.progress i{display:block;height:100%;width:66%;background:var(--action);border-radius:4px}
+.quick{display:flex;flex-wrap:wrap;gap:8px}
+.pub{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:var(--s5);grid-column:1/-1}
+.pub .photo{min-height:360px;border-radius:var(--radius-panel)}
+.pub .photo::after{display:none}
+.pub__info{display:grid;gap:12px;align-content:center}
+.amen{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:14px}
+.amen span{display:flex;align-items:center;gap:8px}.amen .ic{color:var(--text-accent)}
+.phone{display:grid;gap:12px;align-content:start;padding:20px 16px;background:var(--bg-surface);border:1px solid var(--border-control);border-radius:20px}
+.lrow{display:flex;align-items:center;gap:12px;padding:12px;border-radius:var(--radius-panel);background:var(--bg-wash)}
+.lrow.open{background:var(--bg-page)}
+.lrow div{flex:1;display:grid;gap:2px}
+.lrow > .ic:first-child{color:var(--text-accent)}
 
-.cfgbox{background:var(--shell);border:1px solid var(--line-2);border-radius:var(--r-lg);padding:28px;margin-top:22px}
-.cfgrow{padding:22px 0;border-bottom:1px dashed var(--line)}
-.cfgrow:first-child{padding-top:0}
-.cfgrow:last-child{border-bottom:0;padding-bottom:0}
-.cfglab{display:flex;align-items:center;justify-content:space-between;gap:14px;font-size:.87rem;font-weight:800}
-.cfgcount{font-size:.72rem;font-weight:700;color:var(--ink-30)}
-.cfghint{font-size:.78rem;color:var(--ink-50);margin-top:3px;font-weight:500}
+/* koraci */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s5);margin-block:var(--s6)}
+.step{display:grid;gap:12px;align-content:start;padding:28px 24px;text-align:left;background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-feature);color:var(--text);font:inherit;cursor:pointer;transition:background-color .2s var(--ease),color .2s var(--ease)}
+.step__top{display:flex;align-items:center;gap:12px}
+.step__ic{display:grid;place-items:center;width:40px;height:40px;border-radius:8px;background:var(--bg-wash);color:var(--text-accent)}
+.step .t-muted{color:var(--text-muted)}
+.step[aria-pressed="true"]{background:var(--bg-inverse);border-color:var(--bg-inverse);color:#fff}
+.step[aria-pressed="true"] .eyebrow{color:var(--text-on-inverse-accent)}
+.step[aria-pressed="true"] .step__ic{background:rgba(168,226,216,.16);color:var(--text-on-inverse-accent)}
+.step[aria-pressed="true"] .t-muted{color:rgba(255,255,255,.88)}
 
-.sw-row{display:flex;gap:11px;flex-wrap:wrap;margin-top:14px}
-.sw{width:44px;height:44px;border-radius:15px;cursor:pointer;border:3px solid transparent;position:relative;
-  transition:transform .45s var(--ease),border-color .3s,opacity .3s}
-.sw:hover{transform:translateY(-4px)}
-.sw.on{border-color:var(--ink);transform:scale(1.09)}
-.sw.lk{opacity:.42}
-.sw.lk::after{content:"";position:absolute;inset:0;border-radius:12px;
-  background:rgba(250,246,239,.5) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13' height='13' viewBox='0 0 24 24' fill='none' stroke='%2314202E' stroke-width='3' stroke-linecap='round'%3E%3Crect x='5' y='11' width='14' height='9' rx='2'/%3E%3Cpath d='M8 11V7a4 4 0 0 1 8 0'/%3E%3C/svg%3E") center/13px no-repeat}
+/* privatni vodič */
+.guide .wrap{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:var(--s8);align-items:center}
+.guide__copy{display:grid;gap:var(--s5)}
+.guide .eyebrow{color:var(--text-on-inverse-accent)}
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:var(--s4)}
+.cmp > div{display:grid;gap:12px;align-content:start;padding:20px;border-radius:var(--radius-panel);background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.22)}
+.cmp h3{display:flex;align-items:center;gap:10px;font:700 18px/1.35 var(--font-ui)}
+.cmp .ic{color:var(--text-on-inverse-accent)}
+.cmp li{display:flex;gap:8px;font-size:14px}
+.guide .phone{color:var(--text);border:0;border-radius:28px;box-shadow:var(--shadow-overlay)}
 
-.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(128px,1fr));gap:9px;margin-top:14px}
-.opt{position:relative;text-align:left;background:var(--cream);border:2px solid var(--line);border-radius:var(--r-sm);
-  padding:13px 14px;cursor:pointer;font-family:inherit;transition:border-color .3s,background .3s,transform .4s var(--ease),opacity .3s}
-.opt:hover{transform:translateY(-3px)}
-.opt.on{border-color:var(--terra);background:var(--shell)}
-.opt.lk{opacity:.5}
-.opt b{display:block;font-size:.87rem;font-weight:800}
-.opt small{color:var(--ink-30);font-size:.72rem;font-weight:600}
-.opt .lk-i{position:absolute;top:10px;right:11px;opacity:.55}
-.cfgin{width:100%;background:var(--cream);border:1.5px solid var(--line);border-radius:12px;padding:11px 14px;
-  font-family:inherit;font-size:.88rem;color:var(--ink);margin-top:12px;transition:border-color .25s,box-shadow .25s,background .25s}
-.cfgin:focus{outline:0;border-color:var(--terra);background:var(--shell);box-shadow:0 0 0 3px rgba(212,103,74,.14)}
+/* provizija */
+.zero .wrap{display:grid;grid-template-columns:420px minmax(0,1fr);gap:var(--s8);align-items:center}
+.zero__n{font:800 clamp(96px,10vw,136px)/1 var(--font-ui);letter-spacing:-.05em;color:var(--text-accent)}
+.zero__copy{display:grid;gap:var(--s5)}
+.zero .checks{font-size:18px}
 
-.upsell{margin-top:20px;border-radius:var(--r-md);padding:18px 20px;display:flex;flex-wrap:wrap;gap:14px;
-  align-items:center;justify-content:space-between;background:var(--ink);color:#fff;
-  opacity:0;max-height:0;overflow:hidden;transition:opacity .5s var(--ease),max-height .6s var(--ease),margin .4s}
-.upsell.show{opacity:1;max-height:200px}
-.upsell p{margin:0;font-size:.86rem;color:rgba(255,255,255,.7)}
-.upsell b{color:#fff;display:block;font-size:.95rem;margin-bottom:3px}
+/* planovi */
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s5);margin-top:var(--s7)}
+.plan{display:grid;gap:var(--s5);align-content:start;padding:32px;background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-feature)}
+.plan--featured{background:var(--bg-inverse);border-color:var(--bg-inverse);color:#fff;box-shadow:var(--shadow-panel)}
+.plan__price{display:grid;gap:4px}
+.plan__price .n{font:700 28px/1.1 var(--font-ui);letter-spacing:-.02em}
+.plan--featured .t-muted,.plan--featured .t-meta{color:rgba(255,255,255,.86)}
+.plan--featured .checks .ic{color:var(--text-on-inverse-accent)}
+.plan .btn{margin-top:auto}
+.plan__note{margin-top:calc(-1*var(--s3));text-align:center;font-size:13px;line-height:1.4;color:rgba(255,255,255,.86)}
 
-/* pregled */
-.play__pv{position:sticky;top:96px}
-.pvwrap{display:flex;flex-direction:column;align-items:center;gap:14px}
-.pvnote{font-size:.76rem;color:var(--ink-30);font-weight:700;display:flex;align-items:center;gap:8px}
-.pvbadge{margin-top:10px;font-size:.55rem;font-weight:800;letter-spacing:.1em;color:var(--ink-30);
-  background:var(--sand);border-radius:999px;padding:5px 12px;display:inline-flex;align-items:center;gap:6px;
-  transition:opacity .5s var(--ease)}
-
-/* brojke */
-.nums{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;margin-top:20px}
-@media(max-width:760px){.nums{grid-template-columns:1fr;gap:18px}}
-.num{padding:28px 0;border-top:1px solid var(--line)}
-.num .v{font-family:'Fraunces',serif;font-size:clamp(2.6rem,5vw,4rem);font-weight:500;line-height:1;
-  font-variation-settings:'SOFT' 20,'WONK' 1;color:var(--terra)}
-.num .k{font-size:.9rem;color:var(--ink-70);margin-top:10px;font-weight:600;max-width:24ch}
-
-/* cijene */
-.plans{display:grid;grid-template-columns:.88fr 1.12fr .88fr;gap:22px;align-items:center;margin-top:54px}
-@media(max-width:1000px){.plans{grid-template-columns:1fr;max-width:440px;margin-inline:auto}}
-.plan{background:var(--shell);border:1px solid var(--line);border-radius:var(--r-lg);padding:32px 28px;
-  transition:transform .7s var(--ease),box-shadow .7s var(--ease)}
-.plan:hover{transform:translateY(-7px);box-shadow:0 38px 64px -40px rgba(20,32,46,.4)}
-.plan--hero{border:2px solid var(--terra);padding:44px 32px;position:relative;
-  box-shadow:0 36px 70px -34px rgba(212,103,74,.5)}
-.planbadge{position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--terra);color:#fff;
-  font-size:.63rem;font-weight:800;letter-spacing:.14em;padding:7px 17px;border-radius:999px;white-space:nowrap}
-.planname{font-family:'Fraunces',serif;font-size:1.4rem;font-variation-settings:'SOFT' 20,'WONK' 1}
-.price{display:flex;align-items:baseline;gap:10px;margin-top:14px;flex-wrap:wrap}
-.price .n{font-family:'Fraunces',serif;font-size:3rem;font-weight:500;line-height:1;transition:opacity .25s}
-.price .p{font-size:.86rem;color:var(--ink-30);font-weight:700}
-.plan ul{list-style:none;padding:0;margin:24px 0 0;display:flex;flex-direction:column;gap:12px}
-.plan li{display:flex;gap:11px;align-items:flex-start;font-size:.91rem;color:var(--ink-70)}
-.plan li svg{color:var(--olive);flex:none;margin-top:4px}
-.plan .btn{width:100%;margin-top:28px}
-.switch{display:inline-flex;background:var(--sand);border-radius:999px;padding:5px;gap:4px;margin-top:26px}
-.switch button{border:0;background:transparent;font-size:.86rem;font-weight:700;color:var(--ink-50);
-  padding:11px 22px;border-radius:999px;cursor:pointer;transition:background .45s var(--ease),color .3s}
-.switch button.on{background:var(--shell);color:var(--ink);box-shadow:0 6px 18px -8px rgba(20,32,46,.3)}
+/* FAQ */
+.faq .wrap{display:grid;grid-template-columns:420px minmax(0,1fr);gap:var(--s8)}
+.faq__title{display:grid;gap:var(--s4);align-content:start}
 
 /* završni poziv */
-.final{position:relative;overflow:hidden;text-align:center;padding-block:clamp(90px,13vw,160px)}
-.final h2{max-width:15ch;margin-inline:auto}
+.final{padding-bottom:var(--s9)}
+.final__panel{display:grid;grid-template-columns:minmax(0,1fr) 560px;gap:var(--s7);align-items:center;padding:32px 32px 32px 56px;background:var(--bg-inverse);color:#fff;border-radius:var(--radius-feature)}
+.final__panel .eyebrow{color:var(--text-on-inverse-accent)}
+.final__copy{display:grid;gap:20px;justify-items:start}
+.final__panel .photo{min-height:340px;border-radius:var(--radius-panel)}
+.final__panel .photo::after{display:none}
 
-.faq details{border-bottom:1px solid var(--line);padding:20px 0}
-.faq summary{cursor:pointer;font-weight:700;font-size:1.05rem;list-style:none;
-  display:flex;justify-content:space-between;gap:16px;align-items:center}
-.faq summary::-webkit-details-marker{display:none}
-.faq summary::after{content:"+";color:var(--terra);font-size:1.4rem;font-weight:400;transition:transform .3s var(--ease)}
-.faq details[open] summary::after{transform:rotate(45deg)}
-.faq p{margin-top:13px;color:var(--ink-70);line-height:1.68;font-size:.97rem}
+/* footer */
+.foot{border-top:1px solid var(--border);padding-block:48px 32px}
+.foot__cols{display:grid;grid-template-columns:minmax(0,1fr) repeat(3,200px);gap:var(--s7)}
+.foot__cols > div{display:grid;gap:10px;align-content:start}
+.foot a{font-size:14px;color:var(--text-muted);text-decoration:none}
+.foot a:hover{color:var(--text-accent);text-decoration:underline}
+.foot h3{font:600 14px/1.4 var(--font-body)}
+.foot__legal{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-top:var(--s6);font-size:13px;color:var(--text-muted)}
+
+/* ---------- ≤ 1100 px ---------- */
+@media (max-width:1100px){
+  .nav__links{display:none}
+  .hero .wrap,.show__body,.guide .wrap,.zero .wrap,.faq .wrap,.final__panel{grid-template-columns:1fr}
+  .product{justify-items:stretch}
+  .points{grid-template-columns:1fr 1fr}
+  .plans{grid-template-columns:1fr}
+  .final__panel{padding:24px}
+  .final__panel .photo{order:-1;min-height:220px}
+  .foot__cols{grid-template-columns:1fr 1fr}
+}
+/* ---------- mobitel ---------- */
+@media (max-width:760px){
+  .sec{padding-block:56px}
+  .nav .wrap{min-height:68px}
+  .logo{font-size:24px}
+  .nav__login,.nav__cta .btn span.long{display:none}
+  .nav__menu{display:inline-flex}
+  .drawer.open{display:grid;gap:4px;padding:8px var(--gutter) 16px;border-bottom:1px solid var(--border);background:var(--bg-page)}
+  .drawer a{display:flex;align-items:center;min-height:48px;font:600 16px/1.4 var(--font-body);text-decoration:none;border-bottom:1px solid var(--border)}
+  .hero .wrap{padding-block:24px 48px;gap:var(--s5)}
+  .hero__ctas{flex-direction:column;align-items:stretch}
+  .assure{flex-direction:column}
+  .t-lead{font-size:16px}
+  .browser .photo{min-height:240px;padding:16px;flex-direction:column;align-items:flex-start;justify-content:flex-end}
+  .browser .photo .btn{display:none}
+  .photo__name{font-size:30px}
+  .browser__info{flex-direction:column;align-items:stretch}
+  .benefits{grid-template-columns:1fr;gap:0;padding-block:0;border-bottom:0}
+  .benefit{padding-block:20px;border-bottom:1px solid var(--border)}
+  .show__head{flex-direction:column;align-items:flex-start;gap:var(--s4);margin-bottom:var(--s5)}
+  .gallery .photo{min-height:240px}
+  .thumbs{gap:8px}.thumbs .photo{min-height:84px}
+  .show__copy .checks,.zero .checks{font-size:16px}
+  .points{grid-template-columns:1fr;gap:var(--s4)}
+  .demo__bar{padding-inline:8px}
+  .demo__bar .badge,.tab .ic{display:none}
+  .tabs{flex:1;gap:0}.tab{flex:1;justify-content:center;padding:0 8px;min-height:48px}
+  .demo__body{grid-template-columns:1fr;padding:16px}
+  .pub{grid-template-columns:1fr}.pub .photo{min-height:200px}
+  .cal{grid-template-columns:repeat(7,1fr)}
+  .steps{grid-template-columns:1fr;gap:12px}
+  .cmp{grid-template-columns:1fr}
+  .plan{padding:24px}
+  .foot__cols{grid-template-columns:1fr}
+}
 </style>
 </head>
-<body class="grain">
+<body>
+<a class="skip" href="#main">Preskoči na sadržaj</a>
 
-<nav class="nav"><div class="wrap nav__in">
-  <a href="/" class="brand">
-    <svg width="31" height="31" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-      <rect width="32" height="32" rx="10" fill="#14202E"/>
-      <path d="M6.5 21.5c4-9.5 15-9.5 19 0" stroke="#D4674A" stroke-width="2.6" stroke-linecap="round"/>
-      <circle cx="16" cy="11" r="2.6" fill="#E9A13B"/>
-    </svg>
-    Odmoria
-  </a>
-  <div class="nav__links">
-    <a href="#gost">Što gost vidi</a>
-    <a href="#kako">Kako radi</a>
-    <a href="#izgled">Izgled</a>
-    <a href="#cijene">Cijene</a>
-    <a href="#pitanja">Pitanja</a>
+<!-- Lucide ikone (ISC), iste kao u Figmi -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></symbol>
+  <symbol id="i-right" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><path d="M8 2v3"/><path d="M16 2v3"/><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/></symbol>
+  <symbol id="i-images" viewBox="0 0 24 24"><path d="m22 11-1.296-1.296a2.4 2.4 0 0 0-3.408 0L11 16"/><path d="M4 8a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2"/><rect x="8" y="2" width="14" height="14" rx="2"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M12 5v16"/><path d="M20.001 19A2 2 0 0022 17V5a2 2 0 00-1.999-2L16 3.002A5 5 0 0012 5a5 5 0 00-4-2H4a2 2 0 00-2 2v12a2 2 0 001.999 2H8a5 5 0 014 2 5 5 0 014-2z"/></symbol>
+  <symbol id="i-house" viewBox="0 0 24 24"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol>
+  <symbol id="i-key" viewBox="0 0 24 24"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"/></symbol>
+  <symbol id="i-wifi" viewBox="0 0 24 24"><path d="M12 20h.01"/><path d="M2 8.82a15 15 0 0 1 20 0"/><path d="M5 12.859a10 10 0 0 1 14 0"/><path d="M8.5 16.429a5 5 0 0 1 7 0"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+  <symbol id="i-dash" viewBox="0 0 24 24"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 5h16"/><path d="M4 12h16"/><path d="M4 19h16"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+  <symbol id="i-waves" viewBox="0 0 24 24"><path d="M2 12q2.5 2 5 0t5 0 5 0 5 0"/><path d="M2 19q2.5 2 5 0t5 0 5 0 5 0"/><path d="M2 5q2.5 2 5 0t5 0 5 0 5 0"/></symbol>
+  <symbol id="i-bed" viewBox="0 0 24 24"><path d="M2 20v-8a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v8"/><path d="M4 10V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4"/><path d="M12 4v6"/><path d="M2 18h20"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></symbol>
+</svg>
+
+<div class="bar">
+  <div class="wrap">
+    <strong>0% provizije na rezervacije.</strong>
+    <span>Vaši gosti. Vaš dogovor. Plaćeni planovi imaju fiksnu pretplatu za alat.</span>
+    <a href="#planovi">Istraži planove <svg class="ic ic--sm"><use href="#i-up"/></svg></a>
   </div>
-  <div style="display:flex;align-items:center;gap:14px">
-    <a href="/login.html" class="nav__login">Prijava</a>
-    <a href="/register.html" class="btn btn--dark btn--sm" data-magnetic="8">Počni besplatno</a>
-  </div>
-</div></nav>
+</div>
 
-<!-- ============ HERO ============ -->
-<header class="hero" data-scene>
-  <div class="scene">
-    <div class="scene__sun" data-speed="0.14" data-mouse="18" style="transform:translate(-50%,-50%)"></div>
-    <div class="scene__haze"></div>
-
-    <div class="islands" data-speed="0.07" data-mouse="10">
-      <svg viewBox="0 0 1440 200" preserveAspectRatio="none" fill="none">
-        <path d="M0 148c78-6 122-34 196-32 71 2 104 27 176 24 74-3 110-36 190-34 72 2 118 30 190 30 76 0 122-31 196-28 70 3 118 28 190 30 60 2 200-10 302-22v204H0z"
-              fill="#6E8290" opacity=".5"/>
-        <path d="M0 170c96-10 150-42 236-38 78 4 120 33 198 31 80-2 122-40 204-36 74 4 122 34 196 34 80 0 126-33 204-29 66 3 128 26 402 18v210H0z"
-              fill="#3E5A69" opacity=".72"/>
-        <path d="M0 192c120-8 170-30 268-24 86 5 128 24 210 22 84-2 126-26 208-22 78 4 126 22 202 22 82 0 132-18 214-14 70 3 200 6 338 2v122H0z"
-              fill="#22394A" opacity=".92"/>
-      </svg>
-    </div>
-
-    <div class="scene__sea" data-speed="0.03">
-      <div class="shimmer" style="top:9%;left:46%;width:22%;animation-delay:0s"></div>
-      <div class="shimmer" style="top:15%;left:22%;width:16%;animation-delay:1.1s"></div>
-      <div class="shimmer" style="top:22%;left:58%;width:26%;animation-delay:2.2s"></div>
-      <div class="shimmer" style="top:29%;left:34%;width:19%;animation-delay:.6s"></div>
-      <div class="shimmer" style="top:36%;left:64%;width:14%;animation-delay:3.1s"></div>
-      <div class="shimmer" style="top:44%;left:12%;width:23%;animation-delay:1.7s"></div>
-    </div>
-
-    <div class="scene__veil"></div>
-
-    <svg class="olive" data-mouse="26" viewBox="0 0 400 300" fill="none" aria-hidden="true">
-      <path d="M392 18C330 44 262 78 206 124 160 162 124 206 96 254" stroke="#2B4450" stroke-width="3.4" stroke-linecap="round" opacity=".5"/>
-      <g fill="#2B4450" opacity=".45">
-        <ellipse cx="348" cy="40" rx="25" ry="11" transform="rotate(-26 348 40)"/>
-        <ellipse cx="306" cy="66" rx="24" ry="10.5" transform="rotate(-20 306 66)"/>
-        <ellipse cx="268" cy="94" rx="23" ry="10" transform="rotate(-14 268 94)"/>
-        <ellipse cx="232" cy="124" rx="22" ry="10" transform="rotate(-8 232 124)"/>
-        <ellipse cx="198" cy="158" rx="21" ry="9.5" transform="rotate(2 198 158)"/>
-        <ellipse cx="168" cy="194" rx="20" ry="9" transform="rotate(10 168 194)"/>
-        <ellipse cx="142" cy="230" rx="19" ry="8.5" transform="rotate(18 142 230)"/>
-        <ellipse cx="368" cy="74" rx="20" ry="9" transform="rotate(34 368 74)"/>
-        <ellipse cx="322" cy="112" rx="19" ry="8.5" transform="rotate(40 322 112)"/>
-        <ellipse cx="282" cy="150" rx="18" ry="8" transform="rotate(46 282 150)"/>
-      </g>
-      <circle cx="292" cy="112" r="7.5" fill="#7E8F6A" opacity=".8"/>
-      <circle cx="222" cy="176" r="6.5" fill="#7E8F6A" opacity=".7"/>
-    </svg>
-  </div>
-
-  <div class="hero__in wrap">
-    <div class="kicker" data-rv="fade" data-rv-now>Za iznajmljivače na Jadranu</div>
-    <h1 style="margin-top:20px">
-      <span class="mask-line" data-rv-now><span>Gost zna sve,</span></span>
-      <span class="mask-line" data-rv-now><span class="italic" style="color:var(--terra)">prije nego pita.</span></span>
-    </h1>
-    <p class="lead" data-rv="up" data-rv-delay="420">
-      Wi-Fi, šifra vrata, put do kuće i vaše preporuke — na jednoj stranici koju gost otvori u browseru.
-      Bez aplikacije, bez provizije, bez poruka u pola noći.
-    </p>
-    <div class="hero__cta" data-rv="up" data-rv-delay="540">
-      <a href="/register.html" class="btn btn--fill" data-magnetic="12">Napravi svoj vodič <span class="arr">→</span></a>
-      <a href="#gost" class="btn btn--light">Pogledaj primjer</a>
-    </div>
-    <div class="hero__trust" data-rv="up" data-rv-delay="640">
-      <span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Bez kartice</span>
-      <span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Gotovo za 10 minuta</span>
-      <span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Bez provizije, zauvijek</span>
-    </div>
-    <div class="scroll-cue" data-rv="fade" data-rv-delay="800">
-      <span class="cue"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#14202E" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg></span>
-      pogledajte što gost dobije
+<header class="nav">
+  <div class="wrap">
+    <a href="/" class="logo" aria-label="Odmoria — naslovnica">Odmoria<span>.</span></a>
+    <nav class="nav__links" aria-label="Glavna navigacija">
+      <a href="#izlog">Vaša web-stranica</a>
+      <a href="#domacini">Za domaćine</a>
+      <a href="#kako">Kako funkcionira</a>
+      <a href="#planovi">Planovi</a>
+    </nav>
+    <div class="nav__cta">
+      <a href="/login.html" class="nav__login">Prijava</a>
+      <a href="/register.html" class="btn btn--primary btn--sm">Započni <span class="long">besplatno</span> <svg class="ic ic--sm"><use href="#i-up"/></svg></a>
+      <button class="nav__menu" type="button" aria-expanded="false" aria-controls="drawer" aria-label="Izbornik"><svg class="ic"><use href="#i-menu"/></svg></button>
     </div>
   </div>
+  <nav class="drawer" id="drawer" aria-label="Izbornik">
+    <a href="#izlog">Vaša web-stranica</a>
+    <a href="#domacini">Za domaćine</a>
+    <a href="#kako">Kako funkcionira</a>
+    <a href="#planovi">Planovi</a>
+    <a href="/login.html">Prijava</a>
+  </nav>
 </header>
 
-<div class="ticker"><div class="ticker__track" id="ticker"></div></div>
+<main id="main">
 
-<!-- ============ ŠTO GOST VIDI (vodoravni klizač) ============ -->
-<section class="sec" id="gost">
+<!-- HERO -->
+<section class="hero">
   <div class="wrap">
-    <div class="rail-head">
-      <div data-rv="up">
-        <div class="kicker">Što gost vidi</div>
-        <h2 style="margin-top:18px">Jedan link. <span class="italic" style="color:var(--terra)">Sve unutra.</span></h2>
+    <div class="hero__copy">
+      <p class="eyebrow">Za apartmane, vile i dobre domaćine</p>
+      <h1 class="t-hero">Vaš smještaj.<br><span class="accent">Njegov najbolji<br>prvi dojam.</span></h1>
+      <p class="t-lead">Web-stranica koja predstavlja vaš objekt. Alat koji organizira boravke. Privatni vodič koji gostima daje odgovore — bez novih poruka.</p>
+      <div class="hero__ctas">
+        <a href="/register.html" class="btn btn--primary">Izradi svoju stranicu <svg class="ic"><use href="#i-up"/></svg></a>
+        <a href="#izlog" class="btn btn--text">Pogledaj primjer za gosta <svg class="ic"><use href="#i-right"/></svg></a>
       </div>
-      <div class="hand" style="font-size:1.5rem;color:var(--ink-30)" data-rv="fade">povucite u stranu →</div>
+      <ul class="assure">
+        <li><svg class="ic ic--sm"><use href="#i-check"/></svg>Bez provizije na rezervacije</li>
+        <li><svg class="ic ic--sm"><use href="#i-check"/></svg>Bez kodiranja</li>
+        <li><svg class="ic ic--sm"><use href="#i-check"/></svg>Bez aplikacije za gosta</li>
+      </ul>
+      <p class="t-meta">Jednom unesete podatke. Dobijete javnu stranicu i privatni vodič.</p>
     </div>
-  </div>
-
-  <div class="wrap" style="margin-top:44px">
-    <div class="rail" data-rv-stagger="110">
-      <div class="screencard" data-rv="up">
-        <div class="screenframe">
-          <div class="screeninner">
-            <div class="sc-top"><div class="sc-ov"><div class="sc-loc">Hvar, Dalmacija</div><div class="sc-name">Villa Maslina</div></div></div>
-            <div class="sc-body">
-              <div class="sc-row"><span class="sc-k">WI-FI</span><span class="sc-v">VillaMaslina</span></div>
-              <div class="sc-row"><span class="sc-k">ŠIFRA VRATA</span><span class="sc-v">4 2 7 1</span></div>
-              <div class="sc-row"><span class="sc-k">PRIJAVA</span><span class="sc-v">15:00</span></div>
-              <div class="sc-cta">Kontaktiraj domaćina</div>
-            </div>
-          </div>
+    <div class="product">
+      <div class="browser">
+        <div class="browser__bar">
+          <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="t-meta">Javna stranica vašeg smještaja</span>
+          <span class="badge badge--demo">Demo</span>
         </div>
-        <div class="screencap"><b>Pristup</b>Šifra se otključa tek na dan dolaska — ne ranije.</div>
+        <div class="photo" role="img" aria-label="Ogledna vila s bazenom iznad mora">
+          <div class="photo__copy">
+            <span class="eyebrow">Primošten · Dalmacija</span>
+            <span class="photo__name">Villa Maslina</span>
+            <span>Vila · do 6 gostiju · 3 spavaće sobe</span>
+          </div>
+          <a href="#izlog" class="btn btn--inverse btn--sm">Istraži smještaj <svg class="ic ic--sm"><use href="#i-up"/></svg></a>
+        </div>
+        <div class="browser__info">
+          <div><strong class="t-small-head">Vaša stranica, vaši podaci</strong><span class="t-meta">Fotografije, sadržaji, dostupnost i izravan kontakt s domaćinom.</span></div>
+          <a href="#izlog" class="btn btn--secondary btn--sm">Provjeri dostupnost <svg class="ic ic--sm"><use href="#i-up"/></svg></a>
+        </div>
       </div>
-
-      <div class="screencard" data-rv="up">
-        <div class="screenframe">
-          <div class="screeninner">
-            <div class="sc-top" style="background:linear-gradient(165deg,#F3C78C,#7E8F6A 50%,#2B4450 90%)">
-              <div class="sc-ov"><div class="sc-loc">Dolazak</div><div class="sc-name">Put do vrata</div></div>
-            </div>
-            <div class="sc-body">
-              <div class="sc-row"><span class="sc-k">ADRESA</span><span class="sc-v">Sv. Nedjelje 14</span></div>
-              <div class="sc-row"><span class="sc-k">PARKING</span><span class="sc-v">mjesto 3</span></div>
-              <div class="sc-row"><span class="sc-k">KLJUČ</span><span class="sc-v">sef lijevo</span></div>
-              <div class="sc-cta" style="background:var(--sea)">Otvori u Maps</div>
-            </div>
-          </div>
-        </div>
-        <div class="screencap"><b>Dolazak</b>Adresa, parking i put od trajekta — korak po korak.</div>
-      </div>
-
-      <div class="screencard" data-rv="up">
-        <div class="screenframe">
-          <div class="screeninner">
-            <div class="sc-top" style="background:linear-gradient(165deg,#E9A13B,#D4674A 55%,#2E6B77 92%)">
-              <div class="sc-ov"><div class="sc-loc">Preporuke</div><div class="sc-name">Naša uvala</div></div>
-            </div>
-            <div class="sc-body">
-              <div class="sc-row"><span class="sc-k">PLAŽA</span><span class="sc-v">120 stepenica</span></div>
-              <div class="sc-row"><span class="sc-k">KONOBA</span><span class="sc-v">10 min autom</span></div>
-              <div class="sc-row"><span class="sc-k">IZLET</span><span class="sc-v">Pakleni otoci</span></div>
-              <div class="sc-cta" style="background:var(--olive)">Sve preporuke</div>
-            </div>
-          </div>
-        </div>
-        <div class="screencap"><b>Preporuke</b>Vaša mjesta, ne prepisani vodič iz 2009.</div>
-      </div>
-
-      <div class="screencard" data-rv="up">
-        <div class="screenframe">
-          <div class="screeninner">
-            <div class="sc-top" style="background:linear-gradient(165deg,#C98874,#2E6B77 60%,#14202E 95%)">
-              <div class="sc-ov"><div class="sc-loc">Upute</div><div class="sc-name">Kako što radi</div></div>
-            </div>
-            <div class="sc-body">
-              <div class="sc-row"><span class="sc-k">KLIMA</span><span class="sc-v">MODE → ❄</span></div>
-              <div class="sc-row"><span class="sc-k">TOPLA VODA</span><span class="sc-v">bojler 80 l</span></div>
-              <div class="sc-row"><span class="sc-k">PERILICA</span><span class="sc-v">ECO 50°</span></div>
-              <div class="sc-cta" style="background:var(--ink)">Pitaj domaćina</div>
-            </div>
-          </div>
-        </div>
-        <div class="screencap"><b>Upute</b>Klima, bojler, perilica — pitanja koja se ponavljaju svaki tjedan.</div>
+      <div class="note">
+        <span class="note__ic"><svg class="ic"><use href="#i-link"/></svg></span>
+        <div><strong>Jedan link. Cijeli vaš smještaj.</strong><br><span class="t-meta">Za društvene mreže, poruke i povratne goste.</span></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ============ PITANJA ============ -->
-<section class="sec" style="padding-top:0">
+<!-- KORISTI -->
+<div class="wrap">
+  <div class="benefits">
+    <div class="benefit"><b>01</b><div><h2 class="t-small-head">Privucite interes.</h2><p class="t-muted">Galerija, sadržaji i dostupnost na vašoj javnoj stranici.</p></div></div>
+    <div class="benefit"><b>02</b><div><h2 class="t-small-head">Držite sve pod kontrolom.</h2><p class="t-muted">Objekti, kalendar i boravci u jednom preglednom alatu.</p></div></div>
+    <div class="benefit"><b>03</b><div><h2 class="t-small-head">Dočekajte spremne goste.</h2><p class="t-muted">Upute, Wi-Fi i preporuke putem privatnog linka.</p></div></div>
+  </div>
+</div>
+
+<!-- IZLOG -->
+<section class="sec" id="izlog">
   <div class="wrap">
-    <div style="max-width:620px" data-rv="up">
-      <div class="kicker">Zašto</div>
-      <h2 style="margin-top:18px">Ista pitanja. <span class="italic" style="color:var(--terra)">Svaki tjedan.</span></h2>
-      <p class="lead" style="margin-top:18px">Svaki gost pita isto, a vi odgovarate ručno — na plaži, za večerom, u pola noći prije dolaska.</p>
+    <div class="show__head">
+      <div class="head"><p class="eyebrow">Ovo je stranica koju dijelite s gostima</p><h2 class="t-section">Smještaj koji vrijedi pokazati.<br>Stranica koju vrijedi otvoriti.</h2></div>
+      <p class="t-lead">Fotografije stvaraju prvi dojam. Jasne informacije, dostupnost i izravan kontakt pomažu gostu napraviti sljedeći korak.</p>
     </div>
-
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;margin-top:50px" class="pgcols">
-      <div class="ask" data-rv="fade">
-        <div class="b">Bok! Koja je šifra za wifi?<i>23:41</i></div>
-        <div class="b">Gdje točno parkiramo?<i>07:12</i></div>
-        <div class="b">Kako doći s trajekta?<i>14:08</i></div>
-        <div class="b">Ima li blizu dobar restoran?<i>21:55</i></div>
-        <div class="b">Kad se možemo prijaviti?<i>06:30</i></div>
+    <div class="show__body">
+      <div class="gallery">
+        <div class="photo" role="img" aria-label="Ogledna vila, pogled na bazen i more"></div>
+        <div class="thumbs" aria-hidden="true"><div class="photo"></div><div class="photo"></div><div class="photo"></div></div>
       </div>
-
-      <div class="card" style="background:var(--ink);color:#fff;border:0;position:relative;overflow:hidden" data-rv="right">
-        <div style="position:absolute;width:300px;height:300px;border-radius:50%;background:var(--terra);opacity:.15;right:-110px;top:-120px"></div>
-        <div class="kicker" style="color:var(--rose);position:relative">Umjesto toga</div>
-        <h3 style="margin-top:16px;font-size:1.9rem;position:relative">Pošaljete jedan link.<br>I to je to.</h3>
-        <p style="color:rgba(255,255,255,.62);margin:16px 0 0;font-size:.95rem;position:relative">
-          Gost dobije svoju stranicu čim potvrdite rezervaciju. Sve je tamo — i ostaje tamo, kad god mu zatreba.
-        </p>
-        <div style="display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.08);
-          border:1px solid rgba(255,255,255,.16);border-radius:999px;padding:14px 20px;margin-top:24px;
-          font-family:ui-monospace,monospace;font-size:.85rem;position:relative">
-          <span class="dot-live"></span>odmoria.com/h/xk29fm41
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ TAMNA: DVIJE STRANICE ============ -->
-<section class="night sec" id="kako" data-scene>
-  <div class="scene scene--night" style="opacity:.5">
-    <div class="islands" style="bottom:0;opacity:.35" data-speed="0.05">
-      <svg viewBox="0 0 1440 200" preserveAspectRatio="none" fill="none">
-        <path d="M0 170c96-10 150-42 236-38 78 4 120 33 198 31 80-2 122-40 204-36 74 4 122 34 196 34 80 0 126-33 204-29 66 3 128 26 402 18v210H0z" fill="#0C161F"/>
-      </svg>
-    </div>
-  </div>
-  <div class="wrap" style="position:relative">
-    <div style="max-width:700px" data-rv="up">
-      <div class="kicker">Kako radi</div>
-      <h2 style="margin-top:18px">Dvije stranice. Jedna za svijet,<br><span class="italic" style="color:var(--rose)">jedna samo za gosta.</span></h2>
-      <p class="lead" style="margin-top:20px">Postavite objekt jednom. Odmoria napravi obje — i one same znaju tko što smije vidjeti.</p>
-    </div>
-
-    <div class="pagecards">
-      <div class="pgc" data-rv="up">
-        <span class="pgtag pgtag--pub">Javna stranica</span>
-        <h3 style="margin-top:18px">Za dijeljenje svugdje</h3>
-        <p style="color:rgba(255,255,255,.6);font-size:.93rem;margin-top:12px">Fotografije, priča o objektu, sadržaji i slobodni termini. Facebook, Instagram, oglas — gdje god želite.</p>
-        <ul>
-          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#B9CBA3" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Galerija i opis objekta</li>
-          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#B9CBA3" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Kalendar dostupnosti</li>
-          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#B9CBA3" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Kontakt izravno na vas</li>
+      <div class="show__copy">
+        <p class="eyebrow">Vaš digitalni izlog</p>
+        <h3 class="t-section" style="font-size:clamp(28px,2.4vw,32px)">Nije još jedan oglas.<br>To je vaš prostor.</h3>
+        <ul class="checks">
+          <li><svg class="ic"><use href="#i-check"/></svg>Galerija koja stavlja objekt u prvi plan</li>
+          <li><svg class="ic"><use href="#i-check"/></svg>Sadržaji, cijena i dostupnost bez traženja</li>
+          <li><svg class="ic"><use href="#i-check"/></svg>Izravan kontakt — WhatsApp, e-mail ili telefon</li>
+          <li><svg class="ic"><use href="#i-check"/></svg>Lokalne preporuke, pravila i česta pitanja</li>
         </ul>
+        <a href="/register.html" class="btn btn--primary" style="justify-self:start">Izradi svoju stranicu <svg class="ic"><use href="#i-up"/></svg></a>
+        <p class="t-meta">Stranica prikazuje vaše fotografije i vaše podatke.</p>
       </div>
-      <div class="pgc pgc--b" data-rv="up" data-rv-delay="130">
-        <span class="pgtag pgtag--priv">Privatna stranica</span>
-        <h3 style="margin-top:18px">Samo za potvrđenog gosta</h3>
-        <p style="color:rgba(255,255,255,.6);font-size:.93rem;margin-top:12px">Jedinstveni link koji gost dobije tek kad potvrdite rezervaciju. Ne indeksira se, ne curi.</p>
-        <ul>
-          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#EDA890" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Wi-Fi i šifra vrata</li>
-          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#EDA890" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Upute za dolazak i parking</li>
-          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#EDA890" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Vaše osobne preporuke</li>
-        </ul>
-        <div class="lockrow">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#D4674A" stroke-width="2.2" stroke-linecap="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0"/></svg>
-          Šifra vrata otključa se tek kad gost stvarno stigne.
+    </div>
+  </div>
+</section>
+
+<!-- UPRAVLJAČKI CENTAR -->
+<section class="sec sec--wash" id="domacini">
+  <div class="wrap">
+    <div class="head"><p class="eyebrow">Za domaćine</p><h2 class="t-section">Vaš mali upravljački centar.</h2><p class="t-lead">Objekti, kalendar, boravci i vodič za goste na jednom mjestu. Prebacite prikaz i pogledajte što vidi domaćin, a što gost.</p></div>
+    <div class="points">
+      <div class="point"><svg class="ic ic--lg"><use href="#i-cal"/></svg><h3 class="t-small-head">Kalendar</h3><p class="t-meta" style="font-size:14px">Ručne blokade i uvoz zauzeća s Booking.com-a i Airbnb-a (iCal, na klik).</p></div>
+      <div class="point"><svg class="ic ic--lg"><use href="#i-users"/></svg><h3 class="t-small-head">Boravci</h3><p class="t-meta" style="font-size:14px">Svaki boravak dobiva vlastiti privatni link za gosta.</p></div>
+      <div class="point"><svg class="ic ic--lg"><use href="#i-images"/></svg><h3 class="t-small-head">Objekt i fotografije</h3><p class="t-meta" style="font-size:14px">Opis, sadržaji, fotografije i cijena po noći na jednom mjestu.</p></div>
+      <div class="point"><svg class="ic ic--lg"><use href="#i-book"/></svg><h3 class="t-small-head">Vodič</h3><p class="t-meta" style="font-size:14px">Upute za dolazak, uređaji, pravila i lokalne preporuke.</p></div>
+    </div>
+
+    <div class="demo">
+      <div class="demo__bar">
+        <div class="tabs" role="tablist" aria-label="Demo prikaz">
+          <button class="tab" role="tab" id="t-host" aria-controls="p-host" aria-selected="true"><svg class="ic"><use href="#i-dash"/></svg><span>Dashboard domaćina</span></button>
+          <button class="tab" role="tab" id="t-pub" aria-controls="p-pub" aria-selected="false" tabindex="-1"><svg class="ic"><use href="#i-house"/></svg><span>Javna stranica</span></button>
+          <button class="tab" role="tab" id="t-guide" aria-controls="p-guide" aria-selected="false" tabindex="-1"><svg class="ic"><use href="#i-book"/></svg><span>Privatni vodič</span></button>
+        </div>
+        <span class="badge badge--demo">Demo · sintetički podaci</span>
+      </div>
+
+      <div class="demo__body" role="tabpanel" id="p-host" aria-labelledby="t-host">
+        <div style="display:grid;gap:16px;align-content:start">
+          <span class="select"><svg class="ic"><use href="#i-house"/></svg>Villa Maslina<svg class="ic"><use href="#i-down"/></svg></span>
+          <div class="panel">
+            <h3 class="t-small-head">Nadolazeći boravci</h3>
+            <div class="brow"><div><strong>Ana K.</strong><span class="t-meta">12.–19. srpnja · 4 gosta</span></div><span class="badge badge--status"><svg class="ic ic--sm"><use href="#i-check"/></svg>Link aktivan</span></div>
+            <div class="brow"><div><strong>Marko i Iva</strong><span class="t-meta">21.–25. srpnja · 2 gosta</span></div><span class="badge badge--plan">Link nije poslan</span></div>
+            <div class="brow"><div><strong>Obitelj W.</strong><span class="t-meta">2.–9. kolovoza · iz Booking.com kalendara</span></div><span class="badge badge--locked"><svg class="ic ic--sm"><use href="#i-lock"/></svg>Samo zauzeće</span></div>
+          </div>
+          <div class="quick"><span class="btn btn--primary btn--sm">Novi boravak</span><span class="btn btn--secondary btn--sm">Uredi objekt</span><span class="btn btn--secondary btn--sm">Pošalji vodič gostu</span></div>
+        </div>
+        <div style="display:grid;gap:16px;align-content:start">
+          <div class="panel">
+            <div style="display:flex;justify-content:space-between;align-items:center"><h3 class="t-small-head">Srpanj 2026.</h3><span class="t-meta">11 noći zauzeto</span></div>
+            <div class="cal" aria-label="Ogledni kalendar, srpanj">
+              <span class="e"></span><span class="e"></span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+              <span>6</span><span>7</span><span class="today">8</span><span>9</span><span>10</span><span>11</span><span class="x">12</span>
+              <span class="x">13</span><span class="x">14</span><span class="x">15</span><span class="x">16</span><span class="x">17</span><span class="x">18</span><span>19</span>
+              <span>20</span><span class="x">21</span><span class="x">22</span><span class="x">23</span><span class="x">24</span><span>25</span><span>26</span>
+            </div>
+            <div class="legend"><span><i class="x"></i>Zauzeto (iscrtkano)</span><span><i></i>Slobodno</span></div>
+            <p class="t-meta" style="display:flex;gap:8px;align-items:center"><svg class="ic ic--sm"><use href="#i-clock"/></svg>iCal (Booking.com): zadnja ručna sinkronizacija danas u 09:12</p>
+          </div>
+          <div class="panel">
+            <div style="display:flex;justify-content:space-between"><h3 class="t-small-head">Vodič za goste</h3><span class="t-meta">4 od 6 dijelova</span></div>
+            <div class="progress" role="progressbar" aria-valuenow="4" aria-valuemin="0" aria-valuemax="6" aria-label="Dovršenost vodiča"><i></i></div>
+            <p class="t-meta">Nedostaju: upute za parking, česta pitanja.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo__body" role="tabpanel" id="p-pub" aria-labelledby="t-pub" hidden>
+        <div class="pub">
+          <div class="photo" role="img" aria-label="Ogledna vila"></div>
+          <div class="pub__info">
+            <span class="eyebrow">Primošten · Dalmacija</span>
+            <span class="photo__name" style="font-size:36px">Villa Maslina</span>
+            <p class="t-muted">Vila · do 6 gostiju · 3 spavaće sobe · 2 kupaonice · 180 m²</p>
+            <div class="amen"><span><svg class="ic"><use href="#i-waves"/></svg>Privatni bazen</span><span><svg class="ic"><use href="#i-wifi"/></svg>Wi-Fi</span><span><svg class="ic"><use href="#i-bed"/></svg>3 spavaće sobe</span></div>
+            <strong class="t-small-head">od 180 € / noć</strong>
+            <div class="quick"><span class="btn btn--primary btn--sm">Pošalji upit</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo__body" role="tabpanel" id="p-guide" aria-labelledby="t-guide" hidden>
+        <div class="phone" style="max-width:380px">
+          <span class="eyebrow">Villa Maslina · vaš boravak</span>
+          <h3 class="t-card">Dobro došli, Ana.</h3>
+          <p class="t-meta">12.–19. srpnja · prijava od 15:00</p>
+          <div class="lrow"><svg class="ic"><use href="#i-key"/></svg><div><strong>Upute za dolazak i kod vrata</strong><span class="t-meta">Otključava se 12. 7. u 14:00 — sat prije prijave.</span></div><svg class="ic t-muted"><use href="#i-lock"/></svg></div>
+          <div class="lrow"><svg class="ic"><use href="#i-wifi"/></svg><div><strong>Wi-Fi</strong><span class="t-meta">Otključava se zajedno s uputama za dolazak.</span></div><svg class="ic t-muted"><use href="#i-lock"/></svg></div>
+          <p style="font-size:14px">Dostupno odmah: kućna pravila, preporuke domaćina, kontakt.</p>
+        </div>
+        <div style="display:grid;gap:16px;align-content:start">
+          <h3 class="t-card">Privatni vodič otvara se iz linka rezervacije — bez prijave i bez aplikacije.</h3>
+          <ul class="checks">
+            <li><svg class="ic"><use href="#i-check"/></svg>Svaki boravak dobiva vlastiti link.</li>
+            <li><svg class="ic"><use href="#i-check"/></svg>Kod vrata i Wi-Fi prikazuju se tek unutar vremena boravka, od sata prije prijave.</li>
+            <li><svg class="ic"><use href="#i-check"/></svg>Domaćin može link ugasiti; istekli link više ne otvara vodič.</li>
+            <li><svg class="ic"><use href="#i-check"/></svg>Javna stranica nikad ne prikazuje šifre.</li>
+          </ul>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ============ IGRALIŠTE ============ -->
-<section class="sec" id="izgled">
+<!-- KORACI -->
+<section class="sec" id="kako">
   <div class="wrap">
-    <div style="max-width:640px" data-rv="up">
-      <div class="kicker">Izgled</div>
-      <h2 style="margin-top:18px">Vaš objekt, <span class="italic" style="color:var(--terra)">vaš karakter.</span></h2>
-      <p class="lead" style="margin-top:18px">Osam tema, i svaka <b>drugačije slaže zaglavlje</b> — jedna vodi cijenom, druga temperaturom bazena, treća popisom prostorija. Kliknite i gledajte. Gost vidi vaš objekt, ne šablonu koju je već vidio sto puta.</p>
+    <div class="head"><p class="eyebrow">Kako funkcionira</p><h2 class="t-section">Od fotografija do prvog linka.<br>U tri jasna koraka.</h2></div>
+    <div class="steps">
+      <button class="step" type="button" aria-pressed="true"><span class="step__top"><span class="step__ic"><svg class="ic"><use href="#i-images"/></svg></span><span class="eyebrow">Korak 01</span></span><span class="t-card">Dodajte objekt i fotografije</span><span class="t-muted">Naziv, lokacija, kapacitet i fotografije. Prva fotografija postaje naslovna.</span></button>
+      <button class="step" type="button" aria-pressed="false"><span class="step__top"><span class="step__ic"><svg class="ic"><use href="#i-book"/></svg></span><span class="eyebrow">Korak 02</span></span><span class="t-card">Dopunite detalje</span><span class="t-muted">Sadržaji, cijena po noći ako je želite prikazati, pravila, česta pitanja i lokalne preporuke.</span></button>
+      <button class="step" type="button" aria-pressed="false"><span class="step__top"><span class="step__ic"><svg class="ic"><use href="#i-link"/></svg></span><span class="eyebrow">Korak 03</span></span><span class="t-card">Podijelite link</span><span class="t-muted">Javni link za sve kanale. Privatni link vodiča šaljete samo potvrđenom gostu.</span></button>
     </div>
+    <a href="/register.html" class="btn btn--primary">Izradi svoju stranicu <svg class="ic"><use href="#i-up"/></svg></a>
+  </div>
+</section>
 
-    <div style="margin-top:28px" data-rv="up">
-      <div class="planflip" id="planflip">
-        <button class="on" data-plan="free">Free plan</button>
-        <button data-plan="pro">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.6 5.6 6.1.8-4.5 4.2 1.2 6L12 16.8 6.6 19.6l1.2-6-4.5-4.2 6.1-.8z"/></svg>
-          Pro plan
-        </button>
+<!-- PRIVATNI VODIČ -->
+<section class="sec sec--dark guide on-dark" id="vodic">
+  <div class="wrap">
+    <div class="guide__copy">
+      <p class="eyebrow">Privatni vodič za goste</p>
+      <h2 class="t-section">„Koji je Wi-Fi?”<br>Odgovor ih već čeka.</h2>
+      <p class="t-lead" style="color:rgba(255,255,255,.9)">Potvrđeni gost dobiva link svog boravka. Otvara ga u pregledniku — bez registracije i bez aplikacije.</p>
+      <div class="cmp">
+        <div><h3><svg class="ic"><use href="#i-house"/></svg>Javna stranica</h3><ul class="checks">
+          <li><svg class="ic ic--sm"><use href="#i-check"/></svg>Za sve koji dobiju link</li>
+          <li><svg class="ic ic--sm"><use href="#i-check"/></svg>Fotografije, opis, sadržaji</li>
+          <li><svg class="ic ic--sm"><use href="#i-check"/></svg>Dostupnost i kontakt</li>
+          <li><svg class="ic ic--sm"><use href="#i-check"/></svg>Nikad šifre ni Wi-Fi</li></ul></div>
+        <div><h3><svg class="ic"><use href="#i-key"/></svg>Privatni vodič</h3><ul class="checks">
+          <li><svg class="ic ic--sm"><use href="#i-check"/></svg>Samo za potvrđeni boravak</li>
+          <li><svg class="ic ic--sm"><use href="#i-check"/></svg>Upute za dolazak, kod vrata, Wi-Fi</li>
+          <li><svg class="ic ic--sm"><use href="#i-check"/></svg>Otključava se sat prije prijave</li>
+          <li><svg class="ic ic--sm"><use href="#i-check"/></svg>Domaćin može link ugasiti</li></ul></div>
       </div>
-      <div class="cfghint" style="margin-top:12px" id="planNote">Prebacite na Pro i gledajte što se otključa — desno, uživo.</div>
     </div>
-
-    <div class="play">
-      <div data-rv="left">
-        <div class="cfgbox">
-
-          <div class="cfgrow">
-            <div class="cfglab">Tema <span class="cfgcount" id="cntTema">1 od 8</span></div>
-            <div class="cfghint">Ne mijenja samo boju — mijenja što gost vidi prvo, tipografiju i oblik.</div>
-            <div class="teme teme--land mt12" id="temeLand"></div>
-          </div>
-
-          <div class="cfgrow">
-            <div class="cfglab">Naziv i podnaslov <span class="cfgcount">uvijek dostupno</span></div>
-            <div class="cfghint">Upišite svoje — prikaz se mijenja dok tipkate.</div>
-            <input class="cfgin" id="cName" value="Villa Maslina" maxlength="28" aria-label="Naziv objekta">
-            <input class="cfgin" id="cTag" value="Masline, sol i tišina." maxlength="40" aria-label="Podnaslov">
-          </div>
-
-          <div class="cfgrow">
-            <div class="cfglab">Boja naglaska <span class="cfgcount" id="cntColor">1 od 8</span></div>
-            <div class="sw-row" id="sw">
-              <div class="sw on" data-c="#D4674A" data-free="1" style="background:#D4674A" title="Terakota"></div>
-              <div class="sw" data-c="#2E6B77" style="background:#2E6B77" title="Jadran"></div>
-              <div class="sw" data-c="#7E8F6A" style="background:#7E8F6A" title="Maslina"></div>
-              <div class="sw" data-c="#E9A13B" style="background:#E9A13B" title="Zlatni sat"></div>
-              <div class="sw" data-c="#9C5B7B" style="background:#9C5B7B" title="Lavanda"></div>
-              <div class="sw" data-c="#3C6E5B" style="background:#3C6E5B" title="Bor"></div>
-              <div class="sw" data-c="#B8452F" style="background:#B8452F" title="Cigla"></div>
-              <div class="sw" data-c="#14202E" style="background:#14202E" title="Ponoć"></div>
-            </div>
-          </div>
-
-          <div class="cfgrow">
-            <div class="cfglab">Naslovna slika <span class="cfgcount" id="cntCover">1 od 5</span></div>
-            <div class="cfghint">Na Pro planu birate 2–3 vlastite fotografije koje se polako izmjenjuju u zaglavlju — ostale idu u galeriju.</div>
-            <div class="opts" id="covers">
-              <button class="opt on" data-v="zalazak" data-free="1"><b>Zalazak</b><small>toplo, zlatno</small></button>
-              <button class="opt" data-v="more"><b>Otvoreno more</b><small>plavo, mirno</small></button>
-              <button class="opt" data-v="maslinik"><b>Maslinik</b><small>zeleno, sjenovito</small></button>
-              <button class="opt" data-v="kamen"><b>Stari kamen</b><small>bež, mediteran</small></button>
-              <button class="opt" data-v="foto"><b>Vaše fotografije</b><small>2–3 slike koje se izmjenjuju u zaglavlju</small></button>
-            </div>
-          </div>
-
-          <div class="cfgrow">
-            <div class="cfglab">Tipografija <span class="cfgcount" id="cntFont">1 od 3</span></div>
-            <div class="opts" id="fonts">
-              <button class="opt on" data-v="klasik" data-free="1"><b>Klasik</b><small>serif, topao</small></button>
-              <button class="opt" data-v="cist"><b>Čist</b><small>bez serifa, jasan</small></button>
-              <button class="opt" data-v="rukopis"><b>Rukopis</b><small>osobno, ležerno</small></button>
-            </div>
-          </div>
-
-          <div class="cfgrow">
-            <div class="cfglab">Podloga <span class="cfgcount" id="cntStyle">1 od 3</span></div>
-            <div class="opts" id="styles">
-              <button class="opt on" data-v="obalni" data-free="1"><b>Obalni</b><small>topla krema</small></button>
-              <button class="opt" data-v="moderni"><b>Moderni</b><small>čisto bijelo</small></button>
-              <button class="opt" data-v="nocni"><b>Noćni</b><small>tamno</small></button>
-            </div>
-          </div>
-
-          <div class="cfgrow">
-            <div class="cfglab">Naš potpis na vašoj stranici</div>
-            <div class="cfghint" id="brandNote">Na Free planu gost u podnožju vidi malu oznaku „Powered by Odmoria”.</div>
-          </div>
-
-        </div>
-
-        <div class="upsell" id="upsell">
-          <div>
-            <b>Ovo je dio Pro plana</b>
-            <p>Svih osam tema, 8 boja, vlastite fotografije u zaglavlju i bez našeg potpisa — plus kalendar s Booking.com-a.</p>
-          </div>
-          <button class="btn btn--fill btn--sm" onclick="setPlan('pro')">Isprobaj Pro ovdje <span class="arr">→</span></button>
-        </div>
-      </div>
-
-      <div class="play__pv" data-rv="right">
-        <div class="pvwrap">
-          <div class="pvnote"><span class="dot-live"></span> Ovako izgleda gostu</div>
-          <div class="screencard" style="width:min(310px,84vw)">
-            <div class="screenframe">
-              <div class="screeninner" id="pvScreen">
-                <div class="sc-top" id="pvTop" style="height:186px">
-                  <div class="sc-ov">
-                    <div class="sc-loc">Hvar, Dalmacija</div>
-                    <div class="sc-name" id="pvName">Villa Maslina</div>
-                    <div class="sc-tagline hand" id="pvTag" style="font-size:1rem;opacity:.92">Masline, sol i tišina.</div>
-                  </div>
-                </div>
-                <div class="sc-body">
-                  <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:5px">
-                    <span class="pvchip" style="font-size:.57rem;font-weight:700;background:var(--shell);border:1px solid var(--line-2);border-radius:999px;padding:5px 10px">✦ Terasa</span>
-                    <span class="pvchip" style="font-size:.57rem;font-weight:700;background:var(--shell);border:1px solid var(--line-2);border-radius:999px;padding:5px 10px">✦ 2 min do plaže</span>
-                  </div>
-                  <div class="sc-row"><span class="sc-k">SLOBODNO</span><span class="sc-v">12. – 19. srp</span></div>
-                  <div class="sc-row"><span class="sc-k">PRIJAVA</span><span class="sc-v">15:00 – 22:00</span></div>
-                  <div class="sc-row"><span class="sc-k">WI-FI</span><span class="sc-v">VillaMaslina</span></div>
-                  <div class="sc-cta" id="pvCta">Kontaktiraj domaćina</div>
-                  <div style="text-align:center;margin-top:9px" id="pvBrandWrap">
-                    <span class="pvbadge" id="pvBrand">
-                      <svg width="9" height="9" viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="10" fill="#14202E"/><path d="M6.5 21.5c4-9.5 15-9.5 19 0" stroke="#D4674A" stroke-width="3" stroke-linecap="round"/></svg>
-                      POWERED BY ODMORIA
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="pvnote" id="pvSummary" style="text-align:center;max-width:280px;line-height:1.5"></div>
-        </div>
-      </div>
+    <div class="phone" aria-label="Primjer privatnog vodiča">
+      <div style="display:flex;justify-content:space-between;align-items:center"><span class="eyebrow" style="color:var(--text-accent)">Villa Maslina</span><span class="badge badge--demo">Demo</span></div>
+      <h3 class="t-card">Dobro došli, Ana.</h3>
+      <p class="t-meta">Vaš boravak: 12.–19. srpnja · prijava od 15:00</p>
+      <div class="lrow"><svg class="ic"><use href="#i-key"/></svg><div><strong>Dolazak i kod vrata</strong><span class="t-meta">Otključava se 12. 7. u 14:00</span></div><svg class="ic t-muted"><use href="#i-lock"/></svg></div>
+      <div class="lrow"><svg class="ic"><use href="#i-wifi"/></svg><div><strong>Wi-Fi</strong><span class="t-meta">Otključava se s uputama za dolazak</span></div><svg class="ic t-muted"><use href="#i-lock"/></svg></div>
+      <div class="lrow open"><svg class="ic"><use href="#i-book"/></svg><div><strong>Kućna pravila</strong><span class="t-meta">Dostupno odmah</span></div></div>
+      <div class="lrow open"><svg class="ic"><use href="#i-house"/></svg><div><strong>Preporuke domaćina</strong><span class="t-meta">Plaže, restorani, trgovine</span></div></div>
     </div>
   </div>
 </section>
 
-<!-- ============ BROJKE ============ -->
-<section class="sec-tight">
+<!-- PROVIZIJA -->
+<section class="sec zero">
   <div class="wrap">
-    <div class="nums" data-rv-stagger="140">
-      <div class="num" data-rv="up">
-        <div class="v"><span data-count="0" data-count-suffix=" €">0 €</span></div>
-        <div class="k">provizije po rezervaciji — naplaćujemo alat, ne vaš promet</div>
-      </div>
-      <div class="num" data-rv="up">
-        <div class="v"><span data-count="10" data-count-suffix=" min">10 min</span></div>
-        <div class="k">od registracije do gotove stranice koju možete poslati</div>
-      </div>
-      <div class="num" data-rv="up">
-        <div class="v"><span data-count="0" data-count-suffix="">0</span></div>
-        <div class="k">aplikacija koje gost mora instalirati — samo otvori link</div>
-      </div>
+    <div><p class="zero__n">0 %</p><p class="t-card">provizije na rezervacije</p></div>
+    <div class="zero__copy">
+      <h2 class="t-section">Gost plaća vama.<br>Vi birate alat koji vam odgovara.</h2>
+      <ul class="checks">
+        <li><svg class="ic"><use href="#i-check"/></svg>Odmoria ne obrađuje plaćanje smještaja — dogovor i naplata ostaju između vas i gosta.</li>
+        <li><svg class="ic"><use href="#i-check"/></svg>Besplatna razina bez pretplate; plaćeni planovi imaju fiksnu pretplatu za alat, ne postotak od boravka.</li>
+        <li><svg class="ic"><use href="#i-check"/></svg>Booking.com i Airbnb možete koristiti i dalje; njihovo zauzeće uvozite u kalendar preko iCal-a.</li>
+      </ul>
     </div>
   </div>
 </section>
 
-<!-- ============ CIJENE ============ -->
-<section class="sec" id="cijene" style="background:var(--sand)">
+<!-- PLANOVI — nazivi, cijene i limiti dolaze iz tablice `plans` -->
+<section class="sec sec--wash" id="planovi">
   <div class="wrap">
-    <div style="text-align:center;max-width:640px;margin-inline:auto" data-rv="up">
-      <div class="kicker bare" style="justify-content:center">Cijene</div>
-      <h2 style="margin-top:18px">Plaćate alat, <span class="italic" style="color:var(--terra)">ne postotak.</span></h2>
-      <p class="lead" style="margin:18px auto 0">Bez provizije po rezervaciji, bez skrivenih naknada. Otkažete kad želite.</p>
-      <div class="switch" id="switch">
-        <button class="on" data-p="m">Mjesečno</button>
-        <button data-p="y">Godišnje <b style="color:var(--olive);margin-left:6px">−2 mj.</b></button>
-      </div>
-    </div>
-
+    <div class="head"><p class="eyebrow">Planovi</p><h2 class="t-section">Plan za vaš način domaćinstva.</h2><p class="t-lead">Plan određuje broj objekata i fotografija. Bez provizije na rezervacije ni na jednom planu.</p></div>
     <div class="plans">
-      <div class="plan" data-plan="free" data-rv="up">
-        <div class="planname">Free</div>
-        <div class="price"><span class="n" data-m="0 €" data-y="0 €">0 €</span><span class="p" data-mp="zauvijek" data-yp="zauvijek">zauvijek</span></div>
-        <ul>
-          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> <span data-limits>1 objekt, 5 fotografija</span></li>
-          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Javna i privatna stranica</li>
-          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Tema „Jadran”</li>
+      <article class="plan" data-plan="free">
+        <h3 class="t-card" data-name>Free</h3>
+        <div class="plan__price"><span class="n" data-price>0 €</span><span class="t-meta" data-period>bez pretplate</span></div>
+        <ul class="checks">
+          <li><svg class="ic"><use href="#i-check"/></svg><span data-limits>1 objekt · 5 fotografija</span></li>
+          <li><svg class="ic"><use href="#i-check"/></svg>Javna stranica i privatni vodič</li>
+          <li><svg class="ic"><use href="#i-check"/></svg>Bez provizije na rezervacije</li>
         </ul>
-        <a href="/register.html" class="btn btn--ghost">Kreni besplatno</a>
-      </div>
-
-      <div class="plan plan--hero" data-plan="pro" data-rv="up" data-rv-delay="110">
-        <span class="planbadge">Najčešći izbor</span>
-        <div class="planname">Pro</div>
-        <div class="price"><span class="n" data-m="15 €" data-y="150 €">15 €</span><span class="p" data-mp="/ mjesečno" data-yp="/ godišnje">/ mjesečno</span></div>
-        <ul>
-          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> <b style="color:var(--ink);font-weight:800">Kalendar se sam osvježava</b> s Booking.com-a i Airbnb-a</li>
-          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Vodič na jeziku gosta — 5 jezika</li>
-          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Vaša domena, bez našeg potpisa</li>
-          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> <span data-limits>5 objekata · 30 fotografija</span> · svih 8 tema</li>
+        <a href="/register.html" class="btn btn--secondary">Započni besplatno</a>
+      </article>
+      <article class="plan plan--featured" data-plan="pro">
+        <h3 class="t-card" data-name>Pro</h3>
+        <div class="plan__price"><span class="n" data-price>15 €</span><span class="t-meta" data-period>mjesečno · ili 150 € godišnje</span></div>
+        <ul class="checks">
+          <li><svg class="ic"><use href="#i-check"/></svg><span data-limits>5 objekata · 30 fotografija</span></li>
+          <li><svg class="ic"><use href="#i-check"/></svg>Sve iz besplatnog plana</li>
         </ul>
-        <a href="/register.html" class="btn btn--fill" data-magnetic="10">Uzmi Pro <span class="arr">→</span></a>
-        <div style="text-align:center;font-size:.78rem;color:var(--ink-30);margin-top:14px">Jedna izbjegnuta dvostruka rezervacija plati godinu dana.</div>
-      </div>
-
-      <div class="plan" data-plan="business" data-rv="up" data-rv-delay="200">
-        <div class="planname">Business</div>
-        <div class="price"><span class="n" data-m="49 €" data-y="490 €">49 €</span><span class="p" data-mp="/ mjesečno" data-yp="/ godišnje">/ mjesečno</span></div>
-        <ul>
-          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> <span data-limits>15 objekata, 50 fotografija</span></li>
-          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Sve iz Pro plana</li>
-          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Prioritetna podrška</li>
+        <a href="/register.html" class="btn btn--inverse">Započni besplatno</a>
+        <p class="plan__note">Nadogradite kad vam zatreba.</p>
+      </article>
+      <article class="plan" data-plan="business">
+        <h3 class="t-card" data-name>Business</h3>
+        <div class="plan__price"><span class="n" data-price>49 €</span><span class="t-meta" data-period>mjesečno · ili 490 € godišnje</span></div>
+        <ul class="checks">
+          <li><svg class="ic"><use href="#i-check"/></svg><span data-limits>15 objekata · 50 fotografija</span></li>
+          <li><svg class="ic"><use href="#i-check"/></svg>Sve iz besplatnog plana</li>
         </ul>
-        <a href="/register.html" class="btn btn--ghost">Uzmi Business</a>
-      </div>
+        <a href="/register.html" class="btn btn--secondary">Započni besplatno</a>
+      </article>
     </div>
   </div>
 </section>
 
-<!-- ============ ZAVRŠNI POZIV ============ -->
-
-<!-- ============ PITANJA ============ -->
-<section class="sec" id="pitanja" style="padding-top:0">
-  <div class="wrap wrap-narrow">
-    <div data-rv="up">
-      <div class="kicker">Česta pitanja</div>
-      <h2 style="margin-top:16px">Kratko i jasno.</h2>
-    </div>
-    <div class="faq" data-rv="up" style="margin-top:34px">
-      <details>
-        <summary>Je li Odmoria platforma za rezervacije?</summary>
-        <p>Nije. Odmoria je alat za izradu i dijeljenje digitalnog vodiča. Ne prima rezervacije, ne naplaćuje gosta i ne uzima proviziju od vašeg boravka.</p>
-      </details>
-      <details>
-        <summary>Mora li gost instalirati aplikaciju ili otvoriti račun?</summary>
-        <p>Ne. Gost dobiva link ili skenira QR kod i vodič otvara izravno u svom web-pregledniku.</p>
-      </details>
-      <details>
-        <summary>Koja je razlika između javnog i privatnog linka?</summary>
-        <p>Javni link služi za predstavljanje objekta i možete ga dijeliti bilo kome. Privatni link namijenjen je gostu jer sadrži informacije za boravak poput Wi-Fi lozinke i uputa za ulazak.</p>
-      </details>
-      <details>
-        <summary>Čuva li Odmoria bazu osobnih podataka gostiju?</summary>
-        <p>Za otvaranje vodiča gostu ne trebaju račun, ime, e-mail ni broj telefona. Odmoria služi za prikaz informacija koje ste vi pripremili, a ne za vođenje baze gostiju.</p>
-      </details>
-      <details>
-        <summary>Mogu li Odmoriju koristiti uz postojeći način rezerviranja?</summary>
-        <p>Da. Rezervacije mogu dolaziti putem kanala koje već koristite, a Odmoria link jednostavno šaljete gostu prije dolaska.</p>
-      </details>
-      <details>
-        <summary>Što dobivam u besplatnom planu?</summary>
-        <p>Jedan objekt s javnim i privatnim linkom, QR kodom, osnovnim fotografijama i lokalnim preporukama. Kartica nije potrebna.</p>
-      </details>
+<!-- FAQ -->
+<section class="sec faq" id="pitanja">
+  <div class="wrap">
+    <div class="faq__title"><p class="eyebrow">Česta pitanja</p><h2 class="t-section">Dobra pitanja.<br>Jasni odgovori.</h2><p class="t-muted">Niste pronašli odgovor? Pogledajte <a href="/help.html">stranicu Pomoć</a>.</p></div>
+    <div>
+      <details class="acc" open><summary><span>Moram li prestati koristiti Booking ili Airbnb?</span><svg class="ic"><use href="#i-down"/></svg></summary><p>Ne. Odmoria vam daje vlastitu javnu stranicu i privatni vodič. Zauzeće s Booking.com-a i Airbnb-a možete uvesti u kalendar preko iCal-a i nastaviti koristiti postojeće kanale.</p></details>
+      <details class="acc"><summary><span>Kako gosti pronalaze moju stranicu?</span><svg class="ic"><use href="#i-down"/></svg></summary><p>Link dijelite na društvenim mrežama, u porukama i drugim vlastitim kanalima. Odmoria ne jamči posjete niti nove rezervacije.</p></details>
+      <details class="acc"><summary><span>Treba li mi dizajner ili programer?</span><svg class="ic"><use href="#i-down"/></svg></summary><p>Ne. Unosite fotografije, opis, sadržaje i upute, a stranica prikazuje vaše podatke.</p></details>
+      <details class="acc"><summary><span>Tko vidi osjetljive informacije?</span><svg class="ic"><use href="#i-down"/></svg></summary><p>Kod vrata, Wi-Fi i privatne upute vide samo gosti s linkom svog boravka, i to tek od sata prije prijave. Javna stranica ih nikad ne prikazuje.</p></details>
+      <details class="acc"><summary><span>Kako funkcioniraju planovi?</span><svg class="ic"><use href="#i-down"/></svg></summary><p>Postoji besplatna razina i plaćeni planovi s fiksnom mjesečnom ili godišnjom pretplatom. Plan određuje broj objekata i fotografija; provizije na rezervacije nema.</p></details>
     </div>
   </div>
 </section>
 
-<section class="final" data-scene>
-  <div class="scene" style="opacity:.55">
-    <div class="scene__sun" style="top:26%;left:50%" data-speed="0.1"></div>
-    <div class="islands" style="bottom:12%" data-speed="0.05">
-      <svg viewBox="0 0 1440 200" preserveAspectRatio="none" fill="none">
-        <path d="M0 176c110-10 164-38 258-32 84 5 126 28 206 26 82-2 124-32 206-28 76 4 124 30 198 30 80 0 128-28 208-24 68 3 190 8 364 4v208H0z" fill="#4A6672" opacity=".5"/>
-      </svg>
+<!-- ZAVRŠNI POZIV -->
+<section class="final">
+  <div class="wrap">
+    <div class="final__panel on-dark">
+      <div class="final__copy">
+        <p class="eyebrow">Vaš smještaj zaslužuje vlastitu adresu.</p>
+        <h2 class="t-section">Dajte mu stranicu.<br>Sebi ostavite više vremena.</h2>
+        <a href="/register.html" class="btn btn--inverse">Izradi svoju stranicu <svg class="ic"><use href="#i-up"/></svg></a>
+      </div>
+      <div class="photo" role="img" aria-label="Ogledna vila"></div>
     </div>
-    <div class="scene__veil"></div>
-  </div>
-  <div class="wrap" style="position:relative">
-    <div class="kicker bare" style="justify-content:center" data-rv="fade">Spremni?</div>
-    <h2 style="margin-top:22px" data-rv="up">Vaš sljedeći gost zaslužuje <span class="italic" style="color:var(--terra)">bolju dobrodošlicu.</span></h2>
-    <svg class="squiggle" width="160" height="24" viewBox="0 0 160 24" fill="none" style="margin:26px auto 0" data-rv="fade">
-      <path d="M5 16 Q 38 4 80 13 T 155 10" stroke="#D4674A" stroke-width="2.8" stroke-linecap="round"/>
-    </svg>
-    <div style="margin-top:32px" data-rv="up">
-      <a href="/register.html" class="btn btn--fill" data-magnetic="14">Napravi svoj vodič — besplatno <span class="arr">→</span></a>
-    </div>
-    <div style="margin-top:16px;font-size:.85rem;color:var(--ink-50)" data-rv="fade">Bez kartice · Gotovo za 10 minuta · Otkažete kad želite</div>
   </div>
 </section>
 
-<footer class="foot"><div class="wrap foot__in">
-  <div style="display:flex;align-items:center;gap:10px">
-    <svg width="21" height="21" viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="10" fill="#14202E"/><path d="M6.5 21.5c4-9.5 15-9.5 19 0" stroke="#D4674A" stroke-width="2.6" stroke-linecap="round"/><circle cx="16" cy="11" r="2.6" fill="#E9A13B"/></svg>
-    Odmoria — bez provizije, zauvijek.
-  </div>
-  <div style="display:flex;gap:24px">
-    <a href="#gost">Primjer vodiča</a>
-    <a href="/login.html">Prijava</a>
-    <a href="/terms.html">Uvjeti</a>
-    <a href="/privacy.html">Privatnost</a>
-  </div>
-</div></footer>
+</main>
 
-<script src="/teme.js"></script>
-<script src="/motion.js"></script>
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot__cols">
+      <div><a href="/" class="logo" style="font-size:24px;color:var(--text)">Odmoria<span>.</span></a><p class="t-meta" style="font-size:14px;max-width:340px">Javna stranica, alat za domaćine i privatni vodič za goste. Bez provizije na rezervacije.</p></div>
+      <div><h3>Proizvod</h3><a href="#izlog">Vaša web-stranica</a><a href="#domacini">Za domaćine</a><a href="#kako">Kako funkcionira</a><a href="#planovi">Planovi</a></div>
+      <div><h3>Pomoć</h3><a href="#pitanja">Česta pitanja</a><a href="/help.html">Pomoć</a><a href="/login.html">Prijava</a></div>
+      <div><h3>Pravno</h3><a href="/terms.html">Uvjeti korištenja</a><a href="/privacy.html">Privatnost</a></div>
+    </div>
+    <div class="foot__legal"><span>© 2026 Odmoria</span></div>
+  </div>
+</footer>
+
 <script>
-const $ = s => document.querySelector(s);
-const $$ = s => [...document.querySelectorAll(s)];
+/* mobilni izbornik */
+;(() => {
+  const b = document.querySelector('.nav__menu'), d = document.getElementById('drawer')
+  if (!b || !d) return
+  const set = open => { d.classList.toggle('open', open); b.setAttribute('aria-expanded', open); b.querySelector('use').setAttribute('href', open ? '#i-x' : '#i-menu') }
+  b.addEventListener('click', () => set(!d.classList.contains('open')))
+  d.addEventListener('click', e => { if (e.target.closest('a')) set(false) })
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && d.classList.contains('open')) { set(false); b.focus() } })
+})()
 
-/* traka */
-const F = ['Bez provizije po rezervaciji','Gost ne instalira ništa','Šifra pod ključem do dolaska',
-           'Radi na svakom telefonu','Vaše preporuke, ne vodič iz 2009.','Postavljanje za 10 minuta'];
-$('#ticker').innerHTML = [...F,...F].map(f=>`<span class="ticker__item">${f}</span><span class="ticker__dot">✦</span>`).join('');
+/* demo: tabovi (ARIA tabs: strelice, Home/End) */
+;(() => {
+  const tabs = [...document.querySelectorAll('.tabs [role=tab]')]
+  const pick = t => tabs.forEach(x => {
+    const on = x === t
+    x.setAttribute('aria-selected', on); x.tabIndex = on ? 0 : -1
+    document.getElementById(x.getAttribute('aria-controls')).hidden = !on
+  })
+  tabs.forEach((t, i) => {
+    t.addEventListener('click', () => pick(t))
+    t.addEventListener('keydown', e => {
+      const k = e.key
+      const j = k === 'ArrowRight' ? (i + 1) % tabs.length : k === 'ArrowLeft' ? (i - 1 + tabs.length) % tabs.length
+              : k === 'Home' ? 0 : k === 'End' ? tabs.length - 1 : -1
+      if (j < 0) return
+      const n = tabs[j]; pick(n); n.focus(); e.preventDefault()
+    })
+  })
+})()
 
-/* ---------- KONFIGURATOR: Free vs Pro uživo ---------- */
-const STYLES = {
-  obalni:{bg:'#FAF6EF',card:'#FFFCF7',line:'rgba(20,32,46,.06)',ink:'#14202E',k:'rgba(20,32,46,.35)'},
-  moderni:{bg:'#FFFFFF',card:'#F4F5F6',line:'rgba(20,20,22,.08)',ink:'#101114',k:'rgba(16,17,20,.4)'},
-  nocni:{bg:'#18222E',card:'rgba(255,255,255,.07)',line:'rgba(255,255,255,.12)',ink:'#F2EFE9',k:'rgba(255,255,255,.45)'}
-};
-/* prizori: ACCENT se zamjenjuje odabranom bojom pa se svaki prizor slaže s bojom */
-const COVERS = {
-  zalazak:  'linear-gradient(165deg,#F6D9A8 0%,#F0B078 22%,ACCENT 52%,#2E5E6B 84%,#1B3948 100%)',
-  more:     'linear-gradient(170deg,#CFE3E8 0%,#7FB3C0 26%,ACCENT 58%,#1E4A5C 90%)',
-  maslinik: 'linear-gradient(160deg,#E4E2C4 0%,#A9B98A 28%,ACCENT 60%,#33502F 92%)',
-  kamen:    'linear-gradient(175deg,#F2E7D6 0%,#DCC7A8 30%,ACCENT 62%,#6B5741 94%)',
-  foto:     'PHOTO'
-};
-/* naslovne fotografije koje se izmjenjuju u pregledu — isto što gost vidi uživo */
-// Dok host ne doda svoje fotografije, u pregledu se izmjenjuju nasi nacrtani prizori.
-const PHOTOS = [
-  {ime:'Zalazak nad morem', bg:'linear-gradient(176deg,#FBE3B4 0%,#F3C78C 20%,#E9A98A 38%,#C98874 54%,#6E7E85 74%,#3E5C68 100%)'},
-  {ime:'Plava ura', bg:'linear-gradient(174deg,#DCEEF4 0%,#B8DFEA 26%,#8FC9DA 44%,#4E9CB0 64%,#256C80 100%)'},
-  {ime:'Maslinik', bg:'linear-gradient(175deg,#F7E6C0 0%,#EFD39B 24%,#D9C489 44%,#9DA872 66%,#5E7350 100%)'}
-];
-let photoI = 0, photoTimer = null;
-function photoBg(n){
-  return 'linear-gradient(180deg,color-mix(in srgb,' + CFG.accent + ' 22%,transparent) 0%,'
-       + 'rgba(20,32,46,.06) 40%,rgba(20,32,46,.5) 100%), ' + PHOTOS[n].bg;
-}
-function photoLoop(on){
-  clearInterval(photoTimer); photoTimer = null;
-  if(!on) return;
-  photoTimer = setInterval(() => {
-    photoI = (photoI + 1) % PHOTOS.length;
-    const t = document.querySelector('#pvTop');
-    t.style.opacity = '.25';
-    setTimeout(() => { t.style.background = photoBg(photoI); t.style.opacity = '1'; }, 260);
-  }, 2800);
-}
-const FONTS = {
-  klasik:  {fam:"'Fraunces',Georgia,serif", vs:"'SOFT' 20,'WONK' 1", size:'1.34rem', ls:'-.02em'},
-  cist:    {fam:"'Manrope',sans-serif",     vs:"normal",             size:'1.2rem',  ls:'-.035em'},
-  rukopis: {fam:"'Caveat',cursive",         vs:"normal",             size:'1.72rem', ls:'0'}
-};
-const FREE = {colors:1, covers:1, fonts:1, styles:1};
-
-let CFG = {plan:'free', tema:'jadran', accent:'#D4674A', cover:'zalazak', font:'klasik', style:'obalni'};
-
-function isFree(el){ return el.dataset.free === '1'; }
-
-function lockUI(){
-  const pro = CFG.plan === 'pro';
-  $$('#sw .sw').forEach(el => el.classList.toggle('lk', !pro && !isFree(el)));
-  ['#covers','#fonts','#styles'].forEach(sel =>
-    $$(sel + ' .opt').forEach(el => el.classList.toggle('lk', !pro && !isFree(el))));
-
-  $('#cntTema').textContent  = pro ? '8 tema' : '1 od 8 — Free';
-  $('#cntColor').textContent = pro ? '8 boja' : '1 od 8 — Free';
-  $('#cntCover').textContent = pro ? '4 prizora + vaše fotografije' : '1 od 5 — Free';
-  $('#cntFont').textContent  = pro ? '3 tipografije' : '1 od 3 — Free';
-  $('#cntStyle').textContent = pro ? '3 podloge' : '1 od 3 — Free';
-
-  $('#brandNote').innerHTML = pro
-    ? '<b style="color:var(--olive)">Nema našeg potpisa.</b> Stranica izgleda 100 % kao vaša.'
-    : 'Na Free planu gost u podnožju vidi malu oznaku „Powered by Odmoria”.';
-  $('#planNote').textContent = pro
-    ? 'Sve je otključano. Vratite na Free da vidite razliku.'
-    : 'Prebacite na Pro i gledajte što se otključa — desno, uživo.';
-
-  $('#pvBrandWrap').style.opacity = pro ? '0' : '1';
-  $('#pvSummary').textContent = pro
-    ? 'Pro: svih 8 tema · 8 boja · vlastite fotografije u zaglavlju · bez našeg potpisa'
-    : 'Free: 1 tema · 1 boja · 1 prizor · s našim potpisom';
-  $$('#temeLand .tema').forEach(el => el.classList.toggle('lk', !pro && el.dataset.tema !== 'jadran'));
-}
-
-/* Birač tema na naslovnici.
-   Minijature nisu ilustracije — isti su HTML i CSS kao prava stranica, iz
-   `teme.js`, pa posjetitelj vidi točno ono što će dobiti. Upisano ime i
-   podnaslov ulaze u njih, da demo bude njegov, a ne naš. */
-function objektIzCfg(){
-  return {
-    name: $('#cName').value || 'Villa Maslina',
-    location: 'Hvar, Dalmacija',
-    welcome_msg: $('#cTag').value || 'Masline, sol i tišina.',
-    max_guests: 4, bedrooms: 2, beds: 3, bathrooms: 1, size_m2: 68,
-    price_per_night: 180, min_stay: 3, host_name: 'Marina',
-    highlight: '28° · Temperatura mora',
-  };
-}
-
-function crtajTeme(){
-  const T = window.Odmoria?.teme; if (!T) return;
-  const g = $('#temeLand'); if (!g) return;
-  const o = T.izBaze(objektIzCfg());
-  g.innerHTML = T.TEME.map(t => `
-    <button class="tema" type="button" data-tema="${t.id}" aria-pressed="${t.id === CFG.tema}">
-      <div data-stil="${t.id}">${T.zaglavlje(t.id, {mini:true, objekt:o})}</div>
-      <div class="tema__m">
-        <div class="tema__ime">${t.ime}<span class="ck">✓</span></div>
-        <div class="tema__vodi">vodi <b>${t.vodi}</b></div>
-      </div>
-    </button>`).join('');
-  window.Odmoria?.crtajPrizore?.(g);
-  /* `innerHTML` je obrisao i oznake zaključanosti koje je postavio `lockUI()` */
-  const pro = CFG.plan === 'pro';
-  [...g.children].forEach(el => el.classList.toggle('lk', !pro && el.dataset.tema !== 'jadran'));
-}
-
-/* Slušač se veže JEDNOM, na spremnik — `crtajTeme()` se poziva pri svakoj
-   izmjeni imena, pa bi vezanje unutar njega nakupilo slušač po pritisku tipke. */
-$('#temeLand')?.addEventListener('click', e => {
-  const b = e.target.closest('.tema'); if (!b) return;
-  if (b.classList.contains('lk')) { setPlan('pro'); return; }   // zaključana vodi na Pro
-  CFG.tema = b.dataset.tema;
-  [...b.parentElement.children].forEach(x => x.setAttribute('aria-pressed', String(x === b)));
-  paint();
-});
-
-/* Osam minijatura sa SVG prizorima po pritisku tipke je preskupo — čekamo
-   da se tipkanje smiri. */
-let temeTimer = null;
-function crtajTemeUskoro(){
-  clearTimeout(temeTimer);
-  temeTimer = setTimeout(() => { crtajTeme(); paint(); }, 260);
-}
-
-/* Zaglavlje u telefonu: na „Jadranu” ostaje izvorno, inače ga preuzme tema. */
-function temaUTelefon(){
-  const T = window.Odmoria?.teme; if (!T) return;
-  const top = $('#pvTop'); let hold = $('#pvTema');
-  if (!hold) {
-    hold = document.createElement('div');
-    hold.id = 'pvTema';
-    top.parentElement.insertBefore(hold, top);
-  }
-  if (CFG.tema === 'jadran') {
-    top.hidden = false; hold.hidden = true; hold.innerHTML = '';
-    hold.removeAttribute('data-stil');
-    return;
-  }
-  top.hidden = true; hold.hidden = false;
-  hold.setAttribute('data-stil', CFG.tema);
-  T.ubaci(hold, CFG.tema, {objekt: T.izBaze(objektIzCfg()), mini: true});
-}
-
-function paint(){
-  temaUTelefon();
-  const st = STYLES[CFG.style], f = FONTS[CFG.font];
-  const scr = $('#pvScreen');
-  scr.style.background = st.bg; scr.style.color = st.ink;
-  const isFoto = CFG.cover === 'foto';
-  $('#pvTop').style.transition = 'background .5s var(--ease),opacity .26s linear';
-  $('#pvTop').style.background = isFoto ? photoBg(photoI) : COVERS[CFG.cover].replace('ACCENT', CFG.accent);
-  photoLoop(isFoto);
-  $('#pvCta').style.background = CFG.accent;
-  $$('#pvScreen .sc-row, #pvScreen .pvchip').forEach(el => {
-    el.style.background = st.card; el.style.borderColor = st.line; el.style.color = st.ink;
-  });
-  $$('#pvScreen .sc-k').forEach(el => el.style.color = st.k);
-
-  const n = $('#pvName');
-  n.style.fontFamily = f.fam; n.style.fontVariationSettings = f.vs;
-  n.style.fontSize = f.size; n.style.letterSpacing = f.ls;
-  $('#pvTag').style.display = CFG.font === 'rukopis' ? 'none' : 'block';
-}
-
-function setPlan(p){
-  CFG.plan = p;
-  $$('#planflip button').forEach(b => b.classList.toggle('on', b.dataset.plan === p));
-  if(p === 'free'){                       /* vrati na ono što Free stvarno nudi */
-    CFG = {...CFG, tema:'jadran', accent:'#D4674A', cover:'zalazak', font:'klasik', style:'obalni'};
-    $$('#temeLand .tema').forEach(el =>
-      el.setAttribute('aria-pressed', String(el.dataset.tema === 'jadran')));
-    $$('#sw .sw').forEach(el => el.classList.toggle('on', isFree(el)));
-    ['#covers','#fonts','#styles'].forEach(sel =>
-      $$(sel + ' .opt').forEach(el => el.classList.toggle('on', isFree(el))));
-  }
-  $('#upsell').classList.remove('show');
-  lockUI(); paint();
-}
-window.setPlan = setPlan;
-$$('#planflip button').forEach(b => b.onclick = () => setPlan(b.dataset.plan));
-
-function nudge(){
-  $('#upsell').classList.add('show');
-  clearTimeout(nudge._t);
-  nudge._t = setTimeout(() => $('#upsell').classList.remove('show'), 6000);
-}
-
-/* boje */
-$$('#sw .sw').forEach(s => s.onclick = () => {
-  if(CFG.plan === 'free' && !isFree(s)) return nudge();
-  $$('#sw .sw').forEach(x => x.classList.remove('on'));
-  s.classList.add('on'); CFG.accent = s.dataset.c; paint();
-});
-/* prizor / tipografija / podloga */
-[['#covers','cover'],['#fonts','font'],['#styles','style']].forEach(([sel,key]) => {
-  $$(sel + ' .opt').forEach(b => b.onclick = () => {
-    if(CFG.plan === 'free' && !isFree(b)) return nudge();
-    $$(sel + ' .opt').forEach(x => x.classList.remove('on'));
-    b.classList.add('on'); CFG[key] = b.dataset.v; paint();
-  });
-});
-/* tekst uživo */
-$('#cName').addEventListener('input', e => {
-  $('#pvName').textContent = e.target.value || 'Vaš objekt';
-  crtajTemeUskoro();           /* upisano ime ide i u minijature tema */
-});
-$('#cTag').addEventListener('input', e => {
-  $('#pvTag').textContent = e.target.value;
-  crtajTemeUskoro();
-});
-
-/* Birač tema mora biti nacrtan prije prvog `setPlan`, jer `lockUI()` odmah
-   zaključava kartice koje Free ne dobiva. */
-crtajTeme();
-setPlan('free');
-
-/* cijene */
-$$('#switch button').forEach(b => b.onclick = () => {
-  $$('#switch button').forEach(x => x.classList.remove('on'));
-  b.classList.add('on');
-  const y = b.dataset.p === 'y';
-  $$('.price .n').forEach(n => {
-    n.style.opacity = 0;
-    setTimeout(() => { n.textContent = y ? n.dataset.y : n.dataset.m; n.style.opacity = 1; }, 170);
-  });
-  $$('.price .p').forEach(p => setTimeout(() => p.textContent = y ? p.dataset.yp : p.dataset.mp, 170));
-});
+/* koraci: istakni odabrani */
+;(() => {
+  const steps = [...document.querySelectorAll('.step')]
+  steps.forEach(s => s.addEventListener('click', () => steps.forEach(x => x.setAttribute('aria-pressed', x === s))))
+})()
 </script>
 
 <script type="module">
-/* Cijene i limiti dolaze iz tablice `plans` u Supabaseu — isti izvor kao ostatak
-   aplikacije. Ako baza nije dostupna, ostaje ono sto je upisano u HTML-u. */
+/* Nazivi, cijene i limiti planova dolaze iz tablice `plans` — isti izvor kao
+   ostatak aplikacije (plans.js). Ako baza nije dostupna, ostaju vrijednosti
+   upisane u HTML-u. */
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { loadPlans, getPlan } from '/plans.js'
 try {
@@ -988,35 +653,20 @@ try {
     : `${v} ${v % 10 === 1 && v % 100 !== 11 ? one
         : (v % 10 >= 2 && v % 10 <= 4 && (v % 100 < 12 || v % 100 > 14)) ? few : many}`
 
-  const godisnje = document.querySelector('#switch button[data-p="y"]')?.classList.contains('on')
-
   document.querySelectorAll('.plans .plan[data-plan]').forEach(card => {
     const plan = getPlan(card.dataset.plan)
     if (!plan) return
-
-    const ime = card.querySelector('.planname')
+    const ime = card.querySelector('[data-name]')
     if (ime && plan.name) ime.textContent = plan.name
-
-    const n = card.querySelector('.price .n')
-    if (n) {
-      n.dataset.m = `${plan.monthlyPriceEur} €`
-      n.dataset.y = `${plan.yearlyPriceEur} €`
-      n.textContent = godisnje ? n.dataset.y : n.dataset.m
-    }
-
+    const n = card.querySelector('[data-price]'), per = card.querySelector('[data-period]')
+    if (n) n.textContent = `${plan.monthlyPriceEur} €`
+    if (per && plan.monthlyPriceEur > 0)
+      per.textContent = plan.yearlyPriceEur > 0 ? `mjesečno · ili ${plan.yearlyPriceEur} € godišnje` : 'mjesečno'
     const lim = card.querySelector('[data-limits]')
     if (lim) lim.textContent =
       `${rijec(plan.maxProperties, 'objekt', 'objekta', 'objekata')} · ` +
       `${rijec(plan.maxPhotosPerProperty, 'fotografija', 'fotografije', 'fotografija')}`
   })
-
-  /* ustede na godisnjem planu — izracunaj, ne pretpostavljaj "2 mjeseca" */
-  const pro = getPlan('pro')
-  const bYear = document.querySelector('#switch button[data-p="y"] b')
-  if (bYear && pro && pro.monthlyPriceEur > 0 && pro.yearlyPriceEur > 0) {
-    const mj = Math.round((pro.monthlyPriceEur * 12 - pro.yearlyPriceEur) / pro.monthlyPriceEur)
-    bYear.textContent = mj > 0 ? `−${mj} mj.` : ''
-  }
 } catch {
   /* ostaju vrijednosti upisane u HTML-u */
 }
