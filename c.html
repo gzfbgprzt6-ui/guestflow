@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="hr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Raspored čišćenja — Odmoria</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Manrope:wght@600;700;800&display=swap">
+<link rel="stylesheet" href="/odmoria.css">
+<style>
+/* ==========================================================================
+   Raspored za čistačicu (/c/<token>) — dolasci i odlasci za 60 dana.
+   Podatke daje funkcija raspored_ciscenja (sql/add-cleaner-links.sql):
+   bez šifri, Wi-Fija i imena gostiju.
+   ========================================================================== */
+.top{border-bottom:1px solid var(--border);background:var(--bg-surface)}
+.top__in{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:64px}
+.logo{font:800 20px/1 var(--font-ui);letter-spacing:-.03em;color:var(--text);text-decoration:none}
+.logo i{color:var(--action);font-style:normal}
+main{max-width:760px;margin-inline:auto;padding:32px 16px 64px}
+.glava{display:grid;gap:6px;margin-bottom:24px}
+.glava h1{font:800 clamp(26px,4vw,34px)/1.2 var(--font-ui);letter-spacing:-.02em}
+.vremena{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.vremena span{display:inline-flex;align-items:center;min-height:34px;padding:0 12px;border-radius:17px;background:var(--bg-wash);font-weight:600;font-size:15px}
+.dan{display:grid;grid-template-columns:120px minmax(0,1fr);gap:16px;padding:16px 0;border-bottom:1px solid var(--border)}
+.dan__d{font:700 16px/1.3 var(--font-ui)}
+.dan__d small{display:block;font:500 14px/1.3 var(--font-body);color:var(--text-muted)}
+.dog{display:grid;gap:8px}
+.ev{display:flex;gap:10px;align-items:baseline;font-size:16px}
+.ev b{font:700 15px/1.3 var(--font-ui)}
+.tag{display:inline-block;padding:2px 8px;border-radius:6px;font:700 12px/1.6 var(--font-body);letter-spacing:.02em}
+.tag--out{background:#FDECEA;color:#8A1C1C}
+.tag--in{background:var(--bg-wash);color:var(--text-accent)}
+.izmjena{padding:10px 12px;border-radius:var(--radius-panel);background:var(--bg-warm);color:var(--text-warm);font-weight:600;font-size:15px}
+.prazno{padding:24px;border:1px dashed var(--border);border-radius:var(--radius-feature);text-align:center;color:var(--text-muted)}
+.dno{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;margin-top:24px;font-size:14px;color:var(--text-muted)}
+.boot{min-height:60vh;display:grid;place-items:center}
+@media (max-width:520px){.dan{grid-template-columns:minmax(0,1fr);gap:8px}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap top__in"><a class="logo" href="/">Odmoria<i>.</i></a><span class="t-meta">Raspored čišćenja</span></div></header>
+<main id="sadrzaj">
+  <div class="boot" id="boot" role="status"><span class="t-muted">Učitavam raspored…</span></div>
+  <div id="greska" hidden class="prazno"><b style="display:block;font:700 20px/1.3 var(--font-ui);color:var(--text);margin-bottom:6px">Link nije ispravan</b>Link je pogrešno kopiran ili ga je domaćin zamijenio novim. Zamolite domaćina za novi link.</div>
+  <div id="stranica" hidden>
+    <div class="glava">
+      <span class="eyebrow">Raspored dolazaka i odlazaka</span>
+      <h1 id="ime"></h1>
+      <p class="t-muted" id="adresa" hidden></p>
+      <div class="vremena" id="vremena"></div>
+    </div>
+    <div id="dani" aria-live="polite"></div>
+    <div class="dno"><span id="osvjezeno"></span><button class="btn btn--secondary btn--sm" type="button" onclick="ucitaj()">Osvježi</button></div>
+    <p class="t-meta" style="margin-top:16px">Stranica pokazuje samo termine. Šifre i podatke gostiju ima domaćin.</p>
+  </div>
+</main>
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+const sb = createClient('https://wtojzqjhipdfbrnmprmz.supabase.co', 'sb_publishable_tmZAZTDbQ7ktc1N-8y4q4w_ztAu_62F')
+const $ = s => document.querySelector(s)
+const esc = s => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+const DANI = ['nedjelja', 'ponedjeljak', 'utorak', 'srijeda', 'četvrtak', 'petak', 'subota']
+const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+const plus = (ds, n) => { const d = new Date(ds + 'T12:00:00'); d.setDate(d.getDate() + n); return iso(d) }
+
+const token = new URLSearchParams(location.search).get('token') || location.pathname.split('/c/')[1]?.split('/')[0]
+
+/* Boravci iz zauzetih noći: uzastopne noći iste rezervacije (ili istog izvora)
+   su jedan boravak; dolazak = prva noć, odlazak = dan nakon zadnje noći.
+   Rezervacije bez noći u kalendaru dodaju se iz popisa rezervacija. */
+function boravci(dani, rez) {
+  const noci = [...dani].sort((a, b) => a.date < b.date ? -1 : 1)
+  const out = []
+  for (const n of noci) {
+    const kljuc = n.booking_id || n.source || 'rucno'
+    const zadnji = out[out.length - 1]
+    if (zadnji && zadnji.kljuc === kljuc && plus(zadnji.do, 0) === n.date) zadnji.do = plus(n.date, 1)
+    else out.push({ kljuc, od: n.date, do: plus(n.date, 1) })
+  }
+  const pokriveno = new Set(noci.map(n => n.date))
+  const imaId = new Set(noci.map(n => n.booking_id).filter(Boolean))
+  for (const r of rez || []) {
+    if (imaId.has(r.id)) continue
+    const od = String(r.od).slice(0, 10), doo = String(r.do).slice(0, 10)
+    let sve = true
+    for (let d = od; d < doo; d = plus(d, 1)) if (!pokriveno.has(d)) { sve = false; break }
+    if (!sve) out.push({ kljuc: r.id, od: String(r.od).slice(0, 10), do: String(r.do).slice(0, 10) })
+  }
+  return out
+}
+
+window.ucitaj = async () => {
+  let r = null
+  try { const { data, error } = await sb.rpc('raspored_ciscenja', { p_token: token }); if (!error) r = data } catch {}
+  $('#boot').hidden = true
+  if (!r || r.stanje !== 'ok') { $('#greska').hidden = false; return }
+  document.title = 'Raspored — ' + (r.objekt || 'objekt')
+  $('#ime').textContent = r.objekt || 'Objekt'
+  const adr = [r.adresa, r.mjesto].filter(Boolean).join(', ')
+  if (adr) { $('#adresa').textContent = adr; $('#adresa').hidden = false }
+  $('#vremena').innerHTML = [r.odjava ? 'Odjava do ' + r.odjava : '', r.prijava ? 'Prijava od ' + r.prijava : '']
+    .filter(Boolean).map(t => `<span>${esc(t)}</span>`).join('')
+
+  const danas = iso(new Date()), do60 = plus(danas, 60)
+  const po = {}
+  for (const b of boravci(r.dani || [], r.rezervacije)) {
+    if (b.do >= danas && b.do <= do60) (po[b.do] = po[b.do] || { out: 0, in: 0 }).out++
+    if (b.od >= danas && b.od <= do60) (po[b.od] = po[b.od] || { out: 0, in: 0 }).in++
+  }
+  const datumi = Object.keys(po).sort()
+  $('#dani').innerHTML = datumi.length ? datumi.map(ds => {
+    const d = new Date(ds + 'T12:00:00'), e = po[ds]
+    const kad = ds === danas ? 'danas' : ds === plus(danas, 1) ? 'sutra' : DANI[d.getDay()]
+    const ev = []
+    if (e.out) ev.push(`<div class="ev"><span class="tag tag--out">Odlazak</span><b>Čišćenje${r.odjava ? ' od ' + esc(r.odjava) : ''}</b></div>`)
+    if (e.in) ev.push(`<div class="ev"><span class="tag tag--in">Dolazak</span><b>Spremno${r.prijava ? ' do ' + esc(r.prijava) : ''}</b></div>`)
+    if (e.out && e.in) ev.push(`<div class="izmjena">Izmjena gostiju isti dan${r.odjava && r.prijava ? ` — čišćenje između ${esc(r.odjava)} i ${esc(r.prijava)}` : ''}</div>`)
+    return `<div class="dan"><div class="dan__d">${d.getDate()}. ${d.getMonth() + 1}.<small>${kad}</small></div><div class="dog">${ev.join('')}</div></div>`
+  }).join('') : '<div class="prazno">Nema dolazaka ni odlazaka u sljedećih 60 dana.</div>'
+  const t = new Date()
+  $('#osvjezeno').textContent = `Osvježeno u ${String(t.getHours()).padStart(2, '0')}:${String(t.getMinutes()).padStart(2, '0')}`
+  $('#stranica').hidden = false
+}
+if (!token) { $('#boot').hidden = true; $('#greska').hidden = false } else ucitaj()
+</script>
+</body>
+</html>

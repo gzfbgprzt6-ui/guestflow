@@ -51,7 +51,7 @@ const FALLBACK = {
     maxLanguages: 8,
     maxTeamMembers: 1,
     analyticsDays: 90,
-    canRemoveBranding: true,
+    canRemoveBranding: false,   // odluka vlasnika: oznaka i na Pro (sql/add-reviews.sql)
     canCloneProperty: true,
     whiteLabel: false,
   },

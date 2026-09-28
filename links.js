@@ -32,6 +32,11 @@ export function bookingUrl(token) {
 }
 
 /** Stariji, opci gostinski link vezan uz objekt: /h/<slug>-<guest_token> */
+// Raspored za čistačicu (c.html) — bez šifri i imena gostiju
+export function cleanerUrl(token) {
+  return siteBase() + '/c/' + encodeURIComponent(token || '')
+}
+
 export function legacyGuestUrl(slug, guestToken) {
   return siteBase() + '/h/' + encodeURIComponent((slug || '') + '-' + (guestToken || ''))
 }
