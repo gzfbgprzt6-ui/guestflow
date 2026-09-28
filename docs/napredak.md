@@ -14,7 +14,7 @@ je samo pregled posla. Ništa od ovoga nije u produkciji — sve je na grani
 | B | Aplikacija domaćina (13 ekrana × desktop/mobile), privatni vodič za gosta, stanja linka, prototip B1–B3 | gotovo, **nije pregledano** |
 | C | Prijava i registracija, postavljanje objekta, račun i pretplata, admin, 404, prototip C1–C4 | gotovo, **nije pregledano** |
 | Postavljanje, dodavanje objekta, račun (`onboarding`, `add-property`, `account`) + `forms.css` | `7725bdd` | Koraci s brojevima i trakom napretka, zid limita s planovima iz baze, račun u dva taba (profil i sigurnost · pretplata i limiti, istekli plan), brisanje prema Figmi. Isti Supabase pozivi | 3 širine; svih 5 koraka s provjerom upisa u bazu; dodavanje (ima mjesta / zid limita); račun (profil, lozinka, brisanje, prekidač, #pretplata) |
-| Admin `admin.html` i `404.html` | (commit „Admin i 404 prema Figmi”) | Tamna bočna traka s oznakom ADMIN i vlasničkim pristupom, brojke, grafikon rasta i raspodjela u petrol rampi, tablice u v2; admin više ne učitava `atmosphere.css` ni `ui.css`. 404 prema Figmi | 4 širine × 4 taba, pretraga, istek, korisnik koji nije vlasnik, 404 na 2 širine |
+| Admin `admin.html` i `404.html` | `4619ca8` | Tamna bočna traka s oznakom ADMIN i vlasničkim pristupom, brojke, grafikon rasta i raspodjela u petrol rampi, tablice u v2; admin više ne učitava `atmosphere.css` ni `ui.css`. 404 prema Figmi | 4 širine × 4 taba, pretraga, istek, korisnik koji nije vlasnik, 404 na 2 širine |
 
 ### Kod
 
