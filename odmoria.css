@@ -47,6 +47,9 @@
 @media (max-width:760px){ :root{ --gutter:16px } }
 
 *,*::before,*::after{box-sizing:border-box}
+/* `hidden` mora sakriti i element kojem razred daje display:flex/grid — inače se
+   vidi (dogodilo se: „Plaćeni plan je istekao” svakom domaćinu u Računu). */
+[hidden]{display:none!important}
 html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
 body{margin:0;background:var(--bg-page);color:var(--text);font:400 16px/1.6 var(--font-body);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 img{max-width:100%;display:block}

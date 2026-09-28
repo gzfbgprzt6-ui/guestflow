@@ -22,7 +22,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 | Fotografije | **Cloudinary** — namjerna odluka (25GB free tier), ne Supabase Storage |
 | Hosting | Vercel (Hobby plan), auto-deploy iz GitHub `main` grane |
 | Domene | `guestflow-gamma.vercel.app` (Vercel default) + `odmoria.com` (custom domena) |
-| Plaćanje | Stripe — cijene u tablici `plans`, **checkout nije spojen** (vidi "Poznati nedostaci") |
+| Plaćanje | Stripe — **testni način spojen** (checkout, portal, webhook u `api/`); iznos iz baze (`cijena_plana`), vidi „Plaćanje karticom” |
 
 **Supabase projekt:**
 - URL: `https://wtojzqjhipdfbrnmprmz.supabase.co`
@@ -56,7 +56,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 ├── analitika.css            # pločice, stupčasti grafikoni (HTML, ne SVG), popisi, tablice analitike
 ├── links.js                 # gradnja linkova (/p/, /h/) — NIKAD ne zakucavati domenu, vidi dolje
 ├── plans.js                 # rezervne vrijednosti + helperi; pravi izvor istine je tablica `plans` u bazi
-├── billing.js                # Stripe checkout/portal helperi — NIJE importan ni u jednom HTML-u (mrtav kod dok se ne spoji API)
+├── billing.js                # Stripe iz preglednika: billingStatus, startCheckout, openBillingPortal, povratak s plaćanja (dashboard, account)
 ├── assets/                   # landing/villa-1600.jpg i villa-900.jpg (naslovnica i prijava)
 ├── docs/napredak.md          # što je u redizajnu gotovo, a što nije — pregled za vlasnika
 ├── docs/odluke.md            # SVE odluke koje čekaju vlasnika (planovi, faze A/B/C, naslovnica) — čitati prije prijenosa sljedeće stranice
@@ -64,7 +64,12 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 │   ├── keepalive.js          # Vercel Cron, jednom dnevno — sprječava pauziranje Supabase Free projekta
 │   ├── sync-ical.js          # povlači zauzete termine s Booking.com-a i Airbnb-a
 │   ├── test-calendar.js      # testni iCal feed za isprobavanje sinkronizacije bez računa na Bookingu/Airbnbu
-│   └── track.js              # upis pregleda s državom (x-vercel-ip-country), bez IP adrese
+│   ├── track.js              # upis pregleda s državom (x-vercel-ip-country), bez IP adrese
+│   ├── _stripe.js            # zajedničko za Stripe rute (s „_” → Vercel ga ne objavljuje kao rutu)
+│   ├── billing-status.js     # je li plaćanje karticom uključeno (i testni način)
+│   ├── create-checkout-session.js  # Stripe Checkout; iznos iz cijena_plana_za_mene, popust kao kupon
+│   ├── create-portal-session.js    # Stripeov portal (kartica, računi, otkaz)
+│   └── stripe-webhook.js     # JEDINI upisuje plaćeni plan u subscriptions (service role iz env)
 └── sql/
     ├── admin-access.sql                    # RLS politike scope-ane na owner auth UID
     ├── plan-limits.sql                     # tablica `plans` + okidaci koji limite PROVODE u bazi
@@ -75,13 +80,14 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
     ├── sections-security.sql            # funkcija vodic_gosta + zatvaranje sections/bookings (KORACI 0–4, redom!)
     ├── add-country-to-page-views.sql    # page_views.country + indeks
     ├── add-plan-promotions.sql          # tablica plan_promotions + cijena_plana() — popusti na pretplate
+    ├── add-stripe-to-subscriptions.sql  # subscriptions.stripe_customer_id / stripe_subscription_id (KORAK 0 dijagnostika!)
     ├── add-inquiries.sql                # tablica inquiries (upiti gostiju): gost samo insert, vlasnik čita, 20/sat
     └── fix-missing-columns-and-storage.sql # ALTER TABLE dopune (photo_urls, ical_*, beds/bathrooms/size_m2) + storage bucket policy
 ```
 
-**Napomena:** `api/` sadrži samo `keepalive.js`, `sync-ical.js`, `test-calendar.js` i `track.js`. Stripe serverless funkcije (`create-checkout-session`, `create-portal-session`, `stripe-webhook`) **ne postoje** — vidi "Poznati nedostaci".
+**Napomena:** `api/` ima `keepalive.js`, `sync-ical.js`, `test-calendar.js`, `track.js` i Stripe rute (vidi „Plaćanje karticom”). Vercel Hobby dopušta najviše 12 funkcija — sada ih je 8.
 
-Obje funkcije su namjerno **bez ijedne npm ovisnosti** — projekt nema build korak ni `package.json`, pa se Supabase zove izravno preko REST API-ja (`fetch`), a iCal se parsira ručno. CommonJS (`module.exports`), jer bez `package.json` Vercel `.js` u `api/` tretira kao CJS.
+Sve funkcije su namjerno **bez ijedne npm ovisnosti** — projekt nema build korak ni `package.json`, pa se Supabase zove izravno preko REST API-ja (`fetch`), a iCal se parsira ručno. CommonJS (`module.exports`), jer bez `package.json` Vercel `.js` u `api/` tretira kao CJS.
 
 **Mockupi više ne postoje.** Mapa `v3/` i stari `*-v2.html` obrisani su kad su sve četiri prave stranice prešle na v3 — nema više `/v3/` na domeni ni dvije adrese za isto.
 
@@ -315,6 +321,7 @@ ostati nevidljivo. Posljedica: na snimci cijele stranice (Playwright
   postoji od ranije. Prije nego se stupac preuzme, provjeriti što je u njemu
   (`select theme, count(*) ... group by 1`) i ima li DEFAULT — i pisanje u njega
   zaštititi, da jedan klik ne pojede tuđi podatak.
+- **`hidden` ne skriva element kojem razred daje `display:flex/grid`.** Treći put: natpis „Plaćeni plan je istekao” vidio je svaki domaćin u Računu. `odmoria.css` zato ima `[hidden]{display:none!important}`; dashboard (bez `odmoria.css`) treba `.x[hidden]{display:none}` za svaki takav razred.
 - **Dva elementa s istim `id`-em tiho pokvare drugi.** U dashboardu su obje trake
   za prebacivanje plana (Pregled i Analitika) nosile `id="planbar"`, a
   `getElementById` veže samo prvu — traka u Analitici nije radila. Sada je
@@ -333,7 +340,8 @@ ostati nevidljivo. Posljedica: na snimci cijele stranice (Playwright
 plans           -- id (free/pro/business), name, cijene, max_* limiti, can_* zastavice
                    IZVOR ISTINE za limite i cijene. Promjena plana = UPDATE ovdje,
                    bez diranja koda. -1 u bilo kojem max_* znaci neograniceno.
-subscriptions   -- user_id, plan (free/pro/business), status, period_end
+subscriptions   -- user_id, plan (free/pro/business), status (Stripeovi: active/trialing/past_due/canceled…), period_end,
+                   stripe_customer_id, stripe_subscription_id (sql/add-stripe-to-subscriptions.sql)
 properties      -- user_id, name, slug, host_name, phone, email, welcome_msg,
                    photo_urls, cover_photo_url, beds, bathrooms, size_m2,
                    ical_booking_url, ical_airbnb_url, ical_last_sync, guest_token (legacy),
@@ -413,7 +421,7 @@ URL-ovi vraćenih fotografija spremaju se u `properties.photo_urls` (jsonb) i `p
 - `plans.js` drži iste vrijednosti kao **rezervu** i puni se iz baze pozivom `loadPlans(sb)` pri pokretanju stranice. Ako je Supabase nedostupan, stranica radi s rezervnim vrijednostima.
 - Limite **provodi baza** okidačima (`sql/plan-limits.sql`): broj objekata, fotografija po objektu, preporuka, prijevoza, atrakcija, pravila i pitanja. Provjere u pregledniku postoje samo da korisnik dobije lijepu poruku — nisu sigurnosna granica.
 - Istek plana je na jednom mjestu: `effectivePlanId(sub)` u `plans.js` i `current_plan_id(uid)` u bazi. Istekao plan koji nije `free` pada na `free`.
-- `plans.js` uvezen je u `dashboard.html`, `add-property.html`, `account.html` i `admin.html`. **Nikad ne zakucavati limite u HTML** — to su prije bile četiri razilazeće kopije.
+- `plans.js` uvezen je u `dashboard.html`, `add-property.html`, `account.html`, `admin.html`, `index.html` i `help.html`. **Nikad ne zakucavati limite u HTML** — to su prije bile četiri razilazeće kopije.
 
 **Popusti (od rujna 2026.):** tablica `plan_promotions`, uređuje se u adminu
 (tab Popusti). `plans.js` ih učitava u `loadPlans(sb, {userId})` (tiho
@@ -594,15 +602,40 @@ Ako ikad zatreba da linkovi uvijek pokazuju na jednu domenu bez obzira odakle su
 - Novi SQL se provjerava na **lokalnom PostgreSQL-u 16** (instaliran u okruženju: `/usr/lib/postgresql/16/bin`, `initdb` kao ne-root korisnik) s ulogama `anon`/`authenticated` i `auth.uid()` iz `request.jwt.claims` — tako je provjeren `sections-security.sql`.
 - Postoji i stariji link (`slug` + `properties.guest_token`) koji **odmah** otključava bez vremenskog ograničenja (i kroz funkciju: `stari_link_otkljucava`). Dashboard ga i dalje nudi kao „Privatni vodič”; ukidanje čeka odluku (odluke, točka 0).
 - Booking token se deaktivira ručno (`is_active=false`) ili istječe (`token_expires_at`).
-- Nema service role ključa u klijentskom kodu — sve stranice koriste samo publishable/anon key.
+- Nema service role ključa u klijentskom kodu — sve stranice koriste samo publishable/anon key. Poslužiteljski ključ postoji **samo** kao Vercel varijabla `SUPABASE_SERVICE_ROLE_KEY` i koristi ga **samo** `api/stripe-webhook.js`.
 - Admin panel (`admin.html`) je ispravno zaštićen i na RLS razini (`sql/admin-access.sql`, politike scope-ane na `auth.uid()` vlasnikovog računa), ne samo klijentskom provjerom.
 
 ---
 
+## Plaćanje karticom — Stripe (od rujna 2026., testni način)
+
+- **Uključuje se samo varijablama okruženja u Vercelu** (`STRIPE_SECRET_KEY`,
+  `SUPABASE_SERVICE_ROLE_KEY`). Bez njih `/api/billing-status` kaže
+  `stripe:false` i stranice pokazuju staru nadogradnju e-mailom. Upute:
+  `docs/odluke.md`, točka 16.
+- **Iznos nikad iz preglednika.** Checkout zove `cijena_plana_za_mene` s
+  korisnikovim tokenom (bez funkcije → redovna cijena iz `plans`). Popust =
+  Stripe kupon s našim id-jem (`odm_<ponuda>_<centi>_<trajanje>`), proizvod =
+  `odmoria_<plan>`; oba se naprave jednom i ponovno koriste.
+- **Plan upisuje samo `api/stripe-webhook.js`**, poslužiteljskim ključem. Iz
+  tijela zahtjeva uzima **samo id događaja** i događaj dohvati od Stripea
+  (Stripeov potpis se ne koristi: Vercel tijelo sam pretvori u JSON, pa
+  izvorni bajtovi nisu pouzdano dostupni). I pretplatu uvijek dohvati iznova,
+  pa redoslijed događaja ne smeta. Događaj stare pretplate ne smije srušiti
+  novu (`stripe_subscription_id` se uspoređuje).
+- `period_end` = kraj Stripeova razdoblja **+ 2 dana** (kasni webhook ne smije
+  spustiti domaćina na Free). Od API verzije 2025-03-31 `current_period_end`
+  je na stavci — `krajRazdoblja()` čita oba mjesta; zahtjevi idu s
+  `Stripe-Version: 2024-06-20`.
+- Portal i ponovni checkout koriste `stripe_customer_id` **samo ako kupac u
+  Stripeu nosi `metadata.user_id` istog korisnika** — webhook ga upiše.
+- Tko ima aktivnu pretplatu karticom, checkout vraća 409 → preglednik otvara portal.
+- Povratak: `?placanje=uspjeh|odustao`; `povratakSPlacanja()` ga makne iz
+  adrese, `cekajPlan()` čeka da webhook upiše plan (do ~20 s).
+
 ## Poznati nedostaci (stanje repozitorija, ne backlog-želje)
 
-- **Stripe checkout nije spojen.** Nadogradnja u dashboardu (Pretplata) i u Računu ide e-mailom (`mailto:`), kartice planova pune se iz `plans`; ništa ne poziva `billing.js`. `billing.js` uopće nije importan ni u jednom HTML-u.
-- **Stripe serverless funkcije ne postoje** (`create-checkout-session`, `create-portal-session`, `stripe-webhook`). `track-event.js` također ne postoji, ali ne treba — `page_views` insert ide direktno s klijenta preko Supabase (`sb.from('page_views').insert(...)`), pa analytics radi neovisno.
+- **Stripe je spojen samo za testni način** — računi se ne fiskaliziraju, nema PDV-a ni poreznog broja kupca; odluke u `docs/odluke.md`, točka 16. `track-event.js` ne postoji i ne treba — pregledi idu kroz `/api/track`.
 - **Automatska iCal sinkronizacija** — sinkronizira se samo na klik u dashboardu, ne po rasporedu (vidi gore).
 - **Nema višejezičnosti.** `plans.maxLanguages` postoji, ali u kodu nema nijednog prijevoda ni prebacivanja jezika.
 

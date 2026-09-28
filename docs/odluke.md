@@ -748,3 +748,70 @@ Poredano po važnosti. Ništa od ovoga nije započeto; svaka stavka čeka vaše 
 5. [ ] **Hitni brojevi** (112, hitna, najbliža ljekarna/bolnica).
 6. [ ] **Kratka ocjena na kraju boravka** — domaćin sazna problem prije
    recenzije na Bookingu.
+
+## 16. Plaćanje karticom — Stripe u testnom načinu (rujan 2026.)
+
+**Što je napravljeno.** Pretplata u dashboardu i Račun imaju gumbe
+„Odaberi Pro/Business” (mjesečno ili godišnje) koji otvaraju Stripeovu
+stranicu za plaćanje, i „Upravljaj pretplatom” (Stripeov portal: kartica,
+računi, otkaz). Nakon plaćanja domaćin se vrati u Odmoriju, a plan se
+promijeni sam, obično za sekundu-dvije.
+- **Iznos računa baza**, ne preglednik: `cijena_plana_za_mene` (točka 14).
+  Popust ide kao Stripe kupon, pa Stripe sam vrati punu cijenu nakon
+  „trajanja nakon kupnje”.
+- **Plan upisuje samo webhook** (`api/stripe-webhook.js`), a stanje uvijek
+  provjeri izravno kod Stripea. Lažni ili ponovljeni događaj ništa ne mijenja.
+- Otkazana pretplata vrijedi do kraja plaćenog razdoblja, zatim → Free.
+  Neuspjelo plaćanje (kartica odbijena) plan ne ruši odmah — Stripe
+  pokušava ponovno. Nakon kraja razdoblja plan vrijedi još 2 dana, da kasni
+  webhook ne spusti domaćina na Free.
+- Dok Stripe nije postavljen, sve ostaje kao prije (nadogradnja e-mailom).
+
+**Kako uključiti (testni način — ne treba obrt, ništa se ne naplaćuje):**
+1. Otvorite račun na stripe.com i uključite **Test mode** (gore desno).
+2. Stripe → Developers → API keys → **Secret key** (`sk_test_…`).
+3. Vercel → projekt → Settings → Environment Variables, **samo za Preview**
+   (da produkcija ne pokaže „testni način” pravim domaćinima):
+   - `STRIPE_SECRET_KEY` = `sk_test_…`
+   - `SUPABASE_SERVICE_ROLE_KEY` = Supabase → Project Settings → API keys →
+     **secret** (`sb_secret_…` ili `service_role`). Ovaj ključ zaobilazi RLS,
+     zato ga koristi samo webhook i živi samo u Vercelu — nikad u kodu ni
+     u pregledniku. **Ovo je prvi takav ključ u projektu — upisujete ga vi.**
+4. Supabase SQL editor: `sql/add-stripe-to-subscriptions.sql` — **KORAK 0
+   pošaljite meni** (stupci, provjere, RLS na `subscriptions`), zatim KORAK 1.
+   Za popuste i `sql/add-plan-promotions.sql` (bez njega vrijedi redovna cijena).
+5. Stripe → Developers → Webhooks → Add endpoint:
+   `https://guestflow-git-claude-funny-archimedes-c0qosu-guestflow4.vercel.app/api/stripe-webhook`
+   s događajima `checkout.session.completed`, `customer.subscription.created`,
+   `customer.subscription.updated`, `customer.subscription.deleted`,
+   `invoice.paid`, `invoice.payment_failed`. (Tajna „signing secret” ne
+   treba — webhook svaki događaj provjeri dohvatom od Stripea.)
+   - Ako je na Vercelu uključena zaštita Previewa (Deployment Protection),
+     Stripe dobije 401: Vercel → Settings → Deployment Protection →
+     **Protection Bypass for Automation** → dodajte na kraj adrese
+     `?x-vercel-protection-bypass=<ta tajna>`.
+6. Stripe → Settings → Billing → **Customer portal** → Save (jednom, da
+   „Upravljaj pretplatom” radi).
+7. Vercel → Deployments → zadnji Preview → **Redeploy** (nove varijable
+   vrijede tek od sljedeće objave).
+8. Proba: Pretplata → Odaberi Pro → kartica `4242 4242 4242 4242`, bilo koji
+   budući datum i CVC. Za provjeru s dodatnom potvrdom banke:
+   `4000 0025 0000 3155`; za odbijenu karticu: `4000 0000 0000 0002`.
+
+**Za pravu naplatu (nakon obrta / knjigovođe):** isti koraci s `sk_live_…`
+ključem u **Production**, webhook na produkcijsku adresu, i odluke niže.
+
+Otvorene odluke:
+- [ ] **Računi i fiskalizacija** — Stripe šalje potvrdu plaćanja, ali to nije
+  fiskalizirani račun. Knjigovođa: program za račune ili prodavač umjesto
+  vas (Paddle / Lemon Squeezy).
+- [ ] **PDV** — dok ste paušalist, bez PDV-a; kasnije Stripe Tax ili ručno.
+- [ ] **OIB/PDV broj kupca** na računu (domaćini s obrtom ga žele) — u
+  Checkoutu se može uključiti polje za porezni broj.
+- [ ] **Promjena plana (Pro → Business)** ide kroz portal tek kad se u
+  postavkama portala dopusti promjena i dodaju proizvodi „Odmoria Pro” i
+  „Odmoria Business” (nastanu sami pri prvom plaćanju). Do tada: otkaz pa
+  nova kupnja.
+- [ ] **Probno razdoblje** (npr. 14 dana Pro) — jedan parametar u checkoutu.
+- [ ] **RLS na `subscriptions`** — ako KORAK 0 pokaže da domaćin smije sam
+  mijenjati svoj red, to treba zatvoriti (inače si može upisati Business).

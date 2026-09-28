@@ -47,6 +47,13 @@
 .plan ul{margin:4px 0 0;padding:0;list-style:none;display:grid;gap:6px;font-size:15px}
 .plan li::before{content:"✓ ";color:var(--text-accent);font-weight:800}
 .note{display:flex;gap:8px;padding:12px 14px;margin-top:16px;border-radius:var(--radius-panel);background:var(--bg-wash);font-size:14px}
+/* plaćanje karticom (Stripe) */
+.plan__kupi{display:grid;gap:6px;margin-top:6px}
+.plan__kupi button{width:100%;justify-content:center}
+.plan__kupi button[disabled]{opacity:.6;cursor:progress}
+.sub-msg{margin:0 0 16px;padding:14px 16px;border-radius:var(--radius-panel);background:var(--bg-wash);font-size:15px}
+.sub-msg[data-vrsta=upoz]{background:#FFF4DC;color:#6B4A00}
+.sub-akcije{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
 @media (max-width:760px){.plans{grid-template-columns:minmax(0,1fr)}}
 @media (max-width:420px){.tab{padding:0 10px;font-size:15px}}
 </style>
@@ -143,6 +150,7 @@
 
     <!-- ============ PRETPLATA I LIMITI ============ -->
     <div role="tabpanel" id="p-pretplata" aria-labelledby="t-pretplata" hidden>
+      <p class="sub-msg" id="sub-msg" role="status" hidden></p>
       <div class="banner" id="expired" hidden>
         <svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
         <div><b id="expired-t">Plaćeni plan je istekao.</b>Račun je na besplatnoj razini; objekti iznad limita su zaključani dok se plan ne obnovi. Podaci se ne brišu.</div>
@@ -164,6 +172,7 @@
             <span class="t-muted">Račun otvoren</span><b id="reg-date">—</b>
           </div>
           <p class="t-meta" style="margin-top:12px">Limiti se čitaju iz tablice planova i provodi ih baza.</p>
+          <div class="sub-akcije" id="sub-akcije" hidden><button type="button" class="btn-out" onclick="upravljajPretplatom(this)">Upravljaj pretplatom (kartica, računi, otkaz)</button></div>
         </div>
       </section>
 
@@ -171,7 +180,7 @@
         <h2 class="card-head">Planovi</h2>
         <div class="card-body">
           <div class="plans" id="plans"></div>
-          <div class="note"><svg class="ic ic--sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg><span>Online plaćanje (Stripe) još nije spojeno. Do tada nadogradnja ide preko kontakta.</span></div>
+          <div class="note"><svg class="ic ic--sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg><span id="sub-note">Online plaćanje (Stripe) još nije spojeno. Do tada nadogradnja ide preko kontakta.</span></div>
         </div>
       </section>
     </div>
@@ -183,7 +192,8 @@
 
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-import { loadPlans, getPlan, limitFor, effectivePlanId, listPlans, popustZa, formatEur, rokPopusta, trajanjePopusta } from './plans.js'
+import { loadPlans, getPlan, limitFor, effectivePlanId, listPlans, popustZa, formatEur, rokPopusta, trajanjePopusta, cijenaPlana } from './plans.js'
+import { billingStatus, startCheckout, openBillingPortal, povratakSPlacanja, cekajPlan } from './billing.js'
 
 const SURL = 'https://wtojzqjhipdfbrnmprmz.supabase.co'
 const SKEY = 'sb_publishable_tmZAZTDbQ7ktc1N-8y4q4w_ztAu_62F'
@@ -205,8 +215,10 @@ async function init() {
   document.getElementById('av-email').textContent = USER.email
 
   // Plan & stats
+  const status = billingStatus()
   await loadPlans(sb, { userId: USER?.id })
-  const { data: sub } = await sb.from('subscriptions').select('plan,period_end').eq('user_id', USER.id).maybeSingle()
+  const { data: sub } = await sb.from('subscriptions').select('*').eq('user_id', USER.id).maybeSingle()
+  const BILLING = await status
   const plan = effectivePlanId(sub)          // istekao plan pada na free
   const limit = limitFor(plan, 'properties')
   const { count } = await sb.from('properties').select('id', { count: 'exact', head: true }).eq('user_id', USER.id)
@@ -231,6 +243,16 @@ async function init() {
       `Plaćeni plan je istekao ${new Date(sub.period_end).getDate()}. ${new Date(sub.period_end).getMonth() + 1}.`
   }
 
+  // plaćanje karticom: gumbi samo kad je Stripe uključen (/api/billing-status).
+  // Iznos računa poslužitelj iz baze — ovdje se samo prikazuje.
+  const imaKarticu = !!(sub && sub.stripe_subscription_id && plan !== 'free')
+  const kupi = p => {
+    if (!BILLING.stripe || p.id === plan || !(p.monthlyPriceEur > 0)) return ''
+    if (imaKarticu) return `<div class="plan__kupi"><button type="button" class="btn-out" onclick="upravljajPretplatom(this)">Promijeni u portalu</button></div>`
+    return `<div class="plan__kupi"><button type="button" class="btn-blue" onclick="kupiPlan('${p.id}','month',this)">Mjesečno · ${formatEur(cijenaPlana(p.id, 'month'))}</button>`
+      + (p.yearlyPriceEur > 0 ? `<button type="button" class="btn-out" onclick="kupiPlan('${p.id}','year',this)">Godišnje · ${formatEur(cijenaPlana(p.id, 'year'))}</button>` : '') + '</div>'
+  }
+
   // planovi — nazivi, cijene i limiti iz baze
   const lim = (n, a, b, c) => n === Infinity ? 'Neograničeno ' + c : `Do ${n} ${n % 10 === 1 && n % 100 !== 11 ? a : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? b : c}`
   document.getElementById('plans').innerHTML = listPlans().map(p => `
@@ -240,8 +262,16 @@ async function init() {
       <ul><li>${lim(p.maxProperties, 'objekt', 'objekta', 'objekata')}</li>
           <li>${p.maxPhotosPerProperty === Infinity ? 'Neograničeno fotografija' : p.maxPhotosPerProperty + ' fotografija'} po objektu</li>
           <li>Javna stranica i privatni vodič</li></ul>
+      ${kupi(p)}
     </div>`).join('')
+  document.getElementById('sub-akcije').hidden = !(BILLING.stripe && imaKarticu)
+  document.getElementById('sub-note').innerHTML = !BILLING.stripe
+    ? 'Online plaćanje (Stripe) još nije spojeno. Do tada nadogradnja ide preko kontakta.'
+    : BILLING.test
+    ? '<b>Testni način:</b> ništa se stvarno ne naplaćuje. Za probu: kartica <b>4242 4242 4242 4242</b>, bilo koji budući datum i CVC.'
+    : 'Plaćanje karticom preko Stripea. Pretplatu možete otkazati bilo kad; plan vrijedi do kraja plaćenog razdoblja.'
   if (location.hash === '#pretplata') openTab('pretplata')
+  povratakNaPretplatu()
 
   const created = new Date(USER.created_at)
   document.getElementById('reg-date').textContent = created.toLocaleDateString('hr-HR', { day: 'numeric', month: 'long', year: 'numeric' })
@@ -318,6 +348,33 @@ window.handleDelete = () => {
 // Postavka obavijesti se još nigdje ne sprema — prekidač samo mijenja izgled
 window.toggleNotif = (el) => {
   el.setAttribute('aria-checked', el.getAttribute('aria-checked') !== 'true')
+}
+
+// Stripe: povratak s plaćanja (?placanje=uspjeh|odustao). Plan upisuje webhook,
+// pa se čeka da red u `subscriptions` pokaže plaćeni plan, zatim se stranica osvježi.
+async function povratakNaPretplatu() {
+  const v = povratakSPlacanja()
+  if (!v) return
+  openTab('pretplata')
+  if (v === 'odustao') return porukaPretplate('Plaćanje je prekinuto. Ništa nije naplaćeno.')
+  porukaPretplate('Plaćanje je prošlo. Plan se upravo ažurira…')
+  const s = await cekajPlan(sb, USER.id, d => !!d.stripe_subscription_id && effectivePlanId(d) !== 'free')
+  if (!s) return porukaPretplate('Plaćanje je prošlo, ali plan još nije ažuriran. Osvježite stranicu za minutu; ako se ne promijeni, javite nam se na podrska@odmoria.com.', 'upoz')
+  location.reload()
+}
+function porukaPretplate(t, vrsta) {
+  const el = document.getElementById('sub-msg')
+  el.textContent = t; el.hidden = !t
+  if (vrsta) el.dataset.vrsta = vrsta; else delete el.dataset.vrsta
+}
+const cekaGumb = (btn, t) => { if (btn) { btn.dataset.t = btn.dataset.t || btn.textContent; btn.disabled = !!t; btn.textContent = t || btn.dataset.t } }
+window.kupiPlan = async (plan, iv, btn) => {
+  cekaGumb(btn, 'Otvaram plaćanje…')
+  try { await startCheckout(sb, plan, iv, 'account') } catch (e) { cekaGumb(btn, ''); porukaPretplate(e.message, 'upoz') }
+}
+window.upravljajPretplatom = async btn => {
+  cekaGumb(btn, 'Otvaram portal…')
+  try { await openBillingPortal(sb, 'account') } catch (e) { cekaGumb(btn, ''); porukaPretplate(e.message, 'upoz') }
 }
 
 // tabovi: Profil i sigurnost · Pretplata i limiti (#pretplata)
