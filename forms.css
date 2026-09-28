@@ -1,0 +1,105 @@
+/* =====================================================================
+   forms.css — postavljanje objekta (onboarding), dodavanje objekta i
+   račun (Figma: 07 Account & Admin). Stoji na odmoria.css. Imena razreda
+   su ista kao prije (.fi, .fg, .type-btn, .btn-blue…), pa JS nije diran.
+   ===================================================================== */
+
+body{min-height:100dvh;display:flex;flex-direction:column}
+#loading{position:fixed;inset:0;background:var(--bg-page);display:flex;align-items:center;justify-content:center;z-index:999}
+.spin{width:28px;height:28px;border:3px solid var(--border);border-top-color:var(--action);border-radius:50%;animation:sp .8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* gornja traka */
+nav.top{background:var(--bg-surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 24px;min-height:64px;flex-shrink:0}
+.logo{font:800 22px/1 var(--font-ui);letter-spacing:-.03em;text-decoration:none;color:var(--text)}
+.logo span,.logo i{color:var(--action);font-style:normal}
+.nav-back,.nav-exit{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 8px;border:0;background:none;color:var(--text);cursor:pointer;font:700 15px/1 var(--font-ui);text-decoration:none}
+.nav-back:hover,.nav-exit:hover{color:var(--text-accent)}
+
+.main{flex:1;display:flex;align-items:flex-start;justify-content:center;padding:40px 16px 96px;gap:48px}
+.wrap{width:100%;max-width:880px;margin-inline:auto}
+.page-title{font:800 32px/1.15 var(--font-ui);letter-spacing:-.03em;margin-bottom:8px}
+.page-sub{color:var(--text-muted);margin-bottom:24px}
+
+/* kartice */
+.card{background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-feature);margin-bottom:16px;overflow:hidden}
+.card-head{display:flex;align-items:center;gap:10px;padding:24px 24px 0;font:700 20px/1.3 var(--font-ui);letter-spacing:-.02em}
+.card-head .ic{color:var(--text-accent)}
+.card-sub{color:var(--text-muted);font-size:14px;padding:4px 24px 0}
+.card-body{padding:20px 24px 24px}
+
+/* obrasci */
+.fg{margin-bottom:16px;display:grid;gap:8px}
+.fg label,.fl{display:block;font:700 14px/1.3 var(--font-ui);color:var(--text)}
+.fi,.fta,.fsel{width:100%;min-height:48px;padding:0 14px;border:1px solid var(--border-control);border-radius:var(--radius-control);background:var(--bg-surface);color:var(--text);font:400 16px/1.4 var(--font-body)}
+.fta{padding:12px 14px;resize:vertical;line-height:1.55;min-height:96px}
+.fi:hover,.fta:hover,.fsel:hover{border-color:var(--text)}
+.fi:focus,.fta:focus,.fsel:focus{outline:0;border-color:var(--text);box-shadow:0 0 0 2px var(--text)}
+.fi[readonly]{background:var(--bg-wash);border-color:var(--border-control)}
+.fi.big{font:800 22px/1 var(--font-ui);letter-spacing:.12em}
+.fg-hint{display:flex;gap:6px;align-items:flex-start;font-size:13px;line-height:1.45;color:var(--text-muted)}
+.fg-hint .ic{width:16px;height:16px;flex:none;color:var(--text-accent);margin-top:1px}
+.fg-hint.green{color:var(--text-muted)}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:start}
+
+/* vrsta objekta — čipovi */
+.type-grid{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.type-btn{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 16px;border:1px solid var(--border-control);border-radius:var(--radius-control);background:var(--bg-surface);cursor:pointer;font:500 15px/1 var(--font-body);color:var(--text)}
+.type-btn:hover{background:var(--bg-wash)}
+.type-btn:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.type-btn-ic{display:none}
+.type-btn-lbl{font:inherit;color:inherit}
+.type-btn.on{border:2px solid var(--action);padding:0 15px;background:var(--bg-wash);font-weight:700}
+.type-btn.on::before{content:"✓";color:var(--text-accent);font-weight:800}
+
+/* gumbi */
+.btn-blue,.btn-out,.btn-red,.lbtn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 20px;border-radius:var(--radius-control);border:1px solid transparent;cursor:pointer;font:700 16px/1.2 var(--font-ui);text-decoration:none;transition:background-color .15s,border-color .15s,color .15s}
+.btn-blue{background:var(--action);color:#fff}
+.btn-blue:hover{background:var(--action-hover)}
+.btn-out,.lbtn-out{background:var(--bg-surface);color:var(--text);border-color:var(--border-control)}
+.btn-out:hover,.lbtn-out:hover{background:var(--bg-wash)}
+.lbtn-ink{background:var(--action);color:#fff}
+.lbtn-ink:hover{background:var(--action-hover)}
+.btn-red{background:var(--danger);color:#fff}
+.btn-red:hover{background:#912018}
+.btn-sm{min-height:40px;padding:0 14px;font-size:14px}
+.btn-full{width:100%}
+.btn-blue:disabled,.btn-red:disabled,.btn-out:disabled{background:var(--bg-wash);border-color:var(--bg-wash);color:var(--text-muted);cursor:not-allowed}
+.btn-blue .spin{width:18px;height:18px;border-width:2px;border-color:rgba(255,255,255,.4);border-top-color:#fff}
+
+/* poruke */
+.alert{display:none;border-radius:var(--radius-panel);padding:12px 14px;font-weight:600;margin-bottom:16px;line-height:1.5}
+.alert-err{background:var(--danger-bg);color:var(--danger)}
+.alert-ok{background:var(--bg-wash);color:var(--text)}
+.limit-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:6px;font:700 12px/1.3 var(--font-body);letter-spacing:.05em;text-transform:uppercase;margin-bottom:20px}
+.limit-ok{background:var(--bg-wash);color:var(--text-accent)}
+.limit-warn{background:var(--bg-warm);color:var(--text-warm)}
+
+/* fotografije */
+.ph-drop{display:grid;justify-items:center;gap:4px;border:1px dashed var(--border-control);border-radius:var(--radius-feature);padding:28px 20px;text-align:center;cursor:pointer;background:var(--bg-wash);color:var(--text)}
+.ph-drop:hover,.ph-drop.over{border-color:var(--action)}
+.ph-drop:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.ph-drop svg{color:var(--text-accent)}
+.ph-drop-t{font:700 16px/1.3 var(--font-ui);margin-top:8px}
+.ph-drop-s{font-size:14px;color:var(--text-muted)}
+.ph-drop.busy{pointer-events:none;opacity:.6}
+.ph-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;margin-top:16px}
+.ph-item{position:relative;aspect-ratio:4/3;border-radius:var(--radius-panel);overflow:hidden;background:var(--bg-wash)}
+.ph-item img{width:100%;height:100%;object-fit:cover;display:block}
+.ph-item .ph-x{position:absolute;top:6px;right:6px;width:32px;height:32px;border:0;border-radius:var(--radius-control);background:rgba(10,42,51,.8);color:#fff;font-size:14px;cursor:pointer;display:grid;place-items:center}
+.ph-item .ph-x:hover{background:var(--danger)}
+.ph-item .ph-cover{position:absolute;left:6px;bottom:6px;padding:3px 8px;border-radius:6px;background:var(--bg-surface);color:var(--text);font:700 11px/1.3 var(--font-body);letter-spacing:.05em;text-transform:uppercase}
+.ph-count{font-size:14px;color:var(--text-muted);margin-top:12px}
+
+#toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,12px);background:var(--bg-inverse);color:#fff;padding:12px 18px;border-radius:var(--radius-control);font:600 15px/1.3 var(--font-ui);z-index:9999;max-width:calc(100vw - 32px);opacity:0;transition:opacity .2s,transform .2s;pointer-events:none}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+
+@media (max-width:640px){
+  nav.top{padding:0 16px}
+  .main{padding:24px 16px 96px}
+  .card-head{padding:20px 16px 0}
+  .card-sub{padding:4px 16px 0}
+  .card-body{padding:16px}
+  .grid2{grid-template-columns:minmax(0,1fr);gap:0}
+  .page-title{font-size:28px}
+}

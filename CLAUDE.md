@@ -48,6 +48,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 ├── vercel.json              # Rewrites za clean URL-ove, security headeri + dnevni cron za keepalive
 ├── odmoria.css              # v2 dizajn sustav (Figma „Odmoria / Product Design / v2”) — naslovnica, p.html, h.html, prijava
 ├── auth.css                 # raspored četiri stranice prijave (login, register, reset-password, email-confirm)
+├── forms.css                # obrasci za onboarding, add-property i account (ista imena razreda kao prije)
 ├── atmosphere.css           # v3 dizajn sustav — danas ga koristi SAMO preview/ (nijedna živa stranica)
 ├── teme.css                 # OSAM TEMA javne stranice — dijele ih dashboard.html i preview/ (p.html v2 više ne)
 ├── teme.js                  # rasporedi zaglavlja, `izBaze(prop)` i zajednički birač tema
@@ -592,6 +593,17 @@ tokena inače pukne na `const` prije inicijalizacije.
 `<form>` to ime pokazuje na ugrađeni `form.submit()`, pa gumb tiho pošalje
 obrazac umjesto da spremi lozinku (dogodilo se na `reset-password.html`).
 Tijek „zaboravljena lozinka” ne postoji — vidi `docs/odluke.md`, točka 5.
+
+**Postavljanje, dodavanje objekta i račun** dijele `forms.css`; imena razreda
+(`.fi`, `.fg`, `.type-btn`, `.btn-blue`, `.ph-*`…) i svi ID-jevi su isti kao
+prije, pa je JavaScript ostao gotovo netaknut (samo tekstovi na „vi”). Postavljanje:
+brojevi koraka lijevo idu CSS brojačem, a traka napretka su postojeći `.slbl`
+elementi nacrtani kao odsječci (tekst im je skriven, `aria-hidden`). Zid limita
+u `add-property` i popis planova u računu pune se iz `plans` (`getPlan`,
+`listPlans`) — **nikad zakucane cijene**. Račun ima tabove „Profil i sigurnost”
+i „Pretplata i limiti”; `#pretplata` u adresi otvara drugi (na njega vodi
+„Pogledaj planove”). Brisanje računa i e-mail obavijesti i dalje ništa ne rade
+na poslužitelju — sad to piše uz njih (vidi `docs/odluke.md`, točka 5).
 
 Provjereno podmetnutim klijentom (puni objekt, objekt bez ičega, nepostojeći slug)
 na 1920/1440/834/430/390/360: bez prelijevanja, bez JS grešaka; odabir raspona,

@@ -13,6 +13,7 @@ je samo pregled posla. Ništa od ovoga nije u produkciji — sve je na grani
 | A | Temelji (boje, tipografija, razmaci, 47 ikona), komponente, naslovnica, javna stranica, galerija, dostupnost i upit, prototip | **prihvaćeno** |
 | B | Aplikacija domaćina (13 ekrana × desktop/mobile), privatni vodič za gosta, stanja linka, prototip B1–B3 | gotovo, **nije pregledano** |
 | C | Prijava i registracija, postavljanje objekta, račun i pretplata, admin, 404, prototip C1–C4 | gotovo, **nije pregledano** |
+| Postavljanje, dodavanje objekta, račun (`onboarding`, `add-property`, `account`) + `forms.css` | (commit „Postavljanje i račun prema Figmi”) | Koraci s brojevima i trakom napretka, zid limita s planovima iz baze, račun u dva taba (profil i sigurnost · pretplata i limiti, istekli plan), brisanje prema Figmi. Isti Supabase pozivi | 3 širine; svih 5 koraka s provjerom upisa u bazu; dodavanje (ima mjesta / zid limita); račun (profil, lozinka, brisanje, prekidač, #pretplata) |
 
 ### Kod
 
@@ -42,6 +43,7 @@ Popratno:
 - [ ] Dashboard na Previewu — prijaviti se i proći sve dijelove: Objekt
   (spremanje, fotografije), Boravci (nova rezervacija, kalendar, iCal),
   Linkovi i QR, Pretplata; na mobitelu donju traku.
+- [ ] Postavljanje na Previewu — novi račun prolazi svih 5 koraka; dodavanje objekta; Račun → Pretplata i limiti.
 - [ ] Prijava na Previewu — prava prijava, Google, link za prijavu i registracija novog računa (potvrda e-maila).
 - [ ] Vodič na Previewu — otvoriti pravi gostinski link (`/h/<token>`) prije i
   poslije otključavanja; proći sve pločice i gumb natrag.
@@ -61,7 +63,9 @@ Popratno:
    sigurnost tablice `sections` (vidi `odluke.md`, točka 0).
 3. [x] Prijava, registracija, nova lozinka, potvrda e-maila — novi izgled,
    isti Supabase pozivi. Otvoreno: tijek „zaboravljena lozinka” (`odluke.md`, točka 5).
-4. [ ] Postavljanje i račun (`onboarding`, `add-property`, `account`).
+4. [x] Postavljanje i račun (`onboarding`, `add-property`, `account`) — novi izgled,
+   ista logika. Otvoreno: dvije postojeće greške u postavljanju i kontakt za
+   nadogradnju/brisanje (`odluke.md`, točka 5).
 5. [ ] Admin (`admin.html`) i 404.
 6. [ ] Pomoć, Uvjeti, Privatnost — nema dizajna (zajednički predložak tekstualne
    stranice nije rađen).

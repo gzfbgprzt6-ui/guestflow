@@ -1,6 +1,6 @@
 # Odmoria redizajn — odluke koje čekaju vlasnika
 
-Stanje 28. 9. 2026. (naslovnica, javna stranica, dashboard, vodič za gosta te prijava i registracija preneseni u kod). Ovdje su skupljena sva otvorena pitanja iz Figme (faze A, B i C)
+Stanje 28. 9. 2026. (naslovnica, javna stranica, dashboard, vodič za gosta, prijava i registracija te postavljanje, dodavanje objekta i račun preneseni u kod). Ovdje su skupljena sva otvorena pitanja iz Figme (faze A, B i C)
 i ona koja su se otvorila pri prijenosu naslovnice u kod. Dok odluka ne padne, kod
 radi kako je opisano u stupcu **Sada u kodu**, uvijek na sigurnu stranu: ništa se
 ne obećava što ne postoji, a ništa se ne upisuje u bazu.
@@ -50,8 +50,9 @@ i kvačica se zatvori.
 - [ ] **Tijek nadogradnje dok Stripe nije spojen.** Gumbi su danas `toast(...)`.
   Svi CTA-ovi na naslovnici vode na `/register.html` („Započni besplatno”);
   pod Pro karticom piše „Nadogradite kad vam zatreba.”
-- [ ] **Cijene zakucane u `add-property.html`** (15 € / 49 €) — čitati iz `plans`
-  ili pričekati odluku o planovima.
+- [x] **Cijene zakucane u `add-property.html`** (15 € / 49 €) — sada se čitaju iz
+  `plans` (naziv, cijena, limiti); maknute su i tvrdnje „vlastita domena”,
+  „white-label”, „API pristup”, kojih u kodu nema.
 
 ## 2. Naslovnica (`index.html`) — nastalo pri prijenosu u kod
 
@@ -157,13 +158,14 @@ i kvačica se zatvori.
 - [ ] *(Za kod, ne odluka)* „Kreiraj link” mora biti onemogućen dok su datumi
   neispravni — u prototipu vodi dalje.
 
-## 5. Račun, postavljanje, admin — faza C (prijava i registracija prenesene u kod)
+## 5. Račun, postavljanje, admin — faza C (sve osim admina preneseno u kod)
 
 - [ ] Proći prototipe C1 Auth Mobile, C3 Račun i C4 Admin.
 - [ ] **Ton obraćanja:** dizajn i nova naslovnica koriste „vi”, produkcijska
   prijava „ti”. Jedno za cijelu aplikaciju. **Sada u kodu:** naslovnica, javna
-  stranica, vodič, prijava, registracija, nova lozinka i potvrda e-maila su na
-  „vi”; postavljanje, dodavanje objekta, račun i dijelovi dashboarda još su na „ti”.
+  stranica, vodič, prijava, registracija, nova lozinka, potvrda e-maila,
+  postavljanje, dodavanje objekta i račun su na „vi”; dijelovi dashboarda
+  (poruke u panelima) još su na „ti”.
 - [ ] **Zaboravljena lozinka ne postoji kao tijek.** Nigdje se ne šalje e-mail za
   novu lozinku (`resetPasswordForEmail`) — „Zaboravili ste lozinku?” šalje link
   za prijavu (kao i prije, i kao u Figmi). Stranica `reset-password.html` radi,
@@ -180,6 +182,29 @@ i kvačica se zatvori.
   umjesto zelene poruke iznad obrasca. Pretpostavlja da je potvrda e-maila u
   Supabaseu uključena — ako nije, korisnik je već prijavljen i tekst ne stoji.
 - [ ] **Korak 5 postavljanja:** link po boravku umjesto starog zajedničkog.
+  **Sada u kodu:** i dalje stari zajednički link (`slug` + `guest_token`), koji
+  otključava šifre **odmah**, bez vremenskog zaključavanja. Isto vrijedi za
+  „Privatni link” nakon dodavanja objekta.
+- [ ] **Greška u postavljanju (postojala i prije):** ako se s koraka 2 vratite
+  na korak 1 i opet kliknete „Dalje”, objekt se **ponovno upiše** u bazu
+  (duplikat, a na besplatnom planu okidač limita odbije drugi upis). Popravak je
+  mali: na koraku 1 ažurirati postojeći objekt ako je već napravljen. Nije rađen
+  jer mijenja ponašanje — odobriti?
+- [ ] **Greška u postavljanju (postojala i prije):** „Natrag” na koraku 5 vodi
+  na korak 3, ne na 4 (`prevStep(4)` umjesto `prevStep(5)`). Popraviti?
+- [ ] **Nadogradnja „preko kontakta”** — zid limita i Račun pišu „Online
+  plaćanje još nije spojeno — za nadogradnju nam se javite”, ali nigdje nema
+  kontakta. Koja adresa ili obrazac?
+- [ ] **Brisanje računa ne briše ništa** — kao i prije, poruka upućuje na
+  `podrska@odmoria.com`, a domena `odmoria.com` još nije spojena, pa taj e-mail
+  vjerojatno ne radi. Treba prava adresa ili pravo brisanje (serverska funkcija).
+- [ ] **E-mail obavijesti** — prekidač se nigdje ne sprema (ni prije nije).
+  Sada uz njega piše „Postavka se još ne sprema.” Figma ima dva prekidača
+  (važne poruke / novosti). Spremati u bazu (nova kolona — treba odobrenje) ili
+  maknuti?
+- [ ] **Pretplata i limiti:** Figma prikazuje potrošnju fotografija po objektu
+  (traka „4 od 5”); u kodu je samo limit („do 5 po objektu”), jer bi traka
+  tražila dohvat fotografija svih objekata. Dodati?
 - [ ] **Tab „Poruke” u adminu:** odobriti tablicu `announcements` ili ukloniti
   tab.
 - [ ] **Pomoć, Uvjeti, Privatnost:** zajednički predložak tekstualne stranice
