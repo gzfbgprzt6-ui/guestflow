@@ -63,7 +63,8 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 ├── api/
 │   ├── keepalive.js          # Vercel Cron, jednom dnevno — sprječava pauziranje Supabase Free projekta
 │   ├── sync-ical.js          # povlači zauzete termine s Booking.com-a i Airbnb-a
-│   └── test-calendar.js      # testni iCal feed za isprobavanje sinkronizacije bez računa na Bookingu/Airbnbu
+│   ├── test-calendar.js      # testni iCal feed za isprobavanje sinkronizacije bez računa na Bookingu/Airbnbu
+│   └── track.js              # upis pregleda s državom (x-vercel-ip-country), bez IP adrese
 └── sql/
     ├── admin-access.sql                    # RLS politike scope-ane na owner auth UID
     ├── plan-limits.sql                     # tablica `plans` + okidaci koji limite PROVODE u bazi
@@ -71,10 +72,12 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
     ├── add-booking-id-to-availability.sql
     ├── add-source-to-availability.sql
     ├── add-theme-to-properties.sql      # properties.theme → ime teme, properties.highlight
+    ├── sections-security.sql            # funkcija vodic_gosta + zatvaranje sections/bookings (KORACI 0–4, redom!)
+    ├── add-country-to-page-views.sql    # page_views.country + indeks
     └── fix-missing-columns-and-storage.sql # ALTER TABLE dopune (photo_urls, ical_*, beds/bathrooms/size_m2) + storage bucket policy
 ```
 
-**Napomena:** `api/` sadrži samo `keepalive.js`, `sync-ical.js` i `test-calendar.js`. Stripe serverless funkcije (`create-checkout-session`, `create-portal-session`, `stripe-webhook`) **ne postoje** — vidi "Poznati nedostaci".
+**Napomena:** `api/` sadrži samo `keepalive.js`, `sync-ical.js`, `test-calendar.js` i `track.js`. Stripe serverless funkcije (`create-checkout-session`, `create-portal-session`, `stripe-webhook`) **ne postoje** — vidi "Poznati nedostaci".
 
 Obje funkcije su namjerno **bez ijedne npm ovisnosti** — projekt nema build korak ni `package.json`, pa se Supabase zove izravno preko REST API-ja (`fetch`), a iCal se parsira ručno. CommonJS (`module.exports`), jer bez `package.json` Vercel `.js` u `api/` tretira kao CJS.
 
@@ -317,7 +320,7 @@ faq             -- property_id, question, answer
 availability    -- property_id, date, is_booked, source (manual/ical_booking/ical_airbnb)
 bookings        -- property_id, guest_name, guest_note, token (16 znakova), checkin_date,
                    checkout_date, token_expires_at, is_active
-page_views      -- property_id, view_type, timestamp. view_type: public, guest_hub, inquiry_whatsapp,
+page_views      -- property_id, view_type, timestamp, country (ISO, iz /api/track; stupac iz sql/add-country-to-page-views.sql). view_type: public, guest_hub, inquiry_whatsapp,
                    inquiry_email, inquiry_copy, map, guide:<dolazak|kuca|preporuke|domacin>
 ```
 
@@ -539,8 +542,11 @@ Ako ikad zatreba da linkovi uvijek pokazuju na jednu domenu bez obzira odakle su
 - `p.html` **nikad** ne čita `sections` tablicu — `door_code` i `wifi_pass` su isključivo na `h.html`.
 - `h.html` ima `<meta name="robots" content="noindex,nofollow">`.
 - Wi-Fi i kod vrata prikazuju se tek unutar prozora `[checkin_time - 1h, checkout 23:59]` (vremensko zaključavanje), uz `setInterval` koji auto-otključa kad prozor otvori. **Prije otključavanja te vrijednosti uopće ne ulaze u HTML** — ne postoje ni u skrivenom elementu ni u `window.__VALS`, pa se ne mogu izvući iz izvornog koda stranice. Ovo je testirano i mora ostati tako. U v2 vodiču sve prolazi kroz `vaultItems()` → `secretHtml()` (zapečaćeno = samo `••••`); testirano i ubrzanim satom (`page.clock`) da se vrijednosti pojave same u trenutku otključavanja.
-- **Ali:** red iz `sections` (sa šiframa) dohvaća se iz baze i prije otključavanja — ne ulazi u HTML, ali stigne u preglednik. Ako RLS dopušta anonimno čitanje `sections` po `property_id`, šifre se mogu dohvatiti API-jem bez linka i bez vremena. U `sql/` nema pravila za `sections`, pa to treba provjeriti u Supabaseu (vidi `docs/odluke.md`, točka 0). **Zato vodič ne smije tvrditi da se šifre „ne šalju u preglednik”.**
-- Postoji i stariji fallback (`slug` + `properties.guest_token`) koji **odmah** otključava bez vremenskog ograničenja — legacy put, ne koristi se za nove rezervacije.
+- **Šifre izdaje baza, ne preglednik** (od rujna 2026.): `h.html` zove funkciju `vodic_gosta(token, slug)` iz `sql/sections-security.sql`. Ona provjerava link i prozor (po Europe/Zagreb) i **izvan prozora ne vraća `door_code` ni `wifi_pass`**, samo `ima_door_code`/`ima_wifi_pass` — vodič tada stavi oznaku `true` (`zapecati()`) da pokaže zaključanu kućicu. U trenutku otključavanja `otkljucaj()` pita funkciju ponovno. Vodič na novom putu **ne čita ni `sections` ni `bookings`**.
+- **Stari put** (izravno čitanje tablica) ostaje samo kao rezerva dok KORAK 1 nije pokrenut. KORAK 2 zatvara `sections` i `bookings` za anonimne (samo vlasnik; admin čita `bookings`). **Redoslijed: KORAK 1 → objava h.html → KORAK 2** — obrnuto bi slomilo vodič. Dok KORAK 2 nije pokrenut, ranjivost iz `docs/odluke.md` (točka 0) i dalje postoji, pa vodič još ne smije tvrditi da se šifre „ne šalju u preglednik”.
+- `const zvatiFunkciju` i `let IZ_FUNKCIJE` moraju stajati **iznad** poziva `loadHub()` — ista zamka kao `STATES`: inače `loadHub` baci grešku, `try` je proguta i vodič tiho padne na stari put (dogodilo se, test je pokazao `rpc: 0`).
+- Novi SQL se provjerava na **lokalnom PostgreSQL-u 16** (instaliran u okruženju: `/usr/lib/postgresql/16/bin`, `initdb` kao ne-root korisnik) s ulogama `anon`/`authenticated` i `auth.uid()` iz `request.jwt.claims` — tako je provjeren `sections-security.sql`.
+- Postoji i stariji link (`slug` + `properties.guest_token`) koji **odmah** otključava bez vremenskog ograničenja (i kroz funkciju: `stari_link_otkljucava`). Dashboard ga i dalje nudi kao „Privatni vodič”; ukidanje čeka odluku (odluke, točka 0).
 - Booking token se deaktivira ručno (`is_active=false`) ili istječe (`token_expires_at`).
 - Nema service role ključa u klijentskom kodu — sve stranice koriste samo publishable/anon key.
 - Admin panel (`admin.html`) je ispravno zaštićen i na RLS razini (`sql/admin-access.sql`, politike scope-ane na `auth.uid()` vlasnikovog računa), ne samo klijentskom provjerom.

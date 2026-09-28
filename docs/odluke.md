@@ -13,23 +13,62 @@ i kvačica se zatvori.
 
 ---
 
-## 0. Sigurnost — provjeriti prije lansiranja
+## 0. Sigurnost — šifre vrata i Wi-Fi (rujan 2026.: kod gotov, čeka vaše SQL korake)
 
-- [ ] **Tko smije čitati tablicu `sections`?** U njoj su `door_code` i
-  `wifi_pass`. `CLAUDE.md` kaže da je anonimni korisnik smije čitati po
-  `property_id`, a u `sql/` nema datoteke koja postavlja njezina pravila (RLS),
-  pa se iz repozitorija ne može provjeriti. `property_id` nije tajan — javna
-  stranica ga dobije uz ostale podatke objekta.
-  **Ako je tako, šifra vrata i Wi-Fi lozinka mogu se dohvatiti izravno preko
-  API-ja, bez linka gosta i bez vremenskog zaključavanja** — zaključavanje u
-  `h.html` radi samo u pregledniku (vrijednosti ne ulaze u HTML, ali stignu u
-  preglednik u odgovoru baze).
-  Popravak je na strani baze (npr. funkcija koja vraća šifre samo za važeći
-  token i samo u prozoru prijava − 1 h … odjava 23:59) i traži tvoje izričito
-  odobrenje jer mijenja RLS. Ništa nije dirano.
-  **Sada u kodu:** Figma je pod karticom „Vaš pristup” imala rečenicu „Šifre se
-  ne šalju u preglednik prije otključavanja” — to trenutačno **nije istina**, pa
-  vodič piše „Šifra i lozinka prikazuju se tek kad se pristup otključa.”
+**Problem.** Vodič je red iz `sections` (šifra vrata, Wi-Fi lozinka) čitao
+izravno iz preglednika, javnim ključem, **prije** provjere vremena. Ako RLS
+dopušta anonimno čitanje `sections`, šifre svih objekata mogu se dohvatiti
+API-jem bez linka i bez vremena. Isto za `bookings`: pravilo „aktivne
+rezervacije su javne” daje popis svih tokena, a token otvara vodič.
+Iz ovog okruženja baza se ne može doseći (mrežna pravila), pa stvarno stanje
+pravila nije izmjereno — **KORAK 0 to mjeri za vas.**
+
+**Rješenje** (`sql/sections-security.sql` + novi `h.html`):
+- funkcija u bazi `vodic_gosta(token, slug)` provjerava link i vrijeme (sat
+  prije prijave do 23:59 dana odlaska, **po zagrebačkom vremenu**) i tek tada
+  vraća šifre. Prije prozora vraća samo „šifra postoji” — vrijednost ne izlazi
+  iz baze, pa je nema ni u pregledniku;
+- vodič koristi samo tu funkciju; u trenutku otključavanja sam je pita ponovno;
+- `sections` i `bookings` smije čitati samo vlasnik (i admin za `bookings`);
+  anonimna uloga u njima nema nikakva prava.
+
+Provjereno na lokalnom PostgreSQL-u 16 s ulogama i `auth.uid()` kao u
+Supabaseu, s najgorim pravilima („svi čitaju sections”, „aktivne rezervacije su
+javne”): prije — anonimno se čitaju obje šifre i svi tokeni; poslije —
+„permission denied”, funkcija radi, vlasnik vidi i mijenja samo svoje, tuđi
+korisnik vidi 0, admin i dalje vidi sve rezervacije. U pregledniku: prije
+prozora šifre nema ni u HTML-u ni u `__VALS`, vodič ne čita ni `sections` ni
+`bookings`; ubrzanim satom se u 14:00 (prijava 15:00) sama pojavi.
+
+**Što trebate napraviti — redom:**
+- [ ] **KORAK 0** u Supabase SQL editoru (samo čita) — pogledati koliko šifri
+  je danas dostupno anonimno. Ako prvi broj nije 0, ranjivost je stvarna.
+- [ ] **KORAK 1** (funkcija) — može odmah, ništa ne zatvara.
+- [ ] Spojiti ovu granu (novi `h.html`) u `main` i provjeriti pravi link gosta.
+- [ ] **KORAK 2** (zatvaranje) — tek nakon objave. Prije toga stari vodič bez
+  funkcije ne bi mogao prikazati šifre.
+- [ ] **KORAK 4** — provjera (dva „permission denied”, funkcija vraća „invalid”).
+
+**Otvoreno:**
+- [ ] **Stari opći link** (`slug` + `properties.guest_token`) i dalje otključava
+  odmah, bez datuma, a dashboard ga nudi kao „Privatni vodič — pošaljite gostu”.
+  Ako je `properties` javno čitljiv (vjerojatno — javna stranica ga čita), onda
+  je i `guest_token` čitljiv svima, a s njim i šifre. Prijedlog: u dashboardu
+  umjesto starog linka nuditi „Napravi link za gosta” (po rezervaciji), pa u
+  KORAKU 1 postaviti `stari_link_otkljucava := false` (KORAK 3). Treba vašu
+  odluku jer mijenja što domaćini šalju gostima.
+- [ ] **Tajni stupci u `properties`** (`guest_token`, iCal adrese) — potpuno
+  skrivanje traži da javna stranica čita popis stupaca umjesto `*` i
+  `grant select (…)` samo na javne stupce. Veća izmjena, nakon odluke o starom linku.
+- [ ] **Pogađanje tokena** — token ima 16 znakova, pogađanje je nerealno, ali
+  funkcija nema ograničenje broja poziva. Ako zatreba: Supabase rate limiting.
+- [ ] **Vrijeme po Zagrebu** umjesto po satu gostova uređaja — gost iz druge
+  vremenske zone sada vidi otključavanje u stvarno lokalno vrijeme objekta
+  (ispravnije nego prije). U redu?
+
+**Sada u kodu:** vodič i dalje piše „Šifra i lozinka prikazuju se tek kad se
+pristup otključa.” Kad se pokrenu KORACI 1 i 2, smije se vratiti i rečenica iz
+Figme „Šifre se ne šalju u preglednik prije otključavanja” — tada je istina.
 
 ## 1. Najvažnije — planovi i cijene
 
@@ -153,8 +192,9 @@ i kvačica se zatvori.
   ispravan”, „Ovaj link je istekao”, „Objekt nije pronađen”) — nijedno stanje
   ne otkriva naziv ni adresu objekta.
 - [x] **Analitika po danu** iz `page_views` — napravljena, za sve planove (točka 11 — treba li je ograničiti po planu).
-- [ ] **Države posjetitelja:** odobriti izmjenu sheme (`country`, `lang` u
-  `page_views`) i `api/track.js`, ili odustati.
+- [x] **Države posjetitelja** — napravljeno (točka 11): `api/track.js` +
+  stupac `page_views.country` (`sql/add-country-to-page-views.sql`). Jezik
+  preglednika (`lang`) nije dodan — vidi točku 11.
 - [ ] **Gumb „Popuni testnim kalendarom”:** ostaje nakon lansiranja?
 - [ ] **Izgled (teme) i istaknuta brojka:** vidi točku 9.
 - [ ] *(Za kod, ne odluka)* „Kreiraj link” mora biti onemogućen dok su datumi
@@ -297,7 +337,10 @@ pravni tekst, pa je u njoj netočno **uklonjeno ili ispravljeno** (popis dolje).
   kod ne može potvrditi. Provjeriti za svakog (Supabase, Vercel, Cloudinary).
 - [ ] **„Ne prikupljamo … IP adresu gostiju”** — aplikacija IP ne sprema, ali ga
   Vercel i Supabase bilježe u svojim zapisnicima. Preformulirati („ne
-  spremamo”), ili navesti rok zapisnika.
+  spremamo”), ili navesti rok zapisnika. **Novo (rujan 2026.):** iz IP-a se
+  izvodi **država** posjetitelja (Vercel, `x-vercel-ip-country`) i sprema uz
+  pregled; sam IP se ne sprema. Pravila privatnosti to trebaju navesti
+  (npr. „bilježimo državu iz koje je stranica otvorena, bez IP adrese”).
 - [ ] **Kolačići** — Supabase sesiju prijave drži u `localStorage`, ne u
   kolačiću. Tekst „samo kolačići neophodni za sesiju” je
   duhom točan, ali tehnički nije.
@@ -510,3 +553,19 @@ Poruke i Sustav prošireni:
 - [ ] **Stari podaci:** pregledi prije ove verzije nemaju upite ni dijelove
   vodiča, a domaćinovi vlastiti pregledi su se brojali — usporedba s
   razdobljem prije rujna 2026. je zato gruba.
+
+### 11a. Države posjetitelja (rujan 2026.)
+
+- Kako radi: `p.html` i `h.html` šalju pregled na `/api/track` (Vercel
+  funkcija), koja iz zaglavlja `x-vercel-ip-country` doda državu i upiše red.
+  IP se ne sprema. Ako ruta ne odgovori (lokalno), red ide izravno, bez države.
+- **Treba pokrenuti** `sql/add-country-to-page-views.sql` (novi stupac
+  `country` s provjerom oblika i indeks). Dok se ne pokrene, sve radi, a
+  kartica „Države posjetitelja” u dashboardu i adminu pokazuje uputu.
+- Stariji pregledi ostaju bez države („Bez poznate države”).
+- [ ] **Vercel Hobby** ograničava broj poziva funkcija mjesečno — svaki pregled
+  sada je jedan poziv `/api/track`. Pratiti potrošnju u Vercelu kad promet
+  naraste.
+- [ ] **Jezik preglednika** (`navigator.language`) bi pokazao i jezik gostiju
+  (npr. Nijemci iz Austrije) — još jedan stupac. Želite li?
+- [ ] **Pravila privatnosti** — dodati rečenicu o državi (točka 8b).

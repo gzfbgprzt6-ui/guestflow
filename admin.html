@@ -320,6 +320,10 @@ textarea.inp{padding:12px 14px;min-height:140px;resize:vertical}
         <div class="panel"><p class="kicker">Rezervacije</p><h3 class="mt8">Linkovi za goste po mjesecu dolaska</h3><p class="small mt8">Rezervacije napravljene u Odmoriji, zadnjih 12 mjeseci.</p><div id="kRez" class="mt16"></div></div>
       </section>
       <section class="panel mt24">
+        <p class="kicker">Države</p><h3 class="mt8">Odakle dolaze posjetitelji i gosti</h3>
+        <div class="mt16" id="kDrzave"></div>
+      </section>
+      <section class="panel mt24">
         <p class="kicker">Najposjećeniji</p><h3 class="mt8">Top 10 objekata u razdoblju</h3>
         <div class="mt16" id="kTop"></div>
       </section>
@@ -475,7 +479,7 @@ const JE_JAVNA=t=>t==='public', JE_VODIC=t=>t==='guest_hub'
 const PO_STRANICI=25
 const MAX_PREGLEDA=100000
 
-let PROPS=[], SUBS={}, SUBROWS=[], BOOKINGS=[], VIEWS=[], VIEWS_OD=null, VIEWS_PUNO=false
+let PROPS=[], SUBS={}, SUBROWS=[], BOOKINGS=[], VIEWS=[], VIEWS_OD=null, VIEWS_PUNO=false, DRZAVE=false
 let HOSTS=[], PSTAT={}, PLANOVI=[], TRAJANJE=0
 let hStr=0, oStr=0, K_RASPON=30
 
@@ -523,7 +527,10 @@ async function ucitaj(){
       A.sviRedovi(()=>sb.from('bookings').select('id,property_id,checkin_date,checkout_date,is_active').order('checkin_date'))
     ])
     PROPS=props; SUBROWS=subs; BOOKINGS=bks
-    VIEWS=await A.sviRedovi(()=>sb.from('page_views').select('property_id,view_type,timestamp').gte('timestamp',A.uDatum(od).toISOString()).order('timestamp'),MAX_PREGLEDA)
+    // s državom ako stupac postoji (sql/add-country-to-page-views.sql)
+    const upit=kol=>()=>sb.from('page_views').select(kol).gte('timestamp',A.uDatum(od).toISOString()).order('timestamp')
+    try{ VIEWS=await A.sviRedovi(upit('property_id,view_type,timestamp,country'),MAX_PREGLEDA); DRZAVE=true }
+    catch(e){ VIEWS=await A.sviRedovi(upit('property_id,view_type,timestamp'),MAX_PREGLEDA); DRZAVE=false }
     VIEWS_OD=od; VIEWS_PUNO=VIEWS.length>=MAX_PREGLEDA
   }catch(e){
     $('#osvjezeno').textContent='Greška pri učitavanju: '+(e.message||e)
@@ -957,7 +964,7 @@ async function koristenje(){
   if(VIEWS_OD&&odP<VIEWS_OD){
     kVrti=true; $('#kSub').textContent='Učitavam dulje razdoblje…'
     try{
-      const vise=await A.sviRedovi(()=>sb.from('page_views').select('property_id,view_type,timestamp').gte('timestamp',A.uDatum(odP).toISOString()).lt('timestamp',A.uDatum(VIEWS_OD).toISOString()).order('timestamp'),MAX_PREGLEDA)
+      const vise=await A.sviRedovi(()=>sb.from('page_views').select('property_id,view_type,timestamp'+(DRZAVE?',country':'')).gte('timestamp',A.uDatum(odP).toISOString()).lt('timestamp',A.uDatum(VIEWS_OD).toISOString()).order('timestamp'),MAX_PREGLEDA)
       VIEWS=vise.concat(VIEWS); VIEWS_OD=odP; VIEWS_PUNO=VIEWS_PUNO||vise.length>=MAX_PREGLEDA
     }catch(e){}
     kVrti=false
@@ -990,6 +997,15 @@ async function koristenje(){
   BOOKINGS.forEach(b=>{const d=b.checkin_date;if(!d)return;const k=mj.find(x=>d>=x.od&&d<x.do);if(k)k.v++})
   $('#kRez').innerHTML=A.grafikon(mj,{aria:'Linkovi za goste po mjesecu dolaska',vrijednosti:true,oznakaSvaki:1,istakni:11,visina:130})
     +A.kaoTablica(['Mjesec','Rezervacije'],mj.map(x=>[x.naslov,x.v]))
+  const dz=A.poDrzavama(VIEWS,od,sut)
+  if(!DRZAVE)$('#kDrzave').innerHTML=A.prazno('Države se još ne bilježe — pokrenite sql/add-country-to-page-views.sql u Supabaseu.')
+  else if(!dz.lista.length)$('#kDrzave').innerHTML=A.prazno('Nema pregleda s poznatom državom u razdoblju.')
+  else{
+    const sv=dz.lista.reduce((z,x)=>z+x.v,0)
+    $('#kDrzave').innerHTML=`<div class="g g2"><div>${A.rang(dz.lista.filter(x=>x.v).slice(0,10).map(x=>({k:x.ime,v:x.v,sub:A.posto(x.v/Math.max(1,sv))+' pregleda'})))}</div>
+      <div>${A.tablica(['Država','Pregledi','Upiti','Stopa upita','Vodič'],dz.lista.slice(0,15).map(x=>[x.ime,x.v,x.upiti,x.v?A.posto(x.upiti/x.v):'—',x.vodic]))}</div></div>`
+      +(dz.nepoznato?`<p class="an-note mt12">Bez poznate države: ${dz.nepoznato.toLocaleString('hr-HR')} redova (stariji pregledi).</p>`:'')
+  }
   const vl=Object.fromEntries(HOSTS.map(h=>[h.user_id,h]))
   const po=new Map()
   for(const x of uR){ let s=po.get(x.property_id); if(!s)po.set(x.property_id,s={v:0,u:0,g:0}); if(JE_JAVNA(x.view_type))s.v++; else if(A.JE_UPIT(x.view_type))s.u++; else if(JE_VODIC(x.view_type))s.g++ }
@@ -1095,7 +1111,7 @@ function sustav(){
     [0,'Stripe checkout','Nije spojen. Nadogradnja ide e-mailom; serverske funkcije ne postoje.'],
     [0,'Obavijesti u aplikaciji','Traže tablicu announcements. E-mail skupini radi (tab Poruke).'],
     [0,'Višejezičnost','Ne postoji.'],
-    [0,'Analitika po državama','Traži dva stupca na page_views i mali api/track.js.'],
+    [DRZAVE?1:0,'Analitika po državama',DRZAVE?'Radi: /api/track upisuje državu iz Vercelova zaglavlja (bez IP adrese).':'Kod je spreman (/api/track), ali stupac page_views.country ne postoji — pokrenuti sql/add-country-to-page-views.sql.'],
   ].map(([ok,n,t])=>`<div class="sys"><span class="sys__d ${ok?'ok':'no'}"></span><div><b>${esc(n)}</b><p>${esc(t)}</p></div></div>`).join('')
 }
 </script>

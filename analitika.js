@@ -216,6 +216,38 @@ export const broji = (pregledi, filtar, od, doD) => pregledi.reduce((z, r) => {
   return dan >= od && dan < doD ? z + 1 : z
 }, 0)
 
+// ---------- države ----------
+// page_views.country: ISO oznaka (HR, DE…) koju upisuje /api/track iz Vercelova
+// zaglavlja; null = nepoznato ili pregled iz vremena prije stupca.
+let _imena = null
+export function drzava(kod) {
+  if (!kod) return 'Nepoznato'
+  try { _imena = _imena || new Intl.DisplayNames(['hr'], { type: 'region' }); return _imena.of(kod) || kod } catch { return kod }
+}
+
+/**
+ * Pregledi po državi u [od, do). Vraća [{kod, ime, v, upiti, vodic}] od najvećeg,
+ * gdje je v broj pregleda javne stranice; `nepoznato` je broj redova bez države.
+ */
+export function poDrzavama(pregledi, od, doD) {
+  const m = new Map()
+  let nepoznato = 0
+  for (const r of pregledi) {
+    const dan = tsUDan(r.timestamp)
+    if (dan < od || dan >= doD) continue
+    const t = r.view_type
+    if (t !== 'public' && t !== 'guest_hub' && !JE_UPIT(t)) continue
+    if (!r.country) { nepoznato++; continue }
+    let x = m.get(r.country)
+    if (!x) m.set(r.country, x = { kod: r.country, ime: drzava(r.country), v: 0, upiti: 0, vodic: 0 })
+    if (t === 'public') x.v++
+    else if (t === 'guest_hub') x.vodic++
+    else x.upiti++
+  }
+  const lista = [...m.values()].sort((a, b) => (b.v + b.vodic) - (a.v + a.vodic) || a.ime.localeCompare(b.ime, 'hr'))
+  return { lista, nepoznato }
+}
+
 /** Raspodjela po danu u tjednu (pon…ned) i po satu (0–23). */
 export function poDanuISatu(pregledi, filtar) {
   const dani = Array(7).fill(0), sati = Array(24).fill(0)

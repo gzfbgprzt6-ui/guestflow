@@ -647,7 +647,12 @@ const zabiljezeno = new Set()
 function biljezi(vrsta) {
   if (DOMACIN || !PROP || zabiljezeno.has(vrsta)) return
   zabiljezeno.add(vrsta)
-  sb.from('page_views').insert({ property_id: PROP.id, view_type: vrsta }).then(() => {}, () => {})
+  const red = { property_id: PROP.id, view_type: vrsta }
+  // preko /api/track, koji doda državu iz Vercelova zaglavlja; ako ruta ne
+  // odgovori (npr. lokalno bez Vercela), red ide izravno, kao prije — bez države
+  fetch('/api/track', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(red), keepalive: true })
+    .then(r => { if (!r.ok) throw new Error(r.status) })
+    .catch(() => sb.from('page_views').insert(red).then(() => {}, () => {}))
 }
 document.addEventListener('click', e => {
   const a = e.target.closest && e.target.closest('a[href]')

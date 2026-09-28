@@ -373,7 +373,12 @@ const zabiljezeno = new Set()
 function biljezi(vrsta) {
   if (DOMACIN || !PROP || zabiljezeno.has(vrsta)) return
   zabiljezeno.add(vrsta)
-  sb.from('page_views').insert({ property_id: PROP.id, view_type: vrsta }).then(() => {}, () => {})
+  const red = { property_id: PROP.id, view_type: vrsta }
+  // preko /api/track, koji doda državu iz Vercelova zaglavlja; ako ruta ne
+  // odgovori (npr. lokalno bez Vercela), red ide izravno, kao prije — bez države
+  fetch('/api/track', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(red), keepalive: true })
+    .then(r => { if (!r.ok) throw new Error(r.status) })
+    .catch(() => sb.from('page_views').insert(red).then(() => {}, () => {}))
 }
 
 let UNLOCKED = false, tick = null, UNLOCK_AT = null, CO_END = null
@@ -398,13 +403,55 @@ function showErr(kind) {
   show('#oops')
 }
 
+// Mora stajati PRIJE poziva loadHub() ispod — inače const još nije
+// inicijaliziran, poziv baci grešku i vodič tiho padne na stari put.
+let IZ_FUNKCIJE = false
+const zvatiFunkciju = () => sb.rpc('vodic_gosta', { p_token: token, p_slug: params.get('slug') || null })
+
 if (!token) showErr('invalid')
 else loadHub().catch(() => showErr('invalid'))
 
 // ══════════════════════════════════════════════════════
-//  PROVJERA LINKA I VREMENSKO ZAKLJUČAVANJE (logika nepromijenjena)
+//  PROVJERA LINKA I VREMENSKO ZAKLJUČAVANJE
+//  Novi put: funkcija `vodic_gosta` u bazi (sql/sections-security.sql)
+//  provjeri link i vrijeme i tek tada vrati šifre — prije prozora one uopće
+//  ne stignu u preglednik. Stari put (izravno čitanje tablica) ostaje samo
+//  kao rezerva dok KORAK 1 nije pokrenut; nakon KORAKA 2 baza ga odbija.
 // ══════════════════════════════════════════════════════
+
+/* Izvan prozora funkcija vraća samo „šifra postoji” (ima_door_code). Vodič
+   tada pokaže zaključanu kućicu; oznaka `true` nikad se ne ispisuje. */
+function zapecati(sec) {
+  const s = { ...(sec || {}) }
+  if (!s.door_code && s.ima_door_code) s.door_code = true
+  if (!s.wifi_pass && s.ima_wifi_pass) s.wifi_pass = true
+  return s
+}
+
 async function loadHub() {
+  let odgovor = null
+  try {
+    const { data, error } = await zvatiFunkciju()
+    if (!error && data && data.stanje) odgovor = data
+  } catch { /* funkcija još ne postoji → stari put */ }
+  if (odgovor) return izFunkcije(odgovor)
+  return stariPut()
+}
+
+async function izFunkcije(r) {
+  IZ_FUNKCIJE = true
+  if (r.stanje !== 'ok') { showErr(r.stanje === 'expired' ? 'expired' : r.stanje === 'missing' ? 'missing' : 'invalid'); return }
+  PROP = r.property || {}
+  BOOKING = r.booking || null
+  SECTION = zapecati(r.section)
+  UNLOCKED = !!r.otvoreno
+  UNLOCK_AT = r.otkljucava ? new Date(r.otkljucava) : null
+  CO_END = r.zavrsava ? new Date(r.zavrsava) : null
+  if (!UNLOCKED && UNLOCK_AT && new Date() < UNLOCK_AT) startCountdown(UNLOCK_AT)
+  await finish()
+}
+
+async function stariPut() {
   const { data: bk } = await sb.from('bookings').select('*').eq('token', token).maybeSingle()
 
   if (!bk) {
@@ -623,9 +670,7 @@ function startCountdown(unlockAt) {
     const diff = unlockAt - new Date()
     if (diff <= 0) {
       clearInterval(tick)
-      UNLOCKED = true
-      renderVault(); renderArrival(); renderTiles()
-      toast('Šifra i Wi-Fi su sada dostupni.')
+      otkljucaj()
       return
     }
     // osvježi samo odbrojavanje; vrijednosti ostaju zapečaćene
@@ -633,6 +678,22 @@ function startCountdown(unlockAt) {
     if ($('#when-arr').innerHTML) $('#when-arr').innerHTML = whenHtml(true)
   }
   tick = setInterval(paint, 30000)
+}
+
+/* U trenutku otključavanja šifre još nisu u pregledniku (novi put) — traže se
+   od funkcije. Ako sat uređaja žuri pa baza još kaže „zatvoreno”, pokuša se
+   ponovno za minutu. Na starom putu vrijednosti su već učitane. */
+async function otkljucaj() {
+  if (IZ_FUNKCIJE) {
+    let r = null
+    try { const { data } = await zvatiFunkciju(); r = data } catch {}
+    if (!r || r.stanje !== 'ok' || !r.otvoreno) { setTimeout(otkljucaj, 60000); return }
+    SECTION = zapecati(r.section)
+    CO_END = r.zavrsava ? new Date(r.zavrsava) : CO_END
+  }
+  UNLOCKED = true
+  renderVault(); renderArrival(); renderTiles()
+  toast('Šifra i Wi-Fi su sada dostupni.')
 }
 
 // ══════════════════════════════════════════════════════
