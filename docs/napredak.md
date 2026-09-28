@@ -13,7 +13,7 @@ je samo pregled posla. Ništa od ovoga nije u produkciji — sve je na grani
 | A | Temelji (boje, tipografija, razmaci, 47 ikona), komponente, naslovnica, javna stranica, galerija, dostupnost i upit, prototip | **prihvaćeno** |
 | B | Aplikacija domaćina (13 ekrana × desktop/mobile), privatni vodič za gosta, stanja linka, prototip B1–B3 | gotovo, **nije pregledano** |
 | C | Prijava i registracija, postavljanje objekta, račun i pretplata, admin, 404, prototip C1–C4 | gotovo, **nije pregledano** |
-| Postavljanje, dodavanje objekta, račun (`onboarding`, `add-property`, `account`) + `forms.css` | (commit „Postavljanje i račun prema Figmi”) | Koraci s brojevima i trakom napretka, zid limita s planovima iz baze, račun u dva taba (profil i sigurnost · pretplata i limiti, istekli plan), brisanje prema Figmi. Isti Supabase pozivi | 3 širine; svih 5 koraka s provjerom upisa u bazu; dodavanje (ima mjesta / zid limita); račun (profil, lozinka, brisanje, prekidač, #pretplata) |
+| Postavljanje, dodavanje objekta, račun (`onboarding`, `add-property`, `account`) + `forms.css` | `7725bdd` | Koraci s brojevima i trakom napretka, zid limita s planovima iz baze, račun u dva taba (profil i sigurnost · pretplata i limiti, istekli plan), brisanje prema Figmi. Isti Supabase pozivi | 3 širine; svih 5 koraka s provjerom upisa u bazu; dodavanje (ima mjesta / zid limita); račun (profil, lozinka, brisanje, prekidač, #pretplata) |
 
 ### Kod
 
