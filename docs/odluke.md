@@ -871,6 +871,9 @@ Dok se ne pokrenu, stranice rade kao prije, a svaki novi dio sam kaže što nedo
 
 ### Podsjetnik — što ste odgodili i moramo proći
 
+0. **Ključ za automatski prijevod (`ANTHROPIC_API_KEY`)** — odgođeno dok
+   aplikacija ne krene; upute u točki 18.
+
 1. **Pomoć, Uvjeti, Privatnost** — pravni tekst (točka 8) + nove stvari koje
    ga mijenjaju: recenzije, podaci gostiju za eVisitor (broj isprave!), link za
    čistačicu, spremanje na uređaju gosta, Stripe. Pomoć: pitanja o
@@ -909,6 +912,15 @@ engleski, njemački, talijanski, poljski i češki.**
 - Primjer `/h/demo` je preveden cijeli (vrijedi pokazati gostima iz inozemstva).
 
 ### Jezici — što trebate napraviti
+
+> **ODGOĐENO (29. 9. 2026., odluka vlasnika):** `ANTHROPIC_API_KEY` još nije
+> postavljen — da se ništa ne plaća dok aplikacija ne krene s pravim
+> domaćinima. Do tada: sučelje vodiča i javne stranice je na jeziku gosta,
+> tekst domaćina na hrvatskom, a u panelu Prijevodi domaćin može prevesti sam.
+> **Kad krene:** console.anthropic.com → Billing (kredit, npr. 5 $, i
+> ograničenje potrošnje) → API Keys → Create Key → u Vercel kao
+> `ANTHROPIC_API_KEY` (Production i Preview) → Redeploy. Ništa drugo ne treba.
+> Ostali koraci iz ove točke (SQL, `SUPABASE_SERVICE_ROLE_KEY`) su napravljeni.
 
 1. [ ] Pokrenuti `sql/add-translations.sql` (tablice `prijevodi` i `prijevodi_rucni`, čita ih samo poslužitelj).
 2. [ ] **Ključ za prijevod:** console.anthropic.com → API Keys → Create key.
