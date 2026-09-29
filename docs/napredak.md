@@ -2,7 +2,7 @@
 
 Stanje 29. 9. 2026. Otvorene odluke su zasebno u [`odluke.md`](odluke.md); ovdje
 je samo pregled posla. **Sve niže je spojeno u `main` i u produkciji**
-(28. 9. 2026., commit `7bca527`, na izričitu potvrdu vlasnika). SQL datoteke
+(28. 9. 2026., commit `7bca527`, na izričitu potvrdu vlasnika). **Iznimka:** Stripe, paket značajki (točka 17) i jezici s e-mailom (točka 18) su zasad samo na grani `claude/funny-archimedes-c0qosu`. SQL datoteke
 iz tablice treba pokrenuti u Supabaseu — dok se ne pokrenu, stranice rade na
 starom putu (vidi „Čeka tvoj pregled”).
 
