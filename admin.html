@@ -142,6 +142,20 @@ textarea.inp{padding:12px 14px;min-height:140px;resize:vertical}
   .main{padding:16px 16px 48px}
   .head h1{font-size:28px}
 }
+/* čipovi planova (Figma) */
+.pchips{display:flex;flex-wrap:wrap;gap:6px}
+.pchip{min-height:36px;padding:0 14px;border-radius:18px;border:1px solid var(--border-control);background:var(--bg-surface);color:var(--text);cursor:pointer;font:600 14px/1 var(--font-ui)}
+.pchip[aria-pressed="true"]{background:var(--bg-inverse);border-color:var(--bg-inverse);color:#fff}
+.pchip[aria-pressed="true"] .small{color:#fff;opacity:.85}
+/* domaćini na mobitelu: kartice umjesto tablice (Figma mobile) */
+@media (max-width:760px){
+  #tablica thead{display:none}
+  #tablica,#tablica tbody,#tablica tr,#tablica td{display:block;width:100%}
+  #tablica tr{padding:12px 0;border-bottom:1px solid var(--border)}
+  #tablica td{border:0;padding:4px 0}
+  #tablica td[data-l]::before{content:attr(data-l) ": ";color:var(--text-muted);font-size:13px}
+  #tablica td.num{text-align:left}
+}
 @media (max-width:520px){.panel{padding:16px}.dlg__head,.dlg__body{padding-inline:16px}.filters .inp--sm{flex:1 1 100%;width:100%}}
 </style>
 </head>
@@ -255,8 +269,8 @@ textarea.inp{padding:12px 14px;min-height:140px;resize:vertical}
           <input class="inp inp--sm" id="trazi" type="search" placeholder="Ime, e-mail, telefon ili objekt" style="width:min(300px,100%)">
           <label class="sr-only" for="segment">Segment</label>
           <select class="inp inp--sm" id="segment"></select>
-          <label class="sr-only" for="filtar">Plan</label>
-          <select class="inp inp--sm" id="filtar"><option value="">Svi planovi</option></select>
+          <select class="inp inp--sm" id="filtar" hidden aria-hidden="true" tabindex="-1"><option value="">Svi planovi</option></select>
+          <div class="pchips" id="pChips" role="group" aria-label="Plan"></div>
           <label class="sr-only" for="hSort">Poredak</label>
           <select class="inp inp--sm" id="hSort">
             <option value="novi">Najnoviji prvi</option><option value="objekti">Najviše objekata</option>
@@ -489,6 +503,11 @@ textarea.inp{padding:12px 14px;min-height:140px;resize:vertical}
         </div>
       </section>
       <section class="panel mt24">
+        <p class="kicker">Zapisnik</p><h3 class="mt8">Promjene pretplata i popusta</h3>
+        <p class="small mt8">Tko je, kada i što promijenio — iz admina, a „Stripe” kad je promjena došla s naplate (sql/admin-upgrades.sql).</p>
+        <div class="tblwrap mt16" id="zapisnik"></div>
+      </section>
+      <section class="panel mt24">
         <p class="kicker">Vlasnički pristup</p>
         <h3 class="mt8">Tko ovo vidi</h3>
         <p class="lead mt8" style="max-width:74ch">
@@ -523,6 +542,7 @@ const sb=createClient(SURL,SKEY)
 const ADMIN_UID='56549320-2c02-405c-9936-770144bd9b49'
 
 const $=s=>document.querySelector(s)
+const $$=s=>[...document.querySelectorAll(s)]
 const esc=A.esc
 const eur2=n=>n.toFixed(2).replace('.',',')+' €'
 const eur0=n=>Math.round(n).toLocaleString('hr-HR')+' €'
@@ -532,6 +552,9 @@ const PO_STRANICI=25
 const MAX_PREGLEDA=100000
 
 let PROPS=[], SUBS={}, SUBROWS=[], BOOKINGS=[], VIEWS=[], VIEWS_OD=null, VIEWS_PUNO=false, DRZAVE=false
+/* Računi iz auth.users (admin_korisnici, sql/admin-upgrades.sql): e-mail računa i
+   datum registracije. Bez funkcije ostaje staro: kontakt iz objekta. */
+let KORISNICI=null
 let HOSTS=[], PSTAT={}, PLANOVI=[], TRAJANJE=0
 let hStr=0, oStr=0, K_RASPON=30
 
@@ -580,6 +603,7 @@ async function ucitaj(){
     ])
     PROPS=props; SUBROWS=subs; BOOKINGS=bks
     await ucitajPonude()
+    try{ const{data,error}=await sb.rpc('admin_korisnici'); KORISNICI=error?null:Object.fromEntries((data||[]).map(u=>[u.id,u])) }catch{ KORISNICI=null }
     // s državom ako stupac postoji (sql/add-country-to-page-views.sql)
     const upit=kol=>()=>sb.from('page_views').select(kol).gte('timestamp',A.uDatum(od).toISOString()).order('timestamp')
     try{ VIEWS=await A.sviRedovi(upit('property_id,view_type,timestamp,country'),MAX_PREGLEDA); DRZAVE=true }
@@ -625,6 +649,7 @@ function izracunaj(){
     const st=h.props.map(p=>PSTAT[p.id])
     const sum=k=>st.reduce((z,s)=>z+(s[k]||0),0)
     h.sub=SUBS[h.user_id]||null
+    h.racun=KORISNICI?.[h.user_id]||null
     h.plan=normalizePlanId(h.sub?.plan)
     h.istekao=!!(h.sub?.period_end&&new Date(h.sub.period_end)<new Date()&&h.plan!=='free')
     h.efektivni=h.istekao?'free':h.plan
@@ -801,6 +826,8 @@ function filtri(){
   const fv=$('#filtar').value
   $('#filtar').innerHTML='<option value="">Svi planovi</option>'+PLANOVI.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('')
   $('#filtar').value=fv
+  $('#pChips').innerHTML=[['','Svi planovi'],...PLANOVI.map(p=>[p.id,p.name])].map(([id,n])=>
+    `<button type="button" class="pchip" data-plan="${esc(id)}" aria-pressed="${($('#filtar').value||'')===id}">${esc(n)} <span class="small">${id?HOSTS.filter(h=>h.plan===id).length:HOSTS.length}</span></button>`).join('')
 }
 
 function vidljivi(){
@@ -827,17 +854,19 @@ function tablica(){
   $('#prazno').hidden=R.length>0
   const opts=PLANOVI.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('')
   $('#tablica').innerHTML=R.length?`
-    <thead><tr><th scope="col">Domaćin</th><th scope="col">Objekti</th><th scope="col">Plan</th><th scope="col">Status</th><th scope="col" class="num">Pregledi 30 d</th><th scope="col" class="num">Upiti</th><th scope="col">Zdravlje</th><th scope="col"><span class="sr-only">Radnje</span></th></tr></thead>
+    <thead><tr><th scope="col">Domaćin</th><th scope="col">Objekti</th><th scope="col">Plan</th><th scope="col">Status</th><th scope="col">Vrijedi do</th><th scope="col">Registriran</th><th scope="col" class="num">Pregledi 30 d</th><th scope="col" class="num">Upiti</th><th scope="col">Zdravlje</th><th scope="col"><span class="sr-only">Radnje</span></th></tr></thead>
     <tbody>${S.map(h=>`<tr data-uid="${esc(h.user_id)}">
         <td><b>${esc(h.host_name||'Bez imena')}</b>
-          <div class="small">${esc(h.email||'—')}${h.phone?' · '+esc(h.phone):''}</div>
-          <div class="small">od ${datum(h.prvi)} · zadnji promet ${relTs(h.zadnji)}</div></td>
-        <td>${h.props.slice(0,2).map(p=>`<span class="tag tag--mut">${esc(p.name||'Bez naziva')}</span>`).join(' ')}${h.props.length>2?` <span class="small">+${h.props.length-2}</span>`:''}</td>
-        <td><label class="sr-only" for="pl-${esc(h.user_id)}">Plan za ${esc(h.host_name||'domaćina')}</label>
-          <select class="inp inp--sm plan-sel" id="pl-${esc(h.user_id)}" data-uid="${esc(h.user_id)}" ${h.sub?'':'disabled title="Nema reda u subscriptions"'}>${opts}</select></td>
-        <td>${statusTag(h)}</td>
-        <td class="num">${h.views30}</td><td class="num">${h.upiti30}</td>
-        <td>${zdTag(h.zdravlje)}</td>
+          <div class="small">${esc(h.racun?.email||h.email||'—')}${h.phone?' · '+esc(h.phone):''}</div>
+          <div class="small">zadnji promet ${relTs(h.zadnji)}${h.racun?.last_sign_in_at?' · prijava '+relTs(h.racun.last_sign_in_at):''}</div></td>
+        <td data-l="Objekti">${h.props.slice(0,2).map(p=>`<span class="tag tag--mut">${esc(p.name||'Bez naziva')}</span>`).join(' ')}${h.props.length>2?` <span class="small">+${h.props.length-2}</span>`:''}</td>
+        <td data-l="Plan"><label class="sr-only" for="pl-${esc(h.user_id)}">Plan za ${esc(h.host_name||'domaćina')}</label>
+          <select class="inp inp--sm plan-sel" id="pl-${esc(h.user_id)}" data-uid="${esc(h.user_id)}">${opts}</select></td>
+        <td data-l="Status">${h.sub?statusTag(h):'<span class="tag tag--mut">Bez pretplate</span>'}</td>
+        <td data-l="Vrijedi do">${h.sub?.period_end?datum(h.sub.period_end):h.plan==='free'?'—':'bez isteka'}</td>
+        <td data-l="Registriran">${datum(h.racun?.created_at||h.prvi)}</td>
+        <td class="num" data-l="Pregledi 30 d">${h.views30}</td><td class="num" data-l="Upiti">${h.upiti30}</td>
+        <td data-l="Zdravlje">${zdTag(h.zdravlje)}</td>
         <td><div class="row gap8"><button class="btn btn--ghost btn--sm" data-spremi="${esc(h.user_id)}" disabled>Spremi</button>
           <button class="btn btn--ghost btn--sm" data-detalji="${esc(h.user_id)}">Detalji</button></div></td>
       </tr>`).join('')}</tbody>`:''
@@ -867,13 +896,22 @@ $('#tablica').addEventListener('click',async e=>{
 })
 ;['#trazi','#segment','#filtar','#hSort'].forEach(s=>$(s).addEventListener(s==='#trazi'?'input':'change',()=>{hStr=0;tablica()}))
 $('#osvjezi').addEventListener('click',ucitaj)
+$('#pChips').addEventListener('click',e=>{const b=e.target.closest('.pchip');if(!b)return;$('#filtar').value=b.dataset.plan;$$('#pChips .pchip').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));hStr=0;tablica()})
 
-/* Upis u subscriptions. Vraća poruku greške ili null. RLS dopušta vlasniku samo
-   izmjenu postojećeg reda — ako ga nema, update prođe bez greške i bez učinka. */
+/* Upis u subscriptions. Vraća poruku greške ili null. Domaćin bez reda dobiva
+   novi red (politika „Admin creates subscriptions”, sql/admin-upgrades.sql).
+   Promjena se sama bilježi u zapisnik (okidač). */
 async function spremiPretplatu(uid,promjena){
+  if(!SUBS[uid]){
+    const{error}=await sb.from('subscriptions').insert({user_id:uid,status:'active',...promjena})
+    if(error)return /row-level security/i.test(error.message)
+      ?'Domaćin nema pretplatu, a stvaranje još nije dopušteno — u Supabaseu pokrenite sql/admin-upgrades.sql.'
+      :'Greška: '+error.message
+    return null
+  }
   const{data,error}=await sb.from('subscriptions').update(promjena).eq('user_id',uid).select()
   if(error)return 'Greška: '+error.message
-  if(Array.isArray(data)&&!data.length)return 'Promjena nije upisana: domaćin nema red u subscriptions (ili RLS nije dopustio izmjenu).'
+  if(Array.isArray(data)&&!data.length)return 'Promjena nije upisana (RLS nije dopustio izmjenu).'
   return null
 }
 
@@ -914,7 +952,7 @@ function detalji(uid){
       A.kpi('Upiti · 30 dana',String(h.upiti30)),A.kpi('Linkovi za goste',String(h.rez))].join('')}</div>
     <div class="g g2">
       <div class="box"><h3>Pretplata</h3>
-        ${h.sub?`<p class="small">Sada: <b>${esc(planIme(h.plan))}</b> · ${statusTag(h)}${pe?' · istek '+datum(h.sub.period_end):' · bez isteka'}</p>
+        ${true?`<p class="small">${h.sub?`Sada: <b>${esc(planIme(h.plan))}</b> · ${statusTag(h)}${pe?' · istek '+datum(h.sub.period_end):' · bez isteka'}`:'Domaćin još nema red pretplate (Free). Spremanjem se red napravi.'}</p>
         <label class="lb mt12" for="dPlan">Plan</label><select class="inp" id="dPlan">${opts}</select>
         <label class="lb mt12" for="dIstek">Vrijedi do</label><input class="inp" id="dIstek" type="date" value="${pe}">
         <div class="row wrapf gap8 mt12">
@@ -1244,7 +1282,21 @@ $('#oSalji').addEventListener('click',()=>{
 })
 
 /* ---------- SUSTAV ---------- */
+async function zapisnik(){
+  const el=$('#zapisnik');if(!el)return
+  const{data,error}=await sb.from('admin_log').select('*').order('created_at',{ascending:false}).limit(50)
+  if(error){el.innerHTML=A.prazno('Zapisnik još nije uključen — u Supabaseu pokrenite sql/admin-upgrades.sql.');return}
+  if(!data?.length){el.innerHTML=A.prazno('Još nema promjena.');return}
+  const tko=r=>r.tko?(r.tko===ADMIN_UID?'Vi (admin)':(KORISNICI?.[r.tko]?.email||'domaćin')):'Stripe / poslužitelj'
+  const opis=r=>{const p=r.prije||{},n=r.poslije||{}
+    if(r.tablica==='plan_promotions')return (r.radnja==='DELETE'?'Obrisan popust „':r.radnja==='INSERT'?'Novi popust „':'Popust „')+esc(n.naziv||p.naziv||'')+'”'+(r.radnja==='UPDATE'&&p.aktivan!==n.aktivan?(n.aktivan?' pokrenut':' zaustavljen'):'')
+    const d=[];if(p.plan!==n.plan)d.push(`plan ${esc(planIme(p.plan||'free'))} → ${esc(planIme(n.plan||'free'))}`)
+    if(p.period_end!==n.period_end)d.push('istek '+(n.period_end?datum(n.period_end):'bez isteka'));if(p.status!==n.status&&n.status)d.push('status '+esc(n.status))
+    return (r.radnja==='INSERT'?'Nova pretplata: ':r.radnja==='DELETE'?'Obrisana pretplata ':'')+(d.join(', ')||'izmjena')}
+  el.innerHTML=`<table class="tbl"><thead><tr><th>Kada</th><th>Tko</th><th>Za koga</th><th>Promjena</th></tr></thead><tbody>${data.map(r=>`<tr><td class="small">${new Date(r.created_at).toLocaleString('hr-HR')}</td><td>${esc(tko(r))}</td><td>${r.za_korisnika?esc(ime(r.za_korisnika)):'svi domaćini'}</td><td>${opis(r)}</td></tr>`).join('')}</tbody></table>`
+}
 function sustav(){
+  zapisnik()
   const lim=v=>v===Infinity?'∞':(v??'—')
   $('#planTbl').innerHTML='<thead><tr><th>Plan</th><th class="num">Mjesečno</th><th class="num">Sada (mj.)</th><th class="num">Godišnje</th><th class="num">Objekata</th><th class="num">Fotografija</th><th class="num">Preporuka</th><th class="num">Domaćina</th></tr></thead><tbody>'
     +PLANOVI.map(p=>`<tr><td><b>${esc(p.name)}</b></td><td class="num">${eur2(Number(p.monthlyPriceEur||0))}</td>
@@ -1252,15 +1304,15 @@ function sustav(){
         <td class="num">${p.yearlyPriceEur!=null?eur2(Number(p.yearlyPriceEur)):'—'}</td><td class="num">${lim(p.maxProperties)}</td>
         <td class="num">${lim(p.maxPhotosPerProperty)}</td><td class="num">${lim(p.maxLocalPlacesPerProperty)}</td>
         <td class="num">${HOSTS.filter(h=>h.efektivni===p.id).length}</td></tr>`).join('')+'</tbody>'
-  const racuni=new Set([...SUBROWS.map(s=>s.user_id),...HOSTS.map(h=>h.user_id)])
+  const racuni=new Set([...SUBROWS.map(s=>s.user_id),...HOSTS.map(h=>h.user_id),...Object.keys(KORISNICI||{})])
   const bezObj=[...racuni].filter(id=>!HOSTS.some(h=>h.user_id===id)).length
   const bezSub=HOSTS.filter(h=>!h.sub).length
   const bezSluga=PROPS.filter(p=>!p.slug).length
   const krivi=BOOKINGS.filter(b=>!b.checkin_date||!b.checkout_date||b.checkout_date<=b.checkin_date).length
   const bezKont=PROPS.filter(p=>!p.phone&&!p.email).length
   const zd=[
-    [!bezObj,'Računi bez objekta',bezObj?`${bezObj} — registrirani, ali bez objekta. Njihov e-mail je u auth.users, koji admin ne čita.`:'Nema.'],
-    [!bezSub,'Domaćini bez reda u subscriptions',bezSub?`${bezSub} — admin im ne može promijeniti plan (RLS dopušta samo izmjenu).`:'Nema.'],
+    [!bezObj,'Računi bez objekta',bezObj?`${bezObj} — registrirani, ali nisu dovršili postavljanje.${KORISNICI?' Adrese: '+[...racuni].filter(id=>!HOSTS.some(h=>h.user_id===id)).map(id=>KORISNICI[id]?.email).filter(Boolean).slice(0,8).join(', '):' E-mail vidite kad pokrenete sql/admin-upgrades.sql.'}`:'Nema.'],
+    [!bezSub,'Domaćini bez reda u subscriptions',bezSub?`${bezSub} — na Free planu; plan im postavite u Domaćini (red se napravi sam).`:'Nema.'],
     [!bezSluga,'Objekti bez adrese (slug)',bezSluga?`${bezSluga} — javna stranica im se ne može otvoriti.`:'Nema.'],
     [!bezKont,'Objekti bez kontakta',bezKont?`${bezKont} — gost nema kako poslati upit.`:'Nema.'],
     [!krivi,'Rezervacije s neispravnim datumima',krivi?`${krivi} — odlazak nije nakon dolaska.`:'Nema.'],
@@ -1270,10 +1322,12 @@ function sustav(){
   $('#stanje').innerHTML=[
     [1,'Booking tokeni','Rade preko baze, bez backenda. Vodič se otključava po vremenu dolaska.'],
     [1,'Analitika','Pregledi, upiti (WhatsApp, e-mail, kopirano), karta i dijelovi vodiča u page_views; domaćinovi vlastiti pregledi se ne broje.'],
-    [1,'iCal sinkronizacija','Radi, ali samo na klik u dashboardu. Vercel Hobby dopušta jedan cron dnevno, a taj drži bazu budnom.'],
+    [1,'iCal sinkronizacija','Na klik u dashboardu, jednom dnevno uz keepalive (ako je postavljen poslužiteljski ključ) i svakih 30 min preko Supabase pg_cron (sql/auto-ical-sync.sql).'],
+    [1,'Recenzije, čistačica, eVisitor','Ocjene iz vodiča, link za čistačicu i podaci gostiju — rade kad su pokrenuti pripadni SQL-ovi.'],
+    [1,'SEO i pregled linka','/p/<slug> dobiva naslov, opis i fotografiju (api/stranica.js); /sitemap.xml i /robots.txt.'],
     [1,'Fotografije','Cloudinary, izravno s klijenta.'],
     [0,'Teme javne stranice','Biraju se u dashboardu, ali nova javna stranica ih ne prikazuje — planirano za plaćene planove.'],
-    [0,'Stripe checkout','Nije spojen. Nadogradnja ide e-mailom; serverske funkcije ne postoje.'],
+    [0,'Stripe naplata','Spojena za testni način; uključuje se ključevima u Vercelu (odluke.md, točka 16). Bez njih nadogradnja ide e-mailom.'],
     [0,'Obavijesti u aplikaciji','Traže tablicu announcements. E-mail skupini radi (tab Poruke).'],
     [0,'Višejezičnost','Ne postoji.'],
     [DRZAVE?1:0,'Analitika po državama',DRZAVE?'Radi: /api/track upisuje državu iz Vercelova zaglavlja (bez IP adrese).':'Kod je spreman (/api/track), ali stupac page_views.country ne postoji — pokrenuti sql/add-country-to-page-views.sql.'],
