@@ -69,6 +69,7 @@ Popratno:
 - [ ] **Popusti** — pokrenuti `sql/add-plan-promotions.sql` pa u adminu proći tab Popusti (`odluke.md`, točka 14). Naplate još nema dok se ne spoji Stripe.
 - [ ] **Paket značajki (točka 17)** — pokrenuti 6 SQL datoteka redom, dodati `reset-password.html` u Supabase Redirect URLs, `CRON_SECRET` u Vercel; proći na Previewu.
 - [ ] **Ključ za automatski prijevod** — odgođeno (vlasnik: da se ne plaća prije početka); kad krene, samo `ANTHROPIC_API_KEY` u Vercel + Redeploy (`odluke.md`, točka 18).
+- [ ] **E-mail o upitu** — odgođeno (vlasnik); kad krene: Resend ključ + `sql/add-inquiry-email.sql` (`odluke.md`, točka 18). Ostali SQL, ključ baze, CRON_SECRET i automatska sinkronizacija postavljeni 29. 9. 2026.
 - [ ] **Jezici i e-mail o upitu (točka 18)** — pokrenuti `sql/add-translations.sql`, u Vercel dodati `ANTHROPIC_API_KEY`; za e-mail račun na Resendu, potvrđena domena, pa `sql/add-inquiry-email.sql` s upisanim ključem. Proći vodič i javnu stranicu na njemačkom na Previewu.
 - [ ] **Podsjetnik (točka 17):** pravni tekst i Pomoć · pozadina i platforma · plaćanje.
 - [ ] **Stripe (testni način)** — postaviti ključeve i webhook prema `odluke.md`, točka 16, i isprobati karticom 4242…

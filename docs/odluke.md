@@ -873,6 +873,8 @@ Dok se ne pokrenu, stranice rade kao prije, a svaki novi dio sam kaže što nedo
 
 0. **Ključ za automatski prijevod (`ANTHROPIC_API_KEY`)** — odgođeno dok
    aplikacija ne krene; upute u točki 18.
+0. **E-mail domaćinu o upitu (Resend)** — odgođeno dok aplikacija ne krene;
+   upute u točki 18.
 
 1. **Pomoć, Uvjeti, Privatnost** — pravni tekst (točka 8) + nove stvari koje
    ga mijenjaju: recenzije, podaci gostiju za eVisitor (broj isprave!), link za
@@ -963,6 +965,13 @@ engleski, njemački, talijanski, poljski i češki.**
   `truncate public.prijevodi;` povremeno, sve se ponovno prevede samo).
 
 ### E-mail domaćinu za svaki novi upit
+
+> **ODGOĐENO (29. 9. 2026., odluka vlasnika):** Resend i
+> `sql/add-inquiry-email.sql` još nisu postavljeni. Do tada se upiti normalno
+> spremaju i vide u dashboardu (Boravci → Upiti), samo ne stiže e-mail.
+> **Kad krene:** račun na resend.com → API Keys → ključ `re_…` → na stranici
+> „Postavljanje Odmorije” (5. dio) upisati ključ i pošiljatelja → Run u
+> Supabaseu. Ništa u kodu ne treba mijenjati.
 
 Kad gost pošalje upit s javne stranice, domaćin dobije e-mail: tko pita, za
 koje datume i koliko osoba, poruka, kontakt gosta i gumb **„Otvori upit u
