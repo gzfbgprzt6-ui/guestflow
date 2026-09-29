@@ -675,5 +675,14 @@ try {
   /* ostaju vrijednosti upisane u HTML-u */
 }
 </script>
+<!-- poruka nakon brisanja računa (account.html → /?racun=obrisan) -->
+<script>
+;(()=>{const q=new URLSearchParams(location.search);if(q.get('racun')!=='obrisan')return
+  q.delete('racun');history.replaceState(null,'',location.pathname+(q.toString()?'?'+q:'')+location.hash)
+  const d=document.createElement('div');d.setAttribute('role','status')
+  d.style.cssText='position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:200;max-width:calc(100vw - 32px);padding:14px 20px;border-radius:10px;background:#103D4B;color:#fff;font:600 15px/1.4 Manrope,system-ui,sans-serif;box-shadow:0 12px 32px rgba(16,61,75,.25)'
+  d.textContent='Vaš račun i svi podaci su obrisani. Hvala što ste koristili Odmoriju.'
+  document.body.append(d);setTimeout(()=>d.remove(),7000)})()
+</script>
 </body>
 </html>

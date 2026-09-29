@@ -84,6 +84,7 @@ function togglePw(id, b) {
 </script>
 <script type="module">
 import{createClient}from'https://esm.sh/@supabase/supabase-js@2'
+import{hrGreska}from'./auth-greske.js'
 const sb=createClient('https://wtojzqjhipdfbrnmprmz.supabase.co','sb_publishable_tmZAZTDbQ7ktc1N-8y4q4w_ztAu_62F')
 
 const $ = id => document.getElementById(id)
@@ -94,14 +95,7 @@ function showA(type,msg){
   el.querySelector('span').textContent=msg
   el.hidden=false
 }
-function hrErr(e){
-  const m=(e&&e.message)||''
-  if(/already registered|already exists/i.test(m))return 'Račun s tim e-mailom već postoji. Prijavite se ili zatražite link za prijavu.'
-  if(/password/i.test(m)&&/least|short|weak/i.test(m))return 'Lozinka je preslaba. Upotrijebite najmanje 8 znakova.'
-  if(/invalid.*email|email.*invalid/i.test(m))return 'E-mail adresa nije ispravna.'
-  if(/rate limit|too many/i.test(m))return 'Previše pokušaja. Pričekajte malo pa pokušajte ponovno.'
-  return 'Registracija nije uspjela: '+m
-}
+const hrErr=e=>hrGreska(e,'Registracija nije uspjela')   // auth-greske.js
 
 window.register=async()=>{
   const name=$('name').value.trim()

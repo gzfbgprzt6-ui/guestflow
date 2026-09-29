@@ -273,17 +273,16 @@
           </div>
         </div>
         <div class="link-result">
-          <span class="link-badge badge-priv">Privatni link za goste</span>
-          <div class="link-url" id="priv-link-display">—</div>
-          <div class="link-desc">Šifra vrata, Wi-Fi i upute za dolazak. Šaljite ga samo potvrđenim gostima.</div>
+          <span class="link-badge badge-priv">Privatni vodič za goste</span>
+          <div class="link-desc">Svaki gost dobiva svoj link, s datumima boravka: šifra vrata i Wi-Fi otključaju se sat prije njegovog dolaska, a link istječe dan nakon odlaska. Napravite ga kad potvrdite rezervaciju.</div>
           <div class="link-btns">
-            <button class="lbtn lbtn-ink" type="button" onclick="copyPriv()">Kopiraj privatni link</button>
-            <button class="lbtn lbtn-out" type="button" onclick="viewPriv()">Pogledaj vodič</button>
+            <button class="lbtn lbtn-ink" type="button" onclick="prviLink()">Napravi link za prvog gosta</button>
+            <button class="lbtn lbtn-out" type="button" onclick="viewPriv()">Pogledaj kako gost vidi vodič</button>
           </div>
         </div>
       </div>
       <div class="nav-btns">
-        <button class="btn-out" type="button" onclick="prevStep(4)">← Natrag</button>
+        <button class="btn-out" type="button" onclick="prevStep(5)">← Natrag</button>
         <button class="btn-blue" type="button" onclick="goToDashboard()">Otvori dashboard →</button>
       </div>
     </section>
@@ -294,7 +293,7 @@
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { loadPlans, limitFor, effectivePlanId, limitMessage } from './plans.js'
-import { publicUrl, legacyGuestUrl, prettyUrl } from './links.js'
+import { publicUrl, prettyUrl } from './links.js'
 
 const SURL = 'https://wtojzqjhipdfbrnmprmz.supabase.co'
 const SKEY = 'sb_publishable_tmZAZTDbQ7ktc1N-8y4q4w_ztAu_62F'
@@ -480,6 +479,18 @@ async function savePhotos() {
 // ── SAVE FUNCTIONS ────────────────────────────────────
 async function saveStep1() {
   const name = document.getElementById('prop-name').value.trim()
+  // Povratak na korak 1 pa „Dalje”: objekt već postoji — samo ga ažuriraj
+  // (prije je nastajao duplikat, a na Free planu limit bi odbio drugi upis).
+  if (PROP_ID) {
+    const { error } = await sb.from('properties').update({
+      name, type: selectedType,
+      location: document.getElementById('prop-location').value.trim(),
+      host_name: document.getElementById('host-name').value.trim(),
+      phone: document.getElementById('host-phone').value.trim(),
+    }).eq('id', PROP_ID)
+    if (error) { showErr(1, 'Greška: ' + error.message); throw error }
+    return
+  }
   const slug = slugify(name) + '-' + Math.random().toString(36).slice(2,6)
   const token = Math.random().toString(36).slice(2,12)
 
@@ -529,7 +540,6 @@ async function saveStep3() {
 function showLinks() {
   if (!PROP_SLUG) return
   document.getElementById('pub-link-display').textContent = prettyUrl(publicUrl(PROP_SLUG))
-  document.getElementById('priv-link-display').textContent = prettyUrl(legacyGuestUrl(PROP_SLUG, PROP_TOKEN))
 }
 
 // ── WIFI PREVIEW ──────────────────────────────────────
@@ -546,11 +556,8 @@ window.copyPub = () => {
   navigator.clipboard?.writeText(publicUrl(PROP_SLUG))
   toast('Javni link je kopiran.')
 }
-window.copyPriv = () => {
-  if (!PROP_SLUG) return
-  navigator.clipboard?.writeText(legacyGuestUrl(PROP_SLUG, PROP_TOKEN))
-  toast('Privatni link je kopiran.')
-}
+// link po boravku (s datumima) radi se u dashboardu: Boravci → Rezervacije
+window.prviLink = () => { window.location.href = '/dashboard.html?otvori=rezervacija' }
 window.viewPub = () => {
   if (PROP_SLUG) window.open('/p.html?slug=' + PROP_SLUG + '&domacin=1', '_blank')
 }

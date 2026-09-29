@@ -127,16 +127,21 @@
         <h2 class="card-head">Obavijesti</h2>
         <div class="card-body">
           <div class="switch-row">
-            <div><b id="notif-l">E-mail obavijesti</b><span>Novosti i ažuriranja Odmorie. Postavka se još ne sprema.</span></div>
-            <button class="switch" type="button" role="switch" aria-checked="true" aria-labelledby="notif-l" onclick="toggleNotif(this)"></button>
+            <div><b id="notif-l">Važne obavijesti</b><span>Novi upit gosta, istek plana, problem sa sinkronizacijom kalendara.</span></div>
+            <button class="switch" type="button" role="switch" aria-checked="true" aria-labelledby="notif-l" data-obavijest="vazne" onclick="toggleNotif(this)"></button>
           </div>
+          <div class="switch-row">
+            <div><b id="notif-n">Novosti i savjeti</b><span>Nove mogućnosti Odmorie i savjeti za više rezervacija, najviše jednom mjesečno.</span></div>
+            <button class="switch" type="button" role="switch" aria-checked="false" aria-labelledby="notif-n" data-obavijest="novosti" onclick="toggleNotif(this)"></button>
+          </div>
+          <p class="fg-hint" id="notif-hint">Izbor se sprema uz vaš račun. E-mailove počinjemo slati kad uključimo slanje pošte.</p>
         </div>
       </section>
 
       <section class="card danger">
         <h2 class="card-head">Brisanje računa</h2>
         <div class="card-body">
-          <p class="danger-text">Trajno i nepovratno: brišu se svi objekti, linkovi i podaci. Privatni linkovi gostiju prestaju raditi.</p>
+          <p class="danger-text">Trajno i nepovratno: brišu se svi objekti, linkovi, rezervacije, recenzije i podaci gostiju. Privatni linkovi gostiju prestaju raditi. Ako plaćate karticom, prvo otkažite pretplatu.</p>
           <div class="alert alert-err" id="delete-err" role="alert"></div>
           <div class="fg" id="confirm-wrap">
             <label for="confirm-input">Za potvrdu upišite: obriši račun</label>
@@ -168,6 +173,7 @@
           <div class="info-row" style="display:flex;justify-content:space-between;gap:12px;padding-top:8px;border-top:1px solid var(--border)">
             <span class="t-muted">Fotografija po objektu</span><b id="photo-limit">—</b>
           </div>
+          <div id="photo-meters" style="margin-top:12px"></div>
           <div class="info-row" style="display:flex;justify-content:space-between;gap:12px;padding-top:8px">
             <span class="t-muted">Račun otvoren</span><b id="reg-date">—</b>
           </div>
@@ -194,6 +200,7 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { loadPlans, getPlan, limitFor, effectivePlanId, listPlans, popustZa, formatEur, rokPopusta, trajanjePopusta, cijenaPlana } from './plans.js'
 import { billingStatus, startCheckout, openBillingPortal, povratakSPlacanja, cekajPlan } from './billing.js'
+import { hrGreska } from './auth-greske.js'
 
 const SURL = 'https://wtojzqjhipdfbrnmprmz.supabase.co'
 const SKEY = 'sb_publishable_tmZAZTDbQ7ktc1N-8y4q4w_ztAu_62F'
@@ -235,6 +242,19 @@ async function init() {
   document.getElementById('prop-hint').textContent = full ? 'Za još jedan objekt treba viša razina.' : ''
   const ph = limitFor(plan, 'photos')
   document.getElementById('photo-limit').textContent = ph === Infinity ? 'neograničeno' : 'do ' + ph
+  // potrošnja fotografija po objektu (Figma: traka „4 od 5”)
+  const { data: objekti } = await sb.from('properties').select('name,photo_urls').eq('user_id', USER.id).order('created_at')
+  document.getElementById('photo-meters').innerHTML = (objekti || []).map(o => {
+    const n = (o.photo_urls || []).filter(Boolean).length, pun = ph !== Infinity && n >= ph
+    return `<div class="meter${pun ? ' full' : ''}"><div class="meter__top"><span>${String(o.name || 'Objekt').replace(/[<>&"]/g, '')}</span><span>${n}${ph === Infinity ? '' : ' od ' + ph}</span></div>
+      <div class="meter__bar"><i style="width:${ph === Infinity ? Math.min(100, n * 5) : Math.min(100, Math.round(n / ph * 100))}%"></i></div></div>`
+  }).join('')
+  // obavijesti — spremljeni izbor (user_metadata.obavijesti)
+  const ob = USER.user_metadata?.obavijesti || {}
+  document.querySelectorAll('[data-obavijest]').forEach(b => {
+    const k = b.dataset.obavijest
+    if (k in ob) b.setAttribute('aria-checked', String(!!ob[k]))
+  })
 
   // istekao plaćeni plan (effectivePlanId ga je već spustio na free)
   if (sub && sub.plan && sub.plan !== 'free' && sub.period_end && new Date(sub.period_end) < new Date()) {
@@ -322,7 +342,7 @@ window.savePassword = async () => {
   const { error } = await sb.auth.updateUser({ password: p1 })
   document.getElementById('pw-btn-txt').textContent = 'Promijeni lozinku'
 
-  if (error) { showAlert('pw', 'err', error.message); return }
+  if (error) { showAlert('pw', 'err', hrGreska(error, 'Lozinka nije promijenjena')); return }
   document.getElementById('new-pass').value = ''
   document.getElementById('confirm-pass').value = ''
   document.getElementById('str-bar').className = 'strength'
@@ -332,22 +352,36 @@ window.savePassword = async () => {
 }
 
 // ── DELETE ACCOUNT ────────────────────────────────────
-// Gumb se uključi tek kad je potvrda upisana točno (Figma). Klijent ne može
-// obrisati račun (treba service role), pa kao i prije ide uputa podršci.
+// Gumb se uključi tek kad je potvrda upisana točno (Figma). Briše funkcija
+// obrisi_moj_racun() u bazi (sql/delete-account.sql) — samo vlastiti račun.
 window.checkDelete = () => {
   const ok = document.getElementById('confirm-input').value.trim().toLowerCase() === 'obriši račun'
   document.getElementById('delete-btn').disabled = !ok
 }
-window.handleDelete = () => {
+window.handleDelete = async () => {
   if (document.getElementById('confirm-input').value.trim().toLowerCase() !== 'obriši račun') return
-  showAlert('delete', 'err', 'Za brisanje računa pošaljite e-mail na podrska@odmoria.com s adrese svog računa. Brišemo u roku 24 h.')
-  document.getElementById('confirm-input').value = ''
+  const btn = document.getElementById('delete-btn'); btn.disabled = true
+  document.getElementById('delete-btn-txt').textContent = 'Brišem…'
+  let st = null
+  try { const { data, error } = await sb.rpc('obrisi_moj_racun'); st = error ? (/function|schema cache/i.test(error.message) ? 'nema' : 'greska') : data && data.stanje } catch { st = 'greska' }
+  document.getElementById('delete-btn-txt').textContent = 'Obriši račun'
+  if (st === 'ok') { await sb.auth.signOut(); window.location.href = '/?racun=obrisan'; return }
+  showAlert('delete', 'err', {
+    pretplata: 'Imate aktivnu pretplatu karticom. Prvo je otkažite (Pretplata i limiti → Upravljaj pretplatom), pa obrišite račun.',
+    nema: 'Brisanje još nije uključeno. Pišite na podrska@odmoria.com s adrese svog računa.'
+  }[st] || 'Brisanje nije uspjelo. Pokušajte ponovno ili nam pišite na podrska@odmoria.com.')
   window.checkDelete()
 }
 
-// Postavka obavijesti se još nigdje ne sprema — prekidač samo mijenja izgled
-window.toggleNotif = (el) => {
-  el.setAttribute('aria-checked', el.getAttribute('aria-checked') !== 'true')
+// Obavijesti: izbor se sprema u user_metadata (bez nove kolone u bazi)
+window.toggleNotif = async (el) => {
+  const novo = el.getAttribute('aria-checked') !== 'true'
+  el.setAttribute('aria-checked', String(novo))
+  const ob = { ...(USER.user_metadata?.obavijesti || { vazne: true, novosti: false }), [el.dataset.obavijest]: novo }
+  const { data, error } = await sb.auth.updateUser({ data: { obavijesti: ob } })
+  if (error) { el.setAttribute('aria-checked', String(!novo)); toast('Nije spremljeno: ' + hrGreska(error)); return }
+  if (data?.user) USER = data.user
+  toast('Spremljeno.')
 }
 
 // Stripe: povratak s plaćanja (?placanje=uspjeh|odustao). Plan upisuje webhook,

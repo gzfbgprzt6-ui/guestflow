@@ -39,7 +39,10 @@
             <button class="pw__eye" type="button" onclick="togglePw('pass',this)" aria-label="Prikaži lozinku" aria-pressed="false"><svg class="ic"><use href="#i-eye"/></svg></button>
           </div>
         </div>
-        <button class="linkbtn" type="button" onclick="sendMagic()">Zaboravili ste lozinku? Pošaljite link za prijavu</button>
+        <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 16px">
+          <button class="linkbtn" type="button" onclick="sendReset()">Zaboravili ste lozinku?</button>
+          <button class="linkbtn" type="button" onclick="sendMagic()">Prijava linkom na e-mail</button>
+        </div>
         <button class="btn btn--primary btn--block" type="submit" id="login-btn">Prijava<svg class="ic ic--sm"><use href="#i-arrow-right"/></svg></button>
       </form>
       <div class="or">ili</div>
@@ -53,8 +56,8 @@
       <div class="state" role="status">
         <span class="state__ic"><svg class="ic"><use href="#i-mail"/></svg></span>
         <h1>Provjerite e-mail</h1>
-        <p>Poslali smo link za prijavu na <b id="sent-to"></b>. Link vrijedi ograničeno vrijeme.</p>
-        <button class="btn btn--secondary" type="button" onclick="sendMagic()">Pošalji ponovno</button>
+        <p><span id="sent-what">Poslali smo link za prijavu</span> na <b id="sent-to"></b>. Link vrijedi ograničeno vrijeme.</p>
+        <button class="btn btn--secondary" type="button" id="sent-again" onclick="sendMagic()">Pošalji ponovno</button>
         <button class="btn btn--text" type="button" onclick="backToForm()">Natrag na prijavu</button>
       </div>
     </div>
@@ -80,6 +83,7 @@ function togglePw(id, b) {
 </script>
 <script type="module">
 import{createClient}from'https://esm.sh/@supabase/supabase-js@2'
+import{hrGreska}from'./auth-greske.js'
 const sb=createClient('https://wtojzqjhipdfbrnmprmz.supabase.co','sb_publishable_tmZAZTDbQ7ktc1N-8y4q4w_ztAu_62F')
 
 const $ = id => document.getElementById(id)
@@ -90,14 +94,8 @@ function showA(type,msg){
   el.querySelector('span').textContent=msg
   el.hidden=false
 }
-// Supabase vraća poruke na engleskom; najčešće prevodimo, ostale prenosimo
-function hrErr(e){
-  const m=(e&&e.message)||''
-  if(/invalid login credentials/i.test(m))return 'E-mail ili lozinka nisu točni.'
-  if(/email not confirmed/i.test(m))return 'E-mail još nije potvrđen. Otvorite link iz poruke koju smo vam poslali.'
-  if(/rate limit|too many/i.test(m))return 'Previše pokušaja. Pričekajte malo pa pokušajte ponovno.'
-  return 'Prijava nije uspjela: '+m
-}
+// Supabase vraća poruke na engleskom — prijevod je u auth-greske.js
+const hrErr=e=>hrGreska(e,'Prijava nije uspjela')
 
 window.login=async()=>{
   const email=$('email').value.trim()
@@ -119,9 +117,23 @@ window.sendMagic=async()=>{
   if(!email){$('email').setAttribute('aria-invalid','true');showA('err','Upišite e-mail na koji ćemo poslati link za prijavu.');$('email').focus();return}
   const{error}=await sb.auth.signInWithOtp({email,options:{emailRedirectTo:location.origin+'/dashboard.html'}})
   if(error){showA('err',hrErr(error));return}
+  poslano(email,'Poslali smo link za prijavu','sendMagic')
+}
+function poslano(email,sto,ponovno){
   $('sent-to').textContent=email
+  $('sent-what').textContent=sto
+  $('sent-again').setAttribute('onclick',ponovno+'()')
   $('form-box').hidden=true
   $('sent-box').hidden=false
+}
+/* Zaboravljena lozinka: e-mail s linkom na /reset-password.html, gdje se
+   upiše nova. Adresa mora biti dopuštena u Supabaseu (Auth → URL Configuration). */
+window.sendReset=async()=>{
+  const email=$('email').value.trim()
+  if(!email){$('email').setAttribute('aria-invalid','true');showA('err','Upišite e-mail računa — poslat ćemo link za novu lozinku.');$('email').focus();return}
+  const{error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:location.origin+'/reset-password.html'})
+  if(error){showA('err',hrErr(error));return}
+  poslano(email,'Ako postoji račun s tom adresom, poslali smo link za novu lozinku','sendReset')
 }
 window.backToForm=()=>{$('sent-box').hidden=true;$('form-box').hidden=false;$('alert').hidden=true}
 

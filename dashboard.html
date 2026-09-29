@@ -1302,6 +1302,12 @@ async function init(){
   document.getElementById('app').style.removeProperty('display')
   syncGroup(document.querySelector('.editor-panel.active')?.id?.replace('section-','')||'overview')
   povratakNaPretplatu()
+  // iz postavljanja / dodavanja objekta: „Napravi link za gosta”
+  const q=new URLSearchParams(location.search)
+  if(q.get('otvori')==='rezervacija'){
+    q.delete('otvori');history.replaceState(null,'',location.pathname+(q.toString()?'?'+q:'')+location.hash)
+    nav('reservations',document.querySelector('.panelnav [data-panel=reservations]'));window.showAddBooking()
+  }
 }
 
 /* Plan koji korisnik stvarno ima (istekao → Free) i limiti koji iz njega slijede */
