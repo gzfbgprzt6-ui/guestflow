@@ -191,6 +191,17 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
 .input:hover, .select:hover, .textarea:hover { border-color: var(--ink); }
 .input:focus, .select:focus, .textarea:focus { border-color: var(--ink); outline: 0; box-shadow: 0 0 0 2px var(--ink); }
 .helper { color: var(--muted); font-size: 13px; line-height: 1.45; }
+/* Prijevodi (Objekt → Prijevodi) */
+.pr-gr { margin: 22px 0 4px; font: 800 12px/1.3 var(--font-ui); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.pr-row { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 14px; padding: 14px 0; border-top: 1px solid var(--line); }
+.pr-izvor { margin: 0; white-space: pre-line; color: var(--ink); font-size: 15px; line-height: 1.55; }
+.pr-row .textarea { min-height: 64px; }
+.pr-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 6px; font-size: 13px; color: var(--muted); }
+.pr-meta b { color: var(--copper); }
+.pr-alat { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 6px 0 4px; }
+#pr-jezici { flex-wrap: wrap; max-width: 100%; }
+#pr-jezici button { flex: 1 1 auto; }
+@media (max-width: 780px) { .pr-row { grid-template-columns: minmax(0,1fr); gap: 8px; } }
 
 .type-picker { display: flex; flex-wrap: wrap; gap: 8px; }
 .type-option { display: inline-flex; min-height: 44px; align-items: center; gap: 8px; padding: 0 16px; border: 1px solid var(--control); border-radius: var(--radius-sm); background: var(--paper); color: var(--ink); cursor: pointer; font: 500 15px/1 var(--font-body); }
@@ -641,6 +652,7 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
             <button class="nav-item" type="button" data-panel="pricing" data-group="objekt" onclick="nav('pricing',this)">Cijene i sadržaji</button>
             <button class="nav-item" type="button" data-panel="arrival" data-group="objekt" onclick="nav('arrival',this)">Dolazak i upute</button>
             <button class="nav-item" type="button" data-panel="guide" data-group="objekt" onclick="nav('guide',this)">Vodič za goste</button>
+            <button class="nav-item" type="button" data-panel="prijevodi" data-group="objekt" onclick="nav('prijevodi',this)">Prijevodi</button>
             <span class="panelnav__sep" aria-hidden="true"></span>
             <button class="nav-item" type="button" data-panel="inquiries" data-group="boravci" onclick="nav('inquiries',this)">Upiti<span class="nav-count" data-iq-count hidden></span></button>
             <button class="nav-item" type="button" data-panel="reservations" data-group="boravci" onclick="nav('reservations',this)">Rezervacije</button>
@@ -1146,6 +1158,17 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
           </div>
         </section>
 
+        <!-- PRIJEVODI (api/prevedi.js, sql/add-translations.sql) -->
+        <section class="editor-panel an" id="section-prijevodi" data-panel-content="prijevodi">
+          <div class="card">
+            <div class="card-head"><div class="card-title-wrap"><span class="card-number">A↔</span><div><h2>Prijevodi za goste</h2><p>Vodič i javna stranica prikazuju se gostu na njegovom jeziku. Vaše tekstove Odmoria prevodi automatski — ovdje ih pregledajte i ispravite. Vaš ispravak vide samo gosti ovog objekta.</p></div></div>
+              <div class="an-seg" role="group" aria-label="Jezik" id="pr-jezici"></div></div>
+            <div id="pr-stanje"></div>
+            <div id="pr-lista" aria-live="polite"></div>
+            <div style="margin-top:18px;display:flex;justify-content:flex-end" id="pr-spremi" hidden><button class="btn" onclick="saveTranslations()">Spremi prijevode</button></div>
+          </div>
+        </section>
+
         <!-- LINKS -->
         <section class="editor-panel" id="section-links" data-panel-content="links">
           <div class="card">
@@ -1412,6 +1435,7 @@ async function selectProp(p){
   livePreview()
   renderQr()
   renderSubPanel()
+  if(document.querySelector('.editor-panel.active')?.id==='section-prijevodi')ucitajPrijevode()
 }
 
 /* Nazivi, cijene i limiti iz tablice `plans` (plans.js), kao u account.html.
@@ -2557,6 +2581,7 @@ window.nav=(id,el)=>{
     guide:['Objekt','Vodič za goste','Vaše preporuke, prijevoz i izleti — gost ih vidi u vodiču i na javnoj stranici.'],
     transport:['Objekt','Prijevoz','Dodajte korisne načine kretanja i kontakte.'],
     attractions:['Objekt','Atrakcije','Istaknite aktivnosti i mjesta vrijedna posjeta.'],
+    prijevodi:['Objekt','Prijevodi','Kako gosti vide vaše tekstove na svom jeziku — pregledajte i ispravite prijevod.'],
     pricing:['Objekt','Cijene i sadržaji','Informativna cijena, minimalan boravak i sve što je gostu dostupno.'],
     reviews:['Boravci','Recenzije','Ocjene koje gosti ostave u vodiču na kraju boravka.'],
     rules:['Objekt','Pravila i FAQ','Postavite očekivanja za ugodan boravak.'],
@@ -2580,6 +2605,7 @@ window.nav=(id,el)=>{
   if(id==='ical')loadIcal()
   if(id==='links')ucitajCistacicu()
   if(id==='reviews')ucitajRecenzije()
+  if(id==='prijevodi')ucitajPrijevode()
   if((SPOJ[id]||[]).includes('izgled'))window.initTeme&&window.initTeme()
   if(id==='analytics')renderAnalytics()
   if(id==='inquiries')ucitajUpite().then(renderUpiti)
@@ -2952,6 +2978,81 @@ async function ucitajRecenzije(){
 }
 window.skrijRecenziju=async(id,sakrij)=>{const{error}=await sb.from('reviews').update({skriveno:sakrij}).eq('id',id);if(error){toast('Greška: '+error.message);return}toast(sakrij?'Recenzija je sakrivena':'Recenzija je opet javna');ucitajRecenzije()}
 window.obrisiRecenziju=async id=>{if(!confirm('Trajno obrisati ovu ocjenu?'))return;const{error}=await sb.from('reviews').delete().eq('id',id);if(error){toast('Greška: '+error.message);return}toast('Ocjena obrisana');ucitajRecenzije()}
+
+// ── PRIJEVODI ZA GOSTE (api/prevedi.js u načinu za domaćina) ──────────
+// Ruta provjeri da je objekt korisnikov, vrati sve njegove tekstove s
+// prijevodom i oznakom „ručno”; ispravak se sprema po objektu
+// (prijevodi_rucni). Redoslijed jezika = redoslijed otključavanja po planu.
+const PR_JEZICI=[['en','Engleski'],['de','Njemački'],['it','Talijanski'],['pl','Poljski'],['cs','Češki']]
+const PR={jezik:'en',stavke:[],jezici:null}
+async function prFetch(url,opt={}){
+  const{data:{session}}=await sb.auth.getSession()
+  return fetch(url,{...opt,headers:{Authorization:'Bearer '+(session?.access_token||''),'Content-Type':'application/json'}})
+}
+function prJezici(dop){
+  const el=document.getElementById('pr-jezici')
+  el.innerHTML=PR_JEZICI.map(([k,n])=>{const ok=!dop||dop.includes(k)
+    return `<button type="button" data-prj="${k}" aria-pressed="${k===PR.jezik}" title="${ok?n:n+' — nije u vašem planu'}">${ok?'':'🔒 '}${n}</button>`}).join('')
+  el.onclick=e=>{const b=e.target.closest('[data-prj]');if(!b||b.dataset.prj===PR.jezik)return
+    const dalje=()=>{PR.jezik=b.dataset.prj;window.clearDirty();ucitajPrijevode()}
+    if(window.jeNespremljeno())window.pitajPrijeOdlaska(dalje);else dalje()}
+}
+function prPonuda(){
+  const i=PR_JEZICI.findIndex(x=>x[0]===PR.jezik)+2          // hrvatski se broji
+  const p=listPlans().find(x=>(x.maxLanguages<0||x.maxLanguages>=i)&&x.id!==USER_PLAN)
+  const ime=PR_JEZICI.find(x=>x[0]===PR.jezik)[1]
+  return `<p class="an-empty">${esc(ime)} nije uključen u vaš plan${p?` — dostupan je u planu ${esc(p.name)}`:''}. Gosti tada vide stranicu na engleskom.${p?`<br><button class="btn secondary small" type="button" style="margin-top:12px" onclick="nav('sub',document.querySelector('.panelnav [data-panel=sub]'))">Pogledaj planove</button>`:''}</p>`
+}
+async function ucitajPrijevode(prevedi){
+  const el=document.getElementById('pr-lista'),st=document.getElementById('pr-stanje');if(!el||!PROP)return
+  const objekt=PROP.id
+  prJezici(PR.jezici)
+  document.getElementById('pr-spremi').hidden=true
+  st.innerHTML=''
+  el.innerHTML=`<p class="helper">${prevedi?'Prevodim — može potrajati do pola minute…':'Učitavanje…'}</p>`
+  let o=null,status=0
+  try{const r=await prFetch(`/api/prevedi?objekt=${encodeURIComponent(objekt)}&lang=${PR.jezik}${prevedi?'&prevedi=1':''}`);status=r.status;o=await r.json().catch(()=>null)}catch{}
+  if(PROP?.id!==objekt)return                               // u međuvremenu promijenjen objekt
+  if(o&&o.jezici){PR.jezici=o.jezici;prJezici(o.jezici)}
+  if(!o||!o.ok){
+    el.innerHTML=A.prazno(status===503?'Prijevodi još nisu uključeni: u Supabaseu treba pokrenuti sql/add-translations.sql, a u Vercelu postaviti SUPABASE_SERVICE_ROLE_KEY i ANTHROPIC_API_KEY (docs/odluke.md, točka 18).'
+      :status===403?'Ovaj objekt ne pripada vašem računu.':'Prijevode trenutačno nije moguće učitati. Pokušajte ponovno za minutu.')
+    return
+  }
+  if(!o.dopusteno){el.innerHTML=prPonuda();return}
+  PR.stavke=o.stavke||[]
+  if(!PR.stavke.length){el.innerHTML=A.prazno('Još nema teksta za prijevod. Kad upišete riječ dobrodošlice, upute, pravila ili preporuke, pojavit će se ovdje.');return}
+  const n=PR.stavke.length,prev=PR.stavke.filter(x=>x.prijevod!=null).length,ruc=PR.stavke.filter(x=>x.rucno).length,fali=n-prev
+  st.innerHTML=`<div class="an-kpis">${A.kpi('Prevedeno',`${prev} / ${n}`,fali?`${fali} još nije prevedeno`:'sve je prevedeno')}${A.kpi('Vaši ispravci',String(ruc),'imaju prednost pred automatskim')}</div>
+    <div class="pr-alat">${fali&&o.ai?`<button class="btn small" type="button" onclick="prevediSto()">Prevedi što nedostaje (${fali})</button>`:''}
+      <button class="btn secondary small" type="button" onclick="window.open('/p.html?slug='+encodeURIComponent(PROP.slug)+'&domacin=1&lang=${PR.jezik}','_blank')">Pogledaj javnu stranicu</button>
+      ${fali&&!o.ai?'<span class="helper">Automatski prijevod nije uključen (ANTHROPIC_API_KEY) — tekst možete prevesti sami.</span>':'<span class="helper">Neprevedeni tekst prevede se sam kad ga prvi gost otvori na tom jeziku.</span>'}</div>`
+  let g=null
+  el.innerHTML=PR.stavke.map((x,i)=>{const nasl=x.grupa!==g?`<h3 class="pr-gr">${esc(x.grupa||'Ostalo')}</h3>`:'';g=x.grupa
+    return nasl+`<div class="pr-row"><p class="pr-izvor">${esc(x.izvor)}</p><div>
+      <textarea class="textarea" data-pri="${i}" aria-label="Prijevod: ${esc(x.izvor.slice(0,60))}" placeholder="Još nije prevedeno">${esc(x.prijevod||'')}</textarea>
+      <div class="pr-meta">${x.rucno?'<b>Vaš ispravak</b> · <button class="btn ghost small" type="button" onclick="vratiPrijevod('+i+')">Vrati automatski</button>':x.prijevod!=null?'Automatski prijevod':'Nije prevedeno'}</div></div></div>`}).join('')
+  document.getElementById('pr-spremi').hidden=false
+}
+window.ucitajPrijevode=ucitajPrijevode
+window.prevediSto=()=>ucitajPrijevode(true)
+async function spremiIzmjene(izmjene,poruka){
+  const r=await prFetch('/api/prevedi',{method:'POST',body:JSON.stringify({objekt:PROP.id,lang:PR.jezik,izmjene})}).catch(()=>null)
+  const o=r&&await r.json().catch(()=>null)
+  if(!o||!o.ok){toast('Nije spremljeno: '+(o?.error||'provjerite vezu'));return false}
+  toast(poruka);return true
+}
+window.saveTranslations=async()=>{
+  // izmjene se skupe odmah (prije čekanja) — promjena jezika smije krenuti odmah nakon
+  const izmjene=[...document.querySelectorAll('[data-pri]')].map(t=>{const x=PR.stavke[+t.dataset.pri];const v=t.value.trim()
+    return x&&v&&v!==(x.prijevod||'').trim()?{izvor:x.izvor,prijevod:v}:null}).filter(Boolean)
+  if(!izmjene.length){toast('Nema promjena');return}
+  if(await spremiIzmjene(izmjene,izmjene.length===1?'Prijevod je spremljen':`Spremljeno prijevoda: ${izmjene.length}`))ucitajPrijevode()
+}
+window.vratiPrijevod=async i=>{
+  const x=PR.stavke[i];if(!x)return
+  if(await spremiIzmjene([{izvor:x.izvor,prijevod:''}],'Vraćen automatski prijevod')){window.clearDirty();ucitajPrijevode()}
+}
 
 // ── PODACI GOSTIJU ZA eVisitor + BORAVIŠNA PRISTOJBA (sql/add-guest-registration.sql) ──
 let PRIJAVE={},PRIJAVE_OK=false

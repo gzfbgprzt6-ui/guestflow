@@ -98,7 +98,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
     ├── delete-account.sql               # obrisi_moj_racun()
     ├── admin-upgrades.sql               # admin stvara pretplate, admin_korisnici(), admin_log + okidači
     ├── auto-ical-sync.sql               # pg_cron + pg_net: /api/sync-all svakih 30 min, brisanje starih prijava
-    ├── add-translations.sql             # tablica prijevodi (samo service role)
+    ├── add-translations.sql             # tablice prijevodi + prijevodi_rucni (samo service role)
     ├── add-inquiry-email.sql            # e-mail domaćinu za novi upit: okidač → pg_net → Resend (ključ u Vaultu)
     └── fix-missing-columns-and-storage.sql # ALTER TABLE dopune (photo_urls, ical_*, beds/bathrooms/size_m2) + storage bucket policy
 ```
@@ -685,7 +685,7 @@ Ako ikad zatreba da linkovi uvijek pokazuju na jednu domenu bez obzira odakle su
 
 - **Stripe je spojen samo za testni način** — računi se ne fiskaliziraju, nema PDV-a ni poreznog broja kupca; odluke u `docs/odluke.md`, točka 16. `track-event.js` ne postoji i ne treba — pregledi idu kroz `/api/track`.
 - **Automatska iCal sinkronizacija** radi tek kad su postavljeni `SUPABASE_SERVICE_ROLE_KEY` (dnevno) i `sql/auto-ical-sync.sql` + `CRON_SECRET` (svakih 30 min).
-- **Višejezični su samo vodič i javna stranica** (6 jezika). Dashboard, naslovnica, prijava, pravni tekst i `c.html` su samo na hrvatskom. Domaćin još ne može sam ispraviti automatski prijevod.
+- **Višejezični su samo vodič i javna stranica** (6 jezika). Dashboard, naslovnica, prijava, pravni tekst i `c.html` su samo na hrvatskom.
 
 ---
 
@@ -746,6 +746,14 @@ Sve je u `jezici.js` (ES modul, `import * as L from '/jezici.js'`).
   može dobiti stari modul.
 - **Testovi:** Playwright je po zadanom `en-US`, pa stari testovi (koji
   očekuju hrvatski) trebaju `--lang=hr-HR` ili `locale:'hr-HR'`.
+
+**Panel Prijevodi** (dashboard → Objekt → Prijevodi, `ucitajPrijevode()`,
+`saveTranslations()`, `vratiPrijevod()`): zove istu rutu u načinu za
+domaćina (`?objekt=&lang=[&prevedi=1]` + korisnikov Bearer token; POST
+`{objekt, lang, izmjene}`). Ruta provjeri `/auth/v1/user` i `user_id`
+objekta, sprema samo tekstove tog objekta u **`prijevodi_rucni`** (po
+objektu — nikad u zajedničku `prijevodi`, inače bi jedan domaćin mijenjao
+tuđe prijevode). Ručni ispravak ima prednost i u vodiču i na javnoj stranici.
 
 **`api/prevedi.js`:** `?lang=&slug=` (javna) ili `?lang=&token=[&slug=]`
 (vodič; provjeri `is_active` i `token_expires_at`, stari link slug+guest_token).

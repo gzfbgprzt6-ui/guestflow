@@ -910,7 +910,7 @@ engleski, njemački, talijanski, poljski i češki.**
 
 ### Jezici — što trebate napraviti
 
-1. [ ] Pokrenuti `sql/add-translations.sql` (tablica `prijevodi`, čita je samo poslužitelj).
+1. [ ] Pokrenuti `sql/add-translations.sql` (tablice `prijevodi` i `prijevodi_rucni`, čita ih samo poslužitelj).
 2. [ ] **Ključ za prijevod:** console.anthropic.com → API Keys → Create key.
    U Vercelu (Settings → Environment Variables) dodati `ANTHROPIC_API_KEY`
    (Preview i Production). Treba i `SUPABASE_SERVICE_ROLE_KEY` (već na popisu, točka 16).
@@ -933,8 +933,13 @@ engleski, njemački, talijanski, poljski i češki.**
 - [ ] **Poruka domaćinu** (WhatsApp/e-mail/upit s javne stranice) piše se na
   jeziku koji domaćin na Jadranu razumije: gost na HR/EN/DE/IT piše na svom
   jeziku, gost na poljskom ili češkom — na engleskom. Gost vidi poruku prije slanja.
-- [ ] **Domaćin još ne može sam ispraviti prijevod.** Sljedeći korak bi bio panel
-  „Prijevodi” u dashboardu (pregled i ispravak po jeziku).
+- [x] **Domaćin ispravlja prijevod sam:** dashboard → Objekt → **Prijevodi**.
+  Bira jezik, vidi svaki svoj tekst (hrvatski lijevo, prijevod desno, po
+  skupinama), može pokrenuti „Prevedi što nedostaje”, ispraviti i spremiti.
+  Ispravak ima prednost pred automatskim prijevodom, vidi ga samo gosti tog
+  objekta (tablica `prijevodi_rucni`), a „Vrati automatski” ga briše. Jezik
+  koji plan ne uključuje ima lokot i ponudu plana. Javna stranica pokaže
+  ispravak najkasnije za 2 minute (predmemorija na Vercelu).
 - [ ] Recenzije se ne prevode (ostaju na jeziku kojim ih je gost napisao).
 - [ ] Dashboard, naslovnica, prijava, pravni tekst i stranica za čistačicu
   ostaju na hrvatskom (koriste ih domaćini i čistačice u Hrvatskoj).
