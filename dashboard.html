@@ -1304,10 +1304,15 @@ async function init(){
   povratakNaPretplatu()
   // iz postavljanja / dodavanja objekta: „Napravi link za gosta”
   const q=new URLSearchParams(location.search)
-  if(q.get('otvori')==='rezervacija'){
-    q.delete('otvori');history.replaceState(null,'',location.pathname+(q.toString()?'?'+q:'')+location.hash)
+  const otvori=q.get('otvori'),objekt=q.get('objekt')
+  if(otvori||objekt){q.delete('otvori');q.delete('objekt');history.replaceState(null,'',location.pathname+(q.toString()?'?'+q:'')+location.hash)}
+  // iz e-maila o novom upitu: odabrani objekt (ako je tvoj i nije zaključan)
+  const ciljni=objekt&&PROPS.find((p,i)=>p.id===objekt&&i<PLAN_LIMIT)
+  if(ciljni&&ciljni.id!==PROP?.id)await selectProp(ciljni)
+  if(otvori==='rezervacija'){
     nav('reservations',document.querySelector('.panelnav [data-panel=reservations]'));window.showAddBooking()
   }
+  if(otvori==='upiti')window.openInquiries()
 }
 
 /* Plan koji korisnik stvarno ima (istekao → Free) i limiti koji iz njega slijede */

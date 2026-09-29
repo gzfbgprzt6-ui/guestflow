@@ -41,6 +41,8 @@
 .phead__nav a{font:600 15px/1 var(--font-ui);text-decoration:none;padding:12px 0}
 .phead__nav a:hover{color:var(--text-accent)}
 .phead__cta{margin-left:var(--s5)}
+.phead__jez{margin-left:var(--s5)}
+.phead__jez:not([hidden]) + .phead__cta{margin-left:var(--s3)}
 .phead__cta .sm,.hero__act .sm,.gal-all-m{display:none}
 .gal__more .lg{display:block;font:600 15px/1.3 var(--font-body)}
 
@@ -247,7 +249,7 @@
 
 @media (max-width:1100px){
   .phead__nav{display:none}
-  .phead__cta{margin-left:auto}
+  .phead__cta,.phead__jez{margin-left:auto}
   .facts{grid-template-columns:repeat(3,1fr)}
   .intro,.loc,.details,.avail,.faq{grid-template-columns:minmax(0,1fr);gap:40px}
   .summary{position:static;max-width:560px}
@@ -264,6 +266,7 @@
   .intro{gap:0}
   .hero__act .btn{white-space:nowrap}
   .phead__cta{min-height:44px;padding:0 16px;font-size:14px}
+  .phead__jez .jezik{max-width:104px}
   .hero-wrap{padding-inline:0}
   .hero{min-height:420px;border-radius:0;padding:24px 16px;flex-direction:column;align-items:flex-start;justify-content:flex-end}
   .hero__sub{font-size:16px}
@@ -388,6 +391,7 @@
       <a href="#lokacija" data-need="map-sec">Lokacija</a>
       <a href="#dostupnost" data-need="cal-sec">Dostupnost</a>
     </nav>
+    <span class="phead__jez" data-jezik-birac hidden></span>
     <a class="btn btn--primary phead__cta" id="h-cta" href="#upit"><span class="lg">Pošalji upit</span><span class="sm">Upit</span><svg class="ic ic--sm"><use href="#i-arrow-up-right"/></svg></a>
   </div>
 </header>
@@ -545,6 +549,7 @@
             </div>
             <span class="ask__lbl">Poruka</span>
             <div class="msgprev" id="msgPrev"></div>
+            <p class="t-meta" id="msg-jez" hidden></p>
             <!-- Upit spremljen u Odmoriji (tablica inquiries, sql/add-inquiries.sql):
                  domaćin ga vidi u dashboardu i jednim klikom pošalje privatni link. -->
             <form class="iqf" id="iqf" novalidate onsubmit="posaljiUpit(event)">
@@ -638,6 +643,7 @@
       <b id="f-name"></b>
       <div id="f-contact" hidden></div>
     </div>
+    <p class="pfoot__by" id="jez-nap" hidden></p>
     <div class="pfoot__by" id="f-by">Stranicu pokreće <a href="/">Odmoria</a></div>
   </div>
 </footer>
@@ -671,6 +677,13 @@
 
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import * as L from '/jezici.js'
+
+// jezik sučelja odmah; koje jezike plan domaćina dopušta i prijevod njegovih
+// tekstova stižu s /api/prevedi (loadPage → L.pokreni)
+L.postavi(L.odaberi())
+L.prevediDom()
+const t = L.t, H = L.H
 
 const SURL = 'https://wtojzqjhipdfbrnmprmz.supabase.co'
 const SKEY = 'sb_publishable_tmZAZTDbQ7ktc1N-8y4q4w_ztAu_62F'
@@ -683,14 +696,8 @@ const show = (sel, on = true) => { const e = typeof sel === 'string' ? $(sel) : 
 const MJ = ['Siječanj','Veljača','Ožujak','Travanj','Svibanj','Lipanj','Srpanj','Kolovoz','Rujan','Listopad','Studeni','Prosinac']
 const MJ_GEN = ['siječnja','veljače','ožujka','travnja','svibnja','lipnja','srpnja','kolovoza','rujna','listopada','studenoga','prosinca']
 
-function plural(n, one, few, many) {
-  const d10 = n % 10, d100 = n % 100
-  if (d10 === 1 && d100 !== 11) return one
-  if (d10 >= 2 && d10 <= 4 && (d100 < 12 || d100 > 14)) return few
-  return many
-}
-const noci = n => n + ' ' + plural(n, 'noć', 'noći', 'noći')
-const eur = n => n.toLocaleString('hr-HR', { maximumFractionDigits: 2 }) + ' €'
+const noci = (n, j) => L.n(n, 'noć', j)
+const eur = n => L.novac(n)
 
 let PROP = null, nights = 7, price = 0
 
@@ -727,6 +734,7 @@ let filledSet = new Set(), GAPS = new Set()
 const slug = new URLSearchParams(location.search).get('slug')
   || location.pathname.split('/p/')[1]?.split('/')[0]
 
+if (slug) L.unaprijed({ slug })
 if (!slug) showErr(); else loadPage().catch(showErr)
 
 function showErr() {
@@ -762,6 +770,58 @@ async function loadPage() {
   PROP = prop
   price = parseFloat(prop.price_per_night) || 0
 
+  const [ams, places, txs, atts, rules, faqs] = await Promise.all([
+    sb.from('amenities').select('icon,name').eq('property_id', prop.id).eq('enabled', true).order('sort_order'),
+    prop.show_local       ? sb.from('local_places').select('*').eq('property_id', prop.id).order('sort_order') : {data:[]},
+    prop.show_transport   ? sb.from('transport').select('*').eq('property_id', prop.id).order('sort_order')    : {data:[]},
+    prop.show_attractions ? sb.from('attractions').select('*').eq('property_id', prop.id).order('sort_order')  : {data:[]},
+    sb.from('house_rules').select('*').eq('property_id', prop.id).order('sort_order'),
+    prop.show_faq ? sb.from('faq').select('*').eq('property_id', prop.id).order('sort_order') : {data:[]}
+  ])
+  PODACI = { ams: ams.data, places: places.data, txs: txs.data, atts: atts.data, rules: rules.data, faqs: faqs.data }
+
+  // jezik: plan domaćina + prijevod njegovih tekstova; zakasni li, stranica se nacrta ponovno
+  await L.pokreni({ slug }, { kasnije: () => { nacrtaj(); napomenaJezika() } })
+  L.prevediDom()
+  napomenaJezika()
+  if (L.jezik() !== 'hr') document.querySelectorAll('.caldow').forEach(el => { el.innerHTML = L.daniUTjednu().map(d => `<span>${esc(d)}</span>`).join('') })
+
+  nacrtaj()
+  javnoODobjektu(prop.slug)
+
+  if (prop.show_availability) {
+    const { data: avail } = await sb.from('availability').select('date,is_booked').eq('property_id', prop.id)
+    bookedDates = (avail || []).filter(r => r.is_booked !== false).map(r => r.date)
+    show('#cal-sec')
+    renderCal()
+  } else {
+    // bez kalendara „Provjeri dostupnost” vodi ravno na upit
+    $('#sum-cal').href = '#upit'
+    $('#sum-cal').textContent = t('Pitajte za termin')
+  }
+  // „Pošalji upit” u zaglavlju vodi na kalendar ako postoji, inače na kontakt
+  $('#h-cta').href = prop.show_availability ? '#dostupnost' : '#upit'
+  document.querySelectorAll('#h-nav [data-need]').forEach(a => { a.hidden = $('#' + a.dataset.need).hidden })
+
+  GUESTS = Math.min(PROP.max_guests || 2, 2) || 2
+  if (prop.host_name) $('#contact-sub').textContent =
+    t('Bez posrednika i bez provizije. Termin i plaćanje dogovarate direktno s domaćinom ({n}).', { n: prop.host_name })
+  refreshAsk()
+
+  biljezi('public')
+
+  show('#boot', false)
+  show('#page')
+  watchHeader()
+  watchDock()
+}
+
+let PODACI = null
+function napomenaJezika() { const tx = L.napomena(); $('#jez-nap').textContent = tx; show('#jez-nap', !!tx) }
+
+// sve što nosi tekst domaćina — ponovno se crta kad prijevod stigne kasnije
+function nacrtaj() {
+  const prop = PROP
   document.title = prop.name + ' — Odmoria'
   $('#h-name').textContent = prop.name
   $('#hero-name').textContent = prop.name
@@ -782,7 +842,7 @@ async function loadPage() {
   if (!prop.welcome_msg) $('.intro').classList.add('intro--solo')
   else {
     show('#letter')
-    $('#welcome').textContent = prop.welcome_msg
+    $('#welcome').textContent = H(prop.welcome_msg)
     if (prop.host_name) { $('#sig').textContent = '— ' + prop.host_name; show('#sig') }
   }
 
@@ -794,47 +854,11 @@ async function loadPage() {
     show('#map-sec')
   }
 
-  const [ams, places, txs, atts, rules, faqs] = await Promise.all([
-    sb.from('amenities').select('icon,name').eq('property_id', prop.id).eq('enabled', true).order('sort_order'),
-    prop.show_local       ? sb.from('local_places').select('*').eq('property_id', prop.id).order('sort_order') : {data:[]},
-    prop.show_transport   ? sb.from('transport').select('*').eq('property_id', prop.id).order('sort_order')    : {data:[]},
-    prop.show_attractions ? sb.from('attractions').select('*').eq('property_id', prop.id).order('sort_order')  : {data:[]},
-    sb.from('house_rules').select('*').eq('property_id', prop.id).order('sort_order'),
-    prop.show_faq ? sb.from('faq').select('*').eq('property_id', prop.id).order('sort_order') : {data:[]}
-  ])
-
-  renderDetails(prop, ams.data, rules.data)
-  renderPlaces(places.data, prop)
-  renderTransport(txs.data)
-  renderAttractions(atts.data)
-  renderFaq(faqs.data)
-  javnoODobjektu(prop.slug)
-
-  if (prop.show_availability) {
-    const { data: avail } = await sb.from('availability').select('date,is_booked').eq('property_id', prop.id)
-    bookedDates = (avail || []).filter(r => r.is_booked !== false).map(r => r.date)
-    show('#cal-sec')
-    renderCal()
-  } else {
-    // bez kalendara „Provjeri dostupnost” vodi ravno na upit
-    $('#sum-cal').href = '#upit'
-    $('#sum-cal').textContent = 'Pitajte za termin'
-  }
-  // „Pošalji upit” u zaglavlju vodi na kalendar ako postoji, inače na kontakt
-  $('#h-cta').href = prop.show_availability ? '#dostupnost' : '#upit'
-  document.querySelectorAll('#h-nav [data-need]').forEach(a => { a.hidden = $('#' + a.dataset.need).hidden })
-
-  GUESTS = Math.min(PROP.max_guests || 2, 2) || 2
-  if (prop.host_name) $('#contact-sub').textContent =
-    `Bez posrednika i bez provizije. Termin i plaćanje dogovarate direktno s domaćinom (${prop.host_name}).`
-  refreshAsk()
-
-  biljezi('public')
-
-  show('#boot', false)
-  show('#page')
-  watchHeader()
-  watchDock()
+  renderDetails(prop, PODACI.ams, PODACI.rules)
+  renderPlaces(PODACI.places, prop)
+  renderTransport(PODACI.txs)
+  renderAttractions(PODACI.atts)
+  renderFaq(PODACI.faqs)
 }
 
 // ══════════════════════════════════════════════════════
@@ -847,9 +871,9 @@ function orderedPhotos(prop) {
   return urls
 }
 
-const gostiju = n => 'do ' + n + ' ' + plural(n, 'gosta', 'gostiju', 'gostiju')
-const sobe = n => n + ' ' + plural(n, 'spavaća soba', 'spavaće sobe', 'spavaćih soba')
-const kupaonice = n => n + ' ' + plural(n, 'kupaonica', 'kupaonice', 'kupaonica')
+const gostiju = n => t('do {n}', { n: L.n(n, 'gosta') })
+const sobe = n => L.n(n, 'spavaća soba')
+const kupaonice = n => L.n(n, 'kupaonica')
 
 function buildHero(prop) {
   const photos = orderedPhotos(prop)
@@ -860,14 +884,14 @@ function buildHero(prop) {
     hero.style.backgroundImage = `url('${u}')`
     hero.classList.add('has-photo')
   }
-  const sub = [prop.type,
+  const sub = [H(prop.type),
     prop.max_guests && gostiju(prop.max_guests),
     prop.bedrooms && sobe(prop.bedrooms),
     prop.bathrooms && kupaonice(prop.bathrooms)].filter(Boolean)
   if (sub.length) { $('#hero-sub').textContent = sub.join(' · '); show('#hero-sub') }
-  if (price > 0) { $('#hero-price').textContent = `od ${eur(price)} / noć`; show('#hero-price') }
+  if (price > 0) { $('#hero-price').textContent = t('od {cijena} / noć', { cijena: eur(price) }); show('#hero-price') }
   if (photos.length) {
-    $('#hero-gal').innerHTML = `<span class="lg">Sve fotografije</span><span class="sm">Fotografije</span> (${photos.length}) ${ico('images')}`
+    $('#hero-gal').innerHTML = `<span class="lg">${esc(t('Sve fotografije'))}</span><span class="sm">${esc(t('Fotografije'))}</span> (${photos.length}) ${ico('images')}`
     show('#hero-gal')
   }
 }
@@ -876,18 +900,18 @@ function buildFacts(prop) {
   const f = []
   if (prop.max_guests) f.push(['users', gostiju(prop.max_guests)])
   if (prop.bedrooms)   f.push(['bed-double', sobe(prop.bedrooms)])
-  if (prop.beds)       f.push(['bed-double', prop.beds + ' ' + plural(prop.beds, 'krevet', 'kreveta', 'kreveta')])
+  if (prop.beds)       f.push(['bed-double', L.n(prop.beds, 'krevet')])
   if (prop.bathrooms)  f.push(['bath', kupaonice(prop.bathrooms)])
   if (prop.size_m2)    f.push(['ruler', prop.size_m2 + ' m²'])
-  if (prop.min_stay && +prop.min_stay > 1) f.push(['clock', 'najmanje ' + noci(+prop.min_stay)])
+  if (prop.min_stay && +prop.min_stay > 1) f.push(['clock', t('najmanje {n}', { n: noci(+prop.min_stay) })])
   if (!f.length) return
   show('#facts-wrap')
   $('#facts').innerHTML = f.map(([ic, t]) => `<li class="fact">${ico(ic, 'ic--lg')}<span>${esc(t)}</span></li>`).join('')
 }
 
 function buildSummary(prop) {
-  $('#sum-price').textContent = price > 0 ? `od ${eur(price)} / noć` : 'Cijena na upit'
-  const s = [prop.min_stay && +prop.min_stay > 1 && 'Najmanje ' + noci(+prop.min_stay),
+  $('#sum-price').textContent = price > 0 ? t('od {cijena} / noć', { cijena: eur(price) }) : t('Cijena na upit')
+  const s = [prop.min_stay && +prop.min_stay > 1 && t('Najmanje {n}', { n: noci(+prop.min_stay) }),
              prop.max_guests && gostiju(prop.max_guests)].filter(Boolean)
   if (s.length) { $('#sum-sub').textContent = s.join(' · '); show('#sum-sub') }
 }
@@ -900,14 +924,14 @@ function buildGallery(prop) {
   if (!galleryUrls.length) return
   show('#gal-sec')
   const n = galleryUrls.length
-  $('#gal-all').innerHTML = $('#gal-all-m').innerHTML = `Sve fotografije (${n}) ${ico('images')}`
-  const tile = (i, extra = '') => `<button type="button" class="gal__i" onclick="openLb(${i})" aria-label="Otvori fotografiju ${i + 1} od ${n}">
+  $('#gal-all').innerHTML = $('#gal-all-m').innerHTML = `${esc(t('Sve fotografije ({n})', { n }))} ${ico('images')}`
+  const tile = (i, extra = '') => `<button type="button" class="gal__i" onclick="openLb(${i})" aria-label="${esc(t('Otvori fotografiju {i} od {n}', { i: i + 1, n }))}">
       <img src="${esc(galleryUrls[i])}" alt="" loading="${i < 2 ? 'eager' : 'lazy'}">${extra}</button>`
   const g = $('#gal')
   if (n === 1) { g.className = 'gal gal--1'; g.innerHTML = tile(0); return }
   if (n === 2) { g.className = 'gal gal--2'; g.innerHTML = tile(0) + tile(1); return }
   if (n === 3) g.className = 'gal gal--3'
-  const more = n > 4 ? `<span class="gal__more">+${n - 4}<span class="lg">još fotografija</span></span>` : ''
+  const more = n > 4 ? `<span class="gal__more">+${n - 4}<span class="lg">${esc(t('još fotografija'))}</span></span>` : ''
   g.innerHTML = tile(0) + tile(1) +
     `<div class="gal__pair">${tile(2)}${n > 3 ? tile(3, more) : ''}</div>`
 }
@@ -921,14 +945,14 @@ function renderDetails(prop, ams, rules) {
     any = true
     show('#am-col')
     $('#ams').innerHTML = ams.map(a =>
-      `<li class="amen">${ico(pick(a.name, AMEN_IC, 'check'))}<span>${esc(a.name)}</span></li>`).join('')
+      `<li class="amen">${ico(pick(a.name, AMEN_IC, 'check'))}<span>${esc(H(a.name))}</span></li>`).join('')
   }
   const rows = []
-  if (prop.min_stay && +prop.min_stay > 1) rows.push(['Najkraći boravak', noci(+prop.min_stay)])
-  if (prop.max_guests) rows.push(['Najviše gostiju', String(prop.max_guests)])
-  if (price > 0) rows.push(['Cijena', 'od ' + eur(price) + ' po noći'])
-  if (prop.type) rows.push(['Tip objekta', prop.type])
-  for (const r of (rules || [])) if (r.rule_text) rows.push([null, r.rule_text])
+  if (prop.min_stay && +prop.min_stay > 1) rows.push([t('Najkraći boravak'), noci(+prop.min_stay)])
+  if (prop.max_guests) rows.push([t('Najviše gostiju'), String(prop.max_guests)])
+  if (price > 0) rows.push([t('Cijena'), t('od {cijena} po noći', { cijena: eur(price) })])
+  if (prop.type) rows.push([t('Tip objekta'), H(prop.type)])
+  for (const r of (rules || [])) if (r.rule_text) rows.push([null, H(r.rule_text)])
   if (rows.length) {
     any = true
     show('#know-col')
@@ -946,8 +970,8 @@ const mapsUrl = q => 'https://www.google.com/maps/search/?api=1&query=' + encode
 
 function rowHtml({ icon, name, detail, desc, maps, phone }) {
   const go = maps
-    ? `<a class="lrow__go" href="${esc(mapsUrl(maps))}" target="_blank" rel="noopener" aria-label="${esc(name)} na karti">Karta ${ico('arrow-up-right', 'ic--sm')}</a>`
-    : phone ? `<a class="lrow__go" href="tel:${esc(String(phone).replace(/[^\d+]/g, ''))}">Nazovi ${ico('phone', 'ic--sm')}</a>` : ''
+    ? `<a class="lrow__go" href="${esc(mapsUrl(maps))}" target="_blank" rel="noopener" aria-label="${esc(t('{n} na karti', { n: name }))}">${esc(t('Karta'))} ${ico('arrow-up-right', 'ic--sm')}</a>`
+    : phone ? `<a class="lrow__go" href="tel:${esc(String(phone).replace(/[^\d+]/g, ''))}">${esc(t('Nazovi'))} ${ico('phone', 'ic--sm')}</a>` : ''
   return `<div class="lrow">
     <span class="lrow__ic">${ico(icon)}</span>
     <div class="lrow__tx">
@@ -960,28 +984,30 @@ function rowHtml({ icon, name, detail, desc, maps, phone }) {
 function renderPlaces(places, prop) {
   if (!places?.length) return
   show('#loc-sec')
-  if (prop.host_name) $('#loc-title').textContent = `Što ${prop.host_name} preporučuje`
+  if (prop.host_name) $('#loc-title').textContent = t('Što {n} preporučuje', { n: prop.host_name })
 
-  const cats = [...new Set(places.map(p => (p.category || 'Ostalo').trim()))]
+  const cats = [...new Set(places.map(katMjesta))]
   const tabs = $('#tabs')
   if (cats.length > 1) {
-    tabs.innerHTML = ['Sve', ...cats].map((c, i) =>
-      `<button type="button" class="chip" data-c="${esc(c)}" aria-pressed="${i === 0}">${ico('check', 'ic--sm')}${esc(c)}</button>`).join('')
+    // „*” = sve kategorije (natpis „Sve” ovisi o jeziku)
+    tabs.innerHTML = ['*', ...cats].map((c, i) =>
+      `<button type="button" class="chip" data-c="${esc(c)}" aria-pressed="${i === 0}">${ico('check', 'ic--sm')}${esc(c === '*' ? t('Sve') : c)}</button>`).join('')
     tabs.onclick = e => {
       const b = e.target.closest('.chip'); if (!b) return
       tabs.querySelectorAll('.chip').forEach(x => x.setAttribute('aria-pressed', x === b))
       paintPlaces(places, b.dataset.c)
     }
   } else show(tabs, false)
-  paintPlaces(places, cats.length > 1 ? 'Sve' : cats[0])
+  paintPlaces(places, cats.length > 1 ? '*' : cats[0])
 }
 
+const katMjesta = p => (p.category && p.category.trim() ? H(p.category.trim()) : t('Ostalo'))
 function paintPlaces(places, cat) {
-  const list = cat === 'Sve' ? places : places.filter(p => (p.category || 'Ostalo').trim() === cat)
+  const list = cat === '*' ? places : places.filter(p => katMjesta(p) === cat)
   $('#places').innerHTML = list.map(p => rowHtml({
     icon: pick((p.category || '') + ' ' + p.name, PLACE_IC, 'map-pin'),
-    name: p.name,
-    detail: [p.category, p.distance].filter(Boolean).join(' · '),
+    name: H(p.name),
+    detail: [H(p.category), H(p.distance)].filter(Boolean).join(' · '),
     maps: p.maps_query
   })).join('')
 }
@@ -989,8 +1015,8 @@ function paintPlaces(places, cat) {
 function renderTransport(txs) {
   if (!txs?.length) return
   show('#tx-sec'); show('#tx-at-sec')
-  $('#tx-list').innerHTML = txs.map(t => rowHtml({
-    icon: pick(t.name, TX_IC, 'map-pin'), name: t.name, detail: t.details, maps: t.maps_query, phone: t.phone
+  $('#tx-list').innerHTML = txs.map(x => rowHtml({
+    icon: pick(x.name, TX_IC, 'map-pin'), name: H(x.name), detail: H(x.details), maps: x.maps_query, phone: x.phone
   })).join('')
 }
 
@@ -998,9 +1024,9 @@ function renderAttractions(atts) {
   if (!atts?.length) return
   show('#at-sec'); show('#tx-at-sec')
   $('#at-list').innerHTML = atts.map(a => rowHtml({
-    icon: pick((a.type || '') + ' ' + a.name, AT_IC, 'sparkles'), name: a.name,
-    detail: [a.type, a.distance, a.price].filter(Boolean).join(' · '),
-    desc: a.description, maps: a.maps_query
+    icon: pick((a.type || '') + ' ' + a.name, AT_IC, 'sparkles'), name: H(a.name),
+    detail: [H(a.type), H(a.distance), H(a.price)].filter(Boolean).join(' · '),
+    desc: H(a.description), maps: a.maps_query
   })).join('')
 }
 
@@ -1014,14 +1040,14 @@ async function javnoODobjektu(slugObj) {
   const lista = Array.isArray(j.recenzije) ? j.recenzije : []
   if (!j.broj || !lista.length) return
   const zv = n => Array.from({ length: 5 }, (_, i) => `<svg class="${i < Math.round(n) ? '' : 'p'}"><use href="#i-star"/></svg>`).join('')
-  $('#rev-avg').textContent = String(j.prosjek).replace('.', ',')
+  $('#rev-avg').textContent = Number(j.prosjek).toLocaleString(L.lokal(), { maximumFractionDigits: 1 })
   $('#rev-zv').innerHTML = zv(j.prosjek)
-  $('#rev-n').textContent = `${j.broj} ${j.broj % 10 === 1 && j.broj % 100 !== 11 ? 'ocjena' : j.broj % 10 >= 2 && j.broj % 10 <= 4 && (j.broj % 100 < 12 || j.broj % 100 > 14) ? 'ocjene' : 'ocjena'} gostiju`
-  const MJ = ['siječanj','veljača','ožujak','travanj','svibanj','lipanj','srpanj','kolovoz','rujan','listopad','studeni','prosinac']
-  const kartica = r => { const d = new Date(r.created_at)
-    return `<article class="rev__i"><span class="zv" role="img" aria-label="Ocjena ${r.ocjena} od 5">${zv(r.ocjena)}</span>`
+  $('#rev-n').textContent = L.n(j.broj, 'ocjena gostiju')
+  // tekst recenzije ostaje na jeziku kojim ju je gost napisao
+  const kartica = r => {
+    return `<article class="rev__i"><span class="zv" role="img" aria-label="${esc(t('Ocjena {n} od 5', { n: r.ocjena }))}">${zv(r.ocjena)}</span>`
       + (r.tekst ? `<p>${esc(r.tekst)}</p>` : '')
-      + `<span class="rev__who">${esc(r.ime || 'Gost')} · ${MJ[d.getMonth()]} ${d.getFullYear()}.</span></article>` }
+      + `<span class="rev__who">${esc(r.ime || t('Gost'))} · ${esc(L.mjesecGodina(r.created_at))}</span></article>` }
   const crtaj = sve => { $('#rev-list').innerHTML = (sve ? lista : lista.slice(0, 4)).map(kartica).join(''); show('#rev-more', !sve && lista.length > 4) }
   crtaj(false)
   $('#rev-more').onclick = () => crtaj(true)
@@ -1032,7 +1058,7 @@ function renderFaq(faqs) {
   if (!faqs?.length) return
   show('#faq-sec')
   $('#faq-list').innerHTML = faqs.map((f, i) =>
-    `<details class="acc"${i === 0 ? ' open' : ''}><summary><span>${esc(f.question)}</span>${ico('chevron-down')}</summary><p>${esc(f.answer)}</p></details>`).join('')
+    `<details class="acc"${i === 0 ? ' open' : ''}><summary><span>${esc(H(f.question))}</span>${ico('chevron-down')}</summary><p>${esc(H(f.answer))}</p></details>`).join('')
 }
 
 // ══════════════════════════════════════════════════════
@@ -1055,9 +1081,9 @@ window.openLb = i => {
   if (!galleryUrls.length) return
   lbReturn = document.activeElement
   lbIndex = i || 0
-  $('#lb-n').textContent = PROP.name + ' · galerija'
+  $('#lb-n').textContent = t('{n} · galerija', { n: PROP.name })
   $('#lb-thumbs').innerHTML = galleryUrls.length > 1 ? galleryUrls.map((u, n) =>
-    `<button type="button" onclick="lbGo(${n})" aria-label="Fotografija ${n + 1}"><img src="${esc(u)}" alt="" loading="lazy"></button>`).join('') : ''
+    `<button type="button" onclick="lbGo(${n})" aria-label="${esc(t('Fotografija {n}', { n: n + 1 }))}"><img src="${esc(u)}" alt="" loading="lazy"></button>`).join('') : ''
   show('#lb-hint', galleryUrls.length > 1)
   paintLb()
   $('#lb').classList.add('on')
@@ -1073,7 +1099,7 @@ window.lbGo = n => { lbIndex = n; paintLb() }
 window.lbNav = d => { lbIndex = (lbIndex + d + galleryUrls.length) % galleryUrls.length; paintLb() }
 function paintLb() {
   $('#lb-img').src = galleryUrls[lbIndex]
-  $('#lb-img').alt = `${PROP.name} — fotografija ${lbIndex + 1} od ${galleryUrls.length}`
+  $('#lb-img').alt = t('{n} — fotografija {i} od {k}', { n: PROP.name, i: lbIndex + 1, k: galleryUrls.length })
   $('#lb-c').textContent = (lbIndex + 1) + ' / ' + galleryUrls.length
   document.querySelectorAll('#lb-thumbs button').forEach((b, n) => b.setAttribute('aria-current', n === lbIndex))
   document.querySelector('#lb-thumbs [aria-current="true"]')?.scrollIntoView({ block: 'nearest', inline: 'center' })
@@ -1157,13 +1183,13 @@ function gapDays() {
   for (const g of fillableGaps()) for (const x of datesBetween(g.from, g.to).slice(0, -1)) d.add(x)
   return d
 }
-const fmtHR = ds => { const [, m, d] = ds.split('-'); return `${+d}.${m}.` }
-const fmtFull = ds => { const [y, m, d] = ds.split('-'); return `${+d}. ${MJ_GEN[+m-1]} ${y}.` }
+const fmtHR = ds => { const [y, m, d] = ds.split('-'); return L.jezik() === 'hr' ? `${+d}.${m}.` : L.datumKratko(new Date(+y, +m - 1, +d)) }
+const fmtFull = (ds, j = L.jezik()) => { const [y, m, d] = ds.split('-'); return L.datum(new Date(+y, +m - 1, +d), { godina: true, j }) }
 const setLbl = t => { const e = $('#cal-lbl'); if (e) e.textContent = t }
-const priceTxt = n => price > 0 ? ` · okvirno ${eur(Math.round(price * n))}` : ''
+const priceTxt = n => price > 0 ? ' · ' + t('okvirno {cijena}', { cijena: eur(Math.round(price * n)) }) : ''
 const isSelected = ds => checkinDs && checkoutDs && ds > checkinDs && ds < checkoutDs
-const HINT = () => 'Kliknite datum dolaska, zatim datum odlaska.' +
-  ((parseInt(PROP?.min_stay) || 1) > 1 ? ` Najmanje ${noci(parseInt(PROP.min_stay))}.` : '')
+const HINT = () => t('Kliknite datum dolaska, zatim datum odlaska.') +
+  ((parseInt(PROP?.min_stay) || 1) > 1 ? ' ' + t('Najmanje {n}.', { n: noci(parseInt(PROP.min_stay)) }) : '')
 
 window.calNav = d => {
   calMonth += d
@@ -1181,14 +1207,15 @@ function renderCal() {
   const n = calMonth + 1, y2 = n > 11 ? calYear + 1 : calYear, m2 = n % 12
   drawMonth(2, y2, m2)
   const same = y2 === calYear
+  const hr = L.jezik() === 'hr', tocka = hr ? '.' : ''
   $('#cal-title').innerHTML =
-    `<span class="m2">${MJ[calMonth]}${same ? '' : ' ' + calYear + '.'} – ${MJ[m2].toLowerCase()} ${y2}.</span>` +
-    `<span class="m1">${MJ[calMonth]} ${calYear}.</span>`
+    `<span class="m2">${esc(L.mjesec(calMonth))}${same ? '' : ' ' + calYear + tocka} – ${esc(hr ? MJ[m2].toLowerCase() : L.mjesec(m2))} ${y2}${tocka}</span>` +
+    `<span class="m1">${esc(L.mjesec(calMonth))} ${calYear}${tocka}</span>`
   if (!$('#cal-lbl').textContent) setLbl(HINT())
 }
 
 function drawMonth(slot, year, month) {
-  $('#cal-title-' + slot).textContent = MJ[month]
+  $('#cal-title-' + slot).textContent = L.mjesec(month)
   const today = fmtLocal(new Date())
   const fd = (new Date(year, month, 1).getDay() + 6) % 7
   const dim = new Date(year, month + 1, 0).getDate()
@@ -1205,7 +1232,7 @@ function drawMonth(slot, year, month) {
     else if (GAPS.has(ds)) { cls += ' gap'; stanje = 'kraći termin između rezervacija' }
     if (ds === today) cls += ' today'
     const clickable = !taken || !!rangeStart
-    h += `<button type="button" class="${cls}" data-ds="${ds}" aria-label="${d}. ${MJ_GEN[month]} ${year}., ${stanje}"` +
+    h += `<button type="button" class="${cls}" data-ds="${ds}" aria-label="${esc(L.datum(new Date(year, month, d), { godina: true }) + ', ' + t(stanje))}"` +
       (clickable ? ` onclick="pickDate('${ds}')"` : ' aria-disabled="true"') +
       (taken ? '' : ` onmouseover="hoverDate('${ds}')" onfocus="hoverDate('${ds}')"`) + `>${d}</button>`
   }
@@ -1242,7 +1269,7 @@ window.pickDate = ds => {
     if (bookedDates.includes(ds)) return
     rangeStart = ds; hoverDs = null; checkinDs = null; checkoutDs = null
     show('#cal-clear', false)
-    setLbl(`Dolazak: ${fmtHR(ds)} — sad odaberite odlazak`)
+    setLbl(t('Dolazak: {d} — sad odaberite odlazak', { d: fmtHR(ds) }))
     renderCal(); refreshAskBox(); focusDay(ds); return
   }
   if (rangeStart === ds) { rangeStart = null; hoverDs = null; setLbl(HINT()); renderCal(); focusDay(ds); return }
@@ -1250,7 +1277,7 @@ window.pickDate = ds => {
   const to = rangeStart < ds ? ds : rangeStart
   // dan odjave smije biti zauzet — gost tad već odlazi
   if (datesBetween(from, to).slice(0, -1).some(x => bookedDates.includes(x))) {
-    setLbl('Taj raspon nije slobodan — pokušajte drugi')
+    setLbl(t('Taj raspon nije slobodan — pokušajte drugi'))
     rangeStart = null; hoverDs = null; renderCal(); return
   }
   const n = Math.max(1, Math.round((new Date(to) - new Date(from)) / 86400000))
@@ -1259,14 +1286,14 @@ window.pickDate = ds => {
     // ako je gost pogodio razmak ali ga nije uzeo do kraja, reci mu točan termin
     const g = fillableGaps().find(g => from >= g.from && to <= g.to)
     setLbl(g
-      ? `Ovaj razmak se uzima u cijelosti: ${fmtHR(g.from)} → ${fmtHR(g.to)} (${noci(g.nights)})`
-      : `Najkraći boravak je ${noci(minStay)} — pokušajte dulji raspon`)
+      ? t('Ovaj razmak se uzima u cijelosti: {a} → {b} ({n})', { a: fmtHR(g.from), b: fmtHR(g.to), n: noci(g.nights) })
+      : t('Najkraći boravak je {n} — pokušajte dulji raspon', { n: noci(minStay) }))
     rangeStart = null; hoverDs = null; renderCal(); return
   }
   checkinDs = from; checkoutDs = to
   rangeStart = null; hoverDs = null; nights = n
   show('#cal-clear')
-  setLbl(`Odabrano: ${fmtHR(from)} – ${fmtHR(to)} (${noci(n)})`)
+  setLbl(t('Odabrano: {a} – {b} ({n})', { a: fmtHR(from), b: fmtHR(to), n: noci(n) }))
   refreshAsk(); refreshAskBox(); renderCal(); focusDay(ds)
 }
 
@@ -1282,27 +1309,29 @@ window.clearRange = () => {
 // ══════════════════════════════════════════════════════
 let TMPL = 'kratko', GUESTS = 2
 
-const gostiTxt = n => n + ' ' + plural(n, 'gost', 'gosta', 'gostiju')
-const osobaTxt = n => n + ' ' + plural(n, 'osoba', 'osobe', 'osoba')
+const gostiTxt = n => L.n(n, 'gost')
 const waUrl = (phone, text) => `https://wa.me/${String(phone).replace(/\D/g,'')}?text=${encodeURIComponent(text)}`
-const mailUrl = (mail, text) => `mailto:${mail}?subject=${encodeURIComponent('Upit za ' + PROP.name)}&body=${encodeURIComponent(text)}`
+const mailUrl = (mail, text) => `mailto:${mail}?subject=${encodeURIComponent(L.tu(L.jezikPoruke(), 'Upit za {n}', { n: PROP.name }))}&body=${encodeURIComponent(text)}`
 
+/* Poruka domaćinu je na jeziku koji domaćin razumije: hrvatski, engleski,
+   njemački ili talijanski; gost na ostalim jezicima piše na engleskom
+   (L.jezikPoruke). Spremljeni upit nosi istu poruku. */
+function pozdravPoruke(j) {
+  return PROP.host_name ? L.tu(j, 'Dobar dan, {ime}!', { ime: PROP.host_name }) : L.tu(j, 'Dobar dan!')
+}
 function buildMsg() {
   if (!checkinDs || !checkoutDs) return ''
-  const ime = PROP.host_name ? PROP.host_name : ''
-  const pozdrav = ime ? `Dobar dan, ${ime}!` : 'Dobar dan!'
-  const d1 = fmtFull(checkinDs), d2 = fmtFull(checkoutDs)
-  const n = noci(nights)
+  const j = L.jezikPoruke()
+  const v = { pozdrav: pozdravPoruke(j), objekt: PROP.name, d1: fmtFull(checkinDs, j), d2: fmtFull(checkoutDs, j),
+              n: noci(nights, j), osobe: L.n(GUESTS, 'osoba', j) }
 
   if (TMPL === 'kratko')
-    return `${pozdrav} Zanima me ${PROP.name} od ${d1} do ${d2} (${n}). Je li slobodno?`
+    return L.tu(j, '{pozdrav} Zanima me {objekt} od {d1} do {d2} ({n}). Je li slobodno?', v)
 
   if (TMPL === 'detalj')
-    return `${pozdrav}\n\nZanima nas ${PROP.name} od ${d1} do ${d2} — ${n}, ${osobaTxt(GUESTS)}.\n\n` +
-           `Možete li potvrditi je li termin slobodan i koja je cijena? Hvala!`
+    return L.tu(j, '{pozdrav}\n\nZanima nas {objekt} od {d1} do {d2} — {n}, {osobe}.\n\nMožete li potvrditi je li termin slobodan i koja je cijena? Hvala!', v)
 
-  return `${pozdrav}\n\nRazmišljamo o objektu ${PROP.name} oko termina ${d1} – ${d2} ` +
-         `(${n}, ${osobaTxt(GUESTS)}), ali smo fleksibilni par dana u oba smjera.\n\nŠto vam najbolje odgovara?`
+  return L.tu(j, '{pozdrav}\n\nRazmišljamo o objektu {objekt} oko termina {d1} – {d2} ({n}, {osobe}), ali smo fleksibilni par dana u oba smjera.\n\nŠto vam najbolje odgovara?', v)
 }
 
 function refreshAskBox() {
@@ -1311,7 +1340,7 @@ function refreshAskBox() {
   show('#ask-empty', !on)
   if (!on) return
   const [y1, m1, d1] = checkinDs.split('-'), [y2, m2, d2] = checkoutDs.split('-')
-  $('#askDates').textContent = m1 === m2 && y1 === y2
+  $('#askDates').textContent = m1 === m2 && y1 === y2 && L.jezik() === 'hr'
     ? `${+d1}. – ${+d2}. ${MJ_GEN[+m2-1]} ${y2}.`
     : `${fmtFull(checkinDs)} – ${fmtFull(checkoutDs)}`
   $('#askNights').textContent = `${noci(nights)} · ${gostiTxt(GUESTS)}${priceTxt(nights)}`
@@ -1319,13 +1348,15 @@ function refreshAskBox() {
 
   const msg = buildMsg()
   $('#msgPrev').textContent = msg
+  show('#msg-jez', L.jezikPoruke() !== L.jezik())
+  $('#msg-jez').textContent = t('Poruka je na engleskom, da je domaćin lakše razumije.')
   // novi termin nakon poslanog upita → obrazac ponovno
   if (IQ_POSLANO && IQ_POSLANO !== checkinDs + '|' + checkoutDs) { IQ_POSLANO = ''; show('#iqf'); show('#iq-ok', false) }
   let h = ''
-  if (PROP.phone) h += `<a class="btn btn--secondary btn--block" href="${esc(waUrl(PROP.phone, msg))}" target="_blank" rel="noopener">WhatsAppom ${ico('message-circle')}</a>`
+  if (PROP.phone) h += `<a class="btn btn--secondary btn--block" href="${esc(waUrl(PROP.phone, msg))}" target="_blank" rel="noopener">${esc(t('WhatsAppom'))} ${ico('message-circle')}</a>`
   const sec = []
-  if (PROP.email) sec.push(`<a class="btn btn--secondary" href="${esc(mailUrl(PROP.email, msg))}">E-mailom ${ico('mail')}</a>`)
-  sec.push(`<button class="btn btn--secondary" type="button" onclick="copyMsg()">Kopiraj poruku ${ico('copy')}</button>`)
+  if (PROP.email) sec.push(`<a class="btn btn--secondary" href="${esc(mailUrl(PROP.email, msg))}">${esc(t('E-mailom'))} ${ico('mail')}</a>`)
+  sec.push(`<button class="btn btn--secondary" type="button" onclick="copyMsg()">${esc(t('Kopiraj poruku'))} ${ico('copy')}</button>`)
   h += `<div class="pair">${sec.join('')}</div>`
   $('#askBtns').innerHTML = h
 }
@@ -1337,36 +1368,36 @@ window.posaljiUpit = async e => {
   const ime = $('#iq-ime').value.trim(), mail = $('#iq-mail').value.trim(), tel = $('#iq-tel').value.trim()
   const greska = t => { $('#iq-err').textContent = t; show('#iq-err', !!t) }
   if (f.web.value) return hvala(ime, mail || tel)                 // botovi popune skriveno polje
-  if (ime.length < 2) return greska('Upišite ime i prezime.')
-  if (!mail && !tel) return greska('Upišite e-mail ili telefon, da vam domaćin može odgovoriti.')
-  if (mail && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail)) return greska('E-mail adresa nije ispravna.')
-  if (tel && !/^[+0-9 ()/.-]{6,30}$/.test(tel)) return greska('Telefon smije sadržavati samo brojke, razmake i znak +.')
-  if (!checkinDs || !checkoutDs) return greska('Odaberite dolazak i odlazak u kalendaru.')
+  if (ime.length < 2) return greska(t('Upišite ime i prezime.'))
+  if (!mail && !tel) return greska(t('Upišite e-mail ili telefon, da vam domaćin može odgovoriti.'))
+  if (mail && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail)) return greska(t('E-mail adresa nije ispravna.'))
+  if (tel && !/^[+0-9 ()/.-]{6,30}$/.test(tel)) return greska(t('Telefon smije sadržavati samo brojke, razmake i znak +.'))
+  if (!checkinDs || !checkoutDs) return greska(t('Odaberite dolazak i odlazak u kalendaru.'))
   greska('')
-  const btn = $('#iq-btn'); btn.disabled = true; btn.textContent = 'Šaljem…'
+  const btn = $('#iq-btn'); btn.disabled = true; btn.textContent = t('Šaljem…')
   const { error } = await sb.from('inquiries').insert({
     property_id: PROP.id, guest_name: ime, guest_email: mail || null, guest_phone: tel || null,
     checkin_date: checkinDs, checkout_date: checkoutDs, guests: GUESTS, message: buildMsg()
   })
-  btn.disabled = false; btn.textContent = 'Pošalji upit domaćinu'
+  btn.disabled = false; btn.textContent = t('Pošalji upit domaćinu')
   if (error) {
     return greska(/Previše upita/.test(error.message || '')
-      ? 'Previše upita u kratkom vremenu. Pokušajte kasnije ili pišite domaćinu izravno.'
-      : 'Upit trenutačno nije moguće poslati. Pošaljite poruku izravno — WhatsAppom ili e-mailom ispod.')
+      ? t('Previše upita u kratkom vremenu. Pokušajte kasnije ili pišite domaćinu izravno.')
+      : t('Upit trenutačno nije moguće poslati. Pošaljite poruku izravno — WhatsAppom ili e-mailom ispod.'))
   }
   biljezi('inquiry_form')
   hvala(ime, mail || tel)
 }
 function hvala(ime, kontakt) {
   IQ_POSLANO = checkinDs + '|' + checkoutDs
-  const tko = PROP.host_name ? 'Domaćin ' + PROP.host_name : 'Domaćin'
-  $('#iq-ok').innerHTML = `<b>Upit je poslan ✓</b><span>${esc(tko)} javit će vam se na ${esc(kontakt)}. Kad potvrdi termin, dobit ćete privatni link s uputama za dolazak.</span>`
+  const tko = PROP.host_name ? t('Domaćin {n}', { n: PROP.host_name }) : t('Vaš domaćin')
+  $('#iq-ok').innerHTML = `<b>${esc(t('Upit je poslan ✓'))}</b><span>${esc(t('{tko} javit će vam se na {k}. Kad potvrdi termin, dobit ćete privatni link s uputama za dolazak.', { tko, k: kontakt }))}</span>`
   show('#iqf', false); show('#iq-ok')
 }
 
 window.copyMsg = async () => {
-  try { await navigator.clipboard.writeText(buildMsg()); toast('Poruka je kopirana.'); biljezi('inquiry_copy') }
-  catch { toast('Kopiranje nije uspjelo — označite poruku i kopirajte je ručno.') }
+  try { await navigator.clipboard.writeText(buildMsg()); toast(t('Poruka je kopirana.')); biljezi('inquiry_copy') }
+  catch { toast(t('Kopiranje nije uspjelo — označite poruku i kopirajte je ručno.')) }
 }
 
 window.chgGuests = d => {
@@ -1393,11 +1424,12 @@ $('#tmpl').onclick = e => {
 //  KONTAKT — upit bez datuma, traka na dnu, blok „Javite se”
 // ══════════════════════════════════════════════════════
 function askMessage() {
-  const p = PROP
-  const pozdrav = p.host_name ? `Dobar dan, ${p.host_name}!` : 'Dobar dan!'
+  const j = L.jezikPoruke()
+  const v = { pozdrav: pozdravPoruke(j), objekt: PROP.name }
   if (checkinDs && checkoutDs)
-    return `${pozdrav} Zanima me boravak u objektu ${p.name} od ${fmtFull(checkinDs)} do ${fmtFull(checkoutDs)} (${noci(nights)}). Je li slobodno? Hvala!`
-  return `${pozdrav} Zanima me boravak u objektu ${p.name}. Koji su termini slobodni? Hvala!`
+    return L.tu(j, '{pozdrav} Zanima me boravak u objektu {objekt} od {d1} do {d2} ({n}). Je li slobodno? Hvala!',
+      { ...v, d1: fmtFull(checkinDs, j), d2: fmtFull(checkoutDs, j), n: noci(nights, j) })
+  return L.tu(j, '{pozdrav} Zanima me boravak u objektu {objekt}. Koji su termini slobodni? Hvala!', v)
 }
 
 function refreshAsk() {
@@ -1409,13 +1441,13 @@ function refreshAsk() {
   // tamni blok na dnu
   let h = ''
   if (wa) h += `<a class="btn btn--inverse" href="${esc(wa)}" target="_blank" rel="noopener">WhatsApp ${ico('message-circle')}</a>`
-  if (ml) h += `<a class="btn btn--inverse" href="${esc(ml)}">E-mail ${ico('mail')}</a>`
-  $('#ask-btns').innerHTML = h || '<p style="margin:0">Domaćin nije ostavio kontakt podatke.</p>'
+  if (ml) h += `<a class="btn btn--inverse" href="${esc(ml)}">${esc(t('E-mail'))} ${ico('mail')}</a>`
+  $('#ask-btns').innerHTML = h || `<p style="margin:0">${esc(t('Domaćin nije ostavio kontakt podatke.'))}</p>`
 
   // upit bez datuma, uz kalendar
   let n = ''
   if (wa) n += `<a class="btn btn--secondary" href="${esc(wa)}" target="_blank" rel="noopener">WhatsApp ${ico('message-circle')}</a>`
-  if (ml) n += `<a class="btn btn--secondary" href="${esc(ml)}">E-mail ${ico('mail')}</a>`
+  if (ml) n += `<a class="btn btn--secondary" href="${esc(ml)}">${esc(t('E-mail'))} ${ico('mail')}</a>`
   $('#ask-nodate').innerHTML = n
   show('#ask-nodate-lbl', !!n)
   show('#ask-nodate', !!n)
@@ -1429,7 +1461,7 @@ function refreshAsk() {
   } else btn.href = '#upit'
   $('#dock-sub').textContent = checkinDs && checkoutDs
     ? `${fmtHR(checkinDs)} → ${fmtHR(checkoutDs)} · ${noci(nights)}`
-    : (price > 0 ? `od ${eur(price)} / noć · pitajte za termin` : 'Pitajte domaćina za slobodne termine')
+    : (price > 0 ? t('od {cijena} / noć · pitajte za termin', { cijena: eur(price) }) : t('Pitajte domaćina za slobodne termine'))
 }
 
 // zaglavlje dobije rub kad se stranica pomakne

@@ -710,7 +710,7 @@ Poredano po važnosti. Ništa od ovoga nije započeto; svaka stavka čeka vaše 
    pripremljen). Bez toga nema prihoda, a popusti su samo prikaz.
 2. [ ] **Supabase Pro** (ili drugi plan bez pauziranja) i **sigurnosne
    kopije** baze. Keepalive je samo zakrpa.
-3. [ ] **Slanje e-mailova** (npr. Resend): obavijest domaćinu o upitu, potvrda
+3. [ ] **Slanje e-mailova** (npr. Resend): ~~obavijest domaćinu o upitu~~ (gotovo, točka 18), potvrda
    gostu, podsjetnici za istek plana, dobrodošlica i 3–4 e-maila „kako
    postaviti vodič” za nove račune.
 4. [ ] **Pravni tekst i podaci tvrtke** (točka 8) — obavezno prije naplate.
@@ -729,7 +729,7 @@ Poredano po važnosti. Ništa od ovoga nije započeto; svaka stavka čeka vaše 
    najveći rizik danas je dvostruka rezervacija.
 2. [ ] **Automatske poruke gostu**: dan prije dolaska (link + upute), jutro
    odlaska (checklist), dan nakon (zahvala + molba za recenziju).
-3. [ ] **Vodič na jeziku gosta** (EN/DE/IT) — većina gostiju na Jadranu je
+3. [x] **Vodič na jeziku gosta** (EN/DE/IT) — gotovo, 6 jezika (točka 18) — većina gostiju na Jadranu je
    iz Njemačke, Austrije, Italije; `maxLanguages` u planu već postoji.
 4. [ ] **Pomoć za eVisitor i boravišnu pristojbu** — obrazac za podatke
    gosta u vodiču, izvoz za eVisitor. Jedinstvena prednost u Hrvatskoj.
@@ -741,7 +741,7 @@ Poredano po važnosti. Ništa od ovoga nije započeto; svaka stavka čeka vaše 
    (schema.org `LodgingBusiness`, dijeljenje s fotografijom).
 
 ### Za gosta
-1. [ ] **Vodič automatski na jeziku preglednika** (uz 3 gore).
+1. [x] **Vodič automatski na jeziku preglednika** (uz 3 gore) — točka 18.
 2. [ ] **Radi bez interneta** (PWA) — gost po dolasku često nema signal.
 3. [ ] **Wi-Fi QR** — skenira i spoji se bez tipkanja lozinke.
 4. [ ] **Fotografije ulaza i pin na karti** za dolazak; „Dodaj u kalendar” (.ics).
@@ -875,9 +875,104 @@ Dok se ne pokrenu, stranice rade kao prije, a svaki novi dio sam kaže što nedo
    ga mijenjaju: recenzije, podaci gostiju za eVisitor (broj isprave!), link za
    čistačicu, spremanje na uređaju gosta, Stripe. Pomoć: pitanja o
    recenzijama, čistačici, eVisitoru, radu bez interneta.
-2. **Pozadina i platforma** — slanje e-mailova (obavijest o upitu, istek plana,
+2. **Pozadina i platforma** — slanje e-mailova (obavijest o upitu ✔ točka 18; istek plana,
    poruke gostu; izbor obavijesti se već sprema), Supabase Pro i sigurnosne
    kopije, praćenje grešaka, domena i poslovni e-mail, probni Pro, preporuke
    (referral), sezonski plan, kodovi za popust.
 3. **Plaćanje** — Stripe ključevi i webhook (točka 16), knjigovođa (obrt,
    fiskalizacija, PDV), prava naplata, promjena plana kroz portal, OIB kupca.
+
+## 18. Jezici za goste i e-mail o upitu (29. 9. 2026.)
+
+### Jezici — što je napravljeno
+
+Vodič (`h.html`) i javna stranica (`p.html`) rade na **6 jezika: hrvatski,
+engleski, njemački, talijanski, poljski i češki.**
+
+- **Jezik se bira sam** po jeziku preglednika gosta (slovenski, bosanski i
+  srpski → hrvatski; nepoznat → engleski). Gore desno je birač jezika; izbor se
+  pamti na uređaju. Link može nositi jezik: `…/h/<token>?lang=de`.
+- **Sučelje** (gumbi, naslovi, poruke, datumi, množina: „1 noć / 3 noći”) je u
+  rječniku `jezici.js` — radi odmah, bez mreže i bez troška.
+- **Tekstove domaćina** (riječ dobrodošlice, upute za dolazak, pravila,
+  pitanja, preporuke, sadržaji) **prevodi Claude (Anthropic)** preko rute
+  `/api/prevedi`, i prijevod se **sprema u bazu** — isti tekst se prevodi
+  jednom, pa ga svi sljedeći gosti dobiju odmah i besplatno. Promijeni li
+  domaćin tekst, novi se prevede kod prvog sljedećeg gosta.
+- Ispod stranice piše „Tekst domaćina preveden je automatski.” (ili „Dio
+  teksta domaćina prikazan je na hrvatskom.” kad prijevoda nema).
+- **Šifra vrata, Wi-Fi, adresa, ime i kontakt gosta NIKAD ne idu na prijevod** —
+  ruta te stupce uopće ne čita (provjereno testom).
+- Česti tekstovi (popis sadržaja iz dashboarda: Bazen, Klima uređaj, Parking…,
+  vrste objekta, kategorije Plaže/Restorani…, „5 min pješice”) prevedeni su i
+  bez AI-ja, u rječniku.
+- Primjer `/h/demo` je preveden cijeli (vrijedi pokazati gostima iz inozemstva).
+
+### Jezici — što trebate napraviti
+
+1. [ ] Pokrenuti `sql/add-translations.sql` (tablica `prijevodi`, čita je samo poslužitelj).
+2. [ ] **Ključ za prijevod:** console.anthropic.com → API Keys → Create key.
+   U Vercelu (Settings → Environment Variables) dodati `ANTHROPIC_API_KEY`
+   (Preview i Production). Treba i `SUPABASE_SERVICE_ROLE_KEY` (već na popisu, točka 16).
+   → Redeploy.
+   **Trošak:** prijevod jednog vodiča na jedan jezik je oko 1–3 centa, i to
+   jednom (poslije iz baze). 50 objekata × 5 jezika ≈ 2–5 € ukupno.
+   Model se može promijeniti varijablom `PRIJEVOD_MODEL`.
+3. Bez ključa sve radi: sučelje je na jeziku gosta, a tekst domaćina na hrvatskom.
+
+### Jezici — odluke (promijenite ako ne odgovara)
+
+- [ ] **Koji jezici:** EN, DE, IT, PL, CS. Slovenski nisam dodao jer ga
+  preglednik šalje na hrvatski (većina Slovenaca ga razumije). Zamjena ili
+  dodavanje (npr. SL, FR, NL, HU) = novi stupac u rječniku `jezici.js` +
+  jezik u `api/prevedi.js` i u CHECK-u tablice `prijevodi`.
+- [ ] **Po planu:** Free = hrvatski + engleski (`plans.max_languages = 2`),
+  Pro i Business = svih 6 (8). Gost na Free objektu s njemačkim preglednikom
+  dobije engleski. Mijenja se u bazi, bez koda:
+  `update plans set max_languages = 6 where id = 'free';`
+- [ ] **Poruka domaćinu** (WhatsApp/e-mail/upit s javne stranice) piše se na
+  jeziku koji domaćin na Jadranu razumije: gost na HR/EN/DE/IT piše na svom
+  jeziku, gost na poljskom ili češkom — na engleskom. Gost vidi poruku prije slanja.
+- [ ] **Domaćin još ne može sam ispraviti prijevod.** Sljedeći korak bi bio panel
+  „Prijevodi” u dashboardu (pregled i ispravak po jeziku).
+- [ ] Recenzije se ne prevode (ostaju na jeziku kojim ih je gost napisao).
+- [ ] Dashboard, naslovnica, prijava, pravni tekst i stranica za čistačicu
+  ostaju na hrvatskom (koriste ih domaćini i čistačice u Hrvatskoj).
+- [ ] Vrijednosti u prijavi za eVisitor (npr. „Putovnica”) ostaju hrvatske u
+  bazi — prevodi se samo natpis, pa domaćin vidi isto kao prije.
+- [ ] **Privatnost:** tekstovi domaćina idu Anthropicu na prijevod; to treba
+  dodati u popis obrađivača u Pravilima privatnosti (točka 8b). Spremljeni
+  prijevodi nisu vezani uz račun, pa ih brisanje računa ne briše (ako želite:
+  `truncate public.prijevodi;` povremeno, sve se ponovno prevede samo).
+
+### E-mail domaćinu za svaki novi upit
+
+Kad gost pošalje upit s javne stranice, domaćin dobije e-mail: tko pita, za
+koje datume i koliko osoba, poruka, kontakt gosta i gumb **„Otvori upit u
+Odmoriji”** (vodi ravno na Boravci → Upiti tog objekta). **„Odgovori” u
+e-mailu ide ravno gostu.** Šalje ga sama baza (okidač na tablici `inquiries`
+→ pg_net → Resend), pa nijedan upit ne može proći bez obavijesti; ako slanje
+ne uspije, upit se svejedno spremi.
+
+- Ide na e-mail **računa** domaćina (ako ga nema, na kontakt e-mail objekta).
+- **Ne ide** ako je domaćin u Računu → Obavijesti isključio „Važne obavijesti”.
+- Najviše 20 na sat po objektu (isto ograničenje kao za upite).
+
+**Što trebate napraviti:**
+1. [ ] Račun na **resend.com** (besplatno do 3.000 e-mailova mjesečno, 100 dnevno).
+2. [ ] Resend → Domains → dodati domenu (npr. `odmoria.com`) i u DNS kod
+   registrara upisati zapise koje Resend pokaže. **Bez potvrđene domene
+   Resend šalje samo na vašu vlastitu adresu** — za test je to dovoljno.
+3. [ ] Resend → API Keys → Create („Sending access”) → ključ `re_…`.
+4. [ ] U `sql/add-inquiry-email.sql` zamijeniti `<RESEND_KEY>`, `<OD>`
+   (npr. `Odmoria <upiti@odmoria.com>`) i `<ADRESA>` (adresa aplikacije) pa
+   pokrenuti u Supabase SQL editoru. Ključ se sprema u Supabase Vault.
+5. [ ] Poslati upit sa svoje javne stranice i provjeriti poštu. Ako ne stigne:
+   `select status_code, content from net._http_response order by created desc limit 5;`
+
+**Odluke:**
+- [ ] Gost ne dobiva potvrdu e-mailom (samo poruku na stranici). Može se dodati
+  isto tako, jednim okidačem.
+- [ ] E-mail je na hrvatskom (domaćin). Pošiljatelj je Odmoria, odgovor ide gostu.
+- [ ] Privatnost: ime i kontakt gosta prolaze kroz Resend — dodati u popis
+  obrađivača (točka 8b).

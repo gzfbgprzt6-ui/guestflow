@@ -23,6 +23,8 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 | Hosting | Vercel (Hobby plan), auto-deploy iz GitHub `main` grane |
 | Domene | `guestflow-gamma.vercel.app` (Vercel default) + `odmoria.com` (custom domena) |
 | Plaćanje | Stripe — **testni način spojen** (checkout, portal, webhook u `api/`); iznos iz baze (`cijena_plana`), vidi „Plaćanje karticom” |
+| Jezici gostiju | `jezici.js` (sučelje, 6 jezika) + `api/prevedi.js` (tekst domaćina, Claude/Anthropic, spremljeno u `prijevodi`) — vidi „Jezici za goste” |
+| E-mail | Resend, šalje ga **baza** (okidač na `inquiries` → pg_net), ključ u Supabase Vaultu — vidi „E-mail o upitu” |
 
 **Supabase projekt:**
 - URL: `https://wtojzqjhipdfbrnmprmz.supabase.co`
@@ -59,6 +61,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 ├── links.js                 # gradnja linkova (/p/, /h/, /c/) — NIKAD ne zakucavati domenu, vidi dolje
 ├── auth-greske.js           # prijevod Supabase Auth grešaka (prijava, registracija, nova lozinka, račun)
 ├── plans.js                 # rezervne vrijednosti + helperi; pravi izvor istine je tablica `plans` u bazi
+├── jezici.js                 # jezici vodiča i javne stranice: rječnik (ključ = hrvatski tekst), t(), n(), H(), birač — vidi „Jezici za goste”
 ├── billing.js                # Stripe iz preglednika: billingStatus, startCheckout, openBillingPortal, povratak s plaćanja (dashboard, account)
 ├── assets/                   # landing/villa-1600.jpg i villa-900.jpg (naslovnica i prijava)
 ├── docs/napredak.md          # što je u redizajnu gotovo, a što nije — pregled za vlasnika
@@ -71,6 +74,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 │   ├── stranica.js           # /p/:slug s meta/OG/JSON-LD + /sitemap.xml + /robots.txt
 │   ├── test-calendar.js      # testni iCal feed za isprobavanje sinkronizacije bez računa na Bookingu/Airbnbu
 │   ├── track.js              # upis pregleda s državom (x-vercel-ip-country), bez IP adrese
+│   ├── prevedi.js            # prijevod teksta domaćina (Claude) za /h/ i /p/, spremljen u tablicu prijevodi
 │   ├── _stripe.js            # zajedničko za Stripe rute (s „_” → Vercel ga ne objavljuje kao rutu)
 │   ├── billing-status.js     # je li plaćanje karticom uključeno (i testni način)
 │   ├── create-checkout-session.js  # Stripe Checkout; iznos iz cijena_plana_za_mene, popust kao kupon
@@ -94,10 +98,12 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
     ├── delete-account.sql               # obrisi_moj_racun()
     ├── admin-upgrades.sql               # admin stvara pretplate, admin_korisnici(), admin_log + okidači
     ├── auto-ical-sync.sql               # pg_cron + pg_net: /api/sync-all svakih 30 min, brisanje starih prijava
+    ├── add-translations.sql             # tablica prijevodi (samo service role)
+    ├── add-inquiry-email.sql            # e-mail domaćinu za novi upit: okidač → pg_net → Resend (ključ u Vaultu)
     └── fix-missing-columns-and-storage.sql # ALTER TABLE dopune (photo_urls, ical_*, beds/bathrooms/size_m2) + storage bucket policy
 ```
 
-**Napomena:** Vercel Hobby dopušta najviše 12 funkcija — sada ih je **10** (datoteke s `_` nisu funkcije). Nova ruta = provjeriti broj; `stranica.js` namjerno nosi i sitemap i robots.
+**Napomena:** Vercel Hobby dopušta najviše 12 funkcija — sada ih je **11** (datoteke s `_` nisu funkcije). Nova ruta = provjeriti broj; `stranica.js` namjerno nosi i sitemap i robots.
 
 Sve funkcije su namjerno **bez ijedne npm ovisnosti** — projekt nema build korak ni `package.json`, pa se Supabase zove izravno preko REST API-ja (`fetch`), a iCal se parsira ručno. CommonJS (`module.exports`), jer bez `package.json` Vercel `.js` u `api/` tretira kao CJS.
 
@@ -620,7 +626,7 @@ Ako ikad zatreba da linkovi uvijek pokazuju na jednu domenu bez obzira odakle su
 - Novi SQL se provjerava na **lokalnom PostgreSQL-u 16** (instaliran u okruženju: `/usr/lib/postgresql/16/bin`, `initdb` kao ne-root korisnik) s ulogama `anon`/`authenticated` i `auth.uid()` iz `request.jwt.claims` — tako je provjeren `sections-security.sql`.
 - Postoji i stariji link (`slug` + `properties.guest_token`) koji **odmah** otključava bez vremenskog ograničenja (i kroz funkciju: `stari_link_otkljucava`). Dashboard ga i dalje nudi kao „Privatni vodič”; ukidanje čeka odluku (odluke, točka 0).
 - Booking token se deaktivira ručno (`is_active=false`) ili istječe (`token_expires_at`).
-- Nema service role ključa u klijentskom kodu — sve stranice koriste samo publishable/anon key. Poslužiteljski ključ postoji **samo** kao Vercel varijabla `SUPABASE_SERVICE_ROLE_KEY` i koristi ga **samo** `api/stripe-webhook.js`.
+- Nema service role ključa u klijentskom kodu — sve stranice koriste samo publishable/anon key. Poslužiteljski ključ postoji **samo** kao Vercel varijabla `SUPABASE_SERVICE_ROLE_KEY` i koriste ga **samo** `api/stripe-webhook.js`, `api/sync-all.js`/`keepalive.js` (iCal) i `api/prevedi.js` (koji iz `sections` bira stupce izričito — nikad `door_code`, `wifi_pass`, `wifi_name`, `address`).
 - Admin panel (`admin.html`) je ispravno zaštićen i na RLS razini (`sql/admin-access.sql`, politike scope-ane na `auth.uid()` vlasnikovog računa), ne samo klijentskom provjerom.
 
 ---
@@ -679,7 +685,7 @@ Ako ikad zatreba da linkovi uvijek pokazuju na jednu domenu bez obzira odakle su
 
 - **Stripe je spojen samo za testni način** — računi se ne fiskaliziraju, nema PDV-a ni poreznog broja kupca; odluke u `docs/odluke.md`, točka 16. `track-event.js` ne postoji i ne treba — pregledi idu kroz `/api/track`.
 - **Automatska iCal sinkronizacija** radi tek kad su postavljeni `SUPABASE_SERVICE_ROLE_KEY` (dnevno) i `sql/auto-ical-sync.sql` + `CRON_SECRET` (svakih 30 min).
-- **Nema višejezičnosti.** `plans.maxLanguages` postoji, ali u kodu nema nijednog prijevoda ni prebacivanja jezika.
+- **Višejezični su samo vodič i javna stranica** (6 jezika). Dashboard, naslovnica, prijava, pravni tekst i `c.html` su samo na hrvatskom. Domaćin još ne može sam ispraviti automatski prijevod.
 
 ---
 
@@ -704,3 +710,63 @@ Ako ikad zatreba da linkovi uvijek pokazuju na jednu domenu bez obzira odakle su
 ---
 
 *Ažurirano prema stvarnom stanju repozitorija. Ne sadrži tajne ključeve — samo javni Supabase publishable key.*
+
+## Jezici za goste (rujan 2026.)
+
+Vodič (`h.html`) i javna stranica (`p.html`) su na **HR, EN, DE, IT, PL, CS**.
+Sve je u `jezici.js` (ES modul, `import * as L from '/jezici.js'`).
+
+- **Ključ rječnika je hrvatski tekst.** Na hrvatskom stranica ostaje točno
+  ista kao prije. Novi tekst u sučelju = `t('Hrvatski tekst')` **i** red u
+  rječniku `[hr, en, de, it, pl, cs]` — bez reda ostaje hrvatski (ne pukne).
+  Umetanje: `t('Prijava od {v}', { v })` — ime rezerviranog mjesta je dio
+  ključa (`'do {vrijeme}'` i `'do {n}'` su dva različita teksta).
+- **Množina:** `L.n(3, 'noć')` → „3 noći” / „3 nights” / „3 noce” (tablica `P`,
+  pravila za hr/pl/cs). Ne slagati „broj + riječ” ručno.
+- **Datumi:** `L.datum`, `L.datumKratko`, `L.mjesec`, `L.mjesecGodina`,
+  `L.daniUTjednu`; na hrvatskom daju isti oblik kao stari kod.
+- **Statični HTML** prevodi `L.prevediDom()` (tekstni čvorovi + `aria-label`,
+  `placeholder`, `title`, `alt`) — pamti izvornik, pa se može ponoviti.
+  Element s `translate="no"` preskače.
+- **Tekst domaćina** uvijek kroz `H(tekst)`: prijevod s rute → rječnik →
+  uzorak („5 min pješice”) → izvornik. `pick()` za ikone i dalje gleda
+  **izvorni** hrvatski tekst.
+- **Tok:** `L.postavi(L.odaberi())` + `L.prevediDom()` odmah; `L.unaprijed()`
+  pošalje zahtjev ruti usporedo s podacima; `L.pokreni(upit, {kasnije})` suzi
+  jezik na plan domaćina (ruta vraća `jezici`) i učita prijevod. Stigne li
+  prijevod nakon 6 s, `kasnije` ponovno nacrta (`nacrtaj()` u obje stranice) —
+  zato sve što nosi tekst domaćina mora biti u `nacrtaj()` i smije se pozvati
+  dvaput.
+- **Filtar „Sve”** ima vrijednost `'*'` (natpis ovisi o jeziku).
+- **Poruka domaćinu** (`p.html`) ide kroz `L.tu(L.jezikPoruke(), …)`: hr/en/de/it
+  ostaju, pl/cs → engleski. Upit u bazi nosi istu poruku.
+- **eVisitor:** vrijednosti opcija (`Putovnica`, `Ž`) ostaju hrvatske, prevodi se natpis.
+- **`jezici.js` je u predmemoriji service workera** (`sw.js`) — promjena
+  izvoza ili rječnika = povećati `VERZIJA` u `sw.js`, inače vodič bez mreže
+  može dobiti stari modul.
+- **Testovi:** Playwright je po zadanom `en-US`, pa stari testovi (koji
+  očekuju hrvatski) trebaju `--lang=hr-HR` ili `locale:'hr-HR'`.
+
+**`api/prevedi.js`:** `?lang=&slug=` (javna) ili `?lang=&token=[&slug=]`
+(vodič; provjeri `is_active` i `token_expires_at`, stari link slug+guest_token).
+Tekstove čita **sama** (klijent ne šalje tekst — ruta nije besplatan
+prevoditelj), prevodi što nema u `prijevodi` (sha256 teksta + jezik), do 4
+dijela po 40 tekstova istodobno, rok 24 s (`maxDuration: 30`). Broj jezika =
+`plan_limit(vlasnik, 'languages')`, redoslijed `JEZICI`. Bez tablice
+`prijevodi` **ne prevodi** (svako otvaranje bi se platilo); bez ključeva vrati
+sve jezike i `prijevod:false`. Javni odgovor se kešira na CDN-u samo kad je
+potpun. Varijable: `ANTHROPIC_API_KEY`, `SUPABASE_SERVICE_ROLE_KEY`,
+neobavezno `PRIJEVOD_MODEL`.
+
+## E-mail o upitu (rujan 2026.)
+
+`sql/add-inquiry-email.sql`: okidač `email_o_upitu` (AFTER INSERT na
+`inquiries`) → `net.http_post` na `api.resend.com/emails`. Ključ, pošiljatelj
+i adresa aplikacije su u **Supabase Vaultu** (`odmoria_resend_key`,
+`odmoria_email_od`, `odmoria_adresa`); dok su u njima `<ZAMJENSKI>` nazivi,
+okidač ne šalje ništa. Primatelj: e-mail računa (`auth.users`), inače
+`properties.email`; ne šalje ako je `user_metadata.obavijesti.vazne = false`.
+Sve gostovo prolazi kroz `_html_esc`. Greška slanja je samo WARNING — upit se
+uvijek spremi. Link u e-mailu: `/dashboard.html?otvori=upiti&objekt=<id>`
+(dashboard odabere objekt ako je domaćinov i nije zaključan). Lokalni test:
+lažni `vault` i `net` shemom (pg_net lokalno ne postoji).
