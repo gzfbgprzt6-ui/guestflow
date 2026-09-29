@@ -39,7 +39,9 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 /
 ├── index.html              # Landing page — AKTIVNA, **redizajn v2 iz Figme** (`odmoria.css`), bez konfiguratora
 ├── p.html                  # Javna stranica objekta (?slug=xxx) — AKTIVNA, **redizajn v2 iz Figme** (`odmoria.css`), teme se NE primjenjuju
-├── h.html                  # Privatni gostinski hub (?token=xxx) — AKTIVNA, **redizajn v2** (`odmoria.css`), podstranice preko #adrese
+├── h.html                  # Privatni gostinski hub (?token=xxx) — AKTIVNA, **redizajn v2** (`odmoria.css`), podstranice preko #adrese; /h/demo = primjer
+├── c.html                  # Raspored za čistačicu (/c/<token>) — dolasci i odlasci, bez šifri i imena
+├── sw.js                   # service worker vodiča (opseg /h/) — rad bez interneta
 ├── dashboard.html          # Glavni host dashboard — AKTIVNA, **redizajn v2** (vlastiti CSS, ista imena tokena), navigacija po grupama
 ├── login.html               register.html            reset-password.html
 ├── email-confirm.html       onboarding.html          add-property.html
@@ -54,15 +56,19 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 ├── teme.js                  # rasporedi zaglavlja, `izBaze(prop)` i zajednički birač tema
 ├── analitika.js             # izračuni i grafikoni analitike (boravci, popunjenost, praznine, pregledi) — dijele ga dashboard i admin
 ├── analitika.css            # pločice, stupčasti grafikoni (HTML, ne SVG), popisi, tablice analitike
-├── links.js                 # gradnja linkova (/p/, /h/) — NIKAD ne zakucavati domenu, vidi dolje
+├── links.js                 # gradnja linkova (/p/, /h/, /c/) — NIKAD ne zakucavati domenu, vidi dolje
+├── auth-greske.js           # prijevod Supabase Auth grešaka (prijava, registracija, nova lozinka, račun)
 ├── plans.js                 # rezervne vrijednosti + helperi; pravi izvor istine je tablica `plans` u bazi
 ├── billing.js                # Stripe iz preglednika: billingStatus, startCheckout, openBillingPortal, povratak s plaćanja (dashboard, account)
 ├── assets/                   # landing/villa-1600.jpg i villa-900.jpg (naslovnica i prijava)
 ├── docs/napredak.md          # što je u redizajnu gotovo, a što nije — pregled za vlasnika
 ├── docs/odluke.md            # SVE odluke koje čekaju vlasnika (planovi, faze A/B/C, naslovnica) — čitati prije prijenosa sljedeće stranice
 ├── api/
-│   ├── keepalive.js          # Vercel Cron, jednom dnevno — sprječava pauziranje Supabase Free projekta
-│   ├── sync-ical.js          # povlači zauzete termine s Booking.com-a i Airbnb-a
+│   ├── keepalive.js          # Vercel Cron, jednom dnevno — drži Supabase budnim i usput sinkronizira iCal
+│   ├── _ical.js              # zajednička iCal sinkronizacija (gumb, sync-all, keepalive)
+│   ├── sync-ical.js          # gumb „Sinkroniziraj” — korisnikov token, RLS
+│   ├── sync-all.js           # automatska sinkronizacija svih objekata (CRON_SECRET, poslužiteljski ključ)
+│   ├── stranica.js           # /p/:slug s meta/OG/JSON-LD + /sitemap.xml + /robots.txt
 │   ├── test-calendar.js      # testni iCal feed za isprobavanje sinkronizacije bez računa na Bookingu/Airbnbu
 │   ├── track.js              # upis pregleda s državom (x-vercel-ip-country), bez IP adrese
 │   ├── _stripe.js            # zajedničko za Stripe rute (s „_” → Vercel ga ne objavljuje kao rutu)
@@ -82,10 +88,16 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
     ├── add-plan-promotions.sql          # tablica plan_promotions + cijena_plana() — popusti na pretplate
     ├── add-stripe-to-subscriptions.sql  # subscriptions.stripe_customer_id / stripe_subscription_id (KORAK 0 dijagnostika!)
     ├── add-inquiries.sql                # tablica inquiries (upiti gostiju): gost samo insert, vlasnik čita, 20/sat
+    ├── add-reviews.sql                  # recenzije (ostavi_ocjenu, javno_o_objektu) + oznaka „pokreće Odmoria” po planu
+    ├── add-guest-registration.sql       # podaci gostiju za eVisitor + pristojba (properties.pristojba_*)
+    ├── add-cleaner-links.sql            # link za čistačicu (raspored_ciscenja)
+    ├── delete-account.sql               # obrisi_moj_racun()
+    ├── admin-upgrades.sql               # admin stvara pretplate, admin_korisnici(), admin_log + okidači
+    ├── auto-ical-sync.sql               # pg_cron + pg_net: /api/sync-all svakih 30 min, brisanje starih prijava
     └── fix-missing-columns-and-storage.sql # ALTER TABLE dopune (photo_urls, ical_*, beds/bathrooms/size_m2) + storage bucket policy
 ```
 
-**Napomena:** `api/` ima `keepalive.js`, `sync-ical.js`, `test-calendar.js`, `track.js` i Stripe rute (vidi „Plaćanje karticom”). Vercel Hobby dopušta najviše 12 funkcija — sada ih je 8.
+**Napomena:** Vercel Hobby dopušta najviše 12 funkcija — sada ih je **10** (datoteke s `_` nisu funkcije). Nova ruta = provjeriti broj; `stranica.js` namjerno nosi i sitemap i robots.
 
 Sve funkcije su namjerno **bez ijedne npm ovisnosti** — projekt nema build korak ni `package.json`, pa se Supabase zove izravno preko REST API-ja (`fetch`), a iCal se parsira ručno. CommonJS (`module.exports`), jer bez `package.json` Vercel `.js` u `api/` tretira kao CJS.
 
@@ -322,6 +334,8 @@ ostati nevidljivo. Posljedica: na snimci cijele stranice (Playwright
   (`select theme, count(*) ... group by 1`) i ima li DEFAULT — i pisanje u njega
   zaštititi, da jedan klik ne pojede tuđi podatak.
 - **`hidden` ne skriva element kojem razred daje `display:flex/grid`.** Treći put: natpis „Plaćeni plan je istekao” vidio je svaki domaćin u Računu. `odmoria.css` zato ima `[hidden]{display:none!important}`; dashboard (bez `odmoria.css`) treba `.x[hidden]{display:none}` za svaki takav razred.
+- **`esc()` u dashboardu prima samo tekst** (`(s||'').replace`) — broj (npr. iznos) mu treba dati kao `String(x)`, inače baci grešku i prozor se ne nacrta.
+- **U testnim init skriptama redak koji počinje zagradom** nakon `if(x)return {...}` bez `;` spoji se s prethodnim (isti problem kao IIFE) — test tada tiho ne bilježi pozive.
 - **Dva elementa s istim `id`-em tiho pokvare drugi.** U dashboardu su obje trake
   za prebacivanje plana (Pregled i Analitika) nosile `id="planbar"`, a
   `getElementById` veže samo prvu — traka u Analitici nije radila. Sada je
@@ -358,6 +372,10 @@ faq             -- property_id, question, answer
 availability    -- property_id, date, is_booked, source (manual/ical_booking/ical_airbnb)
 bookings        -- property_id, guest_name, guest_note, token (16 znakova), checkin_date,
                    checkout_date, token_expires_at, is_active
+reviews         -- property_id, booking_id (unique), ocjena 1–5, tekst, ime, javno, skriveno (sql/add-reviews.sql)
+guest_registrations -- booking_id (unique), property_id, osobe jsonb, odlazak — čita SAMO vlasnik, briše se 30 dana nakon odlaska
+cleaner_links   -- property_id (unique), token (16–64)
+admin_log       -- tko, tablica, radnja, za_korisnika, prije, poslije (okidači na subscriptions i plan_promotions)
 inquiries       -- property_id, guest_name, guest_email, guest_phone, checkin_date, checkout_date, guests,
                    message, status (novi/prihvacen/odbijen), booking_id, created_at (sql/add-inquiries.sql)
 plan_promotions -- id, naziv, plan_id (null = svi plaćeni), vrsta (posto/cijena), vrijednost,
@@ -384,9 +402,9 @@ Ovo su dizajnirani, core dijelovi proizvoda, ne ostaci:
     1. **`DTEND` je u iCal-u ekskluzivan.** Boravak 12.–19. znači noći 12…18; 19. mora ostati slobodan za sljedećeg gosta. Ovo je najčešći izvor „fantomski zauzetog" dana.
     2. **Brisanje je scope-ano po izvoru** (`source=eq.ical_booking`). Nikad ne brisati cijelu `availability` za objekt — ručno blokirani dani (`source='manual'`) i dani vezani uz rezervacije (`booking_id`) moraju preživjeti sinkronizaciju.
     3. **URL upisuje korisnik**, pa `safeUrl()` odbija `localhost`, privatne IP raspone i ne-HTTP sheme. Bez toga ruta postaje proxy prema internoj mreži. (Ne pokriva DNS rebinding.)
-  - Sinkronizacija je **ručna** (gumb u dashboardu). Automatsko periodično povlačenje ne postoji — Vercel Hobby dopušta samo jedan cron dnevno, a taj je zauzet za `keepalive`.
+  - Sinkronizacija: gumb u dashboardu, dnevno uz `keepalive` i svakih 30 min preko Supabase pg_cron → `/api/sync-all` (vidi „Paket značajki”).
   - `api/test-calendar.js` služi za isprobavanje bez računa na Bookingu/Airbnbu. Datumi se **računaju od danas** (dolazak za 10 i za 24 dana), pa test ne zastarijeva. Sadrži i jedan `STATUS:CANCELLED` događaj koji se **ne smije** upisati — ako se pojavi u kalendaru, filtriranje otkazanih je puklo. Očekivani rezultat je točno **12 noći**.
-  - Prije javnog lansiranja odlučiti ostaje li gumb „Popuni testnim kalendarom" u dashboardu — koristan je dok se proizvod isprobava, ali pravom domaćinu ne treba.
+  - Gumb „Popuni testnim kalendarom” je maknut (odluka vlasnika); `api/test-calendar.js` ostaje za ručno isprobavanje (upisati njegovu adresu kao iCal URL).
 
 ---
 
@@ -633,10 +651,34 @@ Ako ikad zatreba da linkovi uvijek pokazuju na jednu domenu bez obzira odakle su
 - Povratak: `?placanje=uspjeh|odustao`; `povratakSPlacanja()` ga makne iz
   adrese, `cekajPlan()` čeka da webhook upiše plan (do ~20 s).
 
+## Paket značajki (rujan 2026.) — kako radi
+
+- **Gost i čistačica ne pišu u tablice izravno** — samo kroz SECURITY DEFINER
+  funkcije s tokenom: `ostavi_ocjenu`, `ocjena_gosta`, `prijava_gostiju`,
+  `prijava_za_link`, `raspored_ciscenja`, `javno_o_objektu`. Nove funkcije
+  za goste pišu se isto (provjera tokena, `is_active`, `token_expires_at`).
+- **`/h/demo`** je primjer s izmišljenim podacima u samom `h.html` — ne dira
+  bazu, ne bilježi preglede. Izmišljene šifre ne smiju biti iste kao u
+  testovima (`4821` je testna šifra; primjer ima `7305`), inače provjera
+  „šifra u HTML-u” lažno padne.
+- **Rad bez interneta:** `sw.js` (opseg `/h/`) sprema HTML, stilove i
+  biblioteke; podatke vodič sprema sam u `localStorage` (`odm-vodic:<token>`),
+  šifre SAMO ako su bile otključane. Nova verzija workera = promijeniti `VERZIJA`.
+- **`/p/:slug` ide kroz `api/stranica.js`** (meta i OG u HTML-u, CDN 5 min).
+  Kad baza ne odgovori, vraća neizmijenjen `p.html`. `includeFiles: p.html`
+  u `vercel.json`.
+- **Dashboard, Objekt:** 5 podtabova, svaki pokazuje više panela
+  (`SPOJ` u `nav()`); `nav('wifi')` i sl. otvori roditelja i skrolne.
+  `DIRTY` je `Set` panela — „Spremi” na traci pritisne gumb svakog izmijenjenog.
+- **Analitika po planu:** kartice s `data-treba="90|365"`, dopušteni dani iz
+  `plans.analytics_days` (`anDana()`); ograničenje je u sučelju.
+- **iCal:** dan koji drži drugi izvor (ručno, rezervacija) sinkronizacija ne
+  prepisuje (`_ical.js`) — prije bi ga sljedeća sinkronizacija obrisala.
+
 ## Poznati nedostaci (stanje repozitorija, ne backlog-želje)
 
 - **Stripe je spojen samo za testni način** — računi se ne fiskaliziraju, nema PDV-a ni poreznog broja kupca; odluke u `docs/odluke.md`, točka 16. `track-event.js` ne postoji i ne treba — pregledi idu kroz `/api/track`.
-- **Automatska iCal sinkronizacija** — sinkronizira se samo na klik u dashboardu, ne po rasporedu (vidi gore).
+- **Automatska iCal sinkronizacija** radi tek kad su postavljeni `SUPABASE_SERVICE_ROLE_KEY` (dnevno) i `sql/auto-ical-sync.sql` + `CRON_SECRET` (svakih 30 min).
 - **Nema višejezičnosti.** `plans.maxLanguages` postoji, ali u kodu nema nijednog prijevoda ni prebacivanja jezika.
 
 ---
@@ -657,7 +699,7 @@ Ako ikad zatreba da linkovi uvijek pokazuju na jednu domenu bez obzira odakle su
 
 - Svaki HTML fajl je self-contained (CSS + JS inline), bez build koraka.
 - Supabase client: `createClient(...)` iz `https://esm.sh/@supabase/supabase-js@2` (ESM import), `type="module"` skripte.
-- `vercel.json` definira rewrites za clean URL-ove (`/p/:slug`, `/h/:token`, `/dashboard`, itd.) i security headere (`X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`) — nema `crons` ključa.
+- `vercel.json` definira rewrites (`/p/:slug` → `api/stranica`, `/h/:token`, `/c/:token`, `/sitemap.xml`, `/robots.txt`, `/dashboard`…), security headere, dnevni cron za `keepalive` i `functions` (includeFiles, maxDuration).
 
 ---
 

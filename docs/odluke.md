@@ -815,3 +815,69 @@ Otvorene odluke:
 - [ ] **Probno razdoblje** (npr. 14 dana Pro) — jedan parametar u checkoutu.
 - [ ] **RLS na `subscriptions`** — ako KORAK 0 pokaže da domaćin smije sam
   mijenjati svoj red, to treba zatvoriti (inače si može upisati Business).
+
+## 17. Paket značajki za domaćina i gosta (29. 9. 2026.)
+
+Napravljeno po vašem popisu (sve na grani, ništa u produkciji):
+
+| Stranica | Što |
+| --- | --- |
+| Naslovnica | „Pogledaj primjer za gosta” → `/h/demo` (izmišljeni vodič, bez baze) |
+| Javna stranica | SEO i pregled linka (naslov, opis, fotografija za WhatsApp/Facebook, schema.org) kroz `api/stranica.js`; `/sitemap.xml`, `/robots.txt`; recenzije gostiju; „Stranicu pokreće Odmoria” samo na Free i Pro |
+| Vodič | Hitno i pomoć (112, 194, 192, 193, 195, HAK 1987, adresa, ljekarne/bolnica); Odlazak = popis za kvačice + ocjena 1–5; Prijava boravka (podaci za eVisitor); rad bez interneta (`sw.js`) |
+| Dashboard | Objekt u 5 podtabova; veći kalendar s oznakom (ime gosta, Booking, Airbnb, Ručno); link za čistačicu (WhatsApp/e-mail, `c.html`); Boravci → Recenzije; podaci gostiju + boravišna pristojba uz rezervaciju; analitika po planu; „Kreiraj link” tek kad je sve ispravno; bez testnog gumba |
+| Boravci | automatska iCal sinkronizacija (dnevno + svakih 30 min) |
+| Prijava i račun | zaboravljena lozinka; prijevod grešaka; postavljanje bez duplikata i s linkom po boravku; fotografije po objektu; obavijesti se spremaju; pravo brisanje računa |
+| Admin | čipovi planova, „Vrijedi do”, „Registriran”, e-mail računa, stvaranje pretplate, kartice na mobitelu, zapisnik promjena |
+
+**SQL koje treba pokrenuti (Supabase SQL editor, ovim redom):**
+1. `sql/add-reviews.sql` — recenzije + oznaka po planu (KORAK 2 mijenja Pro).
+2. `sql/add-guest-registration.sql` — prvo KORAK 0, zatim KORAK 1.
+3. `sql/add-cleaner-links.sql` — link za čistačicu.
+4. `sql/delete-account.sql` — brisanje računa.
+5. `sql/admin-upgrades.sql` — admin stvara pretplate, popis računa, zapisnik.
+6. `sql/auto-ical-sync.sql` — tek kad su u Vercelu `CRON_SECRET` i
+   `SUPABASE_SERVICE_ROLE_KEY`; u datoteci zamijeniti `<ADRESA>` i `<CRON_SECRET>`.
+Dok se ne pokrenu, stranice rade kao prije, a svaki novi dio sam kaže što nedostaje.
+
+**Postavke izvan koda:**
+- [ ] Supabase → Auth → URL Configuration: u „Redirect URLs” mora biti
+  `…/reset-password.html` (za produkciju i Preview), inače link za novu lozinku ne radi.
+- [ ] Vercel: `CRON_SECRET` (automatska sinkronizacija). Poslužiteljski ključ je
+  već na popisu za Stripe (točka 16).
+
+**Odluke donesene u kodu (promijenite ako ne odgovara):**
+- [ ] **Recenzije:** domaćin može javnu recenziju sakriti (ne i izmijeniti). Gost
+  sam bira smije li se objaviti. Samo gost s linkom rezervacije, od dana dolaska,
+  jednom po boravku.
+- [ ] **Analitika po planu** (iz `plans.analytics_days`): Free — 30 dana i
+  osnovne kartice (posjećenost, popunjenost, čišćenje); Pro (90) — sve kartice
+  i 90 dana; Business (365) — 12 mjeseci i usporedba objekata. Zaključane
+  kartice su zamućene s ponudom plana. Ograničenje je u sučelju, ne u bazi.
+- [ ] **eVisitor:** Odmoria ne šalje podatke u eVisitor (nema javnog API-ja za
+  ovakve aplikacije) — domaćin ih prepisuje ili preuzme CSV. Podaci se brišu 30
+  dana nakon odlaska. Pristojba: djeca do 12 ne plaćaju, 12–18 pola; iznos
+  upisuje domaćin (ovisi o općini). Admin podatke gostiju ne vidi.
+- [ ] **Popis za odlazak:** redovi iz „Upute za odjavu” postaju kvačice; bez njih
+  ide uobičajeni popis (prozori, klima, ormari, ključevi).
+- [ ] **Link za čistačicu:** jedan po objektu, vidi 60 dana unaprijed, bez imena
+  gostiju; „Novi link” poništi stari.
+- [ ] **Rad bez interneta:** šifre se na uređaju gosta spremaju samo ako su u
+  tom trenutku već bile otključane; kopija se briše dan nakon odlaska.
+- [ ] **Stari zajednički link** se više ne nudi u postavljanju ni pri dodavanju
+  objekta (dashboard ga još ima pod „Privatni vodič” — ukidanje, točka 0).
+- [ ] **Pomoć** sada kaže da se kalendari osvježavaju sami — vrijedi tek kad je
+  uključena automatska sinkronizacija (gore).
+
+### Podsjetnik — što ste odgodili i moramo proći
+
+1. **Pomoć, Uvjeti, Privatnost** — pravni tekst (točka 8) + nove stvari koje
+   ga mijenjaju: recenzije, podaci gostiju za eVisitor (broj isprave!), link za
+   čistačicu, spremanje na uređaju gosta, Stripe. Pomoć: pitanja o
+   recenzijama, čistačici, eVisitoru, radu bez interneta.
+2. **Pozadina i platforma** — slanje e-mailova (obavijest o upitu, istek plana,
+   poruke gostu; izbor obavijesti se već sprema), Supabase Pro i sigurnosne
+   kopije, praćenje grešaka, domena i poslovni e-mail, probni Pro, preporuke
+   (referral), sezonski plan, kodovi za popust.
+3. **Plaćanje** — Stripe ključevi i webhook (točka 16), knjigovođa (obrt,
+   fiskalizacija, PDV), prava naplata, promjena plana kroz portal, OIB kupca.
