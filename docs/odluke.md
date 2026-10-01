@@ -1086,7 +1086,7 @@ Prijedlozi su na platnu (Artifact „Odmoria logo”): A · Luk, B · sunce na �
 Preporuka: **Fraunces** (topao, mediteranski) ili **Unbounded** (najuočljiviji).
 Odluka čeka vas; ništa nije stavljeno na stranicu.
 
-## 20. Pet stilova cijele javne stranice (1. 10. 2026.) — čeka vaš izbor
+## 20. Stilovi cijele javne stranice (1. 10. 2026.) — osam, čeka vaš izbor
 
 Preview (dizajn na platnu, nije u kodu): Artifact „Odmoria — 5 stilova javne
 stranice”. Svih pet nosi **iste podatke i isti redoslijed** kao `p.html`:
@@ -1097,10 +1097,15 @@ prijevoz, atrakcije, recenzije, česta pitanja, podnožje s jezikom i oznakom
 „Pokreće Odmoria”. Primjer je izmišljen (Villa Maslina, Vodice).
 
 1. **Priroda** — lan i maslina, Cormorant + Karla, organski oblici, pismo domaćina.
-2. **Luksuz** — crno / bjelokost / zlato, Bodoni + Jost, puno zraka, „zatražite boravak”.
+2. **Luksuz** — crno / bjelokost / zlato, Playfair Display + Jost (Bodoni zamijenjen: pretanki potezi), puno zraka, „zatražite boravak”.
 3. **Sunce i more** — tirkiz, pijesak, koralj, Fredoka + Nunito, valovi i polaroidi.
 4. **Riviera ’70** — retro plakat, Shrikhand + Rubik + DM Mono, karta za brod, filmska vrpca.
 5. **Magazin** — švicarski urednički, Archivo + Newsreader, mreža, tablice, crveni naglasak.
+6. **Snijeg** — alpska kuća: ledeno plava, borova zelena, Josefin Sans + Figtree, planine, staklena kartica, pahulje.
+7. **Relax** — spa: pijesak, kamen, eukaliptus, Marcellus + Albert Sans, okrugla fotografija s krugovima, puno zraka.
+8. **Majolika** — mediteranske pločice: kobalt, terakota, limun, Young Serif + Work Sans, trake pločica, rozete.
+
+Vlasnik (1. 10.): „svi su mi top”.
 
 - [ ] Koje stilove prenosimo u `p.html` (domaćin bira u dashboardu → Objekt → Izgled)?
 - [ ] Jesu li stilovi za plaćene planove (točka 9 — teme za one koji plaćaju)?
