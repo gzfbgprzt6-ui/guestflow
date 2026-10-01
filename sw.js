@@ -13,12 +13,12 @@
 //  Nova verzija: promijeniti VERZIJA — stara predmemorija se obriše.
 // ============================================================================
 
-const VERZIJA = 'odmoria-vodic-2'
+const VERZIJA = 'odmoria-vodic-3'
 const LJUSKA = '/h/__ljuska'
 
 self.addEventListener('install', e => {
   self.skipWaiting()
-  e.waitUntil(caches.open(VERZIJA).then(c => c.addAll(['/odmoria.css', '/jezici.js'])).catch(() => {}))
+  e.waitUntil(caches.open(VERZIJA).then(c => c.addAll(['/odmoria.css', '/jezici.js', '/pokret.js'])).catch(() => {}))
 })
 
 self.addEventListener('activate', e => {
@@ -33,7 +33,7 @@ self.addEventListener('fetch', e => {
   if (r.method !== 'GET') return
   const u = new URL(r.url)
   if (r.mode === 'navigate') return e.respondWith(mrezaPaKopija(r))
-  const staticno = (u.origin === self.location.origin && (u.pathname === '/odmoria.css' || u.pathname === '/jezici.js' || u.pathname.startsWith('/assets/')))
+  const staticno = (u.origin === self.location.origin && (u.pathname === '/odmoria.css' || u.pathname === '/jezici.js' || u.pathname === '/pokret.js' || u.pathname.startsWith('/assets/')))
     || ['esm.sh', 'fonts.googleapis.com', 'fonts.gstatic.com'].includes(u.hostname)
   if (staticno) return e.respondWith(kopijaPaMreza(r))
   // sve ostalo (Supabase, /api/…) ide ravno na mrežu, bez spremanja

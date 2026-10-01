@@ -1040,12 +1040,32 @@ objekata.
 **Iskreno o Instagramu** (piše i u panelu): link u običnoj objavi nije
 klikabilan — zato slika nosi QR i adresu; u storyju se dodaje naljepnica „Link”.
 
+### Dorada (1. 10. 2026.): izgled, pokretna objava, animacije
+
+- **Tri izgleda slike:** *Fotografija* (preko cijele slike), *Razglednica*
+  (topli papir, fotografija u okviru, crtkana crta), *Luk* (fotografija u
+  obliku kamenog luka na petrolu). Naslov u pismu Fraunces, žuta
+  **naljepnica-sunce s cijenom**, oznaka „☀ Slobodno · 4 noći”.
+- **Pokretna objava:** domaćin odabere video (npr. bazen) i početak
+  isječka → **3 sekunde** s istim natpisom i QR-om, kao **video** (MP4 gdje
+  preglednik zna — Chrome, Safari; inače WebM) ili **GIF** (540 px, 10
+  sličica/s, ~1 MB). Video se obrađuje u pregledniku i **nigdje se ne šalje**.
+  Iskreno u panelu: **Instagram ne prima GIF** (ni Facebook ga dobro ne
+  prikazuje) — za njih je MP4; GIF je za WhatsApp, web i e-mail.
+  GIF koder: `gifenc` (MIT) s esm.sh, kao QR.
+- **Male animacije** (`pokret.js` + `odmoria.css`, samo kad korisnik nije
+  isključio pokret): sunčeve iskrice kad gost pošalje upit, ocjenu ili podatke
+  za prijavu, i kad se vodič otključa; kvačica „✓ Kopirano” na gumbima;
+  poruka na dnu iskoči s oprugom; odabrani dan u kalendaru poskoči; kartice i
+  pločice se lagano podignu; tekst zaglavlja naslovnice dolazi redom; paneli u
+  dashboardu se meko pojave.
+
 ### Odluke koje čekaju vas
 
 - [ ] **Što je besplatno, a što plaćeno.** Sada je jedino ograničenje **broj
   jezika po planu** (`plans.max_languages`, kao vodič: Free = HR + EN). Ako
   želite „besplatno jedna slika i jedan tekst, plaćeno sve” (format story,
-  slobodni termini, letak), treba jedan stupac u `plans` (npr. `can_promo`) —
+  slobodni termini, izgledi, video/GIF, letak), treba jedan stupac u `plans` (npr. `can_promo`) —
   mala SQL izmjena, pa vi pokrenete.
 - [ ] Tekstovi su iz predložaka. Kad uključite ključ za prijevod (točka 18),
   može se dodati „Napiši drukčije” (AI) — svaki poziv se tada plaća.

@@ -62,6 +62,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 ├── auth-greske.js           # prijevod Supabase Auth grešaka (prijava, registracija, nova lozinka, račun)
 ├── plans.js                 # rezervne vrijednosti + helperi; pravi izvor istine je tablica `plans` u bazi
 ├── jezici.js                 # jezici vodiča i javne stranice: rječnik (ključ = hrvatski tekst), t(), n(), H(), birač — vidi „Jezici za goste”
+├── pokret.js                 # male animacije: veselje(el) iskrice, kvacica(btn) „✓ Kopirano” (stilovi u odmoria.css i dashboardu)
 ├── objave.js                 # Linkovi i QR → Objave: slobodni termini, tekstovi (6 jezika), slika na canvasu, letak — vidi „Objave”
 ├── billing.js                # Stripe iz preglednika: billingStatus, startCheckout, openBillingPortal, povratak s plaćanja (dashboard, account)
 ├── assets/                   # landing/villa-1600.jpg i villa-900.jpg (naslovnica i prijava)
@@ -803,3 +804,24 @@ objekata je **odbijen** (`docs/odluke.md`, točka 19).
   Google Fonts linka i ima rezervu od 4 s — spor ili blokiran font inače
   zaustavi skriptu i ispis se nikad ne otvori (dogodilo se u testu).
 - Pregled: praznina ili slobodan termin u 3 tjedna → gumb „Napravi objavu”.
+- **Izgledi** (`PREDLOSCI`): `foto`, `razglednica`, `luk`; naljepnica-sunce
+  s cijenom; naslov u pismu Fraunces (dashboard ga već učitava zbog tema).
+  Broj i jedinica vežu se tvrdim razmakom (`\u00a0`), a `prelomi()` lomi samo
+  na običnom razmaku — inače „120 / m²” u dva reda.
+- **Pokretna objava:** `<video>` iz odabrane datoteke (object URL, ne šalje se
+  nigdje); `nacrtaj()` prima i video (`videoWidth`). Pregled se vrti u
+  `obPetlja()` (rAF, ~24/s, staje kad panel nije aktivan). Video:
+  `canvas.captureStream` + `MediaRecorder` (MP4 ako `isTypeSupported`, inače
+  WebM). GIF: `gifenc` s esm.sh, sličice traženjem (`seeked`), 540 px, 10/s.
+  WebM bez zapisanog trajanja (`duration = Infinity`) — skok na kraj ga otkrije.
+  Promjena objekta briše video (`obBezVidea`).
+
+## Male animacije (listopad 2026.)
+
+`pokret.js` (`veselje(el)`, `kvacica(btn, tekst)`) + stilovi `.o-veselje`,
+`.o-kv`, `o-pop`, `o-opruga` u `odmoria.css` (dashboard ima kopiju, jer ga ne
+učitava). **Sve pod `prefers-reduced-motion: no-preference`**, a `veselje()`
+sam provjeri postavku — testovi rade s `reducedMotion:'reduce'`, pa iskrica
+tamo namjerno nema. `pokret.js` je u predmemoriji service workera (`sw.js`,
+`VERZIJA` sada `odmoria-vodic-3`). Dashboard: svaki gumb čiji natpis počinje s
+„Kopiraj” sam dobije kvačicu (jedan slušač na `document`).

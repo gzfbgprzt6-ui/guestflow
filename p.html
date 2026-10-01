@@ -678,6 +678,7 @@
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import * as L from '/jezici.js'
+import { veselje, kvacica } from '/pokret.js'
 
 // jezik sučelja odmah; koje jezike plan domaćina dopušta i prijevod njegovih
 // tekstova stižu s /api/prevedi (loadPage → L.pokreni)
@@ -1393,10 +1394,11 @@ function hvala(ime, kontakt) {
   const tko = PROP.host_name ? t('Domaćin {n}', { n: PROP.host_name }) : t('Vaš domaćin')
   $('#iq-ok').innerHTML = `<b>${esc(t('Upit je poslan ✓'))}</b><span>${esc(t('{tko} javit će vam se na {k}. Kad potvrdi termin, dobit ćete privatni link s uputama za dolazak.', { tko, k: kontakt }))}</span>`
   show('#iqf', false); show('#iq-ok')
+  veselje($('#iq-ok'))
 }
 
 window.copyMsg = async () => {
-  try { await navigator.clipboard.writeText(buildMsg()); toast(t('Poruka je kopirana.')); biljezi('inquiry_copy') }
+  try { await navigator.clipboard.writeText(buildMsg()); toast(t('Poruka je kopirana.')); kvacica(document.activeElement?.closest('button'), t('Kopirano.')); biljezi('inquiry_copy') }
   catch { toast(t('Kopiranje nije uspjelo — označite poruku i kopirajte je ručno.')) }
 }
 

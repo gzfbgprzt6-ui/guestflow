@@ -100,10 +100,11 @@ function odDatuma(s, j) {
  */
 export function podaci(prop, sadrzaji, j, link) {
   const f = []
-  if (prop.max_guests) f.push(L.n(prop.max_guests, 'osoba', j))
-  if (prop.bedrooms) f.push(L.n(prop.bedrooms, 'spavaća soba', j))
-  if (prop.bathrooms) f.push(L.n(prop.bathrooms, 'kupaonica', j))
-  if (prop.size_m2) f.push(prop.size_m2 + ' m²')
+  const nb = x => x.replace(' ', '\u00a0')             // „6 osoba” se ne lomi na slici
+  if (prop.max_guests) f.push(nb(L.n(prop.max_guests, 'osoba', j)))
+  if (prop.bedrooms) f.push(nb(L.n(prop.bedrooms, 'spavaća soba', j)))
+  if (prop.bathrooms) f.push(nb(L.n(prop.bathrooms, 'kupaonica', j)))
+  if (prop.size_m2) f.push(prop.size_m2 + '\u00a0m²')
   const s = []
   for (const ime of sadrzaji || []) {
     if (!ime) continue
@@ -175,7 +176,7 @@ export const FORMATI = { post: [1080, 1350], story: [1080, 1920] }
 const BOJE = { petrol: '#103D4B', akcija: '#116D76', menta: '#A8E2D8', sunce: '#FFC93C', tinta: '#0A2A33' }
 
 function prelomi(ctx, tekst, sirina, maxRedova = 2) {
-  const rijeci = String(tekst).split(/\s+/), redovi = []
+  const rijeci = String(tekst).split(/[ \t\n]+/), redovi = []   // tvrdi razmak (\u00a0) ne lomi
   let r0 = ''
   for (const w of rijeci) {
     const p = r0 ? r0 + ' ' + w : w
@@ -201,12 +202,84 @@ function zaobljeno(ctx, x, y, w, h, r) {
   ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r)
   ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath()
 }
-function pokrij(ctx, img, W, H) {
-  const s = Math.max(W / img.naturalWidth, H / img.naturalHeight)
-  const w = img.naturalWidth * s, h = img.naturalHeight * s
-  ctx.drawImage(img, (W - w) / 2, (H - h) / 2, w, h)
+function pokrij(ctx, img, x, y, W, H) {
+  const iw = img.videoWidth || img.naturalWidth || img.width, ih = img.videoHeight || img.naturalHeight || img.height
+  if (!iw || !ih) return
+  const s = Math.max(W / iw, H / ih), w = iw * s, h = ih * s
+  ctx.drawImage(img, x + (W - w) / 2, y + (H - h) / 2, w, h)
 }
-
+/** Sunce: krug + zrake (isti znak kao u prijedlogu loga). */
+function sunce(ctx, x, y, r, boja, zraka = 8) {
+  ctx.save(); ctx.fillStyle = boja; ctx.strokeStyle = boja; ctx.lineCap = 'round'; ctx.lineWidth = r * 0.42
+  ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill()
+  for (let k = 0; k < zraka; k++) {
+    const a = (k / zraka) * Math.PI * 2 + Math.PI / zraka
+    ctx.beginPath(); ctx.moveTo(x + Math.cos(a) * r * 1.6, y + Math.sin(a) * r * 1.6); ctx.lineTo(x + Math.cos(a) * r * 2.05, y + Math.sin(a) * r * 2.05); ctx.stroke()
+  }
+  ctx.restore()
+}
+/** Žuta naljepnica-sunce s cijenom, lagano nakrivljena. */
+function naljepnica(ctx, x, y, R, d, j) {
+  if (!d.cijena) return
+  const [pre, post] = r('cijenaKratko', j, { c: '|' }).split('|').map(t => t.replace('/', '').trim())
+  ctx.save(); ctx.translate(x, y); ctx.rotate(-0.16)
+  ctx.shadowColor = 'rgba(10,42,51,.28)'; ctx.shadowBlur = 24; ctx.shadowOffsetY = 8
+  ctx.fillStyle = BOJE.sunce
+  ctx.beginPath()
+  const zubi = 16
+  for (let k = 0; k <= zubi * 2; k++) {                 // valoviti rub, kao pečat
+    const a = (k / (zubi * 2)) * Math.PI * 2, rr = k % 2 ? R * 0.93 : R
+    k ? ctx.lineTo(Math.cos(a) * rr, Math.sin(a) * rr) : ctx.moveTo(rr, 0)
+  }
+  ctx.closePath(); ctx.fill(); ctx.shadowColor = 'transparent'
+  ctx.fillStyle = BOJE.petrol; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic'
+  ctx.font = `700 ${Math.round(R * 0.24)}px Manrope`; ctx.fillText(pre, 0, -R * 0.3)
+  stani(ctx, d.cijena, R * 1.5, 800, Math.round(R * 0.5), 'Manrope')
+  ctx.fillText(d.cijena, 0, R * 0.2)
+  ctx.font = `700 ${Math.round(R * 0.22)}px Manrope`; ctx.fillText('/ ' + post, 0, R * 0.52)
+  ctx.restore()
+}
+/** Oznaka (pilula) — „☀ SLOBODNO · 4 NOĆI” ili mjesto. */
+function oznaka(ctx, x, y, tekst, { pozadina, boja, sa_suncem }) {
+  if (!tekst) return 0
+  ctx.save(); ctx.font = '800 32px Manrope'; ctx.textBaseline = 'middle'
+  const pl = sa_suncem ? 76 : 30, tw = ctx.measureText(tekst).width, w = tw + pl + 30
+  zaobljeno(ctx, x, y, w, 68, 34); ctx.fillStyle = pozadina; ctx.fill()
+  if (sa_suncem) sunce(ctx, x + 40, y + 34, 10, boja)
+  ctx.fillStyle = boja; ctx.fillText(tekst, x + pl, y + 36)
+  ctx.restore(); return w
+}
+/** Kartica s QR kodom i adresom. */
+function kartica(ctx, x, y, w, h, o, { pozadina = '#FFFFFF', sjena = true } = {}) {
+  const j = o.j
+  ctx.save()
+  if (sjena) { ctx.shadowColor = 'rgba(10,42,51,.25)'; ctx.shadowBlur = 30; ctx.shadowOffsetY = 10 }
+  zaobljeno(ctx, x, y, w, h, 28); ctx.fillStyle = pozadina; ctx.fill(); ctx.restore()
+  const qS = h - 48
+  if (o.qr) ctx.drawImage(o.qr, x + 24, y + 24, qS, qS)
+  const tx = x + 24 + (o.qr ? qS + 30 : 16), ts = x + w - 28 - tx
+  ctx.textBaseline = 'alphabetic'; ctx.textAlign = 'left'
+  ctx.fillStyle = BOJE.petrol; stani(ctx, r('izravnoKratko', j), ts, 800, 44, 'Manrope'); ctx.fillText(r('izravnoKratko', j), tx, y + h * 0.36)
+  ctx.fillStyle = BOJE.akcija; stani(ctx, o.adresa || '', ts, 700, 32, 'Manrope'); ctx.fillText(o.adresa || '', tx, y + h * 0.6)
+  ctx.fillStyle = '#536D77'; stani(ctx, r('bezProvizije', j), ts, 400, 26, '"DM Sans"'); ctx.fillText(r('bezProvizije', j), tx, y + h * 0.82)
+}
+/** Lukovi: fotografija u obliku kamenog luka (zaobljen vrh). */
+function luk(ctx, x, y, w, h) {
+  const rr = w / 2
+  ctx.beginPath(); ctx.moveTo(x, y + h); ctx.lineTo(x, y + rr); ctx.arc(x + rr, y + rr, rr, Math.PI, 0); ctx.lineTo(x + w, y + h); ctx.closePath()
+}
+/** Tekstovi za sliku: naslov, podnaslov, sitni redak, sadržaj oznake. */
+function sadrzajSlike(o) {
+  const d = o.d, j = o.j, t = o.termin
+  if (t) return {
+    naslov: t.otvoren ? veliko(odDatuma(t.start, j)) : raspon(t.start, t.end, j),
+    pod: [d.ime, d.mjesto].filter(Boolean).join(' · '),
+    sitno: d.fakti,
+    oznaka: (r('pill', j) + (t.otvoren ? '' : ' · ' + L.n(t.nights, 'noć', j))).toLocaleUpperCase(L.lokal(j)),
+    sunce: true
+  }
+  return { naslov: d.ime, pod: d.fakti, sitno: d.sadrzaji.split(' · ').slice(0, 3).join(' · '), oznaka: d.mjesto, sunce: false }
+}
 /** Fotografija s Cloudinaryja u razumnoj veličini; crossOrigin da canvas ostane čitljiv. */
 export function urlSlike(url) {
   if (!url) return ''
@@ -221,83 +294,101 @@ export function ucitajSliku(url) {
     i.src = url
   })
 }
-export const PISMA = ['800 80px Manrope', '700 40px Manrope', '600 30px "DM Sans"', '400 30px "DM Sans"']
+export const PISMA = ['800 80px Manrope', '700 40px Manrope', '600 30px "DM Sans"', '400 30px "DM Sans"', '500 30px "DM Sans"', '600 80px Fraunces']
+export const PREDLOSCI = { foto: 'Fotografija', razglednica: 'Razglednica', luk: 'Luk' }
+const NASLOV = (v) => `600 ${v}px Fraunces, Georgia, serif`
 
 /**
- * Nacrta objavu. o = { format, j, d (podaci), termin, foto (Image|null), qr (canvas|null), adresa }
+ * Nacrta objavu. o = { format, predlozak, j, d (podaci), termin, foto (Image|Video|null), qr (canvas|null), adresa }
+ * Isti crtež služi i za svaku sličicu videa/GIF-a (foto = <video>).
  */
 export function nacrtaj(canvas, o) {
   const [W, H] = FORMATI[o.format] || FORMATI.post
-  canvas.width = W; canvas.height = H
+  if (canvas.width !== W) canvas.width = W
+  if (canvas.height !== H) canvas.height = H
   const ctx = canvas.getContext('2d'), j = o.j, d = o.d
-  const story = o.format === 'story'
-  const M = 64                                           // rub
-  // pozadina
-  if (o.foto) pokrij(ctx, o.foto, W, H)
-  else {
-    const g = ctx.createLinearGradient(0, 0, W, H)
-    g.addColorStop(0, BOJE.akcija); g.addColorStop(1, BOJE.petrol)
+  const story = o.format === 'story', M = 64
+  const top = story ? 200 : M, dno = story ? 290 : M     // story: Instagram gore i dolje crta svoje
+  const t = sadrzajSlike(o)
+  const pozadinaFoto = (x, y, w, h) => {
+    if (o.foto) pokrij(ctx, o.foto, x, y, w, h)
+    else { const g = ctx.createLinearGradient(x, y, x + w, y + h); g.addColorStop(0, BOJE.akcija); g.addColorStop(1, BOJE.petrol); ctx.fillStyle = g; ctx.fillRect(x, y, w, h) }
+  }
+  ctx.save(); ctx.textAlign = 'left'
+  const pred = o.predlozak || 'foto'
+
+  if (pred === 'foto') {
+    pozadinaFoto(0, 0, W, H)
+    let v = ctx.createLinearGradient(0, 0, 0, H * 0.25)
+    v.addColorStop(0, 'rgba(10,42,51,.45)'); v.addColorStop(1, 'rgba(10,42,51,0)'); ctx.fillStyle = v; ctx.fillRect(0, 0, W, H * 0.25)
+    v = ctx.createLinearGradient(0, H * 0.34, 0, H)
+    v.addColorStop(0, 'rgba(10,42,51,0)'); v.addColorStop(0.42, 'rgba(10,42,51,.8)'); v.addColorStop(1, 'rgba(10,42,51,.96)')
+    ctx.fillStyle = v; ctx.fillRect(0, H * 0.34, W, H * 0.66)
+    oznaka(ctx, M, top, t.oznaka, { pozadina: t.sunce ? BOJE.sunce : 'rgba(255,255,255,.94)', boja: BOJE.petrol, sa_suncem: t.sunce })
+    naljepnica(ctx, W - M - 118, top + 150, 118, d, j)
+    const kH = 228, kY = H - dno - kH
+    kartica(ctx, M, kY, W - 2 * M, kH, o)
+    // tekst iznad kartice, odozdo prema gore
+    let y = kY - 46
+    const pisi = (tekst, font, boja, razmak, max = 1) => {
+      if (!tekst) return; ctx.font = font; ctx.fillStyle = boja
+      const red = prelomi(ctx, tekst, W - 2 * M, max)
+      for (let i = red.length - 1; i >= 0; i--) { ctx.fillText(red[i], M, y); y -= razmak }
+      y -= 12
+    }
+    pisi(t.sitno, '500 30px "DM Sans"', 'rgba(255,255,255,.8)', 40)
+    pisi(t.pod, '700 40px Manrope', BOJE.menta, 50, 2)
+    const vel = story ? 112 : 100
+    pisi(t.naslov, NASLOV(vel), '#FFFFFF', vel + 4, 2)
+  }
+
+  else if (pred === 'razglednica') {
+    ctx.fillStyle = '#FBF6EA'; ctx.fillRect(0, 0, W, H)           // topli papir
+    const fx = 48, fy = story ? top - 40 : 48, fw = W - 96, fh = Math.round(H * (story ? 0.48 : 0.5))
+    ctx.save(); zaobljeno(ctx, fx, fy, fw, fh, 32); ctx.clip(); pozadinaFoto(fx, fy, fw, fh)
+    const v = ctx.createLinearGradient(0, fy, 0, fy + 160); v.addColorStop(0, 'rgba(10,42,51,.35)'); v.addColorStop(1, 'rgba(10,42,51,0)')
+    ctx.fillStyle = v; ctx.fillRect(fx, fy, fw, 160); ctx.restore()
+    oznaka(ctx, fx + 28, fy + 28, t.oznaka, { pozadina: t.sunce ? BOJE.sunce : 'rgba(255,255,255,.94)', boja: BOJE.petrol, sa_suncem: t.sunce })
+    naljepnica(ctx, W - 150, fy + fh - 10, 112, d, j)
+    let y = fy + fh + (story ? 120 : 100)
+    const vel = story ? 104 : 88
+    ctx.fillStyle = BOJE.petrol; ctx.font = NASLOV(vel)
+    for (const red of prelomi(ctx, t.naslov, W - 2 * M - (d.cijena ? 150 : 0), 2)) { ctx.fillText(red, M, y); y += vel + 4 }
+    y += 6; ctx.font = '700 38px Manrope'; ctx.fillStyle = BOJE.akcija
+    if (t.pod) for (const red of prelomi(ctx, t.pod, W - 2 * M, 2)) { ctx.fillText(red, M, y); y += 48 }
+    ctx.font = '500 30px "DM Sans"'; ctx.fillStyle = '#536D77'
+    if (t.sitno) { ctx.fillText(prelomi(ctx, t.sitno, W - 2 * M, 1)[0], M, y + 4) }
+    // crtkana crta kao na razglednici, pa QR
+    const kH = 216, kY = H - dno - kH
+    ctx.save(); ctx.setLineDash([14, 12]); ctx.strokeStyle = 'rgba(16,61,75,.25)'; ctx.lineWidth = 3
+    ctx.beginPath(); ctx.moveTo(M, kY - 34); ctx.lineTo(W - M, kY - 34); ctx.stroke(); ctx.restore()
+    kartica(ctx, M - 24, kY, W - 2 * M + 48, kH, o, { pozadina: '#FBF6EA', sjena: false })
+  }
+
+  else {                                                          // luk
+    const g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, BOJE.petrol); g.addColorStop(1, BOJE.tinta)
     ctx.fillStyle = g; ctx.fillRect(0, 0, W, H)
+    sunce(ctx, W - 150, story ? top + 40 : 120, 26, 'rgba(255,201,60,.9)')
+    const lw = story ? 760 : 640, lh = story ? 880 : 640, lx = (W - lw) / 2, ly = story ? top + 60 : 96
+    ctx.save(); luk(ctx, lx, ly, lw, lh); ctx.clip(); pozadinaFoto(lx, ly, lw, lh); ctx.restore()
+    ctx.save(); luk(ctx, lx - 14, ly - 14, lw + 28, lh + 14); ctx.strokeStyle = 'rgba(168,226,216,.55)'; ctx.lineWidth = 4; ctx.stroke(); ctx.restore()
+    naljepnica(ctx, lx + lw - 20, ly + lh - 40, 104, d, j)
+    ctx.textAlign = 'center'
+    let y = ly + lh + (story ? 130 : 96)
+    if (t.oznaka) {
+      ctx.font = '800 30px Manrope'; ctx.fillStyle = t.sunce ? BOJE.sunce : BOJE.menta
+      ctx.fillText(t.oznaka.toLocaleUpperCase(L.lokal(j)), W / 2, y); y += story ? 104 : 86
+    }
+    const vel = story ? 100 : 80
+    ctx.font = NASLOV(vel); ctx.fillStyle = '#FFFFFF'
+    for (const red of prelomi(ctx, t.naslov, W - 2 * M, 2)) { ctx.fillText(red, W / 2, y); y += vel + 4 }
+    ctx.font = '600 34px "DM Sans"'; ctx.fillStyle = 'rgba(255,255,255,.82)'
+    if (t.pod) ctx.fillText(prelomi(ctx, t.pod, W - 2 * M, 1)[0], W / 2, y + 2)
+    ctx.textAlign = 'left'
+    const kH = 210
+    kartica(ctx, M, H - dno - kH, W - 2 * M, kH, o)
   }
-  // veo: gore lagano (za oznaku), dolje jako (za tekst)
-  let v = ctx.createLinearGradient(0, 0, 0, H * 0.25)
-  v.addColorStop(0, 'rgba(10,42,51,.45)'); v.addColorStop(1, 'rgba(10,42,51,0)')
-  ctx.fillStyle = v; ctx.fillRect(0, 0, W, H * 0.25)
-  v = ctx.createLinearGradient(0, H * 0.36, 0, H)
-  v.addColorStop(0, 'rgba(10,42,51,0)'); v.addColorStop(0.4, 'rgba(10,42,51,.78)'); v.addColorStop(1, 'rgba(10,42,51,.95)')
-  ctx.fillStyle = v; ctx.fillRect(0, H * 0.36, W, H * 0.64)
-
-  // oznaka gore lijevo: „SLOBODNO” (žuto) ili mjesto (bijelo)
-  const vrh = story ? 200 : M
-  const oznaka = o.termin ? r('pill', j).toLocaleUpperCase(L.lokal(j)) : d.mjesto
-  if (oznaka) {
-    ctx.font = '800 34px Manrope'
-    const tw = Math.min(ctx.measureText(oznaka).width, W - 2 * M - 56)
-    zaobljeno(ctx, M, vrh, tw + 56, 68, 34)
-    ctx.fillStyle = o.termin ? BOJE.sunce : 'rgba(255,255,255,.92)'; ctx.fill()
-    ctx.fillStyle = BOJE.petrol; ctx.textBaseline = 'middle'
-    ctx.fillText(oznaka, M + 28, vrh + 35, tw)
-  }
-
-  // kartica dolje: QR + „Rezervirajte izravno” + adresa
-  const kH = 236, kY = H - (story ? 300 : M) - kH
-  zaobljeno(ctx, M, kY, W - 2 * M, kH, 28); ctx.fillStyle = '#FFFFFF'; ctx.fill()
-  const qS = kH - 48
-  if (o.qr) ctx.drawImage(o.qr, M + 24, kY + 24, qS, qS)
-  const tx = M + 24 + (o.qr ? qS + 32 : 16), tsir = W - M - 32 - tx
-  ctx.textBaseline = 'alphabetic'; ctx.fillStyle = BOJE.petrol
-  stani(ctx, r('izravnoKratko', j), tsir, 800, 46, 'Manrope')
-  ctx.fillText(r('izravnoKratko', j), tx, kY + 82)
-  ctx.fillStyle = BOJE.akcija
-  stani(ctx, o.adresa || '', tsir, 700, 34, 'Manrope')
-  ctx.fillText(o.adresa || '', tx, kY + 136)
-  ctx.fillStyle = '#536D77'
-  stani(ctx, r('bezProvizije', j), tsir, 400, 27, '"DM Sans"')
-  ctx.fillText(r('bezProvizije', j), tx, kY + 186)
-
-  // tekst iznad kartice, slaže se odozdo prema gore
-  let y = kY - 48
-  const pisi = (tekst, font, boja, razmak, maxRedova = 1) => {
-    if (!tekst) return
-    ctx.font = font; ctx.fillStyle = boja
-    const redovi = prelomi(ctx, tekst, W - 2 * M, maxRedova)
-    for (let i = redovi.length - 1; i >= 0; i--) { ctx.fillText(redovi[i], M, y); y -= razmak }
-    y -= 14
-  }
-  const cij = d.cijena ? r('cijenaKratko', j, { c: d.cijena }) : ''
-  if (o.termin) {
-    pisi([d.ime, d.mjesto].filter(Boolean).join(' · '), '600 36px "DM Sans"', 'rgba(255,255,255,.88)', 46, 2)
-    pisi([o.termin.otvoren ? '' : L.n(o.termin.nights, 'noć', j), cij].filter(Boolean).join(' · '), '700 44px Manrope', BOJE.menta, 54)
-    const vel = story ? 104 : 96
-    const dat = o.termin.otvoren ? veliko(odDatuma(o.termin.start, j)) : raspon(o.termin.start, o.termin.end, j)
-    ctx.font = `800 ${vel}px Manrope`
-    pisi(dat, `800 ${vel}px Manrope`, '#FFFFFF', vel + 6, 2)
-  } else {
-    pisi(cij, '700 44px Manrope', BOJE.sunce, 54)
-    pisi(d.fakti, '600 34px "DM Sans"', 'rgba(255,255,255,.88)', 44, 2)
-    const vel = story ? 100 : 92
-    pisi(d.ime, `800 ${vel}px Manrope`, '#FFFFFF', vel + 6, 2)
-  }
+  ctx.restore()
   return canvas
 }
 
