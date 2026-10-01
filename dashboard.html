@@ -236,6 +236,9 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
 .ob-video .field { margin: 0; width: 100%; max-width: 320px; }
 .ob-video input[type=range] { width: 100%; accent-color: var(--copper); }
 #ob-video-ctl { display: grid; gap: 10px; width: 100%; }
+#ob-video-st:empty { display: none; }
+/* video mora biti u DOM-u (iPhone ga inače ne učita), ali se ne vidi */
+.ob-skriveni-video { position: fixed; left: 0; top: 0; width: 2px; height: 2px; opacity: 0; pointer-events: none; z-index: -1; }
 #ob-video-ctl[hidden], #ob-rez[hidden] { display: none; }
 .ob-rez a { text-decoration: none; }
 @media (max-width: 980px) { .ob-grid { grid-template-columns: minmax(0,1fr); } .ob-slika canvas { max-width: 300px; } }
@@ -1285,10 +1288,10 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
                 <h3>Pokretna objava <span class="ob-novo">novo</span></h3>
                 <p class="ob-nap">Dodajte kratak video (bazen, more, terasa) — napravimo 3 sekunde s istim natpisom i QR kodom. Video ostaje na vašem uređaju, nigdje se ne šalje.</p>
                 <label class="btn secondary small ob-file" id="ob-file-l">Odaberi video<input type="file" id="ob-video-f" accept="video/*"></label>
+                <p class="ob-nap" id="ob-video-st" role="status" aria-live="polite"></p>
                 <div id="ob-video-ctl" hidden>
                   <div class="field"><label for="ob-poc">Početak isječka: <output id="ob-poc-v" for="ob-poc">0,0 s</output></label><input type="range" id="ob-poc" min="0" max="0" step="0.1" value="0"></div>
                   <div class="ob-gumbi"><button class="btn small" type="button" id="ob-mp4" onclick="obNapraviVideo()">Napravi video</button><button class="btn secondary small" type="button" id="ob-gif" onclick="obNapraviGif()">Napravi GIF</button><button class="btn ghost small" type="button" onclick="obBezVidea()">Ukloni video</button></div>
-                  <p class="ob-nap" id="ob-video-st" aria-live="polite"></p>
                   <div class="ob-gumbi" id="ob-rez" hidden></div>
                 </div>
               </div>
@@ -3091,14 +3094,27 @@ document.getElementById('ob-video-f').addEventListener('change',async e=>{
   const f=e.target.files?.[0];e.target.value='';if(!f)return
   window.obBezVidea(true)
   obVideoSt('Učitavam video…')
-  const v=document.createElement('video');v.muted=true;v.playsInline=true;v.preload='auto';v.loop=false
-  v.src=URL.createObjectURL(f)
-  const ok=await new Promise(res=>{v.onloadeddata=()=>res(true);v.onerror=()=>res(false);setTimeout(()=>res(v.readyState>=2),15000)})
+  // iPhone (Safari) video ne učita dok nije na stranici i dok se ne pokrene:
+  // zato je u DOM-u (nevidljiv), bez zvuka, inline, i odmah se pokrene pa zaustavi.
+  const v=document.createElement('video')
+  v.muted=true;v.defaultMuted=true;v.setAttribute('muted','');v.playsInline=true;v.setAttribute('playsinline','');v.setAttribute('webkit-playsinline','')
+  v.preload='auto';v.loop=false;v.className='ob-skriveni-video';v.setAttribute('aria-hidden','true')
+  document.body.appendChild(v)
+  v.src=URL.createObjectURL(f);v.load()
+  const ok=await new Promise(res=>{
+    let gotovo=false;const kraj=x=>{if(gotovo)return;gotovo=true;clearInterval(prov);res(x)}
+    ;['loadeddata','canplay','playing'].forEach(ev=>v.addEventListener(ev,()=>v.readyState>=2&&kraj(true)))
+    v.addEventListener('error',()=>kraj(false))
+    const prov=setInterval(()=>{if(v.readyState>=2)kraj(true)},250)
+    setTimeout(()=>kraj(v.readyState>=2),20000)
+    v.play().then(()=>{if(!gotovo)return;v.pause()}).catch(()=>{})
+  })
+  v.pause()
   if(ok&&!isFinite(v.duration)){                      // WebM bez zapisanog trajanja: skok na kraj ga otkrije
     await new Promise(res=>{v.ondurationchange=()=>isFinite(v.duration)&&res();v.currentTime=1e7;setTimeout(res,3000)})
     v.ondurationchange=null;await obPricekaj(v,0)
   }
-  if(!ok||!v.videoWidth||!isFinite(v.duration)){URL.revokeObjectURL(v.src);obVideoSt('Ovaj video preglednik ne može otvoriti. Na iPhoneu: Postavke → Kamera → Formati → „Najkompatibilnije”, ili pošaljite video sebi WhatsAppom pa ga spremite.');return}
+  if(!ok||!v.videoWidth||!isFinite(v.duration)){URL.revokeObjectURL(v.src);v.remove();obVideoSt('Ovaj video preglednik ne može otvoriti. Na iPhoneu: Postavke → Kamera → Formati → „Najkompatibilnije”, ili pošaljite video sebi WhatsAppom pa ga spremite.');return}
   OB.video=v;OB.poc=0
   const r=document.getElementById('ob-poc');r.max=String(Math.max(0,Math.floor((v.duration-OB_TRAJANJE)*10)/10));r.value='0'
   r.disabled=!(v.duration>OB_TRAJANJE+.05)
@@ -3130,7 +3146,7 @@ function obPetlja(){
 }
 window.obBezVidea=(tiho)=>{
   cancelAnimationFrame(OB.raf)
-  if(OB.video){OB.video.pause();URL.revokeObjectURL(OB.video.src)}
+  if(OB.video){OB.video.pause();URL.revokeObjectURL(OB.video.src);OB.video.remove()}
   OB.video=null
   if(OB.rezUrl){URL.revokeObjectURL(OB.rezUrl);OB.rezUrl=null}
   document.getElementById('ob-video-ctl').hidden=true

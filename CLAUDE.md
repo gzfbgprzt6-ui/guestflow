@@ -815,6 +815,12 @@ objekata je **odbijen** (`docs/odluke.md`, točka 19).
   WebM). GIF: `gifenc` s esm.sh, sličice traženjem (`seeked`), 540 px, 10/s.
   WebM bez zapisanog trajanja (`duration = Infinity`) — skok na kraj ga otkrije.
   Promjena objekta briše video (`obBezVidea`).
+- **Zamka (iPhone):** Safari ne učita video koji nije u DOM-u i nije pokrenut —
+  `loadeddata` nikad ne stigne. Zato je `<video>` dodan u `body` (razred
+  `.ob-skriveni-video`, nevidljiv), `muted` + `playsinline`, `load()` pa
+  `play()`. I **poruka stanja (`#ob-video-st`) mora biti izvan skrivenog
+  dijela** — bila je unutra, pa domaćin na mobitelu nije vidio ni „Učitavam”
+  ni grešku („ništa se ne dogodi”).
 
 ## Male animacije (listopad 2026.)
 
