@@ -201,6 +201,34 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
 .pr-alat { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 6px 0 4px; }
 #pr-jezici { flex-wrap: wrap; max-width: 100%; }
 #pr-jezici button { flex: 1 1 auto; }
+/* Objave (objave.js) */
+.ob-ctrl { display: grid; gap: 16px; }
+.ob-red { display: grid; grid-template-columns: 150px minmax(0,1fr); align-items: start; gap: 12px; }
+.ob-red[hidden] { display: none; }
+.ob-red > span { padding-top: 10px; font: 700 14px/1.3 var(--font-ui); color: var(--ink); }
+.ob-red .an-seg { flex-wrap: wrap; max-width: 100%; justify-self: start; }
+.ob-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.ob-chip { min-height: 40px; padding: 0 14px; border: 1px solid var(--control); border-radius: 7px; background: var(--paper); color: var(--ink); cursor: pointer; font: 600 14px/1.2 var(--font-ui); }
+.ob-chip[aria-pressed="true"] { background: var(--brown); border-color: var(--brown); color: #fff; }
+.ob-vl { display: flex; flex-wrap: wrap; align-items: end; gap: 10px; margin-top: 10px; }
+.ob-vl[hidden] { display: none; }
+.ob-vl .field { margin: 0; }
+.ob-fotke { display: flex; flex-wrap: wrap; gap: 8px; }
+.ob-fotke button { width: 64px; height: 64px; padding: 0; border: 2px solid transparent; border-radius: 8px; background: var(--paper-2) center/cover no-repeat; cursor: pointer; }
+.ob-fotke button[aria-pressed="true"] { border-color: var(--copper); box-shadow: 0 0 0 2px var(--paper) inset; }
+.ob-grid { display: grid; grid-template-columns: minmax(0,360px) minmax(0,1fr); gap: 24px; align-items: start; }
+.ob-slika { display: grid; gap: 12px; justify-items: start; }
+.ob-slika canvas { width: 100%; max-width: 360px; height: auto; border-radius: 12px; box-shadow: var(--shadow-sm, 0 6px 16px rgba(16,61,75,.12)); background: var(--paper-2); }
+.ob-gumbi { display: flex; flex-wrap: wrap; gap: 8px; }
+.ob-gumbi [hidden] { display: none; }
+.ob-kanal { padding: 14px 0; border-top: 1px solid var(--line); }
+.ob-kanal:first-child { border-top: 0; padding-top: 0; }
+.ob-kanal h3 { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 0 0 4px; font: 700 15px/1.3 var(--font-ui); }
+.ob-kanal p { margin: 0 0 8px; font-size: 13px; color: var(--muted); }
+.ob-kanal .textarea { min-height: 150px; font-size: 14px; line-height: 1.5; }
+.ob-nap { font-size: 13px; color: var(--muted); max-width: 360px; }
+@media (max-width: 980px) { .ob-grid { grid-template-columns: minmax(0,1fr); } .ob-slika canvas { max-width: 300px; } }
+@media (max-width: 600px) { .ob-red { grid-template-columns: minmax(0,1fr); gap: 6px; } .ob-red > span { padding-top: 0; } }
 @media (max-width: 780px) { .pr-row { grid-template-columns: minmax(0,1fr); gap: 8px; } }
 
 .type-picker { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -660,6 +688,7 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
             <button class="nav-item" type="button" data-panel="ical" data-group="boravci" onclick="nav('ical',this)">iCal</button>
             <button class="nav-item" type="button" data-panel="reviews" data-group="boravci" onclick="nav('reviews',this)">Recenzije</button>
             <button class="nav-item" type="button" data-panel="links" data-group="linkovi" onclick="nav('links',this)">Linkovi i QR</button>
+            <button class="nav-item" type="button" data-panel="objave" data-group="linkovi" onclick="nav('objave',this)">Objave</button>
             <span class="panelnav__sep" aria-hidden="true"></span>
             <button class="nav-item" type="button" data-panel="sub" data-group="pretplata" onclick="nav('sub',this)">Pretplata</button>
           </nav>
@@ -1192,6 +1221,41 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
           </div>
         </section>
 
+        <!-- OBJAVE (objave.js): slika i tekst za društvene mreže, letak za ispis -->
+        <section class="editor-panel an" id="section-objave" data-panel-content="objave">
+          <div class="card">
+            <div class="card-head"><div class="card-title-wrap"><span class="card-number">☀</span><div><h2>Gotova objava</h2><p>Slika i tekst za Instagram, Facebook grupe, WhatsApp i oglase — iz podataka vašeg objekta, na jeziku vaših gostiju. Preuzmite i objavite.</p></div></div></div>
+            <div class="ob-ctrl">
+              <div class="ob-red"><span id="ob-l-vrsta">Što objavljujete</span>
+                <div class="an-seg" role="group" aria-labelledby="ob-l-vrsta" id="ob-vrsta"><button type="button" data-v="slobodno" aria-pressed="true">Slobodni termini</button><button type="button" data-v="opce" aria-pressed="false">Objekt</button></div></div>
+              <div class="ob-red" id="ob-red-termin"><span id="ob-l-termin">Termin</span>
+                <div><div class="ob-chips" role="group" aria-labelledby="ob-l-termin" id="ob-termini"></div>
+                  <div class="ob-vl" id="ob-vl" hidden>
+                    <div class="field"><label for="ob-od">Dolazak</label><input class="input" type="date" id="ob-od"></div>
+                    <div class="field"><label for="ob-do">Odlazak</label><input class="input" type="date" id="ob-do"></div>
+                  </div></div></div>
+              <div class="ob-red"><span id="ob-l-jezik">Jezik</span>
+                <div class="an-seg" role="group" aria-labelledby="ob-l-jezik" id="ob-jezici"></div></div>
+              <div class="ob-red"><span id="ob-l-format">Format slike</span>
+                <div class="an-seg" role="group" aria-labelledby="ob-l-format" id="ob-format"><button type="button" data-v="post" aria-pressed="true">Objava 4:5</button><button type="button" data-v="story" aria-pressed="false">Story 9:16</button></div></div>
+              <div class="ob-red" id="ob-red-foto"><span id="ob-l-foto">Fotografija</span>
+                <div class="ob-fotke" role="group" aria-labelledby="ob-l-foto" id="ob-fotke"></div></div>
+            </div>
+          </div>
+          <div class="ob-grid">
+            <div class="card ob-slika">
+              <canvas id="ob-canvas" width="1080" height="1350" role="img" aria-label="Pregled slike za objavu"></canvas>
+              <div class="ob-gumbi"><button class="btn" type="button" onclick="obPreuzmi()">Preuzmi sliku</button><button class="btn secondary" type="button" id="ob-dijeli" onclick="obPodijeli()" hidden>Podijeli…</button></div>
+              <p class="ob-nap" id="ob-nap">QR kod i adresa na slici vode na vašu javnu stranicu. Instagram u objavi ne otvara linkove — zato ih slika nosi.</p>
+            </div>
+            <div class="card" id="ob-tekstovi" aria-live="polite"></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div class="card-title-wrap"><span class="card-number">A4</span><div><h2>Letak za ispis</h2><p>Četiri kartice na listu A4 s fotografijom, QR kodom i porukom „Sljedeći put rezervirajte izravno”. Ostavite ih u smještaju ili ih dajte gostima na odlasku — na jeziku odabranom gore.</p></div></div></div>
+            <button class="btn secondary" type="button" onclick="obLetak()">Otvori letak za ispis</button>
+          </div>
+        </section>
+
         <!-- SUBSCRIPTION -->
         <section class="editor-panel" id="section-sub" data-panel-content="sub">
           <div class="card">
@@ -1288,6 +1352,8 @@ import{loadPlans,getPlan,listPlans,limitFor,canAdd,limitMessage,effectivePlanId,
 import{publicUrl,bookingUrl,legacyGuestUrl,prettyUrl,cleanerUrl}from'./links.js'
 import{billingStatus,startCheckout,openBillingPortal,povratakSPlacanja,cekajPlan}from'./billing.js'
 import * as A from'./analitika.js'
+import * as O from'./objave.js'
+import * as JZ from'./jezici.js'
 
 const SURL='https://wtojzqjhipdfbrnmprmz.supabase.co'
 const SKEY='sb_publishable_tmZAZTDbQ7ktc1N-8y4q4w_ztAu_62F'
@@ -1436,6 +1502,7 @@ async function selectProp(p){
   renderQr()
   renderSubPanel()
   if(document.querySelector('.editor-panel.active')?.id==='section-prijevodi')ucitajPrijevode()
+  if(document.querySelector('.editor-panel.active')?.id==='section-objave')obOtvori(true)
 }
 
 /* Nazivi, cijene i limiti iz tablice `plans` (plans.js), kao u account.html.
@@ -1786,8 +1853,14 @@ async function renderOverviewOps(){
       'Otvori cijene',"nav('pricing',document.querySelector('.panelnav [data-panel=pricing]'))"])
   }else if(gaps.length){
     al.push(['info',`${gaps.length} ${A.mn(gaps.length,'kratka praznina','kratke praznine','kratkih praznina')} u sljedećih 60 dana`,
-      `Npr. ${A.fmtKratko(gaps[0].start)} – ${A.fmtKratko(gaps[0].end)} (${A.noci(gaps[0].nights)}). Ponudite je bivšim gostima ili na društvenim mrežama.`,
-      'Pogledaj praznine','openAnalytics()'])
+      `Npr. ${A.fmtKratko(gaps[0].start)} – ${A.fmtKratko(gaps[0].end)} (${A.noci(gaps[0].nights)}). Ponudite je bivšim gostima ili na društvenim mrežama — slika i tekst su spremni u jednom kliku.`,
+      'Napravi objavu',`otvoriObjave('${gaps[0].start}','${gaps[0].end}')`])
+  }else if(AVAIL_ROWS.length){
+    // nema kratkih praznina, ali ima slobodnog u sljedeća 3 tjedna → gotova objava (Linkovi i QR → Objave)
+    const sl=O.slobodniTermini(noci,t,{dana:21,minNoci:obMinNoci(),najvise:1})[0]
+    if(sl)al.push(['info',sl.otvoren?`Slobodno ${O.terminTekst(sl,'hr')}`:`Slobodno ${O.raspon(sl.start,sl.end,'hr')} (${A.noci(sl.nights)})`,
+      'Napravite objavu za Instagram, Facebook grupe ili WhatsApp — slika i tekst na jeziku vaših gostiju, iz vašeg kalendara.',
+      'Napravi objavu',`otvoriObjave('${sl.start}','${sl.end}')`])
   }
   const staro=d.bookings.filter(b=>b.is_active&&b.checkout_date&&b.checkout_date<t&&!(b.token_expires_at&&new Date(b.token_expires_at)<new Date()))
   if(staro.length)al.push(['info',`${staro.length} ${A.mn(staro.length,'link je još aktivan','linka su još aktivna','linkova je još aktivno')} nakon odlaska gosta`,
@@ -2590,6 +2663,7 @@ window.nav=(id,el)=>{
     reservations:['Boravci','Rezervacije','Generiraj privatni gostinski link za potvrđenog gosta.'],
     ical:['Boravci','iCal sinkronizacija','Poveži Booking.com i Airbnb kalendare.'],
     links:['Linkovi i QR','Linkovi i QR','Podijelite javnu stranicu i privatni vodič.'],
+    objave:['Linkovi i QR','Objave','Gotova slika i tekst za društvene mreže i oglase, te letak za ispis.'],
     sub:['Račun','Pretplata','Upravljajte planom i naplatom.']
   }
   const m=meta[glavni]||['','','']
@@ -2604,6 +2678,7 @@ window.nav=(id,el)=>{
   if(id==='reservations')window.loadBookings()
   if(id==='ical')loadIcal()
   if(id==='links')ucitajCistacicu()
+  if(id==='objave')obOtvori()
   if(id==='reviews')ucitajRecenzije()
   if(id==='prijevodi')ucitajPrijevode()
   if((SPOJ[id]||[]).includes('izgled'))window.initTeme&&window.initTeme()
@@ -2828,6 +2903,160 @@ window.downloadQr=()=>{
   a.href=canvas.toDataURL('image/png')
   a.download=(PROP?.slug||'odmoria')+'-qr.png'
   a.click()
+}
+
+// ── OBJAVE (objave.js) ────────────────────────────────────────
+// Slika (canvas) + četiri teksta + letak. Sve iz PROP, amenityRows i
+// AVAIL_ROWS — ništa se ne sprema, pa panel nema gumb „Spremi”.
+const OB={vrsta:'slobodno',termin:0,vlastiti:null,j:'hr',format:'post',foto:null,termini:[],qr:null,qrZa:'',slike:{},blob:null,red:0}
+const OB_KANALI=[
+  ['instagram','Instagram','Opis ispod objave. Link u objavi nije klikabilan — stavite ga u opis profila, a u storyju dodajte naljepnicu „Link”.'],
+  ['facebook','Facebook grupe','Za grupe o odmoru u Hrvatskoj — na jeziku grupe (npr. njemački za „Kroatien Urlaub”).'],
+  ['whatsapp','WhatsApp status','Kratko, uz sliku.'],
+  ['oglas','Oglasnik','Za Njuškalo, Index oglase i slične stranice.']]
+let QRMOD=null
+const qrMod=async()=>QRMOD||(QRMOD=(await import('https://esm.sh/qrcode@1.5.3')).default)
+const obAdresa=()=>prettyUrl(publicUrl(PROP.slug))
+function obJezici(){
+  const n=getPlan(USER_PLAN)?.maxLanguages
+  return JZ.JEZICI.slice(0,n==null||n<0?99:Math.max(1,n)).map(x=>x.kod)
+}
+function obMinNoci(){
+  const m=PROP.allow_gap_fill_stays?Number(PROP.min_gap_stay)||1:Number(PROP.min_stay)||1
+  return Math.max(2,m)
+}
+function obFotke(){return [...new Set([PROP.cover_photo_url,...(PROP.photo_urls||[])].filter(Boolean))].slice(0,8)}
+function obTermin(){
+  if(OB.vrsta!=='slobodno')return null
+  if(OB.termin==='vlastiti'){
+    const od=document.getElementById('ob-od').value,doD=document.getElementById('ob-do').value
+    if(!od||!doD||doD<=od)return null
+    return{start:od,end:doD,nights:Math.round((new Date(doD)-new Date(od))/864e5),otvoren:false}
+  }
+  return OB.termini[OB.termin]||null
+}
+/** Otvori panel (iz navigacije ili s Pregleda). `osvjezi` = promijenjen objekt. */
+function obOtvori(osvjezi){
+  if(!PROP)return
+  if(osvjezi||OB.za!==PROP.id){OB.za=PROP.id;OB.foto=obFotke()[0]||null;OB.qr=null;OB.qrZa=''}
+  OB.termini=AVAIL_ROWS.length?O.slobodniTermini(new Set(AVAIL_ROWS.map(r=>r.date)),A.danas(),{dana:90,minNoci:obMinNoci()}):[]
+  if(OB.termin!=='vlastiti'&&!(OB.termin<OB.termini.length))OB.termin=OB.termini.length?0:'vlastiti'
+  if(!obJezici().includes(OB.j))OB.j='hr'
+  obKontrole();obNacrtaj()
+}
+window.otvoriObjave=(start,end)=>{
+  OB.vrsta='slobodno'
+  if(PROP){
+    OB.termini=O.slobodniTermini(new Set(AVAIL_ROWS.map(r=>r.date)),A.danas(),{dana:90,minNoci:obMinNoci()})
+    const i=OB.termini.findIndex(t=>t.start===start)
+    if(i>=0)OB.termin=i
+    else if(start&&end){OB.termin='vlastiti';document.getElementById('ob-od').value=start;document.getElementById('ob-do').value=end}
+  }
+  nav('objave',document.querySelector('.panelnav .nav-item[data-panel="objave"]'))
+}
+function obSeg(id,vrijednost){document.querySelectorAll(`#${id} [data-v]`).forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.v===vrijednost)))}
+function obKontrole(){
+  obSeg('ob-vrsta',OB.vrsta);obSeg('ob-format',OB.format)
+  const sl=OB.vrsta==='slobodno'
+  document.getElementById('ob-red-termin').hidden=!sl
+  const tl=document.getElementById('ob-termini')
+  tl.innerHTML=(OB.termini.length?'':`<p class="helper" style="margin:8px 0 0;width:100%">${AVAIL_ROWS.length?'U sljedećih 90 dana nema slobodnog niza od '+A.noci(obMinNoci())+' ili više.':'Kalendar je prazan, pa ne znamo što je slobodno — upišite datume sami ili povežite Booking/Airbnb (Boravci → iCal).'}</p>`)
+    +OB.termini.map((t,i)=>`<button type="button" class="ob-chip" data-t="${i}" aria-pressed="${OB.termin===i}">${esc(t.otvoren?O.terminTekst(t,'hr'):O.raspon(t.start,t.end,'hr')+' · '+A.noci(t.nights))}</button>`).join('')
+    +`<button type="button" class="ob-chip" data-t="vlastiti" aria-pressed="${OB.termin==='vlastiti'}">Drugi datumi…</button>`
+  document.getElementById('ob-vl').hidden=OB.termin!=='vlastiti'
+  const dop=obJezici()
+  document.getElementById('ob-jezici').innerHTML=JZ.JEZICI.map(x=>{const ok=dop.includes(x.kod)
+    return `<button type="button" data-v="${x.kod}" data-ok="${ok}" aria-pressed="${x.kod===OB.j}" title="${ok?x.ime:x.ime+' — nije u vašem planu'}">${ok?'':'🔒 '}${x.ime}</button>`}).join('')
+  const f=obFotke()
+  document.getElementById('ob-red-foto').hidden=!f.length
+  document.getElementById('ob-fotke').innerHTML=f.map((u,i)=>`<button type="button" data-f="${i}" aria-pressed="${u===OB.foto}" aria-label="Fotografija ${i+1}" style="background-image:url('${esc(O.urlSlike(u).replace('w_1600','w_160'))}')"></button>`).join('')
+}
+document.getElementById('section-objave').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b||!PROP)return
+  const grp=b.parentElement?.id
+  if(grp==='ob-vrsta'){OB.vrsta=b.dataset.v}
+  else if(grp==='ob-format'){OB.format=b.dataset.v}
+  else if(grp==='ob-jezici'){
+    if(b.dataset.ok!=='true'){const p=listPlans().find(x=>x.maxLanguages<0||x.maxLanguages>JZ.JEZICI.findIndex(j=>j.kod===b.dataset.v));toast(`Taj jezik nije u vašem planu${p?' — dostupan je u planu '+p.name:''}.`);return}
+    OB.j=b.dataset.v}
+  else if(grp==='ob-termini'){OB.termin=b.dataset.t==='vlastiti'?'vlastiti':Number(b.dataset.t)}
+  else if(grp==='ob-fotke'){OB.foto=obFotke()[Number(b.dataset.f)]}
+  else if(b.dataset.kopiraj){const t=document.getElementById('ob-t-'+b.dataset.kopiraj);navigator.clipboard?.writeText(t.value);toast('Tekst kopiran');return}
+  else return
+  obKontrole();obNacrtaj()
+})
+;['ob-od','ob-do'].forEach(id=>document.getElementById(id).addEventListener('change',()=>obNacrtaj()))
+
+function obTekstovi(termin){
+  const sad=amenityRows.filter(r=>r.enabled!==false).map(r=>r.name)
+  const d=O.podaci(PROP,sad,OB.j,obAdresa())
+  const tx=O.tekstovi(d,OB.j,termin)
+  document.getElementById('ob-tekstovi').innerHTML=OB_KANALI.map(([k,ime,opis])=>`<div class="ob-kanal">
+    <h3><label for="ob-t-${k}">${ime}</label><button class="btn secondary small" type="button" data-kopiraj="${k}">Kopiraj</button></h3>
+    <p>${esc(opis)}</p><textarea class="textarea" id="ob-t-${k}" rows="${k==='whatsapp'?3:8}">${esc(tx[k])}</textarea></div>`).join('')
+  return d
+}
+async function obQr(){
+  const url=publicUrl(PROP.slug)
+  if(OB.qr&&OB.qrZa===url)return OB.qr
+  try{const Q=await qrMod();const c=document.createElement('canvas')
+    await Q.toCanvas(c,url,{width:400,margin:1,color:{dark:'#103D4B',light:'#FFFFFF'}});OB.qr=c;OB.qrZa=url}catch(e){OB.qr=null}
+  return OB.qr
+}
+async function obSlika(url){
+  if(!url)return null
+  if(!(url in OB.slike))OB.slike[url]=O.ucitajSliku(O.urlSlike(url))
+  return OB.slike[url]
+}
+async function obNacrtaj(){
+  if(!PROP)return
+  const red=++OB.red
+  const termin=obTermin()
+  if(OB.vrsta==='slobodno'&&!termin){
+    document.getElementById('ob-tekstovi').innerHTML='<p class="an-empty">Odaberite termin ili upišite datume dolaska i odlaska.</p>'
+    const c=document.getElementById('ob-canvas');c.getContext('2d').clearRect(0,0,c.width,c.height);OB.blob=null;return
+  }
+  const d=obTekstovi(termin)
+  try{await Promise.all(O.PISMA.map(f=>document.fonts.load(f)))}catch(e){}
+  const [qr,foto]=await Promise.all([obQr(),obSlika(OB.foto)])
+  if(red!==OB.red)return                       // u međuvremenu je zatražen novi crtež
+  const c=document.getElementById('ob-canvas'),nap=document.getElementById('ob-nap')
+  const o={format:OB.format,j:OB.j,d,termin,foto,qr,adresa:obAdresa()}
+  O.nacrtaj(c,o)
+  let upoz=''
+  try{c.getContext('2d').getImageData(0,0,1,1)}
+  catch(e){o.foto=null;O.nacrtaj(c,o);upoz='Ova se fotografija ne može staviti u sliku (poslužitelj to ne dopušta), pa je pozadina u bojama Odmorije. '}
+  if(OB.foto&&!foto)upoz='Fotografija se nije učitala, pa je pozadina u bojama Odmorije. '
+  nap.textContent=upoz+'QR kod i adresa na slici vode na vašu javnu stranicu. Instagram u objavi ne otvara linkove — zato ih slika nosi.'
+  OB.blob=null
+  c.toBlob(b=>{if(red!==OB.red)return;OB.blob=b
+    const f=b&&new File([b],obIme(),{type:'image/jpeg'})
+    document.getElementById('ob-dijeli').hidden=!(f&&navigator.canShare&&navigator.canShare({files:[f]}))},'image/jpeg',.9)
+}
+const obIme=()=>`${PROP.slug||'odmoria'}-${OB.vrsta==='slobodno'?'slobodno':'objekt'}-${OB.format}-${OB.j}.jpg`
+window.obPreuzmi=()=>{
+  if(!OB.blob){toast('Slika još nije spremna');return}
+  const a=document.createElement('a');a.href=URL.createObjectURL(OB.blob);a.download=obIme();a.click()
+  setTimeout(()=>URL.revokeObjectURL(a.href),4000)
+}
+window.obPodijeli=async()=>{
+  if(!OB.blob)return
+  const f=new File([OB.blob],obIme(),{type:'image/jpeg'})
+  try{await navigator.share({files:[f],text:document.getElementById('ob-t-whatsapp')?.value||''})}catch(e){}
+}
+window.obLetak=async()=>{
+  if(!PROP)return
+  const w=window.open('','_blank')            // odmah, dok klik još vrijedi (inače ga preglednik blokira)
+  if(!w){toast('Preglednik je blokirao novi prozor — dopustite skočne prozore za ovu stranicu');return}
+  w.document.write('<p style="font:16px system-ui;padding:24px">Pripremam letak…</p>')
+  try{
+    const Q=await qrMod()
+    const qrUrl=await Q.toDataURL(publicUrl(PROP.slug),{width:600,margin:1,color:{dark:'#103D4B',light:'#FFFFFF'}})
+    const sad=amenityRows.filter(r=>r.enabled!==false).map(r=>r.name)
+    const d=O.podaci(PROP,sad,OB.j,obAdresa())
+    const foto=obFotke()[0]
+    w.document.open();w.document.write(O.letakHtml({j:OB.j,d,qrUrl,adresa:obAdresa(),foto:foto?new URL(O.urlSlike(foto),location.href).href:''}));w.document.close()
+  }catch(e){w.close();toast('Letak se nije mogao pripremiti: '+(e.message||e))}
 }
 
 // ── LIVE PREVIEW ──────────────────────────────────────

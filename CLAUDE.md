@@ -62,6 +62,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 ├── auth-greske.js           # prijevod Supabase Auth grešaka (prijava, registracija, nova lozinka, račun)
 ├── plans.js                 # rezervne vrijednosti + helperi; pravi izvor istine je tablica `plans` u bazi
 ├── jezici.js                 # jezici vodiča i javne stranice: rječnik (ključ = hrvatski tekst), t(), n(), H(), birač — vidi „Jezici za goste”
+├── objave.js                 # Linkovi i QR → Objave: slobodni termini, tekstovi (6 jezika), slika na canvasu, letak — vidi „Objave”
 ├── billing.js                # Stripe iz preglednika: billingStatus, startCheckout, openBillingPortal, povratak s plaćanja (dashboard, account)
 ├── assets/                   # landing/villa-1600.jpg i villa-900.jpg (naslovnica i prijava)
 ├── docs/napredak.md          # što je u redizajnu gotovo, a što nije — pregled za vlasnika
@@ -778,3 +779,27 @@ Sve gostovo prolazi kroz `_html_esc`. Greška slanja je samo WARNING — upit se
 uvijek spremi. Link u e-mailu: `/dashboard.html?otvori=upiti&objekt=<id>`
 (dashboard odabere objekt ako je domaćinov i nije zaključan). Lokalni test:
 lažni `vault` i `net` shemom (pg_net lokalno ne postoji).
+
+## Objave — slika, tekst i letak za promociju (listopad 2026.)
+
+Dashboard → Linkovi i QR → **Objave** (`obOtvori()`, `obNacrtaj()`,
+`obLetak()`, `otvoriObjave(od, do)`); logika u **`objave.js`** (čiste
+funkcije `slobodniTermini()`, `podaci()`, `tekstovi()`, `raspon()`,
+`terminTekst()` + `nacrtaj()` na canvasu i `letakHtml()`). Katalog/tražilica
+objekata je **odbijen** (`docs/odluke.md`, točka 19).
+
+- Ništa se ne sprema — panel nema gumb `save…`, pa nema ni trake za spremanje.
+- Jezici po planu = prvih `maxLanguages` iz `JZ.JEZICI` (kao vodič). Uvoz
+  jezika u dashboardu je **`JZ`**, ne `L` (`L` je lokalna varijabla upita).
+- Tekst je bez padeža imena i mjesta (zarez/zagrada), pa predložak vrijedi za
+  svako ime. Sadržaj na stranom jeziku ide samo ako ga rječnik `jezici.js` zna;
+  isti naziv na više jezika („Parking”) prepoznaje se po tome što ga rječnik
+  prevodi na barem jedan jezik.
+- Slika: fotografija s `crossOrigin='anonymous'` (Cloudinary šalje CORS); ako
+  canvas ipak bude „zaprljan” (`getImageData` baci grešku), crta se ponovno bez
+  fotografije i to piše ispod slike. Pisma se čekaju (`document.fonts.load`).
+- Letak se otvara u novom prozoru **odmah na klik** (inače ga preglednik
+  blokira), a sadržaj se upiše nakon QR-a. Skripta ispisa stoji **ispred**
+  Google Fonts linka i ima rezervu od 4 s — spor ili blokiran font inače
+  zaustavi skriptu i ispis se nikad ne otvori (dogodilo se u testu).
+- Pregled: praznina ili slobodan termin u 3 tjedna → gumb „Napravi objavu”.

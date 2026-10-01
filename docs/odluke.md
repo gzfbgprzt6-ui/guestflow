@@ -1002,3 +1002,70 @@ ne uspije, upit se svejedno spremi.
 - [ ] E-mail je na hrvatskom (domaćin). Pošiljatelj je Odmoria, odgovor ide gostu.
 - [ ] Privatnost: ime i kontakt gosta prolaze kroz Resend — dodati u popis
   obrađivača (točka 8b).
+
+## 19. Promocija bez kataloga — gotove objave i letak (1. 10. 2026.)
+
+### Odluka vlasnika: katalog / tražilica objekata — **ne sada**
+
+Razmatrana je tražilica kao na Bookingu (lokacija, cijena, datumi), samo za
+plaćene domaćine. **Odbijeno za sada:** prazna tražilica bez ponude izgleda kao
+mrtav projekt; obećanje „besplatne reklame” mjeri se upitima koje ne možemo
+jamčiti; platforma s tuđim oglasima nosi nove obveze (prijave lažnih oglasa,
+moderiranje, DSA). Tehnički bi bilo 2–3 dana za osnovno (mjesto, cijena, broj
+gostiju i kalendar već postoje). Ako se vrati: faza 1 = kućica „Uvrsti me u
+katalog” i uredno mjesto/regija, javno tek kad u regiji bude ~30–50 plaćenih
+objekata.
+
+### Napravljeno: Linkovi i QR → **Objave** (točke 2 i 3 prijedloga)
+
+- **Slika** (canvas, u pregledniku): objava 4:5 (1080×1350) ili story 9:16
+  (1080×1920); naslovna ili odabrana fotografija, žuta oznaka „Slobodno”,
+  datumi, noći, cijena, ime i mjesto; dolje bijela kartica s **QR kodom** i
+  kratkom adresom javne stranice („Rezervirajte izravno · bez provizije”).
+  Story ostavlja prazno gore i dolje (tamo Instagram crta svoje gumbe).
+  Preuzmi (JPG) i, na mobitelu, **Podijeli** (Instagram, WhatsApp… sa slikom).
+- **Slobodni termini iz kalendara** (sljedećih 90 dana, najmanje 2 noći ili
+  minimalni boravak) kao gumbi; „Drugi datumi…” za ručni unos. Bez kalendara
+  piše zašto nema prijedloga.
+- **Četiri teksta** na jeziku po izboru (HR, EN, DE, IT, PL, CS): Instagram (s
+  oznakama # i „link u opisu profila”), Facebook grupe, WhatsApp status,
+  oglasnik (Njuškalo — s opisom i kontaktom). Sadržaji se na stranom jeziku
+  navode samo ako ih rječnik zna (svih 28 iz kataloga zna).
+- **Letak za ispis**: A4 s četiri kartice A6 (fotografija, „Hvala što ste bili
+  naši gosti”, „Sljedeći put rezervirajte izravno”, QR, adresa, kontakt).
+- **Pregled → Na što obratiti pažnju**: praznina ili slobodan termin u sljedeća
+  3 tjedna ima gumb „Napravi objavu” koji otvori Objave s tim datumima.
+- Ništa se ne sprema i nema troška: tekst iz predložaka, slika u pregledniku.
+
+**Iskreno o Instagramu** (piše i u panelu): link u običnoj objavi nije
+klikabilan — zato slika nosi QR i adresu; u storyju se dodaje naljepnica „Link”.
+
+### Odluke koje čekaju vas
+
+- [ ] **Što je besplatno, a što plaćeno.** Sada je jedino ograničenje **broj
+  jezika po planu** (`plans.max_languages`, kao vodič: Free = HR + EN). Ako
+  želite „besplatno jedna slika i jedan tekst, plaćeno sve” (format story,
+  slobodni termini, letak), treba jedan stupac u `plans` (npr. `can_promo`) —
+  mala SQL izmjena, pa vi pokrenete.
+- [ ] Tekstovi su iz predložaka. Kad uključite ključ za prijevod (točka 18),
+  može se dodati „Napiši drukčije” (AI) — svaki poziv se tada plaća.
+- [ ] Slika nema oznaku Odmorije. Može se dodati sitna oznaka za Free plan
+  (besplatna reklama nama), kao „pokreće Odmoria” na javnoj stranici.
+
+### Sljedeće (prijedlog, nije napravljeno)
+
+1. **Gosti se vraćaju izravno** — u vodiču „Dođite opet” (+ popust domaćina),
+  „Javite mi slobodne termine za iduću godinu” s privolom, popis u dashboardu i
+  poruka svima. Treba jedna nova tablica. Samo kroz vodič i uz privolu gosta
+  (Booking ne dopušta „odvlačenje” gostiju kroz svoje poruke).
+2. **Jezične inačice javne stranice za Google** (`hreflang`) — Nijemac koji
+  traži „Ferienwohnung Vodice” nađe stranicu na njemačkom. Pola dana.
+3. Google Business profil (Maps) za apartmane uglavnom **nije dopušten** — ne
+  nuditi.
+
+### Logo (stanje, odgođeno na zahtjev vlasnika)
+
+Prijedlozi su na platnu (Artifact „Odmoria logo”): A · Luk, B · sunce na „i”
+(B1 sa zrakama, B2 izlazak), C · manje žuto sunce, veliko „O”, šest fontova.
+Preporuka: **Fraunces** (topao, mediteranski) ili **Unbounded** (najuočljiviji).
+Odluka čeka vas; ništa nije stavljeno na stranicu.
