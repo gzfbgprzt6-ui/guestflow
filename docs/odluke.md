@@ -1089,7 +1089,7 @@ Odluka čeka vas; ništa nije stavljeno na stranicu.
 ## 20. Stilovi cijele javne stranice (1. 10. 2026.) — osam, čeka vaš izbor
 
 Preview (dizajn na platnu, nije u kodu): Artifact „Odmoria — 5 stilova javne
-stranice”. Svih pet nosi **iste podatke i isti redoslijed** kao `p.html`:
+stranice” (platno, osam ploča). Svih osam nosi **iste podatke i isti redoslijed** kao `p.html`:
 zaglavlje (ime, vrsta, mjesto, gosti, sobe, kupaonice, m², cijena), riječ
 domaćina, galerija, lokacija (bez točne adrese), sadržaji i kućna pravila,
 dostupnost s kalendarom i upitom (WhatsApp / e-mail / kopiranje), u blizini,
@@ -1099,13 +1099,13 @@ prijevoz, atrakcije, recenzije, česta pitanja, podnožje s jezikom i oznakom
 1. **Priroda** — lan i maslina, Cormorant + Karla, organski oblici, pismo domaćina.
 2. **Luksuz** — crno / bjelokost / zlato, Playfair Display + Jost (Bodoni zamijenjen: pretanki potezi), puno zraka, „zatražite boravak”.
 3. **Sunce i more** — tirkiz, pijesak, koralj, Fredoka + Nunito, valovi i polaroidi.
-4. **Riviera ’70** — retro plakat, Shrikhand + Rubik + DM Mono, karta za brod, filmska vrpca.
-5. **Magazin** — švicarski urednički, Archivo + Newsreader, mreža, tablice, crveni naglasak.
+4. **Moderno** — arhitektonski minimalizam: beton i crna, narančasti naglasak, Urbanist + Instrument Sans; lijevo stupac velikih fotografija, desno podaci u blokovima (01)–(08).
+5. **Grad** — gradska signalizacija: crno i žuto, Space Grotesk + JetBrains Mono, ime kao ploča ulice, cijena kao zaslon s voznim redom, okolica kao linije podzemne (U blizini / Prijevoz / Atrakcije).
 6. **Snijeg** — alpska kuća: ledeno plava, borova zelena, Josefin Sans + Figtree, planine, staklena kartica, pahulje.
 7. **Relax** — spa: pijesak, kamen, eukaliptus, Marcellus + Albert Sans, okrugla fotografija s krugovima, puno zraka.
-8. **Majolika** — mediteranske pločice: kobalt, terakota, limun, Young Serif + Work Sans, trake pločica, rozete.
+8. **Seoska kuća** — agroturizam: kockasti stolnjak, drvena ploča s imenom, Zilla Slab + Source Serif 4 + Caveat; riječ domaćina na školskoj ploči, galerija pribodena na pluto, upit kao pismo s markom, okolica kao putokazi, recenzije kao knjiga gostiju.
 
-Vlasnik (1. 10.): „svi su mi top”.
+Vlasnik (1. 10.): „svi su mi top”. Zatim su 4, 5 i 8 (Riviera ’70, Magazin, Majolika) na zahtjev zamijenjeni novima — Moderno, Grad, Seoska kuća; stari su samo u povijesti platna.
 
 - [ ] Koje stilove prenosimo u `p.html` (domaćin bira u dashboardu → Objekt → Izgled)?
 - [ ] Jesu li stilovi za plaćene planove (točka 9 — teme za one koji plaćaju)?
