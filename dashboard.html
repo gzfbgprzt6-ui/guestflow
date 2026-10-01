@@ -227,20 +227,6 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
 .ob-kanal p { margin: 0 0 8px; font-size: 13px; color: var(--muted); }
 .ob-kanal .textarea { min-height: 150px; font-size: 14px; line-height: 1.5; }
 .ob-nap { font-size: 13px; color: var(--muted); max-width: 360px; }
-.ob-video { width: 100%; margin-top: 6px; padding-top: 16px; border-top: 1px solid var(--line); display: grid; gap: 10px; justify-items: start; }
-.ob-video h3 { margin: 0; font: 700 15px/1.3 var(--font-ui); display: flex; align-items: center; gap: 8px; }
-.ob-novo { padding: 2px 8px; border-radius: 999px; background: #FFE9A8; color: #6B4E00; font: 800 11px/1.4 var(--font-ui); letter-spacing: .06em; text-transform: uppercase; }
-.ob-file { position: relative; cursor: pointer; }
-.ob-file input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
-.ob-file:focus-within { outline: 3px solid var(--copper); outline-offset: 2px; }
-.ob-video .field { margin: 0; width: 100%; max-width: 320px; }
-.ob-video input[type=range] { width: 100%; accent-color: var(--copper); }
-#ob-video-ctl { display: grid; gap: 10px; width: 100%; }
-#ob-video-st:empty { display: none; }
-/* video mora biti u DOM-u (iPhone ga inače ne učita), ali se ne vidi */
-.ob-skriveni-video { position: fixed; left: 0; top: 0; width: 2px; height: 2px; opacity: 0; pointer-events: none; z-index: -1; }
-#ob-video-ctl[hidden], #ob-rez[hidden] { display: none; }
-.ob-rez a { text-decoration: none; }
 @media (max-width: 980px) { .ob-grid { grid-template-columns: minmax(0,1fr); } .ob-slika canvas { max-width: 300px; } }
 @media (max-width: 600px) { .ob-red { grid-template-columns: minmax(0,1fr); gap: 6px; } .ob-red > span { padding-top: 0; } }
 @media (max-width: 780px) { .pr-row { grid-template-columns: minmax(0,1fr); gap: 8px; } }
@@ -598,13 +584,8 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
   .link-url { flex-wrap: wrap; }
   .link-url span { white-space: normal; overflow-wrap: anywhere; }
 }
-/* male animacije (pokret.js) — isti stilovi kao u odmoria.css, koji dashboard ne učitava */
-.o-veselje { position: fixed; width: 0; height: 0; pointer-events: none; z-index: 300; }
-.o-veselje i { position: absolute; left: -5px; top: -5px; width: 10px; height: 10px; border-radius: 50%; background: #FFC93C; animation: o-iskra .95s cubic-bezier(.2,.7,.2,1) forwards; }
-.o-veselje .o-v-t { background: var(--copper); }
-.o-veselje .o-v-m { background: var(--peach); border-radius: 3px; }
+/* male animacije (pokret.js: kvačica „Kopirano”) — dashboard ne učitava odmoria.css */
 .o-kv { display: inline-block; }
-@keyframes o-iskra { 0% { transform: translate(0,0) scale(.3) rotate(0); opacity: 1; } 70% { opacity: 1; } 100% { transform: translate(var(--x), calc(var(--y) + 46px)) scale(1) rotate(var(--r)); opacity: 0; } }
 @keyframes o-pop { 0% { transform: scale(.6); } 60% { transform: scale(1.12); } 100% { transform: scale(1); } }
 @keyframes o-pojavi { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 @keyframes o-toast { 0% { opacity: 0; transform: translateY(18px) scale(.96); } 60% { opacity: 1; transform: translateY(-3px) scale(1.01); } 100% { opacity: 1; transform: none; } }
@@ -1284,17 +1265,6 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
               <canvas id="ob-canvas" width="1080" height="1350" role="img" aria-label="Pregled slike za objavu"></canvas>
               <div class="ob-gumbi"><button class="btn" type="button" onclick="obPreuzmi()">Preuzmi sliku</button><button class="btn secondary" type="button" id="ob-dijeli" onclick="obPodijeli()" hidden>Podijeli…</button></div>
               <p class="ob-nap" id="ob-nap">QR kod i adresa na slici vode na vašu javnu stranicu. Instagram u objavi ne otvara linkove — zato ih slika nosi.</p>
-              <div class="ob-video">
-                <h3>Pokretna objava <span class="ob-novo">novo</span></h3>
-                <p class="ob-nap">Dodajte kratak video (bazen, more, terasa) — napravimo 3 sekunde s istim natpisom i QR kodom. Video ostaje na vašem uređaju, nigdje se ne šalje.</p>
-                <label class="btn secondary small ob-file" id="ob-file-l">Odaberi video<input type="file" id="ob-video-f" accept="video/*"></label>
-                <p class="ob-nap" id="ob-video-st" role="status" aria-live="polite"></p>
-                <div id="ob-video-ctl" hidden>
-                  <div class="field"><label for="ob-poc">Početak isječka: <output id="ob-poc-v" for="ob-poc">0,0 s</output></label><input type="range" id="ob-poc" min="0" max="0" step="0.1" value="0"></div>
-                  <div class="ob-gumbi"><button class="btn small" type="button" id="ob-mp4" onclick="obNapraviVideo()">Napravi video</button><button class="btn secondary small" type="button" id="ob-gif" onclick="obNapraviGif()">Napravi GIF</button><button class="btn ghost small" type="button" onclick="obBezVidea()">Ukloni video</button></div>
-                  <div class="ob-gumbi" id="ob-rez" hidden></div>
-                </div>
-              </div>
             </div>
             <div class="card" id="ob-tekstovi" aria-live="polite"></div>
           </div>
@@ -1402,7 +1372,7 @@ import{billingStatus,startCheckout,openBillingPortal,povratakSPlacanja,cekajPlan
 import * as A from'./analitika.js'
 import * as O from'./objave.js'
 import * as JZ from'./jezici.js'
-import{veselje,kvacica}from'./pokret.js'
+import{kvacica}from'./pokret.js'
 
 const SURL='https://wtojzqjhipdfbrnmprmz.supabase.co'
 const SKEY='sb_publishable_tmZAZTDbQ7ktc1N-8y4q4w_ztAu_62F'
@@ -2960,7 +2930,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('button');if(b&&/
 // ── OBJAVE (objave.js) ────────────────────────────────────────
 // Slika (canvas) + četiri teksta + letak. Sve iz PROP, amenityRows i
 // AVAIL_ROWS — ništa se ne sprema, pa panel nema gumb „Spremi”.
-const OB={predlozak:'foto',video:null,poc:0,vrsta:'slobodno',termin:0,vlastiti:null,j:'hr',format:'post',foto:null,termini:[],qr:null,qrZa:'',slike:{},blob:null,red:0}
+const OB={predlozak:'foto',vrsta:'slobodno',termin:0,vlastiti:null,j:'hr',format:'post',foto:null,termini:[],qr:null,qrZa:'',slike:{},blob:null,red:0}
 const OB_KANALI=[
   ['instagram','Instagram','Opis ispod objave. Link u objavi nije klikabilan — stavite ga u opis profila, a u storyju dodajte naljepnicu „Link”.'],
   ['facebook','Facebook grupe','Za grupe o odmoru u Hrvatskoj — na jeziku grupe (npr. njemački za „Kroatien Urlaub”).'],
@@ -2990,7 +2960,7 @@ function obTermin(){
 /** Otvori panel (iz navigacije ili s Pregleda). `osvjezi` = promijenjen objekt. */
 function obOtvori(osvjezi){
   if(!PROP)return
-  if(osvjezi||OB.za!==PROP.id){OB.za=PROP.id;OB.foto=obFotke()[0]||null;OB.qr=null;OB.qrZa='';if(OB.video)window.obBezVidea(true)}
+  if(osvjezi||OB.za!==PROP.id){OB.za=PROP.id;OB.foto=obFotke()[0]||null;OB.qr=null;OB.qrZa=''}
   OB.termini=AVAIL_ROWS.length?O.slobodniTermini(new Set(AVAIL_ROWS.map(r=>r.date)),A.danas(),{dana:90,minNoci:obMinNoci()}):[]
   if(OB.termin!=='vlastiti'&&!(OB.termin<OB.termini.length))OB.termin=OB.termini.length?0:'vlastiti'
   if(!obJezici().includes(OB.j))OB.j='hr'
@@ -3075,7 +3045,6 @@ async function obNacrtaj(){
   if(red!==OB.red)return                       // u međuvremenu je zatražen novi crtež
   const c=document.getElementById('ob-canvas'),nap=document.getElementById('ob-nap')
   const o={format:OB.format,predlozak:OB.predlozak,j:OB.j,d,termin,foto,qr,adresa:obAdresa()}
-  OB.zadnji={...o}                             // pokretna objava crta isto, samo s videom umjesto fotografije
   O.nacrtaj(c,o)
   let upoz=''
   try{c.getContext('2d').getImageData(0,0,1,1)}
@@ -3086,142 +3055,6 @@ async function obNacrtaj(){
   c.toBlob(b=>{if(red!==OB.red)return;OB.blob=b
     const f=b&&new File([b],obIme(),{type:'image/jpeg'})
     document.getElementById('ob-dijeli').hidden=!(f&&navigator.canShare&&navigator.canShare({files:[f]}))},'image/jpeg',.9)
-}
-// ── pokretna objava: video → 3 s (MP4/WebM) ili GIF, sve u pregledniku ──
-const OB_TRAJANJE=3
-const obVideoSt=t=>{document.getElementById('ob-video-st').textContent=t||''}
-document.getElementById('ob-video-f').addEventListener('change',async e=>{
-  const f=e.target.files?.[0];e.target.value='';if(!f)return
-  window.obBezVidea(true)
-  obVideoSt('Učitavam video…')
-  // iPhone (Safari) video ne učita dok nije na stranici i dok se ne pokrene:
-  // zato je u DOM-u (nevidljiv), bez zvuka, inline, i odmah se pokrene pa zaustavi.
-  const v=document.createElement('video')
-  v.muted=true;v.defaultMuted=true;v.setAttribute('muted','');v.playsInline=true;v.setAttribute('playsinline','');v.setAttribute('webkit-playsinline','')
-  v.preload='auto';v.loop=false;v.className='ob-skriveni-video';v.setAttribute('aria-hidden','true')
-  document.body.appendChild(v)
-  v.src=URL.createObjectURL(f);v.load()
-  const ok=await new Promise(res=>{
-    let gotovo=false;const kraj=x=>{if(gotovo)return;gotovo=true;clearInterval(prov);res(x)}
-    ;['loadeddata','canplay','playing'].forEach(ev=>v.addEventListener(ev,()=>v.readyState>=2&&kraj(true)))
-    v.addEventListener('error',()=>kraj(false))
-    const prov=setInterval(()=>{if(v.readyState>=2)kraj(true)},250)
-    setTimeout(()=>kraj(v.readyState>=2),20000)
-    v.play().then(()=>{if(!gotovo)return;v.pause()}).catch(()=>{})
-  })
-  v.pause()
-  if(ok&&!isFinite(v.duration)){                      // WebM bez zapisanog trajanja: skok na kraj ga otkrije
-    await new Promise(res=>{v.ondurationchange=()=>isFinite(v.duration)&&res();v.currentTime=1e7;setTimeout(res,3000)})
-    v.ondurationchange=null;await obPricekaj(v,0)
-  }
-  if(!ok||!v.videoWidth||!isFinite(v.duration)){URL.revokeObjectURL(v.src);v.remove();obVideoSt('Ovaj video preglednik ne može otvoriti. Na iPhoneu: Postavke → Kamera → Formati → „Najkompatibilnije”, ili pošaljite video sebi WhatsAppom pa ga spremite.');return}
-  OB.video=v;OB.poc=0
-  const r=document.getElementById('ob-poc');r.max=String(Math.max(0,Math.floor((v.duration-OB_TRAJANJE)*10)/10));r.value='0'
-  r.disabled=!(v.duration>OB_TRAJANJE+.05)
-  document.getElementById('ob-poc-v').textContent='0,0 s'
-  document.getElementById('ob-video-ctl').hidden=false;document.getElementById('ob-rez').hidden=true
-  document.getElementById('ob-file-l').firstChild.textContent='Drugi video'
-  obVideoSt(v.duration<OB_TRAJANJE?`Video traje ${v.duration.toFixed(1).replace('.',',')} s — ponavljat će se.`:'Pregled lijevo se vrti. Odaberite početak i napravite video ili GIF.')
-  obPetlja()
-})
-document.getElementById('ob-poc').addEventListener('input',e=>{
-  OB.poc=Number(e.target.value)||0
-  document.getElementById('ob-poc-v').textContent=OB.poc.toFixed(1).replace('.',',')+' s'
-  if(OB.video){OB.video.currentTime=OB.poc}
-})
-/* Pregled u panelu: video se vrti od početka isječka 3 s ukrug (≈ 24 sličice/s). */
-function obPetlja(){
-  const v=OB.video;if(!v)return
-  cancelAnimationFrame(OB.raf);let zadnje=0
-  v.currentTime=OB.poc;v.play().catch(()=>{})
-  const korak=t=>{
-    if(OB.video!==v)return
-    if(!document.getElementById('section-objave').classList.contains('active')){v.pause();OB.raf=requestAnimationFrame(korak);return}
-    if(v.paused&&!OB.snima)v.play().catch(()=>{})
-    if(v.currentTime>=Math.min(v.duration,OB.poc+OB_TRAJANJE)-.04||v.ended)v.currentTime=OB.poc
-    if(t-zadnje>40&&OB.zadnji&&!OB.snima){zadnje=t;O.nacrtaj(document.getElementById('ob-canvas'),{...OB.zadnji,foto:v})}
-    OB.raf=requestAnimationFrame(korak)
-  }
-  OB.raf=requestAnimationFrame(korak)
-}
-window.obBezVidea=(tiho)=>{
-  cancelAnimationFrame(OB.raf)
-  if(OB.video){OB.video.pause();URL.revokeObjectURL(OB.video.src);OB.video.remove()}
-  OB.video=null
-  if(OB.rezUrl){URL.revokeObjectURL(OB.rezUrl);OB.rezUrl=null}
-  document.getElementById('ob-video-ctl').hidden=true
-  document.getElementById('ob-file-l').firstChild.textContent='Odaberi video'
-  if(tiho!==true){obVideoSt('');obNacrtaj()}
-}
-const obPricekaj=(v,t)=>new Promise(res=>{const gotovo=()=>{v.removeEventListener('seeked',gotovo);res()};v.addEventListener('seeked',gotovo);v.currentTime=t;setTimeout(gotovo,1500)})
-function obRezultat(blob,ime,opis){
-  if(OB.rezUrl)URL.revokeObjectURL(OB.rezUrl)
-  OB.rezUrl=URL.createObjectURL(blob);OB.rezBlob=blob;OB.rezIme=ime
-  const el=document.getElementById('ob-rez');el.hidden=false
-  const f=new File([blob],ime,{type:blob.type})
-  const dijeli=navigator.canShare&&navigator.canShare({files:[f]})
-  el.innerHTML=`<a class="btn small" href="${OB.rezUrl}" download="${esc(ime)}">Preuzmi ${esc(opis)}</a>${dijeli?'<button class="btn secondary small" type="button" onclick="obDijeliRez()">Podijeli…</button>':''}`
-  el.classList.add('ob-rez')
-  veselje(el)
-}
-window.obDijeliRez=async()=>{try{await navigator.share({files:[new File([OB.rezBlob],OB.rezIme,{type:OB.rezBlob.type})],text:document.getElementById('ob-t-whatsapp')?.value||''})}catch(e){}}
-const obZauzet=b=>{['ob-mp4','ob-gif'].forEach(id=>document.getElementById(id).disabled=b);OB.snima=b}
-/* Video: canvas → MediaRecorder. MP4 gdje preglednik zna (Chrome, Safari), inače WebM. */
-window.obNapraviVideo=async()=>{
-  const v=OB.video;if(!v||!OB.zadnji||OB.snima)return
-  const tip=['video/mp4;codecs=avc1.42E01E','video/mp4','video/webm;codecs=vp9','video/webm'].find(t=>window.MediaRecorder&&MediaRecorder.isTypeSupported(t))
-  if(!tip){obVideoSt('Ovaj preglednik ne može snimiti video. Pokušajte GIF ili Chrome/Safari.');return}
-  obZauzet(true);obVideoSt('Snimam 3 sekunde…')
-  const c=document.createElement('canvas'),o={...OB.zadnji,foto:v}
-  O.nacrtaj(c,o)
-  const tok=c.captureStream(30),rec=new MediaRecorder(tok,{mimeType:tip,videoBitsPerSecond:8e6}),dijelovi=[]
-  rec.ondataavailable=e=>{if(e.data.size)dijelovi.push(e.data)}
-  const kraj=new Promise(res=>rec.onstop=res)
-  v.pause();await obPricekaj(v,OB.poc)
-  rec.start(250);await v.play().catch(()=>{})
-  const t0=performance.now()
-  await new Promise(res=>{const crtaj=()=>{
-    const pr=(performance.now()-t0)/1000
-    if(v.ended||v.currentTime>=v.duration-.04)v.currentTime=OB.poc     // kratak video se ponavlja
-    O.nacrtaj(c,o)
-    if(pr>=OB_TRAJANJE)return res()
-    requestAnimationFrame(crtaj)};crtaj()})
-  rec.stop();await kraj;tok.getTracks().forEach(t=>t.stop())
-  const mp4=tip.startsWith('video/mp4'),blob=new Blob(dijelovi,{type:mp4?'video/mp4':'video/webm'})
-  obRezultat(blob,obIme().replace(/\.jpg$/,mp4?'.mp4':'.webm'),mp4?'video (MP4)':'video (WebM)')
-  obVideoSt(`Gotovo: ${(blob.size/1048576).toFixed(1).replace('.',',')} MB.`+(mp4?' MP4 prima Instagram, Facebook i WhatsApp.':' Ovaj preglednik sprema samo WebM — Instagram ga ne prima. Za MP4 otvorite dashboard u Chromeu ili Safariju (i na mobitelu).'))
-  obZauzet(false);obPetlja()
-}
-/* GIF: 10 sličica/s, upola manje (540 px širine) — za WhatsApp, web i e-mail. */
-let GIFMOD=null
-window.obNapraviGif=async()=>{
-  const v=OB.video;if(!v||!OB.zadnji||OB.snima)return
-  obZauzet(true);obVideoSt('Pripremam GIF…')
-  try{
-    const G=GIFMOD||(GIFMOD=await import('https://esm.sh/gifenc@1.0.3'))
-    const velika=document.createElement('canvas'),o={...OB.zadnji,foto:v}
-    O.nacrtaj(velika,o)
-    const w=Math.round(velika.width/2),h=Math.round(velika.height/2)
-    const mala=document.createElement('canvas');mala.width=w;mala.height=h
-    const mx=mala.getContext('2d',{willReadFrequently:true})
-    const gif=G.GIFEncoder(),FPS=10,N=Math.round(OB_TRAJANJE*FPS)
-    v.pause()
-    for(let i=0;i<N;i++){
-      const t=OB.poc+((i/FPS)%Math.max(.1,Math.min(OB_TRAJANJE,v.duration-OB.poc)))
-      await obPricekaj(v,t)
-      O.nacrtaj(velika,o);mx.drawImage(velika,0,0,w,h)
-      const px=mx.getImageData(0,0,w,h).data
-      const pal=G.quantize(px,256),idx=G.applyPalette(px,pal)
-      gif.writeFrame(idx,w,h,{palette:pal,delay:1000/FPS})
-      obVideoSt(`Pripremam GIF… ${Math.round((i+1)/N*100)} %`)
-      if(i%3===2)await new Promise(r=>setTimeout(r))                  // ne zamrzni stranicu
-    }
-    gif.finish()
-    const blob=new Blob([gif.bytes()],{type:'image/gif'})
-    obRezultat(blob,obIme().replace(/\.jpg$/,'.gif'),'GIF')
-    obVideoSt(`Gotovo: ${(blob.size/1048576).toFixed(1).replace('.',',')} MB, ${w}×${h}. GIF je za WhatsApp, web i e-mail — Instagram i Facebook bolje rade s videom.`)
-  }catch(e){obVideoSt('GIF se nije mogao napraviti: '+(e.message||e))}
-  obZauzet(false);obPetlja()
 }
 const obIme=()=>`${PROP.slug||'odmoria'}-${OB.vrsta==='slobodno'?'slobodno':'objekt'}-${OB.format}-${OB.j}.jpg`
 window.obPreuzmi=()=>{

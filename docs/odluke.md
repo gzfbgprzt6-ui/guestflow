@@ -1046,13 +1046,9 @@ klikabilan — zato slika nosi QR i adresu; u storyju se dodaje naljepnica „Li
   (topli papir, fotografija u okviru, crtkana crta), *Luk* (fotografija u
   obliku kamenog luka na petrolu). Naslov u pismu Fraunces, žuta
   **naljepnica-sunce s cijenom**, oznaka „☀ Slobodno · 4 noći”.
-- **Pokretna objava:** domaćin odabere video (npr. bazen) i početak
-  isječka → **3 sekunde** s istim natpisom i QR-om, kao **video** (MP4 gdje
-  preglednik zna — Chrome, Safari; inače WebM) ili **GIF** (540 px, 10
-  sličica/s, ~1 MB). Video se obrađuje u pregledniku i **nigdje se ne šalje**.
-  Iskreno u panelu: **Instagram ne prima GIF** (ni Facebook ga dobro ne
-  prikazuje) — za njih je MP4; GIF je za WhatsApp, web i e-mail.
-  GIF koder: `gifenc` (MIT) s esm.sh, kao QR.
+- ~~Pokretna objava (video → MP4 ili GIF)~~ — napravljena, pa **maknuta na
+  vaš zahtjev** (moglo bi čudno izgledati). Kod je sačuvan u povijesti gita
+  (commit `a9f5dcd`) ako je poželite vratiti.
 - **Male animacije** (`pokret.js` + `odmoria.css`, samo kad korisnik nije
   isključio pokret): sunčeve iskrice kad gost pošalje upit, ocjenu ili podatke
   za prijavu, i kad se vodič otključa; kvačica „✓ Kopirano” na gumbima;
@@ -1065,7 +1061,7 @@ klikabilan — zato slika nosi QR i adresu; u storyju se dodaje naljepnica „Li
 - [ ] **Što je besplatno, a što plaćeno.** Sada je jedino ograničenje **broj
   jezika po planu** (`plans.max_languages`, kao vodič: Free = HR + EN). Ako
   želite „besplatno jedna slika i jedan tekst, plaćeno sve” (format story,
-  slobodni termini, izgledi, video/GIF, letak), treba jedan stupac u `plans` (npr. `can_promo`) —
+  slobodni termini, izgledi, letak), treba jedan stupac u `plans` (npr. `can_promo`) —
   mala SQL izmjena, pa vi pokrenete.
 - [ ] Tekstovi su iz predložaka. Kad uključite ključ za prijevod (točka 18),
   može se dodati „Napiši drukčije” (AI) — svaki poziv se tada plaća.

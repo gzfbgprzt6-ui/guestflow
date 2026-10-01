@@ -299,8 +299,7 @@ export const PREDLOSCI = { foto: 'Fotografija', razglednica: 'Razglednica', luk:
 const NASLOV = (v) => `600 ${v}px Fraunces, Georgia, serif`
 
 /**
- * Nacrta objavu. o = { format, predlozak, j, d (podaci), termin, foto (Image|Video|null), qr (canvas|null), adresa }
- * Isti crtež služi i za svaku sličicu videa/GIF-a (foto = <video>).
+ * Nacrta objavu. o = { format, predlozak, j, d (podaci), termin, foto (Image|null), qr (canvas|null), adresa }
  */
 export function nacrtaj(canvas, o) {
   const [W, H] = FORMATI[o.format] || FORMATI.post

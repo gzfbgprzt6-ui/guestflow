@@ -808,19 +808,10 @@ objekata je **odbijen** (`docs/odluke.md`, točka 19).
   s cijenom; naslov u pismu Fraunces (dashboard ga već učitava zbog tema).
   Broj i jedinica vežu se tvrdim razmakom (`\u00a0`), a `prelomi()` lomi samo
   na običnom razmaku — inače „120 / m²” u dva reda.
-- **Pokretna objava:** `<video>` iz odabrane datoteke (object URL, ne šalje se
-  nigdje); `nacrtaj()` prima i video (`videoWidth`). Pregled se vrti u
-  `obPetlja()` (rAF, ~24/s, staje kad panel nije aktivan). Video:
-  `canvas.captureStream` + `MediaRecorder` (MP4 ako `isTypeSupported`, inače
-  WebM). GIF: `gifenc` s esm.sh, sličice traženjem (`seeked`), 540 px, 10/s.
-  WebM bez zapisanog trajanja (`duration = Infinity`) — skok na kraj ga otkrije.
-  Promjena objekta briše video (`obBezVidea`).
-- **Zamka (iPhone):** Safari ne učita video koji nije u DOM-u i nije pokrenut —
-  `loadeddata` nikad ne stigne. Zato je `<video>` dodan u `body` (razred
-  `.ob-skriveni-video`, nevidljiv), `muted` + `playsinline`, `load()` pa
-  `play()`. I **poruka stanja (`#ob-video-st`) mora biti izvan skrivenog
-  dijela** — bila je unutra, pa domaćin na mobitelu nije vidio ni „Učitavam”
-  ni grešku („ništa se ne dogodi”).
+- **Pokretna objava (video → MP4/GIF) je napravljena pa maknuta** na
+  zahtjev vlasnika (1. 10. 2026.) — kod je u povijesti gita (commit `a9f5dcd`).
+  Ako se vrati: iPhone ne učita `<video>` koji nije u DOM-u i nije pokrenut, a
+  poruka stanja mora biti izvan skrivenog dijela.
 
 ## Male animacije (listopad 2026.)
 
@@ -830,4 +821,5 @@ učitava). **Sve pod `prefers-reduced-motion: no-preference`**, a `veselje()`
 sam provjeri postavku — testovi rade s `reducedMotion:'reduce'`, pa iskrica
 tamo namjerno nema. `pokret.js` je u predmemoriji service workera (`sw.js`,
 `VERZIJA` sada `odmoria-vodic-3`). Dashboard: svaki gumb čiji natpis počinje s
-„Kopiraj” sam dobije kvačicu (jedan slušač na `document`).
+„Kopiraj” sam dobije kvačicu (jedan slušač na `document`); iskrice u
+dashboardu nema.
