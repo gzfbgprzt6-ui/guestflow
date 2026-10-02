@@ -1413,7 +1413,9 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
 <dialog class="dirty-dlg" id="osm-dlg" aria-labelledby="osm-t">
   <h2 id="osm-t">Mjesta u blizini</h2>
   <p>Plaže, restorani, kafići, trgovine i ljekarna oko vašeg objekta. Označite što želite preporučiti — poslije ih možete urediti.</p>
-  <form class="tim-novi" id="osm-forma" onsubmit="event.preventDefault();traziOsm()"><div class="field"><label for="osm-upit">Gdje tražiti</label><input class="input" id="osm-upit" autocomplete="off"></div><button class="btn secondary" type="submit">Traži</button></form>
+  <form class="tim-novi" id="osm-forma" onsubmit="event.preventDefault();traziOsm()"><div class="field"><label for="osm-upit">Gdje tražiti <span class="optional">adresa ili mjesto</span></label><input class="input" id="osm-upit" autocomplete="off" placeholder="Put Gaćeleza 5, Vodice"></div><button class="btn secondary" type="submit" id="osm-trazi">Traži</button></form>
+  <p class="helper" style="margin:6px 0 0">Ulica i broj pa mjesto, ili samo mjesto — npr. „Vodice, Hrvatska”. Ako adresa nije pronađena, traži se po mjestu.</p>
+  <p class="helper" id="osm-gdje" style="margin:10px 0 0" hidden></p>
   <div class="kopija-izbor" id="osm-lista" style="margin-top:14px"></div>
   <p class="helper" id="osm-st" role="status" style="margin:12px 0 0"></p>
   <div class="dirty-dlg__act" style="margin-top:18px">
@@ -3343,24 +3345,29 @@ window.otvoriOsm=()=>{
   if(!PROP)return
   const adr=(SECTION&&SECTION.address||'').trim(),mj=(PROP.location||'').trim()
   document.getElementById('osm-upit').value=[adr,mj].filter(Boolean).join(', ')||PROP.name||''
-  document.getElementById('osm-lista').innerHTML='';document.getElementById('osm-st').textContent=''
+  document.getElementById('osm-lista').innerHTML='';document.getElementById('osm-st').textContent='';document.getElementById('osm-gdje').hidden=true
   document.getElementById('osm-da').disabled=true
   document.getElementById('osm-dlg').showModal()
   if(document.getElementById('osm-upit').value)traziOsm()
 }
+let OSM_RED=0
 window.traziOsm=async()=>{
-  const upit=v('osm-upit'),st=document.getElementById('osm-st'),el=document.getElementById('osm-lista')
-  if(!upit){st.textContent='Upišite adresu ili mjesto.';return}
-  st.textContent='Tražim…';el.innerHTML='';document.getElementById('osm-da').disabled=true
+  const upit=v('osm-upit'),st=document.getElementById('osm-st'),el=document.getElementById('osm-lista'),gdje=document.getElementById('osm-gdje'),gumb=document.getElementById('osm-trazi')
+  if(!upit){st.textContent='Upišite adresu ili mjesto, '+OSMM.PRIMJER+'.';return}
+  const moj=++OSM_RED   // stariji odgovor (npr. nakon drugog klika) se zanemaruje
+  el.innerHTML='';gdje.hidden=true;document.getElementById('osm-da').disabled=true;gumb.disabled=true
   try{
-    const r=await OSMM.predlozi(upit,(PROP.location||'').trim())
-    if(!r.centar){st.textContent='To mjesto nije pronađeno. Upišite mjesto ili ulicu drukčije (npr. „Vodice, Hrvatska”).';return}
+    const r=await OSMM.predlozi(upit,(PROP.location||'').trim(),fetch,t=>{if(moj===OSM_RED)st.textContent=t})
+    if(moj!==OSM_RED)return
+    if(!r.centar){st.textContent='Ta adresa nije pronađena. Upišite je drukčije, '+OSMM.PRIMJER+'.';return}
+    gdje.hidden=false;gdje.textContent='Tražim oko: '+r.centar.naziv
     const ima=new Set(guideRows.map(x=>isti(x.name)))
     OSM=r.mjesta.filter(x=>!ima.has(isti(x.name)))
-    if(!OSM.length){st.textContent=r.mjesta.length?'Sva pronađena mjesta već su u vašim preporukama.':'U blizini nije pronađeno ništa. Pokušajte s većim mjestom.';return}
+    if(!OSM.length){st.textContent=r.mjesta.length?'Sva pronađena mjesta već su u vašim preporukama.':'U blizini nije pronađeno ništa. Pokušajte sa samim mjestom, npr. „Vodice, Hrvatska”.';return}
     el.innerHTML=OSM.map((x,i)=>`<label><input type="checkbox" value="${i}" checked>${x.icon} ${esc(x.name)}<small>${esc(x.category)} · ${esc(x.distance)}</small></label>`).join('')
     st.textContent='';document.getElementById('osm-da').disabled=false
-  }catch(e){st.textContent=e&&e.message||'Popis mjesta trenutno nije dostupan.'}
+  }catch(e){if(moj===OSM_RED)st.textContent=e&&e.message||'Popis mjesta trenutno nije dostupan.'}
+  finally{if(moj===OSM_RED)gumb.disabled=false}
 }
 window.dodajOsm=async()=>{
   const odabrano=[...document.querySelectorAll('#osm-lista input:checked')].map(i=>OSM[+i.value]).filter(Boolean)

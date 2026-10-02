@@ -14,7 +14,31 @@
 // ============================================================================
 
 const NOMINATIM = 'https://nominatim.openstreetmap.org/search'
-const OVERPASS = ['https://overpass-api.de/api/interpreter', 'https://overpass.kumi.systems/api/interpreter']
+// Javni Overpass poslužitelji su često preopterećeni i znaju držati zahtjev
+// otvoren bez kraja — zato svaki ima vremensko ograničenje i rezervu.
+const OVERPASS = ['https://overpass-api.de/api/interpreter', 'https://overpass.private.coffee/api/interpreter',
+  'https://overpass.kumi.systems/api/interpreter']
+const ROK_NOMINATIM = 10000, ROK_OVERPASS = 15000
+export const PRIMJER = 'npr. „Vodice, Hrvatska” ili „Put Gaćeleza 5, Vodice”'
+
+// fetch s rokom: kad istekne, zahtjev se prekine (AbortController)
+async function sRokom(f, url, opts, ms) {
+  const c = typeof AbortController !== 'undefined' ? new AbortController() : null
+  const t = c && setTimeout(() => c.abort(), ms)
+  try { return await f(url, c ? { ...opts, signal: c.signal } : opts) }
+  finally { if (t) clearTimeout(t) }
+}
+
+// „Ulica 5, Mjesto, Hrvatska” → redom sve kraći upiti, pa samo mjesto objekta
+export function varijante(upit, mjesto = '') {
+  const dijelovi = String(upit || '').split(',').map(x => x.trim()).filter(Boolean)
+  const out = [dijelovi.join(', ')]
+  if (dijelovi.length) out.push(dijelovi.map((x, i) => i === 0 ? x.replace(/\s+(\d+[a-z]?|bb)$/i, '') : x).join(', '))
+  for (let i = 1; i < dijelovi.length; i++) out.push(dijelovi.slice(i).join(', '))
+  if (mjesto) out.push(mjesto)
+  const drzava = /^(hrvatska|croatia|kroatien|croazia|chorwacja|chorvatsko|republika hrvatska)$/i
+  return [...new Set(out.filter(x => x && x.length >= 2 && !drzava.test(x)))]
+}
 
 // vrsta → kategorija (hrvatski, kao u vodiču), ikona, koliko najviše
 export const VRSTE = [
@@ -27,7 +51,7 @@ export const VRSTE = [
 
 export function upitOverpass(lat, lon, r = 2500) {
   const o = `(around:${Math.round(r)},${(+lat).toFixed(6)},${(+lon).toFixed(6)})`
-  return `[out:json][timeout:20];(` +
+  return `[out:json][timeout:14];(` +
     `nwr${o}["natural"="beach"]["name"];` +
     `nwr${o}["leisure"="beach_resort"]["name"];` +
     `nwr${o}["amenity"~"^(restaurant|cafe|bar|ice_cream|pharmacy)$"]["name"];` +
@@ -77,24 +101,32 @@ export function odaberi(elementi, centar, mjesto = '') {
 
 export async function geokodiraj(upit, f = fetch) {
   const u = `${NOMINATIM}?format=jsonv2&limit=1&accept-language=hr&q=${encodeURIComponent(upit)}`
-  const r = await f(u, { headers: { Accept: 'application/json' } })
-  if (!r.ok) throw new Error('Pretraga mjesta trenutno ne radi (' + r.status + ').')
+  let r
+  try { r = await sRokom(f, u, { headers: { Accept: 'application/json' } }, ROK_NOMINATIM) }
+  catch { throw new Error('Pretraga adrese se ne javlja. Provjerite internet i pokušajte ponovno.') }
+  if (!r.ok) throw new Error('Pretraga adrese trenutno ne radi (' + r.status + '). Pokušajte za minutu.')
   const d = await r.json()
   if (!d || !d[0]) return null
-  return { lat: +d[0].lat, lon: +d[0].lon, naziv: d[0].display_name || upit }
+  // država, županija ili regija nisu mjesto — oko njihova središta nema smisla tražiti
+  if (d[0].place_rank != null && +d[0].place_rank < 12) return null
+  return { lat: +d[0].lat, lon: +d[0].lon, naziv: d[0].display_name || upit, upit }
 }
 
-/** Cijeli tijek: upit (adresa ili mjesto) → { centar, mjesta } */
-export async function predlozi(upit, mjesto = '', f = fetch) {
-  const c = await geokodiraj(upit, f)
+/** Cijeli tijek: upit (adresa ili mjesto) → { centar, mjesta }.
+    napredak(tekst) javlja korak, da domaćin vidi da se nešto događa. */
+export async function predlozi(upit, mjesto = '', f = fetch, napredak = () => {}) {
+  let c = null
+  napredak('Tražim adresu…')
+  for (const q of varijante(upit, mjesto)) { c = await geokodiraj(q, f); if (c) break }
   if (!c) return { centar: null, mjesta: [] }
-  for (const url of OVERPASS) {
+  for (let i = 0; i < OVERPASS.length; i++) {
+    napredak(i ? `Prvi poslužitelj se ne javlja, pokušavam drugi (${i + 1}/${OVERPASS.length})…` : 'Tražim plaže, restorane i trgovine u blizini…')
     try {
-      const r = await f(url, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'data=' + encodeURIComponent(upitOverpass(c.lat, c.lon)) })
+      const r = await sRokom(f, OVERPASS[i], { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'data=' + encodeURIComponent(upitOverpass(c.lat, c.lon)) }, ROK_OVERPASS)
       if (!r.ok) throw new Error('Overpass ' + r.status)
       const d = await r.json()
       return { centar: c, mjesta: odaberi(d.elements, c, mjesto) }
     } catch { /* sljedeći poslužitelj */ }
   }
-  throw new Error('Popis mjesta trenutno nije dostupan. Pokušajte za minutu.')
+  throw new Error('Poslužitelji OpenStreetMapa su trenutno preopterećeni. Pokušajte za nekoliko minuta — ili dodajte mjesta ručno („+ Dodaj mjesto”).')
 }

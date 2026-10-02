@@ -896,7 +896,13 @@ izmjene (`MutationObserver`: paneli, toast, poruke; `confirm`/`alert` omotani).
   Kategorije su hrvatske i postoje u `jezici.js` (`Plaže`, `Restorani`,
   `Kafići`, `Trgovine`, `Ljekarna`); udaljenost „N min pješice/autom” (vodič je
   prevodi). Upis kao ručni (`local_places`), isti naziv se preskače, limit
-  plana provodi baza. Natpis „© OpenStreetMap suradnici” u prozoru je obavezan
+  plana provodi baza. **Javni Overpass zna visjeti bez odgovora** (domaćin je
+  vidio samo „Tražim…”): svaki zahtjev ima rok (`sRokom`, AbortController —
+  Nominatim 10 s, Overpass 15 s) i tri poslužitelja redom; dijalog javlja
+  korak (`napredak`), stariji odgovor se zanemaruje (`OSM_RED`). Adresa koja
+  nije nađena skraćuje se (`varijante()`: bez kućnog broja, pa bez ulice, pa
+  mjesto objekta), a rezultat razine države/županije (`place_rank < 12`) se
+  odbija. Natpis „© OpenStreetMap suradnici” u prozoru je obavezan
   (ODbL). Iz okruženja za razvoj OSM nije dostupan — testirano lažnim
   odgovorima; pravi poziv provjeriti na Previewu.
 - **Automatski e-mail gostu** (`sql/add-guest-emails.sql`): stupci
