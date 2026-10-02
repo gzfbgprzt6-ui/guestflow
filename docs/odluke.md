@@ -1119,21 +1119,109 @@ eVisitor, spaja se s Rentliom), **mVisitor / službena eVisitor aplikacija**
 **Lodgify, Smoobu** (web stranica objekta + channel manager).
 
 Gdje zaostajemo (stanje koda, ne želje):
-- [ ] **iCal samo uvoz** — nema izvoza (`.ics` feed). Rezervacija napravljena u
-  Odmoriji ne zatvara dane na Bookingu/Airbnbu → rizik dvostruke rezervacije.
+- [x] **iCal samo uvoz** — RIJEŠENO (točka 22): izvoz `/kalendar/<token>.ics`.
+  Čeka `sql/add-ical-export.sql` u Supabaseu.
 - [ ] **eVisitor** — podatke skupljamo, ali ih ne šaljemo (domaćin prepisuje /
-  CSV). Nema skeniranja isprave. Chekin, Rentlio i mVisitor šalju sami.
+  CSV). Nema skeniranja isprave. Chekin, Rentlio i mVisitor šalju sami. → točka 23.
 - [ ] **Nema automatskih poruka gostu** (link vodiča X dana prije dolaska,
-  podsjetnik, upit za recenziju) — domaćin šalje ručno.
-- [ ] **Preporuke se upisuju ručno** — Hostfully ih puni iz Google Places.
-- [ ] **Nema predložaka/dijeljenja sadržaja među objektima** (Touch Stay „tags”).
-- [ ] **Nema aplikacije ni push obavijesti za domaćina** — samo e-mail o upitu.
-- [ ] **Bez timskog pristupa** (suvlasnik, agencija) osim linka za čistačicu.
+  podsjetnik, upit za recenziju) — domaćin šalje ručno. → točka 24.
+- [ ] **Preporuke se upisuju ručno** — Hostfully ih puni iz Google Places. → točka 25.
+- [x] **Dijeljenje sadržaja među objektima** — RIJEŠENO: Objekt → Osnovno →
+  „Preuzmi sadržaj iz drugog objekta” (bez šifri, Wi-Fija i adrese).
+- [ ] **Nema aplikacije ni push obavijesti za domaćina** — samo e-mail o upitu. → točka 26.
+- [x] **Timski pristup** — RIJEŠENO (točka 22): Linkovi i QR → Suradnici.
+  Čeka `sql/add-team-access.sql` u Supabaseu.
 - [ ] **Teme/stilovi javne stranice nisu u `p.html`** (točka 20); nema vlastite
-  domene po objektu.
-- [ ] **Dashboard, naslovnica i pravni tekst samo na hrvatskom.**
+  domene po objektu. Vlasnik (2. 10.): stilove tek treba proći, nisu konačni.
+- [x] **Domaćinov dio na engleskom** — RIJEŠENO (točka 22): dashboard, prijava,
+  registracija, postavljanje, dodavanje objekta i račun (prekidač HR · EN).
+  I dalje samo hrvatski: naslovnica, Pomoć, pravni tekst, `c.html`, e-mailovi.
 
 Što treba uključiti da postojeće proradi do kraja: SQL koraci sigurnosti
 (točka 0), `ANTHROPIC_API_KEY` (prijevodi), Resend u Vaultu (e-mail o upitu),
 `sql/auto-ical-sync.sql` + `CRON_SECRET`, domena `odmoria.com`, Supabase Pro
 (pauziranje), podaci pružatelja usluge i ispravak pravnih tekstova (točka 8).
+
+## 22. Napravljeno 2. 10. 2026. — što treba pokrenuti
+
+Kod je na grani; da proradi, u Supabase SQL editoru pokrenuti (oba su
+idempotentna, ne diraju postojeće politike ni podatke):
+
+- [ ] **`sql/add-ical-export.sql`** — izvoz kalendara. Domaćin u Boravci →
+  Sinkronizacija dobije dva linka (za Booking i za Airbnb) i zalijepi ih u
+  „Uvezi kalendar”. Link nosi samo datume (bez imena). Dani koji su došli s
+  Bookinga ne vraćaju se Bookingu (isto za Airbnb). Testirano na lokalnom
+  Postgresu i u pregledniku.
+- [ ] **`sql/add-team-access.sql`** — suradnici. Vlasnik pozove (link),
+  suradnik se prijavi svojim računom. Suradnik smije sve oko objekta osim:
+  obrisati ga, preuzeti, mijenjati pretplatu i pozivati druge. Limiti su
+  vlasnikovi. SQL samo DODAJE politike (Postgres ih spaja s OR) — postojeće
+  se ne mijenjaju. Testirano na lokalnom Postgresu (tuđi objekt, preuzimanje,
+  brisanje, pozivanje, iskorištena pozivnica, anonimni).
+- [ ] Odluka: koliko suradnika po planu? Sada nema ograničenja.
+- [ ] Engleski za domaćina: e-mailovi (Supabase potvrda računa, e-mail o upitu)
+  i dalje su na hrvatskom; predlošci se mijenjaju u Supabaseu / `add-inquiry-email.sql`.
+
+## 23. eVisitor — slanje umjesto domaćina: što pravno povlači
+
+Tehnički postoji: eVisitor ima web servis za vanjske sustave (koriste ga
+Rentlio, Chekin, mVisitor). Ali **sa naše strane povlači**:
+
+1. **Lozinke domaćina za eVisitor** — morali bismo ih čuvati (šifrirano) i
+   njima se prijavljivati u državni sustav u ime domaćina. Curenje = tuđi
+   pristup njegovom eVisitoru i pristojbi.
+2. **Odgovornost za rok od 24 h** — prijavu je dužan napraviti domaćin; ako
+   naše slanje zakaže, kaznu plaća on, a pritužba ide nama. Treba ugovor koji
+   to jasno kaže i obavijest kad slanje ne prođe.
+3. **Podaci iz osobnih isprava** (broj isprave, datum rođenja) — već ih
+   skupljamo, ali slanjem postajemo izvršitelj obrade u državni sustav: ugovor
+   o obradi (čl. 28. GDPR) s domaćinom, zapis obrada, sigurnosne mjere.
+4. **Pristup servisu** — traži se od HTZ-a, s testnim okruženjem; bez toga se
+   ne može ni probati.
+
+Zato **nije uključeno**. Preporuka: ostati na „podaci + CSV + kopiraj”
+(domaćin prijavi u mVisitoru za minutu) dok nema pravne osobe, ugovora o
+obradi i pristupa HTZ servisu.
+
+- [ ] Odluka vlasnika: ići u to (tada: odvjetnik + HTZ zahtjev) ili ne.
+
+## 24. Automatske poruke gostu — kojim putem i koliko košta
+
+Što: link vodiča 3 dana prije dolaska, podsjetnik na dan dolaska, molba za
+ocjenu nakon odlaska. Za to treba gostov e-mail ili broj (sada ga spremamo
+samo kod upita; kod ručne rezervacije polje se ne sprema).
+
+| Put | Cijena (okvirno) | Napomena |
+| --- | --- | --- |
+| **E-mail (Resend)** — preporuka | do 3.000 poruka/mj besplatno, zatim ~20 $/mj za 50.000 | Već spojeno za upite; ista baza (pg_cron) može slati raspored |
+| WhatsApp Business API | ~0,03 € po poruci (Hrvatska, „utility”) | Meta verifikacija tvrtke, odobreni predlošci, broj tvrtke — ne domaćinov |
+| SMS | ~0,07–0,10 € po poruci | Najskuplje, kratak tekst |
+
+Primjer: 100 domaćina × 30 boravaka × 3 poruke = 9.000 poruka/mj → e-mail
+~20 $/mj ukupno; WhatsApp ~270 €/mj. Rad: ~1–2 dana (e-mail).
+
+- [ ] Odluka: uključiti e-mail? (tada spremati e-mail gosta uz rezervaciju)
+
+## 25. Preporuke iz Google karata — cijena
+
+Domaćin upiše mjesto, mi povučemo plaže, restorane, trgovine u blizini.
+Google Places (Nearby Search Pro): **5.000 poziva mjesečno besplatno**, zatim
+~32 $ na 1.000. Jedan uvoz = 3–5 poziva → prvih ~1.000 uvoza mjesečno je
+besplatno; nakon toga ~0,15 $ po uvozu. Treba Google Cloud račun s karticom i
+ključ (poslužiteljska ruta; Vercel ima još 1 slobodnu funkciju od 12).
+Besplatna zamjena: OpenStreetMap (bez ocjena i fotografija, slabiji podaci).
+
+- [ ] Odluka: Google (bolje, gotovo besplatno na početku) ili OSM.
+
+## 26. Obavijesti domaćinu na mobitelu — kako
+
+Preporuka: **web-aplikacija s push obavijestima** (PWA + Web Push). Domaćin
+„doda na početni zaslon” dashboard, dopusti obavijesti i dobije „Novi upit”,
+„Gost dolazi sutra”, „Sinkronizacija ne radi”. **Besplatno** (bez Applea i
+Googlea kao trgovine), radi na Androidu i na iPhoneu (iOS 16.4+, samo kad je
+dodano na početni zaslon). Treba: tablica pretplata na obavijesti, VAPID
+ključevi (Vercel varijable), slanje iz baze ili rute. Rad ~2 dana.
+Prava aplikacija u App Storeu / Google Playu: ~99 $/god (Apple) + 25 $
+(Google), tjedni rada — ne isplati se sada.
+
+- [ ] Odluka: napraviti PWA s obavijestima?

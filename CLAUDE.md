@@ -64,6 +64,8 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 ├── jezici.js                 # jezici vodiča i javne stranice: rječnik (ključ = hrvatski tekst), t(), n(), H(), birač — vidi „Jezici za goste”
 ├── pokret.js                 # male animacije: veselje(el) iskrice, kvacica(btn) „✓ Kopirano” (stilovi u odmoria.css i dashboardu)
 ├── objave.js                 # Linkovi i QR → Objave: slobodni termini, tekstovi (6 jezika), slika na canvasu, letak — vidi „Objave”
+├── domacin-jezik.js          # jezik sučelja DOMAĆINA (HR/EN): prekidač, prijevod DOM-a preko rječnika — vidi „Engleski za domaćina”
+├── domacin-en.js             # engleski rječnik (T) i uzorci (P) za domacin-jezik.js; ključ = hrvatski tekst
 ├── billing.js                # Stripe iz preglednika: billingStatus, startCheckout, openBillingPortal, povratak s plaćanja (dashboard, account)
 ├── assets/                   # landing/villa-1600.jpg i villa-900.jpg (naslovnica i prijava)
 ├── docs/napredak.md          # što je u redizajnu gotovo, a što nije — pregled za vlasnika
@@ -74,7 +76,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 │   ├── sync-ical.js          # gumb „Sinkroniziraj” — korisnikov token, RLS
 │   ├── sync-all.js           # automatska sinkronizacija svih objekata (CRON_SECRET, poslužiteljski ključ)
 │   ├── stranica.js           # /p/:slug s meta/OG/JSON-LD + /sitemap.xml + /robots.txt
-│   ├── test-calendar.js      # testni iCal feed za isprobavanje sinkronizacije bez računa na Bookingu/Airbnbu
+│   ├── kalendar.js           # iCal IZVOZ /kalendar/<token>.ics (+ testni feed ?test=1, stara /api/test-calendar)
 │   ├── track.js              # upis pregleda s državom (x-vercel-ip-country), bez IP adrese
 │   ├── prevedi.js            # prijevod teksta domaćina (Claude) za /h/ i /p/, spremljen u tablicu prijevodi
 │   ├── _stripe.js            # zajedničko za Stripe rute (s „_” → Vercel ga ne objavljuje kao rutu)
@@ -102,6 +104,8 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
     ├── auto-ical-sync.sql               # pg_cron + pg_net: /api/sync-all svakih 30 min, brisanje starih prijava
     ├── add-translations.sql             # tablice prijevodi + prijevodi_rucni (samo service role)
     ├── add-inquiry-email.sql            # e-mail domaćinu za novi upit: okidač → pg_net → Resend (ključ u Vaultu)
+    ├── add-ical-export.sql              # izvoz kalendara: calendar_exports + kalendar_izvoz(token)
+    ├── add-team-access.sql              # suradnici: property_members, je_suradnik(), prihvati_pozivnicu(), plan_objekta()
     └── fix-missing-columns-and-storage.sql # ALTER TABLE dopune (photo_urls, ical_*, beds/bathrooms/size_m2) + storage bucket policy
 ```
 
@@ -411,8 +415,9 @@ Ovo su dizajnirani, core dijelovi proizvoda, ne ostaci:
     2. **Brisanje je scope-ano po izvoru** (`source=eq.ical_booking`). Nikad ne brisati cijelu `availability` za objekt — ručno blokirani dani (`source='manual'`) i dani vezani uz rezervacije (`booking_id`) moraju preživjeti sinkronizaciju.
     3. **URL upisuje korisnik**, pa `safeUrl()` odbija `localhost`, privatne IP raspone i ne-HTTP sheme. Bez toga ruta postaje proxy prema internoj mreži. (Ne pokriva DNS rebinding.)
   - Sinkronizacija: gumb u dashboardu, dnevno uz `keepalive` i svakih 30 min preko Supabase pg_cron → `/api/sync-all` (vidi „Paket značajki”).
-  - `api/test-calendar.js` služi za isprobavanje bez računa na Bookingu/Airbnbu. Datumi se **računaju od danas** (dolazak za 10 i za 24 dana), pa test ne zastarijeva. Sadrži i jedan `STATUS:CANCELLED` događaj koji se **ne smije** upisati — ako se pojavi u kalendaru, filtriranje otkazanih je puklo. Očekivani rezultat je točno **12 noći**.
-  - Gumb „Popuni testnim kalendarom” je maknut (odluka vlasnika); `api/test-calendar.js` ostaje za ručno isprobavanje (upisati njegovu adresu kao iCal URL).
+  - Testni feed je `api/kalendar.js?test=1` (stara adresa `/api/test-calendar` i dalje radi, `vercel.json`); služi za isprobavanje bez računa na Bookingu/Airbnbu. Datumi se **računaju od danas** (dolazak za 10 i za 24 dana), pa test ne zastarijeva. Sadrži i jedan `STATUS:CANCELLED` događaj koji se **ne smije** upisati — ako se pojavi u kalendaru, filtriranje otkazanih je puklo. Očekivani rezultat je točno **12 noći**.
+  - Gumb „Popuni testnim kalendarom” je maknut (odluka vlasnika); testni feed ostaje za ručno isprobavanje (upisati njegovu adresu kao iCal URL).
+  - **Izvoz** (od 2. 10. 2026.): vidi „Izvoz kalendara, suradnici, preuzimanje sadržaja”.
 
 ---
 
@@ -687,7 +692,7 @@ Ako ikad zatreba da linkovi uvijek pokazuju na jednu domenu bez obzira odakle su
 
 - **Stripe je spojen samo za testni način** — računi se ne fiskaliziraju, nema PDV-a ni poreznog broja kupca; odluke u `docs/odluke.md`, točka 16. `track-event.js` ne postoji i ne treba — pregledi idu kroz `/api/track`.
 - **Automatska iCal sinkronizacija** radi tek kad su postavljeni `SUPABASE_SERVICE_ROLE_KEY` (dnevno) i `sql/auto-ical-sync.sql` + `CRON_SECRET` (svakih 30 min).
-- **Višejezični su samo vodič i javna stranica** (6 jezika). Dashboard, naslovnica, prijava, pravni tekst i `c.html` su samo na hrvatskom.
+- **Višejezični su vodič i javna stranica** (6 jezika) te **domaćinov dio na engleskom** (dashboard, prijava, registracija, postavljanje, dodavanje objekta, račun). Naslovnica, Pomoć, pravni tekst, `c.html`, admin i e-mailovi su samo na hrvatskom.
 
 ---
 
@@ -823,3 +828,59 @@ tamo namjerno nema. `pokret.js` je u predmemoriji service workera (`sw.js`,
 `VERZIJA` sada `odmoria-vodic-3`). Dashboard: svaki gumb čiji natpis počinje s
 „Kopiraj” sam dobije kvačicu (jedan slušač na `document`); iskrice u
 dashboardu nema.
+
+## Izvoz kalendara, suradnici, preuzimanje sadržaja (2. 10. 2026.)
+
+- **Izvoz kalendara** (`sql/add-ical-export.sql`, `api/kalendar.js`, Boravci →
+  Sinkronizacija): `/kalendar/<token>.ics?za=booking|airbnb` (rewrite u
+  `vercel.json`, token bez `.ics` u ruti). Ruta zove `kalendar_izvoz(token)`
+  **javnim ključem** (SECURITY DEFINER, kao `raspored_ciscenja`) — vraća samo
+  datume i izvor. `?za=booking` izostavlja `source='ical_booking'` (inače
+  Booking uvozi vlastite rezervacije i nakon otkaza ostane zaključan). Uzastopne
+  noći → jedan VEVENT, DTEND ekskluzivan. Aktivne rezervacije bez dana u
+  `availability` dodaju se kao `rezervacija`. Baza ne odgovara → **503**, nikad
+  prazan kalendar (to bi otvorilo sve dane na portalima). Isti broj funkcija
+  (11): testni feed je u istoj datoteci.
+- **Suradnici** (`sql/add-team-access.sql`, Linkovi i QR → Suradnici): tablica
+  `property_members` (token pozivnice, `user_id` tko je prihvatio). Politike se
+  samo **dodaju** (`"suradnik"` na svakoj tablici objekta) — postojeće vlasničke
+  ostaju. `je_suradnik(id)` je SECURITY DEFINER (bez rekurzije RLS-a). Okidač
+  `cuvaj_vlasnika_objekta` brani promjenu `properties.user_id`; brisanje objekta
+  suradnik nema. Pozivnica: `/dashboard.html?pozivnica=<token>` → bez prijave
+  token čeka u `localStorage` (`odm-pozivnica`), login kaže zašto, a
+  `onboarding.html` vraća na dashboard dok pozivnica čeka.
+  Dashboard: `PROPS` = vlastiti + dijeljeni (`__dijeljen`, oznaka „· dijeljeno”);
+  **zaključan je samo vlastiti objekt iznad limita** (`zakljucan(p)`), nikad
+  dijeljeni. Na dijeljenom objektu limiti su vlasnikovi: `plan_objekta()` →
+  `PROP.__plan`; u kodu `planObjekta()` i `fotoLimit()` umjesto `USER_PLAN` /
+  `PHOTO_LIMIT` gdje je riječ o objektu. `api/prevedi.js` (ručni prijevodi)
+  pušta i suradnika.
+- **Preuzmi sadržaj iz drugog objekta** (Objekt → Osnovno, `kopirajSadrzaj()`):
+  dodaje, ne briše; isti naziv/tekst se preskače; upute iz `sections` pune samo
+  prazna polja i **nikad** `door_code`, `wifi_name`, `wifi_pass`, `address`.
+  Upis red po red — kad baza odbije (limit plana), ostatak vrste se preskoči.
+
+## Engleski za domaćina (2. 10. 2026.)
+
+`domacin-jezik.js` + `domacin-en.js`, učitani u `<head>` dashboarda, prijave,
+registracije, nove lozinke, potvrde e-maila, postavljanja, dodavanja objekta i
+računa. Stranice su i dalje **pisane na hrvatskom**; na engleskom skripta
+prevodi tekst iz rječnika (ključ = hrvatski tekst, razmaci sažeti) i prati
+izmjene (`MutationObserver`: paneli, toast, poruke; `confirm`/`alert` omotani).
+
+- Zadano je **hrvatski** i tada se rječnik ni ne učitava. Izbor (prekidač HR · EN
+  u bočnoj traci dashboarda i gore desno na prijavi) pamti se u
+  `localStorage` `odm-jezik-domacina`.
+- **Ne prevodi se**: vrijednost polja (podaci domaćina), `<script>`, `<style>`,
+  `<code>`, `[translate="no"]`. `<option>` bez `value` dobije `value` =
+  hrvatski tekst prije prijevoda — u bazu i dalje ide hrvatska vrijednost.
+- Redoslijed: rječnik `T` → uzorci `P` (`{}` redom ili `{1}`, `{2}` kad engleski
+  mijenja red; specifičniji uzorak prvi) → dijelovi spojeni s „ · ” → datumi
+  (dani, mjeseci, kratice, samo u tekstu s brojkom).
+- **Novi tekst u sučelju domaćina = red u `domacin-en.js`**, inače ostaje
+  hrvatski (ne pukne). Neprevedeno se skuplja u `window.__NEPREVEDENO` (sa
+  `__SKUPI_SVE=true` sve, inače samo što izgleda hrvatski) — tako je testom
+  pronađen ostatak.
+- Gumb čiji natpis počinje s „Kopiraj” **ili „Copy”** dobije kvačicu — zato se
+  „Preuzmi sadržaj” na engleskom zove „Import content”, ne „Copy …”.
+- Država u analitici: `Intl.DisplayNames` po `<html lang>` (`analitika.js`).

@@ -22,6 +22,7 @@ starom putu (vidi „Čeka tvoj pregled”).
 
 | Stranica | Commit | Što je napravljeno | Provjereno |
 | --- | --- | --- | --- |
+| Izvoz kalendara, suradnici, preuzimanje sadržaja, engleski za domaćina (`api/kalendar.js`, `sql/add-ical-export.sql`, `sql/add-team-access.sql`, `domacin-jezik.js`, `domacin-en.js`, dashboard, prijava — vidi `odluke.md`, točke 21–26) | `0196163` `f88367f` `e1de160` | Booking/Airbnb dobivaju naše zauzete dane (link po portalu); suvlasnik/agencija uređuje objekt svojim računom (pozivnica); sadržaj se preuzima iz drugog objekta bez šifri; dashboard, prijava, postavljanje i račun na engleskom (prekidač HR · EN) | SQL na lokalnom Postgresu (RLS: tuđi objekt, preuzimanje, brisanje, pozivanje, anonimni); ruta s lažnom bazom (15 provjera); preglednik 390/1280 za sve tri značajke; engleski: svi paneli i stranice, ostao samo sadržaj domaćina; stari testovi na hrvatskom |
 | `odmoria.css` | `059026a` | Zajednički dizajn sustav iz Figme (tokeni, gumbi, oznake, harmonika, fokus) | — |
 | Naslovnica `index.html` | `059026a` | Nova naslovnica prema fazi A; planovi i dalje iz tablice `plans` | 6 širina, kontrast AA, izbornik, tabovi, planovi iz baze i rezerva |
 | Javna stranica `p.html` | `f74eb84` | Novi izgled prema fazi A; sva logika ista (kalendar, razmaci, poruke, karta, galerija, statistika) | 6 širina, puni i prazan objekt, nepostojeći link, cijeli tijek upita, galerija 1–6 fotografija |

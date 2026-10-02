@@ -505,6 +505,10 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
 .savebar button:hover { background: var(--paper-2); }
 .savebar .sb-odbaci { background: transparent; color: #fff; box-shadow: inset 0 0 0 1px rgba(255,255,255,.4); }
 .savebar .sb-odbaci:hover { background: rgba(255,255,255,.12); }
+.jezik-prekidac { display: inline-flex; gap: 2px; padding: 3px; margin: 8px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--paper); align-self: flex-start; }
+.jezik-prekidac button { min-width: 40px; min-height: 32px; border: 0; border-radius: 999px; background: transparent; color: var(--muted); font: 700 13px/1 var(--font-ui); cursor: pointer; }
+.jezik-prekidac button[aria-pressed="true"] { background: var(--brown); color: #fff; }
+.jezik-prekidac button:focus-visible { outline: 2px solid var(--copper); outline-offset: 2px; }
 .dirty-dlg { width: min(440px, calc(100vw - 32px)); padding: 24px; border: 0; border-radius: var(--radius-lg); background: var(--paper); color: var(--ink); box-shadow: 0 24px 64px rgba(10,42,51,.28); }
 .dirty-dlg.gosti-dlg { width: min(980px, calc(100vw - 32px)); max-height: calc(100vh - 48px); overflow: auto; }
 .gosti-dlg h2 { font: 700 22px/1.3 var(--font-ui); letter-spacing: -.02em; }
@@ -622,6 +626,7 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; } }
 </style>
+<script type="module">import{pokreni,prekidac}from'/domacin-jezik.js';pokreni();prekidac(document.getElementById('jezik-sw'))</script>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -671,6 +676,7 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
       <button class="side-link" type="button" data-group="pretplata" onclick="openGroup('pretplata')"><svg class="ic" aria-hidden="true"><use href="#i-credit-card"/></svg>Pretplata<span class="badge" id="user-plan">Free plan</span></button>
       <button class="side-link" type="button" onclick="location.href='/account.html'"><svg class="ic" aria-hidden="true"><use href="#i-settings"/></svg><span style="min-width:0">Postavke računa<small id="user-name">...</small></span></button>
       <button class="side-link" type="button" onclick="signOut()"><svg class="ic" aria-hidden="true"><use href="#i-log-out"/></svg>Odjava</button>
+      <div class="jezik-prekidac" id="jezik-sw" role="group" aria-label="Jezik / Language"></div>
       <!-- JS još puni ove elemente; dovršenost vodiča sada je u Pregledu -->
       <div class="completion-card" aria-hidden="true"><span class="mini-progress" id="mini-progress" data-pct="0"></span><span><strong id="completion-title">Vodič je 0% gotov</strong><small id="completion-sub">—</small></span></div>
       <div class="user-row" aria-hidden="true"><div class="user-av" id="user-av">?</div></div>
@@ -1778,7 +1784,7 @@ window.saveBasic=async()=>{
   document.getElementById('bannerName').textContent=PROP.name
   document.getElementById('bannerLocation').textContent=PROP.location
   const opt=[...document.getElementById('prop-sel').options].find(o=>o.value===PROP.id)
-  if(opt)opt.textContent=(opt.textContent.startsWith('🔒')?'🔒 ':'')+PROP.name
+  if(opt)opt.textContent=(opt.textContent.startsWith('🔒')?'🔒 ':'')+PROP.name+(PROP.__dijeljen?' · dijeljeno':'')
   showA('basic-alert','ok','Spremljeno ✓');toast('Osnovni podaci spremljeni ✓')
   renderChecklist()
 }
@@ -3034,7 +3040,7 @@ window.downloadQr=()=>{
 }
 
 // male animacije: svaki gumb „Kopiraj…” na trenutak pokaže kvačicu
-document.addEventListener('click',e=>{const b=e.target.closest('button');if(b&&/^Kopiraj/.test(b.textContent.trim()))setTimeout(()=>kvacica(b,'Kopirano'))})
+document.addEventListener('click',e=>{const b=e.target.closest('button');if(b&&/^(Kopiraj|Copy)/.test(b.textContent.trim()))setTimeout(()=>kvacica(b,'Kopirano'))})
 
 // ── OBJAVE (objave.js) ────────────────────────────────────────
 // Slika (canvas) + četiri teksta + letak. Sve iz PROP, amenityRows i

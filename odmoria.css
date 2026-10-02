@@ -192,3 +192,10 @@ ul{margin:0;padding:0;list-style:none}
 /* Popust na cijenu plana (plan_promotions): precrtana redovna + oznaka ponude */
 .cijena-stara{font-size:.62em;font-weight:500;color:var(--text-muted);text-decoration:line-through;margin-right:.35em;letter-spacing:0}
 .ponuda{display:inline-flex;align-items:center;gap:4px;width:fit-content;padding:3px 8px;border-radius:6px;background:var(--bg-warm);color:var(--text-warm);font:700 12px/1.3 var(--font-body);letter-spacing:.02em}
+
+/* Prekidač jezika sučelja domaćina (domacin-jezik.js) — prijava, registracija */
+.jezik-prekidac{display:inline-flex;gap:2px;padding:3px;border:1px solid var(--border);border-radius:999px;background:var(--bg-surface)}
+.jezik-prekidac button{min-width:40px;min-height:32px;border:0;border-radius:999px;background:transparent;color:var(--text-muted);font:700 13px/1 var(--font-ui);cursor:pointer}
+.jezik-prekidac button[aria-pressed="true"]{background:var(--bg-inverse);color:var(--text-inverse)}
+.jezik-prekidac--plutajuci{position:fixed;top:16px;right:16px;z-index:50;box-shadow:var(--shadow-raised)}
+.jezik-prekidac:empty{display:none}
