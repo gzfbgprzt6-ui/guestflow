@@ -516,8 +516,14 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
 .dirty-dlg h2 { font: 800 22px/1.25 var(--font-ui); margin: 0 0 8px; }
 .dirty-dlg p { color: var(--muted); margin: 0 0 20px; }
 .dirty-dlg__act { display: flex; flex-wrap: wrap; gap: 8px; }
-#kopija-dlg { max-height: calc(100dvh - 32px); overflow: auto; }
+#kopija-dlg, #osm-dlg { max-height: calc(100dvh - 32px); overflow: auto; }
 .kopija-izbor { display: grid; gap: 8px; }
+.auto-mail { margin: -4px 0 16px; padding: 12px 14px; border-radius: var(--radius-sm); background: var(--paper-2); }
+.auto-mail[hidden] { display: none; }
+.auto-mail label { display: flex; gap: 12px; align-items: flex-start; cursor: pointer; }
+.auto-mail input { width: 18px; height: 18px; margin-top: 2px; flex: none; }
+.auto-mail small { display: block; color: var(--muted); font-size: 13px; }
+.bk-mail { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
 .tim-lista { display: grid; gap: 8px; margin-bottom: 16px; }
 .tim-red { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; padding: 12px 14px; border-radius: var(--radius-sm); background: var(--paper-2); }
 .tim-red b { display: block; }
@@ -1018,7 +1024,7 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
         <!-- 06 GUIDE -->
         <section class="editor-panel" id="section-guide" data-panel-content="guide">
           <div class="card">
-            <div class="card-head"><div class="card-title-wrap"><span class="card-number">06</span><div><h2>Lokalne preporuke</h2><p>Mjesta koja biste osobno preporučili svom gostu.</p></div></div><button class="btn small" type="button" onclick="openForm('guide')">+ Dodaj mjesto</button></div>
+            <div class="card-head"><div class="card-title-wrap"><span class="card-number">06</span><div><h2>Lokalne preporuke</h2><p>Mjesta koja biste osobno preporučili svom gostu.</p></div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn secondary small" type="button" onclick="otvoriOsm()">Predloži mjesta u blizini</button><button class="btn small" type="button" onclick="openForm('guide')">+ Dodaj mjesto</button></div></div>
             <div class="card" id="guide-form" style="display:none;background:var(--cream)">
               <div class="form-grid">
                 <div class="field one-third"><label>Ikona (emoji)</label><input class="input" id="guide-f-icon" placeholder="📍"></div>
@@ -1154,6 +1160,7 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
         <section class="editor-panel" id="section-reservations" data-panel-content="reservations">
           <div class="card">
             <div class="card-head"><div class="card-title-wrap"><span class="card-number">R</span><div><h2>Rezervacije</h2><p>Generiraj privatni gostinski link za potvrđenog gosta.</p></div></div><button class="btn small" type="button" onclick="showAddBooking()">+ Nova rezervacija</button></div>
+            <div class="auto-mail" id="auto-mail-red" hidden><label><input type="checkbox" id="auto-mail" onchange="spremiAutoMail(this.checked)"> <span><b>Automatski e-mail gostima</b><small>Link na vodič 3 dana prije dolaska i zahvala s molbom za ocjenu na dan odlaska — samo gostima kojima ste upisali e-mail.</small></span></label></div>
             <div class="card" id="add-booking-card" style="display:none;background:var(--cream)">
               <div id="bk-alert"></div>
               <div class="form-grid">
@@ -1162,9 +1169,10 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
                 <div class="field"><label>Check-in</label><input class="input" id="bk-ci" type="date"></div>
                 <div class="field"><label>Check-out</label><input class="input" id="bk-co" type="date"></div>
                 <div class="field"><label for="bk-phone">Telefon gosta <span class="optional">za WhatsApp</span></label><input class="input" id="bk-phone" type="tel" placeholder="+385 91 123 4567" autocomplete="off"></div>
-                <div class="field"><label for="bk-mail">E-mail gosta <span class="optional">za slanje</span></label><input class="input" id="bk-mail" type="email" placeholder="ana@primjer.hr" autocomplete="off"></div>
+                <div class="field"><label for="bk-mail">E-mail gosta <span class="optional">za automatske poruke</span></label><input class="input" id="bk-mail" type="email" placeholder="ana@primjer.hr" autocomplete="off"></div>
+                <div class="field"><label for="bk-lang">Jezik poruka gostu</label><select class="select" id="bk-lang"><option value="hr">Hrvatski</option><option value="en">English</option><option value="de">Deutsch</option><option value="it">Italiano</option><option value="pl">Polski</option><option value="cs">Čeština</option></select></div>
               </div>
-              <div class="helper" style="margin-top:10px">Nastaje jedinstven link koji vrijedi do dan nakon odlaska. Telefon i e-mail služe samo za slanje linka odavde i ne spremaju se.</div>
+              <div class="helper" style="margin-top:10px">Nastaje jedinstven link koji vrijedi do dan nakon odlaska. Ako upišete e-mail, gost sam dobije link 3 dana prije dolaska i zahvalu s molbom za ocjenu na dan odlaska; e-mail se briše 30 dana nakon odlaska. Telefon služi samo za slanje odavde i ne sprema se.</div>
               <div style="display:flex;gap:12px;justify-content:flex-end;align-items:center;flex-wrap:wrap;margin-top:16px"><span class="helper" id="bk-why" aria-live="polite"></span><button class="btn secondary small" onclick="hideAddBooking()">Odustani</button><button class="btn small" id="bk-create" onclick="createBooking()" disabled>Kreiraj link →</button></div>
             </div>
             <div class="bk-result" id="bk-result-card" style="display:none;margin-bottom:16px">
@@ -1401,6 +1409,20 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
   </div>
 </dialog>
 
+<!-- Prijedlog mjesta iz OpenStreetMapa (mjesta-osm.js) -->
+<dialog class="dirty-dlg" id="osm-dlg" aria-labelledby="osm-t">
+  <h2 id="osm-t">Mjesta u blizini</h2>
+  <p>Plaže, restorani, kafići, trgovine i ljekarna oko vašeg objekta. Označite što želite preporučiti — poslije ih možete urediti.</p>
+  <form class="tim-novi" id="osm-forma" onsubmit="event.preventDefault();traziOsm()"><div class="field"><label for="osm-upit">Gdje tražiti</label><input class="input" id="osm-upit" autocomplete="off"></div><button class="btn secondary" type="submit">Traži</button></form>
+  <div class="kopija-izbor" id="osm-lista" style="margin-top:14px"></div>
+  <p class="helper" id="osm-st" role="status" style="margin:12px 0 0"></p>
+  <div class="dirty-dlg__act" style="margin-top:18px">
+    <button type="button" class="btn" id="osm-da" onclick="dodajOsm()" disabled>Dodaj odabrano</button>
+    <button type="button" class="btn ghost" onclick="document.getElementById('osm-dlg').close()">Zatvori</button>
+  </div>
+  <p class="helper" style="margin:14px 0 0;font-size:12px">Podaci: © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> suradnici</p>
+</dialog>
+
 <dialog class="dirty-dlg" id="dirty-dlg" aria-labelledby="dirty-t">
   <h2 id="dirty-t">Spremiti promjene?</h2>
   <p>U ovom dijelu imate promjene koje još nisu spremljene.</p>
@@ -1421,6 +1443,7 @@ import * as A from'./analitika.js'
 import * as O from'./objave.js'
 import * as JZ from'./jezici.js'
 import{kvacica}from'./pokret.js'
+import * as OSMM from'./mjesta-osm.js'
 
 const SURL='https://wtojzqjhipdfbrnmprmz.supabase.co'
 const SKEY='sb_publishable_tmZAZTDbQ7ktc1N-8y4q4w_ztAu_62F'
@@ -2075,7 +2098,7 @@ window.prihvatiUpit=async id=>{
   const z=zauzeteNoci(u.checkin_date,u.checkout_date)
   if(z&&!confirm(`${z} ${A.mn(z,'noć','noći','noći')} u tom terminu već je zauzeto. Svejedno prihvatiti upit?`))return
   const napomena=[u.guests?u.guests+' '+A.mn(u.guests,'gost','gosta','gostiju'):'','upit s javne stranice'].filter(Boolean).join(' · ')
-  const r=await napraviRezervaciju({name:u.guest_name,note:napomena,ci:u.checkin_date,co:u.checkout_date})
+  const r=await napraviRezervaciju({name:u.guest_name,note:napomena,ci:u.checkin_date,co:u.checkout_date,email:u.guest_email||''})
   if(r.error){toast('Greška: '+r.error);return}
   const{error}=await sb.from('inquiries').update({status:'prihvacen',booking_id:r.booking.id}).eq('id',id)
   if(error)toast('Rezervacija je napravljena, ali upit nije označen: '+error.message)
@@ -2912,6 +2935,8 @@ window.loadBookings=async function(){
   const el=document.getElementById('bookings-list')
   const bk=data||[]
   window.BK_LISTA=bk
+  {const red=document.getElementById('auto-mail-red');const ima='auto_email_gostu' in ap
+   red.hidden=!ima;if(ima)document.getElementById('auto-mail').checked=ap.auto_email_gostu!==false}
   if(!bk.length){el.innerHTML='<div class="empty-hint">Još nema rezervacija. Kreiraj prvi gostinski link →</div>';return}
   await ucitajPrijave()
   const now=new Date()
@@ -2922,7 +2947,7 @@ window.loadBookings=async function(){
     const col=colors[Math.abs(b.guest_name?.charCodeAt(0)||0)%colors.length]
     return`<div class="bk-card">
       <div class="bk-av" style="background:${col}">${(b.guest_name||'G')[0].toUpperCase()}</div>
-      <div><h3>${esc(b.guest_name||'Gost')}</h3><p>${fmtD(b.checkin_date)} – ${fmtD(b.checkout_date)}${b.guest_note?' · '+esc(b.guest_note):''}</p><div class="url">${esc(prettyUrl(bookingUrl(b.token)))}</div></div>
+      <div><h3>${esc(b.guest_name||'Gost')}</h3><p>${fmtD(b.checkin_date)} – ${fmtD(b.checkout_date)}${b.guest_note?' · '+esc(b.guest_note):''}</p><div class="url">${esc(prettyUrl(bookingUrl(b.token)))}</div>${b.guest_email?`<p class="bk-mail">✉ ${esc(b.guest_email)} · ${b.email_dolazak_at?'link poslan':'link prije dolaska'} · ${b.email_ocjena_at?'zahvala poslana':'zahvala na odlasku'}</p>`:''}</div>
       <span class="bk-status ${act?'':'exp'}">${act?'Aktivan':'Istekao'}</span>
       <div class="bk-btns">${PRIJAVE_OK&&(act||PRIJAVE[b.id])?`<button class="btn ${PRIJAVE[b.id]?'secondary':'ghost'} small" onclick="otvoriGoste('${b.id}')" title="Podaci za eVisitor i boravišna pristojba">${PRIJAVE[b.id]?'Gosti · '+PRIJAVE[b.id].osobe.length+' '+A.mn(PRIJAVE[b.id].osobe.length,'osoba','osobe','osoba'):'Gosti · čeka podatke'}</button>`:''}${act?`<button class="btn small" onclick="cpBk('${b.token}')">Kopiraj</button><button class="btn secondary small" onclick="deactBk('${b.id}')">Deaktiviraj</button>`:`<button class="btn danger small" onclick="delBk('${b.id}')">Obriši</button>`}</div>
     </div>`
@@ -2952,10 +2977,17 @@ window.hideAddBooking=()=>{document.getElementById('add-booking-card').style.dis
 window.hideResult=()=>{document.getElementById('bk-result-card').style.display='none'}
 /* Rezervacija + zauzeti dani + link. Zajedničko za obrazac i prihvaćanje upita.
    Link vrijedi do dan nakon odlaska (token_expires_at), kako i piše uz obrazac. */
-async function napraviRezervaciju({name,note,ci,co}){
+async function napraviRezervaciju({name,note,ci,co,email,lang}){
   const ap=PROP||PROPS.find(p=>!zakljucan(p));if(!ap)return{error:'Nema objekta.'}
   const istek=new Date(A.plusDana(co,1)+'T23:59:00').toISOString()
-  const{data,error}=await sb.from('bookings').insert({property_id:ap.id,guest_name:name,guest_note:note||null,checkin_date:ci,checkout_date:co,token_expires_at:istek}).select().single()
+  const red={property_id:ap.id,guest_name:name,guest_note:note||null,checkin_date:ci,checkout_date:co,token_expires_at:istek}
+  const mail=(email||'').trim()
+  let{data,error}=await sb.from('bookings').insert(mail?{...red,guest_email:mail,guest_lang:lang||jezikIzMaila(mail)}:red).select().single()
+  let bezMaila=false
+  // stupci iz sql/add-guest-emails.sql još ne postoje → rezervacija svejedno nastaje, bez automatskih poruka
+  if(error&&mail&&/guest_email|guest_lang|column|schema cache|PGRST204|42703/i.test((error.code||'')+' '+error.message)){
+    ({data,error}=await sb.from('bookings').insert(red).select().single());bezMaila=true
+  }
   if(error)return{error:error.message}
   const nights=datesBetween(ci,co).slice(0,-1)
   let upozorenje=''
@@ -2963,8 +2995,22 @@ async function napraviRezervaciju({name,note,ci,co}){
     const{error:availErr}=await sb.from('availability').upsert(nights.map(d=>({property_id:ap.id,date:d,is_booked:true,source:'manual',booking_id:data.id})))
     if(availErr)upozorenje='Rezervacija je spremljena, ali kalendar nije ažuriran: '+availErr.message
   }
+  if(bezMaila&&!upozorenje)upozorenje='Rezervacija je spremljena, ali automatski e-mail gostu još nije uključen (sql/add-guest-emails.sql).'
   return{booking:data,url:bookingUrl(data.token),upozorenje}
 }
+/* Jezik poruka gostu po domeni e-maila (domaćin ga može promijeniti) */
+function jezikIzMaila(m){
+  const d=String(m||'').toLowerCase().split('@')[1]||'',z=d.split('.').pop()
+  return {hr:'hr',ba:'hr',rs:'hr',me:'hr',de:'de',at:'de',ch:'de',it:'it',pl:'pl',cz:'cs',sk:'cs'}[z]||'en'
+}
+window.spremiAutoMail=async on=>{
+  if(!PROP)return
+  const{error}=await sb.from('properties').update({auto_email_gostu:on}).eq('id',PROP.id)
+  if(error){toast('Greška: '+error.message);document.getElementById('auto-mail').checked=!on;return}
+  PROP.auto_email_gostu=on;toast(on?'Automatski e-mail gostima je uključen':'Automatski e-mail gostima je isključen')
+}
+{const m=document.getElementById('bk-mail'),l=document.getElementById('bk-lang')
+ if(m&&l){l.addEventListener('change',()=>{l.dataset.ruka='1'});m.addEventListener('input',()=>{if(!l.dataset.ruka&&m.value.includes('@'))l.value=jezikIzMaila(m.value)})}}
 /* Koliko je noći u terminu već zauzeto u kalendaru */
 function zauzeteNoci(ci,co){
   const zauz=new Set(AVAIL_ROWS.map(r=>r.date));let n=0
@@ -2989,9 +3035,8 @@ window.createBooking=async()=>{
   if(ci>=co){showA('bk-alert','err','Check-out mora biti nakon check-in.');return}
   const zauz=zauzeteNoci(ci,co)
   if(zauz&&!confirm(`${zauz} ${A.mn(zauz,'noć','noći','noći')} u tom terminu već je zauzeto u kalendaru. Svejedno napraviti rezervaciju?`))return
-  const r=await napraviRezervaciju({name,note,ci,co})
+  const r=await napraviRezervaciju({name,note,ci,co,email:v('bk-mail'),lang:v('bk-lang')})
   if(r.error){showA('bk-alert','err','Greška: '+r.error);return}
-  if(r.upozorenje)toast(r.upozorenje)
   lastBkUrl=r.url;lastBk={ime:name,ci,co,tel:v('bk-phone'),mail:v('bk-mail')}
   lastBkPhone=lastBk.tel
   document.getElementById('bk-result-url').textContent=r.url.replace('https://','')
@@ -2999,7 +3044,8 @@ window.createBooking=async()=>{
   document.getElementById('add-booking-card').style.display='none'
   document.getElementById('bk-result-card').style.display='block'
   ;['bk-name','bk-note','bk-phone','bk-mail'].forEach(id=>{const e=document.getElementById(id);if(e)e.value=''})
-  await window.loadBookings();await loadAvail();toast('Rezervacija kreirana ✓')
+  {const l=document.getElementById('bk-lang');if(l){l.value='hr';delete l.dataset.ruka}}
+  await window.loadBookings();await loadAvail();toast(r.upozorenje||'Rezervacija kreirana ✓')   // upozorenje ne smije pregaziti obična potvrda
 }
 window.cpBk=(token)=>{navigator.clipboard?.writeText(bookingUrl(token));toast('Link kopiran!')}
 window.copyResultLink=()=>{navigator.clipboard?.writeText(lastBkUrl);toast('Link kopiran!')}
@@ -3288,6 +3334,49 @@ document.addEventListener('change',e=>{
   const p=e.target.closest('.editor-panel');if(p)markDirty(p)
 })
 
+
+// ── MJESTA U BLIZINI (mjesta-osm.js, OpenStreetMap) ───────────
+// Prijedlog se upisuje u local_places kao ručni unos; isti naziv se preskače,
+// limit plana provodi baza (red po red, kao kod preuzimanja sadržaja).
+let OSM=[]
+window.otvoriOsm=()=>{
+  if(!PROP)return
+  const adr=(SECTION&&SECTION.address||'').trim(),mj=(PROP.location||'').trim()
+  document.getElementById('osm-upit').value=[adr,mj].filter(Boolean).join(', ')||PROP.name||''
+  document.getElementById('osm-lista').innerHTML='';document.getElementById('osm-st').textContent=''
+  document.getElementById('osm-da').disabled=true
+  document.getElementById('osm-dlg').showModal()
+  if(document.getElementById('osm-upit').value)traziOsm()
+}
+window.traziOsm=async()=>{
+  const upit=v('osm-upit'),st=document.getElementById('osm-st'),el=document.getElementById('osm-lista')
+  if(!upit){st.textContent='Upišite adresu ili mjesto.';return}
+  st.textContent='Tražim…';el.innerHTML='';document.getElementById('osm-da').disabled=true
+  try{
+    const r=await OSMM.predlozi(upit,(PROP.location||'').trim())
+    if(!r.centar){st.textContent='To mjesto nije pronađeno. Upišite mjesto ili ulicu drukčije (npr. „Vodice, Hrvatska”).';return}
+    const ima=new Set(guideRows.map(x=>isti(x.name)))
+    OSM=r.mjesta.filter(x=>!ima.has(isti(x.name)))
+    if(!OSM.length){st.textContent=r.mjesta.length?'Sva pronađena mjesta već su u vašim preporukama.':'U blizini nije pronađeno ništa. Pokušajte s većim mjestom.';return}
+    el.innerHTML=OSM.map((x,i)=>`<label><input type="checkbox" value="${i}" checked>${x.icon} ${esc(x.name)}<small>${esc(x.category)} · ${esc(x.distance)}</small></label>`).join('')
+    st.textContent='';document.getElementById('osm-da').disabled=false
+  }catch(e){st.textContent=e&&e.message||'Popis mjesta trenutno nije dostupan.'}
+}
+window.dodajOsm=async()=>{
+  const odabrano=[...document.querySelectorAll('#osm-lista input:checked')].map(i=>OSM[+i.value]).filter(Boolean)
+  const st=document.getElementById('osm-st'),btn=document.getElementById('osm-da')
+  if(!odabrano.length){st.textContent='Označite barem jedno mjesto.';return}
+  btn.disabled=true;st.textContent='Dodajem…'
+  let red=Math.max(0,...guideRows.map(r=>+r.sort_order||0)),n=0,limit=false
+  for(const x of odabrano){
+    const{error}=await sb.from('local_places').insert({property_id:PROP.id,icon:x.icon,name:x.name,category:x.category,distance:x.distance,maps_query:x.maps_query,sort_order:++red})
+    if(error){limit=true;break}
+    n++
+  }
+  await loadListSections()
+  st.textContent=n+' dodano'+(limit?` — ostalo (${odabrano.length-n}) nije stalo u limit plana.`:'.')
+  if(!limit){toast('Mjesta su dodana ✓');document.getElementById('osm-dlg').close()}
+}
 
 // ── PREUZMI SADRŽAJ IZ DRUGOG OBJEKTA ─────────────────────────
 // Dodaje (ne briše) stavke iz drugog vlastitog objekta. Iste stavke se

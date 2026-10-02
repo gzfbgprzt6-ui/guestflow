@@ -64,6 +64,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 ├── jezici.js                 # jezici vodiča i javne stranice: rječnik (ključ = hrvatski tekst), t(), n(), H(), birač — vidi „Jezici za goste”
 ├── pokret.js                 # male animacije: veselje(el) iskrice, kvacica(btn) „✓ Kopirano” (stilovi u odmoria.css i dashboardu)
 ├── objave.js                 # Linkovi i QR → Objave: slobodni termini, tekstovi (6 jezika), slika na canvasu, letak — vidi „Objave”
+├── mjesta-osm.js             # prijedlog mjesta u blizini: Nominatim + Overpass (OpenStreetMap), iz preglednika, besplatno
 ├── domacin-jezik.js          # jezik sučelja DOMAĆINA (HR/EN): prekidač, prijevod DOM-a preko rječnika — vidi „Engleski za domaćina”
 ├── domacin-en.js             # engleski rječnik (T) i uzorci (P) za domacin-jezik.js; ključ = hrvatski tekst
 ├── billing.js                # Stripe iz preglednika: billingStatus, startCheckout, openBillingPortal, povratak s plaćanja (dashboard, account)
@@ -105,7 +106,8 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
     ├── add-translations.sql             # tablice prijevodi + prijevodi_rucni (samo service role)
     ├── add-inquiry-email.sql            # e-mail domaćinu za novi upit: okidač → pg_net → Resend (ključ u Vaultu)
     ├── add-ical-export.sql              # izvoz kalendara: calendar_exports + kalendar_izvoz(token)
-    ├── add-team-access.sql              # suradnici: property_members, je_suradnik(), prihvati_pozivnicu(), plan_objekta()
+    ├── add-team-access.sql              # suradnici: property_members, je_suradnik(), prihvati_pozivnicu(), plan_objekta(), najviše 3
+    ├── add-guest-emails.sql             # automatski e-mail gostu (dolazak / zahvala), pg_cron dnevno; TEK nakon KORAKA 2 i add-inquiry-email.sql
     └── fix-missing-columns-and-storage.sql # ALTER TABLE dopune (photo_urls, ical_*, beds/bathrooms/size_m2) + storage bucket policy
 ```
 
@@ -884,3 +886,30 @@ izmjene (`MutationObserver`: paneli, toast, poruke; `confirm`/`alert` omotani).
 - Gumb čiji natpis počinje s „Kopiraj” **ili „Copy”** dobije kvačicu — zato se
   „Preuzmi sadržaj” na engleskom zove „Import content”, ne „Copy …”.
 - Država u analitici: `Intl.DisplayNames` po `<html lang>` (`analitika.js`).
+
+## Prijedlog mjesta i automatski e-mail gostu (2. 10. 2026.)
+
+- **Mjesta u blizini** (`mjesta-osm.js`, Objekt → Vodič → „Predloži mjesta u
+  blizini”): preglednik domaćina zove Nominatim (adresa/mjesto → koordinate)
+  i Overpass (plaže, restorani, kafići, trgovine, ljekarna u 2,5 km; drugi
+  Overpass poslužitelj kao rezerva). Besplatno, bez ključa i bez naše rute.
+  Kategorije su hrvatske i postoje u `jezici.js` (`Plaže`, `Restorani`,
+  `Kafići`, `Trgovine`, `Ljekarna`); udaljenost „N min pješice/autom” (vodič je
+  prevodi). Upis kao ručni (`local_places`), isti naziv se preskače, limit
+  plana provodi baza. Natpis „© OpenStreetMap suradnici” u prozoru je obavezan
+  (ODbL). Iz okruženja za razvoj OSM nije dostupan — testirano lažnim
+  odgovorima; pravi poziv provjeriti na Previewu.
+- **Automatski e-mail gostu** (`sql/add-guest-emails.sql`): stupci
+  `bookings.guest_email`, `guest_lang`, `email_dolazak_at`, `email_ocjena_at`
+  i `properties.auto_email_gostu`. `posalji_emailove_gostima()` (pg_cron
+  dnevno 8:05 UTC) šalje „dolazak” (0–3 dana prije, link na vodič) i
+  „ocjena” (dan odlaska ili dan poslije, `#kuca/odlazak`), svaku jednom, na
+  jeziku gosta, najviše 80 po izvođenju (Resend Free = 100/dan), reply_to =
+  domaćin. Gostov e-mail se briše 30 dana nakon odlaska. **SQL se odbija
+  pokrenuti dok anon može čitati `bookings`** (KORAK 2 iz
+  `sections-security.sql`) i bez `add-inquiry-email.sql`; cijeli je u jednoj
+  transakciji (greška = ništa promijenjeno). Dashboard: obrazac rezervacije
+  sprema e-mail i jezik (pogođen po domeni, `jezikIzMaila`), „Prihvati” uzima
+  e-mail iz upita, popis pokazuje stanje poruka, prekidač po objektu. Bez
+  stupaca `napraviRezervaciju()` ponovi upis bez e-maila — rezervacija nikad
+  ne propadne zbog ove značajke.

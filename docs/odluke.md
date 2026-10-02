@@ -1200,7 +1200,7 @@ samo kod upita; kod ručne rezervacije polje se ne sprema).
 Primjer: 100 domaćina × 30 boravaka × 3 poruke = 9.000 poruka/mj → e-mail
 ~20 $/mj ukupno; WhatsApp ~270 €/mj. Rad: ~1–2 dana (e-mail).
 
-- [ ] Odluka: uključiti e-mail? (tada spremati e-mail gosta uz rezervaciju)
+- [x] Odluka (2. 10.): **DA, e-mail** — napravljeno (`sql/add-guest-emails.sql`), vidi točku 27.
   Pojašnjenje (2. 10.): e-mail je besplatan do 3.000 poruka mjesečno i
   **100 dnevno** (Resend Free); iznad toga ~20 $/mj. WhatsApp koji gost ili
   domaćin otvori sam (`wa.me` link — već postoji na javnoj stranici i kod
@@ -1216,7 +1216,7 @@ besplatno; nakon toga ~0,15 $ po uvozu. Treba Google Cloud račun s karticom i
 ključ (poslužiteljska ruta; Vercel ima još 1 slobodnu funkciju od 12).
 Besplatna zamjena: OpenStreetMap (bez ocjena i fotografija, slabiji podaci).
 
-- [ ] Odluka: Google (bolje, gotovo besplatno na početku) ili OSM.
+- [x] Odluka (2. 10.): **OpenStreetMap**, besplatno — napravljeno (`mjesta-osm.js`), vidi točku 27.
   Pojašnjenje (2. 10.): 0,15 $ je **jednokratno po uvozu** (domaćin klikne
   „Predloži mjesta u blizini” jednom), ne mjesečno po objektu, i tek nakon
   ~1.000 besplatnih uvoza mjesečno. **Besplatna opcija je OpenStreetMap**
@@ -1235,3 +1235,44 @@ Prava aplikacija u App Storeu / Google Playu: ~99 $/god (Apple) + 25 $
 (Google), tjedni rada — ne isplati se sada.
 
 - [ ] Odluka: napraviti PWA s obavijestima?
+
+## 27. Puštanje u produkciju (main) — redoslijed i provjere
+
+Grana je spremna za spajanje (PR otvoren kao nacrt, NE spajati bez vaše
+potvrde). Sav novi kod radi i bez SQL-a (prikaže napomenu), pa se main može
+spojiti prije SQL koraka — ali značajke proradi tek SQL.
+
+**A. Supabase → SQL editor, ovim redom** (svaki je idempotentan):
+1. `sql/sections-security.sql` — KORAK 0 (samo čita), KORAK 1 (funkcija).
+2. **Spojiti PR u main** i pričekati da Vercel objavi (novi `h.html`).
+3. `sql/sections-security.sql` — KORAK 2 (zatvara `sections` i `bookings`
+   za anonimne), pa KORAK 4 (provjera). Obrnuti redoslijed slomi vodič.
+4. `sql/add-ical-export.sql` — izvoz kalendara.
+5. `sql/add-team-access.sql` — suradnici (najviše 3).
+6. `sql/add-inquiry-email.sql` — ako još nije: Resend ključ, pošiljatelj i
+   adresa u Vaultu (zamijeniti `<RESEND_KEY>`, `<OD>`, `<ADRESA>`).
+7. `sql/add-guest-emails.sql` — automatski e-mail gostu (odbija se dok 3. i
+   6. nisu gotovi).
+8. Ako još nije: `sql/auto-ical-sync.sql` (`<ADRESA>`, `<CRON_SECRET>`).
+
+**B. Vercel → Settings → Environment Variables (Production) → Redeploy:**
+`SUPABASE_SERVICE_ROLE_KEY`, `CRON_SECRET`, `ANTHROPIC_API_KEY` (prijevodi),
+`STRIPE_SECRET_KEY` (testni ili pravi). Nijedan ne ide u kod.
+
+**C. Resend:** potvrđena domena (DNS) — bez nje se šalje samo na vašu adresu.
+
+**D. Nakon objave, ručna provjera (10 min):**
+- prijava, dashboard, prekidač HR · EN;
+- Boravci → Sinkronizacija → „Napravi link za Booking i Airbnb” → otvoriti
+  link: preuzme se `.ics` sa zauzetim danima;
+- Linkovi i QR → Suradnici → pozivnica → otvoriti u drugom pregledniku s
+  drugim računom;
+- Objekt → Vodič → „Predloži mjesta u blizini” (pravi OpenStreetMap);
+- rezervacija s vašim e-mailom kao gostovim, dolazak za 1–3 dana, pa u SQL
+  editoru `select public.posalji_emailove_gostima();` → e-mail stiže;
+- vodič gosta (`/h/<token>`) i dalje otključava šifre u pravo vrijeme.
+
+**E. Pravni tekst (točka 8)** prije pravih korisnika: popis trećih strana
+dopuniti s Resendom (e-mail gostima), OpenStreetMap/Nominatimom (adresa
+objekta šalje se radi pretrage), Anthropicom (prijevodi), Cloudinaryjem;
+spomenuti da se e-mail gosta čuva do 30 dana nakon odlaska.
