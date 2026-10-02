@@ -37,6 +37,11 @@ export function cleanerUrl(token) {
   return siteBase() + '/c/' + encodeURIComponent(token || '')
 }
 
+// Izvoz kalendara za Booking/Airbnb (api/kalendar.js) — ?za= izostavlja dane tog portala
+export function calendarUrl(token, za) {
+  return siteBase() + '/kalendar/' + encodeURIComponent(token || '') + '.ics' + (za ? '?za=' + encodeURIComponent(za) : '')
+}
+
 export function legacyGuestUrl(slug, guestToken) {
   return siteBase() + '/h/' + encodeURIComponent((slug || '') + '-' + (guestToken || ''))
 }

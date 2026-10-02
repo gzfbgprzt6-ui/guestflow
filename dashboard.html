@@ -1191,6 +1191,14 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
               </div>
 
             </div>
+
+            <div class="sync-card" id="izvoz-card">
+              <div class="sync-head">
+                <h2>Vaši zauzeti dani prema Bookingu i Airbnbu</h2>
+                <p>Rezervacije koje dogovorite izravno i dani koje ručno zatvorite moraju se zatvoriti i na portalima, inače se isti termin može prodati dvaput. Zalijepite link u Booking i Airbnb — oni ga sami čitaju svakih nekoliko sati. Link nosi samo datume, bez imena gostiju.</p>
+              </div>
+              <div id="izvoz-body"><p class="helper">Učitavam…</p></div>
+            </div>
           </div>
         </section>
 
@@ -1367,7 +1375,7 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
 <script type="module">
 import{createClient}from'https://esm.sh/@supabase/supabase-js@2'
 import{loadPlans,getPlan,listPlans,limitFor,canAdd,limitMessage,effectivePlanId,popustZa,cijenaPlana,formatEur,rokPopusta,trajanjePopusta}from'./plans.js'
-import{publicUrl,bookingUrl,legacyGuestUrl,prettyUrl,cleanerUrl}from'./links.js'
+import{publicUrl,bookingUrl,legacyGuestUrl,prettyUrl,cleanerUrl,calendarUrl}from'./links.js'
 import{billingStatus,startCheckout,openBillingPortal,povratakSPlacanja,cekajPlan}from'./billing.js'
 import * as A from'./analitika.js'
 import * as O from'./objave.js'
@@ -2736,8 +2744,38 @@ async function loadIcal(){
   if(!PROP)return
   document.getElementById('ical-booking').value=PROP.ical_booking_url||''
   document.getElementById('ical-airbnb').value=PROP.ical_airbnb_url||''
-  paintSyncPills();paintSyncWhen()
+  paintSyncPills();paintSyncWhen();ucitajIzvoz()
 }
+
+// ── IZVOZ KALENDARA (sql/add-ical-export.sql, api/kalendar.js) ──
+// Jedan token po objektu; ?za=booking / ?za=airbnb izostavlja dane koji su
+// došli s tog portala. „Novi link” zamijeni token (stari prestaje raditi).
+let IZVOZ=null
+async function ucitajIzvoz(){
+  const el=document.getElementById('izvoz-body');if(!el||!PROP)return
+  const{data,error}=await sb.from('calendar_exports').select('*').eq('property_id',PROP.id).maybeSingle()
+  if(error){el.innerHTML='<p class="helper">Izvoz kalendara još nije uključen — u Supabaseu treba pokrenuti <code>sql/add-ical-export.sql</code>.</p>';return}
+  IZVOZ=data||null
+  if(!IZVOZ){el.innerHTML='<button class="btn" type="button" onclick="napraviIzvoz()">Napravi link za Booking i Airbnb</button>';return}
+  const red=(za,ime,mark,gdje)=>`<div class="sync-row"><div class="sync-row-top"><span class="sync-mark ${mark}">${mark.toUpperCase()}</span><span class="sync-name">Za ${ime}</span></div>
+    <div class="link-url"><span>${esc(prettyUrl(calendarUrl(IZVOZ.token,za)))}</span><button type="button" onclick="kopirajIzvoz('${za}')">Kopiraj</button></div>
+    <p class="helper" style="margin:6px 0 0">${gdje}</p></div>`
+  el.innerHTML=`<div class="sync-list">${red('booking','Booking.com','b','Booking Extranet → Cijene i dostupnost → Sinkronizacija kalendara → Uvezi kalendar.')}${red('airbnb','Airbnb','a','Airbnb → Kalendar → Dostupnost → Poveži kalendare → Uvezi kalendar.')}</div>
+    <div class="sync-foot"><span class="sync-when">Portali osvježavaju uvezeni kalendar sami, obično svakih nekoliko sati.</span><button class="btn ghost small" type="button" onclick="noviIzvoz()">Novi link (stari prestaje raditi)</button></div>`
+}
+window.napraviIzvoz=async()=>{
+  if(!PROP)return
+  const{error}=await sb.from('calendar_exports').insert({property_id:PROP.id,token:noviToken()})
+  if(error){toast('Greška: '+error.message);return}
+  await ucitajIzvoz();toast('Link je spreman — zalijepite ga u Booking i Airbnb')
+}
+window.noviIzvoz=async()=>{
+  if(!IZVOZ||!confirm('Napraviti novi link? Stari odmah prestaje raditi — novi treba ponovno zalijepiti u Booking i Airbnb.'))return
+  const{error}=await sb.from('calendar_exports').update({token:noviToken()}).eq('id',IZVOZ.id)
+  if(error){toast('Greška: '+error.message);return}
+  await ucitajIzvoz();toast('Novi link je spreman')
+}
+window.kopirajIzvoz=za=>{navigator.clipboard?.writeText(calendarUrl(IZVOZ.token,za));toast('Link kopiran')}
 // Znacka uz svaki servis prati sadrzaj polja, ne zadnju sinkronizaciju —
 // korisnik odmah vidi je li nesto upisao i prije nego spremi.
 window.paintSyncPills=()=>{

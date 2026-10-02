@@ -13,6 +13,14 @@
       "destination": "/api/stranica?sto=robots"
     },
     {
+      "source": "/kalendar/:file",
+      "destination": "/api/kalendar?t=:file"
+    },
+    {
+      "source": "/api/test-calendar",
+      "destination": "/api/kalendar?test=1"
+    },
+    {
       "source": "/c/:token",
       "destination": "/c.html"
     },
@@ -85,6 +93,15 @@
         {
           "key": "Cache-Control",
           "value": "no-store"
+        }
+      ]
+    },
+    {
+      "source": "/kalendar/:file",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
         }
       ]
     },
