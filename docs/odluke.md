@@ -1109,3 +1109,31 @@ Vlasnik (1. 10.): „svi su mi top”. Zatim su 4, 5 i 8 (Riviera ’70, Magazin
 
 - [ ] Koje stilove prenosimo u `p.html` (domaćin bira u dashboardu → Objekt → Izgled)?
 - [ ] Jesu li stilovi za plaćene planove (točka 9 — teme za one koji plaćaju)?
+
+## 21. Konkurencija i nedostaci (2. 10. 2026.) — bez plaćanja
+
+Konkurenti: **Rentlio** (Zadar; PMS + channel manager + booking engine, eVisitor
+prijava iz sučelja), **Chekin** (online check-in, skeniranje isprave, sam šalje u
+eVisitor, spaja se s Rentliom), **mVisitor / službena eVisitor aplikacija**
+(besplatna prijava gostiju), **Touch Stay, Hostfully, Duve** (digitalni vodiči),
+**Lodgify, Smoobu** (web stranica objekta + channel manager).
+
+Gdje zaostajemo (stanje koda, ne želje):
+- [ ] **iCal samo uvoz** — nema izvoza (`.ics` feed). Rezervacija napravljena u
+  Odmoriji ne zatvara dane na Bookingu/Airbnbu → rizik dvostruke rezervacije.
+- [ ] **eVisitor** — podatke skupljamo, ali ih ne šaljemo (domaćin prepisuje /
+  CSV). Nema skeniranja isprave. Chekin, Rentlio i mVisitor šalju sami.
+- [ ] **Nema automatskih poruka gostu** (link vodiča X dana prije dolaska,
+  podsjetnik, upit za recenziju) — domaćin šalje ručno.
+- [ ] **Preporuke se upisuju ručno** — Hostfully ih puni iz Google Places.
+- [ ] **Nema predložaka/dijeljenja sadržaja među objektima** (Touch Stay „tags”).
+- [ ] **Nema aplikacije ni push obavijesti za domaćina** — samo e-mail o upitu.
+- [ ] **Bez timskog pristupa** (suvlasnik, agencija) osim linka za čistačicu.
+- [ ] **Teme/stilovi javne stranice nisu u `p.html`** (točka 20); nema vlastite
+  domene po objektu.
+- [ ] **Dashboard, naslovnica i pravni tekst samo na hrvatskom.**
+
+Što treba uključiti da postojeće proradi do kraja: SQL koraci sigurnosti
+(točka 0), `ANTHROPIC_API_KEY` (prijevodi), Resend u Vaultu (e-mail o upitu),
+`sql/auto-ical-sync.sql` + `CRON_SECRET`, domena `odmoria.com`, Supabase Pro
+(pauziranje), podaci pružatelja usluge i ispravak pravnih tekstova (točka 8).
