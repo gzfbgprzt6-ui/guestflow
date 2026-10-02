@@ -514,6 +514,13 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
 .dirty-dlg__act { display: flex; flex-wrap: wrap; gap: 8px; }
 #kopija-dlg { max-height: calc(100dvh - 32px); overflow: auto; }
 .kopija-izbor { display: grid; gap: 8px; }
+.tim-lista { display: grid; gap: 8px; margin-bottom: 16px; }
+.tim-red { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; padding: 12px 14px; border-radius: var(--radius-sm); background: var(--paper-2); }
+.tim-red b { display: block; }
+.tim-red small { color: var(--muted); font-size: 13px; }
+.tim-akc { display: flex; gap: 6px; flex-wrap: wrap; }
+.tim-novi { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; }
+.tim-novi .field { flex: 1 1 240px; margin: 0; }
 .kopija-izbor label { display: flex; gap: 10px; align-items: center; padding: 10px 12px; border-radius: var(--radius-sm); background: var(--paper-2); font-weight: 600; cursor: pointer; }
 .kopija-izbor input { width: 18px; height: 18px; flex: none; }
 .kopija-izbor small { margin-left: auto; color: var(--muted); font-weight: 500; }
@@ -1245,6 +1252,11 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
             <div class="card-head"><div class="card-title-wrap"><span class="card-number">✓</span><div><h2>Link za čistačicu</h2><p>Dolasci i odlasci za sljedećih 60 dana, s vremenom prijave i odjave. Bez šifri, Wi-Fija i imena gostiju. Stranica je uvijek ažurna.</p></div></div></div>
             <div id="cist-body"><p class="helper">Učitavanje…</p></div>
           </div>
+          <!-- SURADNICI (sql/add-team-access.sql) -->
+          <div class="card" id="tim-card">
+            <div class="card-head"><div class="card-title-wrap"><span class="card-number">+</span><div><h2>Suradnici</h2><p id="tim-opis">Suvlasnik, član obitelji ili agencija mogu uređivati ovaj objekt sa svojim računom: sadržaj, kalendar, rezervacije i upite. Pretplatu i suradnike vodite samo vi.</p></div></div></div>
+            <div id="tim-body"><p class="helper">Učitavanje…</p></div>
+          </div>
           <div class="card">
             <div class="card-head"><div class="card-title-wrap"><span class="card-number">QR</span><div><h2>QR kod za javnu stranicu</h2><p>Postavite ga u smještaju kako bi vodič uvijek bio pri ruci.</p></div></div></div>
             <div class="qr-card">
@@ -1397,7 +1409,7 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
 <script type="module">
 import{createClient}from'https://esm.sh/@supabase/supabase-js@2'
 import{loadPlans,getPlan,listPlans,limitFor,canAdd,limitMessage,effectivePlanId,popustZa,cijenaPlana,formatEur,rokPopusta,trajanjePopusta}from'./plans.js'
-import{publicUrl,bookingUrl,legacyGuestUrl,prettyUrl,cleanerUrl,calendarUrl}from'./links.js'
+import{publicUrl,bookingUrl,legacyGuestUrl,prettyUrl,cleanerUrl,calendarUrl,inviteUrl}from'./links.js'
 import{billingStatus,startCheckout,openBillingPortal,povratakSPlacanja,cekajPlan}from'./billing.js'
 import * as A from'./analitika.js'
 import * as O from'./objave.js'
@@ -1412,6 +1424,12 @@ const MONTHS=['Siječanj','Veljača','Ožujak','Travanj','Svibanj','Lipanj','Srp
 const TYPES=['Apartman','Villa','Kuća','Studio','Soba']
 let USER=null,PROPS=[],PROP=null,SECTION=null
 let USER_PLAN='free',PLAN_LIMIT=1,PHOTO_LIMIT=5
+// Na dijeljenom objektu (suradnik) vrijede limiti VLASNIKA — isto što provodi baza.
+const planObjekta=()=>(PROP&&PROP.__plan)||USER_PLAN
+const fotoLimit=()=>PROP&&PROP.__plan?limitFor(PROP.__plan,'photos'):PHOTO_LIMIT
+// Zaključan je samo VLASTITI objekt iznad limita plana; dijeljeni nikad.
+const vlastiti=()=>PROPS.filter(p=>!p.__dijeljen)
+const zakljucan=p=>!p.__dijeljen&&vlastiti().indexOf(p)>=PLAN_LIMIT
 /* Pretplata: red iz `subscriptions`, je li plaćanje karticom uključeno, odabrano razdoblje */
 let SUB=null,BILLING={stripe:false,test:false},INTERVAL='month'
 let calMonth=new Date().getMonth(),calYear=new Date().getFullYear()
@@ -1422,10 +1440,30 @@ let localCount=0
 let guideRows=[],transportRows=[],attractionRows=[],ruleRows=[],faqRows=[]
 let COUNTS={guests:4,bedrooms:1,beds:0,bathrooms:0,size_m2:0}
 
+// ── POZIVNICA ZA SURADNIKA (sql/add-team-access.sql) ──────────
+// Link /dashboard.html?pozivnica=<token>; bez prijave token čeka u
+// localStorageu (prijava → registracija → postavljanje vraća ovamo).
+let POZ_OBJEKT=null
+async function prihvatiPozivnicu(){
+  let tok=null;try{tok=localStorage.getItem('odm-pozivnica')}catch{}
+  const q=new URLSearchParams(location.search)
+  if(q.has('pozivnica')){q.delete('pozivnica');history.replaceState(null,'',location.pathname+(q.toString()?'?'+q:'')+location.hash)}
+  if(!tok)return
+  try{localStorage.removeItem('odm-pozivnica')}catch{}
+  const{data,error}=await sb.rpc('prihvati_pozivnicu',{p_token:tok})
+  const st=error?'greska':data&&data.stanje
+  if(st==='ok'){POZ_OBJEKT=data.property_id;setTimeout(()=>toast('Sada ste suradnik na objektu '+(data.objekt||'')+' ✓'),300)}
+  else if(st==='vlastiti')POZ_OBJEKT=data.property_id
+  else setTimeout(()=>toast(st==='iskoristeno'?'Ovu pozivnicu je već prihvatio netko drugi. Zamolite vlasnika za novu.':'Pozivnica nije valjana ili je povučena.'),300)
+}
+
 async function init(){
   const{data:{session}}=await sb.auth.getSession()
-  if(!session){location.href='/login.html';return}
+  const pozQ=new URLSearchParams(location.search).get('pozivnica')
+  if(pozQ){try{localStorage.setItem('odm-pozivnica',pozQ)}catch{}}
+  if(!session){location.href='/login.html'+(pozQ?'?pozivnica=1':'');return}
   USER=session.user
+  await prihvatiPozivnicu()
   const n=USER.user_metadata?.full_name||USER.email||'?'
   document.getElementById('user-av').textContent=n[0].toUpperCase()
   document.getElementById('user-name').textContent=USER.user_metadata?.full_name||USER.email.split('@')[0]
@@ -1443,9 +1481,9 @@ async function init(){
   // iz postavljanja / dodavanja objekta: „Napravi link za gosta”
   const q=new URLSearchParams(location.search)
   const otvori=q.get('otvori'),objekt=q.get('objekt')
-  if(otvori||objekt){q.delete('otvori');q.delete('objekt');history.replaceState(null,'',location.pathname+(q.toString()?'?'+q:'')+location.hash)}
+  if(otvori||objekt||POZ_OBJEKT){q.delete('otvori');q.delete('objekt');history.replaceState(null,'',location.pathname+(q.toString()?'?'+q:'')+location.hash)}
   // iz e-maila o novom upitu: odabrani objekt (ako je tvoj i nije zaključan)
-  const ciljni=objekt&&PROPS.find((p,i)=>p.id===objekt&&i<PLAN_LIMIT)
+  const ciljni=(objekt||POZ_OBJEKT)&&PROPS.find(p=>p.id===(objekt||POZ_OBJEKT)&&!zakljucan(p))
   if(ciljni&&ciljni.id!==PROP?.id)await selectProp(ciljni)
   if(otvori==='rezervacija'){
     nav('reservations',document.querySelector('.panelnav [data-panel=reservations]'));window.showAddBooking()
@@ -1493,24 +1531,32 @@ window.setType=(t)=>{
 
 async function loadProps(){
   const{data}=await sb.from('properties').select('*').eq('user_id',USER.id).order('created_at')
-  PROPS=data||[]
+  const moji=data||[]
+  // Objekti na kojima je korisnik suradnik (sql/add-team-access.sql) — bez tablice tiho ništa
+  let dijeljeni=[]
+  try{
+    const{data:m,error}=await sb.from('property_members').select('property_id,user_id,accepted_at').eq('user_id',USER.id)
+    const ids=(error?[]:(m||[])).filter(x=>x.accepted_at).map(x=>x.property_id).filter(id=>!moji.some(p=>p.id===id))
+    if(ids.length){const{data:d}=await sb.from('properties').select('*').in('id',ids).order('created_at');dijeljeni=(d||[]).map(p=>({...p,__dijeljen:true}))}
+  }catch{}
+  PROPS=[...moji,...dijeljeni]
   if(!PROPS.length){location.href='/onboarding.html';return}
   const sel=document.getElementById('prop-sel')
   sel.innerHTML=''
-  PROPS.forEach((p,i)=>{
+  PROPS.forEach(p=>{
     const o=document.createElement('option')
     o.value=p.id
-    o.textContent=(i>=PLAN_LIMIT?'🔒 ':'')+p.name
+    o.textContent=(zakljucan(p)?'🔒 ':'')+p.name+(p.__dijeljen?' · dijeljeno':'')
     sel.appendChild(o)
   })
   document.getElementById('lock-banner-slot').innerHTML=''
-  if(PROPS.length>PLAN_LIMIT)showLockBanner()
-  const first=PROPS.find((_,i)=>i<PLAN_LIMIT)
+  if(moji.length>PLAN_LIMIT)showLockBanner()
+  const first=PROPS.find(p=>!zakljucan(p))
   if(first)await selectProp(first)
 }
 
 function showLockBanner(){
-  const locked=PROPS.length-PLAN_LIMIT
+  const locked=vlastiti().length-PLAN_LIMIT
   document.getElementById('lock-banner-slot').innerHTML=`<div class="lock-banner"><div class="li">🔒</div><div><strong>${locked} objekt${locked>1?'a':''} zaključano</strong><span>${limitMessage('properties',USER_PLAN)}</span></div><button class="btn small" onclick="nav('sub',document.querySelector('[data-panel=sub]'))">Nadogradi →</button></div>`
 }
 
@@ -1524,6 +1570,7 @@ window.onPropChange=async()=>{
 }
 
 async function selectProp(p){
+  if(p.__dijeljen&&!p.__plan){try{const{data}=await sb.rpc('plan_objekta',{p_property:p.id});p.__plan=data||'free'}catch{p.__plan='free'}}
   PROP=p
   document.getElementById('prop-sel').value=p.id
   document.getElementById('prop-thumb').textContent=(p.name||'?').slice(0,2).toUpperCase()
@@ -1553,6 +1600,7 @@ async function selectProp(p){
   {const kc=document.getElementById('kopija-card');if(kc)kc.hidden=PROPS.length<2}
   if(document.querySelector('.editor-panel.active')?.id==='section-prijevodi')ucitajPrijevode()
   if(document.querySelector('.editor-panel.active')?.id==='section-objave')obOtvori(true)
+  if(document.querySelector('.editor-panel.active')?.id==='section-links'){ucitajCistacicu();ucitajTim()}
 }
 
 /* Nazivi, cijene i limiti iz tablice `plans` (plans.js), kao u account.html.
@@ -2066,7 +2114,7 @@ window.napraviLinkZa=(ci,co,izvor)=>{
 
 /* Analitika po planu — koliko dana smije vidjeti daje plans.analytics_days (baza).
    Free (0) ima osnovnih 30 dana; kartice s data-treba traže plan s toliko dana. */
-function anDana(){return Math.max(30,getPlan(USER_PLAN).analyticsDays||0)}
+function anDana(){return Math.max(30,getPlan(planObjekta()).analyticsDays||0)}
 function planZa(treba){return listPlans().find(p=>(p.analyticsDays||0)>=treba)}
 function ponudiPlan(treba){
   const p=planZa(treba)
@@ -2465,7 +2513,7 @@ window.saveListItem=async(key)=>{
     // baza ovo svejedno provodi okidacem — ovdje samo da korisnik dobije
     // jasnu poruku prije nego posalje zahtjev
     const have=listStore[key]().length
-    if(!canAdd(USER_PLAN,cfg.table,have)){toast(limitMessage(cfg.table,USER_PLAN));return}
+    if(!canAdd(planObjekta(),cfg.table,have)){toast(limitMessage(cfg.table,planObjekta()));return}
     payload.property_id=PROP.id
     payload.sort_order=have
     const{error}=await sb.from(cfg.table).insert(payload)
@@ -2625,13 +2673,13 @@ async function uploadToCloudinary(file){
   if(!res.ok)throw new Error(data.error?.message||'Upload nije uspio')
   return data.secure_url
 }
-function photoCountLabel(n){return n+' / '+(PHOTO_LIMIT===Infinity?'∞':PHOTO_LIMIT)}
+function photoCountLabel(n){const l=fotoLimit();return n+' / '+(l===Infinity?'∞':l)}
 
 window.uploadPhotos=async(files)=>{
   if(!PROP||!files.length)return
   const urls=[...(PROP.photo_urls||[])]
-  const limit=PHOTO_LIMIT
-  if(urls.length>=limit){showA('photos-alert','err',limitMessage('photos',USER_PLAN));return}
+  const limit=fotoLimit()
+  if(urls.length>=limit){showA('photos-alert','err',limitMessage('photos',planObjekta()));return}
   let uploaded=0
   for(const file of Array.from(files)){
     if(urls.length>=limit)break
@@ -2727,7 +2775,7 @@ window.nav=(id,el)=>{
   id=glavni
   if(id==='reservations')window.loadBookings()
   if(id==='ical')loadIcal()
-  if(id==='links')ucitajCistacicu()
+  if(id==='links'){ucitajCistacicu();ucitajTim()}
   if(id==='objave')obOtvori()
   if(id==='reviews')ucitajRecenzije()
   if(id==='prijevodi')ucitajPrijevode()
@@ -2852,7 +2900,7 @@ window.syncNow=async()=>{
 
 // ── BOOKINGS ──────────────────────────────────────────
 window.loadBookings=async function(){
-  const ap=PROP||PROPS.find((_,i)=>i<PLAN_LIMIT)
+  const ap=PROP||PROPS.find(p=>!zakljucan(p))
   if(!ap){document.getElementById('bookings-list').innerHTML='<div class="empty-hint">Nema aktivnih objekata.</div>';return}
   const{data}=await sb.from('bookings').select('*').eq('property_id',ap.id).order('checkin_date',{ascending:false}).limit(50)
   const el=document.getElementById('bookings-list')
@@ -2899,7 +2947,7 @@ window.hideResult=()=>{document.getElementById('bk-result-card').style.display='
 /* Rezervacija + zauzeti dani + link. Zajedničko za obrazac i prihvaćanje upita.
    Link vrijedi do dan nakon odlaska (token_expires_at), kako i piše uz obrazac. */
 async function napraviRezervaciju({name,note,ci,co}){
-  const ap=PROP||PROPS.find((_,i)=>i<PLAN_LIMIT);if(!ap)return{error:'Nema objekta.'}
+  const ap=PROP||PROPS.find(p=>!zakljucan(p));if(!ap)return{error:'Nema objekta.'}
   const istek=new Date(A.plusDana(co,1)+'T23:59:00').toISOString()
   const{data,error}=await sb.from('bookings').insert({property_id:ap.id,guest_name:name,guest_note:note||null,checkin_date:ci,checkout_date:co,token_expires_at:istek}).select().single()
   if(error)return{error:error.message}
@@ -3001,7 +3049,7 @@ let QRMOD=null
 const qrMod=async()=>QRMOD||(QRMOD=(await import('https://esm.sh/qrcode@1.5.3')).default)
 const obAdresa=()=>prettyUrl(publicUrl(PROP.slug))
 function obJezici(){
-  const n=getPlan(USER_PLAN)?.maxLanguages
+  const n=getPlan(planObjekta())?.maxLanguages
   return JZ.JEZICI.slice(0,n==null||n<0?99:Math.max(1,n)).map(x=>x.kod)
 }
 function obMinNoci(){
@@ -3306,6 +3354,56 @@ window.kopirajSadrzaj=async()=>{
   btn.disabled=false
   await loadSection();await loadListSections();await loadAmenities();renderChecklist();livePreview()
   toast('Sadržaj je preuzet ✓')
+}
+
+// ── SURADNICI (sql/add-team-access.sql) ────────────────────────
+// Vlasnik pravi pozivnicu (token) i šalje link; suradnik je prihvati
+// prijavljen (prihvati_pozivnicu). „Ukloni” briše red — pristup prestaje odmah.
+let TIM=[]
+const porukaSuradniku=m=>`Pozdrav! Pozivam te da zajedno uređujemo ${PROP.name} u Odmoriji: ${inviteUrl(m.token)}\nPrijavi se ili napravi račun, pa otvori link.`
+async function ucitajTim(){
+  const el=document.getElementById('tim-body');if(!el||!PROP)return
+  const opis=document.getElementById('tim-opis')
+  if(PROP.__dijeljen){
+    opis.textContent='Ovaj objekt s vama dijeli njegov vlasnik. Možete uređivati sadržaj, kalendar, rezervacije i upite; pretplatu i suradnike vodi vlasnik.'
+    el.innerHTML='<button class="btn ghost small" type="button" onclick="napustiObjekt()">Napusti ovaj objekt</button>';return
+  }
+  opis.textContent='Suvlasnik, član obitelji ili agencija mogu uređivati ovaj objekt sa svojim računom: sadržaj, kalendar, rezervacije i upite. Pretplatu i suradnike vodite samo vi.'
+  const{data,error}=await sb.from('property_members').select('*').eq('property_id',PROP.id).order('created_at')
+  if(error){el.innerHTML='<p class="helper">Suradnici još nisu uključeni — u Supabaseu treba pokrenuti <code>sql/add-team-access.sql</code>.</p>';return}
+  TIM=data||[]
+  const redovi=TIM.map(m=>{
+    const tko=esc(m.ime||m.email||'Pozivnica')
+    if(m.accepted_at)return`<div class="tim-red"><div><b>${tko}</b><small>${m.email&&m.ime?esc(m.email)+' · ':''}suradnik od ${new Date(m.accepted_at).toLocaleDateString('hr-HR')}</small></div><button class="btn ghost small" type="button" onclick="ukloniSuradnika('${m.id}')">Ukloni</button></div>`
+    return`<div class="tim-red"><div><b>${tko}</b><small>Čeka da otvori link</small></div><div class="tim-akc"><button class="btn secondary small" type="button" onclick="kopirajPozivnicu('${m.id}')">Kopiraj link</button><button class="btn secondary small" type="button" onclick="posaljiPozivnicu('${m.id}')">WhatsApp</button><button class="btn ghost small" type="button" onclick="ukloniSuradnika('${m.id}')">Povuci</button></div></div>`
+  }).join('')
+  el.innerHTML=`${redovi?`<div class="tim-lista">${redovi}</div>`:''}
+    <div class="tim-novi"><div class="field"><label for="tim-ime">Ime ili uloga <span class="optional">npr. Marko — suvlasnik</span></label><input class="input" id="tim-ime" maxlength="80" autocomplete="off"></div>
+    <button class="btn" type="button" onclick="pozoviSuradnika()">Napravi pozivnicu</button></div>`
+}
+window.pozoviSuradnika=async()=>{
+  if(!PROP||PROP.__dijeljen)return
+  const ime=v('tim-ime').slice(0,80)||null
+  const{data,error}=await sb.from('property_members').insert({property_id:PROP.id,token:noviToken(),ime}).select().single()
+  if(error){toast('Greška: '+error.message);return}
+  await ucitajTim()
+  if(data){navigator.clipboard?.writeText(inviteUrl(data.token)).catch(()=>{})}
+  toast('Pozivnica je spremna — link je kopiran. Pošaljite ga suradniku.')
+}
+window.kopirajPozivnicu=id=>{const m=TIM.find(x=>x.id===id);if(!m)return;navigator.clipboard?.writeText(inviteUrl(m.token));toast('Link kopiran')}
+window.posaljiPozivnicu=id=>{const m=TIM.find(x=>x.id===id);if(!m)return;window.open(waLink('',porukaSuradniku(m)),'_blank','noopener')}
+window.ukloniSuradnika=async id=>{
+  const m=TIM.find(x=>x.id===id);if(!m)return
+  if(!confirm(m.accepted_at?'Ukloniti suradnika? Pristup objektu prestaje odmah.':'Povući pozivnicu? Link prestaje raditi.'))return
+  const{error}=await sb.from('property_members').delete().eq('id',id)
+  if(error){toast('Greška: '+error.message);return}
+  await ucitajTim();toast(m.accepted_at?'Suradnik uklonjen':'Pozivnica povučena')
+}
+window.napustiObjekt=async()=>{
+  if(!PROP||!PROP.__dijeljen||!confirm('Napustiti objekt '+PROP.name+'? Više ga nećete vidjeti dok vas vlasnik ponovno ne pozove.'))return
+  const{error}=await sb.from('property_members').delete().eq('property_id',PROP.id).eq('user_id',USER.id)
+  if(error){toast('Greška: '+error.message);return}
+  PROP=null;await loadProps();toast('Napustili ste objekt')
 }
 
 // ── LINK ZA ČISTAČICU (sql/add-cleaner-links.sql) ─────────────

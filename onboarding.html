@@ -317,6 +317,9 @@ async function init() {
   // Check if already has property — redirect to dashboard
   const { data: props } = await sb.from('properties').select('id').eq('user_id', USER.id).limit(1)
   if (props?.length) { window.location.href = '/dashboard.html'; return }
+  // Pozivnica za suradnika čeka (dashboard.html?pozivnica=…) — prvo nju prihvatiti
+  let poz = null; try { poz = localStorage.getItem('odm-pozivnica') } catch {}
+  if (poz) { window.location.href = '/dashboard.html'; return }
 
   // Pre-fill host name from auth
   const name = USER.user_metadata?.full_name || ''

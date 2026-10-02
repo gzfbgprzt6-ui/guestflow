@@ -162,7 +162,11 @@ async function domacin(req, objektId) {
   const user = await u.json().catch(() => null);
   if (!user || !user.id) return null;
   const p = redovi(await db(`properties?select=id,user_id&id=eq.${enc(objektId)}&limit=1`))[0];
-  return p && p.user_id === user.id ? { id: p.id, sve: true } : null;
+  if (!p) return null;
+  if (p.user_id === user.id) return { id: p.id, sve: true };
+  // suradnik na objektu (sql/add-team-access.sql) smije isto; bez tablice → ne
+  const m = redovi(await db(`property_members?select=id&property_id=eq.${enc(p.id)}&user_id=eq.${enc(user.id)}&accepted_at=not.is.null&limit=1`).catch(() => []));
+  return m.length ? { id: p.id, sve: true } : null;
 }
 
 async function zaDomacina(req, res, q, posalji, pocetak) {

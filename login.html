@@ -25,7 +25,8 @@
     <div class="auth__box" id="form-box">
       <a class="auth__logo" href="/">Odmoria<i>.</i></a>
       <h1 class="auth__title">Dobro došli natrag.</h1>
-      <p class="auth__lead">Prijavite se da uredite objekt, kalendar i boravke.</p>
+      <p class="auth__lead" id="lead">Prijavite se da uredite objekt, kalendar i boravke.</p>
+      <script>if(/[?&]pozivnica=/.test(location.search))document.getElementById('lead').textContent='Prijavite se ili napravite račun da prihvatite poziv za suradnju na objektu.'</script>
       <div class="alert" id="alert" role="alert" hidden></div>
       <form class="form" onsubmit="event.preventDefault();login()" novalidate>
         <div class="fg">
