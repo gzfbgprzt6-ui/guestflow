@@ -512,6 +512,11 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
 .dirty-dlg h2 { font: 800 22px/1.25 var(--font-ui); margin: 0 0 8px; }
 .dirty-dlg p { color: var(--muted); margin: 0 0 20px; }
 .dirty-dlg__act { display: flex; flex-wrap: wrap; gap: 8px; }
+#kopija-dlg { max-height: calc(100dvh - 32px); overflow: auto; }
+.kopija-izbor { display: grid; gap: 8px; }
+.kopija-izbor label { display: flex; gap: 10px; align-items: center; padding: 10px 12px; border-radius: var(--radius-sm); background: var(--paper-2); font-weight: 600; cursor: pointer; }
+.kopija-izbor input { width: 18px; height: 18px; flex: none; }
+.kopija-izbor small { margin-left: auto; color: var(--muted); font-weight: 500; }
 
 /* donja navigacija (mobitel) */
 .bottom-nav { display: none; }
@@ -879,6 +884,10 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
               <div class="field third"><label for="prop-email">Email za upite</label><input class="input" id="prop-email" type="email"></div>
             </div>
             <div style="margin-top:18px;display:flex;justify-content:flex-end"><button class="btn" onclick="saveBasic()">Spremi promjene</button></div>
+          </div>
+          <div class="card" id="kopija-card" hidden>
+            <div class="card-head"><div class="card-title-wrap"><span class="card-number">⧉</span><div><h2>Preuzmi sadržaj iz drugog objekta</h2><p>Imate više objekata u istoj kući ili mjestu? Kućna pravila, česta pitanja, preporuke i upute ne morate pisati ponovno.</p></div></div>
+              <button class="btn secondary" type="button" onclick="otvoriKopiju()">Preuzmi sadržaj</button></div>
           </div>
         </section>
 
@@ -1361,6 +1370,19 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
   </div>
 </dialog>
 
+<!-- Preuzmi sadržaj iz drugog objekta (kopirajSadrzaj) — nikad šifre, Wi-Fi ni adresa -->
+<dialog class="dirty-dlg" id="kopija-dlg" aria-labelledby="kopija-t">
+  <h2 id="kopija-t">Preuzmi sadržaj</h2>
+  <p>Stavke se <b>dodaju</b> postojećima u <b id="kopija-na"></b>; ništa se ne briše, a iste stavke se ne ponavljaju. Šifra vrata, Wi-Fi i adresa se nikad ne prenose.</p>
+  <div class="field" style="margin-bottom:14px"><label for="kopija-od">Iz objekta</label><select class="select" id="kopija-od"></select></div>
+  <div class="kopija-izbor" id="kopija-izbor"></div>
+  <p class="helper" id="kopija-st" role="status" style="margin:12px 0 0"></p>
+  <div class="dirty-dlg__act" style="margin-top:18px">
+    <button type="button" class="btn" id="kopija-da" onclick="kopirajSadrzaj()">Preuzmi</button>
+    <button type="button" class="btn ghost" onclick="document.getElementById('kopija-dlg').close()">Zatvori</button>
+  </div>
+</dialog>
+
 <dialog class="dirty-dlg" id="dirty-dlg" aria-labelledby="dirty-t">
   <h2 id="dirty-t">Spremiti promjene?</h2>
   <p>U ovom dijelu imate promjene koje još nisu spremljene.</p>
@@ -1528,6 +1550,7 @@ async function selectProp(p){
   livePreview()
   renderQr()
   renderSubPanel()
+  {const kc=document.getElementById('kopija-card');if(kc)kc.hidden=PROPS.length<2}
   if(document.querySelector('.editor-panel.active')?.id==='section-prijevodi')ucitajPrijevode()
   if(document.querySelector('.editor-panel.active')?.id==='section-objave')obOtvori(true)
 }
@@ -3211,6 +3234,79 @@ document.addEventListener('change',e=>{
   const p=e.target.closest('.editor-panel');if(p)markDirty(p)
 })
 
+
+// ── PREUZMI SADRŽAJ IZ DRUGOG OBJEKTA ─────────────────────────
+// Dodaje (ne briše) stavke iz drugog vlastitog objekta. Iste stavke se
+// preskaču (po nazivu / tekstu). Upute iz `sections` pune samo PRAZNA polja
+// i nikad ne diraju door_code, wifi_name, wifi_pass ni address.
+// Limit plana provodi baza (sql/plan-limits.sql) — upis ide red po red, pa
+// kad baza odbije, ostatak te vrste se preskoči i to se javi.
+const KOPIJA=[
+  {k:'amenities',t:'Sadržaji (bazen, klima…)',kljuc:'name'},
+  {k:'house_rules',t:'Kućna pravila',kljuc:'rule_text'},
+  {k:'faq',t:'Česta pitanja',kljuc:'question'},
+  {k:'local_places',t:'Preporuke (plaže, restorani…)',kljuc:'name'},
+  {k:'transport',t:'Prijevoz',kljuc:'name'},
+  {k:'attractions',t:'Atrakcije i izleti',kljuc:'name'},
+  {k:'sections',t:'Upute (prijava, odjava, parking, uređaji)'}
+]
+const UPUTE=['checkin_time','checkout_time','parking_info','checkin_notes','checkout_notes','ac_info','heating_info','hot_water_info','kitchen_info']
+const isti=x=>String(x||'').trim().toLowerCase()
+async function brojiKopiju(){
+  const od=document.getElementById('kopija-od').value
+  const n=await Promise.all(KOPIJA.map(async x=>{
+    if(x.k==='sections'){const{data}=await sb.from('sections').select('*').eq('property_id',od).maybeSingle();return UPUTE.filter(f=>data&&String(data[f]||'').trim()).length}
+    const{data}=await sb.from(x.k).select('*').eq('property_id',od);return(data||[]).length
+  }))
+  document.getElementById('kopija-izbor').innerHTML=KOPIJA.map((x,i)=>`<label><input type="checkbox" value="${x.k}" ${n[i]?'checked':'disabled'}>${x.t}<small>${n[i]?(x.k==='sections'?n[i]+' polja':n[i]):'prazno'}</small></label>`).join('')
+}
+window.otvoriKopiju=async()=>{
+  if(!PROP)return
+  const drugi=PROPS.filter(p=>p.id!==PROP.id);if(!drugi.length)return
+  const sel=document.getElementById('kopija-od')
+  sel.innerHTML=drugi.map(p=>`<option value="${p.id}">${esc(p.name||'Bez naziva')}</option>`).join('')
+  sel.onchange=brojiKopiju
+  document.getElementById('kopija-na').textContent=PROP.name||'ovaj objekt'
+  document.getElementById('kopija-st').textContent=''
+  document.getElementById('kopija-da').disabled=false
+  document.getElementById('kopija-izbor').innerHTML='<p class="helper">Učitavam…</p>'
+  document.getElementById('kopija-dlg').showModal()
+  await brojiKopiju()
+}
+window.kopirajSadrzaj=async()=>{
+  const od=document.getElementById('kopija-od').value,na=PROP&&PROP.id
+  const vrste=[...document.querySelectorAll('#kopija-izbor input:checked')].map(i=>i.value)
+  const st=document.getElementById('kopija-st'),btn=document.getElementById('kopija-da')
+  if(!od||!na||od===na||!vrste.length){st.textContent='Odaberite barem jednu vrstu sadržaja.';return}
+  btn.disabled=true;st.textContent='Preuzimam…'
+  const rez=[]
+  for(const x of KOPIJA.filter(x=>vrste.includes(x.k))){
+    if(x.k==='sections'){
+      const[{data:a},{data:b}]=await Promise.all([sb.from('sections').select('*').eq('property_id',od).maybeSingle(),sb.from('sections').select('*').eq('property_id',na).maybeSingle()])
+      const u={};UPUTE.forEach(f=>{if(a&&String(a[f]||'').trim()&&!String((b||{})[f]||'').trim())u[f]=a[f]})
+      const n=Object.keys(u).length
+      if(n){const{error}=b?await sb.from('sections').update(u).eq('property_id',na):await sb.from('sections').insert({property_id:na,...u});if(error){rez.push(x.t+': greška');continue}}
+      rez.push(`${x.t}: ${n?n+' polja':'sve je već ispunjeno'}`);continue
+    }
+    const[{data:a},{data:b}]=await Promise.all([sb.from(x.k).select('*').eq('property_id',od),sb.from(x.k).select('*').eq('property_id',na)])
+    const ima=new Set((b||[]).map(r=>isti(r[x.kljuc])))
+    let red=Math.max(0,...(b||[]).map(r=>+r.sort_order||0))
+    const nove=(a||[]).filter(r=>!ima.has(isti(r[x.kljuc]))).sort((p,q)=>(+p.sort_order||0)-(+q.sort_order||0))
+    let n=0,limit=false
+    for(const r of nove){
+      const{id,property_id,created_at,updated_at,...ostalo}=r
+      if('sort_order' in r)ostalo.sort_order=++red
+      const{error}=await sb.from(x.k).insert({...ostalo,property_id:na})
+      if(error){limit=true;break}
+      n++
+    }
+    rez.push(`${x.t}: ${n} dodano`+(nove.length-n?`, ${nove.length-n} nije (${limit?'limit plana':'već postoji'})`:'')+((a||[]).length-nove.length?`, ${(a||[]).length-nove.length} već postoji`:''))
+  }
+  st.innerHTML=rez.map(esc).join('<br>')
+  btn.disabled=false
+  await loadSection();await loadListSections();await loadAmenities();renderChecklist();livePreview()
+  toast('Sadržaj je preuzet ✓')
+}
 
 // ── LINK ZA ČISTAČICU (sql/add-cleaner-links.sql) ─────────────
 // Token je jedini ključ stranice /c/<token>; „Novi link” ga zamijeni.
