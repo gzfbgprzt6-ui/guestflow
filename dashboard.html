@@ -3366,6 +3366,7 @@ window.kopirajSadrzaj=async()=>{
 // Vlasnik pravi pozivnicu (token) i šalje link; suradnik je prihvati
 // prijavljen (prihvati_pozivnicu). „Ukloni” briše red — pristup prestaje odmah.
 let TIM=[]
+const MAX_SURADNIKA=3   // isto provodi baza (najvise_suradnika u sql/add-team-access.sql)
 const porukaSuradniku=m=>`Pozdrav! Pozivam te da zajedno uređujemo ${PROP.name} u Odmoriji: ${inviteUrl(m.token)}\nPrijavi se ili napravi račun, pa otvori link.`
 async function ucitajTim(){
   const el=document.getElementById('tim-body');if(!el||!PROP)return
@@ -3383,12 +3384,14 @@ async function ucitajTim(){
     if(m.accepted_at)return`<div class="tim-red"><div><b>${tko}</b><small>${m.email&&m.ime?esc(m.email)+' · ':''}suradnik od ${new Date(m.accepted_at).toLocaleDateString('hr-HR')}</small></div><button class="btn ghost small" type="button" onclick="ukloniSuradnika('${m.id}')">Ukloni</button></div>`
     return`<div class="tim-red"><div><b>${tko}</b><small>Čeka da otvori link</small></div><div class="tim-akc"><button class="btn secondary small" type="button" onclick="kopirajPozivnicu('${m.id}')">Kopiraj link</button><button class="btn secondary small" type="button" onclick="posaljiPozivnicu('${m.id}')">WhatsApp</button><button class="btn ghost small" type="button" onclick="ukloniSuradnika('${m.id}')">Povuci</button></div></div>`
   }).join('')
+  const pun=TIM.length>=MAX_SURADNIKA
   el.innerHTML=`${redovi?`<div class="tim-lista">${redovi}</div>`:''}
-    <div class="tim-novi"><div class="field"><label for="tim-ime">Ime ili uloga <span class="optional">npr. Marko — suvlasnik</span></label><input class="input" id="tim-ime" maxlength="80" autocomplete="off"></div>
-    <button class="btn" type="button" onclick="pozoviSuradnika()">Napravi pozivnicu</button></div>`
+    ${pun?`<p class="helper" style="margin:0">Objekt može imati najviše ${MAX_SURADNIKA} suradnika (uključujući pozivnice na čekanju). Za novog uklonite postojećeg ili povucite pozivnicu.</p>`:`<div class="tim-novi"><div class="field"><label for="tim-ime">Ime ili uloga <span class="optional">npr. Marko — suvlasnik</span></label><input class="input" id="tim-ime" maxlength="80" autocomplete="off"></div>
+    <button class="btn" type="button" onclick="pozoviSuradnika()">Napravi pozivnicu</button></div>`}`
 }
 window.pozoviSuradnika=async()=>{
   if(!PROP||PROP.__dijeljen)return
+  if(TIM.length>=MAX_SURADNIKA){toast('Najviše '+MAX_SURADNIKA+' suradnika po objektu.');return}
   const ime=v('tim-ime').slice(0,80)||null
   const{data,error}=await sb.from('property_members').insert({property_id:PROP.id,token:noviToken(),ime}).select().single()
   if(error){toast('Greška: '+error.message);return}

@@ -1158,7 +1158,7 @@ idempotentna, ne diraju postojeće politike ni podatke):
   vlasnikovi. SQL samo DODAJE politike (Postgres ih spaja s OR) — postojeće
   se ne mijenjaju. Testirano na lokalnom Postgresu (tuđi objekt, preuzimanje,
   brisanje, pozivanje, iskorištena pozivnica, anonimni).
-- [ ] Odluka: koliko suradnika po planu? Sada nema ograničenja.
+- [x] Koliko suradnika: **najviše 3 po objektu**, na svim planovima (vlasnik, 2. 10.). Broje se i pozivnice na čekanju; provodi baza (`najvise_suradnika`) i sučelje (`MAX_SURADNIKA`).
 - [ ] Engleski za domaćina: e-mailovi (Supabase potvrda računa, e-mail o upitu)
   i dalje su na hrvatskom; predlošci se mijenjaju u Supabaseu / `add-inquiry-email.sql`.
 
@@ -1201,6 +1201,11 @@ Primjer: 100 domaćina × 30 boravaka × 3 poruke = 9.000 poruka/mj → e-mail
 ~20 $/mj ukupno; WhatsApp ~270 €/mj. Rad: ~1–2 dana (e-mail).
 
 - [ ] Odluka: uključiti e-mail? (tada spremati e-mail gosta uz rezervaciju)
+  Pojašnjenje (2. 10.): e-mail je besplatan do 3.000 poruka mjesečno i
+  **100 dnevno** (Resend Free); iznad toga ~20 $/mj. WhatsApp koji gost ili
+  domaćin otvori sam (`wa.me` link — već postoji na javnoj stranici i kod
+  upita) je **besplatan za sve**; plaća se samo kad Odmoria šalje poruku
+  automatski preko WhatsApp Business API-ja (~0,03 €).
 
 ## 25. Preporuke iz Google karata — cijena
 
@@ -1212,6 +1217,11 @@ ključ (poslužiteljska ruta; Vercel ima još 1 slobodnu funkciju od 12).
 Besplatna zamjena: OpenStreetMap (bez ocjena i fotografija, slabiji podaci).
 
 - [ ] Odluka: Google (bolje, gotovo besplatno na početku) ili OSM.
+  Pojašnjenje (2. 10.): 0,15 $ je **jednokratno po uvozu** (domaćin klikne
+  „Predloži mjesta u blizini” jednom), ne mjesečno po objektu, i tek nakon
+  ~1.000 besplatnih uvoza mjesečno. **Besplatna opcija je OpenStreetMap**
+  (Overpass): 0 €, uz obavezan natpis „© OpenStreetMap contributors”; slabiji
+  podaci o restoranima, bez ocjena i fotografija. Prijedlog: OSM za sve sada.
 
 ## 26. Obavijesti domaćinu na mobitelu — kako
 

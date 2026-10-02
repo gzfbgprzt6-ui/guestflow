@@ -32,6 +32,22 @@ create index if not exists property_members_user on public.property_members(user
 
 alter table public.property_members enable row level security;
 
+-- Najviše 3 suradnika po objektu (odluka vlasnika, 2. 10. 2026.) — broje se i
+-- pozivnice koje još nitko nije prihvatio. Promjena = ova konstanta.
+create or replace function public.najvise_suradnika()
+returns trigger language plpgsql security definer set search_path = public, pg_temp
+as $$
+begin
+  if (select count(*) from public.property_members where property_id = new.property_id) >= 3 then
+    raise exception 'Objekt može imati najviše 3 suradnika (uključujući pozivnice na čekanju).' using errcode = 'P0001';
+  end if;
+  return new;
+end;
+$$;
+drop trigger if exists trg_najvise_suradnika on public.property_members;
+create trigger trg_najvise_suradnika before insert on public.property_members
+  for each row execute function public.najvise_suradnika();
+
 -- Je li prijavljeni korisnik prihvaćeni suradnik na objektu?
 create or replace function public.je_suradnik(p_property uuid)
 returns boolean language sql stable security definer set search_path = public, pg_temp
