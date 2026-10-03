@@ -1246,13 +1246,14 @@ Prava aplikacija u App Storeu / Google Playu: ~99 $/god (Apple) + 25 $
 
 ## 27. Puštanje u produkciju (main) — redoslijed i provjere
 
-Grana je spremna za spajanje (PR otvoren kao nacrt, NE spajati bez vaše
-potvrde). Sav novi kod radi i bez SQL-a (prikaže napomenu), pa se main može
-spojiti prije SQL koraka — ali značajke proradi tek SQL.
+**Spojeno u main 3. 10. 2026.** (PR #2, `8c1b077`, Vercel objavio). Kod radi
+i bez SQL-a (prikaže napomenu); značajke prorade tek nakon koraka ispod.
+Novi `h.html` je već objavljen, pa se KORAK 2 smije pokrenuti odmah nakon
+KORAKA 1 (točka 2 ispod je time obavljena).
 
 **A. Supabase → SQL editor, ovim redom** (svaki je idempotentan):
 1. `sql/sections-security.sql` — KORAK 0 (samo čita), KORAK 1 (funkcija).
-2. **Spojiti PR u main** i pričekati da Vercel objavi (novi `h.html`).
+2. ~~Spojiti PR u main~~ — obavljeno 3. 10. 2026.
 3. `sql/sections-security.sql` — KORAK 2 (zatvara `sections` i `bookings`
    za anonimne), pa KORAK 4 (provjera). Obrnuti redoslijed slomi vodič.
 4. `sql/add-ical-export.sql` — izvoz kalendara.

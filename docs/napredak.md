@@ -126,3 +126,6 @@ Popratno:
   pokazivačem — 3. 10. 2026.
 - [x] Lokacija s ulicom i brojem (broj prelazi u prijedlog) i karta s
   pribadačom na javnoj stranici i u vodiču — 3. 10. 2026.
+- [x] Treće spajanje u `main` — 3. 10. 2026. (PR #2, `8c1b077`): stilovi,
+  pregled gosta, objave, izvoz kalendara, suradnici, engleski, mjesta, e-mail
+  gostu. SQL koraci: `docs/odluke.md`, točka 27.
