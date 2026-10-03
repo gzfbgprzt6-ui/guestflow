@@ -65,6 +65,7 @@
 @media (max-width:900px){.sidebar{display:none}.main{padding-top:24px}}
 @media (max-width:640px){.card-title{font-size:26px}.nav-btns{flex-wrap:wrap}}
 </style>
+<script type="module">import{pokreni,prekidac}from'/domacin-jezik.js';pokreni();prekidac(document.getElementById('jezik-sw'))</script>
 </head>
 <body>
 
@@ -317,6 +318,9 @@ async function init() {
   // Check if already has property — redirect to dashboard
   const { data: props } = await sb.from('properties').select('id').eq('user_id', USER.id).limit(1)
   if (props?.length) { window.location.href = '/dashboard.html'; return }
+  // Pozivnica za suradnika čeka (dashboard.html?pozivnica=…) — prvo nju prihvatiti
+  let poz = null; try { poz = localStorage.getItem('odm-pozivnica') } catch {}
+  if (poz) { window.location.href = '/dashboard.html'; return }
 
   // Pre-fill host name from auth
   const name = USER.user_metadata?.full_name || ''
@@ -590,5 +594,6 @@ window.toast = (msg) => {
 
 init()
 </script>
+<script type="module">import{predloziAdresu}from'/adresa-predlozi.js';predloziAdresu(document.getElementById('prop-location'));predloziAdresu(document.getElementById('address'))</script>
 </body>
 </html>

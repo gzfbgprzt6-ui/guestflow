@@ -38,6 +38,7 @@
 .done__link .btn-out{justify-self:start}
 @media (max-width:640px){.plan-compare{grid-template-columns:minmax(0,1fr)}.section-title{font-size:28px}}
 </style>
+<script type="module">import{pokreni,prekidac}from'/domacin-jezik.js';pokreni();prekidac(document.getElementById('jezik-sw'))</script>
 </head>
 <body>
 <div id="loading"><div class="spin"></div></div>
@@ -436,5 +437,6 @@ window.toast = (msg) => {
 
 init()
 </script>
+<script type="module">import{predloziAdresu}from'/adresa-predlozi.js';predloziAdresu(document.getElementById('prop-location'));predloziAdresu(document.getElementById('address'))</script>
 </body>
 </html>

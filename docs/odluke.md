@@ -871,6 +871,11 @@ Dok se ne pokrenu, stranice rade kao prije, a svaki novi dio sam kaže što nedo
 
 ### Podsjetnik — što ste odgodili i moramo proći
 
+0. **Ključ za automatski prijevod (`ANTHROPIC_API_KEY`)** — odgođeno dok
+   aplikacija ne krene; upute u točki 18.
+0. **E-mail domaćinu o upitu (Resend)** — odgođeno dok aplikacija ne krene;
+   upute u točki 18.
+
 1. **Pomoć, Uvjeti, Privatnost** — pravni tekst (točka 8) + nove stvari koje
    ga mijenjaju: recenzije, podaci gostiju za eVisitor (broj isprave!), link za
    čistačicu, spremanje na uređaju gosta, Stripe. Pomoć: pitanja o
@@ -909,6 +914,15 @@ engleski, njemački, talijanski, poljski i češki.**
 - Primjer `/h/demo` je preveden cijeli (vrijedi pokazati gostima iz inozemstva).
 
 ### Jezici — što trebate napraviti
+
+> **ODGOĐENO (29. 9. 2026., odluka vlasnika):** `ANTHROPIC_API_KEY` još nije
+> postavljen — da se ništa ne plaća dok aplikacija ne krene s pravim
+> domaćinima. Do tada: sučelje vodiča i javne stranice je na jeziku gosta,
+> tekst domaćina na hrvatskom, a u panelu Prijevodi domaćin može prevesti sam.
+> **Kad krene:** console.anthropic.com → Billing (kredit, npr. 5 $, i
+> ograničenje potrošnje) → API Keys → Create Key → u Vercel kao
+> `ANTHROPIC_API_KEY` (Production i Preview) → Redeploy. Ništa drugo ne treba.
+> Ostali koraci iz ove točke (SQL, `SUPABASE_SERVICE_ROLE_KEY`) su napravljeni.
 
 1. [ ] Pokrenuti `sql/add-translations.sql` (tablice `prijevodi` i `prijevodi_rucni`, čita ih samo poslužitelj).
 2. [ ] **Ključ za prijevod:** console.anthropic.com → API Keys → Create key.
@@ -952,6 +966,13 @@ engleski, njemački, talijanski, poljski i češki.**
 
 ### E-mail domaćinu za svaki novi upit
 
+> **ODGOĐENO (29. 9. 2026., odluka vlasnika):** Resend i
+> `sql/add-inquiry-email.sql` još nisu postavljeni. Do tada se upiti normalno
+> spremaju i vide u dashboardu (Boravci → Upiti), samo ne stiže e-mail.
+> **Kad krene:** račun na resend.com → API Keys → ključ `re_…` → na stranici
+> „Postavljanje Odmorije” (5. dio) upisati ključ i pošiljatelja → Run u
+> Supabaseu. Ništa u kodu ne treba mijenjati.
+
 Kad gost pošalje upit s javne stranice, domaćin dobije e-mail: tko pita, za
 koje datume i koliko osoba, poruka, kontakt gosta i gumb **„Otvori upit u
 Odmoriji”** (vodi ravno na Boravci → Upiti tog objekta). **„Odgovori” u
@@ -981,3 +1002,319 @@ ne uspije, upit se svejedno spremi.
 - [ ] E-mail je na hrvatskom (domaćin). Pošiljatelj je Odmoria, odgovor ide gostu.
 - [ ] Privatnost: ime i kontakt gosta prolaze kroz Resend — dodati u popis
   obrađivača (točka 8b).
+
+## 19. Promocija bez kataloga — gotove objave i letak (1. 10. 2026.)
+
+### Odluka vlasnika: katalog / tražilica objekata — **ne sada**
+
+Razmatrana je tražilica kao na Bookingu (lokacija, cijena, datumi), samo za
+plaćene domaćine. **Odbijeno za sada:** prazna tražilica bez ponude izgleda kao
+mrtav projekt; obećanje „besplatne reklame” mjeri se upitima koje ne možemo
+jamčiti; platforma s tuđim oglasima nosi nove obveze (prijave lažnih oglasa,
+moderiranje, DSA). Tehnički bi bilo 2–3 dana za osnovno (mjesto, cijena, broj
+gostiju i kalendar već postoje). Ako se vrati: faza 1 = kućica „Uvrsti me u
+katalog” i uredno mjesto/regija, javno tek kad u regiji bude ~30–50 plaćenih
+objekata.
+
+### Napravljeno: Linkovi i QR → **Objave** (točke 2 i 3 prijedloga)
+
+- **Slika** (canvas, u pregledniku): objava 4:5 (1080×1350) ili story 9:16
+  (1080×1920); naslovna ili odabrana fotografija, žuta oznaka „Slobodno”,
+  datumi, noći, cijena, ime i mjesto; dolje bijela kartica s **QR kodom** i
+  kratkom adresom javne stranice („Rezervirajte izravno · bez provizije”).
+  Story ostavlja prazno gore i dolje (tamo Instagram crta svoje gumbe).
+  Preuzmi (JPG) i, na mobitelu, **Podijeli** (Instagram, WhatsApp… sa slikom).
+- **Slobodni termini iz kalendara** (sljedećih 90 dana, najmanje 2 noći ili
+  minimalni boravak) kao gumbi; „Drugi datumi…” za ručni unos. Bez kalendara
+  piše zašto nema prijedloga.
+- **Četiri teksta** na jeziku po izboru (HR, EN, DE, IT, PL, CS): Instagram (s
+  oznakama # i „link u opisu profila”), Facebook grupe, WhatsApp status,
+  oglasnik (Njuškalo — s opisom i kontaktom). Sadržaji se na stranom jeziku
+  navode samo ako ih rječnik zna (svih 28 iz kataloga zna).
+- **Letak za ispis**: A4 s četiri kartice A6 (fotografija, „Hvala što ste bili
+  naši gosti”, „Sljedeći put rezervirajte izravno”, QR, adresa, kontakt).
+- **Pregled → Na što obratiti pažnju**: praznina ili slobodan termin u sljedeća
+  3 tjedna ima gumb „Napravi objavu” koji otvori Objave s tim datumima.
+- Ništa se ne sprema i nema troška: tekst iz predložaka, slika u pregledniku.
+
+**Iskreno o Instagramu** (piše i u panelu): link u običnoj objavi nije
+klikabilan — zato slika nosi QR i adresu; u storyju se dodaje naljepnica „Link”.
+
+### Dorada (1. 10. 2026.): izgled, pokretna objava, animacije
+
+- **Tri izgleda slike:** *Fotografija* (preko cijele slike), *Razglednica*
+  (topli papir, fotografija u okviru, crtkana crta), *Luk* (fotografija u
+  obliku kamenog luka na petrolu). Naslov u pismu Fraunces, žuta
+  **naljepnica-sunce s cijenom**, oznaka „☀ Slobodno · 4 noći”.
+- ~~Pokretna objava (video → MP4 ili GIF)~~ — napravljena, pa **maknuta na
+  vaš zahtjev** (moglo bi čudno izgledati). Kod je sačuvan u povijesti gita
+  (commit `a9f5dcd`) ako je poželite vratiti.
+- **Male animacije** (`pokret.js` + `odmoria.css`, samo kad korisnik nije
+  isključio pokret): sunčeve iskrice kad gost pošalje upit, ocjenu ili podatke
+  za prijavu, i kad se vodič otključa; kvačica „✓ Kopirano” na gumbima;
+  poruka na dnu iskoči s oprugom; odabrani dan u kalendaru poskoči; kartice i
+  pločice se lagano podignu; tekst zaglavlja naslovnice dolazi redom; paneli u
+  dashboardu se meko pojave.
+
+### Odluke koje čekaju vas
+
+- [ ] **Što je besplatno, a što plaćeno.** Sada je jedino ograničenje **broj
+  jezika po planu** (`plans.max_languages`, kao vodič: Free = HR + EN). Ako
+  želite „besplatno jedna slika i jedan tekst, plaćeno sve” (format story,
+  slobodni termini, izgledi, letak), treba jedan stupac u `plans` (npr. `can_promo`) —
+  mala SQL izmjena, pa vi pokrenete.
+- [ ] Tekstovi su iz predložaka. Kad uključite ključ za prijevod (točka 18),
+  može se dodati „Napiši drukčije” (AI) — svaki poziv se tada plaća.
+- [ ] Slika nema oznaku Odmorije. Može se dodati sitna oznaka za Free plan
+  (besplatna reklama nama), kao „pokreće Odmoria” na javnoj stranici.
+
+### Sljedeće (prijedlog, nije napravljeno)
+
+1. **Gosti se vraćaju izravno** — u vodiču „Dođite opet” (+ popust domaćina),
+  „Javite mi slobodne termine za iduću godinu” s privolom, popis u dashboardu i
+  poruka svima. Treba jedna nova tablica. Samo kroz vodič i uz privolu gosta
+  (Booking ne dopušta „odvlačenje” gostiju kroz svoje poruke).
+2. **Jezične inačice javne stranice za Google** (`hreflang`) — Nijemac koji
+  traži „Ferienwohnung Vodice” nađe stranicu na njemačkom. Pola dana.
+3. Google Business profil (Maps) za apartmane uglavnom **nije dopušten** — ne
+  nuditi.
+
+### Logo (stanje, odgođeno na zahtjev vlasnika)
+
+Prijedlozi su na platnu (Artifact „Odmoria logo”): A · Luk, B · sunce na „i”
+(B1 sa zrakama, B2 izlazak), C · manje žuto sunce, veliko „O”, šest fontova.
+Preporuka: **Fraunces** (topao, mediteranski) ili **Unbounded** (najuočljiviji).
+Odluka čeka vas; ništa nije stavljeno na stranicu.
+
+## 20. Stilovi cijele javne stranice (1. 10. 2026.) — osam, čeka vaš izbor
+
+Preview (dizajn na platnu, nije u kodu): Artifact „Odmoria — 5 stilova javne
+stranice” (platno, osam ploča). Svih osam nosi **iste podatke i isti redoslijed** kao `p.html`:
+zaglavlje (ime, vrsta, mjesto, gosti, sobe, kupaonice, m², cijena), riječ
+domaćina, galerija, lokacija (bez točne adrese), sadržaji i kućna pravila,
+dostupnost s kalendarom i upitom (WhatsApp / e-mail / kopiranje), u blizini,
+prijevoz, atrakcije, recenzije, česta pitanja, podnožje s jezikom i oznakom
+„Pokreće Odmoria”. Primjer je izmišljen (Villa Maslina, Vodice).
+
+1. **Priroda** — lan i maslina, Cormorant + Karla, organski oblici, pismo domaćina.
+2. **Luksuz** — crno / bjelokost / zlato, Playfair Display + Jost (Bodoni zamijenjen: pretanki potezi), puno zraka, „zatražite boravak”.
+3. **Sunce i more** — tirkiz, pijesak, koralj, Fredoka + Nunito, valovi i polaroidi.
+4. **Moderno** — arhitektonski minimalizam: beton i crna, narančasti naglasak, Urbanist + Instrument Sans; lijevo stupac velikih fotografija, desno podaci u blokovima (01)–(08).
+5. **Grad** — gradska signalizacija: crno i žuto, Space Grotesk + JetBrains Mono, ime kao ploča ulice, cijena kao zaslon s voznim redom, okolica kao linije podzemne (U blizini / Prijevoz / Atrakcije).
+6. **Snijeg** — alpska kuća: ledeno plava, borova zelena, Josefin Sans + Figtree, planine, staklena kartica, pahulje.
+7. **Relax** — spa: pijesak, kamen, eukaliptus, Marcellus + Albert Sans, okrugla fotografija s krugovima, puno zraka.
+8. **Seoska kuća** — agroturizam: kockasti stolnjak, drvena ploča s imenom, Zilla Slab + Source Serif 4 + Caveat; riječ domaćina na školskoj ploči, galerija pribodena na pluto, upit kao pismo s markom, okolica kao putokazi, recenzije kao knjiga gostiju.
+
+Vlasnik (1. 10.): „svi su mi top”. Zatim su 4, 5 i 8 (Riviera ’70, Magazin, Majolika) na zahtjev zamijenjeni novima — Moderno, Grad, Seoska kuća; stari su samo u povijesti platna.
+
+- [x] **Odluka 3. 10. 2026.: svih osam ide u `p.html`**, domaćin bira u
+  dashboardu → Objekt → Osnovno → Izgled stranice. U kodu: `stilovi.js`
+  (imena, pisma, boje), `stilovi.css` (izgled), `sql/add-styles.sql` (baza).
+  Stil mijenja boje, pisma i ukrase; raspored, podaci i logika stranice su
+  isti — zato nije kopija ploča s platna piksel u piksel (npr. Grad nema
+  linije podzemne kao zaseban blok, nego obojene oznake linija u popisu).
+- [x] **Zasad besplatno za sve planove** (vlasnik, 3. 10.). Naplata kasnije
+  (točka 9) — tada samo zaključati izbor u panelu i u bazi.
+- [x] Stari panel tema (`teme.js`, `teme.css`, osam starih tema) — **obrisano**
+  na zahtjev vlasnika (3. 10. 2026.).
+
+## 21. Konkurencija i nedostaci (2. 10. 2026.) — bez plaćanja
+
+Konkurenti: **Rentlio** (Zadar; PMS + channel manager + booking engine, eVisitor
+prijava iz sučelja), **Chekin** (online check-in, skeniranje isprave, sam šalje u
+eVisitor, spaja se s Rentliom), **mVisitor / službena eVisitor aplikacija**
+(besplatna prijava gostiju), **Touch Stay, Hostfully, Duve** (digitalni vodiči),
+**Lodgify, Smoobu** (web stranica objekta + channel manager).
+
+Gdje zaostajemo (stanje koda, ne želje):
+- [x] **iCal samo uvoz** — RIJEŠENO (točka 22): izvoz `/kalendar/<token>.ics`.
+  Čeka `sql/add-ical-export.sql` u Supabaseu.
+- [ ] **eVisitor** — podatke skupljamo, ali ih ne šaljemo (domaćin prepisuje /
+  CSV). Nema skeniranja isprave. Chekin, Rentlio i mVisitor šalju sami. → točka 23.
+- [ ] **Nema automatskih poruka gostu** (link vodiča X dana prije dolaska,
+  podsjetnik, upit za recenziju) — domaćin šalje ručno. → točka 24.
+- [ ] **Preporuke se upisuju ručno** — Hostfully ih puni iz Google Places. → točka 25.
+- [x] **Dijeljenje sadržaja među objektima** — RIJEŠENO: Objekt → Osnovno →
+  „Preuzmi sadržaj iz drugog objekta” (bez šifri, Wi-Fija i adrese).
+- [ ] **Nema aplikacije ni push obavijesti za domaćina** — samo e-mail o upitu. → točka 26.
+- [x] **Timski pristup** — RIJEŠENO (točka 22): Linkovi i QR → Suradnici.
+  Čeka `sql/add-team-access.sql` u Supabaseu.
+- [ ] **Teme/stilovi javne stranice nisu u `p.html`** (točka 20); nema vlastite
+  domene po objektu. Vlasnik (2. 10.): stilove tek treba proći, nisu konačni.
+- [x] **Domaćinov dio na engleskom** — RIJEŠENO (točka 22): dashboard, prijava,
+  registracija, postavljanje, dodavanje objekta i račun (prekidač HR · EN).
+  I dalje samo hrvatski: naslovnica, Pomoć, pravni tekst, `c.html`, e-mailovi.
+
+Što treba uključiti da postojeće proradi do kraja: SQL koraci sigurnosti
+(točka 0), `ANTHROPIC_API_KEY` (prijevodi), Resend u Vaultu (e-mail o upitu),
+`sql/auto-ical-sync.sql` + `CRON_SECRET`, domena `odmoria.com`, Supabase Pro
+(pauziranje), podaci pružatelja usluge i ispravak pravnih tekstova (točka 8).
+
+## 22. Napravljeno 2. 10. 2026. — što treba pokrenuti
+
+Kod je na grani; da proradi, u Supabase SQL editoru pokrenuti (oba su
+idempotentna, ne diraju postojeće politike ni podatke):
+
+- [ ] **`sql/add-ical-export.sql`** — izvoz kalendara. Domaćin u Boravci →
+  Sinkronizacija dobije dva linka (za Booking i za Airbnb) i zalijepi ih u
+  „Uvezi kalendar”. Link nosi samo datume (bez imena). Dani koji su došli s
+  Bookinga ne vraćaju se Bookingu (isto za Airbnb). Testirano na lokalnom
+  Postgresu i u pregledniku.
+- [ ] **`sql/add-team-access.sql`** — suradnici. Vlasnik pozove (link),
+  suradnik se prijavi svojim računom. Suradnik smije sve oko objekta osim:
+  obrisati ga, preuzeti, mijenjati pretplatu i pozivati druge. Limiti su
+  vlasnikovi. SQL samo DODAJE politike (Postgres ih spaja s OR) — postojeće
+  se ne mijenjaju. Testirano na lokalnom Postgresu (tuđi objekt, preuzimanje,
+  brisanje, pozivanje, iskorištena pozivnica, anonimni).
+- [x] Koliko suradnika: **najviše 3 po objektu**, na svim planovima (vlasnik, 2. 10.). Broje se i pozivnice na čekanju; provodi baza (`najvise_suradnika`) i sučelje (`MAX_SURADNIKA`).
+- [ ] Engleski za domaćina: e-mailovi (Supabase potvrda računa, e-mail o upitu)
+  i dalje su na hrvatskom; predlošci se mijenjaju u Supabaseu / `add-inquiry-email.sql`.
+
+## 23. eVisitor — slanje umjesto domaćina: što pravno povlači
+
+Tehnički postoji: eVisitor ima web servis za vanjske sustave (koriste ga
+Rentlio, Chekin, mVisitor). Ali **sa naše strane povlači**:
+
+1. **Lozinke domaćina za eVisitor** — morali bismo ih čuvati (šifrirano) i
+   njima se prijavljivati u državni sustav u ime domaćina. Curenje = tuđi
+   pristup njegovom eVisitoru i pristojbi.
+2. **Odgovornost za rok od 24 h** — prijavu je dužan napraviti domaćin; ako
+   naše slanje zakaže, kaznu plaća on, a pritužba ide nama. Treba ugovor koji
+   to jasno kaže i obavijest kad slanje ne prođe.
+3. **Podaci iz osobnih isprava** (broj isprave, datum rođenja) — već ih
+   skupljamo, ali slanjem postajemo izvršitelj obrade u državni sustav: ugovor
+   o obradi (čl. 28. GDPR) s domaćinom, zapis obrada, sigurnosne mjere.
+4. **Pristup servisu** — traži se od HTZ-a, s testnim okruženjem; bez toga se
+   ne može ni probati.
+
+Zato **nije uključeno**. Preporuka: ostati na „podaci + CSV + kopiraj”
+(domaćin prijavi u mVisitoru za minutu) dok nema pravne osobe, ugovora o
+obradi i pristupa HTZ servisu.
+
+- [ ] Odluka vlasnika: ići u to (tada: odvjetnik + HTZ zahtjev) ili ne.
+
+## 24. Automatske poruke gostu — kojim putem i koliko košta
+
+Što: link vodiča 3 dana prije dolaska, podsjetnik na dan dolaska, molba za
+ocjenu nakon odlaska. Za to treba gostov e-mail ili broj (sada ga spremamo
+samo kod upita; kod ručne rezervacije polje se ne sprema).
+
+| Put | Cijena (okvirno) | Napomena |
+| --- | --- | --- |
+| **E-mail (Resend)** — preporuka | do 3.000 poruka/mj besplatno, zatim ~20 $/mj za 50.000 | Već spojeno za upite; ista baza (pg_cron) može slati raspored |
+| WhatsApp Business API | ~0,03 € po poruci (Hrvatska, „utility”) | Meta verifikacija tvrtke, odobreni predlošci, broj tvrtke — ne domaćinov |
+| SMS | ~0,07–0,10 € po poruci | Najskuplje, kratak tekst |
+
+Primjer: 100 domaćina × 30 boravaka × 3 poruke = 9.000 poruka/mj → e-mail
+~20 $/mj ukupno; WhatsApp ~270 €/mj. Rad: ~1–2 dana (e-mail).
+
+- [x] Odluka (2. 10.): **DA, e-mail** — napravljeno (`sql/add-guest-emails.sql`), vidi točku 27.
+  Pojašnjenje (2. 10.): e-mail je besplatan do 3.000 poruka mjesečno i
+  **100 dnevno** (Resend Free); iznad toga ~20 $/mj. WhatsApp koji gost ili
+  domaćin otvori sam (`wa.me` link — već postoji na javnoj stranici i kod
+  upita) je **besplatan za sve**; plaća se samo kad Odmoria šalje poruku
+  automatski preko WhatsApp Business API-ja (~0,03 €).
+
+## 25. Preporuke iz Google karata — cijena
+
+Domaćin upiše mjesto, mi povučemo plaže, restorane, trgovine u blizini.
+Google Places (Nearby Search Pro): **5.000 poziva mjesečno besplatno**, zatim
+~32 $ na 1.000. Jedan uvoz = 3–5 poziva → prvih ~1.000 uvoza mjesečno je
+besplatno; nakon toga ~0,15 $ po uvozu. Treba Google Cloud račun s karticom i
+ključ (poslužiteljska ruta; Vercel ima još 1 slobodnu funkciju od 12).
+Besplatna zamjena: OpenStreetMap (bez ocjena i fotografija, slabiji podaci).
+
+- [x] Odluka (2. 10.): **OpenStreetMap**, besplatno — napravljeno (`mjesta-osm.js`), vidi točku 27.
+  Pojašnjenje (2. 10.): 0,15 $ je **jednokratno po uvozu** (domaćin klikne
+  „Predloži mjesta u blizini” jednom), ne mjesečno po objektu, i tek nakon
+  ~1.000 besplatnih uvoza mjesečno. **Besplatna opcija je OpenStreetMap**
+  (Overpass): 0 €, uz obavezan natpis „© OpenStreetMap contributors”; slabiji
+  podaci o restoranima, bez ocjena i fotografija. Prijedlog: OSM za sve sada.
+
+## 26. Obavijesti domaćinu na mobitelu — kako
+
+Preporuka: **web-aplikacija s push obavijestima** (PWA + Web Push). Domaćin
+„doda na početni zaslon” dashboard, dopusti obavijesti i dobije „Novi upit”,
+„Gost dolazi sutra”, „Sinkronizacija ne radi”. **Besplatno** (bez Applea i
+Googlea kao trgovine), radi na Androidu i na iPhoneu (iOS 16.4+, samo kad je
+dodano na početni zaslon). Treba: tablica pretplata na obavijesti, VAPID
+ključevi (Vercel varijable), slanje iz baze ili rute. Rad ~2 dana.
+Prava aplikacija u App Storeu / Google Playu: ~99 $/god (Apple) + 25 $
+(Google), tjedni rada — ne isplati se sada.
+
+- [ ] Odluka: napraviti PWA s obavijestima?
+
+## 27. Puštanje u produkciju (main) — redoslijed i provjere
+
+Grana je spremna za spajanje (PR otvoren kao nacrt, NE spajati bez vaše
+potvrde). Sav novi kod radi i bez SQL-a (prikaže napomenu), pa se main može
+spojiti prije SQL koraka — ali značajke proradi tek SQL.
+
+**A. Supabase → SQL editor, ovim redom** (svaki je idempotentan):
+1. `sql/sections-security.sql` — KORAK 0 (samo čita), KORAK 1 (funkcija).
+2. **Spojiti PR u main** i pričekati da Vercel objavi (novi `h.html`).
+3. `sql/sections-security.sql` — KORAK 2 (zatvara `sections` i `bookings`
+   za anonimne), pa KORAK 4 (provjera). Obrnuti redoslijed slomi vodič.
+4. `sql/add-ical-export.sql` — izvoz kalendara.
+5. `sql/add-team-access.sql` — suradnici (najviše 3).
+6. `sql/add-inquiry-email.sql` — ako još nije: Resend ključ, pošiljatelj i
+   adresa u Vaultu (zamijeniti `<RESEND_KEY>`, `<OD>`, `<ADRESA>`).
+7. `sql/add-guest-emails.sql` — automatski e-mail gostu (odbija se dok 3. i
+   6. nisu gotovi).
+8. Ako još nije: `sql/auto-ical-sync.sql` (`<ADRESA>`, `<CRON_SECRET>`).
+9. `sql/add-styles.sql` — stilovi javne stranice (dopušta nova imena u
+   `properties.theme`; stane ako zatekne nepoznatu vrijednost).
+
+**B. Vercel → Settings → Environment Variables (Production) → Redeploy:**
+`SUPABASE_SERVICE_ROLE_KEY`, `CRON_SECRET`, `ANTHROPIC_API_KEY` (prijevodi),
+`STRIPE_SECRET_KEY` (testni ili pravi). Nijedan ne ide u kod.
+
+**C. Resend:** potvrđena domena (DNS) — bez nje se šalje samo na vašu adresu.
+
+**D. Nakon objave, ručna provjera (10 min):**
+- prijava, dashboard, prekidač HR · EN;
+- Boravci → Sinkronizacija → „Napravi link za Booking i Airbnb” → otvoriti
+  link: preuzme se `.ics` sa zauzetim danima;
+- Linkovi i QR → Suradnici → pozivnica → otvoriti u drugom pregledniku s
+  drugim računom;
+- Objekt → Vodič → „Predloži mjesta u blizini” (pravi OpenStreetMap);
+- rezervacija s vašim e-mailom kao gostovim, dolazak za 1–3 dana, pa u SQL
+  editoru `select public.posalji_emailove_gostima();` → e-mail stiže;
+- vodič gosta (`/h/<token>`) i dalje otključava šifre u pravo vrijeme.
+
+**E. Pravni tekst (točka 8)** prije pravih korisnika: popis trećih strana
+dopuniti s Resendom (e-mail gostima), OpenStreetMap/Nominatimom i Photonom (komoot) (adresa
+objekta šalje se radi pretrage), Anthropicom (prijevodi), Cloudinaryjem;
+spomenuti da se e-mail gosta čuva do 30 dana nakon odlaska.
+
+## 28. Vercel: iskorišteno 12 od 12 funkcija (3. 10. 2026.)
+
+„Mjesta u blizini” iz preglednika nisu radila kod vlasnika (OSM blokira
+preglednik), pa idu preko `api/mjesta.js` — to je zadnje slobodno mjesto na
+Vercel Hobby planu. Sljedeća nova ruta (npr. obavijesti na mobitelu, točka 26)
+mora se spojiti u postojeću datoteku ili treba Vercel Pro (~20 $/mj).
+- [ ] Znati prije sljedeće značajke s poslužiteljem.
+
+## 29. Prijedlozi adrese dok se tipka (3. 10. 2026.)
+
+Polja Lokacija, Točna adresa / Adresa i „Gdje tražiti” nude adrese dok
+domaćin tipka (`adresa-predlozi.js`), i „Koristi moju trenutnu lokaciju”.
+Servis je **Photon** (komoot, podaci OpenStreetMap): **besplatan, bez ključa
+i bez kartice**, uz pravilo poštene upotrebe — zato zahtjev ide tek nakon
+pauze u tipkanju (300 ms) i od 3 slova.
+- Javna **Lokacija** nudi samo mjesta (grad, selo, kvart), da se točna adresa
+  ne pojavi na javnoj stranici; ulica i broj idu u privatnu „Točnu adresu”.
+- Ako ikad bude previše domaćina za javni Photon: vlastiti Photon na
+  poslužitelju (~5–10 €/mj) ili Google Places Autocomplete (10.000 upita
+  mjesečno besplatno, zatim ~2,8 $ na 1.000, traži karticu). Promjena je samo
+  u `adresa-predlozi.js`.
+- [ ] Ništa za odlučiti sada.
+
+**Dopuna (3. 10., vlasnik):** Lokacija sada nudi i ulicu s brojem (upisani
+broj prelazi u prijedlog), a javna stranica i vodič odmah pokazuju kartu s
+pribadačom. Dvije stvari za znati:
+- Točna adresa u Lokaciji je **javna** (vidi je svatko s linkom stranice).
+- Google karta postavlja Googleove kolačiće čim se učita; prije se zato
+  učitavala tek na klik. Ako bude zatrebala privola za kolačiće, vraća se
+  jednim redom koda.
+- [ ] Pravila privatnosti spomenuti Google Maps i Photon (točka 8).

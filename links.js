@@ -37,6 +37,16 @@ export function cleanerUrl(token) {
   return siteBase() + '/c/' + encodeURIComponent(token || '')
 }
 
+// Izvoz kalendara za Booking/Airbnb (api/kalendar.js) — ?za= izostavlja dane tog portala
+export function calendarUrl(token, za) {
+  return siteBase() + '/kalendar/' + encodeURIComponent(token || '') + '.ics' + (za ? '?za=' + encodeURIComponent(za) : '')
+}
+
+// Pozivnica za suradnika na objektu (sql/add-team-access.sql)
+export function inviteUrl(token) {
+  return siteBase() + '/dashboard.html?pozivnica=' + encodeURIComponent(token || '')
+}
+
 export function legacyGuestUrl(slug, guestToken) {
   return siteBase() + '/h/' + encodeURIComponent((slug || '') + '-' + (guestToken || ''))
 }

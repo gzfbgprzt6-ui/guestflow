@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Gelasio:wght@400;500&family=Manrope:wght@600;700;800&display=swap">
 <link rel="stylesheet" href="/odmoria.css">
+<link rel="stylesheet" href="/stilovi.css">
 <style>
 /* ==========================================================================
    Javna stranica objekta — redizajn v2 (Figma: 04 Public Property).
@@ -455,7 +456,7 @@
         <span class="eyebrow">Lokacija</span>
         <h2 class="t-ed" id="loc-h">Gdje ćete boraviti</h2>
         <p class="loc__place"><svg class="ic"><use href="#i-map-pin"/></svg><span id="adr"></span></p>
-        <p class="t-muted">Točnu adresu i upute za dolazak gost dobiva u privatnom vodiču nakon potvrde boravka.</p>
+        <p class="t-muted" id="adr-later">Točnu adresu i upute za dolazak gost dobiva u privatnom vodiču nakon potvrde boravka.</p>
         <a class="btn btn--secondary" id="adr-link" target="_blank" rel="noopener">Otvori u Google Maps<svg class="ic ic--sm"><use href="#i-arrow-up-right"/></svg></a>
       </div>
       <div class="map">
@@ -678,6 +679,8 @@
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import * as L from '/jezici.js'
+import * as STIL from '/stilovi.js'
+import { veselje, kvacica } from '/pokret.js'
 
 // jezik sučelja odmah; koje jezike plan domaćina dopušta i prijevod njegovih
 // tekstova stižu s /api/prevedi (loadPage → L.pokreni)
@@ -768,6 +771,9 @@ async function loadPage() {
   const { data: prop, error } = await sb.from('properties').select('*').eq('slug', slug).maybeSingle()
   if (error || !prop) { showErr(); return }
   PROP = prop
+  // stil stranice (stilovi.js): ?stil= je pregled iz dashboarda, inače izbor domaćina
+  const stilIzAdrese = new URLSearchParams(location.search).get('stil')
+  STIL.primijeni(stilIzAdrese != null ? stilIzAdrese : prop.theme)
   price = parseFloat(prop.price_per_night) || 0
 
   const [ams, places, txs, atts, rules, faqs] = await Promise.all([
@@ -850,7 +856,14 @@ function nacrtaj() {
     const q = encodeURIComponent(prop.location)
     $('#adr').textContent = prop.location
     $('#adr-link').href = 'https://www.google.com/maps/search/?api=1&query=' + q
-    $('#map-frame').dataset.src = 'https://www.google.com/maps?q=' + q + '&output=embed'
+    // karta s pribadačom odmah (iframe je lazy — učita se tek kad dođe na zaslon)
+    $('#map-frame').dataset.src = 'https://www.google.com/maps?q=' + q + '&z=15&output=embed'
+    const mf = $('#map-frame')
+    if (mf.src !== mf.dataset.src) mf.src = mf.dataset.src
+    show(mf); show('#map-veil', false)
+    $('#adr-link').onclick = () => biljezi('map')
+    // u Lokaciji može biti i cijela adresa (ulica i broj) — tada rečenica o „točnoj adresi kasnije” ne vrijedi
+    show('#adr-later', !/\d/.test(prop.location))
     show('#map-sec')
   }
 
@@ -1062,7 +1075,7 @@ function renderFaq(faqs) {
 }
 
 // ══════════════════════════════════════════════════════
-//  KARTA — učitava se tek na klik (bez praćenja unaprijed)
+//  KARTA — s pribadačom na lokaciji; iframe je lazy. Pregled „map” = klik na Google Maps
 // ══════════════════════════════════════════════════════
 window.loadMap = () => {
   biljezi('map')
@@ -1393,10 +1406,11 @@ function hvala(ime, kontakt) {
   const tko = PROP.host_name ? t('Domaćin {n}', { n: PROP.host_name }) : t('Vaš domaćin')
   $('#iq-ok').innerHTML = `<b>${esc(t('Upit je poslan ✓'))}</b><span>${esc(t('{tko} javit će vam se na {k}. Kad potvrdi termin, dobit ćete privatni link s uputama za dolazak.', { tko, k: kontakt }))}</span>`
   show('#iqf', false); show('#iq-ok')
+  veselje($('#iq-ok'))
 }
 
 window.copyMsg = async () => {
-  try { await navigator.clipboard.writeText(buildMsg()); toast(t('Poruka je kopirana.')); biljezi('inquiry_copy') }
+  try { await navigator.clipboard.writeText(buildMsg()); toast(t('Poruka je kopirana.')); kvacica(document.activeElement?.closest('button'), t('Kopirano.')); biljezi('inquiry_copy') }
   catch { toast(t('Kopiranje nije uspjelo — označite poruku i kopirajte je ručno.')) }
 }
 

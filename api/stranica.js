@@ -92,6 +92,27 @@ function glava(prop, javno, baza) {
   ].filter(Boolean).join('\n');
 }
 
+// Stil javne stranice (properties.theme) — KOPIJA id-jeva i pisama iz stilovi.js
+// (ES modul se ovdje ne može uvesti); mijenjati zajedno. Stil u HTML-u od prvog
+// prikaza = bez treptaja zadanog izgleda prije nego JS učita objekt.
+const PISMA = {
+  priroda: 'family=Cormorant+Garamond:ital,wght@0,500;0,600;1,400;1,500;1,600&family=Karla:wght@400;500;600;700',
+  luksuz: 'family=Playfair+Display:ital,wght@0,400..700;1,400..700&family=Jost:wght@400;500;600',
+  more: 'family=Fredoka:wght@500;600;700&family=Nunito:wght@400;500;600;700;800',
+  moderno: 'family=Urbanist:wght@500;600;700;800&family=Instrument+Sans:wght@400;500;600',
+  grad: 'family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700',
+  snijeg: 'family=Josefin+Sans:wght@400;600;700&family=Figtree:wght@400;500;600;700',
+  relax: 'family=Marcellus&family=Albert+Sans:wght@300;400;500;600',
+  seoska: 'family=Zilla+Slab:wght@600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=Caveat:wght@500;600'
+};
+function saStilom(html, theme) {
+  if (!Object.prototype.hasOwnProperty.call(PISMA, theme)) return html;
+  return html
+    .replace('<html lang="hr">', `<html lang="hr" data-stil="${theme}">`)
+    .replace('<link rel="stylesheet" href="/stilovi.css">',
+      `<link rel="stylesheet" href="/stilovi.css">\n<link rel="stylesheet" data-pisma="${theme}" href="https://fonts.googleapis.com/css2?${PISMA[theme]}&display=swap">`);
+}
+
 function ubaci(html, novo) {
   return html
     .replace(/<title>[^<]*<\/title>\s*/, '')
@@ -118,7 +139,7 @@ async function stranica(req, res) {
     res.statusCode = 200;
     // CDN drži stranicu 5 minuta — manje poziva, a izmjene se vide brzo
     res.setHeader('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=86400');
-    return res.end(ubaci(html, glava(prop, javno, ishodiste(req))));
+    return res.end(saStilom(ubaci(html, glava(prop, javno, ishodiste(req))), prop.theme));
   } catch (e) {
     console.error('stranica:', e.message);
     res.statusCode = 200;
@@ -160,3 +181,4 @@ module.exports = async function handler(req, res) {
 };
 module.exports._glava = glava;
 module.exports._ubaci = ubaci;
+module.exports._saStilom = saStilom;

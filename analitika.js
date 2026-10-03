@@ -222,7 +222,7 @@ export const broji = (pregledi, filtar, od, doD) => pregledi.reduce((z, r) => {
 let _imena = null
 export function drzava(kod) {
   if (!kod) return 'Nepoznato'
-  try { _imena = _imena || new Intl.DisplayNames(['hr'], { type: 'region' }); return _imena.of(kod) || kod } catch { return kod }
+  try { _imena = _imena || new Intl.DisplayNames([typeof document!=='undefined'&&document.documentElement.lang==='en'?'en':'hr'], { type: 'region' }); return _imena.of(kod) || kod } catch { return kod }
 }
 
 /**

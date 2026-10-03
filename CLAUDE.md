@@ -54,14 +54,21 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 ├── auth.css                 # raspored četiri stranice prijave (login, register, reset-password, email-confirm)
 ├── forms.css                # obrasci za onboarding, add-property i account (ista imena razreda kao prije)
 ├── tekst.css                # tekstualne stranice: help, terms, privacy (za njih nema Figme)
-├── teme.css                 # OSAM TEMA javne stranice — danas samo panel „Izgled” u dashboardu (p.html v2 ih ne primjenjuje); ostaje za teme na v2
-├── teme.js                  # rasporedi zaglavlja, `izBaze(prop)` i zajednički birač tema
+├── stilovi.js               # OSAM STILOVA javne stranice (+ zadani): imena, pisma, boje; primijeni(), varijable() — vidi „Stilovi javne stranice”
+├── stilovi.css              # izgled stilova na p.html (<html data-stil>), tokeni odmoria.css + ukrasi
 ├── analitika.js             # izračuni i grafikoni analitike (boravci, popunjenost, praznine, pregledi) — dijele ga dashboard i admin
 ├── analitika.css            # pločice, stupčasti grafikoni (HTML, ne SVG), popisi, tablice analitike
 ├── links.js                 # gradnja linkova (/p/, /h/, /c/) — NIKAD ne zakucavati domenu, vidi dolje
 ├── auth-greske.js           # prijevod Supabase Auth grešaka (prijava, registracija, nova lozinka, račun)
 ├── plans.js                 # rezervne vrijednosti + helperi; pravi izvor istine je tablica `plans` u bazi
 ├── jezici.js                 # jezici vodiča i javne stranice: rječnik (ključ = hrvatski tekst), t(), n(), H(), birač — vidi „Jezici za goste”
+├── pokret.js                 # male animacije: veselje(el) iskrice, kvacica(btn) „✓ Kopirano” (stilovi u odmoria.css i dashboardu)
+├── objave.js                 # Linkovi i QR → Objave: slobodni termini, tekstovi (6 jezika), slika na canvasu, letak — vidi „Objave”
+├── potvrda.js                # potvrdi()/obavijesti(): prozor u stilu aplikacije — NIKAD sistemski confirm()/alert()
+├── mjesta-osm.js             # prijedlog mjesta u blizini: Nominatim + Overpass (OpenStreetMap), iz preglednika, besplatno
+├── adresa-predlozi.js        # prijedlozi adrese dok se tipka (Photon/OSM, besplatno) + „Koristi moju trenutnu lokaciju” — Lokacija, Točna adresa, Gdje tražiti
+├── domacin-jezik.js          # jezik sučelja DOMAĆINA (HR/EN): prekidač, prijevod DOM-a preko rječnika — vidi „Engleski za domaćina”
+├── domacin-en.js             # engleski rječnik (T) i uzorci (P) za domacin-jezik.js; ključ = hrvatski tekst
 ├── billing.js                # Stripe iz preglednika: billingStatus, startCheckout, openBillingPortal, povratak s plaćanja (dashboard, account)
 ├── assets/                   # landing/villa-1600.jpg i villa-900.jpg (naslovnica i prijava)
 ├── docs/napredak.md          # što je u redizajnu gotovo, a što nije — pregled za vlasnika
@@ -72,7 +79,8 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 │   ├── sync-ical.js          # gumb „Sinkroniziraj” — korisnikov token, RLS
 │   ├── sync-all.js           # automatska sinkronizacija svih objekata (CRON_SECRET, poslužiteljski ključ)
 │   ├── stranica.js           # /p/:slug s meta/OG/JSON-LD + /sitemap.xml + /robots.txt
-│   ├── test-calendar.js      # testni iCal feed za isprobavanje sinkronizacije bez računa na Bookingu/Airbnbu
+│   ├── mjesta.js             # „Predloži mjesta u blizini” preko poslužitelja: Nominatim/Photon + Overpass/Nominatim, User-Agent, 1 zahtjev/s, samo prijavljeni
+│   ├── kalendar.js           # iCal IZVOZ /kalendar/<token>.ics (+ testni feed ?test=1, stara /api/test-calendar)
 │   ├── track.js              # upis pregleda s državom (x-vercel-ip-country), bez IP adrese
 │   ├── prevedi.js            # prijevod teksta domaćina (Claude) za /h/ i /p/, spremljen u tablicu prijevodi
 │   ├── _stripe.js            # zajedničko za Stripe rute (s „_” → Vercel ga ne objavljuje kao rutu)
@@ -100,10 +108,14 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
     ├── auto-ical-sync.sql               # pg_cron + pg_net: /api/sync-all svakih 30 min, brisanje starih prijava
     ├── add-translations.sql             # tablice prijevodi + prijevodi_rucni (samo service role)
     ├── add-inquiry-email.sql            # e-mail domaćinu za novi upit: okidač → pg_net → Resend (ključ u Vaultu)
+    ├── add-ical-export.sql              # izvoz kalendara: calendar_exports + kalendar_izvoz(token)
+    ├── add-team-access.sql              # suradnici: property_members, je_suradnik(), prihvati_pozivnicu(), plan_objekta(), najviše 3
+    ├── add-guest-emails.sql             # automatski e-mail gostu (dolazak / zahvala), pg_cron dnevno; TEK nakon KORAKA 2 i add-inquiry-email.sql
+    ├── add-styles.sql                   # stilovi: nova imena u properties.theme (CHECK), Beach & Sea → NULL, stane na nepoznatom
     └── fix-missing-columns-and-storage.sql # ALTER TABLE dopune (photo_urls, ical_*, beds/bathrooms/size_m2) + storage bucket policy
 ```
 
-**Napomena:** Vercel Hobby dopušta najviše 12 funkcija — sada ih je **11** (datoteke s `_` nisu funkcije). Nova ruta = provjeriti broj; `stranica.js` namjerno nosi i sitemap i robots.
+**Napomena:** Vercel Hobby dopušta najviše 12 funkcija — sada ih je **12, NEMA slobodnog mjesta** (datoteke s `_` nisu funkcije; zadnja je `api/mjesta.js`, 3. 10. 2026.). Nova ruta = spojiti je u postojeću (kao `stranica.js` koji nosi i sitemap i robots, ili `kalendar.js` s testnim feedom) ili prijeći na Vercel Pro.
 
 Sve funkcije su namjerno **bez ijedne npm ovisnosti** — projekt nema build korak ni `package.json`, pa se Supabase zove izravno preko REST API-ja (`fetch`), a iCal se parsira ručno. CommonJS (`module.exports`), jer bez `package.json` Vercel `.js` u `api/` tretira kao CJS.
 
@@ -127,113 +139,60 @@ Iz prijedloga **nije preneseno** (i dalje su samo ideje, popisane u
 tamna tema vodiča, zaslon „Prvi dan”, zaslon „Kad nešto ne radi”, podsjetnik
 gostu na njegovom jeziku, grafikoni analitike i analitika po državama.
 
-**Ostaju `teme.css` i `teme.js`** — vlasnik želi teme vratiti kasnije kao
-mogućnost za one koji plaćaju (vidi niže i `docs/odluke.md`, točka 9).
+**`teme.css` i `teme.js` (stare teme v3) obrisani su 3. 10. 2026.** — zamijenili su ih
+stilovi (`stilovi.js` / `stilovi.css`, vidi niže). Zadnje stanje s njima je u povijesti gita.
 
 ---
 
-## Teme javne stranice — čuvaju se za kasnije
+## Stilovi javne stranice (3. 10. 2026.)
 
-> **Od redizajna v2 (28. 9. 2026.) `p.html` teme NE primjenjuje** — učitava
-> samo `odmoria.css`, a `teme.css`/`teme.js` više ne. Panel „Izgled stranice” u
-> dashboardu i dalje sprema temu u bazu i nosi napomenu „Uskoro”. **Vlasnik
-> želi teme vratiti kasnije, kao veći izbor za one koji plaćaju** — plan je u
-> `docs/odluke.md`, točka 9. Opis dolje vrijedi za stari v3 `p.html` iz
-> povijesti gita; teme su pisane na tokenima obrisanog `atmosphere.css`, pa ih
-> za v2 treba ponovno prenijeti.
+Osam stilova s platna (`docs/odluke.md`, točka 20) + zadani izgled
+„Odmoria”: **priroda, luksuz, more (Sunce i more), moderno, grad, snijeg,
+relax, seoska**. Zasad **besplatno za sve planove**.
 
-Tema **ne mijenja samo boju**. Svaka drugačije slaže zaglavlje i vodi s drugom
-informacijom — to je bit, ostalo je posljedica:
+- **Jedan izvor:** `stilovi.js` (`STILOVI`: id, ime, opis, Google pisma, boje
+  `t`). `api/stranica.js` ima **kopiju** id-jeva i adresa pisama (CJS) —
+  mijenjati zajedno.
+- **`p.html`:** `STIL.primijeni(?stil= ili prop.theme)` → `<html data-stil>` +
+  pisma; `stilovi.css` preslika tokene `odmoria.css` (boje, pisma `--font-ui`
+  / `--font-body` / `--font-editorial`, zaobljenja) i doda ukrase. Raspored i
+  logika stranice su **isti** u svim stilovima. Bez atributa = zadani v2
+  izgled, piksel u piksel. `api/stranica.js` (`saStilom`) upiše `data-stil` i
+  link na pisma u HTML — stil od prvog prikaza, bez treptaja.
+- **Kontrast je izmjeren** na podlozi svakog stila (sve ≥ 4,5:1) i provjeren
+  na stranici (`scratchpad/stilpub.mjs`: 8 stilova × 1440/390, bez
+  prelijevanja). Na tamnoj plohi (`.contact`) i na fotografiji zaglavlja
+  (`.hero__copy .eyebrow`) zajednička pravila poništavaju ukrase natpisa iz
+  stila — inače natpis nestane (dogodilo se u Prirodi, Snijegu i Modernom).
+- **Dashboard → Objekt → Osnovno → Izgled:** kartice (`role=radio`, strelice),
+  „Kako gost vidi” = prava `/p/<slug>?stil=…&domacin=1` u `<iframe>`
+  smanjenom na širinu kartice (ne broji se u analitici), `saveStil()` →
+  `properties.theme` (NULL = zadani). Ne piše preko vrijednosti koja nije ni
+  stil ni stara tema; bez `sql/add-styles.sql` CHECK odbije novo ime i panel
+  kaže koji SQL pokrenuti. `STIL_ODABRAN` i `previewMode` stoje **uz uvoz**,
+  iznad prvog `selectProp()` (zamka kao `STATES`).
+- **Zamka:** imena pisama u `t` su u **jednostrukim** navodnicima —
+  `varijable()` ide u `style="…"`, a `"` je prekidao atribut pa su kartice
+  gubile pola boja.
 
-| Tema | Vodi s | Pismo |
-|------|--------|-------|
-| Jadran *(zadana)* | imenom objekta | Fraunces + Manrope |
-| Laguna | temperaturom bazena (32°) | Jost |
-| Zlatni sat | cijenom, na 12,5 rem | Bodoni Moda + Jost |
-| Terakota | numeriranim popisom prostorija | Cormorant + Manrope |
-| Beton | tablicom podataka, nula radijusa | Archivo Black + Space Grotesk |
-| Riviera ’70 | imenom kao plakatom | Playfair Display + Syne |
-| Ponoćni bazen | samom slikom, najmanje teksta | Space Grotesk |
-| Borova šuma | pismom domaćice | Spectral |
+### Pregled gosta (desno, ≥ 1280 px)
 
-`teme.css` i `teme.js` stoje u korijenu; danas ih učitava samo `dashboard.html`.
+Telefon prati **pravu** javnu stranicu u odabranom stilu (`--pv-*` iz
+`STIL.varijable()` na `#pv-device`) i **pravi** vodič (v2: „Vaš pristup”,
+pločice). Šifra vrata se nikad ne pokazuje (samo `••••` ako je postavljena).
+`setPreviewMode()` prebacuje `hidden` i klizni pokazivač (`#pv-seg[data-pv]`);
+`pregledStil()` osvježi boje, ime stila i link „otvori”. Ikone su Lucide u
+spriteu dashboarda.
 
-**Gdje se bira:** panel **Izgled stranice** u pravom `dashboard.html`
-(grupa Objekt, podtab Izgled). Vrti **jednu** izvedbu —
-`Odmoria.teme.birac()` iz `teme.js`. Dvije kopije te logike razišle bi se,
-kao nekad kopije limita plana.
+## Stare teme (v3) — obrisane 3. 10. 2026.
 
-**Podaci dolaze iz baze,** ne iz koda: `izBaze(prop)` preslika red iz
-`properties` u oblik koji rasporedi čitaju. Svako polje ima zamjenu — tema koja
-vodi cijenom bez `price_per_night` vodi imenom, tema koja vodi popisom
-prostorija izvede ga iz `bedrooms`/`bathrooms`/`size_m2`. **Nijedna ne ostane
-prazna**, jer domaćin ne mora ispuniti sve.
-
-**Fotografije imaju prednost pred nacrtanim prizorom** u svakoj temi koja ima
-pozadinu, i izmjenjuju se istim ritmom (7 s) kao rotator u `p.html`. Terakota
-ih stavlja u luk, Riviera u krug. Beton je namjerno bez fotografije — to je
-tema koja vodi tablicom.
-
-**Zadana tema „Jadran” NE dira `p.html`.** `primijeniTemu()` na njoj zove stari
-`buildHero()` i stranica ostaje piksel u piksel ista kao dosad, s rotatorom i
-`.phnav` trakom. Svaka druga tema zamijeni cijeli `<header>`. Zato zamjena mora
-sačuvati značku `.mark`, a `buildChips()` mora podnijeti da `#hero-chips` više
-ne postoji.
-
-**Stupci** (`sql/add-theme-to-properties.sql`): `properties.highlight` je nov,
-a **`properties.theme` je već postojao** — svih 8 objekata imalo je
-`Beach & Sea`, ostatak starijeg koncepta tema koji nijedan `.sql` ne stvara i
-nijedan kod više ne čita ni ne upisuje. Migracija ga **preslikava** u `jadran`
-(konceptualno ista stvar), ne briše, pa se javna stranica ne mijenja ni za
-jedan piksel — provjereno: `Beach & Sea` i `jadran` daju identično zaglavlje.
-Migracija prvo skida DEFAULT sa stupca, inače bi novi objekt opet dobio staru
-vrijednost i pao na CHECK-u.
-
-Dok se migracija ne pokrene, sve radi — vrijedi „Jadran”, a `?stil=` u adresi
-pokazuje svih osam. **Spremanje odbija upisati temu ako u stupcu stoji nešto
-što nije ime teme** (`smijePisati()` u `teme.js`) — istaknuta brojka se svejedno
-spremi, a panel kaže zašto tema nije. Bez toga bi jedan klik pojeo tuđi podatak.
-Ime stupca je jedna konstanta `STUPAC` u `teme.js`.
-
-**`teme.css` je samodostatan.** `dashboard.html` namjerno ne učitava
-`atmosphere.css`, pa `.tema-okruzje` nosi osnovne tokene i `.th .btn` gumbe.
-Taj razred mora biti **predak** elementa s `data-stil`, nikad isti element:
-izravno pravilo pobjeđuje naslijeđenu vrijednost, pa bi tema inače izgubila.
-
-**Kako se pali:** atribut `data-stil`. Na `<html>` prebojava cijelu stranicu
-(stari `p.html?stil=laguna`), a na bilo kojem omotaču samo ono unutar
-njega — zato birač pokazuje temu uživo, a sučelje oko njega ostaje u
-Odmorijinim bojama. Bez atributa vrijedi „Jadran”, tj. čisti `atmosphere.css`.
-
-**Minijature u biraču nisu slike.** Isti su HTML i CSS kao prava stranica, samo
-s `--hs:.30`. Sve mjere u `.th--*` idu kroz `--hs`, pa isti raspored služi i
-zaglavlju i minijaturi.
-
-Tri stvari koje je lako pokvariti:
-
-1. **Gumbi ne znaju za `--hs`** — dolaze iz `atmosphere.css` s fiksnim `padding`
-   i `min-height`, pa su u minijaturi ispadali u punoj veličini i razbijali
-   kartice. Zato `.th .btn` množi te iste vrijednosti s `--hs` (pri `--hs:1`
-   rezultat je identičan izvornome).
-2. **Radijus minijature mora biti broj, ne `--r-sm`** — u temi Riviera taj
-   token je 999px, pa je kartica ispadala kao elipsa.
-3. **Tokeni koje teme pomiču moraju biti u `teme.css`, prije tema** — bili su u
-   `<style>` same stranice, dolazili kasnije u dokumentu i pri istoj
-   specifičnosti nadjačavali temu. Kalendar je zato u tamnim temama ostajao
-   svijetao (1,95:1).
-
-**Kontrast je mjeren, ne procijenjen.** Svaka tema ima vlastiti `--terra-ink`
-(tekst) i `--terra-d` (pune plohe) izmjeren na **vlastitoj** podlozi, jer
-vrijednosti iz `ui.css` vrijede samo za kremu. Najniži omjer je 4,54:1.
-
-Zaglavlje se ne može mjeriti obilaskom roditelja: tekst stoji nad velom koji je
-**susjed, a ne predak**, pa CSS kaže „bijelo na kremi” (1,08:1) iako je stvarno
-6:1. Mjeri se pikselima — snimi se isječak s tekstom i bez njega, maska slova
-je razlika, podloga su ti isti pikseli iz druge snimke. Pritom se **moraju
-isključiti prijelazi** (`transition:none`), inače druga snimka uhvati tekst
-nasred `transition:color .3s` i podloga ispadne tamnija nego što jest — to je
-lažno prijavilo četiri gumba. Provjereno: 95 tekstova u osam zaglavlja prolazi,
-i 24 kombinacije teme × širine (1440/834/390) bez prelijevanja i bez greške.
+Osam starih tema (Jadran, Laguna, Zlatni sat, Terakota, Beton, Riviera ’70,
+Ponoćni bazen, Borova šuma) iz `teme.css`/`teme.js` obrisano je kad su ih
+zamijenili stilovi. Njihova imena i dalje su **dopuštena** u
+`properties.theme` (CHECK iz `sql/add-styles.sql`) i javna stranica ih
+prikazuje kao zadani izgled. Stupac `properties.highlight` ostaje u bazi, ali
+ga više ništa ne koristi. Jedna lekcija vrijedi i dalje: **kontrast mjeriti na
+vlastitoj podlozi stila**, a tekst nad fotografijom mjeriti pikselima.
 
 ### Analitika po državama — traži izmjenu sheme
 
@@ -349,6 +308,11 @@ ostati nevidljivo. Posljedica: na snimci cijele stranice (Playwright
 - **Figma `node.query()` puca na ne-ASCII znakove i razmake u selektoru.**
   `[name=red-Klima uređaj]` baca `Invalid selector`. Imena nodova koje se
   dohvaćaju moraju biti ASCII bez razmaka (`red-klima`).
+- **Nikad `confirm()`, `alert()` ni `prompt()`** — preglednik ih pokaže kao
+  „Na web-lokaciji … navodi se sljedeće” (vlasnik, 3. 10. 2026.). Umjesto toga
+  `await potvrdi(poruka, {da:'Ukloni', opasno:true})` i `obavijesti(poruka)`
+  iz `potvrda.js` (dashboard, admin); funkcija mora biti `async`. Testovi koji
+  su prihvaćali sistemski prozor uključuju `scratchpad/autoda.js`.
 - **Pali `use_figma` poziv povuče se u cijelosti** — ništa ne ostane na canvasu,
   pa se smije jednostavno ponoviti ispravljen.
 
@@ -409,8 +373,9 @@ Ovo su dizajnirani, core dijelovi proizvoda, ne ostaci:
     2. **Brisanje je scope-ano po izvoru** (`source=eq.ical_booking`). Nikad ne brisati cijelu `availability` za objekt — ručno blokirani dani (`source='manual'`) i dani vezani uz rezervacije (`booking_id`) moraju preživjeti sinkronizaciju.
     3. **URL upisuje korisnik**, pa `safeUrl()` odbija `localhost`, privatne IP raspone i ne-HTTP sheme. Bez toga ruta postaje proxy prema internoj mreži. (Ne pokriva DNS rebinding.)
   - Sinkronizacija: gumb u dashboardu, dnevno uz `keepalive` i svakih 30 min preko Supabase pg_cron → `/api/sync-all` (vidi „Paket značajki”).
-  - `api/test-calendar.js` služi za isprobavanje bez računa na Bookingu/Airbnbu. Datumi se **računaju od danas** (dolazak za 10 i za 24 dana), pa test ne zastarijeva. Sadrži i jedan `STATUS:CANCELLED` događaj koji se **ne smije** upisati — ako se pojavi u kalendaru, filtriranje otkazanih je puklo. Očekivani rezultat je točno **12 noći**.
-  - Gumb „Popuni testnim kalendarom” je maknut (odluka vlasnika); `api/test-calendar.js` ostaje za ručno isprobavanje (upisati njegovu adresu kao iCal URL).
+  - Testni feed je `api/kalendar.js?test=1` (stara adresa `/api/test-calendar` i dalje radi, `vercel.json`); služi za isprobavanje bez računa na Bookingu/Airbnbu. Datumi se **računaju od danas** (dolazak za 10 i za 24 dana), pa test ne zastarijeva. Sadrži i jedan `STATUS:CANCELLED` događaj koji se **ne smije** upisati — ako se pojavi u kalendaru, filtriranje otkazanih je puklo. Očekivani rezultat je točno **12 noći**.
+  - Gumb „Popuni testnim kalendarom” je maknut (odluka vlasnika); testni feed ostaje za ručno isprobavanje (upisati njegovu adresu kao iCal URL).
+  - **Izvoz** (od 2. 10. 2026.): vidi „Izvoz kalendara, suradnici, preuzimanje sadržaja”.
 
 ---
 
@@ -466,7 +431,7 @@ Tablica cijena gore je početno stanje u bazi; planovi i cijene još nisu konač
 
 Stari sustav (`atmosphere.css`, `motion.js`, `ui.css`; Fraunces + Manrope +
 Caveat, krema/terakota/more) obrisan je u rujnu 2026. Njegovi tokeni žive još
-samo kao osnova u `teme.css` (`.tema-okruzje`). Jedno pravilo iz v3 vrijedi i
+samo u povijesti gita. Jedno pravilo iz v3 vrijedi i
 dalje: **stranica mora izgledati puno i kad domaćin ima malo sadržaja.**
 
 ---
@@ -482,7 +447,7 @@ bijelom), pa stari problem od 4,30:1 više ne postoji.
 
 `dashboard.html` **nije prepisan**, nego preslikan drugi put (v3 → v2): imena tokena i razreda su ostala ista (`--cream`, `--brown`, `--copper`, `.card`, `.nav-item`…), a cijeli `<style>` je zamijenjen v2 vrijednostima iz Figme (05 Host App). JavaScript panela nije diran — 830 linija provjerene logike (kalendar, fotografije, rezervacije, iCal) ostalo je isto.
 
-Značenje tokena u v2: `--brown` = petrol `#103D4B` (tamne plohe), `--copper` = akcija `#116D76`, `--paper` = bijela kartica, `--cream` = perla podloga, `--paper-2` = wash `#EDF5F6`, `--peach` = menta na tamnom. **Imena namjerno nisu mijenjana** — ~200 mjesta. Pisma su Manrope (sučelje) i DM Sans (tekst); Fraunces se i dalje učitava samo zbog minijatura tema u panelu „Izgled”.
+Značenje tokena u v2: `--brown` = petrol `#103D4B` (tamne plohe), `--copper` = akcija `#116D76`, `--paper` = bijela kartica, `--cream` = perla podloga, `--paper-2` = wash `#EDF5F6`, `--peach` = menta na tamnom. **Imena namjerno nisu mijenjana** — ~200 mjesta. Pisma su Manrope (sučelje) i DM Sans (tekst); Fraunces se i dalje učitava zbog naslova na slikama u Objavama.
 
 **Navigacija po grupama** (Figma HostSidebar): bočna traka ima `.side-link[data-group]` — Pregled, Objekt, Boravci, Linkovi i QR, a dolje Pretplata. Svi paneli i dalje imaju svoj gumb `.nav-item[data-panel][data-group]` u `.panelnav`; `syncGroup(id)` na kraju `nav()` pokazuje samo podtabove aktivne grupe (traka se skriva kad grupa ima jedan panel) i pamti zadnji podtab grupe, pa `openGroup(g)` vraća tamo gdje je korisnik stao. Na mobitelu (≤ 780 px) ista je stvar donja traka `.bottom-nav`; „Više” otvara bočnu traku. **Bočna traka ne smije koristiti razred `.nav-item`** — `nav()` s njega skida `active` sa svega.
 
@@ -506,8 +471,8 @@ nije, u `docs/napredak.md`.
 #116D76, zaobljenja 7/10/14, razmaci 4–96, širina sadržaja 1376, rub 48/16),
 gumbe, oznake, harmoniku i fokus. Pisma: Manrope (sučelje, naslovi), DM Sans
 (tekst), Georgia → Gelasio (ime objekta). Ikone su Lucide, kao inline SVG sprite
-na dnu `<body>` svake stranice. Stari v3 sustav je obrisan; `teme.*` ostaje za
-teme na v2 (vidi `docs/odluke.md`, točka 9).
+na dnu `<body>` svake stranice. Stari v3 sustav i stare teme su obrisani; stilovi su u
+`stilovi.js` / `stilovi.css` (vidi „Stilovi javne stranice”).
 
 **Naslovnica (`index.html`)** — nema konfiguratora tema (odgođeno, vidi
 `docs/odluke.md`). Fotografija je samo `assets/landing/villa-*.jpg` (AI vila iz
@@ -685,7 +650,7 @@ Ako ikad zatreba da linkovi uvijek pokazuju na jednu domenu bez obzira odakle su
 
 - **Stripe je spojen samo za testni način** — računi se ne fiskaliziraju, nema PDV-a ni poreznog broja kupca; odluke u `docs/odluke.md`, točka 16. `track-event.js` ne postoji i ne treba — pregledi idu kroz `/api/track`.
 - **Automatska iCal sinkronizacija** radi tek kad su postavljeni `SUPABASE_SERVICE_ROLE_KEY` (dnevno) i `sql/auto-ical-sync.sql` + `CRON_SECRET` (svakih 30 min).
-- **Višejezični su samo vodič i javna stranica** (6 jezika). Dashboard, naslovnica, prijava, pravni tekst i `c.html` su samo na hrvatskom.
+- **Višejezični su vodič i javna stranica** (6 jezika) te **domaćinov dio na engleskom** (dashboard, prijava, registracija, postavljanje, dodavanje objekta, račun). Naslovnica, Pomoć, pravni tekst, `c.html`, admin i e-mailovi su samo na hrvatskom.
 
 ---
 
@@ -778,3 +743,182 @@ Sve gostovo prolazi kroz `_html_esc`. Greška slanja je samo WARNING — upit se
 uvijek spremi. Link u e-mailu: `/dashboard.html?otvori=upiti&objekt=<id>`
 (dashboard odabere objekt ako je domaćinov i nije zaključan). Lokalni test:
 lažni `vault` i `net` shemom (pg_net lokalno ne postoji).
+
+## Objave — slika, tekst i letak za promociju (listopad 2026.)
+
+Dashboard → Linkovi i QR → **Objave** (`obOtvori()`, `obNacrtaj()`,
+`obLetak()`, `otvoriObjave(od, do)`); logika u **`objave.js`** (čiste
+funkcije `slobodniTermini()`, `podaci()`, `tekstovi()`, `raspon()`,
+`terminTekst()` + `nacrtaj()` na canvasu i `letakHtml()`). Katalog/tražilica
+objekata je **odbijen** (`docs/odluke.md`, točka 19).
+
+- Ništa se ne sprema — panel nema gumb `save…`, pa nema ni trake za spremanje.
+- Jezici po planu = prvih `maxLanguages` iz `JZ.JEZICI` (kao vodič). Uvoz
+  jezika u dashboardu je **`JZ`**, ne `L` (`L` je lokalna varijabla upita).
+- Tekst je bez padeža imena i mjesta (zarez/zagrada), pa predložak vrijedi za
+  svako ime. Sadržaj na stranom jeziku ide samo ako ga rječnik `jezici.js` zna;
+  isti naziv na više jezika („Parking”) prepoznaje se po tome što ga rječnik
+  prevodi na barem jedan jezik.
+- Slika: fotografija s `crossOrigin='anonymous'` (Cloudinary šalje CORS); ako
+  canvas ipak bude „zaprljan” (`getImageData` baci grešku), crta se ponovno bez
+  fotografije i to piše ispod slike. Pisma se čekaju (`document.fonts.load`).
+- Letak se otvara u novom prozoru **odmah na klik** (inače ga preglednik
+  blokira), a sadržaj se upiše nakon QR-a. Skripta ispisa stoji **ispred**
+  Google Fonts linka i ima rezervu od 4 s — spor ili blokiran font inače
+  zaustavi skriptu i ispis se nikad ne otvori (dogodilo se u testu).
+- Pregled: praznina ili slobodan termin u 3 tjedna → gumb „Napravi objavu”.
+- **Izgledi** (`PREDLOSCI`): `foto`, `razglednica`, `luk`; naljepnica-sunce
+  s cijenom; naslov u pismu Fraunces (dashboard ga već učitava zbog tema).
+  Broj i jedinica vežu se tvrdim razmakom (`\u00a0`), a `prelomi()` lomi samo
+  na običnom razmaku — inače „120 / m²” u dva reda.
+- **Pokretna objava (video → MP4/GIF) je napravljena pa maknuta** na
+  zahtjev vlasnika (1. 10. 2026.) — kod je u povijesti gita (commit `a9f5dcd`).
+  Ako se vrati: iPhone ne učita `<video>` koji nije u DOM-u i nije pokrenut, a
+  poruka stanja mora biti izvan skrivenog dijela.
+
+## Male animacije (listopad 2026.)
+
+`pokret.js` (`veselje(el)`, `kvacica(btn, tekst)`) + stilovi `.o-veselje`,
+`.o-kv`, `o-pop`, `o-opruga` u `odmoria.css` (dashboard ima kopiju, jer ga ne
+učitava). **Sve pod `prefers-reduced-motion: no-preference`**, a `veselje()`
+sam provjeri postavku — testovi rade s `reducedMotion:'reduce'`, pa iskrica
+tamo namjerno nema. `pokret.js` je u predmemoriji service workera (`sw.js`,
+`VERZIJA` sada `odmoria-vodic-4`). Dashboard: svaki gumb čiji natpis počinje s
+„Kopiraj” sam dobije kvačicu (jedan slušač na `document`); iskrice u
+dashboardu nema.
+
+## Izvoz kalendara, suradnici, preuzimanje sadržaja (2. 10. 2026.)
+
+- **Izvoz kalendara** (`sql/add-ical-export.sql`, `api/kalendar.js`, Boravci →
+  Sinkronizacija): `/kalendar/<token>.ics?za=booking|airbnb` (rewrite u
+  `vercel.json`, token bez `.ics` u ruti). Ruta zove `kalendar_izvoz(token)`
+  **javnim ključem** (SECURITY DEFINER, kao `raspored_ciscenja`) — vraća samo
+  datume i izvor. `?za=booking` izostavlja `source='ical_booking'` (inače
+  Booking uvozi vlastite rezervacije i nakon otkaza ostane zaključan). Uzastopne
+  noći → jedan VEVENT, DTEND ekskluzivan. Aktivne rezervacije bez dana u
+  `availability` dodaju se kao `rezervacija`. Baza ne odgovara → **503**, nikad
+  prazan kalendar (to bi otvorilo sve dane na portalima). Isti broj funkcija
+  (11): testni feed je u istoj datoteci.
+- **Suradnici** (`sql/add-team-access.sql`, Linkovi i QR → Suradnici): tablica
+  `property_members` (token pozivnice, `user_id` tko je prihvatio). Politike se
+  samo **dodaju** (`"suradnik"` na svakoj tablici objekta) — postojeće vlasničke
+  ostaju. `je_suradnik(id)` je SECURITY DEFINER (bez rekurzije RLS-a). Okidač
+  `cuvaj_vlasnika_objekta` brani promjenu `properties.user_id`; brisanje objekta
+  suradnik nema. Pozivnica: `/dashboard.html?pozivnica=<token>` → bez prijave
+  token čeka u `localStorage` (`odm-pozivnica`), login kaže zašto, a
+  `onboarding.html` vraća na dashboard dok pozivnica čeka.
+  Dashboard: `PROPS` = vlastiti + dijeljeni (`__dijeljen`, oznaka „· dijeljeno”);
+  **zaključan je samo vlastiti objekt iznad limita** (`zakljucan(p)`), nikad
+  dijeljeni. Na dijeljenom objektu limiti su vlasnikovi: `plan_objekta()` →
+  `PROP.__plan`; u kodu `planObjekta()` i `fotoLimit()` umjesto `USER_PLAN` /
+  `PHOTO_LIMIT` gdje je riječ o objektu. `api/prevedi.js` (ručni prijevodi)
+  pušta i suradnika.
+- **Preuzmi sadržaj iz drugog objekta** (Objekt → Osnovno, `kopirajSadrzaj()`):
+  dodaje, ne briše; isti naziv/tekst se preskače; upute iz `sections` pune samo
+  prazna polja i **nikad** `door_code`, `wifi_name`, `wifi_pass`, `address`.
+  Upis red po red — kad baza odbije (limit plana), ostatak vrste se preskoči.
+
+## Engleski za domaćina (2. 10. 2026.)
+
+`domacin-jezik.js` + `domacin-en.js`, učitani u `<head>` dashboarda, prijave,
+registracije, nove lozinke, potvrde e-maila, postavljanja, dodavanja objekta i
+računa. Stranice su i dalje **pisane na hrvatskom**; na engleskom skripta
+prevodi tekst iz rječnika (ključ = hrvatski tekst, razmaci sažeti) i prati
+izmjene (`MutationObserver`: paneli, toast, poruke; `confirm`/`alert` omotani).
+
+- Zadano je **hrvatski** i tada se rječnik ni ne učitava. Izbor (prekidač HR · EN
+  u bočnoj traci dashboarda i gore desno na prijavi) pamti se u
+  `localStorage` `odm-jezik-domacina`.
+- **Ne prevodi se**: vrijednost polja (podaci domaćina), `<script>`, `<style>`,
+  `<code>`, `[translate="no"]`. `<option>` bez `value` dobije `value` =
+  hrvatski tekst prije prijevoda — u bazu i dalje ide hrvatska vrijednost.
+- Redoslijed: rječnik `T` → uzorci `P` (`{}` redom ili `{1}`, `{2}` kad engleski
+  mijenja red; specifičniji uzorak prvi) → dijelovi spojeni s „ · ” → datumi
+  (dani, mjeseci, kratice, samo u tekstu s brojkom).
+- **Novi tekst u sučelju domaćina = red u `domacin-en.js`**, inače ostaje
+  hrvatski (ne pukne). Neprevedeno se skuplja u `window.__NEPREVEDENO` (sa
+  `__SKUPI_SVE=true` sve, inače samo što izgleda hrvatski) — tako je testom
+  pronađen ostatak.
+- Gumb čiji natpis počinje s „Kopiraj” **ili „Copy”** dobije kvačicu — zato se
+  „Preuzmi sadržaj” na engleskom zove „Import content”, ne „Copy …”.
+- Država u analitici: `Intl.DisplayNames` po `<html lang>` (`analitika.js`).
+
+## Prijedlog mjesta i automatski e-mail gostu (2. 10. 2026.)
+
+- **Mjesta u blizini** (`mjesta-osm.js`, Objekt → Vodič → „Predloži mjesta u
+  blizini”): preglednik domaćina zove Nominatim (adresa/mjesto → koordinate)
+  i Overpass (plaže, restorani, kafići, trgovine, ljekarna u 2,5 km; drugi
+  Overpass poslužitelj kao rezerva). Polje „Gdje tražiti” unaprijed puni **samo
+  `properties.location`** (Osnovno); `sections.address` tek kad lokacije nema —
+  spajanje obje dalo je istu adresu dvaput.
+  **Adresu traže Nominatim i Photon istodobno** (ruta i preglednik):
+  Nominatim ima prednost, Photon pokriva skraćenice i tipfelere („Krušaka ul.
+  1a”), ali vrijedi samo ako sadrži zadnji dio upita (mjesto) —
+  `photonOdgovara()`, kopija u obje datoteke. „ul.” → „ulica” je dodatna
+  varijanta. Kad nijedan servis ne odgovori, ruta vraća `nedostupno:true` i
+  dijalog kaže „ne javlja se”, ne „adresa nije pronađena”. Besplatno, bez ključa i bez naše rute.
+  Kategorije su hrvatske i postoje u `jezici.js` (`Plaže`, `Restorani`,
+  `Kafići`, `Trgovine`, `Ljekarna`); udaljenost „N min pješice/autom” (vodič je
+  prevodi). `maps_query` = **koordinate** „lat,lon” (Google ih uvijek pogodi;
+  „naziv, mjesto” je vodilo na adresu objekta jer u `location` zna stajati
+  cijela adresa). Upis kao ručni (`local_places`), isti naziv se preskače, limit
+  plana provodi baza. **Javni Overpass zna visjeti bez odgovora** (domaćin je
+  vidio samo „Tražim…”): svaki zahtjev ima rok (`sRokom`, AbortController —
+  Nominatim 10 s, Overpass 8 s) i dva Overpass poslužitelja, a onda **rezerva
+  bez Overpassa**: Nominatim „posebni izrazi” (`beach`, `restaurant`, `cafe`,
+  `supermarket`, `pharmacy`) u okviru ~2,8 km (`viewbox` + `bounded=1`),
+  redom s 1,1 s razmaka (pravilo Nominatima: 1 zahtjev/s). Kod domaćina
+  (3. 10.) Overpass iz preglednika nije odgovorio nikako, a Nominatim jest —
+  zato rezerva. **Zatim je pao i Nominatim iz preglednika** („Pretraga adrese se
+  ne javlja”) — OSM traži User-Agent i 1 zahtjev/s, a preglednik UA ne smije
+  postaviti. Zato je **prvi put `api/mjesta.js`** (s tokenom domaćina): isti
+  tijek na poslužitelju s `User-Agent: Odmoria/1.0 …`, razmakom 1,1 s, Photon
+  (komoot) kao rezerva za adresu, rok 24 s (`maxDuration: 30`); vraća sirove
+  elemente, `odaberi()` ostaje u pregledniku. `varijante()`/`upitOverpass()`
+  su kopija iz `mjesta-osm.js` — mijenjati zajedno. Ne odgovori li ruta,
+  preglednik ide izravno kao prije. Poruka o grešci nosi razloge (`istek`, `HTTP 429`…); dijalog javlja
+  korak (`napredak`), stariji odgovor se zanemaruje (`OSM_RED`). Adresa koja
+  nije nađena skraćuje se (`varijante()`: bez kućnog broja, pa bez ulice, pa
+  mjesto objekta), a rezultat razine države/županije (`place_rank < 12`) se
+  odbija. Natpis „© OpenStreetMap suradnici” u prozoru je obavezan
+  (ODbL). Iz okruženja za razvoj OSM nije dostupan — testirano lažnim
+  odgovorima; pravi poziv provjeriti na Previewu.
+- **Prijedlozi adrese dok se tipka** (`adresa-predlozi.js`, 3. 10. 2026.):
+  `predloziAdresu(input, {vrsta, odabrano})` na `#prop-location`, `#ci-address` /
+  `#address` i `#osm-upit` (vrsta `adresa`; `mjesto` = samo mjesta, trenutno
+  nigdje — vlasnik 3. 10. želi i ulicu i broj u Lokaciji, s pribadačom na
+  karti javne stranice) u dashboardu, postavljanju i dodavanju objekta.
+  **Kućni broj**: Photon često zna ulicu bez broja — `kucniBroj(upit)` ga
+  dopiše prijedlogu („Ulica krušaka 1, Zagreb”). Država ide kroz
+  `Intl.DisplayNames` po `<html lang>` („Croatia” → „Hrvatska”).
+  **Photon, ne Nominatim** — Nominatim zabranjuje „traži dok tipkaš”. 300 ms
+  pauze, od 3 znaka, stariji zahtjev se prekida. Lokacija uređaja: ako je već
+  dopuštena, prednost oko domaćina; inače red „Koristi moju trenutnu lokaciju”
+  (tek tada preglednik pita) → Photon `/reverse`. Bez nje prednost ima
+  Hrvatska. Odabir okida `input` + `change` (pregled, traka za spremanje).
+  Popis je `position:fixed` (kartica s `overflow:hidden` ga je rezala) i
+  otvara se prema gore kad dolje nema mjesta. Combobox s ARIA, strelice,
+  Enter, Esc (zatvori popis, ne dijalog). Adrese `translate="no"`. U „Mjesta
+  u blizini” odabrani prijedlog nosi koordinate (`OSM_CENTAR` → `predlozi(…,
+  {centar})` → `/api/mjesta?…&lat=&lon=`) pa se adresa ne geokodira ponovno.
+- **Karta s pribadačom** (3. 10. 2026.): `p.html` i vodič (`#dolazak`) karte
+  više ne skrivaju iza „Prikaži kartu” — Google embed `maps?q=…&output=embed`
+  (s adresom pokazuje pribadaču) puni se odmah, iframe je `loading=lazy`.
+  Pregled `map` u analitici sada je klik na „Otvori u Google Maps”. Na `p.html`
+  rečenica „točnu adresu dobivate kasnije” (`#adr-later`) skriva se kad
+  Lokacija ima broj. Vodič slaže adresu kroz `punaAdresa(address, location)` —
+  bez ponavljanja kad je u Lokaciji već cijela adresa.
+- **Automatski e-mail gostu** (`sql/add-guest-emails.sql`): stupci
+  `bookings.guest_email`, `guest_lang`, `email_dolazak_at`, `email_ocjena_at`
+  i `properties.auto_email_gostu`. `posalji_emailove_gostima()` (pg_cron
+  dnevno 8:05 UTC) šalje „dolazak” (0–3 dana prije, link na vodič) i
+  „ocjena” (dan odlaska ili dan poslije, `#kuca/odlazak`), svaku jednom, na
+  jeziku gosta, najviše 80 po izvođenju (Resend Free = 100/dan), reply_to =
+  domaćin. Gostov e-mail se briše 30 dana nakon odlaska. **SQL se odbija
+  pokrenuti dok anon može čitati `bookings`** (KORAK 2 iz
+  `sections-security.sql`) i bez `add-inquiry-email.sql`; cijeli je u jednoj
+  transakciji (greška = ništa promijenjeno). Dashboard: obrazac rezervacije
+  sprema e-mail i jezik (pogođen po domeni, `jezikIzMaila`), „Prihvati” uzima
+  e-mail iz upita, popis pokazuje stanje poruka, prekidač po objektu. Bez
+  stupaca `napraviRezervaciju()` ponovi upis bez e-maila — rezervacija nikad
+  ne propadne zbog ove značajke.
