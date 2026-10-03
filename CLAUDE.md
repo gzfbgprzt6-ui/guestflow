@@ -56,7 +56,6 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 ├── tekst.css                # tekstualne stranice: help, terms, privacy (za njih nema Figme)
 ├── stilovi.js               # OSAM STILOVA javne stranice (+ zadani): imena, pisma, boje; primijeni(), varijable() — vidi „Stilovi javne stranice”
 ├── stilovi.css              # izgled stilova na p.html (<html data-stil>), tokeni odmoria.css + ukrasi
-├── teme.css  teme.js        # STARE teme (v3) — više ih nitko ne učitava; zamijenili su ih stilovi (odluke, točka 20)
 ├── analitika.js             # izračuni i grafikoni analitike (boravci, popunjenost, praznine, pregledi) — dijele ga dashboard i admin
 ├── analitika.css            # pločice, stupčasti grafikoni (HTML, ne SVG), popisi, tablice analitike
 ├── links.js                 # gradnja linkova (/p/, /h/, /c/) — NIKAD ne zakucavati domenu, vidi dolje
@@ -140,8 +139,8 @@ Iz prijedloga **nije preneseno** (i dalje su samo ideje, popisane u
 tamna tema vodiča, zaslon „Prvi dan”, zaslon „Kad nešto ne radi”, podsjetnik
 gostu na njegovom jeziku, grafikoni analitike i analitika po državama.
 
-**Ostaju `teme.css` i `teme.js`** — vlasnik želi teme vratiti kasnije kao
-mogućnost za one koji plaćaju (vidi niže i `docs/odluke.md`, točka 9).
+**`teme.css` i `teme.js` (stare teme v3) obrisani su 3. 10. 2026.** — zamijenili su ih
+stilovi (`stilovi.js` / `stilovi.css`, vidi niže). Zadnje stanje s njima je u povijesti gita.
 
 ---
 
@@ -185,108 +184,15 @@ pločice). Šifra vrata se nikad ne pokazuje (samo `••••` ako je postavl
 `pregledStil()` osvježi boje, ime stila i link „otvori”. Ikone su Lucide u
 spriteu dashboarda.
 
-## Stare teme (v3) — zamijenjene stilovima
+## Stare teme (v3) — obrisane 3. 10. 2026.
 
-> **Od redizajna v2 (28. 9. 2026.) `p.html` teme NE primjenjuje** — učitava
-> samo `odmoria.css`, a `teme.css`/`teme.js` više ne. Panel „Izgled stranice” u
-> dashboardu i dalje sprema temu u bazu i nosi napomenu „Uskoro”. **Vlasnik
-> želi teme vratiti kasnije, kao veći izbor za one koji plaćaju** — plan je u
-> `docs/odluke.md`, točka 9. Opis dolje vrijedi za stari v3 `p.html` iz
-> povijesti gita; teme su pisane na tokenima obrisanog `atmosphere.css`, pa ih
-> za v2 treba ponovno prenijeti.
-
-Tema **ne mijenja samo boju**. Svaka drugačije slaže zaglavlje i vodi s drugom
-informacijom — to je bit, ostalo je posljedica:
-
-| Tema | Vodi s | Pismo |
-|------|--------|-------|
-| Jadran *(zadana)* | imenom objekta | Fraunces + Manrope |
-| Laguna | temperaturom bazena (32°) | Jost |
-| Zlatni sat | cijenom, na 12,5 rem | Bodoni Moda + Jost |
-| Terakota | numeriranim popisom prostorija | Cormorant + Manrope |
-| Beton | tablicom podataka, nula radijusa | Archivo Black + Space Grotesk |
-| Riviera ’70 | imenom kao plakatom | Playfair Display + Syne |
-| Ponoćni bazen | samom slikom, najmanje teksta | Space Grotesk |
-| Borova šuma | pismom domaćice | Spectral |
-
-`teme.css` i `teme.js` stoje u korijenu; danas ih učitava samo `dashboard.html`.
-
-**Gdje se bira:** panel **Izgled stranice** u pravom `dashboard.html`
-(grupa Objekt, podtab Izgled). Vrti **jednu** izvedbu —
-`Odmoria.teme.birac()` iz `teme.js`. Dvije kopije te logike razišle bi se,
-kao nekad kopije limita plana.
-
-**Podaci dolaze iz baze,** ne iz koda: `izBaze(prop)` preslika red iz
-`properties` u oblik koji rasporedi čitaju. Svako polje ima zamjenu — tema koja
-vodi cijenom bez `price_per_night` vodi imenom, tema koja vodi popisom
-prostorija izvede ga iz `bedrooms`/`bathrooms`/`size_m2`. **Nijedna ne ostane
-prazna**, jer domaćin ne mora ispuniti sve.
-
-**Fotografije imaju prednost pred nacrtanim prizorom** u svakoj temi koja ima
-pozadinu, i izmjenjuju se istim ritmom (7 s) kao rotator u `p.html`. Terakota
-ih stavlja u luk, Riviera u krug. Beton je namjerno bez fotografije — to je
-tema koja vodi tablicom.
-
-**Zadana tema „Jadran” NE dira `p.html`.** `primijeniTemu()` na njoj zove stari
-`buildHero()` i stranica ostaje piksel u piksel ista kao dosad, s rotatorom i
-`.phnav` trakom. Svaka druga tema zamijeni cijeli `<header>`. Zato zamjena mora
-sačuvati značku `.mark`, a `buildChips()` mora podnijeti da `#hero-chips` više
-ne postoji.
-
-**Stupci** (`sql/add-theme-to-properties.sql`): `properties.highlight` je nov,
-a **`properties.theme` je već postojao** — svih 8 objekata imalo je
-`Beach & Sea`, ostatak starijeg koncepta tema koji nijedan `.sql` ne stvara i
-nijedan kod više ne čita ni ne upisuje. Migracija ga **preslikava** u `jadran`
-(konceptualno ista stvar), ne briše, pa se javna stranica ne mijenja ni za
-jedan piksel — provjereno: `Beach & Sea` i `jadran` daju identično zaglavlje.
-Migracija prvo skida DEFAULT sa stupca, inače bi novi objekt opet dobio staru
-vrijednost i pao na CHECK-u.
-
-Dok se migracija ne pokrene, sve radi — vrijedi „Jadran”, a `?stil=` u adresi
-pokazuje svih osam. **Spremanje odbija upisati temu ako u stupcu stoji nešto
-što nije ime teme** (`smijePisati()` u `teme.js`) — istaknuta brojka se svejedno
-spremi, a panel kaže zašto tema nije. Bez toga bi jedan klik pojeo tuđi podatak.
-Ime stupca je jedna konstanta `STUPAC` u `teme.js`.
-
-**`teme.css` je samodostatan.** `dashboard.html` namjerno ne učitava
-`atmosphere.css`, pa `.tema-okruzje` nosi osnovne tokene i `.th .btn` gumbe.
-Taj razred mora biti **predak** elementa s `data-stil`, nikad isti element:
-izravno pravilo pobjeđuje naslijeđenu vrijednost, pa bi tema inače izgubila.
-
-**Kako se pali:** atribut `data-stil`. Na `<html>` prebojava cijelu stranicu
-(stari `p.html?stil=laguna`), a na bilo kojem omotaču samo ono unutar
-njega — zato birač pokazuje temu uživo, a sučelje oko njega ostaje u
-Odmorijinim bojama. Bez atributa vrijedi „Jadran”, tj. čisti `atmosphere.css`.
-
-**Minijature u biraču nisu slike.** Isti su HTML i CSS kao prava stranica, samo
-s `--hs:.30`. Sve mjere u `.th--*` idu kroz `--hs`, pa isti raspored služi i
-zaglavlju i minijaturi.
-
-Tri stvari koje je lako pokvariti:
-
-1. **Gumbi ne znaju za `--hs`** — dolaze iz `atmosphere.css` s fiksnim `padding`
-   i `min-height`, pa su u minijaturi ispadali u punoj veličini i razbijali
-   kartice. Zato `.th .btn` množi te iste vrijednosti s `--hs` (pri `--hs:1`
-   rezultat je identičan izvornome).
-2. **Radijus minijature mora biti broj, ne `--r-sm`** — u temi Riviera taj
-   token je 999px, pa je kartica ispadala kao elipsa.
-3. **Tokeni koje teme pomiču moraju biti u `teme.css`, prije tema** — bili su u
-   `<style>` same stranice, dolazili kasnije u dokumentu i pri istoj
-   specifičnosti nadjačavali temu. Kalendar je zato u tamnim temama ostajao
-   svijetao (1,95:1).
-
-**Kontrast je mjeren, ne procijenjen.** Svaka tema ima vlastiti `--terra-ink`
-(tekst) i `--terra-d` (pune plohe) izmjeren na **vlastitoj** podlozi, jer
-vrijednosti iz `ui.css` vrijede samo za kremu. Najniži omjer je 4,54:1.
-
-Zaglavlje se ne može mjeriti obilaskom roditelja: tekst stoji nad velom koji je
-**susjed, a ne predak**, pa CSS kaže „bijelo na kremi” (1,08:1) iako je stvarno
-6:1. Mjeri se pikselima — snimi se isječak s tekstom i bez njega, maska slova
-je razlika, podloga su ti isti pikseli iz druge snimke. Pritom se **moraju
-isključiti prijelazi** (`transition:none`), inače druga snimka uhvati tekst
-nasred `transition:color .3s` i podloga ispadne tamnija nego što jest — to je
-lažno prijavilo četiri gumba. Provjereno: 95 tekstova u osam zaglavlja prolazi,
-i 24 kombinacije teme × širine (1440/834/390) bez prelijevanja i bez greške.
+Osam starih tema (Jadran, Laguna, Zlatni sat, Terakota, Beton, Riviera ’70,
+Ponoćni bazen, Borova šuma) iz `teme.css`/`teme.js` obrisano je kad su ih
+zamijenili stilovi. Njihova imena i dalje su **dopuštena** u
+`properties.theme` (CHECK iz `sql/add-styles.sql`) i javna stranica ih
+prikazuje kao zadani izgled. Stupac `properties.highlight` ostaje u bazi, ali
+ga više ništa ne koristi. Jedna lekcija vrijedi i dalje: **kontrast mjeriti na
+vlastitoj podlozi stila**, a tekst nad fotografijom mjeriti pikselima.
 
 ### Analitika po državama — traži izmjenu sheme
 
@@ -525,7 +431,7 @@ Tablica cijena gore je početno stanje u bazi; planovi i cijene još nisu konač
 
 Stari sustav (`atmosphere.css`, `motion.js`, `ui.css`; Fraunces + Manrope +
 Caveat, krema/terakota/more) obrisan je u rujnu 2026. Njegovi tokeni žive još
-samo kao osnova u `teme.css` (`.tema-okruzje`). Jedno pravilo iz v3 vrijedi i
+samo u povijesti gita. Jedno pravilo iz v3 vrijedi i
 dalje: **stranica mora izgledati puno i kad domaćin ima malo sadržaja.**
 
 ---
@@ -541,7 +447,7 @@ bijelom), pa stari problem od 4,30:1 više ne postoji.
 
 `dashboard.html` **nije prepisan**, nego preslikan drugi put (v3 → v2): imena tokena i razreda su ostala ista (`--cream`, `--brown`, `--copper`, `.card`, `.nav-item`…), a cijeli `<style>` je zamijenjen v2 vrijednostima iz Figme (05 Host App). JavaScript panela nije diran — 830 linija provjerene logike (kalendar, fotografije, rezervacije, iCal) ostalo je isto.
 
-Značenje tokena u v2: `--brown` = petrol `#103D4B` (tamne plohe), `--copper` = akcija `#116D76`, `--paper` = bijela kartica, `--cream` = perla podloga, `--paper-2` = wash `#EDF5F6`, `--peach` = menta na tamnom. **Imena namjerno nisu mijenjana** — ~200 mjesta. Pisma su Manrope (sučelje) i DM Sans (tekst); Fraunces se i dalje učitava samo zbog minijatura tema u panelu „Izgled”.
+Značenje tokena u v2: `--brown` = petrol `#103D4B` (tamne plohe), `--copper` = akcija `#116D76`, `--paper` = bijela kartica, `--cream` = perla podloga, `--paper-2` = wash `#EDF5F6`, `--peach` = menta na tamnom. **Imena namjerno nisu mijenjana** — ~200 mjesta. Pisma su Manrope (sučelje) i DM Sans (tekst); Fraunces se i dalje učitava zbog naslova na slikama u Objavama.
 
 **Navigacija po grupama** (Figma HostSidebar): bočna traka ima `.side-link[data-group]` — Pregled, Objekt, Boravci, Linkovi i QR, a dolje Pretplata. Svi paneli i dalje imaju svoj gumb `.nav-item[data-panel][data-group]` u `.panelnav`; `syncGroup(id)` na kraju `nav()` pokazuje samo podtabove aktivne grupe (traka se skriva kad grupa ima jedan panel) i pamti zadnji podtab grupe, pa `openGroup(g)` vraća tamo gdje je korisnik stao. Na mobitelu (≤ 780 px) ista je stvar donja traka `.bottom-nav`; „Više” otvara bočnu traku. **Bočna traka ne smije koristiti razred `.nav-item`** — `nav()` s njega skida `active` sa svega.
 
@@ -565,8 +471,8 @@ nije, u `docs/napredak.md`.
 #116D76, zaobljenja 7/10/14, razmaci 4–96, širina sadržaja 1376, rub 48/16),
 gumbe, oznake, harmoniku i fokus. Pisma: Manrope (sučelje, naslovi), DM Sans
 (tekst), Georgia → Gelasio (ime objekta). Ikone su Lucide, kao inline SVG sprite
-na dnu `<body>` svake stranice. Stari v3 sustav je obrisan; `teme.*` ostaje za
-teme na v2 (vidi `docs/odluke.md`, točka 9).
+na dnu `<body>` svake stranice. Stari v3 sustav i stare teme su obrisani; stilovi su u
+`stilovi.js` / `stilovi.css` (vidi „Stilovi javne stranice”).
 
 **Naslovnica (`index.html`)** — nema konfiguratora tema (odgođeno, vidi
 `docs/odluke.md`). Fotografija je samo `assets/landing/villa-*.jpg` (AI vila iz

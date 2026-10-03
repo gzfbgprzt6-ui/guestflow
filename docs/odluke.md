@@ -1115,8 +1115,8 @@ Vlasnik (1. 10.): „svi su mi top”. Zatim su 4, 5 i 8 (Riviera ’70, Magazin
   linije podzemne kao zaseban blok, nego obojene oznake linija u popisu).
 - [x] **Zasad besplatno za sve planove** (vlasnik, 3. 10.). Naplata kasnije
   (točka 9) — tada samo zaključati izbor u panelu i u bazi.
-- [ ] Stari panel tema (`teme.js`, `teme.css`, osam starih tema) dashboard više
-  ne učitava; datoteke su ostale u repozitoriju. Obrisati ih?
+- [x] Stari panel tema (`teme.js`, `teme.css`, osam starih tema) — **obrisano**
+  na zahtjev vlasnika (3. 10. 2026.).
 
 ## 21. Konkurencija i nedostaci (2. 10. 2026.) — bez plaćanja
 
