@@ -1284,3 +1284,18 @@ preglednik), pa idu preko `api/mjesta.js` — to je zadnje slobodno mjesto na
 Vercel Hobby planu. Sljedeća nova ruta (npr. obavijesti na mobitelu, točka 26)
 mora se spojiti u postojeću datoteku ili treba Vercel Pro (~20 $/mj).
 - [ ] Znati prije sljedeće značajke s poslužiteljem.
+
+## 29. Prijedlozi adrese dok se tipka (3. 10. 2026.)
+
+Polja Lokacija, Točna adresa / Adresa i „Gdje tražiti” nude adrese dok
+domaćin tipka (`adresa-predlozi.js`), i „Koristi moju trenutnu lokaciju”.
+Servis je **Photon** (komoot, podaci OpenStreetMap): **besplatan, bez ključa
+i bez kartice**, uz pravilo poštene upotrebe — zato zahtjev ide tek nakon
+pauze u tipkanju (300 ms) i od 3 slova.
+- Javna **Lokacija** nudi samo mjesta (grad, selo, kvart), da se točna adresa
+  ne pojavi na javnoj stranici; ulica i broj idu u privatnu „Točnu adresu”.
+- Ako ikad bude previše domaćina za javni Photon: vlastiti Photon na
+  poslužitelju (~5–10 €/mj) ili Google Places Autocomplete (10.000 upita
+  mjesečno besplatno, zatim ~2,8 $ na 1.000, traži karticu). Promjena je samo
+  u `adresa-predlozi.js`.
+- [ ] Ništa za odlučiti sada.

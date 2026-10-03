@@ -1446,6 +1446,7 @@ import * as O from'./objave.js'
 import * as JZ from'./jezici.js'
 import{kvacica}from'./pokret.js'
 import * as OSMM from'./mjesta-osm.js'
+import{predloziAdresu}from'./adresa-predlozi.js'
 import{potvrdi}from'./potvrda.js'
 
 const SURL='https://wtojzqjhipdfbrnmprmz.supabase.co'
@@ -3355,6 +3356,11 @@ window.otvoriOsm=()=>{
   if(document.getElementById('osm-upit').value)traziOsm()
 }
 let OSM_RED=0
+// odabran prijedlog adrese nosi koordinate — tada se adresa ne traži ponovno
+let OSM_CENTAR=null
+predloziAdresu(document.getElementById('prop-location'),{vrsta:'mjesto'})
+predloziAdresu(document.getElementById('ci-address'))
+predloziAdresu(document.getElementById('osm-upit'),{odabrano:x=>{OSM_CENTAR=x;traziOsm()}})
 window.traziOsm=async()=>{
   const upit=v('osm-upit'),st=document.getElementById('osm-st'),el=document.getElementById('osm-lista'),gdje=document.getElementById('osm-gdje'),gumb=document.getElementById('osm-trazi')
   if(!upit){st.textContent='Upišite adresu ili mjesto, '+OSMM.PRIMJER+'.';return}
@@ -3362,7 +3368,8 @@ window.traziOsm=async()=>{
   el.innerHTML='';gdje.hidden=true;document.getElementById('osm-da').disabled=true;gumb.disabled=true
   try{
     let token='';try{token=(await sb.auth.getSession()).data.session?.access_token||''}catch{}
-    const r=await OSMM.predlozi(upit,(PROP.location||'').trim(),fetch,t=>{if(moj===OSM_RED)st.textContent=t},{token})
+    const centar=OSM_CENTAR&&OSM_CENTAR.tekst===upit?{lat:OSM_CENTAR.lat,lon:OSM_CENTAR.lon,naziv:upit}:null
+    const r=await OSMM.predlozi(upit,(PROP.location||'').trim(),fetch,t=>{if(moj===OSM_RED)st.textContent=t},{token,centar})
     if(moj!==OSM_RED)return
     if(!r.centar){st.textContent=r.nedostupno?'Pretraga adrese se trenutno ne javlja. Pokušajte za minutu.':'Ta adresa nije pronađena. Upišite je drukčije, '+OSMM.PRIMJER+'.';return}
     gdje.hidden=false;gdje.textContent='Tražim oko: '+r.centar.naziv

@@ -123,8 +123,11 @@ module.exports = async (req, res) => {
 
   const pocetak = Date.now(), ostalo = () => 24000 - (Date.now() - pocetak);
   const razlozi = [];
-  let centar = null, prvi = true, odgovor = false;
-  for (const v of varijante(upit, mjesto)) {
+  // domaćin je odabrao prijedlog adrese (koordinate stižu s njim) — bez geokodiranja
+  const lat = parseFloat(q.lat), lon = parseFloat(q.lon);
+  const zadan = Number.isFinite(lat) && Number.isFinite(lon) && Math.abs(lat) <= 90 && Math.abs(lon) <= 180;
+  let centar = zadan ? { lat, lon, naziv: upit } : null, prvi = true, odgovor = zadan;
+  for (const v of zadan ? [] : varijante(upit, mjesto)) {
     if (!prvi) await cekaj(1100);          // Nominatim: najviše 1 zahtjev u sekundi
     prvi = false;
     const g = await geokodiraj(v, razlozi);

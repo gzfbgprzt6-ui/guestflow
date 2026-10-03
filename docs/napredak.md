@@ -116,3 +116,5 @@ Popratno:
 - [ ] Licenca za `living.jpg`, `bedroom.jpg`, `kitchen.jpg`.
 - [x] Spajanje u `main` — 28. 9. 2026. (`7bca527`). Na `main` je bio stariji
   squash iste grane bez ičega novog, pa je zadržan sadržaj grane.
+- [x] Prijedlozi adrese dok se tipka + „Koristi moju trenutnu lokaciju”
+  (Lokacija, Točna adresa, Gdje tražiti; besplatno, Photon/OSM) — 3. 10. 2026.

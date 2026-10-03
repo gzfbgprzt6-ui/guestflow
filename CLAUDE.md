@@ -66,6 +66,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 ├── objave.js                 # Linkovi i QR → Objave: slobodni termini, tekstovi (6 jezika), slika na canvasu, letak — vidi „Objave”
 ├── potvrda.js                # potvrdi()/obavijesti(): prozor u stilu aplikacije — NIKAD sistemski confirm()/alert()
 ├── mjesta-osm.js             # prijedlog mjesta u blizini: Nominatim + Overpass (OpenStreetMap), iz preglednika, besplatno
+├── adresa-predlozi.js        # prijedlozi adrese dok se tipka (Photon/OSM, besplatno) + „Koristi moju trenutnu lokaciju” — Lokacija, Točna adresa, Gdje tražiti
 ├── domacin-jezik.js          # jezik sučelja DOMAĆINA (HR/EN): prekidač, prijevod DOM-a preko rječnika — vidi „Engleski za domaćina”
 ├── domacin-en.js             # engleski rječnik (T) i uzorci (P) za domacin-jezik.js; ključ = hrvatski tekst
 ├── billing.js                # Stripe iz preglednika: billingStatus, startCheckout, openBillingPortal, povratak s plaćanja (dashboard, account)
@@ -934,6 +935,20 @@ izmjene (`MutationObserver`: paneli, toast, poruke; `confirm`/`alert` omotani).
   odbija. Natpis „© OpenStreetMap suradnici” u prozoru je obavezan
   (ODbL). Iz okruženja za razvoj OSM nije dostupan — testirano lažnim
   odgovorima; pravi poziv provjeriti na Previewu.
+- **Prijedlozi adrese dok se tipka** (`adresa-predlozi.js`, 3. 10. 2026.):
+  `predloziAdresu(input, {vrsta, odabrano})` na `#prop-location` (vrsta
+  `mjesto` — JAVNO polje, nudi samo mjesta), `#ci-address` / `#address` i
+  `#osm-upit` (vrsta `adresa`) u dashboardu, postavljanju i dodavanju objekta.
+  **Photon, ne Nominatim** — Nominatim zabranjuje „traži dok tipkaš”. 300 ms
+  pauze, od 3 znaka, stariji zahtjev se prekida. Lokacija uređaja: ako je već
+  dopuštena, prednost oko domaćina; inače red „Koristi moju trenutnu lokaciju”
+  (tek tada preglednik pita) → Photon `/reverse`. Bez nje prednost ima
+  Hrvatska. Odabir okida `input` + `change` (pregled, traka za spremanje).
+  Popis je `position:fixed` (kartica s `overflow:hidden` ga je rezala) i
+  otvara se prema gore kad dolje nema mjesta. Combobox s ARIA, strelice,
+  Enter, Esc (zatvori popis, ne dijalog). Adrese `translate="no"`. U „Mjesta
+  u blizini” odabrani prijedlog nosi koordinate (`OSM_CENTAR` → `predlozi(…,
+  {centar})` → `/api/mjesta?…&lat=&lon=`) pa se adresa ne geokodira ponovno.
 - **Automatski e-mail gostu** (`sql/add-guest-emails.sql`): stupci
   `bookings.guest_email`, `guest_lang`, `email_dolazak_at`, `email_ocjena_at`
   i `properties.auto_email_gostu`. `posalji_emailove_gostima()` (pg_cron

@@ -190,7 +190,8 @@ export async function predlozi(upit, mjesto = '', f = fetch, napredak = () => {}
   if (opcije.token) {
     napredak('Tražim adresu i mjesta u blizini…')
     try {
-      const r = await sRokom(f, `/api/mjesta?q=${encodeURIComponent(upit)}&mjesto=${encodeURIComponent(mjesto)}`, { headers: { Authorization: 'Bearer ' + opcije.token } }, 29000)
+      const c0 = opcije.centar ? `&lat=${(+opcije.centar.lat).toFixed(6)}&lon=${(+opcije.centar.lon).toFixed(6)}` : ''
+      const r = await sRokom(f, `/api/mjesta?q=${encodeURIComponent(upit)}&mjesto=${encodeURIComponent(mjesto)}${c0}`, { headers: { Authorization: 'Bearer ' + opcije.token } }, 29000)
       const d = await r.json().catch(() => null)
       if (r.ok && d && d.ok) {
         if (!d.centar) return { centar: null, mjesta: [], izvor: 'posluzitelj', nedostupno: !!d.nedostupno, razlozi: d.razlozi }
@@ -200,9 +201,10 @@ export async function predlozi(upit, mjesto = '', f = fetch, napredak = () => {}
     } catch (e) { razlozi.push('ruta ' + (e && e.name === 'AbortError' ? 'istek' : 'mreža')) }
   }
   // 2) izravno iz preglednika
-  let c = null, greske = 0, varijanti = 0
-  napredak('Tražim adresu…')
-  for (const q of varijante(upit, mjesto)) {
+  // odabran prijedlog adrese (adresa-predlozi.js) već nosi koordinate
+  let c = opcije.centar ? { lat: +opcije.centar.lat, lon: +opcije.centar.lon, naziv: opcije.centar.naziv || upit, upit } : null, greske = 0, varijanti = 0
+  if (!c) napredak('Tražim adresu…')
+  for (const q of c ? [] : varijante(upit, mjesto)) {
     varijanti++
     try { c = await geokodiraj(q, f) } catch (e) { greske++; razlozi.push(e.message) }
     if (c) break
