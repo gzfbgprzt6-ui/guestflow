@@ -1273,6 +1273,14 @@ spojiti prije SQL koraka — ali značajke proradi tek SQL.
 - vodič gosta (`/h/<token>`) i dalje otključava šifre u pravo vrijeme.
 
 **E. Pravni tekst (točka 8)** prije pravih korisnika: popis trećih strana
-dopuniti s Resendom (e-mail gostima), OpenStreetMap/Nominatimom (adresa
+dopuniti s Resendom (e-mail gostima), OpenStreetMap/Nominatimom i Photonom (komoot) (adresa
 objekta šalje se radi pretrage), Anthropicom (prijevodi), Cloudinaryjem;
 spomenuti da se e-mail gosta čuva do 30 dana nakon odlaska.
+
+## 28. Vercel: iskorišteno 12 od 12 funkcija (3. 10. 2026.)
+
+„Mjesta u blizini” iz preglednika nisu radila kod vlasnika (OSM blokira
+preglednik), pa idu preko `api/mjesta.js` — to je zadnje slobodno mjesto na
+Vercel Hobby planu. Sljedeća nova ruta (npr. obavijesti na mobitelu, točka 26)
+mora se spojiti u postojeću datoteku ili treba Vercel Pro (~20 $/mj).
+- [ ] Znati prije sljedeće značajke s poslužiteljem.

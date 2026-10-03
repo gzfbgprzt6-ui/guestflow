@@ -150,6 +150,9 @@
     },
     "api/prevedi.js": {
       "maxDuration": 30
+    },
+    "api/mjesta.js": {
+      "maxDuration": 30
     }
   }
 }

@@ -3357,7 +3357,8 @@ window.traziOsm=async()=>{
   const moj=++OSM_RED   // stariji odgovor (npr. nakon drugog klika) se zanemaruje
   el.innerHTML='';gdje.hidden=true;document.getElementById('osm-da').disabled=true;gumb.disabled=true
   try{
-    const r=await OSMM.predlozi(upit,(PROP.location||'').trim(),fetch,t=>{if(moj===OSM_RED)st.textContent=t})
+    let token='';try{token=(await sb.auth.getSession()).data.session?.access_token||''}catch{}
+    const r=await OSMM.predlozi(upit,(PROP.location||'').trim(),fetch,t=>{if(moj===OSM_RED)st.textContent=t},{token})
     if(moj!==OSM_RED)return
     if(!r.centar){st.textContent='Ta adresa nije pronađena. Upišite je drukčije, '+OSMM.PRIMJER+'.';return}
     gdje.hidden=false;gdje.textContent='Tražim oko: '+r.centar.naziv

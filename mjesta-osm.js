@@ -103,8 +103,8 @@ export async function geokodiraj(upit, f = fetch) {
   const u = `${NOMINATIM}?format=jsonv2&limit=1&accept-language=hr&q=${encodeURIComponent(upit)}`
   let r
   try { r = await sRokom(f, u, { headers: { Accept: 'application/json' } }, ROK_NOMINATIM) }
-  catch { throw new Error('Pretraga adrese se ne javlja. Provjerite internet i pokušajte ponovno.') }
-  if (!r.ok) throw new Error('Pretraga adrese trenutno ne radi (' + r.status + '). Pokušajte za minutu.')
+  catch (e) { throw new Error('adresa ' + (e && e.name === 'AbortError' ? 'istek' : 'mreža')) }
+  if (!r.ok) throw new Error('adresa HTTP ' + r.status)
   const d = await r.json()
   if (!d || !d[0]) return null
   // država, županija ili regija nisu mjesto — oko njihova središta nema smisla tražiti
@@ -144,11 +144,32 @@ export async function izNominatima(c, f = fetch, razmak = 1100) {
     Prvo Overpass (bolji podaci) s kratkim rokom, pa Nominatim kao rezerva —
     javni Overpass iz preglednika domaćina zna ne odgovoriti nikako. */
 export async function predlozi(upit, mjesto = '', f = fetch, napredak = () => {}, opcije = {}) {
-  let c = null
-  napredak('Tražim adresu…')
-  for (const q of varijante(upit, mjesto)) { c = await geokodiraj(q, f); if (c) break }
-  if (!c) return { centar: null, mjesta: [] }
   const razlozi = []
+  // 1) preko našeg poslužitelja (api/mjesta.js) — predstavi se OSM-u i poštuje
+  //    njihova pravila; iz preglednika OSM zna blokirati. Pada li ruta, ide se
+  //    izravno iz preglednika kao prije.
+  if (opcije.token) {
+    napredak('Tražim adresu i mjesta u blizini…')
+    try {
+      const r = await sRokom(f, `/api/mjesta?q=${encodeURIComponent(upit)}&mjesto=${encodeURIComponent(mjesto)}`, { headers: { Authorization: 'Bearer ' + opcije.token } }, 29000)
+      const d = await r.json().catch(() => null)
+      if (r.ok && d && d.ok) {
+        if (!d.centar) return { centar: null, mjesta: [], izvor: 'posluzitelj' }
+        return { centar: d.centar, mjesta: odaberi(d.elementi, d.centar, mjesto), izvor: 'posluzitelj:' + d.izvor, razlozi: d.razlozi }
+      }
+      razlozi.push('ruta ' + r.status + (d && d.razlozi ? ' [' + d.razlozi.join(', ') + ']' : ''))
+    } catch (e) { razlozi.push('ruta ' + (e && e.name === 'AbortError' ? 'istek' : 'mreža')) }
+  }
+  // 2) izravno iz preglednika
+  let c = null, greske = 0, varijanti = 0
+  napredak('Tražim adresu…')
+  for (const q of varijante(upit, mjesto)) {
+    varijanti++
+    try { c = await geokodiraj(q, f) } catch (e) { greske++; razlozi.push(e.message) }
+    if (c) break
+  }
+  if (!c && greske && greske === varijanti) throw new Error('Pretraga adrese se ne javlja. Pokušajte za minutu. (' + razlozi.join(', ') + ')')
+  if (!c) return { centar: null, mjesta: [] }
   for (let i = 0; i < OVERPASS.length && i < (opcije.overpassa ?? 2); i++) {
     napredak('Tražim plaže, restorane i trgovine u blizini…')
     try {
@@ -162,6 +183,6 @@ export async function predlozi(upit, mjesto = '', f = fetch, napredak = () => {}
   try {
     const el = await izNominatima(c, f, opcije.razmak ?? 1100)
     return { centar: c, mjesta: odaberi(el, c, mjesto), izvor: 'nominatim', razlozi }
-  } catch { razlozi.push('nominatim') }
+  } catch { razlozi.push('nominatim mjesta') }
   throw new Error('OpenStreetMap trenutno ne vraća mjesta. Pokušajte za nekoliko minuta — ili dodajte mjesta ručno („+ Dodaj mjesto”). (' + razlozi.join(', ') + ')')
 }

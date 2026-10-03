@@ -77,6 +77,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 │   ├── sync-ical.js          # gumb „Sinkroniziraj” — korisnikov token, RLS
 │   ├── sync-all.js           # automatska sinkronizacija svih objekata (CRON_SECRET, poslužiteljski ključ)
 │   ├── stranica.js           # /p/:slug s meta/OG/JSON-LD + /sitemap.xml + /robots.txt
+│   ├── mjesta.js             # „Predloži mjesta u blizini” preko poslužitelja: Nominatim/Photon + Overpass/Nominatim, User-Agent, 1 zahtjev/s, samo prijavljeni
 │   ├── kalendar.js           # iCal IZVOZ /kalendar/<token>.ics (+ testni feed ?test=1, stara /api/test-calendar)
 │   ├── track.js              # upis pregleda s državom (x-vercel-ip-country), bez IP adrese
 │   ├── prevedi.js            # prijevod teksta domaćina (Claude) za /h/ i /p/, spremljen u tablicu prijevodi
@@ -111,7 +112,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
     └── fix-missing-columns-and-storage.sql # ALTER TABLE dopune (photo_urls, ical_*, beds/bathrooms/size_m2) + storage bucket policy
 ```
 
-**Napomena:** Vercel Hobby dopušta najviše 12 funkcija — sada ih je **11** (datoteke s `_` nisu funkcije). Nova ruta = provjeriti broj; `stranica.js` namjerno nosi i sitemap i robots.
+**Napomena:** Vercel Hobby dopušta najviše 12 funkcija — sada ih je **12, NEMA slobodnog mjesta** (datoteke s `_` nisu funkcije; zadnja je `api/mjesta.js`, 3. 10. 2026.). Nova ruta = spojiti je u postojeću (kao `stranica.js` koji nosi i sitemap i robots, ili `kalendar.js` s testnim feedom) ili prijeći na Vercel Pro.
 
 Sve funkcije su namjerno **bez ijedne npm ovisnosti** — projekt nema build korak ni `package.json`, pa se Supabase zove izravno preko REST API-ja (`fetch`), a iCal se parsira ručno. CommonJS (`module.exports`), jer bez `package.json` Vercel `.js` u `api/` tretira kao CJS.
 
@@ -903,7 +904,14 @@ izmjene (`MutationObserver`: paneli, toast, poruke; `confirm`/`alert` omotani).
   `supermarket`, `pharmacy`) u okviru ~2,8 km (`viewbox` + `bounded=1`),
   redom s 1,1 s razmaka (pravilo Nominatima: 1 zahtjev/s). Kod domaćina
   (3. 10.) Overpass iz preglednika nije odgovorio nikako, a Nominatim jest —
-  zato rezerva. Poruka o grešci nosi razloge (`istek`, `HTTP 429`…); dijalog javlja
+  zato rezerva. **Zatim je pao i Nominatim iz preglednika** („Pretraga adrese se
+  ne javlja”) — OSM traži User-Agent i 1 zahtjev/s, a preglednik UA ne smije
+  postaviti. Zato je **prvi put `api/mjesta.js`** (s tokenom domaćina): isti
+  tijek na poslužitelju s `User-Agent: Odmoria/1.0 …`, razmakom 1,1 s, Photon
+  (komoot) kao rezerva za adresu, rok 24 s (`maxDuration: 30`); vraća sirove
+  elemente, `odaberi()` ostaje u pregledniku. `varijante()`/`upitOverpass()`
+  su kopija iz `mjesta-osm.js` — mijenjati zajedno. Ne odgovori li ruta,
+  preglednik ide izravno kao prije. Poruka o grešci nosi razloge (`istek`, `HTTP 429`…); dijalog javlja
   korak (`napredak`), stariji odgovor se zanemaruje (`OSM_RED`). Adresa koja
   nije nađena skraćuje se (`varijante()`: bez kućnog broja, pa bez ulice, pa
   mjesto objekta), a rezultat razine države/županije (`place_rank < 12`) se
