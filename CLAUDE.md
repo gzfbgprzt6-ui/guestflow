@@ -899,7 +899,9 @@ izmjene (`MutationObserver`: paneli, toast, poruke; `confirm`/`alert` omotani).
 - **Mjesta u blizini** (`mjesta-osm.js`, Objekt → Vodič → „Predloži mjesta u
   blizini”): preglednik domaćina zove Nominatim (adresa/mjesto → koordinate)
   i Overpass (plaže, restorani, kafići, trgovine, ljekarna u 2,5 km; drugi
-  Overpass poslužitelj kao rezerva). Besplatno, bez ključa i bez naše rute.
+  Overpass poslužitelj kao rezerva). Polje „Gdje tražiti” unaprijed puni **samo
+  `properties.location`** (Osnovno); `sections.address` tek kad lokacije nema —
+  spajanje obje dalo je istu adresu dvaput. Besplatno, bez ključa i bez naše rute.
   Kategorije su hrvatske i postoje u `jezici.js` (`Plaže`, `Restorani`,
   `Kafići`, `Trgovine`, `Ljekarna`); udaljenost „N min pješice/autom” (vodič je
   prevodi). `maps_query` = **koordinate** „lat,lon” (Google ih uvijek pogodi;

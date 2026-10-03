@@ -3344,8 +3344,11 @@ document.addEventListener('change',e=>{
 let OSM=[]
 window.otvoriOsm=()=>{
   if(!PROP)return
+  // Lokacija objekta (Osnovno) je ono što domaćin upiše kao adresu objekta;
+  // „Točna adresa” iz Dolaska samo kad lokacije nema. Spajanje obje dalo je
+  // istu adresu dvaput (i s tipfelerom iz jedne od njih).
   const adr=(SECTION&&SECTION.address||'').trim(),mj=(PROP.location||'').trim()
-  document.getElementById('osm-upit').value=[adr,mj].filter(Boolean).join(', ')||PROP.name||''
+  document.getElementById('osm-upit').value=mj||adr||PROP.name||''
   document.getElementById('osm-lista').innerHTML='';document.getElementById('osm-st').textContent='';document.getElementById('osm-gdje').hidden=true
   document.getElementById('osm-da').disabled=true
   document.getElementById('osm-dlg').showModal()
