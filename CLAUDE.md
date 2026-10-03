@@ -898,7 +898,12 @@ izmjene (`MutationObserver`: paneli, toast, poruke; `confirm`/`alert` omotani).
   prevodi). Upis kao ručni (`local_places`), isti naziv se preskače, limit
   plana provodi baza. **Javni Overpass zna visjeti bez odgovora** (domaćin je
   vidio samo „Tražim…”): svaki zahtjev ima rok (`sRokom`, AbortController —
-  Nominatim 10 s, Overpass 15 s) i tri poslužitelja redom; dijalog javlja
+  Nominatim 10 s, Overpass 8 s) i dva Overpass poslužitelja, a onda **rezerva
+  bez Overpassa**: Nominatim „posebni izrazi” (`beach`, `restaurant`, `cafe`,
+  `supermarket`, `pharmacy`) u okviru ~2,8 km (`viewbox` + `bounded=1`),
+  redom s 1,1 s razmaka (pravilo Nominatima: 1 zahtjev/s). Kod domaćina
+  (3. 10.) Overpass iz preglednika nije odgovorio nikako, a Nominatim jest —
+  zato rezerva. Poruka o grešci nosi razloge (`istek`, `HTTP 429`…); dijalog javlja
   korak (`napredak`), stariji odgovor se zanemaruje (`OSM_RED`). Adresa koja
   nije nađena skraćuje se (`varijante()`: bez kućnog broja, pa bez ulice, pa
   mjesto objekta), a rezultat razine države/županije (`place_rank < 12`) se

@@ -18,7 +18,7 @@ const NOMINATIM = 'https://nominatim.openstreetmap.org/search'
 // otvoren bez kraja — zato svaki ima vremensko ograničenje i rezervu.
 const OVERPASS = ['https://overpass-api.de/api/interpreter', 'https://overpass.private.coffee/api/interpreter',
   'https://overpass.kumi.systems/api/interpreter']
-const ROK_NOMINATIM = 10000, ROK_OVERPASS = 15000
+const ROK_NOMINATIM = 10000
 export const PRIMJER = 'npr. „Vodice, Hrvatska” ili „Put Gaćeleza 5, Vodice”'
 
 // fetch s rokom: kad istekne, zahtjev se prekine (AbortController)
@@ -112,21 +112,56 @@ export async function geokodiraj(upit, f = fetch) {
   return { lat: +d[0].lat, lon: +d[0].lon, naziv: d[0].display_name || upit, upit }
 }
 
+// Rezerva bez Overpassa: Nominatim „posebni izrazi” (restaurant, beach…) u
+// okviru oko objekta (viewbox + bounded=1) vraćaju takva mjesta. Nominatim
+// dopušta najviše 1 zahtjev u sekundi — zato redom, s razmakom.
+export const NOMINATIM_VRSTE = ['beach', 'restaurant', 'cafe', 'supermarket', 'pharmacy']
+const cekaj = ms => new Promise(r => setTimeout(r, ms))
+export async function izNominatima(c, f = fetch, razmak = 1100) {
+  const dLat = 0.025, dLon = 0.035   // ~2,8 km u svim smjerovima
+  const box = [c.lon - dLon, c.lat + dLat, c.lon + dLon, c.lat - dLat].map(x => x.toFixed(5)).join(',')
+  const elementi = []
+  let uspjelo = 0
+  for (let i = 0; i < NOMINATIM_VRSTE.length; i++) {
+    if (i) await cekaj(razmak)
+    const u = `${NOMINATIM}?format=jsonv2&limit=15&bounded=1&accept-language=hr&viewbox=${box}&q=${NOMINATIM_VRSTE[i]}`
+    try {
+      const r = await sRokom(f, u, { headers: { Accept: 'application/json' } }, ROK_NOMINATIM)
+      if (!r.ok) continue
+      uspjelo++
+      for (const x of (await r.json()) || []) {
+        if (!x.name || !x.category || !x.type) continue
+        elementi.push({ lat: +x.lat, lon: +x.lon, tags: { name: x.name, [x.category]: x.type } })
+      }
+    } catch { /* sljedeća vrsta */ }
+  }
+  if (!uspjelo) throw new Error('nominatim')
+  return elementi
+}
+
 /** Cijeli tijek: upit (adresa ili mjesto) → { centar, mjesta }.
-    napredak(tekst) javlja korak, da domaćin vidi da se nešto događa. */
-export async function predlozi(upit, mjesto = '', f = fetch, napredak = () => {}) {
+    napredak(tekst) javlja korak, da domaćin vidi da se nešto događa.
+    Prvo Overpass (bolji podaci) s kratkim rokom, pa Nominatim kao rezerva —
+    javni Overpass iz preglednika domaćina zna ne odgovoriti nikako. */
+export async function predlozi(upit, mjesto = '', f = fetch, napredak = () => {}, opcije = {}) {
   let c = null
   napredak('Tražim adresu…')
   for (const q of varijante(upit, mjesto)) { c = await geokodiraj(q, f); if (c) break }
   if (!c) return { centar: null, mjesta: [] }
-  for (let i = 0; i < OVERPASS.length; i++) {
-    napredak(i ? `Prvi poslužitelj se ne javlja, pokušavam drugi (${i + 1}/${OVERPASS.length})…` : 'Tražim plaže, restorane i trgovine u blizini…')
+  const razlozi = []
+  for (let i = 0; i < OVERPASS.length && i < (opcije.overpassa ?? 2); i++) {
+    napredak('Tražim plaže, restorane i trgovine u blizini…')
     try {
-      const r = await sRokom(f, OVERPASS[i], { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'data=' + encodeURIComponent(upitOverpass(c.lat, c.lon)) }, ROK_OVERPASS)
-      if (!r.ok) throw new Error('Overpass ' + r.status)
+      const r = await sRokom(f, OVERPASS[i], { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'data=' + encodeURIComponent(upitOverpass(c.lat, c.lon)) }, opcije.rok ?? 8000)
+      if (!r.ok) throw new Error('HTTP ' + r.status)
       const d = await r.json()
-      return { centar: c, mjesta: odaberi(d.elements, c, mjesto) }
-    } catch { /* sljedeći poslužitelj */ }
+      return { centar: c, mjesta: odaberi(d.elements, c, mjesto), izvor: 'overpass' }
+    } catch (e) { razlozi.push(e && e.name === 'AbortError' ? 'istek' : (e && e.message) || 'mreža') }
   }
-  throw new Error('Poslužitelji OpenStreetMapa su trenutno preopterećeni. Pokušajte za nekoliko minuta — ili dodajte mjesta ručno („+ Dodaj mjesto”).')
+  napredak('Tražim drugim putem (može potrajati desetak sekundi)…')
+  try {
+    const el = await izNominatima(c, f, opcije.razmak ?? 1100)
+    return { centar: c, mjesta: odaberi(el, c, mjesto), izvor: 'nominatim', razlozi }
+  } catch { razlozi.push('nominatim') }
+  throw new Error('OpenStreetMap trenutno ne vraća mjesta. Pokušajte za nekoliko minuta — ili dodajte mjesta ručno („+ Dodaj mjesto”). (' + razlozi.join(', ') + ')')
 }
