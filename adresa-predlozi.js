@@ -52,9 +52,32 @@ let POLOZAJ = null, geoNeDa = false
 
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
 
-/** Photon feature → { tekst (u polje), opis (drugi red), lat, lon } ili null */
-export function oblikuj(f, vrsta = 'adresa') {
-  const p = (f && f.properties) || {}
+/** Kućni broj koji je domaćin upisao: „Ulica krušaka 1, Zagreb” → „1”.
+    Photon često zna ulicu, ali ne i broj — tada se broj prenese u prijedlog. */
+export function kucniBroj(q) {
+  const prvi = String(q || '').split(',')[0].trim()
+  const m = prvi.match(/\s(\d{1,4}\s?[a-zA-Z]?|bb)$/i)
+  return m ? m[1].replace(/\s+/g, '').toLowerCase() : ''
+}
+
+// Država na jeziku sučelja („Croatia” → „Hrvatska”), iz ISO koda
+let IMENA = null
+function drzava(p) {
+  const kod = (p.countrycode || '').toUpperCase()
+  if (kod && typeof Intl !== 'undefined' && Intl.DisplayNames) {
+    try {
+      IMENA = IMENA || new Intl.DisplayNames([(typeof document !== 'undefined' && document.documentElement.lang) || 'hr'], { type: 'region' })
+      return IMENA.of(kod) || p.country || ''
+    } catch {}
+  }
+  return p.country || ''
+}
+
+/** Photon feature → { tekst (u polje), opis (drugi red), lat, lon } ili null.
+    broj = kućni broj iz upita; dopisuje se ulici koja ga u podacima nema. */
+export function oblikuj(f, vrsta = 'adresa', broj = '') {
+  const p = { ...((f && f.properties) || {}) }
+  p.country = drzava(p)
   const g = f && f.geometry && f.geometry.coordinates
   if (!g) return null
   if (['country', 'state', 'county'].includes(p.type)) return null
@@ -66,7 +89,7 @@ export function oblikuj(f, vrsta = 'adresa') {
   }
   let prvi
   if (p.housenumber && p.street) prvi = `${p.street} ${p.housenumber}`
-  else if (p.type === 'street' || (p.osm_key === 'highway')) prvi = p.name
+  else if (p.type === 'street' || (p.osm_key === 'highway')) prvi = p.name && broj ? `${p.name} ${broj}` : p.name
   else if (jeMjesto) prvi = p.name
   else prvi = [p.name, p.street && (p.street + (p.housenumber ? ' ' + p.housenumber : ''))].filter(Boolean).join(', ')
   if (!prvi) return null
@@ -170,7 +193,8 @@ export function predloziAdresu(input, { vrsta = 'adresa', odabrano, f = (...a) =
       const d = await r.json()
       if (moj !== red) return
       const vidjeno = new Set()
-      const lista = (d.features || []).map(x => oblikuj(x, vrsta)).filter(x => x && !vidjeno.has(x.tekst) && vidjeno.add(x.tekst)).slice(0, 6)
+      const broj = kucniBroj(q)
+      const lista = (d.features || []).map(x => oblikuj(x, vrsta, broj)).filter(x => x && !vidjeno.has(x.tekst) && vidjeno.add(x.tekst)).slice(0, 6)
       nacrtaj([...geoRed(), ...lista], lista.length ? '' : 'Nema prijedloga — možete upisati ručno.')
     } catch (e) {
       if (e && e.name === 'AbortError') return

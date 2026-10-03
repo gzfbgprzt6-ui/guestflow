@@ -1299,3 +1299,12 @@ pauze u tipkanju (300 ms) i od 3 slova.
   mjesečno besplatno, zatim ~2,8 $ na 1.000, traži karticu). Promjena je samo
   u `adresa-predlozi.js`.
 - [ ] Ništa za odlučiti sada.
+
+**Dopuna (3. 10., vlasnik):** Lokacija sada nudi i ulicu s brojem (upisani
+broj prelazi u prijedlog), a javna stranica i vodič odmah pokazuju kartu s
+pribadačom. Dvije stvari za znati:
+- Točna adresa u Lokaciji je **javna** (vidi je svatko s linkom stranice).
+- Google karta postavlja Googleove kolačiće čim se učita; prije se zato
+  učitavala tek na klik. Ako bude zatrebala privola za kolačiće, vraća se
+  jednim redom koda.
+- [ ] Pravila privatnosti spomenuti Google Maps i Photon (točka 8).

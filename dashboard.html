@@ -877,7 +877,7 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
             <div class="form-grid">
               <div class="field two-thirds"><label for="prop-name">Naziv objekta</label><input class="input" id="prop-name" autocomplete="off" oninput="livePreview()"></div>
               <div class="field one-third"><label for="prop-type">Vrsta</label><select class="select" id="prop-type" onchange="setType(this.value)"><option>Apartman</option><option>Villa</option><option>Kuća</option><option>Studio</option><option>Soba</option></select></div>
-              <div class="field full"><label for="prop-location">Lokacija</label><input class="input" id="prop-location" autocomplete="off" oninput="livePreview()"><span class="helper">Upišite grad ili mjesto koje gost prepoznaje.</span></div>
+              <div class="field full"><label for="prop-location">Lokacija</label><input class="input" id="prop-location" autocomplete="off" oninput="livePreview()"><span class="helper">Adresa ili mjesto objekta — vidi se na javnoj stranici, s pribadačom na karti.</span></div>
             </div>
           </div>
           <div class="card">
@@ -3358,7 +3358,7 @@ window.otvoriOsm=()=>{
 let OSM_RED=0
 // odabran prijedlog adrese nosi koordinate — tada se adresa ne traži ponovno
 let OSM_CENTAR=null
-predloziAdresu(document.getElementById('prop-location'),{vrsta:'mjesto'})
+predloziAdresu(document.getElementById('prop-location'))
 predloziAdresu(document.getElementById('ci-address'))
 predloziAdresu(document.getElementById('osm-upit'),{odabrano:x=>{OSM_CENTAR=x;traziOsm()}})
 window.traziOsm=async()=>{

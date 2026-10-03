@@ -41,6 +41,7 @@ export const T = {
   "; ništa se ne briše, a iste stavke se ne ponavljaju. Šifra vrata, Wi-Fi i adresa se nikad ne prenose.": "; nothing is deleted and identical items aren't repeated. The door code, Wi-Fi and address are never copied.",
   "? Više ga nećete vidjeti dok vas vlasnik ponovno ne pozove.": "? You won't see it again until the owner invites you again.",
   "Adresa": "Address",
+  "Adresa ili mjesto objekta — vidi se na javnoj stranici, s pribadačom na karti.": "Address or town of the property — shown on the public page, with a pin on the map.",
   "Adresa objekta": "Property address",
   "Airbnb": "Airbnb",
   "Airbnb → Kalendar → Dostupnost → Poveži kalendare → Uvezi kalendar.": "Airbnb → Calendar → Availability → Connect calendars → Import calendar.",

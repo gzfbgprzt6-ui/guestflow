@@ -835,7 +835,7 @@ objekata je **odbijen** (`docs/odluke.md`, točka 19).
 učitava). **Sve pod `prefers-reduced-motion: no-preference`**, a `veselje()`
 sam provjeri postavku — testovi rade s `reducedMotion:'reduce'`, pa iskrica
 tamo namjerno nema. `pokret.js` je u predmemoriji service workera (`sw.js`,
-`VERZIJA` sada `odmoria-vodic-3`). Dashboard: svaki gumb čiji natpis počinje s
+`VERZIJA` sada `odmoria-vodic-4`). Dashboard: svaki gumb čiji natpis počinje s
 „Kopiraj” sam dobije kvačicu (jedan slušač na `document`); iskrice u
 dashboardu nema.
 
@@ -936,9 +936,13 @@ izmjene (`MutationObserver`: paneli, toast, poruke; `confirm`/`alert` omotani).
   (ODbL). Iz okruženja za razvoj OSM nije dostupan — testirano lažnim
   odgovorima; pravi poziv provjeriti na Previewu.
 - **Prijedlozi adrese dok se tipka** (`adresa-predlozi.js`, 3. 10. 2026.):
-  `predloziAdresu(input, {vrsta, odabrano})` na `#prop-location` (vrsta
-  `mjesto` — JAVNO polje, nudi samo mjesta), `#ci-address` / `#address` i
-  `#osm-upit` (vrsta `adresa`) u dashboardu, postavljanju i dodavanju objekta.
+  `predloziAdresu(input, {vrsta, odabrano})` na `#prop-location`, `#ci-address` /
+  `#address` i `#osm-upit` (vrsta `adresa`; `mjesto` = samo mjesta, trenutno
+  nigdje — vlasnik 3. 10. želi i ulicu i broj u Lokaciji, s pribadačom na
+  karti javne stranice) u dashboardu, postavljanju i dodavanju objekta.
+  **Kućni broj**: Photon često zna ulicu bez broja — `kucniBroj(upit)` ga
+  dopiše prijedlogu („Ulica krušaka 1, Zagreb”). Država ide kroz
+  `Intl.DisplayNames` po `<html lang>` („Croatia” → „Hrvatska”).
   **Photon, ne Nominatim** — Nominatim zabranjuje „traži dok tipkaš”. 300 ms
   pauze, od 3 znaka, stariji zahtjev se prekida. Lokacija uređaja: ako je već
   dopuštena, prednost oko domaćina; inače red „Koristi moju trenutnu lokaciju”
@@ -949,6 +953,13 @@ izmjene (`MutationObserver`: paneli, toast, poruke; `confirm`/`alert` omotani).
   Enter, Esc (zatvori popis, ne dijalog). Adrese `translate="no"`. U „Mjesta
   u blizini” odabrani prijedlog nosi koordinate (`OSM_CENTAR` → `predlozi(…,
   {centar})` → `/api/mjesta?…&lat=&lon=`) pa se adresa ne geokodira ponovno.
+- **Karta s pribadačom** (3. 10. 2026.): `p.html` i vodič (`#dolazak`) karte
+  više ne skrivaju iza „Prikaži kartu” — Google embed `maps?q=…&output=embed`
+  (s adresom pokazuje pribadaču) puni se odmah, iframe je `loading=lazy`.
+  Pregled `map` u analitici sada je klik na „Otvori u Google Maps”. Na `p.html`
+  rečenica „točnu adresu dobivate kasnije” (`#adr-later`) skriva se kad
+  Lokacija ima broj. Vodič slaže adresu kroz `punaAdresa(address, location)` —
+  bez ponavljanja kad je u Lokaciji već cijela adresa.
 - **Automatski e-mail gostu** (`sql/add-guest-emails.sql`): stupci
   `bookings.guest_email`, `guest_lang`, `email_dolazak_at`, `email_ocjena_at`
   i `properties.auto_email_gostu`. `posalji_emailove_gostima()` (pg_cron

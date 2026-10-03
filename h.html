@@ -348,7 +348,7 @@
     <p id="adr"></p>
     <div class="btnrow">
       <a class="btn btn--secondary" id="adr-link" target="_blank" rel="noopener">Google Maps<svg class="ic ic--sm"><use href="#i-arrow-up-right"/></svg></a>
-      <button class="btn btn--secondary" type="button" id="map-btn" onclick="loadMap()">Prikaži kartu</button>
+      <button class="btn btn--secondary" type="button" id="map-btn" onclick="loadMap()" hidden>Prikaži kartu</button>
     </div>
     <div class="map" id="map" hidden><iframe id="map-frame" title="Karta" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
   </div>
@@ -868,18 +868,33 @@ async function otkljucaj() {
 // ══════════════════════════════════════════════════════
 //  DOLAZAK
 // ══════════════════════════════════════════════════════
+// „Točna adresa” + Lokacija bez ponavljanja — u Lokaciji zna biti cijela adresa.
+// Točna adresa ima prednost; mjesto se dopiše samo ako ga u njoj nema.
+function punaAdresa(adresa, lokacija) {
+  const a = (adresa || '').trim(), l = (lokacija || '').trim()
+  if (!a || !l) return a || l
+  const n = x => x.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/[^a-z0-9]+/g, ' ').trim()
+  const na = n(a), nl = n(l), mjesto = n(l.split(',').pop())
+  if (na.includes(nl) || (mjesto && na.includes(mjesto))) return a
+  if (nl.includes(na)) return l
+  return a + ', ' + l
+}
 function renderArrival() {
   const s = SECTION, steps = []
   if (s.checkin_time) steps.push(['clock', t('Prijava'), t('Od {v}.', { v: s.checkin_time }) + (s.checkout_time ? ' ' + t('Odjava je do {v}.', { v: s.checkout_time }) : '')])
   if (s.checkin_notes) steps.push(['door-open', t('Upute za dolazak'), H(s.checkin_notes)])
   if (s.parking_info) steps.push(['car', t('Parking'), H(s.parking_info)])
 
-  const adr = s.address ? s.address + (PROP.location ? ', ' + PROP.location : '') : PROP.location
+  const adr = punaAdresa(s.address, PROP.location)
   if (adr) {
     const q = encodeURIComponent(adr)
     $('#adr').textContent = adr
     $('#adr-link').href = 'https://www.google.com/maps/search/?api=1&query=' + q
-    $('#map-frame').dataset.src = 'https://www.google.com/maps?q=' + q + '&output=embed'
+    // karta s pribadačom na adresi odmah (iframe je lazy)
+    const f = $('#map-frame'), src = 'https://www.google.com/maps?q=' + q + '&z=16&output=embed'
+    f.dataset.src = src
+    if (f.src !== src) f.src = src
+    show('#map')
     show('#arr-adr')
   }
   $('#arr-steps').innerHTML = steps.map(([ic, t, sub]) =>
@@ -1027,7 +1042,7 @@ addEventListener('popstate', route)
 // ══════════════════════════════════════════════════════
 function renderHitno() {
   const s = SECTION || {}
-  const adr = s.address ? s.address + (PROP.location ? ', ' + PROP.location : '') : PROP.location
+  const adr = punaAdresa(s.address, PROP.location)
   if (adr) {
     $('#sos-adr').textContent = adr
     $('#sos-ljekarna').href = 'https://www.google.com/maps/search/' + encodeURIComponent('ljekarna ' + adr)
