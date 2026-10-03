@@ -33,6 +33,8 @@ const cekaj = ms => new Promise(r => setTimeout(r, ms));
 function varijante(upit, mjesto = '') {
   const dijelovi = String(upit || '').split(',').map(x => x.trim()).filter(Boolean);
   const out = [dijelovi.join(', ')];
+  // „Krušaka ul. 1a” → „Krušaka ulica 1a” (OSM piše puni naziv)
+  if (dijelovi.length && /\bul\.(?=\s|$)/i.test(dijelovi[0])) out.push([dijelovi[0].replace(/\bul\.(?=\s|$)/i, 'ulica'), ...dijelovi.slice(1)].join(', '));
   if (dijelovi.length) out.push(dijelovi.map((x, i) => i === 0 ? x.replace(/\s+(\d+[a-z]?|bb)$/i, '') : x).join(', '));
   for (let i = 1; i < dijelovi.length; i++) out.push(dijelovi.slice(i).join(', '));
   if (mjesto) out.push(mjesto);
@@ -57,24 +59,46 @@ async function sRokom(url, opts, ms) {
 }
 const razlog = e => (e && e.name === 'AbortError') ? 'istek' : (e && e.message) || 'mreža';
 
-// Nominatim → {lat,lon,naziv} ili null; Photon kao rezerva za samu adresu
-async function geokodiraj(q, razlozi) {
+// Photon (komoot) je „neizrazit”: podnosi tipfeler i skraćenice, ali zna
+// pogoditi isto ime u drugom mjestu. Zato njegov rezultat vrijedi samo ako
+// sadrži zadnji dio upita (mjesto) — „…, Zagreb” mora pasti u Zagreb.
+const bez = x => String(x || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/gi, 'd').toLowerCase().trim();
+function photonOdgovara(q, p) {
+  if (['country', 'state', 'county'].includes(p.type)) return false;
+  const dijelovi = String(q).split(',').map(x => x.trim()).filter(Boolean);
+  if (dijelovi.length < 2) return true;
+  const mjesto = bez(dijelovi[dijelovi.length - 1]);
+  const gdje = [p.name, p.city, p.town, p.village, p.district, p.locality, p.county, p.state, p.postcode].map(bez);
+  return gdje.some(x => x && (x === mjesto || x.includes(mjesto) || mjesto.includes(x) && x.length > 3));
+}
+
+// → { c: {lat,lon,naziv} | null, odgovor: je li servis uopće odgovorio }
+async function nominatim(q, razlozi) {
   try {
-    const r = await sRokom(`${NOMINATIM}?format=jsonv2&limit=1&accept-language=hr&q=${encodeURIComponent(q)}`, {}, 8000);
+    const r = await sRokom(`${NOMINATIM}?format=jsonv2&limit=1&accept-language=hr&q=${encodeURIComponent(q)}`, {}, 7000);
     if (!r.ok) throw new Error('nominatim HTTP ' + r.status);
     const d = await r.json();
-    if (d && d[0] && !(d[0].place_rank != null && +d[0].place_rank < 12)) return { lat: +d[0].lat, lon: +d[0].lon, naziv: d[0].display_name || q };
-    return null;
-  } catch (e) { razlozi.push(razlog(e)); }
+    // država, županija ili regija nisu mjesto — oko njihova središta nema smisla tražiti
+    if (d && d[0] && !(d[0].place_rank != null && +d[0].place_rank < 12)) return { c: { lat: +d[0].lat, lon: +d[0].lon, naziv: d[0].display_name || q }, odgovor: true };
+    return { c: null, odgovor: true };
+  } catch (e) { razlozi.push('nominatim ' + razlog(e)); return { c: null, odgovor: false }; }
+}
+async function photon(q, razlozi) {
   try {
-    const r = await sRokom(`${PHOTON}?limit=1&q=${encodeURIComponent(q)}`, {}, 8000);
+    const r = await sRokom(`${PHOTON}?limit=3&q=${encodeURIComponent(q)}`, {}, 7000);
     if (!r.ok) throw new Error('photon HTTP ' + r.status);
-    const f = ((await r.json()).features || [])[0];
-    if (!f || ['country', 'state', 'county'].includes(f.properties && f.properties.type)) return null;
+    const f = ((await r.json()).features || []).find(x => x && x.geometry && photonOdgovara(q, x.properties || {}));
+    if (!f) return { c: null, odgovor: true };
     const p = f.properties || {};
-    return { lat: f.geometry.coordinates[1], lon: f.geometry.coordinates[0],
-      naziv: [p.name, p.street && (p.street + (p.housenumber ? ' ' + p.housenumber : '')), p.city, p.country].filter(Boolean).join(', ') || q };
-  } catch (e) { razlozi.push(razlog(e)); return null; }
+    return { c: { lat: f.geometry.coordinates[1], lon: f.geometry.coordinates[0],
+      naziv: [p.name, p.street && (p.street + (p.housenumber ? ' ' + p.housenumber : '')), p.city || p.town || p.village, p.country].filter(Boolean).join(', ') || q }, odgovor: true };
+  } catch (e) { razlozi.push('photon ' + razlog(e)); return { c: null, odgovor: false }; }
+}
+// Oba istodobno; Nominatim ima prednost (točniji), Photon pokriva tipfeler,
+// skraćenice i Nominatim koji ne odgovara.
+async function geokodiraj(q, razlozi) {
+  const [n, p] = await Promise.all([nominatim(q, razlozi), photon(q, razlozi)]);
+  return { c: n.c || p.c, odgovor: n.odgovor || p.odgovor };
 }
 
 async function domacin(req) {
@@ -99,14 +123,16 @@ module.exports = async (req, res) => {
 
   const pocetak = Date.now(), ostalo = () => 24000 - (Date.now() - pocetak);
   const razlozi = [];
-  let centar = null, prvi = true;
+  let centar = null, prvi = true, odgovor = false;
   for (const v of varijante(upit, mjesto)) {
     if (!prvi) await cekaj(1100);          // Nominatim: najviše 1 zahtjev u sekundi
     prvi = false;
-    centar = await geokodiraj(v, razlozi);
+    const g = await geokodiraj(v, razlozi);
+    centar = g.c; odgovor = odgovor || g.odgovor;
     if (centar || ostalo() < 12000) break;
   }
-  if (!centar) return posalji(200, { ok: true, centar: null, elementi: [], razlozi });
+  // nedostupno: nijedan servis nije odgovorio — to nije „adresa ne postoji”
+  if (!centar) return posalji(200, { ok: true, centar: null, elementi: [], nedostupno: !odgovor, razlozi });
 
   for (const url of OVERPASS) {
     if (ostalo() < 9000) break;
@@ -140,3 +166,4 @@ module.exports = async (req, res) => {
 };
 
 module.exports.varijante = varijante;
+module.exports.photonOdgovara = photonOdgovara;

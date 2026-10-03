@@ -18,6 +18,7 @@ const NOMINATIM = 'https://nominatim.openstreetmap.org/search'
 // otvoren bez kraja — zato svaki ima vremensko ograničenje i rezervu.
 const OVERPASS = ['https://overpass-api.de/api/interpreter', 'https://overpass.private.coffee/api/interpreter',
   'https://overpass.kumi.systems/api/interpreter']
+const PHOTON = 'https://photon.komoot.io/api/'
 const ROK_NOMINATIM = 10000
 export const PRIMJER = 'npr. „Vodice, Hrvatska” ili „Put Gaćeleza 5, Vodice”'
 
@@ -33,6 +34,8 @@ async function sRokom(f, url, opts, ms) {
 export function varijante(upit, mjesto = '') {
   const dijelovi = String(upit || '').split(',').map(x => x.trim()).filter(Boolean)
   const out = [dijelovi.join(', ')]
+  // „Krušaka ul. 1a” → „Krušaka ulica 1a” (OSM piše puni naziv)
+  if (dijelovi.length && /\bul\.(?=\s|$)/i.test(dijelovi[0])) out.push([dijelovi[0].replace(/\bul\.(?=\s|$)/i, 'ulica'), ...dijelovi.slice(1)].join(', '))
   if (dijelovi.length) out.push(dijelovi.map((x, i) => i === 0 ? x.replace(/\s+(\d+[a-z]?|bb)$/i, '') : x).join(', '))
   for (let i = 1; i < dijelovi.length; i++) out.push(dijelovi.slice(i).join(', '))
   if (mjesto) out.push(mjesto)
@@ -101,7 +104,7 @@ export function odaberi(elementi, centar, mjesto = '') {
   return out.sort((a, b) => VRSTE.findIndex(v => v.k === a.vrsta) - VRSTE.findIndex(v => v.k === b.vrsta) || a.metara - b.metara)
 }
 
-export async function geokodiraj(upit, f = fetch) {
+async function nominatimAdresa(upit, f) {
   const u = `${NOMINATIM}?format=jsonv2&limit=1&accept-language=hr&q=${encodeURIComponent(upit)}`
   let r
   try { r = await sRokom(f, u, { headers: { Accept: 'application/json' } }, ROK_NOMINATIM) }
@@ -112,6 +115,40 @@ export async function geokodiraj(upit, f = fetch) {
   // država, županija ili regija nisu mjesto — oko njihova središta nema smisla tražiti
   if (d[0].place_rank != null && +d[0].place_rank < 12) return null
   return { lat: +d[0].lat, lon: +d[0].lon, naziv: d[0].display_name || upit, upit }
+}
+
+// Photon (komoot) podnosi tipfeler i skraćenice, ali zna pogoditi isto ime u
+// drugom mjestu — rezultat vrijedi samo ako sadrži zadnji dio upita (mjesto).
+// Ista provjera je u api/mjesta.js — mijenjati zajedno.
+const bez = x => String(x || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/gi, 'd').toLowerCase().trim()
+export function photonOdgovara(q, p) {
+  if (['country', 'state', 'county'].includes(p.type)) return false
+  const dijelovi = String(q).split(',').map(x => x.trim()).filter(Boolean)
+  if (dijelovi.length < 2) return true
+  const mjesto = bez(dijelovi[dijelovi.length - 1])
+  const gdje = [p.name, p.city, p.town, p.village, p.district, p.locality, p.county, p.state, p.postcode].map(bez)
+  return gdje.some(x => x && (x === mjesto || x.includes(mjesto) || mjesto.includes(x) && x.length > 3))
+}
+async function photonAdresa(upit, f) {
+  let r
+  try { r = await sRokom(f, `${PHOTON}?limit=3&q=${encodeURIComponent(upit)}`, {}, ROK_NOMINATIM) }
+  catch (e) { throw new Error('photon ' + (e && e.name === 'AbortError' ? 'istek' : 'mreža')) }
+  if (!r.ok) throw new Error('photon HTTP ' + r.status)
+  const x = ((await r.json()).features || []).find(x => x && x.geometry && photonOdgovara(upit, x.properties || {}))
+  if (!x) return null
+  const p = x.properties || {}
+  return { lat: x.geometry.coordinates[1], lon: x.geometry.coordinates[0], upit,
+    naziv: [p.name, p.street && (p.street + (p.housenumber ? ' ' + p.housenumber : '')), p.city || p.town || p.village, p.country].filter(Boolean).join(', ') || upit }
+}
+
+/** Nominatim i Photon istodobno; Nominatim ima prednost. Baca grešku samo
+    kad nijedan nije odgovorio. */
+export async function geokodiraj(upit, f = fetch) {
+  const [n, p] = await Promise.allSettled([nominatimAdresa(upit, f), photonAdresa(upit, f)])
+  if (n.status === 'fulfilled' && n.value) return n.value
+  if (p.status === 'fulfilled' && p.value) return p.value
+  if (n.status === 'rejected' && p.status === 'rejected') throw n.reason
+  return null
 }
 
 // Rezerva bez Overpassa: Nominatim „posebni izrazi” (restaurant, beach…) u
@@ -156,7 +193,7 @@ export async function predlozi(upit, mjesto = '', f = fetch, napredak = () => {}
       const r = await sRokom(f, `/api/mjesta?q=${encodeURIComponent(upit)}&mjesto=${encodeURIComponent(mjesto)}`, { headers: { Authorization: 'Bearer ' + opcije.token } }, 29000)
       const d = await r.json().catch(() => null)
       if (r.ok && d && d.ok) {
-        if (!d.centar) return { centar: null, mjesta: [], izvor: 'posluzitelj' }
+        if (!d.centar) return { centar: null, mjesta: [], izvor: 'posluzitelj', nedostupno: !!d.nedostupno, razlozi: d.razlozi }
         return { centar: d.centar, mjesta: odaberi(d.elementi, d.centar, mjesto), izvor: 'posluzitelj:' + d.izvor, razlozi: d.razlozi }
       }
       razlozi.push('ruta ' + r.status + (d && d.razlozi ? ' [' + d.razlozi.join(', ') + ']' : ''))

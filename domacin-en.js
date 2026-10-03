@@ -645,6 +645,7 @@ export const T = {
   "Pretplata": "Subscription",
   "Pretplata i limiti": "Subscription and limits",
   "Pretraga adrese se ne javlja. Provjerite internet i pokušajte ponovno.": "The address search isn't responding. Check your internet connection and try again.",
+  "Pretraga adrese se trenutno ne javlja. Pokušajte za minutu.": "The address search isn't responding right now. Try again in a minute.",
   "Pretraži sadržaje (npr. klima, parking, bazen)...": "Search amenities (e.g. air conditioning, parking, pool)...",
   "Preusmjeravamo vas na dashboard…": "Redirecting you to the dashboard…",
   "Preuzimam…": "Importing…",

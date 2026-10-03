@@ -901,7 +901,13 @@ izmjene (`MutationObserver`: paneli, toast, poruke; `confirm`/`alert` omotani).
   i Overpass (plaže, restorani, kafići, trgovine, ljekarna u 2,5 km; drugi
   Overpass poslužitelj kao rezerva). Polje „Gdje tražiti” unaprijed puni **samo
   `properties.location`** (Osnovno); `sections.address` tek kad lokacije nema —
-  spajanje obje dalo je istu adresu dvaput. Besplatno, bez ključa i bez naše rute.
+  spajanje obje dalo je istu adresu dvaput.
+  **Adresu traže Nominatim i Photon istodobno** (ruta i preglednik):
+  Nominatim ima prednost, Photon pokriva skraćenice i tipfelere („Krušaka ul.
+  1a”), ali vrijedi samo ako sadrži zadnji dio upita (mjesto) —
+  `photonOdgovara()`, kopija u obje datoteke. „ul.” → „ulica” je dodatna
+  varijanta. Kad nijedan servis ne odgovori, ruta vraća `nedostupno:true` i
+  dijalog kaže „ne javlja se”, ne „adresa nije pronađena”. Besplatno, bez ključa i bez naše rute.
   Kategorije su hrvatske i postoje u `jezici.js` (`Plaže`, `Restorani`,
   `Kafići`, `Trgovine`, `Ljekarna`); udaljenost „N min pješice/autom” (vodič je
   prevodi). `maps_query` = **koordinate** „lat,lon” (Google ih uvijek pogodi;

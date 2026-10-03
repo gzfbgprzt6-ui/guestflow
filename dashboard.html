@@ -3364,7 +3364,7 @@ window.traziOsm=async()=>{
     let token='';try{token=(await sb.auth.getSession()).data.session?.access_token||''}catch{}
     const r=await OSMM.predlozi(upit,(PROP.location||'').trim(),fetch,t=>{if(moj===OSM_RED)st.textContent=t},{token})
     if(moj!==OSM_RED)return
-    if(!r.centar){st.textContent='Ta adresa nije pronađena. Upišite je drukčije, '+OSMM.PRIMJER+'.';return}
+    if(!r.centar){st.textContent=r.nedostupno?'Pretraga adrese se trenutno ne javlja. Pokušajte za minutu.':'Ta adresa nije pronađena. Upišite je drukčije, '+OSMM.PRIMJER+'.';return}
     gdje.hidden=false;gdje.textContent='Tražim oko: '+r.centar.naziv
     const ima=new Set(guideRows.map(x=>isti(x.name)))
     OSM=r.mjesta.filter(x=>!ima.has(isti(x.name)))
