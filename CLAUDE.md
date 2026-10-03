@@ -902,7 +902,9 @@ izmjene (`MutationObserver`: paneli, toast, poruke; `confirm`/`alert` omotani).
   Overpass poslužitelj kao rezerva). Besplatno, bez ključa i bez naše rute.
   Kategorije su hrvatske i postoje u `jezici.js` (`Plaže`, `Restorani`,
   `Kafići`, `Trgovine`, `Ljekarna`); udaljenost „N min pješice/autom” (vodič je
-  prevodi). Upis kao ručni (`local_places`), isti naziv se preskače, limit
+  prevodi). `maps_query` = **koordinate** „lat,lon” (Google ih uvijek pogodi;
+  „naziv, mjesto” je vodilo na adresu objekta jer u `location` zna stajati
+  cijela adresa). Upis kao ručni (`local_places`), isti naziv se preskače, limit
   plana provodi baza. **Javni Overpass zna visjeti bez odgovora** (domaćin je
   vidio samo „Tražim…”): svaki zahtjev ima rok (`sRokom`, AbortController —
   Nominatim 10 s, Overpass 8 s) i dva Overpass poslužitelja, a onda **rezerva

@@ -83,7 +83,7 @@ export function odaberi(elementi, centar, mjesto = '') {
     const lat = e.lat ?? e.center?.lat, lon = e.lon ?? e.center?.lon
     const v = VRSTE.find(x => x.test(t))
     if (!v || !t.name || lat == null || lon == null) return null
-    return { v, ime: String(t.name).trim(), m: metara(centar, { lat, lon }) }
+    return { v, ime: String(t.name).trim(), m: metara(centar, { lat, lon }), lat: +lat, lon: +lon }
   }).filter(Boolean).sort((a, b) => a.m - b.m)
   const out = []
   for (const x of lista) {
@@ -93,7 +93,9 @@ export function odaberi(elementi, centar, mjesto = '') {
     po[x.v.k] = (po[x.v.k] || 0) + 1
     if (po[x.v.k] > x.v.max) continue
     out.push({ icon: x.v.ikona, name: x.ime, category: x.v.kategorija, distance: udaljenost(x.m),
-      maps_query: mjesto ? `${x.ime}, ${mjesto}` : x.ime, metara: Math.round(x.m), vrsta: x.v.k })
+      // za kartu točne koordinate: „naziv, mjesto” je Google znao odvesti na adresu
+      // objekta (u „Lokaciji” zna stajati cijela adresa), a koordinate uvijek pogode
+      maps_query: `${x.lat.toFixed(6)},${x.lon.toFixed(6)}`, metara: Math.round(x.m), vrsta: x.v.k })
   }
   // redom vrsta (plaže prve), unutar vrste po udaljenosti
   return out.sort((a, b) => VRSTE.findIndex(v => v.k === a.vrsta) - VRSTE.findIndex(v => v.k === b.vrsta) || a.metara - b.metara)
