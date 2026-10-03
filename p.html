@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Gelasio:wght@400;500&family=Manrope:wght@600;700;800&display=swap">
 <link rel="stylesheet" href="/odmoria.css">
+<link rel="stylesheet" href="/stilovi.css">
 <style>
 /* ==========================================================================
    Javna stranica objekta — redizajn v2 (Figma: 04 Public Property).
@@ -678,6 +679,7 @@
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import * as L from '/jezici.js'
+import * as STIL from '/stilovi.js'
 import { veselje, kvacica } from '/pokret.js'
 
 // jezik sučelja odmah; koje jezike plan domaćina dopušta i prijevod njegovih
@@ -769,6 +771,9 @@ async function loadPage() {
   const { data: prop, error } = await sb.from('properties').select('*').eq('slug', slug).maybeSingle()
   if (error || !prop) { showErr(); return }
   PROP = prop
+  // stil stranice (stilovi.js): ?stil= je pregled iz dashboarda, inače izbor domaćina
+  const stilIzAdrese = new URLSearchParams(location.search).get('stil')
+  STIL.primijeni(stilIzAdrese != null ? stilIzAdrese : prop.theme)
   price = parseFloat(prop.price_per_night) || 0
 
   const [ams, places, txs, atts, rules, faqs] = await Promise.all([

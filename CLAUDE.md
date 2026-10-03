@@ -54,8 +54,9 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 ├── auth.css                 # raspored četiri stranice prijave (login, register, reset-password, email-confirm)
 ├── forms.css                # obrasci za onboarding, add-property i account (ista imena razreda kao prije)
 ├── tekst.css                # tekstualne stranice: help, terms, privacy (za njih nema Figme)
-├── teme.css                 # OSAM TEMA javne stranice — danas samo panel „Izgled” u dashboardu (p.html v2 ih ne primjenjuje); ostaje za teme na v2
-├── teme.js                  # rasporedi zaglavlja, `izBaze(prop)` i zajednički birač tema
+├── stilovi.js               # OSAM STILOVA javne stranice (+ zadani): imena, pisma, boje; primijeni(), varijable() — vidi „Stilovi javne stranice”
+├── stilovi.css              # izgled stilova na p.html (<html data-stil>), tokeni odmoria.css + ukrasi
+├── teme.css  teme.js        # STARE teme (v3) — više ih nitko ne učitava; zamijenili su ih stilovi (odluke, točka 20)
 ├── analitika.js             # izračuni i grafikoni analitike (boravci, popunjenost, praznine, pregledi) — dijele ga dashboard i admin
 ├── analitika.css            # pločice, stupčasti grafikoni (HTML, ne SVG), popisi, tablice analitike
 ├── links.js                 # gradnja linkova (/p/, /h/, /c/) — NIKAD ne zakucavati domenu, vidi dolje
@@ -111,6 +112,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
     ├── add-ical-export.sql              # izvoz kalendara: calendar_exports + kalendar_izvoz(token)
     ├── add-team-access.sql              # suradnici: property_members, je_suradnik(), prihvati_pozivnicu(), plan_objekta(), najviše 3
     ├── add-guest-emails.sql             # automatski e-mail gostu (dolazak / zahvala), pg_cron dnevno; TEK nakon KORAKA 2 i add-inquiry-email.sql
+    ├── add-styles.sql                   # stilovi: nova imena u properties.theme (CHECK), Beach & Sea → NULL, stane na nepoznatom
     └── fix-missing-columns-and-storage.sql # ALTER TABLE dopune (photo_urls, ical_*, beds/bathrooms/size_m2) + storage bucket policy
 ```
 
@@ -143,7 +145,47 @@ mogućnost za one koji plaćaju (vidi niže i `docs/odluke.md`, točka 9).
 
 ---
 
-## Teme javne stranice — čuvaju se za kasnije
+## Stilovi javne stranice (3. 10. 2026.)
+
+Osam stilova s platna (`docs/odluke.md`, točka 20) + zadani izgled
+„Odmoria”: **priroda, luksuz, more (Sunce i more), moderno, grad, snijeg,
+relax, seoska**. Zasad **besplatno za sve planove**.
+
+- **Jedan izvor:** `stilovi.js` (`STILOVI`: id, ime, opis, Google pisma, boje
+  `t`). `api/stranica.js` ima **kopiju** id-jeva i adresa pisama (CJS) —
+  mijenjati zajedno.
+- **`p.html`:** `STIL.primijeni(?stil= ili prop.theme)` → `<html data-stil>` +
+  pisma; `stilovi.css` preslika tokene `odmoria.css` (boje, pisma `--font-ui`
+  / `--font-body` / `--font-editorial`, zaobljenja) i doda ukrase. Raspored i
+  logika stranice su **isti** u svim stilovima. Bez atributa = zadani v2
+  izgled, piksel u piksel. `api/stranica.js` (`saStilom`) upiše `data-stil` i
+  link na pisma u HTML — stil od prvog prikaza, bez treptaja.
+- **Kontrast je izmjeren** na podlozi svakog stila (sve ≥ 4,5:1) i provjeren
+  na stranici (`scratchpad/stilpub.mjs`: 8 stilova × 1440/390, bez
+  prelijevanja). Na tamnoj plohi (`.contact`) i na fotografiji zaglavlja
+  (`.hero__copy .eyebrow`) zajednička pravila poništavaju ukrase natpisa iz
+  stila — inače natpis nestane (dogodilo se u Prirodi, Snijegu i Modernom).
+- **Dashboard → Objekt → Osnovno → Izgled:** kartice (`role=radio`, strelice),
+  „Kako gost vidi” = prava `/p/<slug>?stil=…&domacin=1` u `<iframe>`
+  smanjenom na širinu kartice (ne broji se u analitici), `saveStil()` →
+  `properties.theme` (NULL = zadani). Ne piše preko vrijednosti koja nije ni
+  stil ni stara tema; bez `sql/add-styles.sql` CHECK odbije novo ime i panel
+  kaže koji SQL pokrenuti. `STIL_ODABRAN` i `previewMode` stoje **uz uvoz**,
+  iznad prvog `selectProp()` (zamka kao `STATES`).
+- **Zamka:** imena pisama u `t` su u **jednostrukim** navodnicima —
+  `varijable()` ide u `style="…"`, a `"` je prekidao atribut pa su kartice
+  gubile pola boja.
+
+### Pregled gosta (desno, ≥ 1280 px)
+
+Telefon prati **pravu** javnu stranicu u odabranom stilu (`--pv-*` iz
+`STIL.varijable()` na `#pv-device`) i **pravi** vodič (v2: „Vaš pristup”,
+pločice). Šifra vrata se nikad ne pokazuje (samo `••••` ako je postavljena).
+`setPreviewMode()` prebacuje `hidden` i klizni pokazivač (`#pv-seg[data-pv]`);
+`pregledStil()` osvježi boje, ime stila i link „otvori”. Ikone su Lucide u
+spriteu dashboarda.
+
+## Stare teme (v3) — zamijenjene stilovima
 
 > **Od redizajna v2 (28. 9. 2026.) `p.html` teme NE primjenjuje** — učitava
 > samo `odmoria.css`, a `teme.css`/`teme.js` više ne. Panel „Izgled stranice” u

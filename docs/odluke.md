@@ -1107,8 +1107,16 @@ prijevoz, atrakcije, recenzije, česta pitanja, podnožje s jezikom i oznakom
 
 Vlasnik (1. 10.): „svi su mi top”. Zatim su 4, 5 i 8 (Riviera ’70, Magazin, Majolika) na zahtjev zamijenjeni novima — Moderno, Grad, Seoska kuća; stari su samo u povijesti platna.
 
-- [ ] Koje stilove prenosimo u `p.html` (domaćin bira u dashboardu → Objekt → Izgled)?
-- [ ] Jesu li stilovi za plaćene planove (točka 9 — teme za one koji plaćaju)?
+- [x] **Odluka 3. 10. 2026.: svih osam ide u `p.html`**, domaćin bira u
+  dashboardu → Objekt → Osnovno → Izgled stranice. U kodu: `stilovi.js`
+  (imena, pisma, boje), `stilovi.css` (izgled), `sql/add-styles.sql` (baza).
+  Stil mijenja boje, pisma i ukrase; raspored, podaci i logika stranice su
+  isti — zato nije kopija ploča s platna piksel u piksel (npr. Grad nema
+  linije podzemne kao zaseban blok, nego obojene oznake linija u popisu).
+- [x] **Zasad besplatno za sve planove** (vlasnik, 3. 10.). Naplata kasnije
+  (točka 9) — tada samo zaključati izbor u panelu i u bazi.
+- [ ] Stari panel tema (`teme.js`, `teme.css`, osam starih tema) dashboard više
+  ne učitava; datoteke su ostale u repozitoriju. Obrisati ih?
 
 ## 21. Konkurencija i nedostaci (2. 10. 2026.) — bez plaćanja
 
@@ -1254,6 +1262,8 @@ spojiti prije SQL koraka — ali značajke proradi tek SQL.
 7. `sql/add-guest-emails.sql` — automatski e-mail gostu (odbija se dok 3. i
    6. nisu gotovi).
 8. Ako još nije: `sql/auto-ical-sync.sql` (`<ADRESA>`, `<CRON_SECRET>`).
+9. `sql/add-styles.sql` — stilovi javne stranice (dopušta nova imena u
+   `properties.theme`; stane ako zatekne nepoznatu vrijednost).
 
 **B. Vercel → Settings → Environment Variables (Production) → Redeploy:**
 `SUPABASE_SERVICE_ROLE_KEY`, `CRON_SECRET`, `ANTHROPIC_API_KEY` (prijevodi),

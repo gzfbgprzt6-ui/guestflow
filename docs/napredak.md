@@ -118,3 +118,11 @@ Popratno:
   squash iste grane bez ičega novog, pa je zadržan sadržaj grane.
 - [x] Prijedlozi adrese dok se tipka + „Koristi moju trenutnu lokaciju”
   (Lokacija, Točna adresa, Gdje tražiti; besplatno, Photon/OSM) — 3. 10. 2026.
+- [x] **Stilovi javne stranice** (8 + zadani): birač u Objekt → Osnovno →
+  Izgled, prava stranica u malom prozoru, stil od prvog prikaza (poslužitelj) —
+  3. 10. 2026. Treba pokrenuti `sql/add-styles.sql`.
+- [x] **Pregled gosta desno** prepravljen: telefon prati pravu javnu stranicu u
+  odabranom stilu i pravi vodič (v2), Lucide ikone, prekidač s kliznim
+  pokazivačem — 3. 10. 2026.
+- [x] Lokacija s ulicom i brojem (broj prelazi u prijedlog) i karta s
+  pribadačom na javnoj stranici i u vodiču — 3. 10. 2026.

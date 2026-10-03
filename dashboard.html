@@ -7,7 +7,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..700,0..100,0..1;1,9..144,300..600,0..100,0..1&family=Manrope:wght@400;500;600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Gelasio:wght@400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/teme.css">
 <link rel="stylesheet" href="/analitika.css">
 <style>
 /* ==========================================================================
@@ -446,47 +445,117 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
 .sync-when b { color: var(--ink); }
 
 /* pregled gosta (desno, samo na širokom zaslonu) */
-.preview-pane { position: sticky; top: 76px; min-height: calc(100vh - 76px); padding: 24px 20px 32px; border-left: 1px solid var(--line); background: var(--paper-2); }
-.preview-head { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 16px; }
-.preview-head strong { font: 700 17px/1.3 var(--font-ui); }
-.preview-head span { color: var(--copper); font: 700 12px/1.3 var(--font-body); letter-spacing: .05em; text-transform: uppercase; }
-.preview-toggle { display: flex; margin-bottom: 16px; padding: 4px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper); }
-.preview-toggle button { flex: 1; min-height: 36px; border: 0; border-radius: var(--radius-sm); background: transparent; color: var(--muted); cursor: pointer; font: 600 13px/1 var(--font-ui); }
-.preview-toggle button.active { background: var(--brown); color: #fff; }
-.phone { position: relative; overflow: hidden; width: min(100%, 288px); height: 560px; margin: 0 auto; border: 8px solid var(--brown-deep); border-radius: 34px; background: var(--paper); box-shadow: var(--shadow); }
-.phone-notch { position: absolute; z-index: 4; top: 8px; left: 50%; width: 64px; height: 17px; border-radius: 20px; background: var(--brown-deep); transform: translateX(-50%); }
-.phone-screen { height: 100%; overflow-y: auto; scrollbar-width: none; }
-.phone-screen::-webkit-scrollbar { display: none; }
-.phone-hero { position: relative; display: flex; min-height: 190px; flex-direction: column; justify-content: end; padding: 31px 18px 18px; background: linear-gradient(180deg, #A3C4DA 0%, #5E8FA3 30%, #173D4B 70%); color: #fff; background-size: cover; background-position: center; }
-.phone-hero::before { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10,42,51,0) 0%, rgba(10,42,51,.35) 30%, rgba(10,42,51,.72) 50%, rgba(10,42,51,.88) 100%); content: ""; }
-.phone-hero > * { position: relative; z-index: 1; }
-.phone-hero small { font: 700 9px/1.3 var(--font-body); letter-spacing: .15em; text-transform: uppercase; }
-.phone-hero h4 { margin: 5px 0 2px; font: 400 24px/1.05 Georgia, "Gelasio", serif; }
-.phone-hero p { margin: 0; color: rgba(255,255,255,.9); font-size: 10px; }
-#prev-tema .th--mini { height: 190px; border-radius: 0; box-shadow: none; --hs: .26; }
-.phone-content { padding: 14px; }
-.welcome-box { margin-bottom: 12px; padding: 12px; border-radius: var(--radius); background: var(--paper-2); }
-.welcome-box small { display: block; margin-bottom: 4px; color: var(--copper); font: 700 8px/1.3 var(--font-body); letter-spacing: .15em; text-transform: uppercase; }
-.welcome-box p { margin: 0; color: var(--ink); font: 400 12px/1.4 Georgia, "Gelasio", serif; }
-.phone-stats { display: grid; gap: 5px; margin-bottom: 12px; grid-template-columns: repeat(4, 1fr); }
-.phone-stat { padding: 8px 4px; border: 1px solid var(--line); border-radius: 8px; text-align: center; }
-.phone-stat strong { display: block; font: 700 13px/1.2 var(--font-ui); }
-.phone-stat span { display: block; margin-top: 2px; color: var(--muted); font-size: 8px; }
-.phone-menu { display: grid; gap: 6px; }
-.phone-row { display: grid; min-height: 40px; align-items: center; gap: 8px; padding: 8px 9px; border: 1px solid var(--line); border-radius: 9px; font: 700 10px/1.3 var(--font-ui); grid-template-columns: 24px 1fr auto; }
-.phone-row i { display: grid; width: 24px; height: 24px; place-items: center; border-radius: 50%; background: var(--paper-2); color: var(--copper); font-style: normal; }
-.phone-row em { color: var(--muted); font-style: normal; }
-.guest-private { display: none; background: var(--brown); color: #fff; }
-.guest-private .phone-hero { min-height: 160px; background: var(--brown-soft); }
-.guest-private .phone-content { background: var(--brown); }
-.guest-private .welcome-box { background: rgba(255,255,255,.08); }
-.guest-private .welcome-box small { color: var(--peach); }
-.guest-private .welcome-box p { color: #fff; }
-.guest-private .phone-row { border-color: rgba(255,255,255,.16); }
-.guest-private .phone-row i { background: rgba(255,255,255,.1); color: var(--peach); }
-.guest-private .phone-row em { color: rgba(255,255,255,.7); }
-.preview-note { display: flex; align-items: start; gap: 10px; margin-top: 16px; padding: 12px; border-radius: var(--radius); background: var(--paper); color: var(--muted); font-size: 13px; }
-.preview-note i { display: grid; width: 20px; height: 20px; flex: 0 0 auto; place-items: center; border-radius: 50%; background: var(--paper-2); color: var(--copper); font-style: normal; font-weight: 700; }
+/* ── Pregled gosta (desno, ≥1280 px): telefon koji prati pravu javnu stranicu
+   (u odabranom STILU — varijable --pv-* iz stilovi.js) i pravi vodič (v2). */
+.preview-pane { position: sticky; top: 76px; min-height: calc(100vh - 76px); padding: 22px 20px 32px; border-left: 1px solid var(--line); overflow: hidden;
+  background: radial-gradient(120% 60% at 50% 0%, #fff 0%, transparent 70%), radial-gradient(circle, rgba(16,61,75,.09) 1px, transparent 1.2px) 0 0/14px 14px, var(--paper-2); }
+.pv-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+.pv-head strong { display: block; font: 800 16px/1.2 var(--font-ui); letter-spacing: -.01em; }
+.pv-live { display: inline-flex; align-items: center; gap: 6px; margin-top: 3px; color: var(--copper); font: 700 11px/1 var(--font-body); letter-spacing: .14em; text-transform: uppercase; }
+.pv-live i { position: relative; width: 7px; height: 7px; border-radius: 50%; background: #18A57E; box-shadow: 0 0 0 0 rgba(24,165,126,.5); }
+.pv-open { display: grid; width: 36px; height: 36px; place-items: center; border: 1px solid var(--line); border-radius: 10px; background: rgba(255,255,255,.7); color: var(--ink); backdrop-filter: blur(6px); }
+.pv-open:hover { border-color: var(--control); background: #fff; }
+.pv-seg { position: relative; display: grid; grid-template-columns: 1fr 1fr; margin-bottom: 18px; padding: 4px; border: 1px solid rgba(16,61,75,.12); border-radius: 12px; background: rgba(255,255,255,.66); backdrop-filter: blur(8px); }
+.pv-seg button { position: relative; z-index: 1; min-height: 34px; border: 0; background: transparent; color: var(--muted); cursor: pointer; font: 700 12.5px/1 var(--font-ui); letter-spacing: .01em; }
+.pv-seg button[aria-selected="true"] { color: #fff; }
+.pv-seg__ind { position: absolute; top: 4px; bottom: 4px; left: 4px; width: calc(50% - 4px); border-radius: 9px; background: linear-gradient(135deg, var(--brown) 0%, #1B5966 100%); box-shadow: 0 6px 14px rgba(16,61,75,.25), inset 0 1px 0 rgba(255,255,255,.18); transition: transform .35s cubic-bezier(.2,.8,.2,1); }
+.pv-seg[data-pv="private"] .pv-seg__ind { transform: translateX(100%); }
+/* uređaj */
+.pv-device { --pv-glow: var(--pv-accent, #116D76); position: relative; width: min(100%, 292px); height: 600px; margin: 6px auto 0; padding: 9px; border-radius: 46px;
+  background: linear-gradient(150deg, #3A4A52 0%, #0E171B 38%, #1E2A30 70%, #05090B 100%);
+  box-shadow: 0 0 0 1px rgba(255,255,255,.08) inset, 0 0 0 1.5px #0B1215, 0 40px 70px -28px rgba(10,30,38,.55), 0 18px 40px -20px var(--pv-glow); }
+.pv-device::before { content: ""; position: absolute; inset: -40px -30px auto; height: 260px; z-index: -1; border-radius: 50%; background: radial-gradient(closest-side, color-mix(in srgb, var(--pv-glow) 35%, transparent), transparent); filter: blur(18px); pointer-events: none; }
+.pv-island { position: absolute; z-index: 6; top: 18px; left: 50%; width: 82px; height: 22px; border-radius: 20px; background: #05090B; transform: translateX(-50%); box-shadow: inset 0 0 0 1px rgba(255,255,255,.05); }
+.pv-island::after { content: ""; position: absolute; top: 7px; right: 12px; width: 8px; height: 8px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #3B5966, #0B1418); }
+.pv-status { position: absolute; z-index: 5; top: 19px; left: 30px; right: 30px; display: flex; justify-content: space-between; color: var(--pv-status, #fff); font: 700 10.5px/1 var(--font-ui); pointer-events: none; text-shadow: 0 1px 2px rgba(0,0,0,.25); }
+.pv-sig { display: inline-flex; align-items: end; gap: 2px; height: 9px; } .pv-sig i { width: 3px; border-radius: 1px; background: currentColor; } .pv-sig i:nth-child(1) { height: 4px; } .pv-sig i:nth-child(2) { height: 6px; } .pv-sig i:nth-child(3) { height: 9px; }
+.pv-home { position: absolute; z-index: 6; bottom: 16px; left: 50%; width: 96px; height: 4px; border-radius: 4px; background: rgba(255,255,255,.75); transform: translateX(-50%); mix-blend-mode: difference; }
+.pv-screen { position: relative; height: 100%; overflow-y: auto; border-radius: 37px; background: var(--pv-bg); color: var(--pv-ink); font-family: var(--pv-body); scrollbar-width: none; }
+.pv-screen::-webkit-scrollbar { display: none; }
+.pv-screen::after { content: ""; position: sticky; display: block; bottom: 0; height: 26px; margin-top: -26px; background: linear-gradient(transparent, var(--pv-bg)); pointer-events: none; }
+/* javna stranica */
+.pv-bar { position: sticky; top: 0; z-index: 4; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 44px 14px 9px; background: color-mix(in srgb, var(--pv-bg) 86%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid color-mix(in srgb, var(--pv-line) 70%, transparent); --pv-status: var(--pv-ink); }
+.pv-bar__ime { min-width: 0; overflow: hidden; color: var(--pv-ink); font: 600 14px/1.1 var(--pv-display); text-overflow: ellipsis; white-space: nowrap; }
+.pv-chip { flex: none; padding: 6px 11px; border-radius: var(--pv-r-btn); background: var(--pv-action); color: var(--pv-action-ink); font: 700 10px/1 var(--pv-ui); letter-spacing: .02em; }
+.pv-hero { position: relative; display: flex; min-height: 196px; flex-direction: column; justify-content: end; gap: 3px; margin: 10px 10px 0; padding: 16px 14px 14px; overflow: hidden; border-radius: min(var(--pv-r), 18px); color: #fff;
+  background: linear-gradient(170deg, color-mix(in srgb, var(--pv-accent) 45%, #9CC3D3) 0%, rgb(var(--pv-tint)) 100%) center/cover no-repeat; isolation: isolate; }
+.pv-hero::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(var(--pv-tint),0) 25%, rgba(var(--pv-tint),.55) 60%, rgba(var(--pv-tint),.9) 100%); }
+.pv-eyebrow { font: 700 8.5px/1.3 var(--pv-body); letter-spacing: .16em; text-transform: uppercase; opacity: .95; }
+.pv-hero h4 { margin: 0; font: 400 25px/1.02 var(--pv-display); letter-spacing: -.01em; overflow-wrap: anywhere; }
+.pv-price { align-self: start; margin-top: 6px; padding: 5px 9px; border: 1px solid rgba(255,255,255,.28); border-radius: var(--pv-r-btn); background: rgba(255,255,255,.14); backdrop-filter: blur(6px); font: 600 10px/1 var(--pv-ui); }
+.pv-price b { font-weight: 800; }
+.pv-facts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 10px 10px 0; }
+.pv-fact { display: grid; justify-items: center; gap: 3px; padding: 8px 2px 7px; border: 1px solid var(--pv-line); border-radius: min(var(--pv-r), 12px); background: var(--pv-surface); text-align: center; }
+.pv-fact .ic { width: 14px; height: 14px; color: var(--pv-accent); }
+.pv-fact strong { max-width: 100%; overflow: hidden; color: var(--pv-ink); font: 800 12px/1.1 var(--pv-ui); text-overflow: ellipsis; white-space: nowrap; }
+.pv-fact span { color: var(--pv-muted); font-size: 8px; line-height: 1.1; }
+.pv-letter { margin: 10px 10px 0; padding: 12px 13px; border: 1px solid var(--pv-line); border-radius: min(var(--pv-r), 14px); background: var(--pv-surface); }
+.pv-letter small { display: block; margin-bottom: 4px; color: var(--pv-accent); font: 700 7.5px/1.3 var(--pv-body); letter-spacing: .16em; text-transform: uppercase; }
+.pv-letter p { display: -webkit-box; margin: 0; overflow: hidden; color: var(--pv-ink); font: 400 13px/1.38 var(--pv-display); -webkit-box-orient: vertical; -webkit-line-clamp: 4; }
+.pv-cta { display: grid; gap: 6px; margin: 10px 10px 0; }
+.pv-btn { display: grid; min-height: 34px; place-items: center; border-radius: var(--pv-r-btn); background: var(--pv-action); color: var(--pv-action-ink); font: 700 11px/1 var(--pv-ui); }
+.pv-btn--2 { border: 1px solid color-mix(in srgb, var(--pv-ink) 35%, transparent); background: var(--pv-surface); color: var(--pv-ink); }
+.pv-list { display: grid; margin: 12px 10px 30px; border-top: 1px solid var(--pv-line); }
+.pv-row { display: grid; min-height: 40px; align-items: center; gap: 9px; border-bottom: 1px solid var(--pv-line); grid-template-columns: 24px 1fr auto; font: 600 11px/1.25 var(--pv-ui); }
+.pv-row > span:first-child { display: grid; width: 24px; height: 24px; place-items: center; border-radius: 50%; background: var(--pv-wash); color: var(--pv-accent); }
+.pv-row .ic { width: 13px; height: 13px; }
+.pv-row em { overflow: hidden; color: var(--pv-muted); font-style: normal; font-weight: 500; text-overflow: ellipsis; white-space: nowrap; max-width: 110px; }
+/* privatni vodič (h.html v2) */
+.pv-screen--vodic { background: #FCFCFA; color: #103D4B; font-family: "DM Sans", system-ui, sans-serif; }
+.pv-screen--vodic::after { background: linear-gradient(transparent, #FCFCFA); }
+.pv-greet { position: relative; padding: 50px 16px 22px; overflow: hidden; color: #fff; background: radial-gradient(120% 90% at 100% 0%, #1B6B75 0%, transparent 60%), linear-gradient(160deg, #164B5A 0%, #0A2A33 100%); --pv-status: #fff; }
+.pv-greet::after { content: ""; position: absolute; inset: auto -20% -60% 30%; height: 160px; border-radius: 50%; background: radial-gradient(closest-side, rgba(168,226,216,.35), transparent); }
+.pv-greet small { color: #A8E2D8; font: 700 8.5px/1.3 "DM Sans", sans-serif; letter-spacing: .16em; text-transform: uppercase; }
+.pv-greet h4 { margin: 5px 0 3px; font: 400 23px/1.05 Georgia, "Gelasio", serif; overflow-wrap: anywhere; }
+.pv-greet p { margin: 0; color: rgba(255,255,255,.82); font-size: 10.5px; }
+.pv-access { position: relative; z-index: 1; display: grid; gap: 0; margin: -12px 10px 0; padding: 4px 12px; border: 1px solid #E0E8EB; border-radius: 14px; background: rgba(255,255,255,.96); box-shadow: 0 12px 28px rgba(16,61,75,.14); }
+.pv-access__h { display: flex; align-items: center; gap: 6px; padding: 9px 0 7px; font: 800 11.5px/1.2 "Manrope", sans-serif; }
+.pv-access__h .ic { width: 14px; height: 14px; color: #116D76; }
+.pv-access__h em { margin-left: auto; padding: 3px 6px; border-radius: 6px; background: #EDF5F6; color: #116D76; font: 700 7.5px/1.2 "DM Sans", sans-serif; font-style: normal; letter-spacing: .04em; text-transform: uppercase; }
+.pv-kv { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 34px; border-top: 1px solid #E0E8EB; font-size: 10.5px; }
+.pv-kv span { display: inline-flex; align-items: center; gap: 6px; color: #536D77; }
+.pv-kv .ic { width: 13px; height: 13px; color: #116D76; }
+.pv-kv b { max-width: 120px; overflow: hidden; font: 800 11px/1.2 "Manrope", sans-serif; text-overflow: ellipsis; white-space: nowrap; }
+.pv-seal { letter-spacing: .2em; color: #116D76; }
+.pv-tiles-h { margin: 14px 12px 7px; color: #536D77; font: 700 8px/1.3 "DM Sans", sans-serif; letter-spacing: .16em; text-transform: uppercase; }
+.pv-tiles { display: grid; gap: 7px; margin: 0 10px 30px; grid-template-columns: 1fr 1fr; }
+.pv-tile { display: grid; gap: 14px; padding: 11px; border: 1px solid #E0E8EB; border-radius: 12px; background: #fff; font: 800 11px/1.2 "Manrope", sans-serif; }
+.pv-tile > span { display: grid; width: 26px; height: 26px; place-items: center; border-radius: 8px; background: #EDF5F6; color: #116D76; }
+.pv-tile .ic { width: 14px; height: 14px; }
+.pv-stil { display: flex; width: min(100%, 292px); align-items: center; justify-content: space-between; gap: 8px; margin: 16px auto 0; padding: 9px 12px; border: 1px solid var(--line); border-radius: 12px; background: rgba(255,255,255,.8); color: var(--ink); cursor: pointer; font: 600 12.5px/1.2 var(--font-ui); backdrop-filter: blur(6px); }
+.pv-stil:hover { border-color: var(--control); background: #fff; }
+.pv-stil b { font-weight: 800; }
+.pv-stil i { width: 14px; height: 14px; flex: none; border-radius: 50%; background: conic-gradient(var(--pv-accent) 0 50%, var(--pv-bg) 0); box-shadow: 0 0 0 1px rgba(16,61,75,.2); }
+.pv-stil span:last-child { color: var(--copper); }
+@media (prefers-reduced-motion: no-preference) {
+  .pv-live i::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: #18A57E; animation: pv-puls 1.8s ease-out infinite; }
+  .pv-screen { scroll-behavior: smooth; }
+  .pv-device { transition: box-shadow .5s ease; }
+  .pv-screen#publicPreview > * { transition: background-color .4s ease, color .4s ease, border-color .4s ease; }
+}
+@keyframes pv-puls { from { transform: scale(1); opacity: .7; } to { transform: scale(3); opacity: 0; } }
+.preview-note { display: flex; align-items: start; gap: 10px; width: min(100%, 292px); margin: 12px auto 0; padding: 11px 12px; border: 1px solid var(--line); border-radius: 12px; background: rgba(255,255,255,.8); color: var(--muted); font-size: 12.5px; line-height: 1.4; }
+.preview-note .ic { width: 16px; height: 16px; margin-top: 1px; color: var(--copper); }
+/* birač stilova (Objekt → Osnovno → Izgled) */
+.stilovi { display: grid; gap: 14px; margin-top: 18px; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+.stil-k { display: grid; gap: 10px; padding: 8px 8px 12px; border: 1px solid var(--line); border-radius: 16px; background: var(--paper); color: var(--ink); cursor: pointer; text-align: left; transition: border-color .15s ease, box-shadow .2s ease, transform .2s ease; }
+.stil-k:hover { border-color: var(--control); transform: translateY(-2px); box-shadow: 0 10px 24px rgba(16,61,75,.1); }
+.stil-k[aria-checked="true"] { border: 2px solid var(--copper); padding: 7px 7px 11px; box-shadow: 0 0 0 4px rgba(17,109,118,.12); }
+.stil-k__mini { position: relative; display: grid; height: 138px; overflow: hidden; border-radius: 11px; background: var(--pv-bg); grid-template-rows: 78px 1fr; }
+.stil-k__foto { position: relative; display: block; margin: 6px 6px 0; overflow: hidden; border-radius: min(var(--pv-r), 10px); background: linear-gradient(170deg, color-mix(in srgb, var(--pv-accent) 45%, #9CC3D3), rgb(var(--pv-tint))) center/cover no-repeat; }
+.stil-k__foto::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 30%, rgba(var(--pv-tint),.75)); }
+.stil-k__ime { position: absolute; left: 7px; right: 7px; bottom: 6px; z-index: 1; text-shadow: 0 1px 3px rgba(0,0,0,.45); overflow: hidden; color: #fff; font: 600 15px/1.1 var(--pv-display); text-overflow: ellipsis; white-space: nowrap; }
+.stil-k__crte { display: grid; gap: 4px; align-content: center; padding: 0 10px; }
+.stil-k__crte i { display: block; height: 5px; border-radius: 3px; background: var(--pv-line); }
+.stil-k__crte i:first-child { width: 72%; background: color-mix(in srgb, var(--pv-ink) 70%, transparent); }
+.stil-k__crte i:last-child { width: 50%; }
+.stil-k__gumb { position: absolute; right: 9px; bottom: 9px; padding: 5px 9px; border-radius: var(--pv-r-btn); background: var(--pv-action); color: var(--pv-action-ink); font: 700 9px/1 var(--pv-ui); }
+.stil-k__txt { display: grid; gap: 2px; padding: 0 4px; }
+.stil-k__txt b { font: 800 14px/1.25 var(--font-ui); }
+.stil-k__txt small { color: var(--muted); font-size: 12.5px; line-height: 1.35; }
+.stil-akcije { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; margin-top: 18px; }
+.stil-zivo { position: relative; height: 520px; overflow: hidden; border: 1px solid var(--line); border-radius: 14px; background: var(--paper-2); }
+.stil-zivo iframe { position: absolute; top: 0; left: 0; width: 1280px; height: calc(520px / var(--zivo-s, .5)); border: 0; transform: scale(var(--zivo-s, .5)); transform-origin: 0 0; pointer-events: none; }
 
 .alert { border-radius: var(--radius); padding: 12px 14px; font-size: 15px; font-weight: 500; margin-bottom: 14px; line-height: 1.5; display: none; }
 .alert-err { background: var(--danger-bg); border: 1px solid var(--danger); color: var(--danger); }
@@ -649,6 +718,23 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
   <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" /> <circle cx="12" cy="12" r="3" /></symbol>
   <symbol id="i-book-open" viewBox="0 0 24 24"><path d="M12 5v16" /> <path d="M20.001 19A2 2 0 0022 17V5a2 2 0 00-1.999-2L16 3.002A5 5 0 0012 5a5 5 0 00-4-2H4a2 2 0 00-2 2v12a2 2 0 001.999 2H8a5 5 0 014 2 5 5 0 014-2z" /></symbol>
   <symbol id="i-ellipsis" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1" /> <circle cx="19" cy="12" r="1" /> <circle cx="5" cy="12" r="1" /></symbol>
+  <!-- pregled gosta (telefon desno) -->
+  <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /> <path d="M16 3.128a4 4 0 0 1 0 7.744" /> <path d="M22 21v-2a4 4 0 0 0-3-3.87" /> <circle cx="9" cy="7" r="4" /></symbol>
+  <symbol id="i-bed-double" viewBox="0 0 24 24"><path d="M2 20v-8a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v8" /> <path d="M4 10V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4" /> <path d="M12 4v6" /> <path d="M2 18h20" /></symbol>
+  <symbol id="i-bath" viewBox="0 0 24 24"><path d="M10 4 8 6" /> <path d="M17 19v2" /> <path d="M2 12h20" /> <path d="M7 19v2" /> <path d="M9 5 7.621 3.621A2.121 2.121 0 0 0 4 5v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5" /></symbol>
+  <symbol id="i-ruler" viewBox="0 0 24 24"><path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0Z" /> <path d="m14.5 12.5 2-2" /> <path d="m11.5 9.5 2-2" /> <path d="m8.5 6.5 2-2" /> <path d="m17.5 15.5 2-2" /></symbol>
+  <symbol id="i-map-pin" viewBox="0 0 24 24"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" /> <circle cx="12" cy="10" r="3" /></symbol>
+  <symbol id="i-wifi" viewBox="0 0 24 24"><path d="M12 20h.01" /> <path d="M2 8.82a15 15 0 0 1 20 0" /> <path d="M5 12.859a10 10 0 0 1 14 0" /> <path d="M8.5 16.429a5 5 0 0 1 7 0" /></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /> <path d="M12 6v6l4 2" /></symbol>
+  <symbol id="i-message-circle" viewBox="0 0 24 24"><path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719" /></symbol>
+  <symbol id="i-sparkles" viewBox="0 0 24 24"><path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z" /> <path d="M20 2v4" /> <path d="M22 4h-4" /> <circle cx="4" cy="20" r="2" /></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384" /></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z" /></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2" ry="2" /> <path d="M7 11V7a5 5 0 0 1 10 0v4" /></symbol>
+  <symbol id="i-key-round" viewBox="0 0 24 24"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z" /> <circle cx="16.5" cy="7.5" r=".5" fill="currentColor" /></symbol>
+  <symbol id="i-door-open" viewBox="0 0 24 24"><path d="M10 21H2" /> <path d="M10 3H7a2 2 0 00-2 2v16" /> <path d="M14 12h.01" /> <path d="M19 21V5a2 2 0 00-1.675-1.974l-6.163-1.013A1 1 0 0010 3v18a1 1 0 001.124.992z" /> <path d="M22 21h-3" /></symbol>
+  <symbol id="i-arrow-up-right" viewBox="0 0 24 24"><path d="M7 7h10v10" /> <path d="M7 17 17 7" /></symbol>
+  <symbol id="i-compass" viewBox="0 0 24 24"><path d="m16.24 7.76-1.804 5.411a2 2 0 0 1-1.265 1.265L7.76 16.24l1.804-5.411a2 2 0 0 1 1.265-1.265z"/><circle cx="12" cy="12" r="10"/></symbol>
 </svg>
 <a class="skip" href="#main-content">Preskoči na sadržaj</a>
 <div id="loading"><div class="spin"></div></div>
@@ -910,42 +996,28 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
           </div>
         </section>
 
-        <!-- IZGLED -->
-        <section class="editor-panel tema-okruzje" id="section-izgled" data-panel-content="izgled">
+        <!-- IZGLED: stilovi javne stranice (stilovi.js / stilovi.css) -->
+        <section class="editor-panel" id="section-izgled" data-panel-content="izgled">
           <div id="izgled-alert"></div>
           <div class="card">
             <div class="card-head"><div class="card-title-wrap"><span class="card-number">◈</span><div>
-              <h2>Tema javne stranice</h2>
-              <p>Tema ne mijenja samo boju. Svaka drugačije slaže zaglavlje i vodi s drugom
-                 informacijom — cijenom, istaknutom brojkom, popisom prostorija, pismom.</p>
-              <p class="sub-note" style="margin-top:8px"><strong>Uskoro.</strong> Nova javna stranica teme zasad ne prikazuje. Odabir se sprema i vrijedit će kad se teme uključe.</p>
+              <h2>Izgled javne stranice</h2>
+              <p>Osam stilova i zadani izgled. Podaci i raspored su isti — mijenjaju se boje, pisma i ukrasi. Zasad su svi stilovi uključeni u svaki plan.</p>
             </div></div></div>
-
-            <div class="teme" id="teme"></div>
-
-            <div style="margin-top:22px">
-              <label class="field-label" for="fHighlight">Istaknuta brojka
-                <span style="font-weight:400;opacity:.7">— koriste je teme Laguna i Ponoćni bazen</span></label>
-              <input id="fHighlight" class="input" maxlength="60"
-                     placeholder="32° · Temperatura bazena">
-              <p class="card-hint" style="margin-top:6px">Oblik <code>vrijednost · oznaka</code>.
-                 Ostavite prazno pa se izvede iz površine ili broja gostiju.</p>
-            </div>
-
-            <div style="margin-top:18px;display:flex;justify-content:flex-end;gap:10px">
-              <a class="btn btn-ghost" id="temaOtvori" target="_blank" rel="noopener">Otvori javnu stranicu</a>
-              <button class="btn" onclick="saveTema()">Spremi promjene</button>
+            <div class="stilovi" id="stilovi" role="radiogroup" aria-label="Stil javne stranice"></div>
+            <div class="stil-akcije">
+              <a class="btn btn-ghost" id="stil-otvori" target="_blank" rel="noopener">Otvori pregled u novoj kartici</a>
+              <button class="btn" type="button" onclick="saveStil()">Spremi stil</button>
             </div>
           </div>
 
           <div class="card">
-            <!-- `.card-title-wrap` je mreža `32px 1fr` i traži DVA djeteta;
-                 bez oznake tekst padne u stupac od 32px i lomi se riječ po riječ. -->
+            <!-- `.card-title-wrap` je mreža `32px 1fr` i traži DVA djeteta -->
             <div class="card-head"><div class="card-title-wrap"><span class="card-number">◉</span><div>
               <h2>Kako gost vidi</h2>
-              <p>Pravi raspored s vašim podacima i vašim fotografijama.</p>
+              <p>Prava javna stranica s vašim podacima, u odabranom stilu. Prikaz se ne broji u analitici.</p>
             </div></div></div>
-            <div class="zivo" id="zivoOkvir"><div id="zivo"></div></div>
+            <div class="stil-zivo" id="stil-zivo"><iframe id="stil-okvir" title="Pregled javne stranice" loading="lazy" tabindex="-1"></iframe></div>
           </div>
         </section>
 
@@ -1335,36 +1407,54 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
         </section>
       </div>
 
-      <aside class="preview-pane tema-okruzje" aria-label="Pregled vodiča">
-        <div class="preview-head"><strong>Pregled gosta</strong><span>● Uživo</span></div>
-        <div class="preview-toggle"><button class="active" type="button" onclick="setPreviewMode('public',this)">Javni prikaz</button><button type="button" onclick="setPreviewMode('private',this)">Privatni vodič</button></div>
-        <div class="phone">
-          <span class="phone-notch"></span>
-          <div class="phone-screen guest-public" id="publicPreview">
-            <div class="phone-hero" id="prev-hero"><small>Dobro došli</small><h4 id="prev-name">—</h4><p id="prev-loc">—</p></div>
-            <div id="prev-tema" hidden></div>
-            <div class="phone-content">
-              <div class="welcome-box"><small>Poruka domaćina</small><p id="prev-welcome">—</p></div>
-              <div class="phone-stats"><div class="phone-stat"><strong id="prev-guests">—</strong><span>Gosti</span></div><div class="phone-stat"><strong id="prev-rooms">—</strong><span>Sobe</span></div><div class="phone-stat"><strong id="prev-type">—</strong><span>Vrsta</span></div><div class="phone-stat"><strong id="prev-minstay">—</strong><span>Min. noći</span></div></div>
-              <div class="phone-menu"><div class="phone-row"><i>O</i><span>O objektu</span><em>›</em></div><div class="phone-row"><i>L</i><span>Lokalni vodič</span><em>›</em></div><div class="phone-row"><i>A</i><span>Atrakcije</span><em>›</em></div><div class="phone-row"><i>€</i><span>Od <b id="prev-price">—</b> / noć</span><em>›</em></div></div>
+      <aside class="preview-pane" aria-label="Pregled gosta">
+        <div class="pv-head"><div><strong>Pregled gosta</strong><span class="pv-live"><i aria-hidden="true"></i>Uživo</span></div>
+          <a class="pv-open" id="pv-otvori" target="_blank" rel="noopener" aria-label="Otvori u novoj kartici" title="Otvori u novoj kartici"><svg class="ic ic--sm" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a></div>
+        <div class="pv-seg" id="pv-seg" data-pv="public" role="tablist" aria-label="Što gost vidi">
+          <button type="button" role="tab" aria-selected="true" aria-controls="publicPreview" onclick="setPreviewMode('public',this)">Javna stranica</button>
+          <button type="button" role="tab" aria-selected="false" aria-controls="privatePreview" onclick="setPreviewMode('private',this)">Privatni vodič</button>
+          <span class="pv-seg__ind" aria-hidden="true"></span>
+        </div>
+        <div class="pv-device" id="pv-device">
+          <span class="pv-island" aria-hidden="true"></span>
+          <span class="pv-home" aria-hidden="true"></span>
+          <div class="pv-screen" id="publicPreview" role="tabpanel">
+            <div class="pv-bar"><span class="pv-status" aria-hidden="true"><span>9:41</span><span class="pv-sig"><i></i><i></i><i></i></span></span><span class="pv-bar__ime" id="prev-name-bar">—</span><span class="pv-chip">Upit</span></div>
+            <div class="pv-hero" id="prev-hero"><span class="pv-eyebrow" id="prev-loc">—</span><h4 id="prev-name">—</h4><span class="pv-price">od <b id="prev-price">—</b> / noć</span></div>
+            <div class="pv-facts">
+              <div class="pv-fact"><svg class="ic" aria-hidden="true"><use href="#i-users"/></svg><strong id="prev-guests">—</strong><span>gosti</span></div>
+              <div class="pv-fact"><svg class="ic" aria-hidden="true"><use href="#i-bed-double"/></svg><strong id="prev-rooms">—</strong><span>sobe</span></div>
+              <div class="pv-fact"><svg class="ic" aria-hidden="true"><use href="#i-house"/></svg><strong id="prev-type">—</strong><span>vrsta</span></div>
+              <div class="pv-fact"><svg class="ic" aria-hidden="true"><use href="#i-clock"/></svg><strong id="prev-minstay">—</strong><span>min. noći</span></div>
+            </div>
+            <div class="pv-letter"><small>Riječ domaćina</small><p id="prev-welcome">—</p></div>
+            <div class="pv-cta"><span class="pv-btn">Provjeri dostupnost</span><span class="pv-btn pv-btn--2">Pošalji upit domaćinu</span></div>
+            <div class="pv-list">
+              <div class="pv-row"><span><svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg></span>Lokacija<em id="prev-loc-row">—</em></div>
+              <div class="pv-row"><span><svg class="ic" aria-hidden="true"><use href="#i-sparkles"/></svg></span>Sadržaji<em>›</em></div>
+              <div class="pv-row"><span><svg class="ic" aria-hidden="true"><use href="#i-compass"/></svg></span>U blizini<em>›</em></div>
+              <div class="pv-row"><span><svg class="ic" aria-hidden="true"><use href="#i-star"/></svg></span>Recenzije<em>›</em></div>
             </div>
           </div>
-          <div class="phone-screen guest-private" id="privatePreview">
-            <div class="phone-hero"><small>Vaš boravak</small><h4 id="prev-name-p">—</h4><p id="prev-loc-p">—</p></div>
-            <div class="phone-content">
-              <div class="welcome-box"><small>Sve za dolazak</small><p>Dobro došli. Ovdje vas čekaju sve privatne informacije za boravak.</p></div>
-              <div class="phone-menu">
-                <div class="phone-row"><i>↗</i><span id="prev-checkin">Check-in od —</span><em>›</em></div>
-                <div class="phone-row"><i>W</i><span id="prev-wifi-name">Wi-Fi mreža —</span><em>›</em></div>
-                <div class="phone-row"><i>K</i><span id="prev-door">Kod za ulazak</span><em>›</em></div>
-                <div class="phone-row"><i>P</i><span>Parking i dolazak</span><em>›</em></div>
-                <div class="phone-row"><i>!</i><span>Kućna pravila</span><em>›</em></div>
-                <div class="phone-row"><i>☎</i><span>Kontakt domaćina</span><em>›</em></div>
-              </div>
+          <div class="pv-screen pv-screen--vodic" id="privatePreview" role="tabpanel" hidden>
+            <div class="pv-greet"><span class="pv-status" aria-hidden="true"><span>9:41</span><span class="pv-sig"><i></i><i></i><i></i></span></span><small>Vaš boravak</small><h4 id="prev-name-p">—</h4><p id="prev-loc-p">—</p></div>
+            <div class="pv-access">
+              <div class="pv-access__h"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg>Vaš pristup<em>1 h prije dolaska</em></div>
+              <div class="pv-kv"><span><svg class="ic" aria-hidden="true"><use href="#i-wifi"/></svg>Wi-Fi</span><b id="prev-wifi-name">—</b></div>
+              <div class="pv-kv"><span><svg class="ic" aria-hidden="true"><use href="#i-key-round"/></svg>Šifra vrata</span><b class="pv-seal" id="prev-door">—</b></div>
+              <div class="pv-kv"><span><svg class="ic" aria-hidden="true"><use href="#i-clock"/></svg>Check-in</span><b id="prev-checkin">—</b></div>
+            </div>
+            <p class="pv-tiles-h">Sve za boravak</p>
+            <div class="pv-tiles">
+              <div class="pv-tile"><span><svg class="ic" aria-hidden="true"><use href="#i-door-open"/></svg></span>Dolazak</div>
+              <div class="pv-tile"><span><svg class="ic" aria-hidden="true"><use href="#i-wifi"/></svg></span>Wi-Fi i kuća</div>
+              <div class="pv-tile"><span><svg class="ic" aria-hidden="true"><use href="#i-compass"/></svg></span>Preporuke</div>
+              <div class="pv-tile"><span><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg></span>Domaćin</div>
             </div>
           </div>
         </div>
-        <div class="preview-note"><i>i</i><span>Wi-Fi lozinka i kod vrata se ne prikazuju u pregledu — vidljivi su gostu tek 1h prije dolaska.</span></div>
+        <button class="pv-stil" type="button" id="pv-stil" onclick="nav('izgled')"><span><i aria-hidden="true"></i> Stil: <b id="pv-stil-ime">Odmoria</b></span><span>Promijeni</span></button>
+        <div class="preview-note"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg><span>Wi-Fi lozinka i šifra vrata ne prikazuju se u pregledu — gost ih vidi tek 1 h prije dolaska.</span></div>
       </aside>
     </div>
   </main>
@@ -1435,7 +1525,6 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
   </div>
 </dialog>
 
-<script src="/teme.js"></script>
 <script type="module">
 import{createClient}from'https://esm.sh/@supabase/supabase-js@2'
 import{loadPlans,getPlan,listPlans,limitFor,canAdd,limitMessage,effectivePlanId,popustZa,cijenaPlana,formatEur,rokPopusta,trajanjePopusta}from'./plans.js'
@@ -1447,6 +1536,10 @@ import * as JZ from'./jezici.js'
 import{kvacica}from'./pokret.js'
 import * as OSMM from'./mjesta-osm.js'
 import{predloziAdresu}from'./adresa-predlozi.js'
+import * as STIL from'./stilovi.js'
+// gore, prije prvog poziva selectProp()/livePreview() (zamka kao STATES u h.html)
+let STIL_ODABRAN=null   // stil kliknut u Izgledu, a još nije spremljen
+let previewMode='public'
 import{potvrdi}from'./potvrda.js'
 
 const SURL='https://wtojzqjhipdfbrnmprmz.supabase.co'
@@ -1603,6 +1696,7 @@ window.onPropChange=async()=>{
 }
 
 async function selectProp(p){
+  STIL_ODABRAN=null
   if(p.__dijeljen&&!p.__plan){try{const{data}=await sb.rpc('plan_objekta',{p_property:p.id});p.__plan=data||'free'}catch{p.__plan='free'}}
   PROP=p
   document.getElementById('prop-sel').value=p.id
@@ -1728,74 +1822,80 @@ window.stepCount=(key,step)=>{
   livePreview()
 }
 
-/* ====================== TEMA JAVNE STRANICE ====================== */
-let TEMA_SPREMNA=false
-window.initTeme=()=>{
-  const T=window.Odmoria&&window.Odmoria.teme
-  if(!T||!PROP)return
-  const hl=document.getElementById('fHighlight')
-  if(!TEMA_SPREMNA){
-    hl.value=PROP.highlight||''
-    T.birac({
-      objekt:()=>T.izBaze(Object.assign({},PROP,{highlight:hl.value})),
-      odabrana:T.zaObjekt(PROP),
-      link:'temaOtvori',
-      linkBaza:'/p/'+PROP.slug,
-      naPromjenu:id=>{window.markDirty&&window.markDirty(document.getElementById('section-izgled'));telefon(id)}
-    })
-    /* Upisana brojka se odmah vidi u pregledu — inace se ne zna sto ce ispasti */
-    hl.addEventListener('input',()=>{window.markDirty&&window.markDirty(document.getElementById('section-izgled'));T.osvjezi();telefon()})
-    telefon()
-    TEMA_SPREMNA=true
+/* ====================== STIL JAVNE STRANICE (stilovi.js) ======================
+   Objekt → Osnovno → Izgled. Kartice za zadani izgled + 8 stilova; izbor se
+   odmah vidi u telefonu desno i u „Kako gost vidi” (prava p.html u okviru,
+   ?stil=&domacin=1 — ne broji se u analitici). Sprema se u properties.theme
+   (sql/add-styles.sql dopušta nova imena). */
+const STARE_TEME=['jadran','laguna','zlatnisat','terakota','beton','riviera','ponocni','borova','Beach & Sea']
+const stilObjekta=()=>PROP&&STIL.jeStil(PROP.theme)?PROP.theme:''
+const stilSad=()=>STIL_ODABRAN!=null?STIL_ODABRAN:stilObjekta()
+window.initStil=()=>{
+  if(!PROP)return
+  const el=document.getElementById('stilovi');if(!el)return
+  const cover=PROP.cover_photo_url||(PROP.photo_urls||[])[0]||''
+  const sad=stilSad()
+  STIL.STILOVI.forEach(x=>STIL.ucitajPisma(x.id))
+  el.innerHTML=STIL.STILOVI.map(x=>`<button type="button" role="radio" class="stil-k" data-stil="${x.id}" aria-checked="${x.id===sad}" tabindex="${x.id===sad?0:-1}" style="${STIL.varijable(x.id)}">
+    <span class="stil-k__mini" aria-hidden="true"><span class="stil-k__foto"${cover?` style="background-image:url('${esc(cover)}')"`:''}><span class="stil-k__ime" translate="no">${esc(PROP.name||'Vaš objekt')}</span></span><span class="stil-k__crte"><i></i><i></i></span><span class="stil-k__gumb">Upit</span></span>
+    <span class="stil-k__txt"><b>${esc(x.ime)}</b><small>${esc(x.opis)}</small></span></button>`).join('')
+  el.onclick=e=>{const b=e.target.closest('.stil-k');if(b)odaberiStil(b.dataset.stil)}
+  el.onkeydown=e=>{
+    const k=[...el.querySelectorAll('.stil-k')],i=k.indexOf(document.activeElement)
+    if(i<0)return
+    const n={ArrowRight:1,ArrowDown:1,ArrowLeft:-1,ArrowUp:-1}[e.key]
+    if(!n)return
+    e.preventDefault();const j=(i+n+k.length)%k.length;k[j].focus();odaberiStil(k[j].dataset.stil)
   }
+  osvjeziZivo()
 }
-
-/* Stalni „Pregled gosta" u desnom stupcu ima vlastito zakucano zaglavlje koje
-   ne zna za teme. Na zadanoj temi ostaje netaknut; na svakoj drugoj se sakrije
-   i umjesto njega ide pravi raspored te teme, smanjen na sirinu telefona. */
-function telefon(id){
-  const T=window.Odmoria&&window.Odmoria.teme
-  if(!T||!PROP)return
-  const staro=document.getElementById('prev-hero')
-  const novo=document.getElementById('prev-tema')
-  if(!staro||!novo)return
-  const t=id||T.odabrana()
-  const hl=document.getElementById('fHighlight')
-  if(t==='jadran'){
-    staro.hidden=false; novo.hidden=true; novo.innerHTML=''
-    novo.removeAttribute('data-stil')
+function odaberiStil(id){
+  STIL_ODABRAN=id
+  document.querySelectorAll('#stilovi .stil-k').forEach(b=>{const da=b.dataset.stil===id;b.setAttribute('aria-checked',String(da));b.tabIndex=da?0:-1})
+  if(id!==stilObjekta())window.markDirty&&window.markDirty(document.getElementById('section-izgled'))
+  osvjeziZivo();pregledStil()
+}
+function stilUrl(id){return '/p/'+encodeURIComponent(PROP.slug)+'?stil='+encodeURIComponent(id)+'&domacin=1'}
+function osvjeziZivo(){
+  if(!PROP)return
+  const id=stilSad(),a=document.getElementById('stil-otvori');if(a)a.href=stilUrl(id)
+  const okvir=document.getElementById('stil-okvir'),z=document.getElementById('stil-zivo')
+  if(!okvir||!z||!z.offsetWidth)return
+  z.style.setProperty('--zivo-s',String(Math.min(1,z.offsetWidth/1280)))
+  const url=stilUrl(id);if(okvir.getAttribute('src')!==url)okvir.setAttribute('src',url)
+}
+addEventListener('resize',()=>{const z=document.getElementById('stil-zivo');if(z&&z.offsetWidth)z.style.setProperty('--zivo-s',String(Math.min(1,z.offsetWidth/1280)))})
+/* Telefon desno: javna stranica u odabranom stilu (varijable --pv-*) */
+function pregledStil(){
+  const d=document.getElementById('pv-device');if(!d)return
+  const id=PROP?stilSad():''
+  d.setAttribute('style',STIL.varijable(id))
+  STIL.ucitajPisma(id)
+  const ime=document.getElementById('pv-stil-ime');if(ime)ime.textContent=STIL.stil(id).ime
+  const st=document.getElementById('pv-stil');if(st)st.setAttribute('style',STIL.varijable(id))
+  const o=document.getElementById('pv-otvori')
+  if(o&&PROP)o.href=previewMode==='private'?'/h/demo':stilUrl(id)
+}
+window.saveStil=async()=>{
+  if(!PROP)return
+  const id=stilSad(),sad=PROP.theme
+  /* Ne pojesti tuđi podatak: u stupcu smije biti samo stil, stara tema ili prazno */
+  if(sad!=null&&!STIL.jeStil(sad)&&!STARE_TEME.includes(sad)){
+    showA('izgled-alert','err','U stupcu „theme” u bazi stoji „'+sad+'”, što nije ime stila. Stil nije spremljen da se taj podatak ne izgubi — javite vrijednost (vidi sql/add-styles.sql).')
     return
   }
-  staro.hidden=true; novo.hidden=false
-  novo.setAttribute('data-stil',t)
-  T.ubaci(novo,t,{objekt:T.izBaze(Object.assign({},PROP,{highlight:hl?hl.value:''})),mini:true})
-}
-
-window.saveTema=async()=>{
-  const T=window.Odmoria&&window.Odmoria.teme
-  if(!T||!PROP)return
-  /* U ovoj bazi stupac `theme` postoji od ranije i nosi tuđe vrijednosti.
-     Ako je u njemu nešto što nije ime teme, ne diramo ga — spremanje bi ga
-     tiho pojelo. Istaknuta brojka se svejedno spremi. */
-  const u={highlight:document.getElementById('fHighlight').value.trim()||null}
-  if(T.smijePisati(PROP)) u[T.STUPAC]=T.odabrana()
-  else showA('izgled-alert','err',
-    'Stupac „'+T.STUPAC+'” u bazi već sadrži „'+PROP[T.STUPAC]+'”, što nije ime teme. '
-    +'Tema nije spremljena da se taj podatak ne izgubi — javi vrijednost pa da se '
-    +'stupac razriješi (vidi sql/add-theme-to-properties.sql).')
-  const{error}=await sb.from('properties').update(u).eq('id',PROP.id)
+  const{error}=await sb.from('properties').update({theme:id||null}).eq('id',PROP.id)
   if(error){
-    /* Stupci dolaze iz `sql/add-theme-to-properties.sql`. Dok se ne pokrene,
-       odabir se ne pamti, ali stranica radi i `?stil=` i dalje sve pokazuje. */
-    const nema=/column .* does not exist|schema cache|theme|highlight/i.test(error.message)
-    showA('izgled-alert','err', nema
-      ? 'Baza još nema stupce za temu. Pokrenite sql/add-theme-to-properties.sql u Supabase SQL editoru, pa ponovno spremite.'
-      : error.message)
+    const baza=/check constraint|theme_check|column .*theme|schema cache/i.test(error.message)
+    showA('izgled-alert','err',baza
+      ?'Baza još ne poznaje nove stilove. Pokrenite sql/add-styles.sql u Supabase SQL editoru, pa ponovno spremite.'
+      :error.message)
     return
   }
-  Object.assign(PROP,u)
+  PROP.theme=id||null;STIL_ODABRAN=null
   window.clearDirty&&window.clearDirty()
-  showA('izgled-alert','ok','Spremljeno ✓');toast('Tema spremljena ✓')
+  showA('izgled-alert','ok','Spremljeno ✓');toast('Stil spremljen ✓')
+  pregledStil()
 }
 
 window.saveBasic=async()=>{
@@ -1878,8 +1978,9 @@ window.togglePw=()=>{
   i.type=i.type==='password'?'text':'password'
 }
 window.updateWifiPrev=()=>{
-  document.getElementById('prev-wifi-name').textContent='Wi-Fi mreža '+(document.getElementById('wifi-name').value||'—')
-  document.getElementById('prev-door').textContent=document.getElementById('door-code').value?'Kod za ulazak postavljen':'Kod za ulazak'
+  document.getElementById('prev-wifi-name').textContent=document.getElementById('wifi-name').value||'—'
+  // šifra se nikad ne pokazuje u pregledu — samo je li postavljena
+  document.getElementById('prev-door').textContent=document.getElementById('door-code').value?'••••':'—'
 }
 
 // ── OVERVIEW STATS + CHECKLIST ──────────────────────────
@@ -2812,7 +2913,7 @@ window.nav=(id,el)=>{
   if(id==='objave')obOtvori()
   if(id==='reviews')ucitajRecenzije()
   if(id==='prijevodi')ucitajPrijevode()
-  if((SPOJ[id]||[]).includes('izgled'))window.initTeme&&window.initTeme()
+  if((SPOJ[id]||[]).includes('izgled'))window.initStil&&window.initStil()
   if(id==='analytics')renderAnalytics()
   if(id==='inquiries')ucitajUpite().then(renderUpiti)
   if(id==='overview'&&PROP)renderOverviewOps()
@@ -3248,12 +3349,13 @@ window.obLetak=async()=>{
 }
 
 // ── LIVE PREVIEW ──────────────────────────────────────
-let previewMode='public'
 window.setPreviewMode=(mode,btn)=>{
   previewMode=mode
-  document.querySelectorAll('.preview-toggle button').forEach(b=>b.classList.toggle('active',b===btn))
-  document.getElementById('publicPreview').style.display=mode==='public'?'block':'none'
-  document.getElementById('privatePreview').style.display=mode==='public'?'none':'block'
+  const seg=document.getElementById('pv-seg');seg.dataset.pv=mode
+  seg.querySelectorAll('button').forEach(b=>b.setAttribute('aria-selected',String(b===btn)))
+  document.getElementById('publicPreview').hidden=mode!=='public'
+  document.getElementById('privatePreview').hidden=mode==='public'
+  pregledStil()
 }
 window.livePreview=()=>{
   if(!PROP)return
@@ -3263,8 +3365,10 @@ window.livePreview=()=>{
   const price=v('prop-price')||PROP.price_per_night||0
   const minstay=v('prop-minstay')||PROP.min_stay||1
   document.getElementById('prev-name').textContent=name
+  document.getElementById('prev-name-bar').textContent=name
   document.getElementById('prev-name-p').textContent=name
   document.getElementById('prev-loc').textContent=loc
+  document.getElementById('prev-loc-row').textContent=loc
   document.getElementById('prev-loc-p').textContent=loc
   document.getElementById('prev-welcome').textContent=welcome
   document.getElementById('prev-guests').textContent=COUNTS.guests
@@ -3272,7 +3376,7 @@ window.livePreview=()=>{
   document.getElementById('prev-type').textContent=v('prop-type')||PROP.type||'—'
   document.getElementById('prev-minstay').textContent=minstay
   document.getElementById('prev-price').textContent=price+' €'
-  document.getElementById('prev-checkin').textContent='Check-in od '+(v('ci-time')||'—')
+  document.getElementById('prev-checkin').textContent=v('ci-time')?'od '+v('ci-time'):'—'
   // kartica iznad polja za cijenu: prije se nikad nije azurirala pa je zauvijek pisalo 0 €
   const pp=document.getElementById('pricePreview')
   if(pp)pp.textContent=(price||0)+' €'
@@ -3280,6 +3384,7 @@ window.livePreview=()=>{
   if(mp)mp.textContent=minstay
   const cover=PROP.cover_photo_url||(PROP.photo_urls||[])[0]
   document.getElementById('prev-hero').style.backgroundImage=cover?`url('${cover}')`:''
+  pregledStil()
 }
 
 
