@@ -64,6 +64,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 ├── jezici.js                 # jezici vodiča i javne stranice: rječnik (ključ = hrvatski tekst), t(), n(), H(), birač — vidi „Jezici za goste”
 ├── pokret.js                 # male animacije: veselje(el) iskrice, kvacica(btn) „✓ Kopirano” (stilovi u odmoria.css i dashboardu)
 ├── objave.js                 # Linkovi i QR → Objave: slobodni termini, tekstovi (6 jezika), slika na canvasu, letak — vidi „Objave”
+├── potvrda.js                # potvrdi()/obavijesti(): prozor u stilu aplikacije — NIKAD sistemski confirm()/alert()
 ├── mjesta-osm.js             # prijedlog mjesta u blizini: Nominatim + Overpass (OpenStreetMap), iz preglednika, besplatno
 ├── domacin-jezik.js          # jezik sučelja DOMAĆINA (HR/EN): prekidač, prijevod DOM-a preko rječnika — vidi „Engleski za domaćina”
 ├── domacin-en.js             # engleski rječnik (T) i uzorci (P) za domacin-jezik.js; ključ = hrvatski tekst
@@ -358,6 +359,11 @@ ostati nevidljivo. Posljedica: na snimci cijele stranice (Playwright
 - **Figma `node.query()` puca na ne-ASCII znakove i razmake u selektoru.**
   `[name=red-Klima uređaj]` baca `Invalid selector`. Imena nodova koje se
   dohvaćaju moraju biti ASCII bez razmaka (`red-klima`).
+- **Nikad `confirm()`, `alert()` ni `prompt()`** — preglednik ih pokaže kao
+  „Na web-lokaciji … navodi se sljedeće” (vlasnik, 3. 10. 2026.). Umjesto toga
+  `await potvrdi(poruka, {da:'Ukloni', opasno:true})` i `obavijesti(poruka)`
+  iz `potvrda.js` (dashboard, admin); funkcija mora biti `async`. Testovi koji
+  su prihvaćali sistemski prozor uključuju `scratchpad/autoda.js`.
 - **Pali `use_figma` poziv povuče se u cijelosti** — ništa ne ostane na canvasu,
   pa se smije jednostavno ponoviti ispravljen.
 

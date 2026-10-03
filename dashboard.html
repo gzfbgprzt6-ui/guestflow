@@ -1446,6 +1446,7 @@ import * as O from'./objave.js'
 import * as JZ from'./jezici.js'
 import{kvacica}from'./pokret.js'
 import * as OSMM from'./mjesta-osm.js'
+import{potvrdi}from'./potvrda.js'
 
 const SURL='https://wtojzqjhipdfbrnmprmz.supabase.co'
 const SKEY='sb_publishable_tmZAZTDbQ7ktc1N-8y4q4w_ztAu_62F'
@@ -2098,7 +2099,7 @@ document.querySelectorAll('[data-iqf]').forEach(b=>b.addEventListener('click',()
 window.prihvatiUpit=async id=>{
   const u=UPITI.find(x=>x.id===id);if(!u)return
   const z=zauzeteNoci(u.checkin_date,u.checkout_date)
-  if(z&&!confirm(`${z} ${A.mn(z,'noć','noći','noći')} u tom terminu već je zauzeto. Svejedno prihvatiti upit?`))return
+  if(z&&!await potvrdi(`${z} ${A.mn(z,'noć','noći','noći')} u tom terminu već je zauzeto. Svejedno prihvatiti upit?`,{da:'Svejedno prihvati'}))return
   const napomena=[u.guests?u.guests+' '+A.mn(u.guests,'gost','gosta','gostiju'):'','upit s javne stranice'].filter(Boolean).join(' · ')
   const r=await napraviRezervaciju({name:u.guest_name,note:napomena,ci:u.checkin_date,co:u.checkout_date,email:u.guest_email||''})
   if(r.error){toast('Greška: '+r.error);return}
@@ -2112,13 +2113,13 @@ window.prihvatiUpit=async id=>{
   document.getElementById('iq-'+id)?.scrollIntoView({block:'center',behavior:'smooth'})
 }
 window.odbijUpit=async id=>{
-  if(!confirm('Odbiti upit? Nakon toga možete gostu jednim klikom javiti da termin nije slobodan.'))return
+  if(!await potvrdi('Odbiti upit? Nakon toga možete gostu jednim klikom javiti da termin nije slobodan.',{da:'Odbij',opasno:true}))return
   const{error}=await sb.from('inquiries').update({status:'odbijen'}).eq('id',id)
   if(error){toast('Greška: '+error.message);return}
   IQ_ISTAKNI=id;await ucitajUpite();renderUpiti()
 }
 window.obrisiUpit=async id=>{
-  if(!confirm('Trajno obrisati ovaj upit i gostove podatke?'))return
+  if(!await potvrdi('Trajno obrisati ovaj upit i gostove podatke?',{da:'Obriši',opasno:true}))return
   const{error}=await sb.from('inquiries').delete().eq('id',id)
   if(error){toast('Greška: '+error.message);return}
   await ucitajUpite();renderUpiti()
@@ -2441,7 +2442,7 @@ window.addCustomAmenity=async()=>{
   renderCustomAmenities();renderChecklist();toast('Dodano ✓')
 }
 window.delAmenity=async(id)=>{
-  if(!confirm('Ukloni ovaj sadržaj?'))return
+  if(!await potvrdi('Ukloni ovaj sadržaj?',{da:'Ukloni',opasno:true}))return
   await sb.from('amenities').delete().eq('id',id)
   amenityRows=amenityRows.filter(r=>r.id!==id)
   renderAmenityCatalog();renderCustomAmenities();renderChecklist();toast('Uklonjen')
@@ -2556,7 +2557,7 @@ window.saveListItem=async(key)=>{
   toast('Spremljeno ✓')
 }
 window.delListItem=async(key,id)=>{
-  if(!confirm('Ukloni ovu stavku?'))return
+  if(!await potvrdi('Ukloni ovu stavku?',{da:'Ukloni',opasno:true}))return
   await sb.from(LIST_CFG[key].table).delete().eq('id',id)
   await loadListSections()
   renderChecklist()
@@ -2735,7 +2736,7 @@ window.setCover=async(url)=>{
   PROP.cover_photo_url=url;renderPhotos(PROP.photo_urls||[]);toast('Naslovna postavljena ✓');livePreview()
 }
 window.deletePhoto=async(url)=>{
-  if(!PROP||!confirm('Obriši ovu fotografiju?'))return
+  if(!PROP||!await potvrdi('Obriši ovu fotografiju?',{da:'Obriši',opasno:true}))return
   const urls=(PROP.photo_urls||[]).filter(u=>u!==url)
   const cover=PROP.cover_photo_url===url?(urls[0]||null):PROP.cover_photo_url
   await sb.from('properties').update({photo_urls:urls,cover_photo_url:cover}).eq('id',PROP.id)
@@ -2872,7 +2873,7 @@ window.napraviIzvoz=async()=>{
   await ucitajIzvoz();toast('Link je spreman — zalijepite ga u Booking i Airbnb')
 }
 window.noviIzvoz=async()=>{
-  if(!IZVOZ||!confirm('Napraviti novi link? Stari odmah prestaje raditi — novi treba ponovno zalijepiti u Booking i Airbnb.'))return
+  if(!IZVOZ||!await potvrdi('Napraviti novi link? Stari odmah prestaje raditi — novi treba ponovno zalijepiti u Booking i Airbnb.',{da:'Napravi novi link',opasno:true}))return
   const{error}=await sb.from('calendar_exports').update({token:noviToken()}).eq('id',IZVOZ.id)
   if(error){toast('Greška: '+error.message);return}
   await ucitajIzvoz();toast('Novi link je spreman')
@@ -3036,7 +3037,7 @@ window.createBooking=async()=>{
   if(!ci||!co){showA('bk-alert','err','Upiši datume.');return}
   if(ci>=co){showA('bk-alert','err','Check-out mora biti nakon check-in.');return}
   const zauz=zauzeteNoci(ci,co)
-  if(zauz&&!confirm(`${zauz} ${A.mn(zauz,'noć','noći','noći')} u tom terminu već je zauzeto u kalendaru. Svejedno napraviti rezervaciju?`))return
+  if(zauz&&!await potvrdi(`${zauz} ${A.mn(zauz,'noć','noći','noći')} u tom terminu već je zauzeto u kalendaru. Svejedno napraviti rezervaciju?`,{da:'Svejedno napravi'}))return
   const r=await napraviRezervaciju({name,note,ci,co,email:v('bk-mail'),lang:v('bk-lang')})
   if(r.error){showA('bk-alert','err','Greška: '+r.error);return}
   lastBkUrl=r.url;lastBk={ime:name,ci,co,tel:v('bk-phone'),mail:v('bk-mail')}
@@ -3054,8 +3055,8 @@ window.copyResultLink=()=>{navigator.clipboard?.writeText(lastBkUrl);toast('Link
 /* Bez gostova broja wa.me otvara WhatsApp s izborom kontakta (prije je otvarao domaćinov vlastiti broj) */
 window.shareWA=()=>{const b=lastBk||{};const msg=porukaGostu(b.ime,b.ci,b.co,lastBkUrl);window.open(b.tel?waLink(b.tel,msg):'https://wa.me/?text='+encodeURIComponent(msg),'_blank')}
 window.shareMail=()=>{const b=lastBk||{};location.href=mailLink(b.mail,'Vaš boravak — '+PROP.name,porukaGostu(b.ime,b.ci,b.co,lastBkUrl))}
-window.deactBk=async(id)=>{if(!confirm('Deaktiviraj link?'))return;const{error}=await sb.from('bookings').update({is_active:false}).eq('id',id);if(error){toast('Greška: '+error.message);return}await window.loadBookings();toast('Link deaktiviran')}
-window.delBk=async(id)=>{if(!confirm('Trajno obriši ovu rezervaciju?'))return;await sb.from('availability').delete().eq('booking_id',id);const{error}=await sb.from('bookings').delete().eq('id',id);if(error){toast('Greška: '+error.message);return}await window.loadBookings();toast('Rezervacija obrisana')}
+window.deactBk=async(id)=>{if(!await potvrdi('Deaktiviraj link?',{da:'Deaktiviraj',opasno:true}))return;const{error}=await sb.from('bookings').update({is_active:false}).eq('id',id);if(error){toast('Greška: '+error.message);return}await window.loadBookings();toast('Link deaktiviran')}
+window.delBk=async(id)=>{if(!await potvrdi('Trajno obriši ovu rezervaciju?',{da:'Obriši',opasno:true}))return;await sb.from('availability').delete().eq('booking_id',id);const{error}=await sb.from('bookings').delete().eq('id',id);if(error){toast('Greška: '+error.message);return}await window.loadBookings();toast('Rezervacija obrisana')}
 
 // ── LINKS + QR ────────────────────────────────────────
 window.copyLink=(type)=>{
@@ -3500,13 +3501,13 @@ window.kopirajPozivnicu=id=>{const m=TIM.find(x=>x.id===id);if(!m)return;navigat
 window.posaljiPozivnicu=id=>{const m=TIM.find(x=>x.id===id);if(!m)return;window.open(waLink('',porukaSuradniku(m)),'_blank','noopener')}
 window.ukloniSuradnika=async id=>{
   const m=TIM.find(x=>x.id===id);if(!m)return
-  if(!confirm(m.accepted_at?'Ukloniti suradnika? Pristup objektu prestaje odmah.':'Povući pozivnicu? Link prestaje raditi.'))return
+  if(!await potvrdi(m.accepted_at?'Ukloniti suradnika? Pristup objektu prestaje odmah.':'Povući pozivnicu? Link prestaje raditi.',{da:m.accepted_at?'Ukloni':'Povuci',opasno:true}))return
   const{error}=await sb.from('property_members').delete().eq('id',id)
   if(error){toast('Greška: '+error.message);return}
   await ucitajTim();toast(m.accepted_at?'Suradnik uklonjen':'Pozivnica povučena')
 }
 window.napustiObjekt=async()=>{
-  if(!PROP||!PROP.__dijeljen||!confirm('Napustiti objekt '+PROP.name+'? Više ga nećete vidjeti dok vas vlasnik ponovno ne pozove.'))return
+  if(!PROP||!PROP.__dijeljen||!await potvrdi('Napustiti objekt '+PROP.name+'? Više ga nećete vidjeti dok vas vlasnik ponovno ne pozove.',{da:'Napusti',opasno:true}))return
   const{error}=await sb.from('property_members').delete().eq('property_id',PROP.id).eq('user_id',USER.id)
   if(error){toast('Greška: '+error.message);return}
   PROP=null;await loadProps();toast('Napustili ste objekt')
@@ -3535,7 +3536,7 @@ window.napraviCistacicu=async()=>{
   await ucitajCistacicu();toast('Link za čistačicu je spreman')
 }
 window.noviCistacica=async()=>{
-  if(!CIST||!confirm('Napraviti novi link? Stari odmah prestaje raditi — novi treba ponovno poslati čistačici.'))return
+  if(!CIST||!await potvrdi('Napraviti novi link? Stari odmah prestaje raditi — novi treba ponovno poslati čistačici.',{da:'Napravi novi link',opasno:true}))return
   const{error}=await sb.from('cleaner_links').update({token:noviToken()}).eq('id',CIST.id)
   if(error){toast('Greška: '+error.message);return}
   await ucitajCistacicu();toast('Novi link je spreman')
@@ -3567,7 +3568,7 @@ async function ucitajRecenzije(){
       <div style="display:flex;gap:6px;flex-wrap:wrap">${x.javno?`<button class="btn secondary small" type="button" onclick="skrijRecenziju('${x.id}',${!x.skriveno})">${x.skriveno?'Prikaži':'Sakrij'}</button>`:''}<button class="btn ghost small" type="button" onclick="obrisiRecenziju('${x.id}')">Obriši</button></div></div>`).join('')
 }
 window.skrijRecenziju=async(id,sakrij)=>{const{error}=await sb.from('reviews').update({skriveno:sakrij}).eq('id',id);if(error){toast('Greška: '+error.message);return}toast(sakrij?'Recenzija je sakrivena':'Recenzija je opet javna');ucitajRecenzije()}
-window.obrisiRecenziju=async id=>{if(!confirm('Trajno obrisati ovu ocjenu?'))return;const{error}=await sb.from('reviews').delete().eq('id',id);if(error){toast('Greška: '+error.message);return}toast('Ocjena obrisana');ucitajRecenzije()}
+window.obrisiRecenziju=async id=>{if(!await potvrdi('Trajno obrisati ovu ocjenu?',{da:'Obriši',opasno:true}))return;const{error}=await sb.from('reviews').delete().eq('id',id);if(error){toast('Greška: '+error.message);return}toast('Ocjena obrisana');ucitajRecenzije()}
 
 // ── PRIJEVODI ZA GOSTE (api/prevedi.js u načinu za domaćina) ──────────
 // Ruta provjeri da je objekt korisnikov, vrati sve njegove tekstove s
@@ -3703,7 +3704,7 @@ window.csvGosti=id=>{
   const csv='﻿'+[['Dolazak','Odlazak',...POLJA_GOSTA.map(([,l])=>l)].map(q).join(';'),...o.map(x=>[bk?.checkin_date,bk?.checkout_date,...POLJA_GOSTA.map(([k])=>x[k])].map(q).join(';'))].join('\r\n')
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download=`gosti-${bk?.checkin_date||'boravak'}.csv`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)
 }
-window.obrisiPrijavu=async id=>{if(!confirm('Obrisati podatke gostiju za ovaj boravak? (npr. nakon što ste ih prijavili u eVisitor)'))return;const{error}=await sb.from('guest_registrations').delete().eq('booking_id',id);if(error){toast('Greška: '+error.message);return}delete PRIJAVE[id];document.getElementById('gosti-dlg').close();toast('Podaci obrisani');window.loadBookings()}
+window.obrisiPrijavu=async id=>{if(!await potvrdi('Obrisati podatke gostiju za ovaj boravak? (npr. nakon što ste ih prijavili u eVisitor)',{da:'Obriši',opasno:true}))return;const{error}=await sb.from('guest_registrations').delete().eq('booking_id',id);if(error){toast('Greška: '+error.message);return}delete PRIJAVE[id];document.getElementById('gosti-dlg').close();toast('Podaci obrisani');window.loadBookings()}
 
 // ── SIDEBAR / MOBILE ──────────────────────────────────
 window.toggleSide=()=>{document.getElementById('sidebar').classList.toggle('open');document.getElementById('mobileOverlay').classList.toggle('visible')}

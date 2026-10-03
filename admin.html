@@ -533,6 +533,7 @@ textarea.inp{padding:12px 14px;min-height:140px;resize:vertical}
 
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import{potvrdi,obavijesti}from'./potvrda.js'
 import { loadPlans, ODMORIA_PLANS, normalizePlanId, listPlans, popustZa, postaviPromocije, vrijediSada, formatEur, rokPopusta, trajanjePopusta } from '/plans.js'
 import * as A from '/analitika.js'
 
@@ -891,7 +892,7 @@ $('#tablica').addEventListener('click',async e=>{
   const plan=document.getElementById('pl-'+uid).value
   b.disabled=true; b.textContent='Spremam…'
   const msg=await spremiPretplatu(uid,{plan})
-  if(msg){ b.textContent='Greška'; alert(msg); return }
+  if(msg){ b.textContent='Greška'; await obavijesti(msg); return }
   await ucitaj()
 })
 ;['#trazi','#segment','#filtar','#hSort'].forEach(s=>$(s).addEventListener(s==='#trazi'?'input':'change',()=>{hStr=0;tablica()}))
@@ -929,10 +930,10 @@ $('#izvoz').addEventListener('click',()=>{
 async function kopiraj(txt,poruka,el){
   try{ await navigator.clipboard.writeText(txt); obavijest(el,poruka,true) }catch{ obavijest(el,'Kopiranje nije uspjelo.',false) }
 }
-function obavijest(el,txt,ok){ if(!el){alert(txt);return} el.textContent=txt; el.className=ok?'note-ok mt12':'note-inline mt12'; el.hidden=false; clearTimeout(el.__t); el.__t=setTimeout(()=>{el.hidden=true},5000) }
+function obavijest(el,txt,ok){ if(!el){obavijesti(txt);return} el.textContent=txt; el.className=ok?'note-ok mt12':'note-inline mt12'; el.hidden=false; clearTimeout(el.__t); el.__t=setTimeout(()=>{el.hidden=true},5000) }
 $('#hMail').addEventListener('click',()=>{
   const m=[...new Set(vidljivi().map(h=>h.email).filter(Boolean))]
-  if(!m.length){alert('U odabranom skupu nema e-mail adresa.');return}
+  if(!m.length){obavijesti('U odabranom skupu nema e-mail adresa.');return}
   kopiraj(m.join(', '),`Kopirano ${m.length} adresa.`,null)
 })
 
@@ -1243,9 +1244,9 @@ $('#pForma').addEventListener('submit',async e=>{
 $('#pPopis').addEventListener('click',async e=>{
   const z=e.target.closest('[data-zaustavi],[data-pokreni],[data-obrisi]'); if(!z)return
   let r
-  if(z.dataset.obrisi){ if(!confirm('Trajno obrisati ponudu?'))return; r=await sb.from('plan_promotions').delete().eq('id',z.dataset.obrisi) }
+  if(z.dataset.obrisi){ if(!await potvrdi('Trajno obrisati ponudu?',{da:'Obriši',opasno:true}))return; r=await sb.from('plan_promotions').delete().eq('id',z.dataset.obrisi) }
   else r=await sb.from('plan_promotions').update({aktivan:!!z.dataset.pokreni}).eq('id',z.dataset.zaustavi||z.dataset.pokreni)
-  if(r.error){alert('Greška: '+r.error.message);return}
+  if(r.error){await obavijesti('Greška: '+r.error.message);return}
   await ucitajPonude(); crtajSve()
 })
 
