@@ -500,6 +500,7 @@ export const T = {
   "Od": "From",
   "Odaberite barem jednu vrstu sadržaja.": "Choose at least one type of content.",
   "Odaberite datume dolaska i odlaska.": "Choose arrival and departure dates.",
+  "Odaberite objekt": "Choose a property",
   "Odaberite opis koji najbolje odgovara objektu.": "Choose the description that fits your property best.",
   "Odaberite termin ili upišite datume dolaska i odlaska.": "Choose dates or enter arrival and departure dates.",
   "Odaberite što je gostu dostupno tijekom boravka.": "Choose what guests can use during their stay.",

@@ -470,6 +470,14 @@ traka za spremanje stoji iznad nje. Podtabovi (`.panelnav`) se pomiču **samo
 vodoravno** (`overflow-y:hidden`; `syncGroup()` pomiče `scrollLeft`, ne
 `scrollIntoView` — on je pomicao i stranicu); na mobitelu su kapsule. **Bočna traka ne smije koristiti razred `.nav-item`** — `nav()` s njega skida `active` sa svega.
 
+**Izbornik objekta** (bočna traka, 4. 10. 2026.): gumb `#prop-btn` s
+fotografijom objekta (`palac()`) i prozorčić `#prop-meni` s karticama
+(`nacrtajIzbornik()`: fotografija, ime, mjesto, oznaka dijeljeno/zaključano,
+kvačica na otvorenom) i „Dodaj objekt”. Tipkovnica: strelice, Home/End,
+Enter, Esc; klik izvan zatvara. **Vrijednost i dalje nosi skriveni
+`<select id="prop-sel">`** — izbornik postavi `value` i zove `onPropChange()`
+(pita za nespremljeno, odbija zaključane), pa testovi i ostali kod rade kao prije.
+
 Elementi `#completion-card`, `#user-av` i `.user-row` i dalje postoje jer ih JS puni, ali su skriveni: dovršenost vodiča je u Pregledu i u zaglavlju panela. `#user-plan` je sada značka uz „Pretplata”, a `#user-name` sitni redak uz „Postavke računa”.
 
 Pregled gosta (telefon desno) vidi se tek iznad 1280 px; Figma ga nema, pa je to otvorena odluka.

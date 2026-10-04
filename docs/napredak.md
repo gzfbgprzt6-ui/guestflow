@@ -135,3 +135,5 @@ Popratno:
 - [x] Pregled u stilu „nekretnine” (zaglavlje s fotografijom i trakom
   zauzetosti, brojke s malim stupcima, kartice objekata, karta); popravljen
   prazan „Kako gost vidi” (X-Frame-Options → SAMEORIGIN) — 4. 10. 2026.
+- [x] Izbornik objekta u bočnoj traci: gumb s fotografijom i prozorčić s
+  karticama objekata umjesto sistemskog padajućeg izbornika — 4. 10. 2026.
