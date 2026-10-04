@@ -108,6 +108,18 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
 .ps-dodaj:hover { background: #2A3033; }
 @media (prefers-reduced-motion: no-preference) { .ps-meni:not([hidden]) { animation: ps-in .16s ease-out; } }
 @keyframes ps-in { from { opacity: 0; transform: translateY(-4px) scale(.98); } }
+.ps-dno { display: grid; gap: 6px; margin-top: 6px; grid-template-columns: auto 1fr; }
+.ps-dno .ps-dodaj { margin-top: 0; }
+.ps-kopiraj { min-height: 40px; padding: 0 14px; border: 1px solid rgba(16,24,28,.14); border-radius: 12px; background: #fff; color: var(--ink); cursor: pointer; font: 700 13.5px/1 var(--font-ui); }
+.ps-kopiraj:hover { background: var(--paper-2); }
+.ps-kopiraj[hidden] { display: none; }
+.ps-dno:has(.ps-kopiraj[hidden]) { grid-template-columns: 1fr; }
+.upr-red { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 0; border-top: 1px solid var(--line); }
+.upr-red b { display: block; font: 800 15px/1.3 var(--font-ui); }
+.upr-red small { display: block; max-width: 520px; margin-top: 2px; color: var(--muted); font-size: 13.5px; line-height: 1.45; }
+.upr-red .btn { flex: none; }
+.upr-red[hidden] { display: none; }
+@media (max-width: 780px) { .upr-red { flex-direction: column; align-items: stretch; } }
 
 .sidebar-scroll { flex: 1; overflow-y: auto; padding: 8px 16px 16px; }
 .side-nav { display: grid; gap: 4px; }
@@ -431,31 +443,81 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
 #ical-status { font-size: 18px; line-height: 1.3; }
 
 /* kalendar dostupnosti */
-.calendar { overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--paper); max-width: 920px; }
-.calendar-head { display: flex; align-items: center; justify-content: space-between; padding: 18px 20px; }
-.calendar-head strong { font: 700 22px/1.3 var(--font-ui); letter-spacing: -.02em; }
-.calendar-nav { display: flex; gap: 8px; }
-.calendar-nav button { display: grid; width: 44px; height: 44px; place-items: center; border: 1px solid var(--control); border-radius: 50%; background: var(--paper); color: var(--ink); cursor: pointer; }
-.calendar-nav button:hover { background: var(--paper-2); }
-.weekdays, .calendar-days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; padding: 0 16px; }
-.calendar-days { padding-bottom: 12px; }
-.weekdays span { padding: 4px 0 8px; color: var(--muted); font-size: 13px; text-align: center; }
-.day { position: relative; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between; gap: 4px; min-width: 0; min-height: 76px; padding: 8px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--paper); color: var(--ink); cursor: pointer; font: 600 15px/1 var(--font-ui); text-align: left; }
-/* oznaka izvora u ćeliji: ime gosta, Booking, Airbnb, Ručno — na prvom danu boravka i ponedjeljkom */
-.day .dl { display: block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 700 11px/1.2 var(--font-body); letter-spacing: .01em; opacity: .95; }
-.day.rez { color: #fff; background: var(--copper); border-color: var(--copper); }
-.day.danas { box-shadow: inset 0 0 0 2px var(--copper); }
-.calendar-days > span:empty, .calendar-days > div:empty { border: 0; }
-.day:hover { background: var(--paper-2); }
-.day.busy { color: #fff; background: var(--brown); border-color: var(--brown); }
-.day.busy.rez { background: var(--copper); border-color: var(--copper); }
-.day.rstart { background: var(--copper); border-color: var(--copper); color: #fff; }
-.day.rpreview { background: var(--paper-2); border-color: var(--copper); transition: background .15s ease; }
-.day.ical { background: var(--yellow-soft); border: 1px dashed var(--warm-ink); color: var(--warm-ink); cursor: not-allowed; }
-.calendar-legend { display: flex; flex-wrap: wrap; gap: 8px 20px; padding: 14px 20px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
+/* ── KALENDAR (4. 10. 2026.): trake boravaka, boje po izvoru, popunjenost mjeseca ── */
+.calendar { --cg: 6px; overflow: hidden; border: 1px solid rgba(16,24,28,.06); border-radius: 22px; background: #fff; max-width: 980px; box-shadow: var(--kartica-sjena, 0 14px 34px -18px rgba(16,24,28,.22)); }
+.calendar-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 20px 22px 14px; flex-wrap: wrap; }
+.cal-naslov { display: grid; gap: 4px; }
+.calendar-head strong { font: 800 26px/1.15 var(--font-ui); letter-spacing: -.03em; text-transform: capitalize; }
+.cal-stat { color: var(--muted); font-size: 13.5px; }
+.cal-stat b { color: var(--ink); font-weight: 800; }
+.calendar-nav { display: flex; align-items: center; gap: 8px; }
+.calendar-nav button { display: grid; width: 40px; height: 40px; place-items: center; border: 1px solid rgba(16,24,28,.12); border-radius: 50%; background: #fff; color: var(--ink); cursor: pointer; transition: background .15s ease, transform .15s ease; }
+.calendar-nav button:hover { background: #F4F5F5; }
+.calendar-nav button:active { transform: scale(.94); }
+.calendar-nav .cal-danas { width: auto; padding: 0 14px; border-radius: 999px; font: 700 13px/1 var(--font-ui); }
+/* tanka traka popunjenosti mjeseca (svaki dan jedna crtica) */
+.cal-traka { display: flex; height: 6px; gap: 2px; margin: 0 22px 14px; }
+.cal-traka i { flex: 1; border-radius: 3px; background: #ECEEEE; }
+.cal-traka i.z { background: var(--crna, #14181A); }
+.cal-traka i.b { background: #EFA65A; }
+.cal-traka i.a { background: #F07B72; }
+.cal-traka i.r { background: repeating-linear-gradient(135deg, #8A9396 0 2px, #C9CED0 2px 4px); }
+.weekdays, .calendar-days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: var(--cg); padding: 0 18px; }
+.calendar-days { padding-bottom: 16px; }
+.weekdays span { padding: 2px 0 6px; color: var(--muted); font: 700 11.5px/1 var(--font-ui); letter-spacing: .06em; text-align: center; text-transform: uppercase; }
+.weekdays span:nth-child(n+6) { color: #A2AAAD; }
+.day { position: relative; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between; gap: 4px; min-width: 0; min-height: 82px; padding: 9px 10px; border: 1px solid #EEF0F0; border-radius: 14px; background: #fff; color: var(--ink); cursor: pointer; text-align: left; font: 700 15px/1 var(--font-ui); transition: background .15s ease, border-color .15s ease, transform .15s ease, box-shadow .15s ease; }
+.day > span:first-child { font-variant-numeric: tabular-nums; }
+.day.vikend:not(.busy):not(.ical) { background: #FAFBFB; }
+.day.proslo:not(.busy):not(.ical) { color: #B4BBBE; background: #FBFBFB; }
+.day:hover { border-color: rgba(16,24,28,.3); box-shadow: 0 6px 16px -10px rgba(16,24,28,.4); }
+.calendar-days > div:empty { border: 0; }
+.day .dl { display: block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 700 11px/1.2 var(--font-body); letter-spacing: .01em; }
+/* zauzeto: trake koje se spajaju preko razmaka (poc/kraj = početak/kraj niza u tjednu) */
+.day.busy, .day.ical { border-color: transparent; color: #fff; }
+.day.busy:not(.poc), .day.ical:not(.poc) { margin-left: calc(-1 * var(--cg)); padding-left: calc(10px + var(--cg)); border-top-left-radius: 0; border-bottom-left-radius: 0; }
+.day.busy:not(.kraj), .day.ical:not(.kraj) { border-top-right-radius: 0; border-bottom-right-radius: 0; }
+.day.busy:not(.poc) > span:first-child, .day.ical:not(.poc) > span:first-child { opacity: .7; }
+.day.busy.rez { background: var(--crna, #14181A); }
+.day.busy:not(.rez):not(.ical) { background: repeating-linear-gradient(135deg, #5E686C 0 3px, #6C777B 3px 9px); }
+.day.ical { background: #E9954A; cursor: not-allowed; }
+.day.ical.airbnb { background: #E8675E; }
+.day.busy:hover, .day.ical:hover { box-shadow: none; filter: brightness(1.06); }
+.day.proslo.busy, .day.proslo.ical { opacity: .55; }
+.day.danas { border-color: var(--crna, #14181A); box-shadow: inset 0 0 0 1px var(--crna, #14181A); }
+.day .dn { position: absolute; right: 8px; top: 9px; font: 700 9.5px/1 var(--font-ui); font-style: normal; letter-spacing: .06em; text-transform: uppercase; opacity: .75; }
+.day.busy.danas, .day.ical.danas { box-shadow: inset 0 0 0 2px #fff, 0 0 0 2px var(--crna, #14181A); }
+.day.rstart { background: var(--crna, #14181A); border-color: var(--crna, #14181A); color: #fff; box-shadow: 0 0 0 4px rgba(20,24,26,.15); }
+.day.rpreview { background: #E9EBEB; border-color: #D5D9DA; transition: background .15s ease; }
+.calendar-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; padding: 14px 22px; border-top: 1px solid #EEF0F0; color: var(--muted); font-size: 13px; }
 .calendar-legend span { display: inline-flex; align-items: center; gap: 8px; }
-.calendar-legend i { width: 14px; height: 14px; border-radius: 3px; background: var(--paper); box-shadow: inset 0 0 0 1px var(--control); display: inline-block; }
-.cal-range-lbl { padding: 0 20px 14px; font: 700 14px/1.4 var(--font-ui); color: var(--copper); min-height: 14px; }
+.calendar-legend i { display: inline-block; width: 14px; height: 14px; border-radius: 5px; }
+.lg-slobodno { background: #fff; box-shadow: inset 0 0 0 1px #D9DDDE; }
+.lg-rez { background: var(--crna, #14181A); }
+.lg-rucno { background: repeating-linear-gradient(135deg, #5E686C 0 2px, #6C777B 2px 5px); }
+.lg-booking { background: #E9954A; }
+.lg-airbnb { background: #E8675E; }
+.cal-savjet { margin-left: auto; font-size: 12px; }
+.cal-range-lbl { min-height: 14px; padding: 0 22px 14px; color: var(--ink); font: 700 14px/1.4 var(--font-ui); }
+.cal-range-lbl:not(:empty)::before { content: ""; display: inline-block; width: 8px; height: 8px; margin-right: 8px; border-radius: 50%; background: var(--crna, #14181A); vertical-align: middle; }
+@media (max-width: 780px) {
+  .calendar { --cg: 3px; }
+  .calendar-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 6px 8px; padding: 16px 14px 10px; }
+  .cal-naslov { display: contents; }
+  .cal-stat { grid-column: 1 / -1; grid-row: 2; }
+  .calendar-head strong { font-size: 20px; }
+  .calendar-nav { gap: 6px; }
+  .calendar-nav button { width: 36px; height: 36px; }
+  .calendar-nav .cal-danas { padding: 0 11px; }
+  .cal-traka { margin: 0 14px 10px; }
+  .weekdays, .calendar-days { padding: 0 8px; }
+  .day { min-height: 56px; padding: 6px; border-radius: 10px; font-size: 13px; }
+  .day.busy:not(.poc), .day.ical:not(.poc) { padding-left: calc(6px + var(--cg)); }
+  .day .dl { display: none; }
+  .day .dn { display: none; }
+  .calendar-legend { padding: 12px 14px; gap: 6px 12px; }
+  .cal-savjet { margin-left: 0; }
+}
 
 /* rezervacije */
 .bk-list { display: grid; gap: 8px; }
@@ -737,8 +799,6 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
   .header-progress { display: none; }
 }
 @media (max-width: 780px) {
-  .day { min-height: 58px; padding: 5px; font-size: 14px; }
-  .day .dl { font-size: 10px; }
   .app-shell { display: block; width: 100%; }
   .sidebar { width: min(310px, 86vw); transform: translateX(-101%); transition: transform .22s ease; box-shadow: var(--shadow); }
   .sidebar.open { transform: none; }
@@ -935,7 +995,7 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
         <div class="ps-meni" id="prop-meni" hidden>
           <div class="ps-meni__h"><span>Vaši objekti</span><b id="prop-broj">0</b></div>
           <ul role="listbox" id="prop-lista" aria-label="Odaberite objekt" tabindex="-1"></ul>
-          <a class="ps-dodaj" href="/add-property.html"><svg class="ic ic--sm" aria-hidden="true"><use href="#i-plus"/></svg>Dodaj objekt</a>
+          <div class="ps-dno"><button type="button" class="ps-kopiraj" id="ps-kopiraj" onclick="psZatvori(false);otvoriDuplikat()">Napravi kopiju</button><a class="ps-dodaj" href="/add-property.html"><svg class="ic ic--sm" aria-hidden="true"><use href="#i-plus"/></svg>Dodaj objekt</a></div>
         </div>
         <select id="prop-sel" onchange="onPropChange()" hidden tabindex="-1" aria-hidden="true"></select>
       </div>
@@ -1215,6 +1275,17 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
             <div class="card-head"><div class="card-title-wrap"><span class="card-number">⧉</span><div><h2>Preuzmi sadržaj iz drugog objekta</h2><p>Imate više objekata u istoj kući ili mjestu? Kućna pravila, česta pitanja, preporuke i upute ne morate pisati ponovno.</p></div></div>
               <button class="btn secondary" type="button" onclick="otvoriKopiju()">Preuzmi sadržaj</button></div>
           </div>
+          <div class="card" id="upravljanje-card">
+            <div class="card-head" style="margin-bottom:8px"><div class="card-title-wrap"><span class="card-number">⚙</span><div><h2>Upravljanje objektom</h2><p>Napravite sličan objekt u nekoliko sekundi ili uklonite objekt koji više ne iznajmljujete.</p></div></div></div>
+            <div class="upr-red">
+              <div><b>Kopija objekta</b><small>Više apartmana u istoj kući? Odaberete što se prenosi — opis, cijene, sadržaji, pravila, preporuke, fotografije…</small></div>
+              <button class="btn secondary" type="button" onclick="otvoriDuplikat()">Napravi kopiju</button>
+            </div>
+            <div class="upr-red upr-red--opasno" id="upr-brisanje">
+              <div><b>Obriši objekt</b><small>Briše objekt sa svim podacima: kalendarom, rezervacijama, linkovima za goste, upitima i statistikom. Ne može se vratiti.</small></div>
+              <button class="btn danger" type="button" onclick="obrisiObjekt()">Obriši objekt</button>
+            </div>
+          </div>
         </section>
 
         <!-- IZGLED: stilovi javne stranice (stilovi.js / stilovi.css) -->
@@ -1426,11 +1497,15 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
           <div class="card">
             <div class="card-head"><div class="card-title-wrap"><span class="card-number">11</span><div><h2>Dostupnost</h2><p>Klikni prvi i zadnji datum da označiš cijeli period zauzetim.</p></div></div></div>
             <div class="calendar">
-              <div class="calendar-head"><strong id="cal-title"></strong><div class="calendar-nav"><button type="button" onclick="calNav(-1)">←</button><button type="button" onclick="calNav(1)">→</button></div></div>
+              <div class="calendar-head">
+                <div class="cal-naslov"><strong id="cal-title"></strong><span class="cal-stat" id="cal-stat"></span></div>
+                <div class="calendar-nav"><button type="button" class="cal-danas" onclick="calDanas()">Danas</button><button type="button" onclick="calNav(-1)" aria-label="Prethodni mjesec"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button><button type="button" onclick="calNav(1)" aria-label="Sljedeći mjesec"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button></div>
+              </div>
+              <div class="cal-traka" id="cal-traka" aria-hidden="true"></div>
               <div class="weekdays"><span>Pon</span><span>Uto</span><span>Sri</span><span>Čet</span><span>Pet</span><span>Sub</span><span>Ned</span></div>
               <div class="calendar-days" id="cal-days"></div>
               <div class="cal-range-lbl" id="cal-range-lbl"></div>
-              <div class="calendar-legend"><span><i></i>Slobodno</span><span><i style="background:var(--copper);box-shadow:none"></i>Rezervacija s linkom (ime gosta)</span><span><i style="background:var(--brown);box-shadow:none"></i>Zauzeto ručno</span><span><i style="background:var(--yellow-soft);box-shadow:none;border:1px dashed var(--warm-ink)"></i>Booking / Airbnb (zaključano)</span></div>
+              <div class="calendar-legend"><span><i class="lg-slobodno"></i>Slobodno</span><span><i class="lg-rez"></i>Rezervacija (ime gosta)</span><span><i class="lg-rucno"></i>Zauzeto ručno</span><span><i class="lg-booking"></i>Booking.com</span><span><i class="lg-airbnb"></i>Airbnb</span><span class="cal-savjet">Booking i Airbnb se mijenjaju sami (sinkronizacija)</span></div>
             </div>
           </div>
         </section>
@@ -1720,6 +1795,20 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
   </div>
 </dialog>
 
+<!-- Kopiraj objekt (napraviDuplikat) — novi objekt s odabranim dijelovima; nikad šifre, Wi-Fi, adresa, kalendar ni rezervacije -->
+<dialog class="dirty-dlg" id="dupl-dlg" aria-labelledby="dupl-t">
+  <h2 id="dupl-t">Kopija objekta</h2>
+  <p>Napravit ćemo novi objekt na temelju <b id="dupl-od" translate="no"></b>. Odaberite što se prenosi — sve ostalo uredite poslije.</p>
+  <div class="field" style="margin-bottom:14px"><label for="dupl-ime">Naziv novog objekta</label><input class="input" id="dupl-ime" maxlength="120" autocomplete="off"></div>
+  <div class="kopija-izbor" id="dupl-izbor"></div>
+  <p class="helper" style="margin:10px 0 0">Ne prenosi se: kalendar, rezervacije, iCal linkovi, Wi-Fi, šifra vrata, točna adresa, recenzije i statistika.</p>
+  <p class="helper" id="dupl-st" role="status" style="margin:10px 0 0"></p>
+  <div class="dirty-dlg__act" style="margin-top:18px">
+    <button type="button" class="btn" id="dupl-da" onclick="napraviDuplikat()">Napravi kopiju</button>
+    <button type="button" class="btn ghost" onclick="document.getElementById('dupl-dlg').close()">Odustani</button>
+  </div>
+</dialog>
+
 <!-- Prijedlog mjesta iz OpenStreetMapa (mjesta-osm.js) -->
 <dialog class="dirty-dlg" id="osm-dlg" aria-labelledby="osm-t">
   <h2 id="osm-t">Mjesta u blizini</h2>
@@ -1761,7 +1850,7 @@ import * as STIL from'./stilovi.js'
 // gore, prije prvog poziva selectProp()/livePreview() (zamka kao STATES u h.html)
 let STIL_ODABRAN=null   // stil kliknut u Izgledu, a još nije spremljen
 let previewMode='public'
-import{potvrdi}from'./potvrda.js'
+import{potvrdi,obavijesti}from'./potvrda.js'
 
 const SURL='https://wtojzqjhipdfbrnmprmz.supabase.co'
 const SKEY='sb_publishable_tmZAZTDbQ7ktc1N-8y4q4w_ztAu_62F'
@@ -2005,6 +2094,8 @@ async function selectProp(p){
   renderQr()
   renderSubPanel()
   {const kc=document.getElementById('kopija-card');if(kc)kc.hidden=PROPS.length<2}
+  {const ub=document.getElementById('upr-brisanje');if(ub)ub.hidden=!!p.__dijeljen
+   const pk=document.getElementById('ps-kopiraj');if(pk)pk.hidden=!!p.__dijeljen}
   if(document.querySelector('.editor-panel.active')?.id==='section-prijevodi')ucitajPrijevode()
   if(document.querySelector('.editor-panel.active')?.id==='section-objave')obOtvori(true)
   if(document.querySelector('.editor-panel.active')?.id==='section-links'){ucitajCistacicu();ucitajTim()}
@@ -3054,6 +3145,12 @@ function oznakaDana(r){
   return r.booking_id?'Rezervacija':'Ručno'
 }
 function pomakDana(ds,n){const d=new Date(ds+'T12:00:00');d.setDate(d.getDate()+n);return fmtLocal(d)}
+/* ključ niza: isti izvor i ista rezervacija = jedna traka */
+function kljucDana(ds){
+  if(!bookedDays.includes(ds))return ''
+  const r=AVAIL_MAP[ds]   // dan označen upravo sada još nema red u AVAIL_MAP = ručno
+  return r?(r.source||'manual')+'|'+(r.booking_id||''):'manual|'
+}
 function renderCal(){
   const danas=fmtLocal(new Date())
   const el=document.getElementById('cal-title')
@@ -3061,26 +3158,38 @@ function renderCal(){
   const fd=(new Date(calYear,calMonth,1).getDay()+6)%7
   const dim=new Date(calYear,calMonth+1,0).getDate()
   filledSet=new Set()
-  let h=''
+  let h='',traka='',zauzeto=0
   for(let i=0;i<fd;i++)h+='<div></div>'
   for(let d=1;d<=dim;d++){
     const ds=`${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`
     const ical=icalDays.includes(ds)
     const taken=bookedDays.includes(ds)
+    const dt=(fd+d-1)%7   // 0 = ponedjeljak
     let cls='day'
     const red=AVAIL_MAP[ds],lbl=oznakaDana(red)
-    if(ical)cls+=' ical'
+    const k=kljucDana(ds)
+    const poc=dt===0||d===1||kljucDana(pomakDana(ds,-1))!==k
+    const kraj=dt===6||d===dim||kljucDana(pomakDana(ds,1))!==k
+    if(ical)cls+=' ical'+(red&&red.source==='ical_airbnb'?' airbnb':'')
     else if(rangeStart===ds)cls+=' rstart'
     else if(taken)cls+=' busy'+(red&&red.booking_id?' rez':'')
+    if((ical||taken)&&rangeStart!==ds){if(poc)cls+=' poc';if(kraj)cls+=' kraj'}
+    if(dt>4)cls+=' vikend'
+    if(ds<danas)cls+=' proslo'
     if(ds===danas)cls+=' danas'
-    // oznaka samo na prvom danu niza i ponedjeljkom (da se u tjednu vidi čije je)
-    const prije=AVAIL_MAP[pomakDana(ds,-1)]
-    const pokazi=lbl&&(oznakaDana(prije)!==lbl||(prije&&prije.booking_id)!==(red&&red.booking_id)||(fd+d-1)%7===0)
+    if(taken)zauzeto++
+    traka+=`<i class="${ical?(red&&red.source==='ical_airbnb'?'a':'b'):taken?(red&&red.booking_id?'z':'r'):''}"></i>`
+    // oznaka samo na prvom danu niza u tjednu (da se vidi čije je)
+    const pokazi=lbl&&poc
     const opis=`${d}. ${MONTHS[calMonth].toLowerCase()}: ${lbl||(taken?'zauzeto':'slobodno')}`
-    h+=`<button type="button" class="${cls}" data-ds="${ds}" aria-label="${esc(opis)}" onclick="toggleDay('${ds}')" onmouseover="previewRange('${ds}')"><span>${d}</span>${pokazi?`<small class="dl">${esc(lbl)}</small>`:''}</button>`
+    h+=`<button type="button" class="${cls}" data-ds="${ds}" aria-label="${esc(opis)}" onclick="toggleDay('${ds}')" onmouseover="previewRange('${ds}')"><span>${d}</span>${ds===danas?'<em class="dn">danas</em>':''}${pokazi?`<small class="dl">${esc(lbl)}</small>`:''}</button>`
   }
   const days=document.getElementById('cal-days')
   if(days)days.innerHTML=h
+  const tr=document.getElementById('cal-traka')
+  if(tr)tr.innerHTML=traka
+  const st=document.getElementById('cal-stat')
+  if(st)st.textContent=`${zauzeto} od ${dim} noći zauzeto · popunjenost ${Math.round(zauzeto/dim*100)} %`
 }
 window.previewRange=(ds)=>{
   if(!rangeStart||ds===rangeStart||ds===hoverDs)return
@@ -3103,6 +3212,7 @@ window.previewRange=(ds)=>{
   const n=datesBetween(from,to).length
   setRangeLbl(`${fmtHR(from)} → ${fmtHR(to)} (${n} dana)`)
 }
+window.calDanas=()=>{const t=new Date();calYear=t.getFullYear();calMonth=t.getMonth();rangeStart=null;hoverDs=null;setRangeLbl('');renderCal()}
 window.calNav=(d)=>{calMonth+=d;if(calMonth>11){calMonth=0;calYear++}if(calMonth<0){calMonth=11;calYear--}rangeStart=null;hoverDs=null;setRangeLbl('');renderCal()}
 window.toggleDay=async(ds)=>{
   if(!PROP)return
@@ -3887,6 +3997,16 @@ window.kopirajSadrzaj=async()=>{
   const st=document.getElementById('kopija-st'),btn=document.getElementById('kopija-da')
   if(!od||!na||od===na||!vrste.length){st.textContent='Odaberite barem jednu vrstu sadržaja.';return}
   btn.disabled=true;st.textContent='Preuzimam…'
+  const rez=await prenesiSadrzaj(od,na,vrste)
+  st.innerHTML=rez.map(esc).join('<br>')
+  btn.disabled=false
+  await loadSection();await loadListSections();await loadAmenities();renderChecklist();livePreview()
+  toast('Sadržaj je preuzet ✓')
+}
+/* Jedan prijenos sadržaja za „Preuzmi sadržaj” i „Kopiraj objekt”: dodaje,
+   ne briše; isti naziv se preskače; upute iz sections pune samo prazna polja
+   i NIKAD door_code, wifi_name, wifi_pass, address. */
+async function prenesiSadrzaj(od,na,vrste){
   const rez=[]
   for(const x of KOPIJA.filter(x=>vrste.includes(x.k))){
     if(x.k==='sections'){
@@ -3910,10 +4030,78 @@ window.kopirajSadrzaj=async()=>{
     }
     rez.push(`${x.t}: ${n} dodano`+(nove.length-n?`, ${nove.length-n} nije (${limit?'limit plana':'već postoji'})`:'')+((a||[]).length-nove.length?`, ${(a||[]).length-nove.length} već postoji`:''))
   }
-  st.innerHTML=rez.map(esc).join('<br>')
+  return rez
+}
+
+// ── KOPIRAJ OBJEKT (novi objekt s odabranim dijelovima) ─────────
+// Stupci properties po skupinama; prenose se samo oni koji u retku postoje.
+const DUPL_POLJA=[
+  {k:'p:osnovno',t:'Opis, riječ domaćina i kontakt',polja:['type','location','host_name','phone','email','welcome_msg']},
+  {k:'p:kapacitet',t:'Kapacitet (gosti, sobe, kreveti, kupaonice, m²)',polja:['max_guests','bedrooms','beds','bathrooms','size_m2']},
+  {k:'p:cijene',t:'Cijena, najkraći boravak i postavke stranice',polja:['price_per_night','min_stay','allow_gap_fill_stays','min_gap_stay','show_availability','show_local','show_transport','show_attractions','show_faq','auto_email_gostu'],prefiks:'pristojba_'},
+  {k:'p:stil',t:'Izgled javne stranice (stil)',polja:['theme']},
+  {k:'p:foto',t:'Fotografije',polja:['photo_urls','cover_photo_url'],ne:true}
+]
+window.otvoriDuplikat=async()=>{
+  if(!PROP)return
+  if(PROP.__dijeljen){toast('Kopirati možete samo vlastiti objekt.');return}
+  document.getElementById('dupl-od').textContent=PROP.name||'ovog objekta'
+  document.getElementById('dupl-ime').value=(PROP.name||'Objekt')+' 2'
+  document.getElementById('dupl-st').textContent=''
+  document.getElementById('dupl-da').disabled=false
+  const el=document.getElementById('dupl-izbor')
+  el.innerHTML='<p class="helper">Učitavam…</p>'
+  document.getElementById('dupl-dlg').showModal()
+  const n=await Promise.all(KOPIJA.map(async x=>{
+    if(x.k==='sections'){const{data}=await sb.from('sections').select('*').eq('property_id',PROP.id).maybeSingle();return UPUTE.filter(f=>data&&String(data[f]||'').trim()).length}
+    const{data}=await sb.from(x.k).select('id').eq('property_id',PROP.id);return(data||[]).length
+  }))
+  const foto=(PROP.photo_urls||[]).length
+  el.innerHTML=DUPL_POLJA.map(x=>`<label><input type="checkbox" value="${x.k}" ${x.ne?'':'checked'}>${x.t}<small>${x.k==='p:foto'?(foto?foto+' fotografija':'nema'):''}</small></label>`).join('')
+    +KOPIJA.map((x,i)=>`<label><input type="checkbox" value="${x.k}" ${n[i]?'checked':'disabled'}>${x.t}<small>${n[i]?(x.k==='sections'?n[i]+' polja':n[i]):'prazno'}</small></label>`).join('')
+}
+const noviSlug=ime=>(String(ime).toLowerCase().replace(/[čć]/g,'c').replace(/š/g,'s').replace(/ž/g,'z').replace(/đ/g,'d').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,40)||'objekt')+'-'+Math.random().toString(36).slice(2,6)
+window.napraviDuplikat=async()=>{
+  if(!PROP||PROP.__dijeljen)return
+  const st=document.getElementById('dupl-st'),btn=document.getElementById('dupl-da')
+  const ime=document.getElementById('dupl-ime').value.trim()
+  if(!ime){st.textContent='Upišite naziv novog objekta.';return}
+  if(PLAN_LIMIT!==-1&&vlastiti().length>=PLAN_LIMIT){st.textContent=limitMessage('properties',USER_PLAN);return}
+  const odabrano=new Set([...document.querySelectorAll('#dupl-izbor input:checked')].map(i=>i.value))
+  const red={user_id:USER.id,name:ime,slug:noviSlug(ime),guest_token:Math.random().toString(36).slice(2,12)}
+  DUPL_POLJA.filter(x=>odabrano.has(x.k)).forEach(x=>{
+    x.polja.forEach(f=>{if(f in PROP&&PROP[f]!=null)red[f]=PROP[f]})
+    if(x.prefiks)Object.keys(PROP).filter(f=>f.startsWith(x.prefiks)&&PROP[f]!=null).forEach(f=>red[f]=PROP[f])
+  })
+  if(red.theme!=null&&!STIL.jeStil(red.theme))delete red.theme
+  btn.disabled=true;st.textContent='Pravim kopiju…'
+  const{data:novi,error}=await sb.from('properties').insert(red).select().single()
+  if(error){btn.disabled=false;st.textContent=/plan|limit/i.test(error.message||'')?error.message:'Kopija nije napravljena: '+error.message;return}
+  const vrste=KOPIJA.map(x=>x.k).filter(k=>odabrano.has(k))
+  if(!vrste.includes('sections'))await sb.from('sections').insert({property_id:novi.id})
+  const rez=vrste.length?await prenesiSadrzaj(PROP.id,novi.id,vrste):[]
+  st.innerHTML=['Objekt „'+ime+'” je napravljen.',...rez].map(esc).join('<br>')
+  await loadProps()
+  const p=PROPS.find(x=>x.id===novi.id);if(p)await selectProp(p)
+  document.getElementById('dupl-dlg').close()
   btn.disabled=false
-  await loadSection();await loadListSections();await loadAmenities();renderChecklist();livePreview()
-  toast('Sadržaj je preuzet ✓')
+  toast('Kopija je napravljena — sad uređujete „'+ime+'” ✓')
+}
+
+// ── OBRIŠI OBJEKT (sql/delete-property.sql → obrisi_objekt) ────
+window.obrisiObjekt=async()=>{
+  if(!PROP||PROP.__dijeljen)return
+  const ime=PROP.name||'ovaj objekt'
+  if(!await potvrdi(`Obrisati „${ime}”?\n\nBrišu se i kalendar, rezervacije, linkovi za goste (vodič prestaje raditi), upiti, recenzije, fotografije u objektu i statistika. Ovo se ne može vratiti.`,{da:'Obriši zauvijek',opasno:true}))return
+  const danas=new Date().toISOString().slice(0,10)
+  const{data:bk}=await sb.from('bookings').select('id').eq('property_id',PROP.id).eq('is_active',true).gte('checkout_date',danas)
+  if((bk||[]).length&&!await potvrdi(`„${ime}” ima ${bk.length} ${bk.length===1?'aktivnu rezervaciju':'aktivnih rezervacija'} — ti gosti će izgubiti pristup vodiču. Svejedno obrisati?`,{da:'Da, obriši',opasno:true}))return
+  const{data,error}=await sb.rpc('obrisi_objekt',{p_objekt:PROP.id})
+  if(error){await obavijesti(/function|schema cache|does not exist/i.test(error.message)?'Brisanje objekta još nije uključeno. U Supabaseu pokrenite sql/delete-property.sql, pa pokušajte ponovno.':'Brisanje nije uspjelo: '+error.message);return}
+  if(!data||data.stanje!=='ok'){await obavijesti(data&&data.stanje==='nije_vlasnik'?'Objekt može obrisati samo njegov vlasnik.':'Brisanje nije uspjelo. Osvježite stranicu i pokušajte ponovno.');return}
+  window.clearDirty&&window.clearDirty()
+  toast('„'+ime+'” je obrisan')
+  await loadProps()
 }
 
 // ── SURADNICI (sql/add-team-access.sql) ────────────────────────

@@ -139,3 +139,8 @@ Popratno:
   karticama objekata umjesto sistemskog padajućeg izbornika — 4. 10. 2026.
 - [x] Stil „nekretnine” na svim zaslonima domaćina (dashboard, postavljanje,
   dodavanje objekta, račun): bijele kartice sa sjenom, crne kapsule — 4. 10. 2026.
+- [x] **Kopija objekta** (domaćin bira što se prenosi; fotografije po želji;
+  nikad kalendar, rezervacije, šifre, Wi-Fi ni adresa) i **brisanje objekta**
+  (dvije potvrde) — 4. 10. 2026. Brisanje treba `sql/delete-property.sql`.
+- [x] **Kalendar** prepravljen: boravci kao spojene trake u boji izvora, ime
+  gosta, traka popunjenosti mjeseca, „Danas”, vikendi i prošli dani — 4. 10. 2026.

@@ -112,6 +112,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
     ├── add-team-access.sql              # suradnici: property_members, je_suradnik(), prihvati_pozivnicu(), plan_objekta(), najviše 3
     ├── add-guest-emails.sql             # automatski e-mail gostu (dolazak / zahvala), pg_cron dnevno; TEK nakon KORAKA 2 i add-inquiry-email.sql
     ├── add-styles.sql                   # stilovi: nova imena u properties.theme (CHECK), Beach & Sea → NULL, stane na nepoznatom
+    ├── delete-property.sql              # obrisi_objekt(id): brisanje jednog objekta, samo vlasnik, sve tablice u jednoj transakciji
     └── fix-missing-columns-and-storage.sql # ALTER TABLE dopune (photo_urls, ical_*, beds/bathrooms/size_m2) + storage bucket policy
 ```
 
@@ -485,6 +486,37 @@ kvačica na otvorenom) i „Dodaj objekt”. Tipkovnica: strelice, Home/End,
 Enter, Esc; klik izvan zatvara. **Vrijednost i dalje nosi skriveni
 `<select id="prop-sel">`** — izbornik postavi `value` i zove `onPropChange()`
 (pita za nespremljeno, odbija zaključane), pa testovi i ostali kod rade kao prije.
+Na dnu izbornika „Napravi kopiju” (samo vlastiti objekt).
+
+**Kopija i brisanje objekta** (Objekt → Osnovno → „Upravljanje objektom”,
+4. 10. 2026.):
+- **Kopija** (`otvoriDuplikat()` → `#dupl-dlg` → `napraviDuplikat()`): novi
+  red u `properties` s novim `slug` i `guest_token`; domaćin kvačicama bira
+  skupine stupaca (`DUPL_POLJA`: opis i kontakt, kapacitet, cijene i postavke
+  + `pristojba_*`, stil; **fotografije su zadano isključene**) i sadržaj iz
+  drugih tablica — isti `prenesiSadrzaj()` kao „Preuzmi sadržaj” (jedna kopija
+  logike). **Nikad se ne prenose** kalendar, rezervacije, iCal linkovi,
+  `door_code`, `wifi_name`, `wifi_pass`, `address`, recenzije ni statistika.
+  Limit broja objekata provjerava se prije (`vlastiti()`), a provodi ga baza.
+  Suradnik ne može kopirati tuđi objekt.
+- **Brisanje** (`obrisiObjekt()`): dvije potvrde (druga samo ako ima aktivnih
+  rezervacija), pa `rpc('obrisi_objekt')` iz **`sql/delete-property.sql`**
+  (SECURITY DEFINER, samo **vlasnik**, sve tablice objekta u jednoj
+  transakciji). Bez SQL-a poruka kaže koju datoteku pokrenuti. Fotografije na
+  Cloudinaryju ostaju (kao i kod brisanja računa).
+- Gumbi se ne smiju zvati „Kopiraj …” — svaki gumb s tim početkom dobije
+  kvačicu „Kopirano” (zato „Napravi kopiju”).
+
+**Kalendar** (Boravci → Kalendar, 4. 10. 2026.): `renderCal()` crta zauzete
+noći kao **trake** — uzastopni dani istog izvora i iste rezervacije
+(`kljucDana(ds)`) dobiju `poc`/`kraj` i spajaju se preko razmaka (negativan
+`margin-left` = `--cg`); traka se lomi na kraju tjedna. Boje: rezervacija
+crna (ime gosta na početku trake), ručno sivo prugasto, Booking narančasto,
+Airbnb koraljno (`.ical.airbnb`). Iznad mreže tanka traka mjeseca
+(`#cal-traka`, crtica po danu) i `#cal-stat` („N od M noći zauzeto ·
+popunjenost X %”); gumb „Danas” (`calDanas()`). Oznaka „danas” je element
+`.dn`, ne CSS `content`, da je engleski prevede. Dan označen upravo sada još
+nema red u `AVAIL_MAP` — `kljucDana()` ga zato tretira kao ručni.
 
 Elementi `#completion-card`, `#user-av` i `.user-row` i dalje postoje jer ih JS puni, ali su skriveni: dovršenost vodiča je u Pregledu i u zaglavlju panela. `#user-plan` je sada značka uz „Pretplata”, a `#user-name` sitni redak uz „Postavke računa”.
 

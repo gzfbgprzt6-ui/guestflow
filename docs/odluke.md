@@ -1265,6 +1265,9 @@ KORAKA 1 (točka 2 ispod je time obavljena).
 8. Ako još nije: `sql/auto-ical-sync.sql` (`<ADRESA>`, `<CRON_SECRET>`).
 9. `sql/add-styles.sql` — stilovi javne stranice (dopušta nova imena u
    `properties.theme`; stane ako zatekne nepoznatu vrijednost).
+10. `sql/delete-property.sql` — gumb „Obriši objekt” (funkcija
+   `obrisi_objekt`, smije samo vlasnik). Bez nje gumb kaže da brisanje još
+   nije uključeno; ništa se ne briše.
 
 **B. Vercel → Settings → Environment Variables (Production) → Redeploy:**
 `SUPABASE_SERVICE_ROLE_KEY`, `CRON_SECRET`, `ANTHROPIC_API_KEY` (prijevodi),
