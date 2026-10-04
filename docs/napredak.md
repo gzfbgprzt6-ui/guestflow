@@ -129,3 +129,6 @@ Popratno:
 - [x] Treće spajanje u `main` — 3. 10. 2026. (PR #2, `8c1b077`): stilovi,
   pregled gosta, objave, izvoz kalendara, suradnici, engleski, mjesta, e-mail
   gostu. SQL koraci: `docs/odluke.md`, točka 27.
+- [x] Mobitel: plutajuća donja traka i ikone u stilu „Iconly” (i u bočnoj
+  traci), podtabovi kao kapsule bez okomitog pomicanja, prijedlozi adrese
+  ispod polja — 4. 10. 2026.

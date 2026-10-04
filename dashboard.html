@@ -87,10 +87,17 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
 .side-nav { display: grid; gap: 4px; }
 .side-link { position: relative; display: flex; align-items: center; gap: 12px; width: 100%; min-height: 44px; padding: 0 12px; border: 0; border-radius: var(--radius-sm); background: transparent; color: var(--ink); cursor: pointer; font: 500 15px/1.2 var(--font-ui); text-align: left; }
 .side-link .ic { color: var(--muted); }
+/* glavna navigacija: obris kad nije odabrano, puna ikona kad jest (stil Iconly) */
+.nv { width: 22px; height: 22px; flex: none; }
+.nv-b, .active > .nv-o { display: none; }
+.active > .nv-b { display: block; }
+.side-link .nv { color: var(--muted); }
+.side-link.active .nv { color: var(--ink); }
+.side-link .ic { stroke-width: 1.6; }
 .side-link:hover { background: var(--paper-2); }
 .side-link.active { background: var(--paper-2); font-weight: 700; }
 .side-link.active::before { content: ""; position: absolute; left: 0; top: 8px; bottom: 8px; width: 3px; border-radius: 3px; background: var(--copper); }
-.side-link.active .ic { color: var(--copper); }
+.side-link.active .ic { color: var(--ink); }
 .side-link .badge { margin-left: auto; padding: 3px 8px; border-radius: 6px; box-shadow: inset 0 0 0 1px var(--control); font: 700 11px/1.3 var(--font-body); letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; }
 .side-link small { display: block; color: var(--muted); font: 400 12px/1.3 var(--font-body); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
@@ -138,7 +145,8 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
 /* podtabovi grupe (Objekt, Boravci) */
 .panelnav-wrap { position: relative; margin: -8px 0 24px; border-bottom: 1px solid var(--line); }
 .panelnav-wrap[hidden] { display: none; }
-.panelnav { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.panelnav { display: flex; gap: 4px; overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain; scrollbar-width: none; -webkit-overflow-scrolling: touch; scroll-snap-type: x proximity; }
+.panelnav .nav-item { scroll-snap-align: start; }
 .panelnav::-webkit-scrollbar { display: none; }
 .panelnav .nav-item { flex: none; min-height: 48px; padding: 0 14px; border: 0; border-bottom: 3px solid transparent; margin-bottom: -1px; background: transparent; color: var(--muted); cursor: pointer; font: 600 15px/1 var(--font-ui); white-space: nowrap; }
 .panelnav .nav-item:hover { color: var(--ink); }
@@ -384,7 +392,7 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
 .nav-count { display: inline-grid; place-items: center; min-width: 20px; height: 20px; margin-left: 6px; padding: 0 6px; border-radius: 10px; background: var(--copper); color: #fff; font: 700 12px/1 var(--font-body); }
 .nav-count[hidden] { display: none; }   /* display:inline-grid inače nadjača atribut hidden */
 .side-link .nav-count { margin-left: auto; }
-.bottom-nav .nav-count { position: absolute; top: 2px; right: calc(50% - 26px); margin: 0; }
+.bottom-nav .nav-count { position: absolute; top: 3px; right: calc(50% - 22px); margin: 0; }
 .bottom-nav button { position: relative; }
 .iq { display: grid; gap: 10px; padding: 18px; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--paper); }
 .iq.is-new { border-color: var(--copper); box-shadow: inset 3px 0 0 var(--copper); }
@@ -648,14 +656,20 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
   .card { padding: 20px 16px; }
   .mobile-overlay { position: fixed; z-index: 39; inset: 0; display: block; background: rgba(10,42,51,.4); opacity: 0; pointer-events: none; transition: opacity .18s ease; }
   .mobile-overlay.visible { opacity: 1; pointer-events: auto; }
-  .bottom-nav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 35; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); padding: 6px 4px calc(6px + env(safe-area-inset-bottom)); background: var(--paper); border-top: 1px solid var(--line); }
-  .bottom-nav button { display: grid; justify-items: center; gap: 4px; min-height: 52px; padding: 4px 0; border: 0; background: none; color: var(--muted); cursor: pointer; font: 600 12px/1.2 var(--font-ui); }
-  .bottom-nav button .ic { width: 22px; height: 22px; }
-  .bottom-nav button.active { color: var(--ink); font-weight: 700; }
-  .bottom-nav button.active .ic { color: var(--copper); }
-  .bottom-nav button.active span.pill { background: var(--paper-2); }
-  .bottom-nav span.pill { display: grid; place-items: center; width: 48px; height: 28px; border-radius: 14px; }
-  .savebar { left: 12px; right: 12px; bottom: 84px; transform: translateY(260%); justify-content: space-between; gap: 12px; }
+  /* plutajuća traka (stil „Iconly”): bijela kapsula, meka sjena, puna ikona za odabrano */
+  .bottom-nav { position: fixed; left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bottom)); z-index: 35; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); padding: 7px 6px; border: 1px solid rgba(16,61,75,.07); border-radius: 28px;
+    background: rgba(255,255,255,.94); backdrop-filter: blur(18px) saturate(1.5); -webkit-backdrop-filter: blur(18px) saturate(1.5);
+    box-shadow: 0 22px 44px -16px rgba(10,30,38,.32), 0 4px 12px rgba(10,30,38,.06), inset 0 1px 0 #fff; }
+  .bottom-nav button { display: grid; justify-items: center; align-content: center; gap: 5px; min-height: 54px; padding: 4px 0; border: 0; border-radius: 20px; background: none; color: var(--muted); cursor: pointer; font: 500 11.5px/1.1 var(--font-ui); letter-spacing: .01em; }
+  .bottom-nav .nv { width: 24px; height: 24px; }
+  .bottom-nav button.active { color: var(--ink); font-weight: 800; }
+  .bottom-nav button:focus-visible { outline: 2px solid var(--ink); outline-offset: -2px; }
+  /* podtabovi na mobitelu: kapsule u istom duhu, pomiču se samo vodoravno */
+  .panelnav-wrap { margin: -4px -16px 20px; border-bottom: 0; }
+  .panelnav { gap: 6px; padding: 4px 16px 6px; scroll-padding-inline: 16px; }
+  .panelnav .nav-item { min-height: 40px; padding: 0 16px; border: 1px solid var(--line); border-radius: 999px; margin: 0; background: var(--paper); font-size: 14px; }
+  .panelnav .nav-item.active { border-color: var(--ink); background: var(--ink); color: #fff; }
+  .savebar { left: 12px; right: 12px; bottom: calc(92px + env(safe-area-inset-bottom)); transform: translateY(260%); justify-content: space-between; gap: 12px; }
   .savebar.show { transform: none; }
   .savebar .sb-txt { white-space: normal; font-size: 14px; }
   .toast { right: 16px; left: 16px; bottom: 84px; min-width: 0; }
@@ -718,6 +732,17 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
   <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" /> <circle cx="12" cy="12" r="3" /></symbol>
   <symbol id="i-book-open" viewBox="0 0 24 24"><path d="M12 5v16" /> <path d="M20.001 19A2 2 0 0022 17V5a2 2 0 00-1.999-2L16 3.002A5 5 0 0012 5a5 5 0 00-4-2H4a2 2 0 00-2 2v12a2 2 0 001.999 2H8a5 5 0 014 2 5 5 0 014-2z" /></symbol>
   <symbol id="i-ellipsis" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1" /> <circle cx="19" cy="12" r="1" /> <circle cx="5" cy="12" r="1" /></symbol>
+  <!-- glavna navigacija: obris (-o) i puna (-b) ikona, stil kao Iconly (zaobljeno, 1,6 px) -->
+  <symbol id="nv-pregled-o" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3.5" y="3.5" width="7" height="7" rx="2.2"/><rect x="13.5" y="3.5" width="7" height="7" rx="3.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="2.2"/><rect x="13.5" y="13.5" width="7" height="7" rx="2.2"/></g></symbol>
+  <symbol id="nv-pregled-b" viewBox="0 0 24 24"><g fill="currentColor"><rect x="3" y="3" width="8" height="8" rx="2.4"/><rect x="13" y="3" width="8" height="8" rx="4"/><rect x="3" y="13" width="8" height="8" rx="2.4"/><rect x="13" y="13" width="8" height="8" rx="2.4"/></g></symbol>
+  <symbol id="nv-objekt-o" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.3c0-.7.3-1.3.8-1.7l5.8-4.5a2.3 2.3 0 0 1 2.8 0l5.8 4.5c.5.4.8 1 .8 1.7v7.7a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 18z"/><path d="M12 15.2v2.6"/></g></symbol>
+  <symbol id="nv-objekt-b" viewBox="0 0 24 24"><path fill="currentColor" d="M3.4 10.3c0-.9.4-1.7 1.1-2.2l5.8-4.5a2.8 2.8 0 0 1 3.4 0l5.8 4.5c.7.5 1.1 1.3 1.1 2.2v7.7a3.1 3.1 0 0 1-3.1 3.1H6.5A3.1 3.1 0 0 1 3.4 18z"/><path d="M12 15v3" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round"/></symbol>
+  <symbol id="nv-boravci-o" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="15.5" rx="3.6"/><path d="M3.5 10h17M8 3.2v3.6M16 3.2v3.6"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 17.2h.01M12 17.2h.01" stroke-width="2.2"/></g></symbol>
+  <symbol id="nv-boravci-b" viewBox="0 0 24 24"><rect x="3" y="4.6" width="18" height="16.4" rx="4" fill="currentColor"/><path d="M8 2.8v3.8M16 2.8v3.8" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/><path d="M3.5 9.8h17" fill="none" stroke="#fff" stroke-width="1.5"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 17.2h.01M12 17.2h.01" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round"/></symbol>
+  <symbol id="nv-linkovi-o" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 16.8H7.4a4.8 4.8 0 0 1 0-9.6h2.1"/><path d="M14.5 7.2h2.1a4.8 4.8 0 0 1 0 9.6h-2.1"/><path d="M8.6 12h6.8"/></g></symbol>
+  <symbol id="nv-linkovi-b" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 16.8H7.4a4.8 4.8 0 0 1 0-9.6h2.1"/><path d="M14.5 7.2h2.1a4.8 4.8 0 0 1 0 9.6h-2.1"/><path d="M8.8 12h6.4"/></g></symbol>
+  <symbol id="nv-vise-o" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8.3 12h.01M12 12h.01M15.7 12h.01" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"/></symbol>
+  <symbol id="nv-vise-b" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.2" fill="currentColor"/><path d="M8.3 12h.01M12 12h.01M15.7 12h.01" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></symbol>
   <!-- pregled gosta (telefon desno) -->
   <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /> <path d="M16 3.128a4 4 0 0 1 0 7.744" /> <path d="M22 21v-2a4 4 0 0 0-3-3.87" /> <circle cx="9" cy="7" r="4" /></symbol>
   <symbol id="i-bed-double" viewBox="0 0 24 24"><path d="M2 20v-8a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v8" /> <path d="M4 10V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4" /> <path d="M12 4v6" /> <path d="M2 18h20" /></symbol>
@@ -755,10 +780,10 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
       <!-- Pet glavnih dijelova (Figma: HostSidebar). Paneli unutar grupe su
            podtabovi u `.panelnav`; `nav()` i dalje radi s `.nav-item[data-panel]`. -->
       <nav class="side-nav" aria-label="Glavni dijelovi">
-        <button class="side-link" type="button" data-group="pregled" onclick="openGroup('pregled')"><svg class="ic" aria-hidden="true"><use href="#i-layout-dashboard"/></svg>Pregled</button>
-        <button class="side-link" type="button" data-group="objekt" onclick="openGroup('objekt')"><svg class="ic" aria-hidden="true"><use href="#i-house"/></svg>Objekt</button>
-        <button class="side-link" type="button" data-group="boravci" onclick="openGroup('boravci')"><svg class="ic" aria-hidden="true"><use href="#i-calendar-days"/></svg>Boravci<span class="nav-count" data-iq-count hidden></span></button>
-        <button class="side-link" type="button" data-group="linkovi" onclick="openGroup('linkovi')"><svg class="ic" aria-hidden="true"><use href="#i-link"/></svg>Linkovi i QR</button>
+        <button class="side-link" type="button" data-group="pregled" onclick="openGroup('pregled')"><svg class="nv nv-o" aria-hidden="true"><use href="#nv-pregled-o"/></svg><svg class="nv nv-b" aria-hidden="true"><use href="#nv-pregled-b"/></svg>Pregled</button>
+        <button class="side-link" type="button" data-group="objekt" onclick="openGroup('objekt')"><svg class="nv nv-o" aria-hidden="true"><use href="#nv-objekt-o"/></svg><svg class="nv nv-b" aria-hidden="true"><use href="#nv-objekt-b"/></svg>Objekt</button>
+        <button class="side-link" type="button" data-group="boravci" onclick="openGroup('boravci')"><svg class="nv nv-o" aria-hidden="true"><use href="#nv-boravci-o"/></svg><svg class="nv nv-b" aria-hidden="true"><use href="#nv-boravci-b"/></svg>Boravci<span class="nav-count" data-iq-count hidden></span></button>
+        <button class="side-link" type="button" data-group="linkovi" onclick="openGroup('linkovi')"><svg class="nv nv-o" aria-hidden="true"><use href="#nv-linkovi-o"/></svg><svg class="nv nv-b" aria-hidden="true"><use href="#nv-linkovi-b"/></svg>Linkovi i QR</button>
       </nav>
     </div>
 
@@ -1461,11 +1486,11 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
 </div>
 
 <nav class="bottom-nav" aria-label="Glavni dijelovi">
-  <button type="button" data-group="pregled" onclick="openGroup('pregled')"><span class="pill"><svg class="ic" aria-hidden="true"><use href="#i-layout-dashboard"/></svg></span>Pregled</button>
-  <button type="button" data-group="objekt" onclick="openGroup('objekt')"><span class="pill"><svg class="ic" aria-hidden="true"><use href="#i-house"/></svg></span>Objekt</button>
-  <button type="button" data-group="boravci" onclick="openGroup('boravci')"><span class="pill"><svg class="ic" aria-hidden="true"><use href="#i-calendar-days"/></svg></span>Boravci<span class="nav-count" data-iq-count hidden></span></button>
-  <button type="button" data-group="linkovi" onclick="openGroup('linkovi')"><span class="pill"><svg class="ic" aria-hidden="true"><use href="#i-link"/></svg></span>Linkovi</button>
-  <button type="button" onclick="toggleSide()" aria-label="Više: objekti, pretplata, račun"><span class="pill"><svg class="ic" aria-hidden="true"><use href="#i-ellipsis"/></svg></span>Više</button>
+  <button type="button" data-group="pregled" onclick="openGroup('pregled')"><svg class="nv nv-o" aria-hidden="true"><use href="#nv-pregled-o"/></svg><svg class="nv nv-b" aria-hidden="true"><use href="#nv-pregled-b"/></svg><span>Pregled</span></button>
+  <button type="button" data-group="objekt" onclick="openGroup('objekt')"><svg class="nv nv-o" aria-hidden="true"><use href="#nv-objekt-o"/></svg><svg class="nv nv-b" aria-hidden="true"><use href="#nv-objekt-b"/></svg><span>Objekt</span></button>
+  <button type="button" data-group="boravci" onclick="openGroup('boravci')"><svg class="nv nv-o" aria-hidden="true"><use href="#nv-boravci-o"/></svg><svg class="nv nv-b" aria-hidden="true"><use href="#nv-boravci-b"/></svg><span>Boravci</span><span class="nav-count" data-iq-count hidden></span></button>
+  <button type="button" data-group="linkovi" onclick="openGroup('linkovi')"><svg class="nv nv-o" aria-hidden="true"><use href="#nv-linkovi-o"/></svg><svg class="nv nv-b" aria-hidden="true"><use href="#nv-linkovi-b"/></svg><span>Linkovi</span></button>
+  <button type="button" onclick="toggleSide()" aria-label="Više: objekti, pretplata, račun"><svg class="nv nv-o" aria-hidden="true"><use href="#nv-vise-o"/></svg><svg class="nv nv-b" aria-hidden="true"><use href="#nv-vise-b"/></svg><span>Više</span></button>
 </nav>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -2938,7 +2963,10 @@ function syncGroup(id){
     l.classList.toggle('active',on)
     if(on)l.setAttribute('aria-current','page');else l.removeAttribute('aria-current')
   })
-  btn?.scrollIntoView({block:'nearest',inline:'nearest'})
+  // samo vodoravno (scrollIntoView je znao pomaknuti i stranicu gore-dolje)
+  const pn=document.getElementById('panelnav')
+  if(btn&&pn&&!btn.hidden){const l=btn.offsetLeft-pn.offsetLeft,r=l+btn.offsetWidth
+    if(l<pn.scrollLeft+16||r>pn.scrollLeft+pn.clientWidth-16)pn.scrollTo({left:Math.max(0,l-16),behavior:'smooth'})}
 }
 window.openGroup=g=>{
   const id=lastInGroup[g]||GROUP_FIRST[g]

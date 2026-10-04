@@ -33,6 +33,10 @@ const CSS = `
   border:1px solid var(--line,var(--border,#D5DEE1));border-radius:var(--radius-sm,var(--radius-control,10px));
   box-shadow:0 12px 32px rgba(10,42,51,.16);font:500 15px/1.35 var(--font-body,"DM Sans",system-ui,sans-serif);overflow:hidden}
 .odm-adr[hidden]{display:none}
+/* mobitel: popis u toku stranice ispod polja — nikad preko polja (tipkovnica
+   pomiče vidljivi dio zaslona, pa lebdeći popis zna pasti na upisani tekst) */
+.odm-adr.odm-adr--tok{position:static;margin-top:6px;box-shadow:0 8px 20px rgba(10,42,51,.12)}
+.odm-adr-omot input{scroll-margin-top:96px}
 .odm-adr ul{list-style:none;margin:0;padding:0;max-height:320px;overflow:auto}
 .odm-adr li{display:flex;gap:10px;align-items:flex-start;padding:9px 14px;cursor:pointer}
 .odm-adr li[aria-selected="true"],.odm-adr li:hover{background:var(--paper-2,var(--bg-wash,#EDF5F6))}
@@ -147,7 +151,18 @@ export function predloziAdresu(input, { vrsta = 'adresa', odabrano, f = (...a) =
 
   const zatvori = () => { box.hidden = true; input.setAttribute('aria-expanded', 'false'); input.removeAttribute('aria-activedescendant'); aktivna = -1 }
   // ispod polja, a gore kad dolje nema mjesta (npr. polje pri dnu zaslona)
+  const naMobitelu = () => typeof matchMedia === 'function' && matchMedia('(max-width: 760px), (pointer: coarse)').matches
+  let pomaknuto = false
   function smjesti() {
+    const tok = naMobitelu()
+    box.classList.toggle('odm-adr--tok', tok)
+    if (tok) {
+      box.style.left = box.style.width = box.style.top = box.style.bottom = ''
+      ul.style.maxHeight = '260px'
+      // jednom po fokusu: polje gore, da se ispod vidi popis (i iznad tipkovnice)
+      if (!pomaknuto) { pomaknuto = true; setTimeout(() => { try { input.scrollIntoView({ block: 'start', behavior: 'smooth' }) } catch {} }, 250) }
+      return
+    }
     const r = input.getBoundingClientRect(), vh = window.innerHeight
     const ispod = vh - r.bottom, iznad = r.top, gore = ispod < 240 && iznad > ispod
     box.style.left = r.left + 'px'
@@ -256,7 +271,7 @@ export function predloziAdresu(input, { vrsta = 'adresa', odabrano, f = (...a) =
     else if (e.key === 'Enter') { if (!box.hidden && aktivna >= 0) { e.preventDefault(); biraj(aktivna) } }
     else if (e.key === 'Escape') { if (!box.hidden) { e.preventDefault(); e.stopPropagation(); zatvori() } }
   })
-  input.addEventListener('blur', () => setTimeout(() => { if (document.activeElement !== input) zatvori() }, 150))
+  input.addEventListener('blur', () => setTimeout(() => { if (document.activeElement !== input) { zatvori(); pomaknuto = false } }, 150))
   // mousedown: fokus ostaje u polju, pa blur ne zatvori popis prije klika
   ul.addEventListener('mousedown', e => e.preventDefault())
   ul.addEventListener('click', e => {

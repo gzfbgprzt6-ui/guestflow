@@ -449,7 +449,14 @@ bijelom), pa stari problem od 4,30:1 više ne postoji.
 
 Značenje tokena u v2: `--brown` = petrol `#103D4B` (tamne plohe), `--copper` = akcija `#116D76`, `--paper` = bijela kartica, `--cream` = perla podloga, `--paper-2` = wash `#EDF5F6`, `--peach` = menta na tamnom. **Imena namjerno nisu mijenjana** — ~200 mjesta. Pisma su Manrope (sučelje) i DM Sans (tekst); Fraunces se i dalje učitava zbog naslova na slikama u Objavama.
 
-**Navigacija po grupama** (Figma HostSidebar): bočna traka ima `.side-link[data-group]` — Pregled, Objekt, Boravci, Linkovi i QR, a dolje Pretplata. Svi paneli i dalje imaju svoj gumb `.nav-item[data-panel][data-group]` u `.panelnav`; `syncGroup(id)` na kraju `nav()` pokazuje samo podtabove aktivne grupe (traka se skriva kad grupa ima jedan panel) i pamti zadnji podtab grupe, pa `openGroup(g)` vraća tamo gdje je korisnik stao. Na mobitelu (≤ 780 px) ista je stvar donja traka `.bottom-nav`; „Više” otvara bočnu traku. **Bočna traka ne smije koristiti razred `.nav-item`** — `nav()` s njega skida `active` sa svega.
+**Navigacija po grupama** (Figma HostSidebar): bočna traka ima `.side-link[data-group]` — Pregled, Objekt, Boravci, Linkovi i QR, a dolje Pretplata. Svi paneli i dalje imaju svoj gumb `.nav-item[data-panel][data-group]` u `.panelnav`; `syncGroup(id)` na kraju `nav()` pokazuje samo podtabove aktivne grupe (traka se skriva kad grupa ima jedan panel) i pamti zadnji podtab grupe, pa `openGroup(g)` vraća tamo gdje je korisnik stao. Na mobitelu (≤ 780 px) ista je stvar donja traka `.bottom-nav`; „Više” otvara bočnu traku.
+**Ikone glavne navigacije** (4. 10. 2026., vlasnik: stil „Iconly”) su vlastiti
+simboli `#nv-<grupa>-o` (obris, 1,6 px) i `#nv-<grupa>-b` (puna); u gumbu
+stoje obje (`.nv-o`, `.nv-b`), a `.active` pokazuje punu. Donja traka je
+**plutajuća bijela kapsula** (12 px od rubova, `env(safe-area-inset-bottom)`),
+traka za spremanje stoji iznad nje. Podtabovi (`.panelnav`) se pomiču **samo
+vodoravno** (`overflow-y:hidden`; `syncGroup()` pomiče `scrollLeft`, ne
+`scrollIntoView` — on je pomicao i stranicu); na mobitelu su kapsule. **Bočna traka ne smije koristiti razred `.nav-item`** — `nav()` s njega skida `active` sa svega.
 
 Elementi `#completion-card`, `#user-av` i `.user-row` i dalje postoje jer ih JS puni, ali su skriveni: dovršenost vodiča je u Pregledu i u zaglavlju panela. `#user-plan` je sada značka uz „Pretplata”, a `#user-name` sitni redak uz „Postavke računa”.
 
@@ -898,7 +905,10 @@ izmjene (`MutationObserver`: paneli, toast, poruke; `confirm`/`alert` omotani).
   Hrvatska. Odabir okida `input` + `change` (pregled, traka za spremanje).
   Popis je `position:fixed` (kartica s `overflow:hidden` ga je rezala) i
   otvara se prema gore kad dolje nema mjesta. Combobox s ARIA, strelice,
-  Enter, Esc (zatvori popis, ne dijalog). Adrese `translate="no"`. U „Mjesta
+  Enter, Esc (zatvori popis, ne dijalog). Adrese `translate="no"`. **Na mobitelu
+  (≤ 760 px ili dodir)** popis je u toku stranice ispod polja (`.odm-adr--tok`),
+  a polje se jednom po fokusu pomakne prema vrhu — lebdeći popis je s
+  tipkovnicom padao preko upisanog teksta (vlasnik, 4. 10.). U „Mjesta
   u blizini” odabrani prijedlog nosi koordinate (`OSM_CENTAR` → `predlozi(…,
   {centar})` → `/api/mjesta?…&lat=&lon=`) pa se adresa ne geokodira ponovno.
 - **Karta s pribadačom** (3. 10. 2026.): `p.html` i vodič (`#dolazak`) karte
