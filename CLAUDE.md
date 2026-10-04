@@ -244,6 +244,14 @@ strelicom u panel, kartice **Vaši objekti** (`ovStatika()`; klik = promjena
 objekta kroz `#prop-sel` + `onPropChange()`) i **karta** uz „Sljedećih 14
 dana”. `.property-banner` se na Pregledu skriva (`:has`). Podtabovi su i na
 računalu kapsule (crna = odabrano). Podaci i izračuni su isti kao prije.
+**Isti stil na svim zaslonima** (4. 10. 2026.): u dashboardu sloj
+„STIL NEKRETNINE” na kraju `<style>` (kartice s `--kartica-sjena`, gumbi
+kapsule i **crni** `--crna` za glavnu radnju, mekša polja, crni prekidači,
+`.property-banner` kao bijela kartica sa sličicom `#banner-thumb`) i veća
+zaobljenja (`--radius-sm/--radius/--radius-lg` = 10/14/22), podloga `--cream`
+sivlja (#F5F6F5). Isti sloj na kraju `forms.css` (postavljanje, dodavanje
+objekta, račun) i kapsule tabova u `account.html`. Javne stranice
+(`odmoria.css`) se NE mijenjaju — gostinski izgled ostaje Figma v2 / stilovi.
 **`X-Frame-Options` je `SAMEORIGIN`** (ne `DENY`) — inače „Kako gost vidi”
 (iframe javne stranice u Izgledu) ostane prazan; tuđe stranice nas i dalje ne
 mogu uokviriti.

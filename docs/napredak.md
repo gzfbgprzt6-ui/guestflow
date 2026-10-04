@@ -137,3 +137,5 @@ Popratno:
   prazan „Kako gost vidi” (X-Frame-Options → SAMEORIGIN) — 4. 10. 2026.
 - [x] Izbornik objekta u bočnoj traci: gumb s fotografijom i prozorčić s
   karticama objekata umjesto sistemskog padajućeg izbornika — 4. 10. 2026.
+- [x] Stil „nekretnine” na svim zaslonima domaćina (dashboard, postavljanje,
+  dodavanje objekta, račun): bijele kartice sa sjenom, crne kapsule — 4. 10. 2026.
