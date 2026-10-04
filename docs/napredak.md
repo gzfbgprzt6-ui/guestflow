@@ -132,3 +132,6 @@ Popratno:
 - [x] Mobitel: plutajuća donja traka i ikone u stilu „Iconly” (i u bočnoj
   traci), podtabovi kao kapsule bez okomitog pomicanja, prijedlozi adrese
   ispod polja — 4. 10. 2026.
+- [x] Pregled u stilu „nekretnine” (zaglavlje s fotografijom i trakom
+  zauzetosti, brojke s malim stupcima, kartice objekata, karta); popravljen
+  prazan „Kako gost vidi” (X-Frame-Options → SAMEORIGIN) — 4. 10. 2026.

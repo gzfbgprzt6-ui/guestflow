@@ -159,6 +159,87 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
 .property-banner small { display: block; margin-bottom: 2px; color: var(--muted); font-size: 13px; }
 .property-banner strong { display: block; font: 700 18px/1.3 var(--font-ui); }
 .property-banner p { margin: 2px 0 0; color: var(--muted); font-size: 14px; }
+/* ── PREGLED u stilu „nekretnine” (vlasnik, 4. 10. 2026.): bijele zaobljene
+   kartice na perli, crne kapsule, narančasti naglasak; podaci isti kao prije */
+.editor:has(#section-overview.active) .property-banner { display: none; }
+#section-overview { --ov-r: 22px; --ov-sjena: 0 1px 2px rgba(16,24,28,.04), 0 14px 34px -18px rgba(16,24,28,.22); --ov-crna: #14181A; --ov-naranca: #E9B577; }
+#section-overview .card, .ov-hero, .ov-objekti-k, .ov-karta-k { border: 1px solid rgba(16,24,28,.06); border-radius: var(--ov-r); background: #fff; box-shadow: var(--ov-sjena); }
+.ov-hero { display: grid; gap: 18px; margin-bottom: 16px; padding: 18px; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); }
+.ov-hero__l { display: flex; min-width: 0; flex-direction: column; padding: 6px 4px 4px 6px; }
+.ov-eyebrow { color: var(--muted); font: 600 12px/1.3 var(--font-body); letter-spacing: .02em; }
+.ov-ime { margin: 6px 0 4px; overflow-wrap: anywhere; font: 800 clamp(26px, 2.6vw, 34px)/1.08 var(--font-ui); letter-spacing: -.03em; }
+.ov-mjesto { display: flex; align-items: center; gap: 6px; margin: 0; color: var(--muted); font-size: 14px; }
+.ov-stat { display: grid; gap: 14px; margin-top: auto; padding-top: 24px; grid-template-columns: 1fr 1fr; }
+.ov-stat > div { padding-left: 12px; border-left: 1px solid var(--line); }
+.ov-stat small { display: block; color: var(--muted); font-size: 12px; }
+.ov-stat b { display: block; margin-top: 2px; font: 800 24px/1.15 var(--font-ui); letter-spacing: -.02em; }
+.ov-traka { display: flex; height: 14px; gap: 4px; margin-top: 14px; }
+.ov-traka i { min-width: 0; border-radius: 99px; transition: flex-grow .6s cubic-bezier(.2,.8,.2,1); }
+.ov-traka .z, .ov-legenda .z { background: var(--ov-crna); }
+.ov-traka .p, .ov-legenda .p { background: var(--ov-naranca); }
+.ov-traka .s, .ov-legenda .s { background: repeating-linear-gradient(115deg, #E4E6E6 0 2px, transparent 2px 6px); box-shadow: inset 0 0 0 1px #E4E6E6; }
+.ov-legenda { display: flex; flex-wrap: wrap; gap: 4px 14px; margin: 10px 0 0; color: var(--muted); font-size: 12px; }
+.ov-legenda span { display: inline-flex; align-items: center; gap: 6px; }
+.ov-legenda i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; }
+.ov-foto { position: relative; min-height: 236px; overflow: hidden; border-radius: 16px; background: #DDE7EA center/cover no-repeat; }
+.ov-foto.bez { background: linear-gradient(160deg, #A3C4DA 0%, #5E8FA3 45%, #173D4B 100%); }
+.ov-cijena { position: absolute; left: 12px; bottom: 12px; padding: 7px 12px; border-radius: 99px; background: rgba(255,255,255,.92); color: var(--ov-crna); backdrop-filter: blur(8px); font: 800 13px/1 var(--font-ui); }
+.ov-foto__akc { position: absolute; top: 12px; right: 12px; display: flex; gap: 8px; }
+.ov-krug { display: inline-grid; width: 34px; height: 34px; flex: none; place-items: center; border: 0; border-radius: 50%; background: var(--ov-crna, #14181A); color: #fff; cursor: pointer; }
+.ov-krug--svijetli { border: 1px solid var(--line); background: #fff; color: var(--ink); }
+.ov-krug:hover { transform: scale(1.06); }
+/* brojke s malim stupcima */
+#section-overview .an-kpis { gap: 14px; margin-bottom: 16px; }
+#section-overview .an-kpi { position: relative; min-height: 148px; padding: 16px 16px 14px; border: 1px solid rgba(16,24,28,.06); border-radius: 18px; background: #fff; box-shadow: var(--ov-sjena); }
+#section-overview .an-kpi__l { padding-right: 34px; font-weight: 600; color: var(--ink); font-size: 13.5px; }
+#section-overview .an-kpi__v { font-size: 28px; }
+.ov-kpi-go { position: absolute; top: 12px; right: 12px; display: grid; width: 28px; height: 28px; place-items: center; border: 0; border-radius: 50%; background: transparent; color: var(--ink); cursor: pointer; }
+.ov-kpi-go:hover { background: var(--paper-2); }
+.ov-spark { display: flex; height: 26px; align-items: end; gap: 2px; margin-top: auto; padding-top: 8px; }
+.ov-spark i { flex: 1; min-width: 2px; border-radius: 2px; background: var(--ov-crna); }
+.ov-spark i.n { background: #E1E4E4; }
+/* objekti */
+.ov-objekti-k, .ov-karta-k { margin-bottom: 16px; padding: 16px; }
+.ov-k-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.ov-k-head h2 { margin: 0; font: 800 17px/1.2 var(--font-ui); letter-spacing: -.01em; }
+.ov-objekti { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); }
+.ov-obj { display: grid; gap: 8px; padding: 6px 6px 10px; border: 1px solid var(--line); border-radius: 16px; background: #fff; color: var(--ink); cursor: pointer; text-align: left; text-decoration: none; font: inherit; transition: transform .2s ease, box-shadow .2s ease; grid-template-columns: minmax(0, 1fr) auto; }
+.ov-obj:hover { transform: translateY(-2px); box-shadow: var(--ov-sjena); }
+.ov-obj.is-on { border: 2px solid var(--ov-crna); padding: 5px 5px 9px; }
+.ov-obj__f { position: relative; display: block; height: 132px; overflow: hidden; border-radius: 12px; background: #DDE7EA center/cover no-repeat; grid-column: 1 / -1; }
+.ov-obj__f.bez { background: linear-gradient(160deg, #EEF1F1, #DDE3E4); }
+.ov-obj--novi .ov-obj__f { display: grid; place-items: center; }
+.ov-obj--novi .ov-obj__f .ov-krug { position: static; }
+.ov-obj__f em { position: absolute; top: 8px; left: 8px; padding: 4px 8px; border-radius: 99px; background: rgba(255,255,255,.92); color: var(--ink); font: 700 11px/1 var(--font-ui); font-style: normal; }
+.ov-obj__f .ov-krug { position: absolute; top: 8px; right: 8px; width: 28px; height: 28px; }
+.ov-obj__t { display: grid; min-width: 0; gap: 2px; padding-left: 4px; }
+.ov-obj__t b { overflow: hidden; font: 800 14px/1.25 var(--font-ui); text-overflow: ellipsis; white-space: nowrap; }
+.ov-obj__t small { overflow: hidden; color: var(--muted); font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+.ov-obj__c { align-self: center; padding-right: 4px; font: 800 13px/1 var(--font-ui); }
+/* sljedećih 14 dana + karta */
+.ov-dva { display: grid; gap: 16px; align-items: start; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); margin-bottom: 16px; }
+.ov-dva > .card { margin-bottom: 0; }
+.ov-dva > .ov-karta-k { margin-bottom: 0; }
+.ov-dva:not(:has(.ov-karta-k:not([hidden]))) { grid-template-columns: minmax(0, 1fr); }
+.ov-karta { position: relative; height: 260px; overflow: hidden; border-radius: 14px; background: #E6ECEE; }
+.ov-karta iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; filter: grayscale(.25) contrast(1.02); }
+#section-overview .an-tag { border-radius: 99px; }
+@media (max-width: 1100px) { .ov-dva { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 780px) {
+  .ov-hero { padding: 12px; grid-template-columns: minmax(0, 1fr); }
+  .ov-foto { order: -1; min-height: 190px; }
+  .ov-objekti { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .ov-obj__f { height: 104px; }
+  .ov-obj__c { display: none; }
+}
+/* podtabovi i na računalu kao kapsule (crna = odabrano) */
+@media (min-width: 781px) {
+  .panelnav-wrap { border-bottom: 0; }
+  .panelnav { gap: 6px; padding: 2px 0 6px; }
+  .panelnav .nav-item { min-height: 38px; padding: 0 16px; border: 1px solid transparent; border-radius: 99px; margin: 0; font-size: 14px; }
+  .panelnav .nav-item:hover { background: #fff; border-color: var(--line); }
+  .panelnav .nav-item.active { border-color: #14181A; background: #14181A; color: #fff; }
+}
 .status-pill { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 6px; background: var(--paper); color: var(--copper); font: 700 12px/1.3 var(--font-body); letter-spacing: .05em; text-transform: uppercase; }
 .status-pill::before { content: "✓"; }
 .status-pill.locked { color: var(--muted); }
@@ -668,7 +749,7 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
   .panelnav-wrap { margin: -4px -16px 20px; border-bottom: 0; }
   .panelnav { gap: 6px; padding: 4px 16px 6px; scroll-padding-inline: 16px; }
   .panelnav .nav-item { min-height: 40px; padding: 0 16px; border: 1px solid var(--line); border-radius: 999px; margin: 0; background: var(--paper); font-size: 14px; }
-  .panelnav .nav-item.active { border-color: var(--ink); background: var(--ink); color: #fff; }
+  .panelnav .nav-item.active { border-color: #14181A; background: #14181A; color: #fff; }
   .savebar { left: 12px; right: 12px; bottom: calc(92px + env(safe-area-inset-bottom)); transform: translateY(260%); justify-content: space-between; gap: 12px; }
   .savebar.show { transform: none; }
   .savebar .sb-txt { white-space: normal; font-size: 14px; }
@@ -871,6 +952,26 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
         <!-- 00 OVERVIEW — operativni pregled: brojke, upozorenja, sljedećih 14 dana
              (izračuni u analitika.js, podaci iz postojećih tablica) -->
         <section class="editor-panel active an" id="section-overview" data-panel-content="overview">
+          <!-- zaglavlje Pregleda (stil „nekretnine”, vlasnik 4. 10.): objekt, traka zauzetosti, fotografija -->
+          <div class="ov-hero">
+            <div class="ov-hero__l">
+              <span class="ov-eyebrow">Trenutačno uređujete</span>
+              <h2 class="ov-ime" id="ov-ime" translate="no">—</h2>
+              <p class="ov-mjesto"><svg class="ic ic--sm" aria-hidden="true"><use href="#i-map-pin"/></svg><span id="ov-mjesto" translate="no">—</span></p>
+              <div class="ov-stat">
+                <div><small>Zauzeto · 30 dana</small><b id="ov-zauzeto">—</b></div>
+                <div><small>Slobodno · 30 dana</small><b id="ov-slobodno">—</b></div>
+              </div>
+              <div class="ov-traka" id="ov-traka" role="img" aria-label="Zauzetost sljedećih 30 dana"><i class="z"></i><i class="p"></i><i class="s"></i></div>
+              <p class="ov-legenda"><span><i class="z"></i>zauzeto</span><span><i class="p"></i>kratke praznine</span><span><i class="s"></i>slobodno</span></p>
+            </div>
+            <div class="ov-foto" id="ov-foto">
+              <span class="ov-cijena" id="ov-cijena" hidden></span>
+              <div class="ov-foto__akc">
+                <button type="button" class="ov-krug" onclick="viewPub()" aria-label="Otvori javnu stranicu" title="Javna stranica"><svg class="ic ic--sm" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></button>
+              </div>
+            </div>
+          </div>
           <div class="an-kpis" id="ov-kpis" aria-live="polite">
             <div class="an-kpi"><span class="an-kpi__l">Popunjenost · sljedećih 30 dana</span><span class="an-kpi__v">—</span></div>
             <div class="an-kpi"><span class="an-kpi__l">Sljedeći dolazak</span><span class="an-kpi__v">—</span></div>
@@ -881,10 +982,20 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
             <div class="card-head"><div class="card-title-wrap"><span class="card-number">!</span><div><h2>Na što obratiti pažnju</h2><p>Automatske provjere kalendara, linkova za goste i vodiča.</p></div></div></div>
             <div class="an-list" id="ov-alerts"><p class="an-empty">Provjeravam…</p></div>
           </div>
+          <div class="ov-objekti-k" id="ov-objekti-k">
+            <div class="ov-k-head"><h2>Vaši objekti</h2><a class="ov-krug ov-krug--svijetli" href="/add-property.html" aria-label="Dodaj objekt" title="Dodaj objekt"><svg class="ic ic--sm" aria-hidden="true"><use href="#i-plus"/></svg></a></div>
+            <div class="ov-objekti" id="ov-objekti"></div>
+          </div>
+          <div class="ov-dva">
           <div class="card">
             <div class="card-head"><div class="card-title-wrap"><span class="card-number">14</span><div><h2>Sljedećih 14 dana</h2><p>Dolasci i odlasci iz kalendara, s Bookinga, Airbnba i iz vaših rezervacija.</p></div></div>
               <button class="btn secondary small" type="button" onclick="openAnalytics()">Cijela analitika</button></div>
             <div id="ov-upcoming"></div>
+          </div>
+          <div class="ov-karta-k" id="ov-karta-k" hidden>
+            <div class="ov-k-head"><h2>Karta</h2><a class="ov-krug ov-krug--svijetli" id="ov-karta-link" target="_blank" rel="noopener" aria-label="Otvori u Google Maps" title="Otvori u Google Maps"><svg class="ic ic--sm" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a></div>
+            <div class="ov-karta"><iframe id="ov-karta" title="Karta objekta" loading="lazy" referrerpolicy="no-referrer-when-downgrade" tabindex="-1"></iframe></div>
+          </div>
           </div>
           <div class="card">
             <div class="card-head"><div class="card-title-wrap"><span class="card-number">✓</span><div><h2 id="ov-title">Objekt je objavljen</h2><p>Vaši linkovi rade i promjene se prikazuju odmah nakon spremanja.</p></div></div></div>
@@ -2044,8 +2155,62 @@ function relDan(ds){const n=A.razlikaDana(A.danas(),ds);return n===0?'danas':n==
 async function loadOverviewStats(){
   if(!PROP)return
   document.getElementById('ov-title').textContent=(PROP.name||'Objekt')+' je objavljen'
+  ovStatika()
   await renderOverviewOps()
 }
+
+// ── ZAGLAVLJE PREGLEDA (stil „nekretnine”, 4. 10. 2026.) ──────────────
+// objekt + fotografija, traka zauzetosti, kartice objekata, karta
+const OV_STRELICA='<svg class="ic ic--sm" aria-hidden="true"><use href="#i-arrow-up-right"/></svg>'
+function ovStatika(){
+  if(!PROP)return
+  document.getElementById('ov-ime').textContent=PROP.name||'Objekt'
+  document.getElementById('ov-mjesto').textContent=PROP.location||'Lokacija još nije upisana'
+  const cover=PROP.cover_photo_url||(PROP.photo_urls||[])[0]
+  const f=document.getElementById('ov-foto')
+  f.style.backgroundImage=cover?`url('${String(cover).replace(/'/g,'%27')}')`:''
+  f.classList.toggle('bez',!cover)
+  const c=document.getElementById('ov-cijena'),cij=parseFloat(PROP.price_per_night)||0
+  c.hidden=!cij;if(cij)c.textContent='od '+cij+' € / noć'
+  // objekti
+  const el=document.getElementById('ov-objekti')
+  el.innerHTML=PROPS.map(p=>{
+    const ph=p.cover_photo_url||(p.photo_urls||[])[0],on=p.id===PROP.id
+    return `<button type="button" class="ov-obj${on?' is-on':''}" data-id="${esc(String(p.id))}"${on?' aria-current="true"':''}>
+      <span class="ov-obj__f${ph?'':' bez'}"${ph?` style="background-image:url('${esc(String(ph))}')"`:''}>${zakljucan(p)?'<em>zaključano</em>':p.__dijeljen?'<em>dijeljeno</em>':on?'<em>otvoreno</em>':''}<i class="ov-krug">${OV_STRELICA}</i></span>
+      <span class="ov-obj__t"><b translate="no">${esc(p.name||'Objekt')}</b><small translate="no">${esc(p.location||'—')}</small></span>
+      ${parseFloat(p.price_per_night)?`<span class="ov-obj__c">${esc(String(parseFloat(p.price_per_night)))} €</span>`:''}</button>`}).join('')
+    +`<a class="ov-obj ov-obj--novi" href="/add-property.html"><span class="ov-obj__f bez"><i class="ov-krug">${'<svg class="ic ic--sm" aria-hidden="true"><use href="#i-plus"/></svg>'}</i></span><span class="ov-obj__t"><b>Dodaj objekt</b><small>Novi apartman ili kuća</small></span></a>`
+  el.onclick=e=>{const b=e.target.closest('button.ov-obj');if(!b||b.classList.contains('is-on'))return
+    const sel=document.getElementById('prop-sel');sel.value=b.dataset.id;window.onPropChange()}
+  // karta
+  const kk=document.getElementById('ov-karta-k'),lok=(PROP.location||'').trim()
+  kk.hidden=!lok
+  if(lok){const q=encodeURIComponent(lok),src='https://www.google.com/maps?q='+q+'&z=14&output=embed',fr=document.getElementById('ov-karta')
+    if(fr.getAttribute('src')!==src)fr.setAttribute('src',src)
+    document.getElementById('ov-karta-link').href='https://www.google.com/maps/search/?api=1&query='+q}
+}
+function ovTraka(noci,t){
+  const gap=new Set()
+  A.praznine(noci,t,A.plusDana(t,30),7).forEach(g=>{for(let i=0;i<g.nights;i++)gap.add(A.plusDana(g.start,i))})
+  let z=0,p=0
+  for(let i=0;i<30;i++){const ds=A.plusDana(t,i);if(noci.has(ds))z++;else if(gap.has(ds))p++}
+  const sl=30-z-p,tr=document.getElementById('ov-traka')
+  document.getElementById('ov-zauzeto').textContent=z+' '+A.mn(z,'noć','noći','noći')
+  document.getElementById('ov-slobodno').textContent=(30-z)+' '+A.mn(30-z,'noć','noći','noći')
+  const[iz,ip,is]=tr.children;iz.style.flexGrow=z;ip.style.flexGrow=p;is.style.flexGrow=sl
+  tr.setAttribute('aria-label',`Sljedećih 30 dana: ${z} zauzeto, ${p} u kratkim prazninama, ${sl} slobodno`)
+}
+const ovDan=x=>{const d=new Date(x);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function ovNiz(views,test,t){
+  const m={};views.forEach(v=>{if(test(v.view_type)){const k=ovDan(v.timestamp);m[k]=(m[k]||0)+1}})
+  return Array.from({length:30},(_,i)=>m[A.plusDana(t,i-29)]||0)
+}
+function ovSpark(arr){
+  const mx=Math.max(1,...arr)
+  return `<span class="ov-spark" aria-hidden="true">${arr.map(x=>`<i${x?'':' class="n"'} style="height:${x?Math.max(18,Math.round(x/mx*100)):12}%"></i>`).join('')}</span>`
+}
+const ovKpi=(html,spark,on)=>html.replace(/<\/div>\s*$/,`${spark||''}<button class="ov-kpi-go" type="button" onclick="${on}" aria-label="Otvori">${OV_STRELICA}</button></div>`)
 
 async function renderOverviewOps(){
   const d=await anPodaci(60)
@@ -2061,13 +2226,16 @@ async function renderOverviewOps(){
   const od30=A.plusDana(sut,-30),od60=A.plusDana(sut,-60)
   const v=A.broji(d.views,JE_JAVNA,od30,sut),vP=A.broji(d.views,JE_JAVNA,od60,od30)
   const u=A.broji(d.views,A.JE_UPIT,od30,sut),uP=A.broji(d.views,A.JE_UPIT,od60,od30)
+  ovStatika();ovTraka(noci,t)
+  const zauz=Array.from({length:30},(_,i)=>noci.has(A.plusDana(t,i))?1:0)
+  const boravci="nav('availability',document.querySelector('.panelnav [data-panel=availability]'))"
   document.getElementById('ov-kpis').innerHTML=[
-    A.kpi('Popunjenost · sljedećih 30 dana',A.posto(p30.udio),`${p30.zauzeto} od 30 noći zauzeto`),
-    A.kpi('Sljedeći dolazak',sljedeci?A.fmtSDanom(sljedeci.start):'—',
+    ovKpi(A.kpi('Popunjenost · sljedećih 30 dana',A.posto(p30.udio),`${p30.zauzeto} od 30 noći zauzeto`),ovSpark(zauz),boravci),
+    ovKpi(A.kpi('Sljedeći dolazak',sljedeci?A.fmtSDanom(sljedeci.start):'—',
       sljedeci?`${A.imeBoravka(sljedeci)} · ${A.noci(sljedeci.nights)} · ${izvorTxt(sljedeci)} · ${relDan(sljedeci.start)}`
-      :sada?`U tijeku: ${A.imeBoravka(sada)}, odlazak ${A.fmtKratko(sada.end)}`:'Nema najavljenih dolazaka'),
-    A.kpi('Pregledi javne stranice · 30 dana',String(v),'u odnosu na prethodnih 30 dana',A.promjena(v,vP)),
-    A.kpi('Upiti · 30 dana',String(u),v?`${A.posto(u/v)} posjeta završi upitom`:'WhatsApp, e-mail ili kopirana poruka',A.promjena(u,uP))
+      :sada?`U tijeku: ${A.imeBoravka(sada)}, odlazak ${A.fmtKratko(sada.end)}`:'Nema najavljenih dolazaka'),'',"nav('reservations',document.querySelector('.panelnav [data-panel=reservations]'))"),
+    ovKpi(A.kpi('Pregledi javne stranice · 30 dana',String(v),'u odnosu na prethodnih 30 dana',A.promjena(v,vP)),ovSpark(ovNiz(d.views,JE_JAVNA,t)),'openAnalytics()'),
+    ovKpi(A.kpi('Upiti · 30 dana',String(u),v?`${A.posto(u/v)} posjeta završi upitom`:'WhatsApp, e-mail ili kopirana poruka',A.promjena(u,uP)),ovSpark(ovNiz(d.views,A.JE_UPIT,t)),'openAnalytics()')
   ].join('')
   A.odbroji(document.getElementById('ov-kpis'))
 

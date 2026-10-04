@@ -236,6 +236,18 @@ rezervacija koja se preklapa s boravkom s Bookinga/Airbnba samo mu da ime
 gosta. Popunjenost čita **samo kalendar**. `loadAvail()` zato čita
 `select('*')` i puni `AVAIL_ROWS` (s `booking_id` ako stupac postoji).
 
+**Pregled u stilu „nekretnine”** (vlasnik, 4. 10. 2026.): zaglavlje
+`.ov-hero` (objekt, fotografija, cijena, traka zauzetosti 30 dana: crno
+zauzeto / narančasto kratke praznine / šrafirano slobodno — `ovTraka()`),
+brojke s malim stupcima (`ovSpark()`, `ovNiz()` po danu iz `page_views`) i
+strelicom u panel, kartice **Vaši objekti** (`ovStatika()`; klik = promjena
+objekta kroz `#prop-sel` + `onPropChange()`) i **karta** uz „Sljedećih 14
+dana”. `.property-banner` se na Pregledu skriva (`:has`). Podtabovi su i na
+računalu kapsule (crna = odabrano). Podaci i izračuni su isti kao prije.
+**`X-Frame-Options` je `SAMEORIGIN`** (ne `DENY`) — inače „Kako gost vidi”
+(iframe javne stranice u Izgledu) ostane prazan; tuđe stranice nas i dalje ne
+mogu uokviriti.
+
 **Dashboard:** Pregled (brojke, „Na što obratiti pažnju” s radnjama,
 „Sljedećih 14 dana”) i novi podtab **Analitika** u grupi Pregled
 (`nav('analytics')`, `renderAnalytics()`). Pregledi se dohvaćaju za 2 × raspon
