@@ -144,3 +144,13 @@ Popratno:
   (dvije potvrde) — 4. 10. 2026. Brisanje treba `sql/delete-property.sql`.
 - [x] **Kalendar** prepravljen: boravci kao spojene trake u boji izvora, ime
   gosta, traka popunjenosti mjeseca, „Danas”, vikendi i prošli dani — 4. 10. 2026.
+- [x] **Dashboard „Aurex”**: gornja traka s tabovima, traži, obavijesti,
+  postavke i profil (bez bočne trake na računalu); Pregled s brojkama,
+  izvorima noći, karticama, tablicom objekata s filtrima i kartom — 12. 10. 2026.
+- [x] **Kapljica** za nespremljene promjene umjesto prozora (i popravak:
+  brojači i vrsta objekta je sad pokreću) — 12. 10. 2026.
+- [x] **Kako ući, korak po korak** sa slikama u privatnom vodiču — 12. 10. 2026.
+  Treba `sql/add-arrival-steps.sql`.
+- [x] **Javna stranica „soft touch”**: fotografija „diše”, znak „Slobodno od …”,
+  mekane sjene i reakcije — 12. 10. 2026.
+- [x] `docs/must-do.md` — kratki popis za vlasnika — 12. 10. 2026.

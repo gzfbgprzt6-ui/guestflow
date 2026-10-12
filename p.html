@@ -308,6 +308,38 @@
 @media (max-width:400px){
   .pair{grid-template-columns:minmax(0,1fr)}
 }
+
+/* ── SOFT TOUCH + ŽIVO (vlasnik, 12. 10.): mekane sjene, kartice koje se lagano
+   podignu, gumbi koji se utisnu, polagano „disanje” naslovne fotografije i
+   živi znak slobodnog termina. Boje i pisma i dalje iz tokena (stilovi). ── */
+.zivo{display:inline-flex;align-items:center;gap:8px;justify-self:start;padding:7px 14px 7px 10px;border-radius:999px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.32);color:#fff;text-decoration:none;font:700 13px/1 var(--font-ui);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.zivo i{width:8px;height:8px;border-radius:50%;background:#5BE38E;box-shadow:0 0 0 0 rgba(91,227,142,.7)}
+.zivo:hover{background:rgba(255,255,255,.26)}
+.pricetag{backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.card,.summary,.calbox,.rev__i,.lrow{box-shadow:0 1px 2px rgba(10,20,25,.04),0 22px 44px -34px rgba(10,20,25,.38)}
+@media (prefers-reduced-motion: no-preference){
+  .hero::before{content:"";position:absolute;inset:0;background:inherit;transform-origin:60% 40%;animation:p-disanje 26s ease-in-out infinite alternate}
+  @keyframes p-disanje{from{transform:scale(1)}to{transform:scale(1.07)}}
+  .zivo i{animation:p-puls 2.2s ease-out infinite}
+  @keyframes p-puls{70%{box-shadow:0 0 0 9px rgba(91,227,142,0)}100%{box-shadow:0 0 0 0 rgba(91,227,142,0)}}
+  .hero__copy > *{animation:p-ulaz .8s cubic-bezier(.2,.8,.2,1) both}
+  .hero__copy > :nth-child(2){animation-delay:.08s}.hero__copy > :nth-child(3){animation-delay:.16s}.hero__copy > :nth-child(4){animation-delay:.24s}
+  .hero__act{animation:p-ulaz .8s .3s cubic-bezier(.2,.8,.2,1) both}
+  @keyframes p-ulaz{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .card,.summary,.lrow,.rev__i,.fact,.gal__i{transition:transform .35s cubic-bezier(.2,1.2,.4,1),box-shadow .35s ease}
+  .card:hover,.lrow:hover,.rev__i:hover{transform:translateY(-3px);box-shadow:0 2px 4px rgba(10,20,25,.05),0 30px 50px -30px rgba(10,20,25,.42)}
+  .fact:hover{transform:translateY(-2px)}
+  .fact .ic{transition:transform .4s cubic-bezier(.2,1.6,.4,1)}
+  .fact:hover .ic{transform:scale(1.18) rotate(-6deg)}
+  .gal__i{overflow:hidden}
+  .gal__i img{transition:transform .8s cubic-bezier(.2,.8,.2,1)}
+  .gal__i:hover img{transform:scale(1.045)}
+  .btn{transition:transform .18s cubic-bezier(.2,1.4,.4,1),background-color .2s ease,box-shadow .2s ease,color .2s ease}
+  .btn:hover{transform:translateY(-1px)}
+  .btn:active{transform:scale(.97)}
+  .facts .fact{animation:p-ulaz .6s cubic-bezier(.2,.8,.2,1) both}
+  .facts .fact:nth-child(2){animation-delay:.05s}.facts .fact:nth-child(3){animation-delay:.1s}.facts .fact:nth-child(4){animation-delay:.15s}.facts .fact:nth-child(5){animation-delay:.2s}.facts .fact:nth-child(6){animation-delay:.25s}
+}
 </style>
 </head>
 <body>
@@ -403,6 +435,7 @@
   <div class="wrap hero-wrap">
     <section class="hero" id="hero" aria-labelledby="hero-name">
       <div class="hero__copy">
+        <a class="zivo" id="hero-zivo" href="#cal-sec" hidden><i aria-hidden="true"></i><span></span></a>
         <span class="eyebrow" id="hero-loc" hidden></span>
         <h1 class="hero__name" id="hero-name"></h1>
         <p class="hero__sub" id="hero-sub" hidden></p>
@@ -798,6 +831,7 @@ async function loadPage() {
   if (prop.show_availability) {
     const { data: avail } = await sb.from('availability').select('date,is_booked').eq('property_id', prop.id)
     bookedDates = (avail || []).filter(r => r.is_booked !== false).map(r => r.date)
+    ZIVO = true; zivo()
     show('#cal-sec')
     renderCal()
   } else {
@@ -826,7 +860,20 @@ let PODACI = null
 function napomenaJezika() { const tx = L.napomena(); $('#jez-nap').textContent = tx; show('#jez-nap', !!tx) }
 
 // sve što nosi tekst domaćina — ponovno se crta kad prijevod stigne kasnije
+/* „Živi” znak na naslovnoj fotografiji: prvi slobodni dan iz kalendara (12. 10.) */
+let ZIVO = false
+function zivo() {
+  const el = $('#hero-zivo'); if (!el || !ZIVO) return
+  const zauz = new Set(bookedDates), d = new Date(); d.setHours(12, 0, 0, 0)
+  const ds = x => `${x.getFullYear()}-${String(x.getMonth() + 1).padStart(2, '0')}-${String(x.getDate()).padStart(2, '0')}`
+  let i = 0
+  while (i < 180 && zauz.has(ds(d))) { d.setDate(d.getDate() + 1); i++ }
+  if (i >= 180) { show(el, false); return }
+  el.querySelector('span').textContent = i === 0 ? t('Slobodno već danas') : t('Slobodno od {d}', { d: L.datum(d) })
+  show(el)
+}
 function nacrtaj() {
+  zivo()
   const prop = PROP
   document.title = prop.name + ' — Odmoria'
   $('#h-name').textContent = prop.name

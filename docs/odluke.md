@@ -1268,6 +1268,9 @@ KORAKA 1 (točka 2 ispod je time obavljena).
 10. `sql/delete-property.sql` — gumb „Obriši objekt” (funkcija
    `obrisi_objekt`, smije samo vlasnik). Bez nje gumb kaže da brisanje još
    nije uključeno; ništa se ne briše.
+11. `sql/add-arrival-steps.sql` — „Kako ući, korak po korak” sa slikama
+   (stupac `sections.ulazak_koraci`). Bez njega „Spremi korake” kaže što
+   pokrenuti. Sažetak svih koraka za vas: `docs/must-do.md`.
 
 **B. Vercel → Settings → Environment Variables (Production) → Redeploy:**
 `SUPABASE_SERVICE_ROLE_KEY`, `CRON_SECRET`, `ANTHROPIC_API_KEY` (prijevodi),

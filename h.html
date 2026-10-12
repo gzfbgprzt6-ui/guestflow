@@ -217,6 +217,31 @@
   .tiles{grid-template-columns:minmax(0,1fr)}
   .btnrow{grid-template-columns:minmax(0,1fr)}
 }
+/* Kako ući — koraci sa slikama (sections.ulazak_koraci) */
+.ulaz__uvod { margin: -4px 0 16px; color: var(--muted); }
+.ulaz__lista { display: grid; gap: 16px; margin: 0; padding: 0; list-style: none; counter-reset: none; }
+.ulaz__k { position: relative; display: grid; overflow: hidden; border: 1px solid var(--line); border-radius: var(--r-14, 14px); background: var(--surface, #fff); box-shadow: 0 10px 30px -22px rgba(10,42,51,.35); }
+.ulaz__f { display: block; width: 100%; padding: 0; border: 0; background: var(--wash, #EDF5F6); cursor: zoom-in; aspect-ratio: 4 / 3; overflow: hidden; }
+.ulaz__f img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; }
+.ulaz__f:hover img { transform: scale(1.03); }
+.ulaz__t { padding: 14px 16px 16px; }
+.ulaz__br { display: inline-block; margin-bottom: 6px; padding: 4px 10px; border-radius: 99px; background: var(--ink, #103D4B); color: #fff; font: 700 11.5px/1 var(--font-ui); letter-spacing: .02em; }
+.ulaz__t h3 { margin: 0 0 4px; font: 700 18px/1.3 var(--font-ui); }
+.ulaz__t p { margin: 0; white-space: pre-line; }
+.ulaz__k:not(:last-child)::after { content: ""; position: absolute; left: 50%; bottom: -14px; width: 2px; height: 12px; background: var(--line); }
+@media (min-width: 760px) { .ulaz__k:has(.ulaz__f) { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); align-items: center; } }
+.ulaz-dlg { width: 100vw; max-width: 100vw; height: 100dvh; max-height: 100dvh; margin: 0; padding: 0; border: 0; background: #0B1418; color: #fff; }
+.ulaz-dlg::backdrop { background: #0B1418; }
+.ulaz-dlg[open] { display: grid; grid-template-rows: minmax(0, 1fr) auto; }
+.ulaz-dlg img { width: 100%; height: 100%; object-fit: contain; }
+.ulaz-dlg__tx { display: grid; gap: 4px; padding: 14px 18px calc(18px + env(safe-area-inset-bottom)); background: rgba(0,0,0,.35); }
+.ulaz-dlg__tx b { font: 700 16px/1.3 var(--font-ui); }
+.ulaz-dlg__tx span { color: rgba(255,255,255,.82); white-space: pre-line; }
+.ulaz-dlg button { position: absolute; display: grid; width: 46px; height: 46px; place-items: center; border: 0; border-radius: 50%; background: rgba(255,255,255,.14); color: #fff; cursor: pointer; font: 400 26px/1 var(--font-ui); backdrop-filter: blur(6px); }
+.ulaz-dlg__x { top: 14px; right: 14px; font-size: 18px !important; }
+.ulaz-dlg__n { top: 42%; }
+.ulaz-dlg__p { left: 12px; }
+.ulaz-dlg__s { right: 12px; }
 </style>
 </head>
 <body>
@@ -351,6 +376,11 @@
       <button class="btn btn--secondary" type="button" id="map-btn" onclick="loadMap()" hidden>Prikaži kartu</button>
     </div>
     <div class="map" id="map" hidden><iframe id="map-frame" title="Karta" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
+  </div>
+  <div class="blk ulaz" id="ulaz-blk" hidden>
+    <h2 tabindex="-1"><svg class="ic"><use href="#i-door-open"/></svg>Kako ući</h2>
+    <p class="ulaz__uvod">Korak po korak, s fotografijama — od ulice do vrata.</p>
+    <ol class="ulaz__lista" id="ulaz-lista"></ol>
   </div>
   <div id="arr-steps"></div>
 </div>
@@ -739,7 +769,7 @@ function renderTiles() {
   const s = SECTION
   const kontakt = [PROP.host_name, PROP.phone ? 'WhatsApp' : PROP.email ? t('e-mail') : null].filter(Boolean).join(' · ')
   TILES = [
-    ['#dolazak', 'map-pin', t('Dolazak'), t('Adresa, parking, upute'), !$('#arr-adr').hidden || !!$('#arr-steps').innerHTML || !!(s.door_code)],
+    ['#dolazak', 'map-pin', t('Dolazak'), t('Adresa, parking, upute'), !$('#arr-adr').hidden || !$('#ulaz-blk').hidden || !!$('#arr-steps').innerHTML || !!(s.door_code)],
     ['#kuca', 'wifi', t('Wi-Fi i kuća'), t('Mreža, lozinka, uređaji'), !!(s.wifi_name || s.wifi_pass || !$('#dev-blk').hidden)],
     ['#preporuke', 'umbrella', t('Preporuke'), t('Plaže, hrana, izleti'), !!$('#places').innerHTML],
     ['#prijava', 'id-card', t('Prijava boravka'), t('Podaci za eVisitor'), PRIJAVA_DOSTUPNA],
@@ -897,9 +927,56 @@ function renderArrival() {
     show('#map')
     show('#arr-adr')
   }
+  renderUlaz()
   $('#arr-steps').innerHTML = steps.map(([ic, t, sub]) =>
     `<div class="blk"><h3 class="h">${ico(ic)}${esc(t)}</h3><p>${esc(sub)}</p></div>`).join('')
 }
+
+// upute za ulazak po koracima (sections.ulazak_koraci, sql/add-arrival-steps.sql)
+function renderUlaz() {
+  const k = (Array.isArray(SECTION.ulazak_koraci) ? SECTION.ulazak_koraci : []).filter(x => x && (x.naslov || x.tekst || x.foto))
+  show('#ulaz-blk', k.length > 0)
+  $('#ulaz-lista').innerHTML = k.map((x, i) => `<li class="ulaz__k">
+      ${x.foto ? `<button type="button" class="ulaz__f" data-ulaz="${i}" aria-label="${esc(t('Povećaj fotografiju'))} · ${esc(t('Korak {n}', { n: i + 1 }))}"><img src="${esc(x.foto)}" alt="" loading="lazy" decoding="async"></button>` : ''}
+      <div class="ulaz__t"><span class="ulaz__br">${esc(t('Korak {n} od {u}', { n: i + 1, u: k.length }))}</span>
+        ${x.naslov ? `<h3>${esc(H(x.naslov))}</h3>` : ''}${x.tekst ? `<p>${esc(H(x.tekst))}</p>` : ''}</div></li>`).join('')
+  ULAZ = k
+}
+let ULAZ = []
+function ulazPrikaz(i) {
+  let d = document.getElementById('ulaz-dlg')
+  if (!d) {
+    d = document.createElement('dialog'); d.id = 'ulaz-dlg'; d.className = 'ulaz-dlg'
+    d.innerHTML = `<img alt=""><div class="ulaz-dlg__tx"><b></b><span></span></div>
+      <button type="button" class="ulaz-dlg__x" data-x>✕</button><button type="button" class="ulaz-dlg__n ulaz-dlg__p" data-p>‹</button><button type="button" class="ulaz-dlg__n ulaz-dlg__s" data-s>›</button>`
+    document.body.appendChild(d)
+    d.addEventListener('click', e => { if (e.target.closest('[data-x]') || e.target === d) d.close()
+      if (e.target.closest('[data-p]')) ulazIdi(-1); if (e.target.closest('[data-s]')) ulazIdi(1) })
+    d.addEventListener('keydown', e => { if (e.key === 'ArrowLeft') ulazIdi(-1); if (e.key === 'ArrowRight') ulazIdi(1) })
+    let x0 = null
+    d.addEventListener('touchstart', e => { x0 = e.touches[0].clientX }, { passive: true })
+    d.addEventListener('touchend', e => { if (x0 == null) return; const dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 50) ulazIdi(dx < 0 ? 1 : -1); x0 = null })
+  }
+  d.querySelector('[data-x]').setAttribute('aria-label', t('Zatvori'))
+  d.querySelector('[data-p]').setAttribute('aria-label', t('Prethodna fotografija'))
+  d.querySelector('[data-s]').setAttribute('aria-label', t('Sljedeća fotografija'))
+  d.dataset.i = i; ulazNacrtaj(d)
+  if (!d.open) d.showModal()
+}
+const ulazSFotkom = () => ULAZ.map((x, i) => x.foto ? i : -1).filter(i => i >= 0)
+function ulazIdi(sm) {
+  const d = document.getElementById('ulaz-dlg'), f = ulazSFotkom(), p = f.indexOf(+d.dataset.i)
+  d.dataset.i = f[(p + sm + f.length) % f.length]; ulazNacrtaj(d)
+}
+function ulazNacrtaj(d) {
+  const i = +d.dataset.i, x = ULAZ[i]
+  d.querySelector('img').src = x.foto
+  d.querySelector('b').textContent = t('Korak {n} od {u}', { n: i + 1, u: ULAZ.length }) + (x.naslov ? ' · ' + H(x.naslov) : '')
+  d.querySelector('span').textContent = x.tekst ? H(x.tekst) : ''
+  const vise = ulazSFotkom().length > 1
+  d.querySelectorAll('.ulaz-dlg__n').forEach(b => b.hidden = !vise)
+}
+document.addEventListener('click', e => { const b = e.target.closest('[data-ulaz]'); if (b) ulazPrikaz(+b.dataset.ulaz) })
 
 window.loadMap = () => {
   const f = $('#map-frame')
@@ -1246,6 +1323,10 @@ async function prikaziPrimjer() {
   SECTION = { wifi_name: 'Maslina-Gost', wifi_pass: 'primjer-2026', door_code: '7305', checkin_time: '15:00', checkout_time: '10:00',
     address: 'Put maslina 12 (izmišljeno)', parking_info: 'Dva mjesta ispred kuće, lijevo od ulaza.',
     checkin_notes: 'Kutija s ključem je desno od ulaznih vrata. Upišite šifru i povucite poklopac prema dolje.',
+    ulazak_koraci: [
+      { naslov: 'Kuća s bazenom na kraju puta', tekst: 'S glavne ceste skrenite kod table „Put maslina”. Kuća je zadnja s desne strane, iza maslinika.', foto: '/assets/landing/villa-900.jpg' },
+      { naslov: 'Kutija s ključem', tekst: 'Desno od ulaznih vrata, u visini ruke. Šifru vidite gore pod „Vaš pristup”.' },
+      { naslov: 'Ulazna vrata', tekst: 'Ključ okrenite dvaput ulijevo. Svjetlo je odmah desno od vrata.' }],
     ac_info: 'Daljinski je u ladici ispod televizora. Preporučena temperatura je 24 °C.', hot_water_info: 'Bojler je stalno uključen.',
     checkout_notes: 'Zatvorite prozore i balkonska vrata\nUgasite klimu i svjetla\nSmeće odnesite u kontejnere na kraju ulice\nKljuč vratite u kutiju i zaključajte je' }
   BOOKING = { guest_name: 'Ana', checkin_date: dan(-1), checkout_date: dan(4) }
