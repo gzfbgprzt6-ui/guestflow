@@ -154,3 +154,14 @@ Popratno:
 - [x] **Javna stranica „soft touch”**: fotografija „diše”, znak „Slobodno od …”,
   mekane sjene i reakcije — 12. 10. 2026.
 - [x] `docs/must-do.md` — kratki popis za vlasnika — 12. 10. 2026.
+- [x] **Dorade 16. 10. 2026.** — logo B2 na svim stranicama i kao ikona
+  kartice; Osnovno zbijeno (vrsta jednom + „Drugo…”, kapacitet s upisom);
+  „Riječ domaćina” i besplatni prijevod (MyMemory); 75 sadržaja u 9 skupina s
+  ikonama i prijevodima; parking sa slikom i pribadačom; predlošci pitanja i
+  pravila; kalendar s dva mjeseca; čistačica javlja (potvrda / vrijeme /
+  gotovo / ne može); obavijesti po prioritetu (hitno / važno / za znanje) s
+  otkazanim i novim rezervacijama s platformi; „Objavi” i Facebook grupe u
+  Objavama; „Preporuči domaćina”. SQL: `add-parking`, `add-cleaner-status`,
+  `add-referrals`.
+- [x] Drugi budilnik za Supabase (GitHub Actions) — 16. 10. 2026.
+

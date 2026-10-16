@@ -2,6 +2,7 @@
 <html lang="hr">
 <head>
 <meta charset="utf-8">
+<link rel="icon" href="/assets/logo/ikona.svg" type="image/svg+xml">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>Vaš vodič — Odmoria</title>
@@ -242,6 +243,12 @@
 .ulaz-dlg__n { top: 42%; }
 .ulaz-dlg__p { left: 12px; }
 .ulaz-dlg__s { right: 12px; }
+/* parking u vodiču (fotografija + pribadača) */
+.park-g__m { display: grid; gap: 10px; margin-top: 12px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.park-g__f { display: block; overflow: hidden; border-radius: var(--r-14, 14px); aspect-ratio: 4 / 3; background: var(--wash, #EDF5F6); }
+.park-g__f img { width: 100%; height: 100%; object-fit: cover; }
+.park-g__k { margin: 0; aspect-ratio: 4 / 3; height: auto; }
+.park-g__k iframe { width: 100%; height: 100%; border: 0; }
 </style>
 </head>
 <body>
@@ -294,7 +301,7 @@
 <!-- stanje linka: neispravan / istekao / objekt nije pronađen -->
 <div class="boot" id="oops" hidden>
   <div class="state">
-    <span class="state__logo">Odmoria<i>.</i></span>
+    <span class="state__logo"><img class="o-logo" src="/assets/logo/odmoria.svg" alt="Odmoria" width="112" height="24"></span>
     <span class="state__ic" id="oops-ic"><svg class="ic"><use href="#i-link"/></svg></span>
     <h1 id="oops-title">Link nije ispravan</h1>
     <p class="t-muted" id="oops-msg">Adresa je nepotpuna ili pogrešno kopirana. Otvorite link iz poruke domaćina ponovno.</p>
@@ -913,7 +920,8 @@ function renderArrival() {
   const s = SECTION, steps = []
   if (s.checkin_time) steps.push(['clock', t('Prijava'), t('Od {v}.', { v: s.checkin_time }) + (s.checkout_time ? ' ' + t('Odjava je do {v}.', { v: s.checkout_time }) : '')])
   if (s.checkin_notes) steps.push(['door-open', t('Upute za dolazak'), H(s.checkin_notes)])
-  if (s.parking_info) steps.push(['car', t('Parking'), H(s.parking_info)])
+  const pLat = s.parking_lat, pLon = s.parking_lon, pPin = pLat != null && pLon != null
+  if (s.parking_info || s.parking_foto || pPin) steps.push(['car', t('Parking'), H(s.parking_info || ''), 'parking'])
 
   const adr = punaAdresa(s.address, PROP.location)
   if (adr) {
@@ -928,8 +936,16 @@ function renderArrival() {
     show('#arr-adr')
   }
   renderUlaz()
-  $('#arr-steps').innerHTML = steps.map(([ic, t, sub]) =>
-    `<div class="blk"><h3 class="h">${ico(ic)}${esc(t)}</h3><p>${esc(sub)}</p></div>`).join('')
+  $('#arr-steps').innerHTML = steps.map(([ic, nas, sub, vrsta]) => {
+    if (vrsta !== 'parking') return `<div class="blk"><h3 class="h">${ico(ic)}${esc(nas)}</h3><p>${esc(sub)}</p></div>`
+    // parking: tekst, fotografija (otvara se u punoj veličini), mala karta s pribadačom i „Navigiraj” (sql/add-parking.sql)
+    const ll = pPin ? `${(+pLat).toFixed(6)},${(+pLon).toFixed(6)}` : ''
+    return `<div class="blk park-g"><h3 class="h">${ico(ic)}${esc(nas)}</h3>${sub ? `<p>${esc(sub)}</p>` : ''}
+      ${s.parking_foto || pPin ? `<div class="park-g__m">
+        ${s.parking_foto ? `<a class="park-g__f" href="${esc(s.parking_foto)}" target="_blank" rel="noopener"><img src="${esc(s.parking_foto)}" alt="${esc(t('Parking'))}" loading="lazy"></a>` : ''}
+        ${pPin ? `<div class="map park-g__k"><iframe title="${esc(t('Parking'))}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=${ll}&z=17&output=embed"></iframe></div>` : ''}</div>` : ''}
+      ${pPin ? `<div class="btnrow"><a class="btn btn--secondary" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${ll}">${esc(t('Navigiraj do parkinga'))}${ico('arrow-up-right', 'ic--sm')}</a></div>` : ''}</div>`
+  }).join('')
 }
 
 // upute za ulazak po koracima (sections.ulazak_koraci, sql/add-arrival-steps.sql)
@@ -1321,7 +1337,7 @@ async function prikaziPrimjer() {
     cover_photo_url: '/assets/landing/villa-1600.jpg',
     welcome_msg: 'Dobro došli! Kuća je spremna, bazen očišćen, a u hladnjaku vas čeka domaće maslinovo ulje. Ako išta zatreba, javite se.' }
   SECTION = { wifi_name: 'Maslina-Gost', wifi_pass: 'primjer-2026', door_code: '7305', checkin_time: '15:00', checkout_time: '10:00',
-    address: 'Put maslina 12 (izmišljeno)', parking_info: 'Dva mjesta ispred kuće, lijevo od ulaza.',
+    address: 'Put maslina 12 (izmišljeno)', parking_info: 'Dva mjesta ispred kuće, lijevo od ulaza.', parking_lat: 43.5862, parking_lon: 15.9238,
     checkin_notes: 'Kutija s ključem je desno od ulaznih vrata. Upišite šifru i povucite poklopac prema dolje.',
     ulazak_koraci: [
       { naslov: 'Kuća s bazenom na kraju puta', tekst: 'S glavne ceste skrenite kod table „Put maslina”. Kuća je zadnja s desne strane, iza maslinika.', foto: '/assets/landing/villa-900.jpg' },

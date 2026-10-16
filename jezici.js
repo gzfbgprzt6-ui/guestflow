@@ -15,6 +15,8 @@
 // Redoslijed JEZICI je i redoslijed otključavanja po planu (Free 2 = HR + EN).
 // ============================================================
 
+import { RJECNIK as SADRZAJI_RJ } from './sadrzaji.js'
+
 export const JEZICI = [
   { kod: 'hr', ime: 'Hrvatski', loc: 'hr-HR' },
   { kod: 'en', ime: 'English', loc: 'en-GB' },
@@ -44,6 +46,7 @@ const norm = s => String(s).replace(/\s+/g, ' ').trim()
 function dodaj(redovi) {
   for (const [hr, en, de, it, pl, cs] of redovi) R[norm(hr)] = { en, de, it, pl, cs }
 }
+dodaj(SADRZAJI_RJ)   // nazivi sadržaja objekta (sadrzaji.js) — prije rječnika, pa ručno napisani redovi niže imaju prednost
 
 dodaj([
   // zajedničko
@@ -161,6 +164,7 @@ dodaj([
   ['Zatvori', 'Close', 'Schließen', 'Chiudi', 'Zamknij', 'Zavřít'],
   ['Upute za dolazak', 'Arrival instructions', 'Hinweise zur Ankunft', "Istruzioni per l'arrivo", 'Wskazówki dotyczące przyjazdu', 'Pokyny k příjezdu'],
   ['Parking', 'Parking', 'Parkplatz', 'Parcheggio', 'Parking', 'Parkování'],
+  ['Navigiraj do parkinga', 'Directions to parking', 'Route zum Parkplatz', 'Indicazioni per il parcheggio', 'Nawiguj do parkingu', 'Navigovat k parkování'],
   ['Kako što radi', 'How things work', 'So funktioniert alles', 'Come funziona tutto', 'Jak wszystko działa', 'Jak co funguje'],
   ['Klima-uređaj', 'Air conditioning', 'Klimaanlage', 'Aria condizionata', 'Klimatyzacja', 'Klimatizace'],
   ['Grijanje', 'Heating', 'Heizung', 'Riscaldamento', 'Ogrzewanie', 'Topení'],

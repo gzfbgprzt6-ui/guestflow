@@ -199,3 +199,6 @@ ul{margin:0;padding:0;list-style:none}
 .jezik-prekidac button[aria-pressed="true"]{background:var(--bg-inverse);color:var(--text-inverse)}
 .jezik-prekidac--plutajuci{position:fixed;top:16px;right:16px;z-index:50;box-shadow:var(--shadow-raised)}
 .jezik-prekidac:empty{display:none}
+
+/* logo (assets/logo/, prijedlog B2 „izlazak sunca”, 16. 10. 2026.) — visina prati pismo poveznice */
+.o-logo{display:block;height:1.12em;width:auto;max-width:none}

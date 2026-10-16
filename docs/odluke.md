@@ -1271,6 +1271,11 @@ KORAKA 1 (točka 2 ispod je time obavljena).
 11. `sql/add-arrival-steps.sql` — „Kako ući, korak po korak” sa slikama
    (stupac `sections.ulazak_koraci`). Bez njega „Spremi korake” kaže što
    pokrenuti. Sažetak svih koraka za vas: `docs/must-do.md`.
+12. `sql/add-parking.sql` — fotografija i pribadača parkinga.
+13. `sql/add-cleaner-status.sql` — čistačica javlja (potvrda, vrijeme,
+   gotovo, ne može) i bilježenje otkazanih/novih rezervacija s platformi.
+   Nakon `sql/add-cleaner-links.sql`.
+14. `sql/add-referrals.sql` — brojač „Preporuči domaćina”.
 
 **B. Vercel → Settings → Environment Variables (Production) → Redeploy:**
 `SUPABASE_SERVICE_ROLE_KEY`, `CRON_SECRET`, `ANTHROPIC_API_KEY` (prijevodi),
@@ -1325,3 +1330,21 @@ pribadačom. Dvije stvari za znati:
   učitavala tek na klik. Ako bude zatrebala privola za kolačiće, vraća se
   jednim redom koda.
 - [ ] Pravila privatnosti spomenuti Google Maps i Photon (točka 8).
+
+## 30. Preporuči domaćina — nagrada (16. 10. 2026.)
+
+Link i brojač postoje (`sql/add-referrals.sql`). **Nagrada nije nigdje
+obećana** dok je vi ne odredite. Prijedlog: mjesec Pro plana za svakog
+preporučenog domaćina koji postavi objekt, odobrava se ručno u adminu
+(lažni računi tako ne donose besplatne mjesece).
+- [ ] Odluka: nagrada i tekst koji domaćin vidi.
+
+## 31. Besplatni prijevod (MyMemory) — uvjeti (16. 10. 2026.)
+
+„Prevedi besplatno” koristi MyMemory (oko 50.000 znakova dnevno po
+domaćinu, bez ključa). Njihove uvjete za komercijalnu upotrebu nismo mogli
+provjeriti (stranica s uvjetima nije bila dostupna) — prije pravih korisnika
+pročitati https://mymemory.translated.net/doc/usagelimits.php. Rezerva:
+Claude (oko 1–3 centa po objektu, jednokratno) ili ručni prijevod.
+- [ ] Provjeriti uvjete MyMemoryja.
+
