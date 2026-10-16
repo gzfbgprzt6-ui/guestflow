@@ -30,6 +30,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 - URL: `https://wtojzqjhipdfbrnmprmz.supabase.co`
 - Publishable/anon key (javan, sigurno za commit): `sb_publishable_tmZAZTDbQ7ktc1N-8y4q4w_ztAu_62F`
 - **Rizik (ublažen):** ovo je Free tier projekt koji se automatski pauzira nakon ~7 dana neaktivnosti (potvrđeno u praksi — cijela app tada baca "Failed to fetch"). `api/keepalive.js` se preko Vercel Crona pokreće **jednom dnevno** i radi jedan trivijalan read, što drži projekt budnim. Ako se cron ugasi ili Vercel preskoči izvršavanje nekoliko dana zaredom, problem se vraća — za pravi production i dalje treba Supabase Pro.
+- **Drugi budilnik (16. 10. 2026.):** `.github/workflows/supabase-budan.yml` — GitHub Actions dvaput dnevno (05:17 i 17:43 UTC) napravi isti read `plans` javnim ključem, s 5 pokušaja. Besplatno (javni repo), radi tek s `main`; GitHub ga gasi nakon 60 dana bez commita (tada Actions → Enable workflow). Dva neovisna izvora: ako Vercel preskoči cron, GitHub ne.
 
 **GitHub repo:** `gzfbgprzt6-ui/guestflow` (public)
 
@@ -49,6 +50,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 ├── email-confirm.html       onboarding.html          add-property.html
 ├── account.html              help.html                admin.html (gated: owner auth UID)
 ├── terms.html                privacy.html             404.html
+├── .github/workflows/supabase-budan.yml  # GitHub Actions: Supabase budan (2× dnevno, besplatno)
 ├── vercel.json              # Rewrites za clean URL-ove, security headeri + dnevni cron za keepalive
 ├── odmoria.css              # v2 dizajn sustav (Figma „Odmoria / Product Design / v2”) — sve žive stranice osim dashboarda
 ├── auth.css                 # raspored četiri stranice prijave (login, register, reset-password, email-confirm)

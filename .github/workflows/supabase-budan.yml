@@ -1,0 +1,40 @@
+# Drži Supabase (Free) budnim — drugi, neovisni budilnik uz Vercel Cron
+# (/api/keepalive, vercel.json). Supabase Free pauzira projekt nakon ~7 dana
+# bez upita; ovaj posao dvaput dnevno napravi jedan trivijalan read javne
+# tablice `plans` javnim (publishable) ključem — istim koji je i u HTML-u.
+#
+# Besplatno: GitHub Actions za javne repozitorije ne naplaćuje minute.
+# Zakazani poslovi rade samo s glavne grane (main). GitHub ih sam ugasi
+# nakon 60 dana bez ijednog commita u repozitoriju — tada u Actions →
+# „Supabase budan” kliknuti „Enable workflow”.
+name: Supabase budan
+
+on:
+  schedule:
+    - cron: '17 5 * * *'    # 05:17 UTC
+    - cron: '43 17 * * *'   # 17:43 UTC
+  workflow_dispatch: {}      # ručno: Actions → Supabase budan → Run workflow
+
+permissions: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Upit prema Supabaseu
+        env:
+          SB_URL: https://wtojzqjhipdfbrnmprmz.supabase.co
+          SB_KEY: sb_publishable_tmZAZTDbQ7ktc1N-8y4q4w_ztAu_62F
+        run: |
+          # pauziran projekt se budi sporo — do 5 pokušaja
+          for i in 1 2 3 4 5; do
+            kod=$(curl -s -o /tmp/odg -w '%{http_code}' --max-time 30 \
+              -H "apikey: $SB_KEY" -H "Authorization: Bearer $SB_KEY" \
+              "$SB_URL/rest/v1/plans?select=id&limit=1")
+            echo "pokušaj $i: HTTP $kod $(head -c 200 /tmp/odg)"
+            [ "$kod" = "200" ] && exit 0
+            sleep 30
+          done
+          echo "::error::Supabase ne odgovara (projekt je možda pauziran — otvorite supabase.com/dashboard i kliknite Restore)"
+          exit 1
