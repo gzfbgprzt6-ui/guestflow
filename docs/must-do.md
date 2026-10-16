@@ -33,14 +33,18 @@ pokretanje ništa ne kvari.
 ### C. Resend
 - [ ] potvrditi domenu (DNS) — bez nje e-mail ide samo na vašu adresu
 
+### C2. Supabase budan (besplatno)
+- [ ] nakon spajanja u main: GitHub → Actions → „Supabase budan” → **Run workflow** (jednom, da vidite zeleno)
+- [ ] Vercel → Settings → Cron Jobs: `/api/keepalive` je uključen (ako je `CRON_SECRET` postavljen, Vercel ga šalje sam)
+
 ### D. Pregledati Preview i reći „pusti u main”
 - [ ] https://guestflow-git-claude-funny-archimedes-c0qosu-guestflow4.vercel.app/dashboard.html
 
 ### E. Prije pravih korisnika
 - [ ] pravni tekst (Uvjeti, Privatnost) — popis u `docs/odluke.md`, točka 8
   (Resend, OpenStreetMap/Photon, Anthropic, Cloudinary; e-mail gosta 30 dana)
-- [ ] Supabase Pro (Free se pauzira nakon ~7 dana bez prometa; `keepalive` to
-  ublažava, ali ne jamči)
+- [ ] Supabase Pro kad krenu pravi gosti (Free se pauzira nakon ~7 dana bez
+  prometa; dva besplatna budilnika to sprječavaju, ali bez jamstva)
 
 ---
 
@@ -67,6 +71,7 @@ pokretanje ništa ne kvari.
 | **Pregled**: brojke, „Odakle dolaze noći”, kartice objekata, tablica svih objekata s filtrima, karta | 12. 10. |
 | **Nespremljene promjene** = mali balončić („kapljica”) umjesto prozora; brojači i vrsta objekta sad ga ispravno pokreću | 12. 10. |
 | **Kako ući, korak po korak**: fotografija + opis po koraku, gost ih vidi u privatnom vodiču i može povećati sliku | 12. 10. |
+| **Supabase budan**: GitHub Actions dvaput dnevno, uz Vercel cron (radi tek s `main`) | 16. 10. |
 | **Javna stranica „soft touch”**: naslovna fotografija polako „diše”, znak „Slobodno od …”, kartice i gumbi mekano reagiraju | 12. 10. |
 
 ## 4. Što radi samo djelomično / poznato
