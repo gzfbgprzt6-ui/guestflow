@@ -1,98 +1,90 @@
 # Odmoria — MUST DO i stanje (16. 10. 2026.)
 
-Kratko: što je u produkciji, što čeka na grani, što morate napraviti vi i što
-ostaje. Stripe i obrt su namjerno izostavljeni (kasnije).
+Kratko: što je u produkciji, što je postavljeno, što još ostaje vama.
+Stripe i obrt su namjerno izostavljeni (kasnije).
 
 ---
 
-## 1. MUST DO — vi, ovim redom
+## 1. Postavljeno — ništa ne treba raditi
 
-### A. Supabase → SQL editor (svaka datoteka jednom, smiju se ponoviti)
+Sve iz zadnjeg spajanja u `main` (16. 10. 2026.) je u produkciji, a baza i
+Vercel su postavljeni i provjereni.
 
-| ✓ | Datoteka | Zašto je bitno |
-|---|----------|----------------|
-| [ ] | `sql/sections-security.sql` — **KORAK 0** (samo čita) pa **KORAK 1** | 🔴 sigurnost: šifre vrata i Wi-Fi izdaje baza, tek u pravo vrijeme |
-| [ ] | `sql/sections-security.sql` — **KORAK 2**, pa **KORAK 4** (provjera) | 🔴 zatvara `sections` i `bookings` za anonimne. Bez ovoga se šifre mogu izvući iz baze |
-| [ ] | `sql/add-styles.sql` | stilovi javne stranice se mogu spremiti |
-| [ ] | `sql/delete-property.sql` | gumb „Obriši objekt” |
-| [ ] | `sql/add-arrival-steps.sql` | „Kako ući, korak po korak” sa slikama |
-| [ ] | `sql/add-parking.sql` | **novo** — fotografija i pribadača parkinga |
-| [ ] | `sql/add-cleaner-status.sql` | **novo** — čistačica javlja (potvrda, vrijeme, gotovo, ne može) + otkazane/nove rezervacije u obavijestima (nakon `add-cleaner-links.sql`) |
-| [ ] | `sql/add-referrals.sql` | **novo** — brojač „Preporuči domaćina” |
-| [ ] | `sql/add-translations.sql` | prijevodi (i besplatni „Prevedi besplatno”) |
-| [ ] | `sql/add-ical-export.sql` | izvoz kalendara prema Bookingu/Airbnbu |
-| [ ] | `sql/add-team-access.sql` | suradnici na objektu |
-| [ ] | `sql/add-inquiry-email.sql` (+ Resend ključ u Vaultu) | e-mail vama kad gost pošalje upit |
-| [ ] | `sql/add-guest-emails.sql` | automatski e-mail gostu (tek nakon KORAKA 2 i reda iznad) |
-| [ ] | `sql/auto-ical-sync.sql` (`<ADRESA>`, `<CRON_SECRET>`) | Booking/Airbnb se sinkroniziraju sami svakih 30 min |
+### Supabase — pokrenuto i provjereno (16. 10.)
+- [x] `sql/sections-security.sql` (KORAK 1 i 2) — šifre i rezervacije zatvorene za anonimne
+- [x] `sql/add-styles.sql` — 8 stilova (stare teme na objektima ostale)
+- [x] `sql/delete-property.sql` — „Obriši objekt” (samo vlasnik)
+- [x] `sql/add-arrival-steps.sql` — „Kako ući, korak po korak”
+- [x] `sql/add-parking.sql` — fotografija i pribadača parkinga
+- [x] `sql/add-ical-export.sql` — izvoz kalendara prema Bookingu/Airbnbu
+- [x] `sql/add-team-access.sql` — suradnici
+- [x] `sql/add-cleaner-status.sql` — čistačica javlja + otkazano/novo s platformi
+- [x] `sql/add-referrals.sql` — „Preporuči domaćina”
+- [x] `sql/add-translations.sql`, `sql/auto-ical-sync.sql` (od ranije)
+- [x] zatvoren stari pogled `plan_violations` (bio je čitljiv javnim ključem i
+      otkrivao e-mail domaćina): `revoke select … from anon, authenticated`
 
-Ne znam koje ste već pokrenuli — ako je datoteka pokrenuta, ponovno
-pokretanje ništa ne kvari.
+### Vercel
+- [x] `SUPABASE_SERVICE_ROLE_KEY` i `CRON_SECRET` postavljeni — provjereno:
+      sinkronizacija svakih 30 min dobiva `200 OK`
 
-### B. Vercel → Settings → Environment Variables → Redeploy
-- [ ] `SUPABASE_SERVICE_ROLE_KEY` — dnevna sinkronizacija, **prijevodi (i besplatni)**
-- [ ] `CRON_SECRET` — sinkronizacija svakih 30 min
-- [ ] `ANTHROPIC_API_KEY` — **neobavezno**: automatski prijevod (≈ 1–3 centa po objektu, jednokratno). Bez njega domaćin klikne „Prevedi besplatno”
-
-### C. Resend
-- [ ] potvrditi domenu (DNS) — bez nje e-mail ide samo na vašu adresu
-
-### C2. Supabase budan (besplatno)
-- [ ] nakon spajanja u main: GitHub → Actions → „Supabase budan” → **Run workflow** (jednom, da vidite zeleno)
-- [ ] Vercel → Settings → Cron Jobs: `/api/keepalive` je uključen (ako je `CRON_SECRET` postavljen, Vercel ga šalje sam)
-
-### D. Pregledati Preview i reći „pusti u main”
-- [ ] https://guestflow-git-claude-funny-archimedes-c0qosu-guestflow4.vercel.app/dashboard.html
-
-### E. Prije pravih korisnika
-- [ ] pravni tekst (Uvjeti, Privatnost) — popis u `docs/odluke.md`, točka 8
-  (Resend, OpenStreetMap/Photon, Anthropic, Cloudinary; e-mail gosta 30 dana)
-- [ ] Supabase Pro kad krenu pravi gosti (Free se pauzira nakon ~7 dana bez
-  prometa; dva besplatna budilnika to sprječavaju, ali bez jamstva)
+### Supabase budan (besplatno)
+- [x] GitHub Actions „Supabase budan” pokrenut, zeleno (05:17 i 17:43 UTC)
+- [x] Vercel cron `/api/keepalive` jednom dnevno
 
 ---
 
-## 2. Što je u produkciji (`main`, zadnje spajanje 3. 10. 2026.)
+## 2. Ostaje vama (ništa hitno)
 
-- Naslovnica, prijava/registracija (s „zaboravljena lozinka”), postavljanje, račun
-- Javna stranica `/p/…`: galerija, kalendar, upit, karta, recenzije, **8 stilova**, 6 jezika
-- Privatni vodič `/h/…`: šifre zaključane do dolaska, Wi-Fi, upute, preporuke, rad bez interneta, primjer `/h/demo`
-- Dashboard: objekt, fotografije, kalendar, rezervacije i linkovi, upiti, iCal uvoz i izvoz,
-  recenzije, čistačica, eVisitor, analitika, objave i letak, suradnici, prijevodi, HR/EN
-- Admin panel
+- [ ] **Isprobati na produkciji**: Osnovno (vrsta, kapacitet, stil), Dolazak
+      (koraci, parking), Sadržaji, Prijevodi → „Prevedi besplatno”, kalendar 2
+      mjeseca, link čistačice → „Potvrđujem” (vidi se u 🔔), vodič rezervacije
+- [ ] **E-mailovi** — Resend račun + potvrda domene, pa `sql/add-inquiry-email.sql`
+      (ključ u Vaultu) i tek onda `sql/add-guest-emails.sql`
+- [ ] Supabase → Authentication → uključiti „Leaked password protection”
+      (ako je dostupno na Free planu)
+- [ ] `ANTHROPIC_API_KEY` u Vercelu — **neobavezno** (automatski prijevod);
+      bez njega domaćin klikne „Prevedi besplatno”
+- [ ] **Prije pravih korisnika**: pravni tekst (Uvjeti, Privatnost) — popis u
+      `docs/odluke.md`, točka 8 (Resend, OpenStreetMap/Photon, MyMemory,
+      Anthropic, Cloudinary; e-mail gosta 30 dana)
+- [ ] Supabase Pro kad krenu pravi gosti (dva besplatna budilnika drže Free
+      budnim, ali bez jamstva)
 
-## 3. Na grani — gotovo, čeka vaš „pusti u main”
+### Supabase upozorenja koja su namjerna (ne dirati)
+Supabase „Advisors” javlja da anon smije zvati SECURITY DEFINER funkcije
+(`vodic_gosta`, `raspored_ciscenja`, `javi_ciscenje`, `ostavi_ocjenu`…). To je
+namjerno — gost i čistačica rade samo kroz te funkcije s tokenom.
 
-| Što | Kada |
-|-----|------|
-| Mobitel: plutajuća donja traka, ikone „Iconly”, podtabovi bez trzanja, prijedlozi adrese ispod polja | 4. 10. |
-| Pregled u stilu nekretnine + popravljen prazan „Kako gost vidi” | 4. 10. |
-| Izbornik objekta s fotografijama | 4. 10. |
-| Isti stil na svim zaslonima domaćina | 4. 10. |
-| Kopija objekta i brisanje objekta | 4. 10. |
-| Novi kalendar (trake boravaka, boje po izvoru, popunjenost) | 4. 10. |
-| **Dashboard „Aurex”**: gornja traka (tabovi, traži, obavijesti 🔔, postavke ⚙, profil), bez bočne trake na računalu | 12. 10. |
-| **Pregled**: brojke, „Odakle dolaze noći”, kartice objekata, tablica svih objekata s filtrima, karta | 12. 10. |
-| **Nespremljene promjene** = mali balončić („kapljica”) umjesto prozora; brojači i vrsta objekta sad ga ispravno pokreću | 12. 10. |
-| **Kako ući, korak po korak**: fotografija + opis po koraku, gost ih vidi u privatnom vodiču i može povećati sliku | 12. 10. |
-| **Dorade 16. 10.**: logo B2, Osnovno zbijeno + „Drugo…”, kapacitet s upisom, besplatni prijevod, 75 sadržaja s ikonama, parking sa slikom i pribadačom, predlošci pitanja/pravila, kalendar 2 mjeseca, javljanja čistačice, obavijesti po prioritetu, „Objavi” + FB grupe, Preporuči domaćina | 16. 10. |
-| **Supabase budan**: GitHub Actions dvaput dnevno, uz Vercel cron (radi tek s `main`) | 16. 10. |
-| **Javna stranica „soft touch”**: naslovna fotografija polako „diše”, znak „Slobodno od …”, kartice i gumbi mekano reagiraju | 12. 10. |
+---
 
-## 4. Što radi samo djelomično / poznato
+## 3. Što je u produkciji (`main`, zadnje spajanje 16. 10. 2026.)
+
+- Naslovnica, prijava/registracija, postavljanje, račun
+- Javna stranica `/p/…`: galerija, kalendar, upit, karta, recenzije, 8 stilova,
+  6 jezika, „soft touch” (fotografija „diše”, „Slobodno od …”)
+- Privatni vodič `/h/…`: šifre zaključane do dolaska (izdaje ih baza), Wi-Fi,
+  koraci ulaska sa slikama, parking sa slikom i kartom, preporuke, rad bez
+  interneta, primjer `/h/demo`
+- Dashboard „Aurex”: gornja traka (traži, obavijesti po prioritetu, postavke),
+  Pregled s tablicom objekata i kartom, kapljica za nespremljeno, Osnovno
+  zbijeno, 75 sadržaja s ikonama, predlošci pitanja/pravila, kalendar 2
+  mjeseca, rezervacije, upiti, iCal uvoz i izvoz, čistačica s javljanjima,
+  Objave + „Objavi” i FB grupe, suradnici, prijevodi (i besplatni),
+  Preporuči domaćina, kopija i brisanje objekta, HR/EN
+- Logo B2, admin panel
+
+## 4. Poznato
 
 - **Mjesta u blizini (OpenStreetMap)** — iz razvojnog okruženja se ne može
-  provjeriti; provjerite na Previewu.
-- **Upute za ulazak** — dok `sql/add-arrival-steps.sql` nije pokrenut, gumb
-  „Spremi korake” kaže što pokrenuti; ništa se ne gubi.
-- Prijevod koraka ulaska na strane jezike radi tek s `ANTHROPIC_API_KEY`.
+  provjeriti; provjerite na produkciji.
 - Naslovnica, Pomoć, pravni tekst, admin i raspored za čistačicu su samo na hrvatskom.
 - Vercel Hobby: 12/12 funkcija — nova poslužiteljska ruta traži spajanje ili Pro.
 
-## 5. Što ostaje (prijedlozi za dalje)
+## 5. Prijedlozi za dalje
 
-- Dashboard: doraditi ostale panele u novom stilu (Objekt, Boravci) po vašim komentarima
+- Doraditi ostale panele po vašim komentarima nakon isprobavanja
 - Vodič: isti „soft touch” kao javna stranica
-- Upute za ulazak: i PDF kao privitak (ako ga domaćin već ima)
+- Upute za ulazak: i PDF kao privitak
 - Obavijesti na mobitel (odluke, točka 26)
 - Stripe i obrt — kad odlučite
