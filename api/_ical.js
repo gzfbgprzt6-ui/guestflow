@@ -126,6 +126,30 @@ function rest(path, kljuc, opts) {
   });
 }
 
+// ---------- promjene na platformi (otkazano / novo) ----------
+// Uzastopne noći → jedan raspon [od, do) (do = dan odlaska). Bez tablice
+// kalendar_promjene upis tiho ne uspije — sinkronizacija radi kao prije.
+function rasponi(noci) {
+  const out = [];
+  for (const d of [...noci].sort()) {
+    const z = out[out.length - 1];
+    if (z && z.do_ === d) z.do_ = sljedeci(d); else out.push({ od: d, do_: sljedeci(d) });
+  }
+  return out;
+}
+function sljedeci(d) { const x = new Date(d + 'T12:00:00Z'); x.setUTCDate(x.getUTCDate() + 1); return x.toISOString().slice(0, 10); }
+async function zabiljeziPromjene(propertyId, izvor, stari, novi, kljuc) {
+  if (!stari.length) return;
+  const danas = new Date().toISOString().slice(0, 10);
+  const nS = new Set(novi), sS = new Set(stari);
+  const otkazano = rasponi(stari.filter(d => d >= danas && !nS.has(d)));
+  const novo = rasponi(novi.filter(d => d >= danas && !sS.has(d)));
+  const redovi = otkazano.map(r => ({ property_id: propertyId, izvor, vrsta: 'otkazano', od: r.od, do_: r.do_ }))
+    .concat(novo.map(r => ({ property_id: propertyId, izvor, vrsta: 'novo', od: r.od, do_: r.do_ })));
+  if (!redovi.length) return;
+  try { await rest('kalendar_promjene', kljuc, { method: 'POST', body: JSON.stringify(redovi.slice(0, 50)), headers: { Prefer: 'return=minimal' } }); } catch (e) {}
+}
+
 // ---------- sinkronizacija jednog objekta ----------
 // prop = { id, ical_booking_url, ical_airbnb_url }. Vraća { ok, results, ical_last_sync, error }.
 async function syncProperty(prop, kljuc) {
@@ -171,6 +195,9 @@ async function syncProperty(prop, kljuc) {
       });
       if (!ins.ok) { results.push({ source: feed.source, label: feed.label, dates: 0, error: 'Upis termina nije uspio: ' + await ins.text() }); continue; }
     }
+    // otkazano / novo (sql/add-cleaner-status.sql → kalendar_promjene): samo buduće
+    // noći i samo kad je ovaj izvor već prije bio povučen (prvi put sve je „novo”)
+    await zabiljeziPromjene(propertyId, feed.source, postojeci.filter(r => r.source === feed.source).map(r => r.date), dates, kljuc);
     // i drugi feed u istom krugu mora znati za ove dane
     postojeci = postojeci.filter(r => r.source !== feed.source).concat(dates.map(d => ({ date: d, source: feed.source })));
     results.push({ source: feed.source, label: feed.label, dates: dates.length });
@@ -210,4 +237,4 @@ async function syncAll({ rokMs = 45000, najvise = 40, razmakMin = 20 } = {}) {
   return { ok: true, obradeno, greske, na_redu: lista.length - obradeno };
 }
 
-module.exports = { parseIcal, nightsBetween, safeUrl, fetchFeed, rest, syncProperty, syncAll, SUPABASE_ANON };
+module.exports = { _rasponi: rasponi, parseIcal, nightsBetween, safeUrl, fetchFeed, rest, syncProperty, syncAll, SUPABASE_ANON };

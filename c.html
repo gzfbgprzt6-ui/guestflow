@@ -2,6 +2,7 @@
 <html lang="hr">
 <head>
 <meta charset="utf-8">
+<link rel="icon" href="/assets/logo/ikona.svg" type="image/svg+xml">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>Raspored čišćenja — Odmoria</title>
@@ -12,7 +13,8 @@
 <style>
 /* ==========================================================================
    Raspored za čistačicu (/c/<token>) — dolasci i odlasci za 60 dana.
-   Podatke daje funkcija raspored_ciscenja (sql/add-cleaner-links.sql):
+   Podatke daje funkcija raspored_ciscenja (sql/add-cleaner-links.sql, s javljanjima
+   sql/add-cleaner-status.sql):
    bez šifri, Wi-Fija i imena gostiju.
    ========================================================================== */
 .top{border-bottom:1px solid var(--border);background:var(--bg-surface)}
@@ -36,12 +38,22 @@ main{max-width:760px;margin-inline:auto;padding:32px 16px 64px}
 .izmjena{padding:10px 12px;border-radius:var(--radius-panel);background:var(--bg-warm);color:var(--text-warm);font-weight:600;font-size:15px}
 .prazno{padding:24px;border:1px dashed var(--border);border-radius:var(--radius-feature);text-align:center;color:var(--text-muted)}
 .dno{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;margin-top:24px;font-size:14px;color:var(--text-muted)}
+.jav{display:grid;gap:8px;margin-top:4px;padding:12px;border:1px solid var(--border);border-radius:var(--radius-panel);background:var(--bg-surface)}
+.jav__st{font:700 14px/1.3 var(--font-ui)}
+.jav__st.ok{color:#1E6B45}.jav__st.ne{color:#8A1C1C}
+.jav__btn{display:flex;flex-wrap:wrap;gap:6px}
+.jav__btn button{min-height:40px;padding:0 14px;border:1px solid var(--border);border-radius:999px;background:var(--bg-surface);color:var(--text);cursor:pointer;font:600 14px/1 var(--font-ui)}
+.jav__btn button[aria-pressed="true"]{border-color:var(--text);background:var(--text);color:#fff}
+.jav__btn button.ne[aria-pressed="true"]{border-color:#8A1C1C;background:#8A1C1C}
+.jav__dod{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.jav__dod input{min-height:40px;padding:0 12px;border:1px solid var(--border);border-radius:10px;font:500 15px/1 var(--font-body);background:#fff;color:var(--text)}
+.jav__dod input[type=text]{flex:1 1 200px}
 .boot{min-height:60vh;display:grid;place-items:center}
 @media (max-width:520px){.dan{grid-template-columns:minmax(0,1fr);gap:8px}}
 </style>
 </head>
 <body>
-<header class="top"><div class="wrap top__in"><a class="logo" href="/">Odmoria<i>.</i></a><span class="t-meta">Raspored čišćenja</span></div></header>
+<header class="top"><div class="wrap top__in"><a class="logo" href="/"><img class="o-logo" src="/assets/logo/odmoria.svg" alt="Odmoria" width="112" height="24"></a><span class="t-meta">Raspored čišćenja</span></div></header>
 <main id="sadrzaj">
   <div class="boot" id="boot" role="status"><span class="t-muted">Učitavam raspored…</span></div>
   <div id="greska" hidden class="prazno"><b style="display:block;font:700 20px/1.3 var(--font-ui);color:var(--text);margin-bottom:6px">Link nije ispravan</b>Link je pogrešno kopiran ili ga je domaćin zamijenio novim. Zamolite domaćina za novi link.</div>
@@ -54,7 +66,7 @@ main{max-width:760px;margin-inline:auto;padding:32px 16px 64px}
     </div>
     <div id="dani" aria-live="polite"></div>
     <div class="dno"><span id="osvjezeno"></span><button class="btn btn--secondary btn--sm" type="button" onclick="ucitaj()">Osvježi</button></div>
-    <p class="t-meta" style="margin-top:16px">Stranica pokazuje samo termine. Šifre i podatke gostiju ima domaćin.</p>
+    <p class="t-meta" style="margin-top:16px">Stranica pokazuje samo termine. Šifre i podatke gostiju ima domaćin. Što javite (potvrda, vrijeme dolaska, „gotovo”), domaćin vidi odmah.</p>
   </div>
 </main>
 <script type="module">
@@ -92,12 +104,53 @@ function boravci(dani, rez) {
   return out
 }
 
+/* Javljanje domaćinu (sql/add-cleaner-status.sql → javi_ciscenje): sve neobavezno.
+   Bez te funkcije gumbi se ne prikazuju (stari raspored bez 'javljanja'). */
+let JAV = null
+const STANJA = { potvrdeno: 'Potvrđujem', dolazim: 'Dolazim u…', gotovo: 'Gotovo', ne_mogu: 'Ne mogu doći' }
+function javljanje(ds) {
+  if (!JAV) return ''
+  const j = JAV[ds] || {}
+  const opis = j.stanje === 'potvrdeno' ? '✓ Potvrdili ste dolazak' : j.stanje === 'dolazim' ? `✓ Dolazite u ${esc(j.vrijeme || '')}` : j.stanje === 'gotovo' ? '✓ Čišćenje je gotovo' : j.stanje === 'ne_mogu' ? '✗ Javili ste da ne možete doći' : 'Javite domaćinu (nije obavezno):'
+  return `<div class="jav" data-dan="${ds}">
+    <span class="jav__st${j.stanje === 'ne_mogu' ? ' ne' : j.stanje ? ' ok' : ''}">${opis}${j.napomena ? ` — „${esc(j.napomena)}”` : ''}</span>
+    <div class="jav__btn">${Object.entries(STANJA).map(([k, n]) => `<button type="button" data-st="${k}"${k === 'ne_mogu' ? ' class="ne"' : ''} aria-pressed="${j.stanje === k}">${n}</button>`).join('')}</div>
+    <div class="jav__dod" hidden><input type="time" aria-label="Vrijeme dolaska" value="${esc(j.vrijeme || '')}"><input type="text" maxlength="300" placeholder="Napomena (neobavezno)" aria-label="Napomena" value="${esc(j.napomena || '')}"><button class="btn btn--primary btn--sm" type="button" data-posalji>Pošalji</button></div>
+  </div>`
+}
+async function posaljiJav(ds, stanje, vrijeme, napomena) {
+  const { data, error } = await sb.rpc('javi_ciscenje', { p_token: token, p_dan: ds, p_stanje: stanje, p_vrijeme: vrijeme || null, p_napomena: napomena || null })
+  if (error || !data || data.stanje !== 'ok') { alertJ('Nije poslano — pokušajte ponovno.'); return false }
+  JAV[ds] = { stanje, vrijeme, napomena }
+  return true
+}
+const alertJ = t => { const e = $('#osvjezeno'); if (e) e.textContent = t }
+document.addEventListener('click', async e => {
+  const box = e.target.closest('.jav'); if (!box) return
+  const ds = box.dataset.dan, dod = box.querySelector('.jav__dod')
+  const b = e.target.closest('[data-st]')
+  if (b) {
+    const st = b.dataset.st
+    box.dataset.izbor = st
+    if (st === 'dolazim' || st === 'ne_mogu') { dod.hidden = false; dod.querySelector('input[type=time]').hidden = st !== 'dolazim'; (st === 'dolazim' ? dod.querySelector('input[type=time]') : dod.querySelector('input[type=text]')).focus(); return }
+    b.disabled = true
+    if (await posaljiJav(ds, st, null, dod.querySelector('input[type=text]').value.trim())) ucitaj()
+    b.disabled = false
+  }
+  if (e.target.closest('[data-posalji]')) {
+    const st = box.dataset.izbor || 'potvrdeno', vr = dod.querySelector('input[type=time]').value
+    if (st === 'dolazim' && !vr) { dod.querySelector('input[type=time]').focus(); return }
+    if (await posaljiJav(ds, st, st === 'dolazim' ? vr : null, dod.querySelector('input[type=text]').value.trim())) ucitaj()
+  }
+})
+
 window.ucitaj = async () => {
   let r = null
   try { const { data, error } = await sb.rpc('raspored_ciscenja', { p_token: token }); if (!error) r = data } catch {}
   $('#boot').hidden = true
   if (!r || r.stanje !== 'ok') { $('#greska').hidden = false; return }
   document.title = 'Raspored — ' + (r.objekt || 'objekt')
+  JAV = Array.isArray(r.javljanja) ? Object.fromEntries(r.javljanja.map(j => [String(j.dan).slice(0, 10), j])) : null
   $('#ime').textContent = r.objekt || 'Objekt'
   const adr = [r.adresa, r.mjesto].filter(Boolean).join(', ')
   if (adr) { $('#adresa').textContent = adr; $('#adresa').hidden = false }
@@ -115,7 +168,7 @@ window.ucitaj = async () => {
     const d = new Date(ds + 'T12:00:00'), e = po[ds]
     const kad = ds === danas ? 'danas' : ds === plus(danas, 1) ? 'sutra' : DANI[d.getDay()]
     const ev = []
-    if (e.out) ev.push(`<div class="ev"><span class="tag tag--out">Odlazak</span><b>Čišćenje${r.odjava ? ' od ' + esc(r.odjava) : ''}</b></div>`)
+    if (e.out) ev.push(`<div class="ev"><span class="tag tag--out">Odlazak</span><b>Čišćenje${r.odjava ? ' od ' + esc(r.odjava) : ''}</b></div>${javljanje(ds)}`)
     if (e.in) ev.push(`<div class="ev"><span class="tag tag--in">Dolazak</span><b>Spremno${r.prijava ? ' do ' + esc(r.prijava) : ''}</b></div>`)
     if (e.out && e.in) ev.push(`<div class="izmjena">Izmjena gostiju isti dan${r.odjava && r.prijava ? ` — čišćenje između ${esc(r.odjava)} i ${esc(r.prijava)}` : ''}</div>`)
     return `<div class="dan"><div class="dan__d">${d.getDate()}. ${d.getMonth() + 1}.<small>${kad}</small></div><div class="dog">${ev.join('')}</div></div>`

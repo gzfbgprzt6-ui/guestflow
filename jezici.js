@@ -15,6 +15,8 @@
 // Redoslijed JEZICI je i redoslijed otključavanja po planu (Free 2 = HR + EN).
 // ============================================================
 
+import { RJECNIK as SADRZAJI_RJ } from './sadrzaji.js'
+
 export const JEZICI = [
   { kod: 'hr', ime: 'Hrvatski', loc: 'hr-HR' },
   { kod: 'en', ime: 'English', loc: 'en-GB' },
@@ -44,6 +46,7 @@ const norm = s => String(s).replace(/\s+/g, ' ').trim()
 function dodaj(redovi) {
   for (const [hr, en, de, it, pl, cs] of redovi) R[norm(hr)] = { en, de, it, pl, cs }
 }
+dodaj(SADRZAJI_RJ)   // nazivi sadržaja objekta (sadrzaji.js) — prije rječnika, pa ručno napisani redovi niže imaju prednost
 
 dodaj([
   // zajedničko
@@ -153,8 +156,15 @@ dodaj([
   ['Odjava je do {v}.', 'Check-out is by {v}.', 'Check-out bis {v}.', 'Il check-out è entro le {v}.', 'Wymeldowanie do {v}.', 'Check-out je do {v}.'],
   ['od {vrijeme}', 'from {vrijeme}', 'ab {vrijeme}', 'dalle {vrijeme}', 'od {vrijeme}', 'od {vrijeme}'],
   ['do {vrijeme}', 'by {vrijeme}', 'bis {vrijeme}', 'entro le {vrijeme}', 'do {vrijeme}', 'do {vrijeme}'],
+  ['Kako ući', 'How to get in', 'So kommen Sie hinein', 'Come entrare', 'Jak wejść', 'Jak se dostat dovnitř'],
+  ['Korak po korak, s fotografijama — od ulice do vrata.', 'Step by step, with photos — from the street to the door.', 'Schritt für Schritt, mit Fotos — von der Straße bis zur Tür.', 'Passo dopo passo, con foto: dalla strada alla porta.', 'Krok po kroku, ze zdjęciami — od ulicy do drzwi.', 'Krok za krokem, s fotkami — od ulice ke dveřím.'],
+  ['Korak {n}', 'Step {n}', 'Schritt {n}', 'Passo {n}', 'Krok {n}', 'Krok {n}'],
+  ['Korak {n} od {u}', 'Step {n} of {u}', 'Schritt {n} von {u}', 'Passo {n} di {u}', 'Krok {n} z {u}', 'Krok {n} z {u}'],
+  ['Povećaj fotografiju', 'Enlarge photo', 'Foto vergrößern', 'Ingrandisci foto', 'Powiększ zdjęcie', 'Zvětšit fotku'],
+  ['Zatvori', 'Close', 'Schließen', 'Chiudi', 'Zamknij', 'Zavřít'],
   ['Upute za dolazak', 'Arrival instructions', 'Hinweise zur Ankunft', "Istruzioni per l'arrivo", 'Wskazówki dotyczące przyjazdu', 'Pokyny k příjezdu'],
   ['Parking', 'Parking', 'Parkplatz', 'Parcheggio', 'Parking', 'Parkování'],
+  ['Navigiraj do parkinga', 'Directions to parking', 'Route zum Parkplatz', 'Indicazioni per il parcheggio', 'Nawiguj do parkingu', 'Navigovat k parkování'],
   ['Kako što radi', 'How things work', 'So funktioniert alles', 'Come funziona tutto', 'Jak wszystko działa', 'Jak co funguje'],
   ['Klima-uređaj', 'Air conditioning', 'Klimaanlage', 'Aria condizionata', 'Klimatyzacja', 'Klimatizace'],
   ['Grijanje', 'Heating', 'Heizung', 'Riscaldamento', 'Ogrzewanie', 'Topení'],
@@ -244,6 +254,8 @@ dodaj([
   ['Upit', 'Enquiry', 'Anfrage', 'Richiesta', 'Zapytanie', 'Dotaz'],
   ['Osnovni podaci', 'Key facts', 'Eckdaten', 'Dati principali', 'Podstawowe informacje', 'Základní údaje'],
   ['Sažetak', 'Summary', 'Übersicht', 'Riepilogo', 'Podsumowanie', 'Shrnutí'],
+  ['Slobodno već danas', 'Available today', 'Heute frei', 'Libero già oggi', 'Wolne już dziś', 'Volno už dnes'],
+  ['Slobodno od {d}', 'Available from {d}', 'Frei ab {d}', 'Libero dal {d}', 'Wolne od {d}', 'Volno od {d}'],
   ['Provjeri dostupnost', 'Check availability', 'Verfügbarkeit prüfen', 'Verifica disponibilità', 'Sprawdź dostępność', 'Ověřit dostupnost'],
   ['Pošalji upit domaćinu', 'Send an enquiry to the host', 'Anfrage an den Gastgeber', "Invia una richiesta all'host", 'Wyślij zapytanie do gospodarza', 'Poslat dotaz hostiteli'],
   ['Bez provizije. Termin i plaćanje dogovarate izravno s domaćinom.', 'No commission. You arrange dates and payment directly with the host.', 'Keine Provision. Termin und Zahlung vereinbaren Sie direkt mit dem Gastgeber.', "Nessuna commissione. Date e pagamento si concordano direttamente con l'host.", 'Bez prowizji. Termin i płatność ustalasz bezpośrednio z gospodarzem.', 'Bez provize. Termín a platbu domlouváte přímo s hostitelem.'],

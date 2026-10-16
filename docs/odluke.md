@@ -1246,13 +1246,14 @@ Prava aplikacija u App Storeu / Google Playu: ~99 $/god (Apple) + 25 $
 
 ## 27. Puštanje u produkciju (main) — redoslijed i provjere
 
-Grana je spremna za spajanje (PR otvoren kao nacrt, NE spajati bez vaše
-potvrde). Sav novi kod radi i bez SQL-a (prikaže napomenu), pa se main može
-spojiti prije SQL koraka — ali značajke proradi tek SQL.
+**Spojeno u main 3. 10. 2026.** (PR #2, `8c1b077`, Vercel objavio). Kod radi
+i bez SQL-a (prikaže napomenu); značajke prorade tek nakon koraka ispod.
+Novi `h.html` je već objavljen, pa se KORAK 2 smije pokrenuti odmah nakon
+KORAKA 1 (točka 2 ispod je time obavljena).
 
 **A. Supabase → SQL editor, ovim redom** (svaki je idempotentan):
 1. `sql/sections-security.sql` — KORAK 0 (samo čita), KORAK 1 (funkcija).
-2. **Spojiti PR u main** i pričekati da Vercel objavi (novi `h.html`).
+2. ~~Spojiti PR u main~~ — obavljeno 3. 10. 2026.
 3. `sql/sections-security.sql` — KORAK 2 (zatvara `sections` i `bookings`
    za anonimne), pa KORAK 4 (provjera). Obrnuti redoslijed slomi vodič.
 4. `sql/add-ical-export.sql` — izvoz kalendara.
@@ -1264,6 +1265,17 @@ spojiti prije SQL koraka — ali značajke proradi tek SQL.
 8. Ako još nije: `sql/auto-ical-sync.sql` (`<ADRESA>`, `<CRON_SECRET>`).
 9. `sql/add-styles.sql` — stilovi javne stranice (dopušta nova imena u
    `properties.theme`; stane ako zatekne nepoznatu vrijednost).
+10. `sql/delete-property.sql` — gumb „Obriši objekt” (funkcija
+   `obrisi_objekt`, smije samo vlasnik). Bez nje gumb kaže da brisanje još
+   nije uključeno; ništa se ne briše.
+11. `sql/add-arrival-steps.sql` — „Kako ući, korak po korak” sa slikama
+   (stupac `sections.ulazak_koraci`). Bez njega „Spremi korake” kaže što
+   pokrenuti. Sažetak svih koraka za vas: `docs/must-do.md`.
+12. `sql/add-parking.sql` — fotografija i pribadača parkinga.
+13. `sql/add-cleaner-status.sql` — čistačica javlja (potvrda, vrijeme,
+   gotovo, ne može) i bilježenje otkazanih/novih rezervacija s platformi.
+   Nakon `sql/add-cleaner-links.sql`.
+14. `sql/add-referrals.sql` — brojač „Preporuči domaćina”.
 
 **B. Vercel → Settings → Environment Variables (Production) → Redeploy:**
 `SUPABASE_SERVICE_ROLE_KEY`, `CRON_SECRET`, `ANTHROPIC_API_KEY` (prijevodi),
@@ -1318,3 +1330,21 @@ pribadačom. Dvije stvari za znati:
   učitavala tek na klik. Ako bude zatrebala privola za kolačiće, vraća se
   jednim redom koda.
 - [ ] Pravila privatnosti spomenuti Google Maps i Photon (točka 8).
+
+## 30. Preporuči domaćina — nagrada (16. 10. 2026.)
+
+Link i brojač postoje (`sql/add-referrals.sql`). **Nagrada nije nigdje
+obećana** dok je vi ne odredite. Prijedlog: mjesec Pro plana za svakog
+preporučenog domaćina koji postavi objekt, odobrava se ručno u adminu
+(lažni računi tako ne donose besplatne mjesece).
+- [ ] Odluka: nagrada i tekst koji domaćin vidi.
+
+## 31. Besplatni prijevod (MyMemory) — uvjeti (16. 10. 2026.)
+
+„Prevedi besplatno” koristi MyMemory (oko 50.000 znakova dnevno po
+domaćinu, bez ključa). Njihove uvjete za komercijalnu upotrebu nismo mogli
+provjeriti (stranica s uvjetima nije bila dostupna) — prije pravih korisnika
+pročitati https://mymemory.translated.net/doc/usagelimits.php. Rezerva:
+Claude (oko 1–3 centa po objektu, jednokratno) ili ručni prijevod.
+- [ ] Provjeriti uvjete MyMemoryja.
+

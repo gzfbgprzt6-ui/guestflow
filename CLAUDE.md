@@ -30,6 +30,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 - URL: `https://wtojzqjhipdfbrnmprmz.supabase.co`
 - Publishable/anon key (javan, sigurno za commit): `sb_publishable_tmZAZTDbQ7ktc1N-8y4q4w_ztAu_62F`
 - **Rizik (ublažen):** ovo je Free tier projekt koji se automatski pauzira nakon ~7 dana neaktivnosti (potvrđeno u praksi — cijela app tada baca "Failed to fetch"). `api/keepalive.js` se preko Vercel Crona pokreće **jednom dnevno** i radi jedan trivijalan read, što drži projekt budnim. Ako se cron ugasi ili Vercel preskoči izvršavanje nekoliko dana zaredom, problem se vraća — za pravi production i dalje treba Supabase Pro.
+- **Drugi budilnik (16. 10. 2026.):** `.github/workflows/supabase-budan.yml` — GitHub Actions dvaput dnevno (05:17 i 17:43 UTC) napravi isti read `plans` javnim ključem, s 5 pokušaja. Besplatno (javni repo), radi tek s `main`; GitHub ga gasi nakon 60 dana bez commita (tada Actions → Enable workflow). Dva neovisna izvora: ako Vercel preskoči cron, GitHub ne.
 
 **GitHub repo:** `gzfbgprzt6-ui/guestflow` (public)
 
@@ -49,6 +50,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 ├── email-confirm.html       onboarding.html          add-property.html
 ├── account.html              help.html                admin.html (gated: owner auth UID)
 ├── terms.html                privacy.html             404.html
+├── .github/workflows/supabase-budan.yml  # GitHub Actions: Supabase budan (2× dnevno, besplatno)
 ├── vercel.json              # Rewrites za clean URL-ove, security headeri + dnevni cron za keepalive
 ├── odmoria.css              # v2 dizajn sustav (Figma „Odmoria / Product Design / v2”) — sve žive stranice osim dashboarda
 ├── auth.css                 # raspored četiri stranice prijave (login, register, reset-password, email-confirm)
@@ -69,8 +71,10 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 ├── adresa-predlozi.js        # prijedlozi adrese dok se tipka (Photon/OSM, besplatno) + „Koristi moju trenutnu lokaciju” — Lokacija, Točna adresa, Gdje tražiti
 ├── domacin-jezik.js          # jezik sučelja DOMAĆINA (HR/EN): prekidač, prijevod DOM-a preko rječnika — vidi „Engleski za domaćina”
 ├── domacin-en.js             # engleski rječnik (T) i uzorci (P) za domacin-jezik.js; ključ = hrvatski tekst
+├── sadrzaji.js               # KATALOG SADRŽAJA (75, 9 skupina): naziv, skupina, Lucide ikona, prijevodi — dashboard, p.html, jezici.js
 ├── billing.js                # Stripe iz preglednika: billingStatus, startCheckout, openBillingPortal, povratak s plaćanja (dashboard, account)
-├── assets/                   # landing/villa-1600.jpg i villa-900.jpg (naslovnica i prijava)
+├── assets/                   # landing/villa-1600.jpg i villa-900.jpg (naslovnica i prijava); logo/ (B2 „izlazak sunca”: odmoria.svg, odmoria-bijeli.svg, ikona.svg, ikona-svijetla.svg)
+├── docs/must-do.md           # KRATKO za vlasnika: što mora napraviti (SQL, Vercel), što je u mainu, što na grani
 ├── docs/napredak.md          # što je u redizajnu gotovo, a što nije — pregled za vlasnika
 ├── docs/odluke.md            # SVE odluke koje čekaju vlasnika (planovi, faze A/B/C, naslovnica) — čitati prije prijenosa sljedeće stranice
 ├── api/
@@ -112,6 +116,11 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
     ├── add-team-access.sql              # suradnici: property_members, je_suradnik(), prihvati_pozivnicu(), plan_objekta(), najviše 3
     ├── add-guest-emails.sql             # automatski e-mail gostu (dolazak / zahvala), pg_cron dnevno; TEK nakon KORAKA 2 i add-inquiry-email.sql
     ├── add-styles.sql                   # stilovi: nova imena u properties.theme (CHECK), Beach & Sea → NULL, stane na nepoznatom
+    ├── delete-property.sql              # obrisi_objekt(id): brisanje jednog objekta, samo vlasnik, sve tablice u jednoj transakciji
+    ├── add-parking.sql                  # sections.parking_foto / parking_lat / parking_lon — parking sa slikom i pribadačom (samo vodič)
+    ├── add-cleaner-status.sql           # cleaning_status + javi_ciscenje(token…) + kalendar_promjene (otkazano/novo s platformi); raspored_ciscenja + javljanja
+    ├── add-referrals.sql                # moje_preporuke(), admin_preporuke() — Preporuči domaćina (user_metadata.preporucio)
+    ├── add-arrival-steps.sql            # sections.ulazak_koraci (jsonb, ≤ 12): „Kako ući” po koracima sa slikama, samo vodič
     └── fix-missing-columns-and-storage.sql # ALTER TABLE dopune (photo_urls, ical_*, beds/bathrooms/size_m2) + storage bucket policy
 ```
 
@@ -171,6 +180,11 @@ relax, seoska**. Zasad **besplatno za sve planove**.
   stil ni stara tema; bez `sql/add-styles.sql` CHECK odbije novo ime i panel
   kaže koji SQL pokrenuti. `STIL_ODABRAN` i `previewMode` stoje **uz uvoz**,
   iznad prvog `selectProp()` (zamka kao `STATES`).
+- **Soft touch i „živo”** (vlasnik, 12. 10. 2026., samo `p.html`): naslovna
+  fotografija polako „diše” (`.hero::before{background:inherit}` + scale),
+  znak `#hero-zivo` „Slobodno već danas / od …” (`zivo()` iz `bookedDates`,
+  zove ga i `nacrtaj()`), mekane sjene, kartice/gumbi/sličice reagiraju na
+  pokazivač — sve pod `prefers-reduced-motion: no-preference`, boje iz tokena.
 - **Zamka:** imena pisama u `t` su u **jednostrukim** navodnicima —
   `varijable()` ide u `style="…"`, a `"` je prekidao atribut pa su kartice
   gubile pola boja.
@@ -235,6 +249,26 @@ dodaje se kao `bezKalendara` (vidi se u dolascima, ne ulazi u popunjenost);
 rezervacija koja se preklapa s boravkom s Bookinga/Airbnba samo mu da ime
 gosta. Popunjenost čita **samo kalendar**. `loadAvail()` zato čita
 `select('*')` i puni `AVAIL_ROWS` (s `booking_id` ako stupac postoji).
+
+**Pregled u stilu „nekretnine”** (vlasnik, 4. 10. 2026.): zaglavlje
+`.ov-hero` (objekt, fotografija, cijena, traka zauzetosti 30 dana: crno
+zauzeto / narančasto kratke praznine / šrafirano slobodno — `ovTraka()`),
+brojke s malim stupcima (`ovSpark()`, `ovNiz()` po danu iz `page_views`) i
+strelicom u panel, kartice **Vaši objekti** (`ovStatika()`; klik = promjena
+objekta kroz `#prop-sel` + `onPropChange()`) i **karta** uz „Sljedećih 14
+dana”. `.property-banner` se na Pregledu skriva (`:has`). Podtabovi su i na
+računalu kapsule (crna = odabrano). Podaci i izračuni su isti kao prije.
+**Isti stil na svim zaslonima** (4. 10. 2026.): u dashboardu sloj
+„STIL NEKRETNINE” na kraju `<style>` (kartice s `--kartica-sjena`, gumbi
+kapsule i **crni** `--crna` za glavnu radnju, mekša polja, crni prekidači,
+`.property-banner` kao bijela kartica sa sličicom `#banner-thumb`) i veća
+zaobljenja (`--radius-sm/--radius/--radius-lg` = 10/14/22), podloga `--cream`
+sivlja (#F5F6F5). Isti sloj na kraju `forms.css` (postavljanje, dodavanje
+objekta, račun) i kapsule tabova u `account.html`. Javne stranice
+(`odmoria.css`) se NE mijenjaju — gostinski izgled ostaje Figma v2 / stilovi.
+**`X-Frame-Options` je `SAMEORIGIN`** (ne `DENY`) — inače „Kako gost vidi”
+(iframe javne stranice u Izgledu) ostane prazan; tuđe stranice nas i dalje ne
+mogu uokviriti.
 
 **Dashboard:** Pregled (brojke, „Na što obratiti pažnju” s radnjama,
 „Sljedećih 14 dana”) i novi podtab **Analitika** u grupi Pregled
@@ -449,7 +483,83 @@ bijelom), pa stari problem od 4,30:1 više ne postoji.
 
 Značenje tokena u v2: `--brown` = petrol `#103D4B` (tamne plohe), `--copper` = akcija `#116D76`, `--paper` = bijela kartica, `--cream` = perla podloga, `--paper-2` = wash `#EDF5F6`, `--peach` = menta na tamnom. **Imena namjerno nisu mijenjana** — ~200 mjesta. Pisma su Manrope (sučelje) i DM Sans (tekst); Fraunces se i dalje učitava zbog naslova na slikama u Objavama.
 
-**Navigacija po grupama** (Figma HostSidebar): bočna traka ima `.side-link[data-group]` — Pregled, Objekt, Boravci, Linkovi i QR, a dolje Pretplata. Svi paneli i dalje imaju svoj gumb `.nav-item[data-panel][data-group]` u `.panelnav`; `syncGroup(id)` na kraju `nav()` pokazuje samo podtabove aktivne grupe (traka se skriva kad grupa ima jedan panel) i pamti zadnji podtab grupe, pa `openGroup(g)` vraća tamo gdje je korisnik stao. Na mobitelu (≤ 780 px) ista je stvar donja traka `.bottom-nav`; „Više” otvara bočnu traku. **Bočna traka ne smije koristiti razred `.nav-item`** — `nav()` s njega skida `active` sa svega.
+**Navigacija po grupama** (Figma HostSidebar): bočna traka ima `.side-link[data-group]` — Pregled, Objekt, Boravci, Linkovi i QR, a dolje Pretplata. Svi paneli i dalje imaju svoj gumb `.nav-item[data-panel][data-group]` u `.panelnav`; `syncGroup(id)` na kraju `nav()` pokazuje samo podtabove aktivne grupe (traka se skriva kad grupa ima jedan panel) i pamti zadnji podtab grupe, pa `openGroup(g)` vraća tamo gdje je korisnik stao. Na mobitelu (≤ 780 px) ista je stvar donja traka `.bottom-nav`; „Više” otvara bočnu traku.
+**Ikone glavne navigacije** (4. 10. 2026., vlasnik: stil „Iconly”) su vlastiti
+simboli `#nv-<grupa>-o` (obris, 1,6 px) i `#nv-<grupa>-b` (puna); u gumbu
+stoje obje (`.nv-o`, `.nv-b`), a `.active` pokazuje punu. Donja traka je
+**plutajuća bijela kapsula** (12 px od rubova, `env(safe-area-inset-bottom)`),
+traka za spremanje stoji iznad nje. Podtabovi (`.panelnav`) se pomiču **samo
+vodoravno** (`overflow-y:hidden`; `syncGroup()` pomiče `scrollLeft`, ne
+`scrollIntoView` — on je pomicao i stranicu); na mobitelu su kapsule. **Bočna traka ne smije koristiti razred `.nav-item`** — `nav()` s njega skida `active` sa svega.
+
+**Izbornik objekta** (bočna traka, 4. 10. 2026.): gumb `#prop-btn` s
+fotografijom objekta (`palac()`) i prozorčić `#prop-meni` s karticama
+(`nacrtajIzbornik()`: fotografija, ime, mjesto, oznaka dijeljeno/zaključano,
+kvačica na otvorenom) i „Dodaj objekt”. Tipkovnica: strelice, Home/End,
+Enter, Esc; klik izvan zatvara. **Vrijednost i dalje nosi skriveni
+`<select id="prop-sel">`** — izbornik postavi `value` i zove `onPropChange()`
+(pita za nespremljeno, odbija zaključane), pa testovi i ostali kod rade kao prije.
+Na dnu izbornika „Napravi kopiju” (samo vlastiti objekt).
+
+**Kopija i brisanje objekta** (Objekt → Osnovno → „Upravljanje objektom”,
+4. 10. 2026.):
+- **Kopija** (`otvoriDuplikat()` → `#dupl-dlg` → `napraviDuplikat()`): novi
+  red u `properties` s novim `slug` i `guest_token`; domaćin kvačicama bira
+  skupine stupaca (`DUPL_POLJA`: opis i kontakt, kapacitet, cijene i postavke
+  + `pristojba_*`, stil; **fotografije su zadano isključene**) i sadržaj iz
+  drugih tablica — isti `prenesiSadrzaj()` kao „Preuzmi sadržaj” (jedna kopija
+  logike). **Nikad se ne prenose** kalendar, rezervacije, iCal linkovi,
+  `door_code`, `wifi_name`, `wifi_pass`, `address`, recenzije ni statistika.
+  Limit broja objekata provjerava se prije (`vlastiti()`), a provodi ga baza.
+  Suradnik ne može kopirati tuđi objekt.
+- **Brisanje** (`obrisiObjekt()`): dvije potvrde (druga samo ako ima aktivnih
+  rezervacija), pa `rpc('obrisi_objekt')` iz **`sql/delete-property.sql`**
+  (SECURITY DEFINER, samo **vlasnik**, sve tablice objekta u jednoj
+  transakciji). Bez SQL-a poruka kaže koju datoteku pokrenuti. Fotografije na
+  Cloudinaryju ostaju (kao i kod brisanja računa).
+- Gumbi se ne smiju zvati „Kopiraj …” — svaki gumb s tim početkom dobije
+  kvačicu „Kopirano” (zato „Napravi kopiju”).
+
+**Kalendar** (Boravci → Kalendar, 4. 10. 2026.): `renderCal()` crta zauzete
+noći kao **trake** — uzastopni dani istog izvora i iste rezervacije
+(`kljucDana(ds)`) dobiju `poc`/`kraj` i spajaju se preko razmaka (negativan
+`margin-left` = `--cg`); traka se lomi na kraju tjedna. Boje: rezervacija
+crna (ime gosta na početku trake), ručno sivo prugasto, Booking narančasto,
+Airbnb koraljno (`.ical.airbnb`). Iznad mreže tanka traka mjeseca
+(`#cal-traka`, crtica po danu) i `#cal-stat` („N od M noći zauzeto ·
+popunjenost X %”); gumb „Danas” (`calDanas()`). Oznaka „danas” je element
+`.dn`, ne CSS `content`, da je engleski prevede. Dan označen upravo sada još
+nema red u `AVAIL_MAP` — `kljucDana()` ga zato tretira kao ručni.
+
+**Gornja traka „Aurex”** (vlasnik, 12. 10. 2026.): na računalu (> 780 px)
+**nema bočne trake** (`.sidebar{display:none}`); `header.topbar` nosi logo,
+izbornik objekta (`#prop-izbornik` je premješten ovamo), grupe kao kapsule
+(`.side-link.tb-tab[data-group]` — isti razred kao bočna traka, pa ih
+`syncGroup()` označava sam), traži (`tbTrazi()`: podtabovi, radnje
+`TB_RADNJE`, objekti; Ctrl/⌘ K), obavijesti (`OBAV` puni `renderOverviewOps()`:
+upozorenja + dolasci/odlasci danas i sutra; značka = broj upozorenja),
+postavke i profil (plan, račun, **prekidač HR · EN `#jezik-sw` je sad tu**,
+odjava). „Privatni vodič” i „Pogledaj stranicu” su u `.ph-akcije` zaglavlja
+stranice. Na mobitelu ostaje donja traka, a „Više” otvara bočnu.
+`let OBAV` i `const tbNorm` stoje uz `STIL_ODABRAN` (zamka kao `STATES`).
+**Pregled** (isti dan): bez telefona desno (`:has(#section-overview.active)`),
+red 2 = dvije brojke + „Odakle dolaze noći” (`ovIzvori()`, ±90 dana) +
+kartice objekata; red 3 = tablica svih objekata s filtrima (`ovTablica()`:
+availability 30 dana i broj pregleda po objektu, `ovTablicaNacrtaj()`) + karta;
+red 4 = upozorenja i 14 dana.
+**Nespremljene promjene = „kapljica”** (`#savebar`): mali balon dolje u
+sredini; pri odlasku isti balon pita („Spremiti prije odlaska?” · Ne spremaj
+· Spremi · ×), **bez prozora** (`#dirty-dlg` je obrisan; `pitajPrijeOdlaska`,
+`kapSpremi/kapOdbaci/kapOstani`, Esc = ostani). Gumbi koji mijenjaju stanje
+bez `input`/`change` događaja moraju sami zvati `markDirty` (brojači
+`stepCount`, vrsta `setType` — prije se tu balon nije javljao).
+**Kako ući, korak po korak** (Dolazak i upute, `KORACI`, `nacrtajKorake()`,
+`saveKoraci()`): `sections.ulazak_koraci` = `[{naslov, tekst, foto}]`, slike
+na Cloudinary (`uploadToCloudinary`), najviše 12. Vodič: `renderUlaz()` u
+`#dolazak` + prikaz preko cijelog zaslona (`ulaz-dlg`, strelice, povlačenje).
+`vodic_gosta()` vraća cijeli red `sections`, pa SQL funkciju ne treba
+mijenjati; `api/prevedi.js` prevodi naslov i tekst (zaseban upit — bez
+stupca tiho ništa). Javna stranica `sections` i dalje ne čita.
 
 Elementi `#completion-card`, `#user-av` i `.user-row` i dalje postoje jer ih JS puni, ali su skriveni: dovršenost vodiča je u Pregledu i u zaglavlju panela. `#user-plan` je sada značka uz „Pretplata”, a `#user-name` sitni redak uz „Postavke računa”.
 
@@ -458,6 +568,62 @@ Pregled gosta (telefon desno) vidi se tek iznad 1280 px; Figma ga nema, pa je to
 **Traka „Imate nespremljene promjene"** (`.savebar`) javlja se na bilo koju izmjenu unutar aktivnog panela i nestaje pri spremanju ili promjeni panela. Ne uvodi novi način spremanja — samo pronađe gumb koji panel već ima (`onclick="saveXxx()"`) i pritisne ga. Paneli bez takvog gumba (liste, rezervacije) je ne pokazuju.
 
 Dashboard **ne učitava `odmoria.css`** — ima vlastiti potpun CSS s istim vrijednostima. Dvostruko definiranje istih tokena bi se sukobilo.
+
+## Dorade vlasnika (16. 10. 2026.)
+
+- **Logo B2** („izlazak sunca” na „i”, Manrope): `assets/logo/*.svg`, u svim
+  stranicama `<img class="o-logo">` (visina 1,12 em, `odmoria.css` +
+  dashboard) i `<link rel="icon" href="/assets/logo/ikona.svg">`.
+- **Osnovno**: jedna zbijena kartica; vrsta = kapsule `TYPES` + „Drugo…” s
+  vlastitim upisom (`#prop-type` je skriveno polje, `properties.type` slobodan
+  tekst, `drugaVrsta()`); kapacitet `.kap` = upisiva polja `data-count` +
+  −/+ (`kapUpis()`, `stepCount()`).
+- **Riječ domaćina** (bivša „poruka dobrodošlice”). **Besplatni prijevod**:
+  Prijevodi → „Prevedi besplatno” — preglednik domaćina pita **MyMemory**
+  (`mmPrevedi()`, dijelovi ≤ 480 znakova, `&de=` e-mail domaćina ≈ 50.000
+  znakova/dan), upiše prijedloge, domaćin spremi kao ručne (`prijevodi_rucni`).
+  Gostu se onda ništa ne prevodi u hodu. Treba `SUPABASE_SERVICE_ROLE_KEY`
+  i `sql/add-translations.sql`; `ANTHROPIC_API_KEY` je neobavezan.
+- **Sadržaji**: `sadrzaji.js` je jedini izvor (`SADRZAJI`, `SKUPINE`,
+  `ikonaZa()`, `RJECNIK` → `jezici.js` ga uvozi). Dashboard: pločice po
+  skupinama (`renderAmenityCatalog()`), `amenities.icon` = ime Lucide ikone;
+  p.html: `ikonaZa(name) || pick(…AMEN_IC)`. Nova ikona = simbol `i-<ime>` u
+  spriteu dashboarda **i** p.html (`lucide-static`, kao skripta `ikone.py`).
+  `sadrzaji.js` je u predmemoriji `sw.js` (`VERZIJA` `odmoria-vodic-6`).
+- **`data-bez-spremanja`** na polju = ne pali kapljicu (pretraga sadržaja,
+  FB grupe…). Paneli koji se spremaju odmah inače bi lažno tražili „Spremi”.
+- **Predlošci** (`PREDLOSCI.faq` 20, `.rules` 12, `nacrtajPredloske()`): klik
+  otvori obrazac s tekstom, prva `[zagrada]` označena; spremanje sa
+  zaostalom zagradom pita.
+- **Kalendar**: dva mjeseca (`crtajMjesec()` ×2, `#cal-days` + `#cal-days2`);
+  ≤ 1100 px jedan mjesec (naslov i brojka prate `matchMedia`), povlačenje
+  prsta = `calNav`.
+- **Parking** (`sql/add-parking.sql`): Leaflet 1.9.4 s unpkg + OSM pločice
+  tek kad se otvori Dolazak (`parkKarta()`), pribadača `divIcon` (bez slika),
+  klik/povlačenje; fotografija na Cloudinary. `saveArrival()` bez stupaca
+  ponovi upis bez parkinga i kaže koji SQL. Vodič: tekst + slika + Google
+  karta `q=lat,lon` + „Navigiraj do parkinga”.
+- **Čistačica javlja** (`sql/add-cleaner-status.sql`): c.html uz svaki
+  odlazak — Potvrđujem / Dolazim u… / Gotovo / Ne mogu doći (+ napomena) →
+  `javi_ciscenje(token, dan, stanje, vrijeme, napomena)`; dashboard: Linkovi i
+  QR → Čistačica → „Javljanja čistačice” i obavijesti.
+- **Otkazano / novo s platformi**: `api/_ical.js` `zabiljeziPromjene()` usporedi
+  stare i nove buduće noći istog izvora (samo ako je izvor već bio povučen) i
+  upiše raspone u `kalendar_promjene` (bez tablice tiho ništa).
+- **Obavijesti po prioritetu**: `OBAV` = `{r: hitno|vazno|info, n, tx, btn, on}`;
+  hitno = upit čeka ≥ 3 h, boravak bez linka za ≤ 2 dana, dolazak sutra bez
+  šifre, čistačica ne može, otkazano; značka broji hitno + važno (crvena /
+  narančasta). „U redu” = `promVidjeno(id)`.
+- **Objave → „Objavi”** (`obObjavi(k)`): tekst se kopira; mobitel =
+  `navigator.share` sa slikom; računalo = preuzimanje slike + Instagram /
+  Facebook sharer / wa.me / Njuškalo. **Moje Facebook grupe** u
+  `user_metadata.fb_grupe` (bez SQL-a): klik kopira tekst, preuzme sliku,
+  otvori grupu. Objava u grupe preko API-ja ne postoji (Meta, 2024.).
+- **Preporuči domaćina** (`sql/add-referrals.sql`): link
+  `/register.html?preporuka=<prvih 8 znakova id-ja>` → `user_metadata.preporucio`
+  (Google prijava: kod čeka u `localStorage` `odm-preporuka`, `upisiPreporuku()`);
+  brojač `moje_preporuke()`. **Nagrada nije obećana u sučelju** — odluka
+  vlasnika (odluke, točka 30); admin vidi popis kroz `admin_preporuke()`.
 
 ## Redizajn v2 — prijenos iz Figme u kod (u tijeku)
 
@@ -783,7 +949,7 @@ objekata je **odbijen** (`docs/odluke.md`, točka 19).
 učitava). **Sve pod `prefers-reduced-motion: no-preference`**, a `veselje()`
 sam provjeri postavku — testovi rade s `reducedMotion:'reduce'`, pa iskrica
 tamo namjerno nema. `pokret.js` je u predmemoriji service workera (`sw.js`,
-`VERZIJA` sada `odmoria-vodic-4`). Dashboard: svaki gumb čiji natpis počinje s
+`VERZIJA` sada `odmoria-vodic-6`). Dashboard: svaki gumb čiji natpis počinje s
 „Kopiraj” sam dobije kvačicu (jedan slušač na `document`); iskrice u
 dashboardu nema.
 
@@ -898,7 +1064,10 @@ izmjene (`MutationObserver`: paneli, toast, poruke; `confirm`/`alert` omotani).
   Hrvatska. Odabir okida `input` + `change` (pregled, traka za spremanje).
   Popis je `position:fixed` (kartica s `overflow:hidden` ga je rezala) i
   otvara se prema gore kad dolje nema mjesta. Combobox s ARIA, strelice,
-  Enter, Esc (zatvori popis, ne dijalog). Adrese `translate="no"`. U „Mjesta
+  Enter, Esc (zatvori popis, ne dijalog). Adrese `translate="no"`. **Na mobitelu
+  (≤ 760 px ili dodir)** popis je u toku stranice ispod polja (`.odm-adr--tok`),
+  a polje se jednom po fokusu pomakne prema vrhu — lebdeći popis je s
+  tipkovnicom padao preko upisanog teksta (vlasnik, 4. 10.). U „Mjesta
   u blizini” odabrani prijedlog nosi koordinate (`OSM_CENTAR` → `predlozi(…,
   {centar})` → `/api/mjesta?…&lat=&lon=`) pa se adresa ne geokodira ponovno.
 - **Karta s pribadačom** (3. 10. 2026.): `p.html` i vodič (`#dolazak`) karte

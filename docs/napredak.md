@@ -126,3 +126,42 @@ Popratno:
   pokazivačem — 3. 10. 2026.
 - [x] Lokacija s ulicom i brojem (broj prelazi u prijedlog) i karta s
   pribadačom na javnoj stranici i u vodiču — 3. 10. 2026.
+- [x] Treće spajanje u `main` — 3. 10. 2026. (PR #2, `8c1b077`): stilovi,
+  pregled gosta, objave, izvoz kalendara, suradnici, engleski, mjesta, e-mail
+  gostu. SQL koraci: `docs/odluke.md`, točka 27.
+- [x] Mobitel: plutajuća donja traka i ikone u stilu „Iconly” (i u bočnoj
+  traci), podtabovi kao kapsule bez okomitog pomicanja, prijedlozi adrese
+  ispod polja — 4. 10. 2026.
+- [x] Pregled u stilu „nekretnine” (zaglavlje s fotografijom i trakom
+  zauzetosti, brojke s malim stupcima, kartice objekata, karta); popravljen
+  prazan „Kako gost vidi” (X-Frame-Options → SAMEORIGIN) — 4. 10. 2026.
+- [x] Izbornik objekta u bočnoj traci: gumb s fotografijom i prozorčić s
+  karticama objekata umjesto sistemskog padajućeg izbornika — 4. 10. 2026.
+- [x] Stil „nekretnine” na svim zaslonima domaćina (dashboard, postavljanje,
+  dodavanje objekta, račun): bijele kartice sa sjenom, crne kapsule — 4. 10. 2026.
+- [x] **Kopija objekta** (domaćin bira što se prenosi; fotografije po želji;
+  nikad kalendar, rezervacije, šifre, Wi-Fi ni adresa) i **brisanje objekta**
+  (dvije potvrde) — 4. 10. 2026. Brisanje treba `sql/delete-property.sql`.
+- [x] **Kalendar** prepravljen: boravci kao spojene trake u boji izvora, ime
+  gosta, traka popunjenosti mjeseca, „Danas”, vikendi i prošli dani — 4. 10. 2026.
+- [x] **Dashboard „Aurex”**: gornja traka s tabovima, traži, obavijesti,
+  postavke i profil (bez bočne trake na računalu); Pregled s brojkama,
+  izvorima noći, karticama, tablicom objekata s filtrima i kartom — 12. 10. 2026.
+- [x] **Kapljica** za nespremljene promjene umjesto prozora (i popravak:
+  brojači i vrsta objekta je sad pokreću) — 12. 10. 2026.
+- [x] **Kako ući, korak po korak** sa slikama u privatnom vodiču — 12. 10. 2026.
+  Treba `sql/add-arrival-steps.sql`.
+- [x] **Javna stranica „soft touch”**: fotografija „diše”, znak „Slobodno od …”,
+  mekane sjene i reakcije — 12. 10. 2026.
+- [x] `docs/must-do.md` — kratki popis za vlasnika — 12. 10. 2026.
+- [x] **Dorade 16. 10. 2026.** — logo B2 na svim stranicama i kao ikona
+  kartice; Osnovno zbijeno (vrsta jednom + „Drugo…”, kapacitet s upisom);
+  „Riječ domaćina” i besplatni prijevod (MyMemory); 75 sadržaja u 9 skupina s
+  ikonama i prijevodima; parking sa slikom i pribadačom; predlošci pitanja i
+  pravila; kalendar s dva mjeseca; čistačica javlja (potvrda / vrijeme /
+  gotovo / ne može); obavijesti po prioritetu (hitno / važno / za znanje) s
+  otkazanim i novim rezervacijama s platformi; „Objavi” i Facebook grupe u
+  Objavama; „Preporuči domaćina”. SQL: `add-parking`, `add-cleaner-status`,
+  `add-referrals`.
+- [x] Drugi budilnik za Supabase (GitHub Actions) — 16. 10. 2026.
+

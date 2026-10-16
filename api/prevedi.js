@@ -96,14 +96,16 @@ async function tekstovi(o) {
   const p = redovi(await db(`properties?select=id,user_id,welcome_msg,type,show_local,show_transport,show_attractions,show_faq&id=eq.${id}`))[0];
   if (!p) return null;
   const vodic = o.vodic || o.sve;
-  const [sek, mjesta, prijevoz, izleti, pravila, pitanja, sadrzaji] = await Promise.all([
+  const [sek, mjesta, prijevoz, izleti, pravila, pitanja, sadrzaji, koraci] = await Promise.all([
     vodic ? db(`sections?select=checkin_notes,checkout_notes,parking_info,ac_info,heating_info,hot_water_info,kitchen_info&property_id=eq.${id}&limit=1`) : null,
     vodic || p.show_local ? db(`local_places?select=name,category,distance&property_id=eq.${id}`) : null,
     vodic || p.show_transport ? db(`transport?select=name,details&property_id=eq.${id}`) : null,
     vodic || p.show_attractions ? db(`attractions?select=name,type,distance,price,description&property_id=eq.${id}`) : null,
     db(`house_rules?select=rule_text&property_id=eq.${id}`),
     vodic || p.show_faq ? db(`faq?select=question,answer&property_id=eq.${id}`) : null,
-    o.vodic ? null : db(`amenities?select=name&property_id=eq.${id}&enabled=eq.true`)
+    o.vodic ? null : db(`amenities?select=name&property_id=eq.${id}&enabled=eq.true`),
+    // upute za ulazak (sql/add-arrival-steps.sql) — bez stupca upit vrati grešku pa redovi() = []
+    vodic ? db(`sections?select=ulazak_koraci&property_id=eq.${id}&limit=1`) : null
   ].map(x => x || { ok: true, data: [] }));
 
   const grupe = new Map();                          // tekst → skupina (za panel u dashboardu)
@@ -117,6 +119,8 @@ async function tekstovi(o) {
   // popis za odlazak vodič dijeli po recima — svaki redak je zasebna stavka
   for (const s of redovi(sek)) for (const red of String(s.checkout_notes || '').split(/\n+/))
     dodaj(red.replace(/^\s*([-•*–·]|\d+[.)])\s*/, ''), 'Dolazak i kuća');
+  for (const s of redovi(koraci)) for (const k of Array.isArray(s.ulazak_koraci) ? s.ulazak_koraci : [])
+    if (k && typeof k === 'object') { dodaj(k.naslov, 'Dolazak i kuća'); dodaj(k.tekst, 'Dolazak i kuća'); }
   for (const [t, g] of [[pravila, 'Pravila i pitanja'], [pitanja, 'Pravila i pitanja'], [mjesta, 'Preporuke'], [prijevoz, 'Preporuke'], [izleti, 'Preporuke'], [sadrzaji, 'Sadržaji']])
     for (const r of redovi(t)) for (const v of Object.values(r)) dodaj(v, g);
 

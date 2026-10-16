@@ -2,6 +2,7 @@
 <html lang="hr">
 <head>
 <meta charset="utf-8">
+<link rel="icon" href="/assets/logo/ikona.svg" type="image/svg+xml">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Registracija — Odmoria</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -25,7 +26,7 @@
 <div class="auth">
   <main class="auth__main">
     <div class="auth__box" id="form-box">
-      <a class="auth__logo" href="/">Odmoria<i>.</i></a>
+      <a class="auth__logo" href="/"><img class="o-logo" src="/assets/logo/odmoria.svg" alt="Odmoria" width="112" height="24"></a>
       <span class="badge badge--status" style="justify-self:start"><svg class="ic ic--sm"><use href="#i-check"/></svg>Besplatno za početak · bez kartice</span>
       <h1 class="auth__title">Napravite račun.</h1>
       <p class="auth__lead">Zatim vas vodimo kroz postavljanje prvog objekta.</p>
@@ -57,7 +58,7 @@
 
     <!-- nakon registracije -->
     <div class="auth__box" id="sent-box" hidden>
-      <a class="auth__logo" href="/">Odmoria<i>.</i></a>
+      <a class="auth__logo" href="/"><img class="o-logo" src="/assets/logo/odmoria.svg" alt="Odmoria" width="112" height="24"></a>
       <div class="state" role="status">
         <span class="state__ic"><svg class="ic"><use href="#i-mail"/></svg></span>
         <h1>Provjerite e-mail</h1>
@@ -99,6 +100,10 @@ function showA(type,msg){
 }
 const hrErr=e=>hrGreska(e,'Registracija nije uspjela')   // auth-greske.js
 
+// Preporuči domaćina (sql/add-referrals.sql): ?preporuka=<kod> → user_metadata.preporucio
+// (pamti se i za prijavu Googleom — dashboard ga upiše nakon prve prijave)
+const PREPORUKA=(()=>{const k=(new URLSearchParams(location.search).get('preporuka')||'').toLowerCase().replace(/[^0-9a-f]/g,'').slice(0,8)
+  try{if(k.length===8)localStorage.setItem('odm-preporuka',k);return k.length===8?k:(localStorage.getItem('odm-preporuka')||'')}catch{return k.length===8?k:''}})()
 window.register=async()=>{
   const name=$('name').value.trim()
   const email=$('email').value.trim()
@@ -111,7 +116,7 @@ window.register=async()=>{
   }
   if(pass.length<8){$('pass').setAttribute('aria-invalid','true');showA('err','Lozinka mora imati najmanje 8 znakova.');return}
   const b=$('reg-btn');b.disabled=true
-  const{error}=await sb.auth.signUp({email,password:pass,options:{data:{full_name:name},emailRedirectTo:location.origin+'/email-confirm.html'}})
+  const{error}=await sb.auth.signUp({email,password:pass,options:{data:{full_name:name,...(PREPORUKA?{preporucio:PREPORUKA}:{})},emailRedirectTo:location.origin+'/email-confirm.html'}})
   b.disabled=false
   if(error){showA('err',hrErr(error));return}
   $('sent-to').textContent=email

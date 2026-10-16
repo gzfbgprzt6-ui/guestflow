@@ -2,6 +2,7 @@
 <html lang="hr">
 <head>
 <meta charset="utf-8">
+<link rel="icon" href="/assets/logo/ikona.svg" type="image/svg+xml">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Račun — Odmoria</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -11,9 +12,10 @@
 <link rel="stylesheet" href="/forms.css">
 <style>
 /* Račun (Figma: Profil i sigurnost · Pretplata i limiti) */
-.tabs{display:flex;gap:4px;border-bottom:1px solid var(--border);margin:8px 0 24px;overflow-x:auto}
-.tab{flex:none;min-height:48px;padding:0 16px;border:0;border-bottom:3px solid transparent;margin-bottom:-1px;background:none;color:var(--text-muted);cursor:pointer;font:600 16px/1 var(--font-ui)}
-.tab[aria-selected="true"]{color:var(--text);font-weight:700;border-bottom-color:var(--action)}
+.tabs{display:flex;gap:6px;margin:8px 0 24px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none}
+.tab{flex:none;min-height:40px;padding:0 16px;border:1px solid rgba(16,24,28,.12);border-radius:999px;background:#fff;color:var(--text-muted);cursor:pointer;font:600 15px/1 var(--font-ui)}
+.tab:hover{color:var(--text);border-color:rgba(16,24,28,.25)}
+.tab[aria-selected="true"]{color:#fff;font-weight:700;border-color:#14181A;background:#14181A}
 .save-row{margin-top:4px}
 .strength{height:4px;border-radius:2px;background:var(--border);width:0;transition:width .2s}
 .strength.weak{width:33%;background:var(--danger)}.strength.medium{width:66%;background:var(--text-warm)}.strength.strong{width:100%;background:var(--action)}
@@ -65,7 +67,7 @@
 
 <nav class="top">
   <a href="/dashboard.html" class="nav-back"><svg class="ic ic--sm" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>Natrag na aplikaciju</a>
-  <a href="/" class="logo">Odmoria<i>.</i></a>
+  <a href="/" class="logo"><img class="o-logo" src="/assets/logo/odmoria.svg" alt="Odmoria" width="112" height="24"></a>
 </nav>
 
 <div class="main" id="main-app" style="display:none">
