@@ -74,7 +74,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 ├── sadrzaji.js               # KATALOG SADRŽAJA (75, 9 skupina): naziv, skupina, Lucide ikona, prijevodi — dashboard, p.html, jezici.js
 ├── billing.js                # Stripe iz preglednika: billingStatus, startCheckout, openBillingPortal, povratak s plaćanja (dashboard, account)
 ├── assets/                   # landing/villa-1600.jpg i villa-900.jpg (naslovnica i prijava); logo/ (B2 „izlazak sunca”: odmoria.svg, odmoria-bijeli.svg, ikona.svg, ikona-svijetla.svg)
-├── docs/must-do.md           # KRATKO za vlasnika: što mora napraviti (SQL, Vercel), što je u mainu, što na grani
+├── docs/must-do.md           # KRATKO za vlasnika: što je postavljeno (SQL, Vercel), što je u mainu, što ostaje
 ├── docs/napredak.md          # što je u redizajnu gotovo, a što nije — pregled za vlasnika
 ├── docs/odluke.md            # SVE odluke koje čekaju vlasnika (planovi, faze A/B/C, naslovnica) — čitati prije prijenosa sljedeće stranice
 ├── api/
@@ -827,6 +827,7 @@ Ako ikad zatreba da linkovi uvijek pokazuju na jednu domenu bez obzira odakle su
 - Nakon pusha na feature granu, javi **Vercel Preview URL** i pričekaj da korisnik vizualno provjeri.
 - **Merge u `main` (produkcija) samo na eksplicitnu, svježu potvrdu** za tu konkretnu promjenu — prijašnje odobrenje ne vrijedi automatski za sljedeću izmjenu.
 - Nikad ne mijenjati Supabase ključeve, RLS politike ni konfiguraciju bez izričitog dogovora.
+- **Supabase je spojen konektorom** (16. 10. 2026.). Izmjene baze (SQL datoteke iz `sql/`) pitaju se **jednom za cijeli paket**, uz puštanje u `main` — ne datoteku po datoteku. Prije toga samo čitati stanje (što je već pokrenuto). SQL s riječju `delete` konektor ne pušta bez potvrde koju vlasnik ne vidi (istekne nakon 60 s, ništa se ne upiše) — takve dati vlasniku kao okvire koda u chatu (datoteke .sql/.txt mu se ne otvaraju).
 - Nikad ne izmišljati nove SQL stupce/tablice — provjeriti stvarnu shemu prije pisanja koda koji na nju pretpostavlja.
 - `p.html` ne smije nikad dohvaćati ni prikazivati `wifi_pass` ili `door_code`.
 
