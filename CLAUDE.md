@@ -589,7 +589,7 @@ Dashboard **ne učitava `odmoria.css`** — ima vlastiti potpun CSS s istim vrij
   skupinama (`renderAmenityCatalog()`), `amenities.icon` = ime Lucide ikone;
   p.html: `ikonaZa(name) || pick(…AMEN_IC)`. Nova ikona = simbol `i-<ime>` u
   spriteu dashboarda **i** p.html (`lucide-static`, kao skripta `ikone.py`).
-  `sadrzaji.js` je u predmemoriji `sw.js` (`VERZIJA` `odmoria-vodic-6`).
+  `sadrzaji.js` je u predmemoriji `sw.js` (`VERZIJA` `odmoria-vodic-7`).
 - **`data-bez-spremanja`** na polju = ne pali kapljicu (pretraga sadržaja,
   FB grupe…). Paneli koji se spremaju odmah inače bi lažno tražili „Spremi”.
 - **Predlošci** (`PREDLOSCI.faq` 20, `.rules` 12, `nacrtajPredloske()`): klik
@@ -619,6 +619,15 @@ Dashboard **ne učitava `odmoria.css`** — ima vlastiti potpun CSS s istim vrij
   Facebook sharer / wa.me / Njuškalo. **Moje Facebook grupe** u
   `user_metadata.fb_grupe` (bez SQL-a): klik kopira tekst, preuzme sliku,
   otvori grupu. Objava u grupe preko API-ja ne postoji (Meta, 2024.).
+- **Dolazak u vodiču, redom** (vlasnik, 16. 10.): kartica „Prijava · Odjava”
+  (`renderKad()`: datumi iz rezervacije + **živo odbrojavanje** do prijave,
+  `KAD_TICK` svake sekunde, zatim „Prijava je otvorena”) → koraci ulaska →
+  upute za dolazak i parking → adresa s kartom. **Zvjezdica na koraku**
+  (`ulazak_koraci[i].sifra = true`, samo jedan; dashboard `[data-zv]`) = na
+  tom koraku stoji šifra vrata kroz istu `secretHtml()` (zapečaćeno = `••••`);
+  bez zvjezdice šifra ostaje ispod koraka (`#codes-arr`). Wi-Fi mreža nema
+  „Kopiraj” (samo lozinka i šifra); u kućnim pravilima prijava i odjava su
+  jedan red. Stari opći link nema datume — kartica tada samo s vremenima.
 - **Preporuči domaćina** (`sql/add-referrals.sql`): link
   `/register.html?preporuka=<prvih 8 znakova id-ja>` → `user_metadata.preporucio`
   (Google prijava: kod čeka u `localStorage` `odm-preporuka`, `upisiPreporuku()`);
@@ -950,7 +959,7 @@ objekata je **odbijen** (`docs/odluke.md`, točka 19).
 učitava). **Sve pod `prefers-reduced-motion: no-preference`**, a `veselje()`
 sam provjeri postavku — testovi rade s `reducedMotion:'reduce'`, pa iskrica
 tamo namjerno nema. `pokret.js` je u predmemoriji service workera (`sw.js`,
-`VERZIJA` sada `odmoria-vodic-6`). Dashboard: svaki gumb čiji natpis počinje s
+`VERZIJA` sada `odmoria-vodic-7`). Dashboard: svaki gumb čiji natpis počinje s
 „Kopiraj” sam dobije kvačicu (jedan slušač na `document`); iskrice u
 dashboardu nema.
 
