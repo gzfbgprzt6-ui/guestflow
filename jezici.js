@@ -135,6 +135,8 @@ dodaj([
   ['Otključano', 'Unlocked', 'Freigeschaltet', 'Sbloccato', 'Odblokowane', 'Odemčeno'],
   ['Kopiraj', 'Copy', 'Kopieren', 'Copia', 'Kopiuj', 'Kopírovat'],
   ['Kopiraj: {k}', 'Copy: {k}', 'Kopieren: {k}', 'Copia: {k}', 'Kopiuj: {k}', 'Kopírovat: {k}'],
+  ['Dolazak moguć za', 'Check-in opens in', 'Check-in möglich in', 'Check-in tra', 'Zameldowanie za', 'Check-in za'],
+  ['Prijava je otvorena — dobrodošli!', 'Check-in is open — welcome!', 'Check-in ist geöffnet — willkommen!', 'Il check-in è aperto — benvenuti!', 'Zameldowanie jest otwarte — witamy!', 'Check-in je otevřený — vítejte!'],
   ['Otključava se za {rel}', 'Unlocks in {rel}', 'Freischaltung in: {rel}', 'Si sblocca tra {rel}', 'Odblokuje się za {rel}', 'Odemkne se za {rel}'],
   ['Šifra vrata i Wi-Fi pojavit će se ovdje sat prije prijave.', 'The door code and Wi-Fi will appear here an hour before check-in.', 'Türcode und WLAN erscheinen hier eine Stunde vor dem Check-in.', "Il codice della porta e il Wi-Fi appariranno qui un'ora prima del check-in.", 'Kod do drzwi i Wi-Fi pojawią się tutaj godzinę przed zameldowaniem.', 'Kód ke dveřím a Wi-Fi se tu objeví hodinu před check-inem.'],
   ['Otključava se {d} u {t}', 'Unlocks on {d} at {t}', 'Freischaltung am {d} um {t}', 'Si sblocca il {d} alle {t}', 'Odblokuje się {d} o {t}', 'Odemkne se {d} v {t}'],

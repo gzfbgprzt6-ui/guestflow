@@ -221,7 +221,7 @@
 /* Kako ući — koraci sa slikama (sections.ulazak_koraci) */
 .ulaz__uvod { margin: -4px 0 16px; color: var(--muted); }
 .ulaz__lista { display: grid; gap: 16px; margin: 0; padding: 0; list-style: none; counter-reset: none; }
-.ulaz__k { position: relative; display: grid; overflow: hidden; border: 1px solid var(--line); border-radius: var(--r-14, 14px); background: var(--surface, #fff); box-shadow: 0 10px 30px -22px rgba(10,42,51,.35); }
+.ulaz__k { position: relative; display: grid; overflow: hidden; border: 1px solid var(--border); border-radius: var(--radius-feature); background: var(--bg-surface); box-shadow: 0 10px 30px -22px rgba(10,42,51,.35); }
 .ulaz__f { display: block; width: 100%; padding: 0; border: 0; background: var(--wash, #EDF5F6); cursor: zoom-in; aspect-ratio: 4 / 3; overflow: hidden; }
 .ulaz__f img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; }
 .ulaz__f:hover img { transform: scale(1.03); }
@@ -229,7 +229,7 @@
 .ulaz__br { display: inline-block; margin-bottom: 6px; padding: 4px 10px; border-radius: 99px; background: var(--ink, #103D4B); color: #fff; font: 700 11.5px/1 var(--font-ui); letter-spacing: .02em; }
 .ulaz__t h3 { margin: 0 0 4px; font: 700 18px/1.3 var(--font-ui); }
 .ulaz__t p { margin: 0; white-space: pre-line; }
-.ulaz__k:not(:last-child)::after { content: ""; position: absolute; left: 50%; bottom: -14px; width: 2px; height: 12px; background: var(--line); }
+.ulaz__k:not(:last-child)::after { content: ""; position: absolute; left: 50%; bottom: -14px; width: 2px; height: 12px; background: var(--border); }
 @media (min-width: 760px) { .ulaz__k:has(.ulaz__f) { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); align-items: center; } }
 .ulaz-dlg { width: 100vw; max-width: 100vw; height: 100dvh; max-height: 100dvh; margin: 0; padding: 0; border: 0; background: #0B1418; color: #fff; }
 .ulaz-dlg::backdrop { background: #0B1418; }
@@ -245,10 +245,31 @@
 .ulaz-dlg__s { right: 12px; }
 /* parking u vodiču (fotografija + pribadača) */
 .park-g__m { display: grid; gap: 10px; margin-top: 12px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
-.park-g__f { display: block; overflow: hidden; border-radius: var(--r-14, 14px); aspect-ratio: 4 / 3; background: var(--wash, #EDF5F6); }
+.park-g__f { display: block; overflow: hidden; border-radius: var(--radius-feature); aspect-ratio: 4 / 3; background: var(--wash, #EDF5F6); }
 .park-g__f img { width: 100%; height: 100%; object-fit: cover; }
 .park-g__k { margin: 0; aspect-ratio: 4 / 3; height: auto; }
 .park-g__k iframe { width: 100%; height: 100%; border: 0; }
+/* Dolazak: „kada” — prijava/odjava + živo odbrojavanje */
+.kad { margin-top: 8px; padding: 18px; border: 1px solid var(--border); border-radius: var(--radius-feature); background: var(--bg-surface); box-shadow: 0 10px 30px -22px rgba(10,42,51,.35); }
+.kad__h { margin: 0 0 12px; font: 700 18px/1.3 var(--font-ui); }
+.kad__tim { display: grid; gap: 10px; margin-bottom: 14px; padding: 14px 16px; border-radius: var(--radius-panel, 10px); background: var(--bg-warm); color: var(--text-warm); }
+.kad__tim--da { background: var(--bg-wash); color: var(--text-accent); }
+.kad__lbl { display: flex; align-items: center; gap: 8px; font: 700 14px/1.3 var(--font-ui); }
+.kad__tocka { width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex: none; }
+.kad__br { display: flex; gap: 8px; flex-wrap: wrap; }
+.kad__d { display: grid; justify-items: center; min-width: 58px; padding: 8px 6px; border-radius: 10px; background: var(--bg-surface); color: var(--text, #103D4B); }
+.kad__d b { font: 800 24px/1 var(--font-ui); font-variant-numeric: tabular-nums; }
+.kad__d i { font: 600 11.5px/1.4 var(--font-ui); font-style: normal; color: var(--text-muted); }
+.kad__rr { display: grid; gap: 8px; }
+.kad__r { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 10px; font-size: 15px; }
+.kad__r .ic { color: var(--text-accent); }
+.kad__r b { font: 700 15px/1.3 var(--font-ui); text-align: right; }
+@media (prefers-reduced-motion: no-preference) { .kad__tocka { animation: kad-puls 1.6s ease-in-out infinite; } }
+@keyframes kad-puls { 50% { opacity: .25; } }
+/* šifra vrata na koraku sa zvjezdicom */
+.ulaz__k--sifra { border-color: var(--text-accent); }
+.ulaz__sifra { display: grid; gap: 8px; margin-top: 12px; }
+.ulaz__nap { display: flex; gap: 6px; align-items: center; margin: 0; font-size: 13.5px; color: var(--text-muted); }
 </style>
 </head>
 <body>
@@ -274,7 +295,9 @@
   <symbol id="i-flame" viewBox="0 0 24 24"><path d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4" /></symbol>
   <symbol id="i-droplets" viewBox="0 0 24 24"><path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z" /> <path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97" /></symbol>
   <symbol id="i-utensils" viewBox="0 0 24 24"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2" /> <path d="M7 2v20" /> <path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7" /></symbol>
-  <symbol id="i-car" viewBox="0 0 24 24"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2" /> <circle cx="7" cy="17" r="2" /> <path d="M9 17h6" /> <circle cx="17" cy="17" r="2" /></symbol>
+  <symbol id="i-log-in" viewBox="0 0 24 24"><path d="m10 17 5-5-5-5" /> <path d="M15 12H3" /> <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" /></symbol>
+<symbol id="i-log-out" viewBox="0 0 24 24"><path d="m16 17 5-5-5-5" /> <path d="M21 12H9" /> <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /></symbol>
+<symbol id="i-car" viewBox="0 0 24 24"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2" /> <circle cx="7" cy="17" r="2" /> <path d="M9 17h6" /> <circle cx="17" cy="17" r="2" /></symbol>
   <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /> <path d="M12 16v-4" /> <path d="M12 8h.01" /></symbol>
   <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" /> <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" /></symbol>
   <symbol id="i-house" viewBox="0 0 24 24"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8" /> <path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /></symbol>
@@ -373,8 +396,15 @@
 <!-- ============ DOLAZAK ============ -->
 <div class="wrap view" data-view="dolazak" hidden>
   <p class="eyebrow view__lbl" id="arr-lbl"></p>
-  <div id="when-arr"></div>
+  <!-- redom: kada (s odbrojavanjem) → koraci ulaska (šifra na koraku sa zvjezdicom) → upute i parking → adresa -->
+  <section class="kad" id="arr-kad" hidden aria-labelledby="kad-h"></section>
+  <div class="blk ulaz" id="ulaz-blk" hidden>
+    <h2 tabindex="-1"><svg class="ic"><use href="#i-door-open"/></svg>Kako ući</h2>
+    <p class="ulaz__uvod">Korak po korak, s fotografijama — od ulice do vrata.</p>
+    <ol class="ulaz__lista" id="ulaz-lista"></ol>
+  </div>
   <div id="codes-arr" style="display:grid;gap:12px;margin-top:12px"></div>
+  <div id="arr-steps"></div>
   <div class="blk" id="arr-adr" hidden>
     <h2 tabindex="-1"><svg class="ic"><use href="#i-map-pin"/></svg>Kako do nas</h2>
     <p id="adr"></p>
@@ -384,12 +414,6 @@
     </div>
     <div class="map" id="map" hidden><iframe id="map-frame" title="Karta" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
   </div>
-  <div class="blk ulaz" id="ulaz-blk" hidden>
-    <h2 tabindex="-1"><svg class="ic"><use href="#i-door-open"/></svg>Kako ući</h2>
-    <p class="ulaz__uvod">Korak po korak, s fotografijama — od ulice do vrata.</p>
-    <ol class="ulaz__lista" id="ulaz-lista"></ol>
-  </div>
-  <div id="arr-steps"></div>
 </div>
 
 <!-- ============ WI-FI I KUĆA ============ -->
@@ -809,6 +833,7 @@ function secretHtml(it, i) {
     <div class="secret__tx"><span class="secret__k">${esc(it.k)}</span><span class="secret__v">${sealed ? '••••' : esc(it.v)}</span></div>
     ${sealed
       ? `<span class="secret__lock">${ico('lock', 'ic--sm')}${esc(t('Zaključano'))}</span>`
+      : !it.sensitive ? ''   // ime mreže se bira na mobitelu, ne lijepi — bez „Kopiraj”
       : `<button class="copybtn" type="button" onclick="copyVal(${i})" aria-label="${esc(t('Kopiraj: {k}', { k: it.k }))}">${esc(t('Kopiraj'))}${ico('copy', 'ic--sm')}</button>`}
   </div>`
 }
@@ -847,8 +872,8 @@ function renderVault() {
 
   // Dolazak: samo šifra vrata
   const dc = idx('door_code')
+  // (šifra na koraku sa zvjezdicom ili ispod koraka — renderUlaz/renderArrival; odbrojavanje je u kartici „kada”)
   $('#codes-arr').innerHTML = dc >= 0 ? secretHtml(items[dc], dc) : ''
-  $('#when-arr').innerHTML = dc >= 0 ? whenHtml(true) : ''
   $('#arr-lbl').textContent = UNLOCKED
     ? (CO_END ? t('Otključano · vrijedi do {d} u 23:59', { d: fmtShort(CO_END) }) : t('Otključano'))
     : (UNLOCK_AT && new Date() < UNLOCK_AT ? t('Zaključano do {d} u {t}', { d: fmtShort(UNLOCK_AT), t: fmtHM(UNLOCK_AT) }) : '')
@@ -878,7 +903,6 @@ function startCountdown(unlockAt) {
     }
     // osvježi samo odbrojavanje; vrijednosti ostaju zapečaćene
     $('#when-home').innerHTML = whenHtml(false)
-    if ($('#when-arr').innerHTML) $('#when-arr').innerHTML = whenHtml(true)
   }
   tick = setInterval(paint, 30000)
 }
@@ -916,9 +940,55 @@ function punaAdresa(adresa, lokacija) {
   if (nl.includes(na)) return l
   return a + ', ' + l
 }
+// ── „Kada” — prijava i odjava u jednoj kartici + živo odbrojavanje do dolaska ──
+// Prijava = sat nakon otključavanja (UNLOCK_AT je sat prije prijave). Stari
+// opći link nema datume: tada samo vremena, bez odbrojavanja.
+let KAD_TICK = null
+function kadTrenuci() {
+  const s = SECTION
+  const u = (dan, vr, zad) => {
+    if (!dan) return null
+    const [h, m] = String(vr || zad).split(':').map(Number), x = new Date(String(dan).slice(0, 10) + 'T00:00:00')
+    x.setHours(Number.isFinite(h) ? h : +zad.slice(0, 2), Number.isFinite(m) ? m : 0, 0, 0)
+    return x
+  }
+  // otključavanje (iz baze) je sat prije prijave; bez njega iz datuma rezervacije
+  const dolazak = UNLOCK_AT ? new Date(UNLOCK_AT.getTime() + 3600000) : u(BOOKING?.checkin_date, s.checkin_time, '15:00')
+  return { dolazak, odjava: u(BOOKING?.checkout_date, s.checkout_time, '10:00') }
+}
+function kadOdbrojavanje() {
+  const { dolazak, odjava } = kadTrenuci(), sad = new Date()
+  if (dolazak && sad < dolazak) {
+    const r = dolazak - sad, d = Math.floor(r / 86400000), h = Math.floor(r % 86400000 / 3600000),
+          m = Math.floor(r % 3600000 / 60000), sk = Math.floor(r % 60000 / 1000)
+    const dio = (n, j) => `<span class="kad__d"><b>${n}</b><i>${j}</i></span>`
+    return `<div class="kad__tim" role="timer" aria-label="${esc(t('Dolazak moguć za'))}"><span class="kad__lbl"><span class="kad__tocka" aria-hidden="true"></span>${esc(t('Dolazak moguć za'))}</span>
+      <div class="kad__br">${d ? dio(d, 'd') : ''}${dio(String(h).padStart(d ? 2 : 1, '0'), 'h')}${dio(String(m).padStart(2, '0'), 'min')}${dio(String(sk).padStart(2, '0'), 's')}</div></div>`
+  }
+  if (dolazak && odjava && sad < odjava) return `<div class="kad__tim kad__tim--da"><span class="kad__lbl"><span class="kad__tocka" aria-hidden="true"></span>${esc(t('Prijava je otvorena — dobrodošli!'))}</span></div>`
+  return ''
+}
+function renderKad() {
+  const s = SECTION, el = $('#arr-kad')
+  clearInterval(KAD_TICK)
+  if (!s.checkin_time && !s.checkout_time) { show('#arr-kad', false); return }
+  const { dolazak, odjava } = kadTrenuci()
+  const red = (ic, k, dan, v) => `<div class="kad__r">${ico(ic)}<span>${esc(k)}</span><b>${dan ? esc(fmtShort(dan)) + ' · ' : ''}${esc(v)}</b></div>`
+  el.innerHTML = `<h2 class="kad__h" id="kad-h">${esc(t('Prijava'))} · ${esc(t('Odjava'))}</h2>
+    <div id="kad-tim">${kadOdbrojavanje()}</div>
+    <div class="kad__rr">${s.checkin_time ? red('log-in', t('Prijava'), dolazak, t('od {vrijeme}', { vrijeme: s.checkin_time })) : ''}
+      ${s.checkout_time ? red('log-out', t('Odjava'), odjava, t('do {vrijeme}', { vrijeme: s.checkout_time })) : ''}</div>`
+  show('#arr-kad')
+  if (dolazak && new Date() < dolazak) KAD_TICK = setInterval(() => {
+    const tim = $('#kad-tim'); if (!tim) return
+    tim.innerHTML = kadOdbrojavanje()
+    if (new Date() >= dolazak) renderKad()
+  }, 1000)
+}
+
 function renderArrival() {
   const s = SECTION, steps = []
-  if (s.checkin_time) steps.push(['clock', t('Prijava'), t('Od {v}.', { v: s.checkin_time }) + (s.checkout_time ? ' ' + t('Odjava je do {v}.', { v: s.checkout_time }) : '')])
+  renderKad()
   if (s.checkin_notes) steps.push(['door-open', t('Upute za dolazak'), H(s.checkin_notes)])
   const pLat = s.parking_lat, pLon = s.parking_lon, pPin = pLat != null && pLon != null
   if (s.parking_info || s.parking_foto || pPin) steps.push(['car', t('Parking'), H(s.parking_info || ''), 'parking'])
@@ -935,7 +1005,8 @@ function renderArrival() {
     show('#map')
     show('#arr-adr')
   }
-  renderUlaz()
+  // šifra vrata stoji na koraku sa zvjezdicom; bez njega ispod koraka (kao prije)
+  if (renderUlaz()) $('#codes-arr').innerHTML = ''
   $('#arr-steps').innerHTML = steps.map(([ic, nas, sub, vrsta]) => {
     if (vrsta !== 'parking') return `<div class="blk"><h3 class="h">${ico(ic)}${esc(nas)}</h3><p>${esc(sub)}</p></div>`
     // parking: tekst, fotografija (otvara se u punoj veličini), mala karta s pribadačom i „Navigiraj” (sql/add-parking.sql)
@@ -952,11 +1023,17 @@ function renderArrival() {
 function renderUlaz() {
   const k = (Array.isArray(SECTION.ulazak_koraci) ? SECTION.ulazak_koraci : []).filter(x => x && (x.naslov || x.tekst || x.foto))
   show('#ulaz-blk', k.length > 0)
-  $('#ulaz-lista').innerHTML = k.map((x, i) => `<li class="ulaz__k">
+  // korak sa zvjezdicom (domaćin: „ovdje gost upisuje šifru”) nosi šifru vrata —
+  // ista secretHtml() kao drugdje: zapečaćena vrijednost ne ulazi u HTML
+  const items = vaultItems(), dc = items.findIndex(x => x.id === 'door_code')
+  const zv = dc >= 0 ? k.findIndex(x => x.sifra) : -1
+  $('#ulaz-lista').innerHTML = k.map((x, i) => `<li class="ulaz__k${i === zv ? ' ulaz__k--sifra' : ''}">
       ${x.foto ? `<button type="button" class="ulaz__f" data-ulaz="${i}" aria-label="${esc(t('Povećaj fotografiju'))} · ${esc(t('Korak {n}', { n: i + 1 }))}"><img src="${esc(x.foto)}" alt="" loading="lazy" decoding="async"></button>` : ''}
       <div class="ulaz__t"><span class="ulaz__br">${esc(t('Korak {n} od {u}', { n: i + 1, u: k.length }))}</span>
-        ${x.naslov ? `<h3>${esc(H(x.naslov))}</h3>` : ''}${x.tekst ? `<p>${esc(H(x.tekst))}</p>` : ''}</div></li>`).join('')
+        ${x.naslov ? `<h3>${esc(H(x.naslov))}</h3>` : ''}${x.tekst ? `<p>${esc(H(x.tekst))}</p>` : ''}
+        ${i === zv ? `<div class="ulaz__sifra">${secretHtml(items[dc], dc)}${UNLOCKED ? '' : `<p class="ulaz__nap">${ico('clock', 'ic--sm')}${esc(t('Šifra vrata i Wi-Fi pojavit će se ovdje sat prije prijave.'))}</p>`}</div>` : ''}</div></li>`).join('')
   ULAZ = k
+  return zv >= 0
 }
 let ULAZ = []
 function ulazPrikaz(i) {
@@ -1016,8 +1093,9 @@ function renderHouse(rules, faqs) {
   }
 
   const rows = []
-  if (s.checkin_time) rows.push(`<div class="rule rule--kv"><span>${esc(t('Prijava'))}</span><b>${esc(t('od {vrijeme}', { vrijeme: s.checkin_time }))}</b></div>`)
-  if (s.checkout_time) rows.push(`<div class="rule rule--kv"><span>${esc(t('Odjava'))}</span><b>${esc(t('do {vrijeme}', { vrijeme: s.checkout_time }))}</b></div>`)
+  // prijava i odjava u jednom redu (detalji s datumima su u Dolasku)
+  const pr = [s.checkin_time && [t('Prijava'), t('od {vrijeme}', { vrijeme: s.checkin_time })], s.checkout_time && [t('Odjava'), t('do {vrijeme}', { vrijeme: s.checkout_time })]].filter(Boolean)
+  if (pr.length) rows.push(`<div class="rule rule--kv"><span>${esc(pr.map(x => x[0]).join(' · '))}</span><b>${esc(pr.map(x => x[1]).join(' · '))}</b></div>`)
   if (PROP.max_guests) rows.push(`<div class="rule rule--kv"><span>${esc(t('Najviše gostiju'))}</span><b>${esc(String(PROP.max_guests))}</b></div>`)
   for (const r of (rules || [])) if (r.rule_text) rows.push(`<div class="rule">${esc(H(r.rule_text))}</div>`)
   if (rows.length) { show('#rules-blk'); $('#rules').innerHTML = rows.join('') }
@@ -1341,7 +1419,7 @@ async function prikaziPrimjer() {
     checkin_notes: 'Kutija s ključem je desno od ulaznih vrata. Upišite šifru i povucite poklopac prema dolje.',
     ulazak_koraci: [
       { naslov: 'Kuća s bazenom na kraju puta', tekst: 'S glavne ceste skrenite kod table „Put maslina”. Kuća je zadnja s desne strane, iza maslinika.', foto: '/assets/landing/villa-900.jpg' },
-      { naslov: 'Kutija s ključem', tekst: 'Desno od ulaznih vrata, u visini ruke. Šifru vidite gore pod „Vaš pristup”.' },
+      { naslov: 'Kutija s ključem', tekst: 'Desno od ulaznih vrata, u visini ruke. Upišite šifru i povucite poklopac prema dolje.', sifra: true },
       { naslov: 'Ulazna vrata', tekst: 'Ključ okrenite dvaput ulijevo. Svjetlo je odmah desno od vrata.' }],
     ac_info: 'Daljinski je u ladici ispod televizora. Preporučena temperatura je 24 °C.', hot_water_info: 'Bojler je stalno uključen.',
     checkout_notes: 'Zatvorite prozore i balkonska vrata\nUgasite klimu i svjetla\nSmeće odnesite u kontejnere na kraju ulice\nKljuč vratite u kutiju i zaključajte je' }
