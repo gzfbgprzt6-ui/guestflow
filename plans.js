@@ -32,6 +32,7 @@ const FALLBACK = {
     canRemoveBranding: false,
     canCloneProperty: false,
     whiteLabel: false,
+    mogucnosti: [],
   },
   pro: {
     id: "pro",
@@ -54,6 +55,7 @@ const FALLBACK = {
     canRemoveBranding: false,   // odluka vlasnika: oznaka i na Pro (sql/add-reviews.sql)
     canCloneProperty: true,
     whiteLabel: false,
+    mogucnosti: ["koraci", "preporuke", "ocjena", "evisitor", "stilovi", "cistacica"],
   },
   business: {
     id: "business",
@@ -76,6 +78,7 @@ const FALLBACK = {
     canRemoveBranding: true,
     canCloneProperty: true,
     whiteLabel: true,
+    mogucnosti: ["koraci", "preporuke", "ocjena", "evisitor", "stilovi", "cistacica", "promocija", "email"],
   },
 };
 
@@ -114,6 +117,8 @@ function fromRow(row) {
     canRemoveBranding: !!row.can_remove_branding,
     canCloneProperty: !!row.can_clone_property,
     whiteLabel: !!row.white_label,
+    // plans.mogucnosti (sql/add-plan-features.sql); bez stupca vrijedi rezerva gore
+    mogucnosti: Array.isArray(row.mogucnosti) ? row.mogucnosti : base.mogucnosti,
   };
 }
 
@@ -249,6 +254,21 @@ export function effectivePlanId(subscription) {
 
 export function getPlan(planId) {
   return ODMORIA_PLANS[normalizePlanId(planId)];
+}
+
+/**
+ * Otključava li plan mogućnost (koraci, preporuke, ocjena, evisitor, stilovi,
+ * cistacica, promocija, email). Izvor je plans.mogucnosti u bazi.
+ */
+export function imaMogucnost(planId, kljuc) {
+  return (getPlan(planId).mogucnosti || []).includes(kljuc);
+}
+
+/** Najjeftiniji plan koji otključava mogućnost — za oznaku „Pro” / „Business”. */
+export function planZaMogucnost(kljuc) {
+  return Object.values(ODMORIA_PLANS)
+    .filter((p) => (p.mogucnosti || []).includes(kljuc))
+    .sort((a, b) => a.sortOrder - b.sortOrder)[0] || null;
 }
 
 export function listPlans() {

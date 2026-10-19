@@ -1433,3 +1433,40 @@ potvrdite ulazak, domaćin dobiva obavijest s vremenom ulaska.”). Ovo nije
 pravni savjet — ako imate pravnika za Uvjete i Privatnost (točka 8), neka
 pogleda i ovo.
 
+---
+
+## 34. v4: vodič na jednoj stranici, dashboard u 4 dijela, mogućnosti po planu (19. 10. 2026.)
+
+Vlasnik je odobrio prijedlog (artifact „Odmoria v4 — prijedlog”): „sviđa mi
+se, napravi zasad tako”. Preneseno na probnu granu:
+
+- **Vodič**: sve na jednoj stranici, redom po danu boravka; obavljeno se
+  sažme dolje; preko cijelog zaslona samo ulazak korak po korak.
+- **Dashboard**: Danas · Gosti · Vodič · Javna stranica. Paneli i logika su
+  isti, promijenjen je samo raspored; zaključano je jedan sivi red.
+- **Mogućnosti po planu** (`sql/add-plan-features.sql`, mijenja se u tablici
+  `plans`, ne u kodu):
+  - Free: šifra i Wi-Fi s otključavanjem, kuća, pravila, odlazak, domaćin,
+    javna stranica s kalendarom i upitima, 1 objekt, 5 fotografija, HR + EN.
+  - Pro: + koraci sa slikama i „Ušli smo”, preporuke, ocjena, eVisitor,
+    stilovi, čistačica.
+  - Business: + promocija (objave, letak, FB grupe), automatski e-mail gostu.
+  - SQL usput ispravlja: jezika 6 (ne 8), suradnika najviše 3 (ne 5).
+
+**Otvoreno:**
+- [ ] **Cijene** — u bazi Pro 15 € / Business 49 €; prijedlog iz točke 32
+      (model B) je 9 € / 29 €. Mijenja se samo `plans`.
+- [ ] **Oznaka „pokreće Odmoria” na Pro** — po staroj odluci (sql/add-reviews.sql)
+      vidi se i na Pro; prijedlog v4 je bez nje na Pro. Ostavljeno kako je u bazi
+      (`can_remove_branding`) dok vlasnik ne odluči.
+- [ ] **Automatska iCal sinkronizacija samo za Pro** — u prijedlogu, ali još
+      nije provedeno (sync-all sinkronizira sve objekte); prvo odluka.
+- [ ] **Prevedi besplatno** — gumb je ostao (u Vodič → Jezici). Automatski
+      prijevod pri spremanju traži `ANTHROPIC_API_KEY` u Vercelu (1–3 centa po
+      objektu); kad se ključ postavi, gumb se može maknuti.
+- [ ] **Naslovnica: vizualna usporedba planova** (vlasnik: „kasnije”) — što
+      domaćin dobiva na Free, Pro i Business, s pregledom vodiča po planu
+      (kao kartica „Planovi” u prijedlogu). Puni se iz `plans` (`mogucnosti`).
+- [ ] Pregled gosta u dashboardu (telefon desno) još pokazuje stari vodič s
+      pločicama — uskladiti s v4.
+

@@ -1244,6 +1244,18 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
 .ob-gx:hover { background: #F1F3F3; color: var(--ink); }
 .ob-gd { display: grid; gap: 6px; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) auto; }
 @media (max-width: 780px) { .ob-gd { grid-template-columns: minmax(0, 1fr); } }
+
+/* ── mogućnosti po planu: zaključano = jedan sivi red (v4) ── */
+section.mog-zak > *:not(.zakl){display:none!important}
+.mog-zak:not(section){display:none!important}
+section.mog-zak[data-mog-tiho]{display:none!important}
+.zakl{display:flex;align-items:center;gap:14px;margin:0 0 14px;padding:16px 18px;border:1px dashed #C9D5D7;border-radius:var(--radius,14px);background:#FAFBFB;color:var(--muted)}
+.zakl > .ic{width:20px;height:20px;flex:none;color:#7E949B}
+.zakl div{flex:1;min-width:0;display:grid;gap:2px}
+.zakl b{font:800 15px/1.3 var(--font-ui);color:var(--ink,#103D4B)}
+.zakl span{font-size:13.5px;line-height:1.45}
+.zakl-plan{flex:none;min-height:34px;padding:0 14px;border:0;border-radius:999px;background:var(--brown,#103D4B);color:#fff;cursor:pointer;font:800 12.5px/1 var(--font-ui)}
+.zakl-plan:hover{filter:brightness(1.15)}
 </style>
 <script type="module">import{pokreni,prekidac}from'/domacin-jezik.js';pokreni();prekidac(document.getElementById('jezik-sw'))</script>
 </head>
@@ -1330,6 +1342,8 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
   <symbol id="nv-objekt-b" viewBox="0 0 24 24"><path fill="currentColor" d="M3.4 10.3c0-.9.4-1.7 1.1-2.2l5.8-4.5a2.8 2.8 0 0 1 3.4 0l5.8 4.5c.7.5 1.1 1.3 1.1 2.2v7.7a3.1 3.1 0 0 1-3.1 3.1H6.5A3.1 3.1 0 0 1 3.4 18z"/><path d="M12 15v3" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round"/></symbol>
   <symbol id="nv-boravci-o" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="15.5" rx="3.6"/><path d="M3.5 10h17M8 3.2v3.6M16 3.2v3.6"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 17.2h.01M12 17.2h.01" stroke-width="2.2"/></g></symbol>
   <symbol id="nv-boravci-b" viewBox="0 0 24 24"><rect x="3" y="4.6" width="18" height="16.4" rx="4" fill="currentColor"/><path d="M8 2.8v3.8M16 2.8v3.8" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/><path d="M3.5 9.8h17" fill="none" stroke="#fff" stroke-width="1.5"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 17.2h.01M12 17.2h.01" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round"/></symbol>
+  <symbol id="nv-vodic-o" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.5c-1.6-1.3-3.9-2-6.5-2H4.8a.8.8 0 0 0-.8.8V17a.8.8 0 0 0 .8.8h.7c2.6 0 4.9.7 6.5 2 1.6-1.3 3.9-2 6.5-2h.7a.8.8 0 0 0 .8-.8V5.3a.8.8 0 0 0-.8-.8h-.7c-2.6 0-4.9.7-6.5 2z"/><path d="M12 6.5v13.3"/></g></symbol>
+  <symbol id="nv-vodic-b" viewBox="0 0 24 24"><path fill="currentColor" d="M11.2 5.8C9.5 4.6 7.3 3.9 4.9 3.9h-.6A1.3 1.3 0 0 0 3 5.2v11.9c0 .7.6 1.3 1.3 1.3h.6c2.3 0 4.5.6 6.3 1.8zm1.6 0c1.7-1.2 3.9-1.9 6.3-1.9h.6c.7 0 1.3.6 1.3 1.3v11.9c0 .7-.6 1.3-1.3 1.3h-.6c-2.3 0-4.5.6-6.3 1.8z"/></symbol>
   <symbol id="nv-linkovi-o" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 16.8H7.4a4.8 4.8 0 0 1 0-9.6h2.1"/><path d="M14.5 7.2h2.1a4.8 4.8 0 0 1 0 9.6h-2.1"/><path d="M8.6 12h6.8"/></g></symbol>
   <symbol id="nv-linkovi-b" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 16.8H7.4a4.8 4.8 0 0 1 0-9.6h2.1"/><path d="M14.5 7.2h2.1a4.8 4.8 0 0 1 0 9.6h-2.1"/><path d="M8.8 12h6.4"/></g></symbol>
   <symbol id="nv-vise-o" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8.3 12h.01M12 12h.01M15.7 12h.01" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"/></symbol>
@@ -1367,10 +1381,10 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
       <!-- Pet glavnih dijelova (Figma: HostSidebar). Paneli unutar grupe su
            podtabovi u `.panelnav`; `nav()` i dalje radi s `.nav-item[data-panel]`. -->
       <nav class="side-nav" aria-label="Glavni dijelovi">
-        <button class="side-link" type="button" data-group="pregled" onclick="openGroup('pregled')"><svg class="nv nv-o" aria-hidden="true"><use href="#nv-pregled-o"/></svg><svg class="nv nv-b" aria-hidden="true"><use href="#nv-pregled-b"/></svg>Pregled</button>
-        <button class="side-link" type="button" data-group="objekt" onclick="openGroup('objekt')"><svg class="nv nv-o" aria-hidden="true"><use href="#nv-objekt-o"/></svg><svg class="nv nv-b" aria-hidden="true"><use href="#nv-objekt-b"/></svg>Objekt</button>
-        <button class="side-link" type="button" data-group="boravci" onclick="openGroup('boravci')"><svg class="nv nv-o" aria-hidden="true"><use href="#nv-boravci-o"/></svg><svg class="nv nv-b" aria-hidden="true"><use href="#nv-boravci-b"/></svg>Boravci<span class="nav-count" data-iq-count hidden></span></button>
-        <button class="side-link" type="button" data-group="linkovi" onclick="openGroup('linkovi')"><svg class="nv nv-o" aria-hidden="true"><use href="#nv-linkovi-o"/></svg><svg class="nv nv-b" aria-hidden="true"><use href="#nv-linkovi-b"/></svg>Linkovi i QR</button>
+        <button class="side-link" type="button" data-group="pregled" onclick="openGroup('pregled')"><svg class="nv nv-o" aria-hidden="true"><use href="#nv-pregled-o"/></svg><svg class="nv nv-b" aria-hidden="true"><use href="#nv-pregled-b"/></svg>Danas</button>
+        <button class="side-link" type="button" data-group="boravci" onclick="openGroup('boravci')"><svg class="nv nv-o" aria-hidden="true"><use href="#nv-boravci-o"/></svg><svg class="nv nv-b" aria-hidden="true"><use href="#nv-boravci-b"/></svg>Gosti<span class="nav-count" data-iq-count hidden></span></button>
+        <button class="side-link" type="button" data-group="vodic" onclick="openGroup('vodic')"><svg class="nv nv-o" aria-hidden="true"><use href="#nv-vodic-o"/></svg><svg class="nv nv-b" aria-hidden="true"><use href="#nv-vodic-b"/></svg>Vodič</button>
+        <button class="side-link" type="button" data-group="objekt" onclick="openGroup('objekt')"><svg class="nv nv-o" aria-hidden="true"><use href="#nv-objekt-o"/></svg><svg class="nv nv-b" aria-hidden="true"><use href="#nv-objekt-b"/></svg>Javna stranica</button>
       </nav>
     </div>
 
@@ -1412,10 +1426,10 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
           <select id="prop-sel" onchange="onPropChange()" hidden tabindex="-1" aria-hidden="true"></select>
         </div>
       <nav class="tb-tabs" aria-label="Glavni dijelovi">
-        <button class="side-link tb-tab" type="button" data-group="pregled" onclick="openGroup('pregled')">Pregled</button>
-        <button class="side-link tb-tab" type="button" data-group="objekt" onclick="openGroup('objekt')">Objekt</button>
-        <button class="side-link tb-tab" type="button" data-group="boravci" onclick="openGroup('boravci')">Boravci<span class="nav-count" data-iq-count hidden></span></button>
-        <button class="side-link tb-tab" type="button" data-group="linkovi" onclick="openGroup('linkovi')">Linkovi i QR</button>
+        <button class="side-link tb-tab" type="button" data-group="pregled" onclick="openGroup('pregled')">Danas</button>
+        <button class="side-link tb-tab" type="button" data-group="boravci" onclick="openGroup('boravci')">Gosti<span class="nav-count" data-iq-count hidden></span></button>
+        <button class="side-link tb-tab" type="button" data-group="vodic" onclick="openGroup('vodic')">Vodič</button>
+        <button class="side-link tb-tab" type="button" data-group="objekt" onclick="openGroup('objekt')">Javna stranica</button>
       </nav>
       <span id="crumb-name" hidden></span>
       <div class="tb-desno">
@@ -1460,24 +1474,24 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
              ovo samo drugo mjesto za iste gumbe — logika panela nije dirana. -->
         <div class="panelnav-wrap" id="panelnav-wrap" hidden>
           <nav class="panelnav" id="panelnav" aria-label="Dijelovi objekta">
-            <button class="nav-item active" type="button" data-panel="overview" data-group="pregled" onclick="nav('overview',this)">Pregled</button>
+            <button class="nav-item active" type="button" data-panel="overview" data-group="pregled" onclick="nav('overview',this)">Danas</button>
             <button class="nav-item" type="button" data-panel="analytics" data-group="pregled" onclick="nav('analytics',this)">Analitika</button>
             <span class="panelnav__sep" aria-hidden="true"></span>
             <!-- Objekt: 5 podtabova (Figma); svaki pokazuje nekoliko postojećih panela, vidi SPOJ -->
-            <button class="nav-item" type="button" data-panel="basic" data-group="objekt" onclick="nav('basic',this)">Osnovno</button>
+            <button class="nav-item" type="button" data-panel="basic" data-group="objekt" onclick="nav('basic',this)">Opis i izgled</button>
             <button class="nav-item" type="button" data-panel="photos" data-group="objekt" onclick="nav('photos',this)">Fotografije</button>
             <button class="nav-item" type="button" data-panel="pricing" data-group="objekt" onclick="nav('pricing',this)">Cijene i sadržaji</button>
-            <button class="nav-item" type="button" data-panel="arrival" data-group="objekt" onclick="nav('arrival',this)">Dolazak i upute</button>
-            <button class="nav-item" type="button" data-panel="guide" data-group="objekt" onclick="nav('guide',this)">Vodič za goste</button>
-            <button class="nav-item" type="button" data-panel="prijevodi" data-group="objekt" onclick="nav('prijevodi',this)">Prijevodi</button>
+            <button class="nav-item" type="button" data-panel="arrival" data-group="vodic" onclick="nav('arrival',this)">Dolazak i upute</button>
+            <button class="nav-item" type="button" data-panel="guide" data-group="vodic" onclick="nav('guide',this)">Preporuke</button>
+            <button class="nav-item" type="button" data-panel="prijevodi" data-group="vodic" onclick="nav('prijevodi',this)">Jezici</button>
             <span class="panelnav__sep" aria-hidden="true"></span>
             <button class="nav-item" type="button" data-panel="inquiries" data-group="boravci" onclick="nav('inquiries',this)">Upiti<span class="nav-count" data-iq-count hidden></span></button>
             <button class="nav-item" type="button" data-panel="reservations" data-group="boravci" onclick="nav('reservations',this)">Rezervacije</button>
             <button class="nav-item" type="button" data-panel="availability" data-group="boravci" onclick="nav('availability',this)">Kalendar</button>
-            <button class="nav-item" type="button" data-panel="ical" data-group="boravci" onclick="nav('ical',this)">iCal</button>
+            <button class="nav-item" type="button" data-panel="ical" data-group="boravci" onclick="nav('ical',this)">Booking i Airbnb</button>
             <button class="nav-item" type="button" data-panel="reviews" data-group="boravci" onclick="nav('reviews',this)">Recenzije</button>
-            <button class="nav-item" type="button" data-panel="links" data-group="linkovi" onclick="nav('links',this)">Linkovi i QR</button>
-            <button class="nav-item" type="button" data-panel="objave" data-group="linkovi" onclick="nav('objave',this)">Objave</button>
+            <button class="nav-item" type="button" data-panel="links" data-group="objekt" onclick="nav('links',this)">Linkovi i QR</button>
+            <button class="nav-item" type="button" data-panel="objave" data-group="objekt" onclick="nav('objave',this)">Promocija</button>
             <span class="panelnav__sep" aria-hidden="true"></span>
             <button class="nav-item" type="button" data-panel="sub" data-group="pretplata" onclick="nav('sub',this)">Pretplata</button>
           </nav>
@@ -1724,7 +1738,7 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
         </section>
 
         <!-- IZGLED: stilovi javne stranice (stilovi.js / stilovi.css) -->
-        <section class="editor-panel" id="section-izgled" data-panel-content="izgled">
+        <section class="editor-panel" id="section-izgled" data-panel-content="izgled" data-mog="stilovi">
           <div id="izgled-alert"></div>
           <div class="card">
             <div class="card-head"><div class="card-title-wrap"><span class="card-number">◈</span><div>
@@ -1790,7 +1804,7 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
             <div style="margin-top:18px;display:flex;justify-content:flex-end"><button class="btn" onclick="saveArrival()">Spremi promjene</button></div>
           </div>
           <!-- Upute za ulazak po koracima (sql/add-arrival-steps.sql): sections.ulazak_koraci, samo privatni vodič -->
-          <div class="card" id="koraci-card">
+          <div class="card" id="koraci-card" data-mog="koraci">
             <div class="card-head"><div class="card-title-wrap"><span class="card-number"><svg class="ic ic--sm" aria-hidden="true"><use href="#i-door-open"/></svg></span><div><h2>Kako ući — korak po korak</h2><p>Umjesto PDF-a: za svaki korak fotografija i kratko objašnjenje — ulaz u dvorište, kutija s ključem, stubište, vrata, parking. Gost to vidi samo u privatnom vodiču.</p></div></div><span class="status-pill">Privatno</span></div>
             <p class="helper kor-zv-upute"><span class="kor-zv-ikona" aria-hidden="true">★</span> Zvjezdicom označite korak na kojem gost upisuje šifru — šifra vrata pokaže mu se baš tamo (tek kad se pristup otključa).</p>
             <div id="koraci-alert"></div>
@@ -1846,7 +1860,7 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
         </section>
 
         <!-- 06 GUIDE -->
-        <section class="editor-panel" id="section-guide" data-panel-content="guide">
+        <section class="editor-panel" id="section-guide" data-panel-content="guide" data-mog="preporuke">
           <div class="card">
             <div class="card-head"><div class="card-title-wrap"><span class="card-number">06</span><div><h2>Lokalne preporuke</h2><p>Mjesta koja biste osobno preporučili svom gostu.</p></div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn secondary small" type="button" onclick="otvoriOsm()">Predloži mjesta u blizini</button><button class="btn small" type="button" onclick="openForm('guide')">+ Dodaj mjesto</button></div></div>
             <div class="card" id="guide-form" style="display:none;background:var(--cream)">
@@ -1864,7 +1878,7 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
         </section>
 
         <!-- 07 TRANSPORT -->
-        <section class="editor-panel" id="section-transport" data-panel-content="transport">
+        <section class="editor-panel" id="section-transport" data-panel-content="transport" data-mog="preporuke" data-mog-tiho>
           <div class="card">
             <div class="card-head"><div class="card-title-wrap"><span class="card-number">07</span><div><h2>Prijevoz</h2><p>Pomozite gostu da se snađe od dolaska do odlaska.</p></div></div><button class="btn small" type="button" onclick="openForm('transport')">+ Dodaj prijevoz</button></div>
             <div class="card" id="transport-form" style="display:none;background:var(--cream)">
@@ -1882,7 +1896,7 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
         </section>
 
         <!-- 08 ATTRACTIONS -->
-        <section class="editor-panel" id="section-attractions" data-panel-content="attractions">
+        <section class="editor-panel" id="section-attractions" data-panel-content="attractions" data-mog="preporuke" data-mog-tiho>
           <div class="card">
             <div class="card-head"><div class="card-title-wrap"><span class="card-number">08</span><div><h2>Atrakcije i aktivnosti</h2><p>Istaknite doživljaje zbog kojih vrijedi ostati dan duže.</p></div></div><button class="btn small" type="button" onclick="openForm('attractions')">+ Dodaj atrakciju</button></div>
             <div class="card" id="attractions-form" style="display:none;background:var(--cream)">
@@ -1992,7 +2006,7 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
         <section class="editor-panel" id="section-reservations" data-panel-content="reservations">
           <div class="card">
             <div class="card-head"><div class="card-title-wrap"><span class="card-number">R</span><div><h2>Rezervacije</h2><p>Generiraj privatni gostinski link za potvrđenog gosta.</p></div></div><button class="btn small" type="button" onclick="showAddBooking()">+ Nova rezervacija</button></div>
-            <div class="auto-mail" id="auto-mail-red" hidden><label><input type="checkbox" id="auto-mail" onchange="spremiAutoMail(this.checked)"> <span><b>Automatski e-mail gostima</b><small>Link na vodič 3 dana prije dolaska i zahvala s molbom za ocjenu na dan odlaska — samo gostima kojima ste upisali e-mail.</small></span></label></div>
+            <div class="auto-mail" id="auto-mail-red" hidden data-mog="email"><label><input type="checkbox" id="auto-mail" onchange="spremiAutoMail(this.checked)"> <span><b>Automatski e-mail gostima</b><small>Link na vodič 3 dana prije dolaska i zahvala s molbom za ocjenu na dan odlaska — samo gostima kojima ste upisali e-mail.</small></span></label></div>
             <div class="card" id="add-booking-card" style="display:none;background:var(--cream)">
               <div id="bk-alert"></div>
               <div class="form-grid">
@@ -2065,7 +2079,7 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
         </section>
 
         <!-- RECENZIJE (tablica reviews, sql/add-reviews.sql) -->
-        <section class="editor-panel an" id="section-reviews" data-panel-content="reviews">
+        <section class="editor-panel an" id="section-reviews" data-panel-content="reviews" data-mog="ocjena">
           <div class="card">
             <div class="card-head"><div class="card-title-wrap"><span class="card-number">★</span><div><h2>Ocjene gostiju</h2><p>Gost ocjenjuje boravak u vodiču (Odlazak), od dana dolaska. Javne recenzije vide se na vašoj javnoj stranici; svaku možete sakriti.</p></div></div></div>
             <div class="an-kpis" id="rv-kpis"></div>
@@ -2094,7 +2108,7 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
             </div>
           </div>
           <!-- LINK ZA ČISTAČICU (sql/add-cleaner-links.sql) -->
-          <div class="card" id="cist-card">
+          <div class="card" id="cist-card" data-mog="cistacica">
             <div class="card-head"><div class="card-title-wrap"><span class="card-number">✓</span><div><h2>Link za čistačicu</h2><p>Dolasci i odlasci za sljedećih 60 dana, s vremenom prijave i odjave. Bez šifri, Wi-Fija i imena gostiju. Stranica je uvijek ažurna.</p></div></div></div>
             <div id="cist-body"><p class="helper">Učitavanje…</p></div>
           </div>
@@ -2118,7 +2132,7 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
         </section>
 
         <!-- OBJAVE (objave.js): slika i tekst za društvene mreže, letak za ispis -->
-        <section class="editor-panel an" id="section-objave" data-panel-content="objave">
+        <section class="editor-panel an" id="section-objave" data-panel-content="objave" data-mog="promocija">
           <div class="card">
             <div class="card-head"><div class="card-title-wrap"><span class="card-number">☀</span><div><h2>Gotova objava</h2><p>Slika i tekst za Instagram, Facebook grupe, WhatsApp i oglase — iz podataka vašeg objekta, na jeziku vaših gostiju. Preuzmite i objavite.</p></div></div></div>
             <div class="ob-ctrl">
@@ -2226,10 +2240,10 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
 </div>
 
 <nav class="bottom-nav" aria-label="Glavni dijelovi">
-  <button type="button" data-group="pregled" onclick="openGroup('pregled')"><svg class="nv nv-o" aria-hidden="true"><use href="#nv-pregled-o"/></svg><svg class="nv nv-b" aria-hidden="true"><use href="#nv-pregled-b"/></svg><span>Pregled</span></button>
-  <button type="button" data-group="objekt" onclick="openGroup('objekt')"><svg class="nv nv-o" aria-hidden="true"><use href="#nv-objekt-o"/></svg><svg class="nv nv-b" aria-hidden="true"><use href="#nv-objekt-b"/></svg><span>Objekt</span></button>
-  <button type="button" data-group="boravci" onclick="openGroup('boravci')"><svg class="nv nv-o" aria-hidden="true"><use href="#nv-boravci-o"/></svg><svg class="nv nv-b" aria-hidden="true"><use href="#nv-boravci-b"/></svg><span>Boravci</span><span class="nav-count" data-iq-count hidden></span></button>
-  <button type="button" data-group="linkovi" onclick="openGroup('linkovi')"><svg class="nv nv-o" aria-hidden="true"><use href="#nv-linkovi-o"/></svg><svg class="nv nv-b" aria-hidden="true"><use href="#nv-linkovi-b"/></svg><span>Linkovi</span></button>
+  <button type="button" data-group="pregled" onclick="openGroup('pregled')"><svg class="nv nv-o" aria-hidden="true"><use href="#nv-pregled-o"/></svg><svg class="nv nv-b" aria-hidden="true"><use href="#nv-pregled-b"/></svg><span>Danas</span></button>
+  <button type="button" data-group="boravci" onclick="openGroup('boravci')"><svg class="nv nv-o" aria-hidden="true"><use href="#nv-boravci-o"/></svg><svg class="nv nv-b" aria-hidden="true"><use href="#nv-boravci-b"/></svg><span>Gosti</span><span class="nav-count" data-iq-count hidden></span></button>
+  <button type="button" data-group="vodic" onclick="openGroup('vodic')"><svg class="nv nv-o" aria-hidden="true"><use href="#nv-vodic-o"/></svg><svg class="nv nv-b" aria-hidden="true"><use href="#nv-vodic-b"/></svg><span>Vodič</span></button>
+  <button type="button" data-group="objekt" onclick="openGroup('objekt')"><svg class="nv nv-o" aria-hidden="true"><use href="#nv-objekt-o"/></svg><svg class="nv nv-b" aria-hidden="true"><use href="#nv-objekt-b"/></svg><span>Stranica</span></button>
   <button type="button" onclick="toggleSide()" aria-label="Više: objekti, pretplata, račun"><svg class="nv nv-o" aria-hidden="true"><use href="#nv-vise-o"/></svg><svg class="nv nv-b" aria-hidden="true"><use href="#nv-vise-b"/></svg><span>Više</span></button>
 </nav>
 
@@ -2298,7 +2312,7 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
 
 <script type="module">
 import{createClient}from'https://esm.sh/@supabase/supabase-js@2'
-import{loadPlans,getPlan,listPlans,limitFor,canAdd,limitMessage,effectivePlanId,popustZa,cijenaPlana,formatEur,rokPopusta,trajanjePopusta}from'./plans.js'
+import{loadPlans,getPlan,listPlans,limitFor,canAdd,limitMessage,effectivePlanId,popustZa,cijenaPlana,formatEur,rokPopusta,trajanjePopusta,imaMogucnost,planZaMogucnost}from'./plans.js'
 import{publicUrl,bookingUrl,prettyUrl,cleanerUrl,calendarUrl,inviteUrl}from'./links.js'
 import{billingStatus,startCheckout,openBillingPortal,povratakSPlacanja,cekajPlan}from'./billing.js'
 import * as A from'./analitika.js'
@@ -2326,6 +2340,32 @@ let USER=null,PROPS=[],PROP=null,SECTION=null
 let USER_PLAN='free',PLAN_LIMIT=1,PHOTO_LIMIT=5
 // Na dijeljenom objektu (suradnik) vrijede limiti VLASNIKA — isto što provodi baza.
 const planObjekta=()=>(PROP&&PROP.__plan)||USER_PLAN
+// ── Mogućnosti po planu (plans.mogucnosti, sql/add-plan-features.sql) ──
+// Što plan objekta ne uključuje postaje jedan sivi red s oznakom plana — bez
+// skočnog prozora. Dijelovi nose data-mog="…"; sadržaj ostaje u DOM-u (skriven).
+const MOG_TX={koraci:['Koraci sa slikama i „Ušli smo”','Gost prolazi ulaz korak po korak, a vi dobijete obavijest kad uđe.'],
+  preporuke:['Preporuke u blizini','Plaže, restorani i izleti u vodiču — i prijedlog mjesta s karte.'],
+  ocjena:['Ocjene gostiju','Gost ocijeni boravak na odlasku; javne ocjene vide se na vašoj stranici.'],
+  stilovi:['8 stilova javne stranice','Priroda, luksuz, more, moderno… isti sadržaj, drugačiji izgled.'],
+  cistacica:['Link za čistačicu','Raspored dolazaka i odlazaka bez šifri; čistačica javlja „gotovo”.'],
+  promocija:['Promocija','Gotove objave za slobodne termine, letak s QR kodom i Facebook grupe.'],
+  email:['Automatski e-mail gostu','Link na vodič 3 dana prije dolaska i zahvala na odlasku.']}
+function primijeniPlan(){
+  const pl=planObjekta()
+  document.querySelectorAll('[data-mog]').forEach(el=>{
+    const k=el.dataset.mog,ok=imaMogucnost(pl,k)
+    el.classList.toggle('mog-zak',!ok)
+    const uSebi=el.tagName==='SECTION'
+    let z=uSebi?el.querySelector(':scope > .zakl'):(el.previousElementSibling?.matches?.(`.zakl[data-za="${k}"]`)?el.previousElementSibling:null)
+    if(ok){if(z)z.remove();return}
+    if(!z&&el.dataset.mogTiho===undefined){
+      const cilj=planZaMogucnost(k),[n,tx]=MOG_TX[k]||[k,'']
+      z=document.createElement('div');z.className='zakl';z.dataset.za=k
+      z.innerHTML=`<svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg><div><b>${esc(n)}</b><span>${esc(tx)}</span></div><button type="button" class="zakl-plan" onclick="nav('sub',document.querySelector('.panelnav [data-panel=sub]'))">${esc(cilj?cilj.name:'Pro')}</button>`
+      if(uSebi)el.prepend(z);else el.before(z)
+    }
+  })
+}
 const fotoLimit=()=>PROP&&PROP.__plan?limitFor(PROP.__plan,'photos'):PHOTO_LIMIT
 // Zaključan je samo VLASTITI objekt iznad limita plana; dijeljeni nikad.
 const vlastiti=()=>PROPS.filter(p=>!p.__dijeljen)
@@ -2548,6 +2588,7 @@ async function selectProp(p){
   STIL_ODABRAN=null
   if(p.__dijeljen&&!p.__plan){try{const{data}=await sb.rpc('plan_objekta',{p_property:p.id});p.__plan=data||'free'}catch{p.__plan='free'}}
   PROP=p
+  primijeniPlan()
   document.getElementById('prop-sel').value=p.id
   palac(document.getElementById('prop-thumb'),p);palac(document.getElementById('banner-thumb'),p);nacrtajIzbornik()
   document.getElementById('prop-switch-name').textContent=p.name||'Bez naziva'
@@ -4097,27 +4138,27 @@ window.nav=(id,el)=>{
   const btn=document.querySelector(`.panelnav .nav-item[data-panel="${glavni}"]`)||el
   if(btn)btn.classList.add('active')
   const meta={
-    overview:['Pregled','Pregled objekta','Što se događa ovih dana i na što obratiti pažnju.'],
-    analytics:['Pregled','Analitika','Posjećenost, upiti, popunjenost i praznine u kalendaru.'],
-    basic:['Objekt','Osnovno','Naziv, lokacija, opis, kontakt i izgled javne stranice.'],
-    photos:['Objekt','Fotografije','Složite galeriju koja predstavlja vaš objekt.'],
-    izgled:['Objekt','Izgled stranice','Izaberite temu koja odlučuje što gost vidi prvo.'],
-    arrival:['Objekt','Dolazak i upute','Dolazak, Wi-Fi, uređaji, kućna pravila i česta pitanja.'],
-    wifi:['Objekt','Wi-Fi','Spremite pristupne podatke za privatni vodič.'],
-    amenities:['Objekt','Sadržaji','Označite sve što je gostu dostupno u objektu.'],
-    guide:['Objekt','Vodič za goste','Vaše preporuke, prijevoz i izleti — gost ih vidi u vodiču i na javnoj stranici.'],
-    transport:['Objekt','Prijevoz','Dodajte korisne načine kretanja i kontakte.'],
-    attractions:['Objekt','Atrakcije','Istaknite aktivnosti i mjesta vrijedna posjeta.'],
-    prijevodi:['Objekt','Prijevodi','Kako gosti vide vaše tekstove na svom jeziku — pregledajte i ispravite prijevod.'],
-    pricing:['Objekt','Cijene i sadržaji','Informativna cijena, minimalan boravak i sve što je gostu dostupno.'],
-    reviews:['Boravci','Recenzije','Ocjene koje gosti ostave u vodiču na kraju boravka.'],
-    rules:['Objekt','Pravila i FAQ','Postavite očekivanja za ugodan boravak.'],
-    availability:['Boravci','Kalendar','Označite slobodne i zauzete datume.'],
-    inquiries:['Boravci','Upiti gostiju','Upiti s javne stranice — prihvatite ih i pošaljite link u jednom koraku.'],
-    reservations:['Boravci','Rezervacije','Generiraj privatni gostinski link za potvrđenog gosta.'],
-    ical:['Boravci','iCal sinkronizacija','Poveži Booking.com i Airbnb kalendare.'],
-    links:['Linkovi i QR','Linkovi i QR','Podijelite javnu stranicu i privatni vodič.'],
-    objave:['Linkovi i QR','Objave','Gotova slika i tekst za društvene mreže i oglase, te letak za ispis.'],
+    overview:['Danas','Danas','Što se događa ovih dana i na što obratiti pažnju.'],
+    analytics:['Danas','Analitika','Posjećenost, upiti, popunjenost i praznine u kalendaru.'],
+    basic:['Javna stranica','Opis i izgled','Naziv, lokacija, opis, kontakt i izgled javne stranice.'],
+    photos:['Javna stranica','Fotografije','Složite galeriju koja predstavlja vaš objekt.'],
+    izgled:['Javna stranica','Izgled stranice','Izaberite temu koja odlučuje što gost vidi prvo.'],
+    arrival:['Vodič','Dolazak i upute','Dolazak, Wi-Fi, uređaji, kućna pravila i česta pitanja.'],
+    wifi:['Vodič','Wi-Fi','Spremite pristupne podatke za privatni vodič.'],
+    amenities:['Javna stranica','Sadržaji','Označite sve što je gostu dostupno u objektu.'],
+    guide:['Vodič','Preporuke','Vaše preporuke, prijevoz i izleti — gost ih vidi u vodiču i na javnoj stranici.'],
+    transport:['Vodič','Prijevoz','Dodajte korisne načine kretanja i kontakte.'],
+    attractions:['Vodič','Atrakcije','Istaknite aktivnosti i mjesta vrijedna posjeta.'],
+    prijevodi:['Vodič','Jezici','Kako gosti vide vaše tekstove na svom jeziku — pregledajte i ispravite prijevod.'],
+    pricing:['Javna stranica','Cijene i sadržaji','Informativna cijena, minimalan boravak i sve što je gostu dostupno.'],
+    reviews:['Gosti','Recenzije','Ocjene koje gosti ostave u vodiču na kraju boravka.'],
+    rules:['Vodič','Pravila i FAQ','Postavite očekivanja za ugodan boravak.'],
+    availability:['Gosti','Kalendar','Označite slobodne i zauzete datume.'],
+    inquiries:['Gosti','Upiti gostiju','Upiti s javne stranice — prihvatite ih i pošaljite link u jednom koraku.'],
+    reservations:['Gosti','Rezervacije','Generiraj privatni gostinski link za potvrđenog gosta.'],
+    ical:['Gosti','Booking i Airbnb','Poveži Booking.com i Airbnb kalendare.'],
+    links:['Javna stranica','Linkovi i QR','Podijelite javnu stranicu i privatni vodič.'],
+    objave:['Javna stranica','Promocija','Gotova slika i tekst za društvene mreže i oglase, te letak za ispis.'],
     sub:['Račun','Pretplata','Upravljajte planom i naplatom.']
   }
   const m=meta[glavni]||['','','']
@@ -4143,10 +4184,12 @@ window.nav=(id,el)=>{
   syncGroup(id)
 }
 
-// ── GRUPE (Figma: Pregled · Objekt · Boravci · Linkovi i QR + Pretplata) ──
+// ── GRUPE (v4, 19. 10.: Danas · Gosti · Vodič · Javna stranica + Pretplata) ──
+// Ključevi grupa su stari (pregled, boravci, objekt) da ostali kod radi; „vodic” je nov,
+// „linkovi” je spojen u Javnu stranicu (openGroup('linkovi') i dalje otvara Linkove i QR).
 // Paneli su isti kao prije; grupa samo odlučuje koji se podtabovi vide i što
 // je istaknuto u bočnoj traci. Zadnji otvoreni podtab grupe se pamti.
-const GROUP_FIRST={pregled:'overview',objekt:'basic',boravci:'inquiries',linkovi:'links',pretplata:'sub'}
+const GROUP_FIRST={pregled:'overview',boravci:'inquiries',vodic:'arrival',objekt:'basic',linkovi:'links',pretplata:'sub'}
 const lastInGroup={}
 function syncGroup(id){
   const btn=document.querySelector(`.panelnav .nav-item[data-panel="${id}"]`)
@@ -4167,7 +4210,7 @@ function syncGroup(id){
     if(l<pn.scrollLeft+16||r>pn.scrollLeft+pn.clientWidth-16)pn.scrollTo({left:Math.max(0,l-16),behavior:'smooth'})}
 }
 window.openGroup=g=>{
-  const id=lastInGroup[g]||GROUP_FIRST[g]
+  const id=(g!=='linkovi'&&lastInGroup[g])||GROUP_FIRST[g]
   nav(id,document.querySelector(`.panelnav .nav-item[data-panel="${id}"]`))
 }
 
@@ -5390,7 +5433,7 @@ const TB_RADNJE=[
 let TB_RED=[],TB_SEL=0
 function tbTrazi(q){
   const n=tbNorm(q).trim()
-  const grupe={pregled:'Pregled',objekt:'Objekt',boravci:'Boravci',linkovi:'Linkovi i QR',pretplata:'Račun'}
+  const grupe={pregled:'Danas',objekt:'Javna stranica',vodic:'Vodič',boravci:'Gosti',linkovi:'Javna stranica',pretplata:'Račun'}
   const paneli=[...document.querySelectorAll('.panelnav .nav-item[data-panel]')].map(b=>[b.textContent.replace(/\d+$/,'').trim(),`nav('${b.dataset.panel}',document.querySelector('.panelnav [data-panel=${b.dataset.panel}]'))`,grupe[b.dataset.group]||''])
   const objekti=PROPS.filter(p=>!zakljucan(p)).map(p=>[p.name||'Objekt',`(()=>{const s=document.getElementById('prop-sel');s.value='${String(p.id).replace(/'/g,'')}';onPropChange()})()`,p.id===PROP?.id?'otvoreno':'objekt',p.id===PROP?.id])
   TB_RED=[...paneli,...TB_RADNJE,...objekti].filter(r=>!n||tbNorm(r[0]+' '+r[2]).includes(n)).slice(0,12)

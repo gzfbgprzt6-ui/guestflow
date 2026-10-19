@@ -126,6 +126,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
     ├── add-push.sql                     # obavijesti na mobitel: push_pretplate, push_prijava/odjava/proba, VAPID u Vaultu, okidači → /api/obavijest
     ├── add-arrival-steps.sql            # sections.ulazak_koraci (jsonb, ≤ 12): „Kako ući” po koracima sa slikama, samo vodič
     ├── add-guest-arrived.sql            # bookings.usao_at + gost_usao(token): „Ušli smo” u vodiču → push domaćinu (jednom)
+    ├── add-plan-features.sql            # plans.mogucnosti (koraci, preporuke, ocjena, evisitor, stilovi, cistacica, promocija, email) + mogucnosti_vodica(token, slug)
     └── fix-missing-columns-and-storage.sql # ALTER TABLE dopune (photo_urls, ical_*, beds/bathrooms/size_m2) + storage bucket policy
 ```
 
@@ -654,6 +655,35 @@ Dashboard **ne učitava `odmoria.css`** — ima vlastiti potpun CSS s istim vrij
   pitanja. **Domaćin**: brze poruke (`BRZE_PORUKE`, `[data-poruka]`) puni
   `#dom-tx`, slanje istim `posaljiDomacinu(kanal, polje)`. Riječ domaćina
   (`welcome_msg`) se na početnoj vodiča **više ne prikazuje** (vlasnik, 19. 10.).
+- **v4 (19. 10., odluke 34) — vodič na jednoj stranici i dashboard u 4 dijela.**
+  *Vodič:* nema podstranica osim `#ulaz` (korak po korak) i `#prijava`
+  (eVisitor obrazac). Početna: karta → trake `#skok` (skrolaju do odjeljka,
+  `skociNa()`) → `#sada` (tamna kartica po fazi) → `#odjeljci`: statični
+  `section.odj#o-<id>` (ulaz, wifi, kuca, pravila, okolica, prijava,
+  odlazak) u koje je **premješten stari HTML** (isti ID-jevi: `#codes-arr`,
+  `#codes-wifi`, `#dev-list`, `#rules`, `#faq-blk`, `#out-list`, `#stars`…),
+  pa stari rendereri rade kao prije. `poredaj()` ih slaže po fazi
+  (`REDOSLIJED`; `faza()` sad ima i `dolazak` = cijeli dan dolaska) **samo
+  premještanjem u DOM-u** (ocjena ne gubi upisano); obavljeno (`GOT_KLJUC`:
+  ulaz, wifi, prijava) dobije `.odj--got` (sažetak u jednom redu, „Prikaži”)
+  i ide pod `#got-oz`. `oznaci(id, false)` (kopirana lozinka) ne miče
+  karticu dok gost ne otvori vodič ponovno (`OTVORENO`). Stare adrese
+  (`#dolazak`, `#kuca[/pravila|/odlazak]`, `#preporuke`, `#domacin`,
+  `#hitno`, `#odlazak`) skrolaju do odjeljka (`ODJ_ZA`, `ODJ_SIDRO`). Popis za
+  odlazak tek dan prije odlaska (`#out-pred`). Kuća = `details.ur` pločice.
+  Domaćin i Hitno su kartice na dnu; „Vodič pokreće Odmoria” (`#pokrece`) po
+  `oznaka` iz baze. **Po planu** (`MOG`, `imaM(k)` iz `mogucnosti_vodica`):
+  bez `koraci` koraci su tekst bez slika i bez `#ulaz`; bez `preporuke`,
+  `ocjena`, `evisitor` tih dijelova nema. Gost nikad ne vidi „zaključano”.
+  Bez SQL-a `MOG = null` → sve kao prije.
+  *Dashboard:* grupe **Danas** (`pregled`) · **Gosti** (`boravci`) ·
+  **Vodič** (`vodic`: arrival, guide = „Preporuke”, prijevodi = „Jezici”) ·
+  **Javna stranica** (`objekt`: basic = „Opis i izgled”, photos, pricing,
+  links, objave = „Promocija”); `linkovi` je spojen (openGroup('linkovi') →
+  Linkovi i QR). Dijelovi s `data-mog="…"` se zaključaju po
+  `imaMogucnost(planObjekta(), k)` (`plans.js`, rezerva u `FALLBACK`):
+  `primijeniPlan()` u `selectProp()` ubaci jedan red `.zakl` s gumbom plana;
+  `data-mog-tiho` = sakrij bez reda (prijevoz, atrakcije uz preporuke).
 - **Dolazak u vodiču, redom** (vlasnik, 16. 10.): kartica „Prijava · Odjava”
   (`renderKad()`: datumi iz rezervacije + **živo odbrojavanje** do prijave,
   `KAD_TICK` svake sekunde, zatim „Prijava je otvorena”) → koraci ulaska →
