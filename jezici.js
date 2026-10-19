@@ -135,6 +135,7 @@ dodaj([
   ['Otključano', 'Unlocked', 'Freigeschaltet', 'Sbloccato', 'Odblokowane', 'Odemčeno'],
   ['Kopiraj', 'Copy', 'Kopieren', 'Copia', 'Kopiuj', 'Kopírovat'],
   ['Kopiraj: {k}', 'Copy: {k}', 'Kopieren: {k}', 'Copia: {k}', 'Kopiuj: {k}', 'Kopírovat: {k}'],
+  ['Šifru vrata i Wi-Fi lozinku dobivate u osobnom linku od domaćina.', 'You will get the door code and Wi-Fi password in your personal link from the host.', 'Türcode und WLAN-Passwort erhalten Sie im persönlichen Link Ihres Gastgebers.', 'Il codice della porta e la password Wi-Fi li riceverete nel link personale dal vostro host.', 'Kod do drzwi i hasło Wi-Fi otrzymacie w osobistym linku od gospodarza.', 'Kód ke dveřím a heslo k Wi-Fi dostanete v osobním odkazu od hostitele.'],
   ['Dolazak moguć za', 'Check-in opens in', 'Check-in möglich in', 'Check-in tra', 'Zameldowanie za', 'Check-in za'],
   ['Prijava je otvorena — dobrodošli!', 'Check-in is open — welcome!', 'Check-in ist geöffnet — willkommen!', 'Il check-in è aperto — benvenuti!', 'Zameldowanie jest otwarte — witamy!', 'Check-in je otevřený — vítejte!'],
   ['Otključava se za {rel}', 'Unlocks in {rel}', 'Freischaltung in: {rel}', 'Si sblocca tra {rel}', 'Odblokuje się za {rel}', 'Odemkne se za {rel}'],

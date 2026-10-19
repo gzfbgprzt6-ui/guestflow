@@ -559,7 +559,7 @@ function biljezi(vrsta) {
     .catch(() => sb.from('page_views').insert(red).then(() => {}, () => {}))
 }
 
-let UNLOCKED = false, tick = null, UNLOCK_AT = null, CO_END = null
+let UNLOCKED = false, tick = null, UNLOCK_AT = null, CO_END = null, STARI_LINK = false
 
 const params = new URLSearchParams(location.search)
 let token = params.get('token')
@@ -636,6 +636,7 @@ async function izFunkcije(r) {
   BOOKING = r.booking || null
   SECTION = zapecati(r.section)
   UNLOCKED = !!r.otvoreno
+  STARI_LINK = !!r.stari_link
   UNLOCK_AT = r.otkljucava ? new Date(r.otkljucava) : null
   CO_END = r.zavrsava ? new Date(r.zavrsava) : null
   if (!UNLOCKED && UNLOCK_AT && new Date() < UNLOCK_AT) startCountdown(UNLOCK_AT)
@@ -646,13 +647,13 @@ async function stariPut() {
   const { data: bk } = await sb.from('bookings').select('*').eq('token', token).maybeSingle()
 
   if (!bk) {
-    // stariji put: slug + properties.guest_token — otključava odmah, bez vremenskog uvjeta
+    // stariji opći link (slug + properties.guest_token): vodič da, šifre nikad — dobivaju se u linku rezervacije
     const slug = params.get('slug')
     if (slug) {
       const { data: prop } = await sb.from('properties').select('*').eq('slug', slug).maybeSingle()
       if (prop && prop.guest_token && prop.guest_token === token) {
         PROP = prop
-        UNLOCKED = true
+        UNLOCKED = false; STARI_LINK = true
         await loadSection()
         await finish()
         return
@@ -861,6 +862,7 @@ function renderVault() {
     : ico('lock', 'ic--sm') + esc(UNLOCK_AT && new Date() < UNLOCK_AT ? t('Otključava se prije dolaska') : t('Zaključano'))
   $('#access-note').textContent = UNLOCKED
     ? (CO_END ? t('Vrijedi do {d} u 23:59.', { d: fmtShort(CO_END) }) : t('Podijelite samo s osobama koje borave s vama.'))
+    : STARI_LINK ? t('Šifru vrata i Wi-Fi lozinku dobivate u osobnom linku od domaćina.')
     : t('Šifra i lozinka prikazuju se tek kad se pristup otključa.')
 
   // početna: šifra vrata i Wi-Fi lozinka (mreža je u „Wi-Fi i kuća”)
@@ -1031,7 +1033,7 @@ function renderUlaz() {
       ${x.foto ? `<button type="button" class="ulaz__f" data-ulaz="${i}" aria-label="${esc(t('Povećaj fotografiju'))} · ${esc(t('Korak {n}', { n: i + 1 }))}"><img src="${esc(x.foto)}" alt="" loading="lazy" decoding="async"></button>` : ''}
       <div class="ulaz__t"><span class="ulaz__br">${esc(t('Korak {n} od {u}', { n: i + 1, u: k.length }))}</span>
         ${x.naslov ? `<h3>${esc(H(x.naslov))}</h3>` : ''}${x.tekst ? `<p>${esc(H(x.tekst))}</p>` : ''}
-        ${i === zv ? `<div class="ulaz__sifra">${secretHtml(items[dc], dc)}${UNLOCKED ? '' : `<p class="ulaz__nap">${ico('clock', 'ic--sm')}${esc(t('Šifra vrata i Wi-Fi pojavit će se ovdje sat prije prijave.'))}</p>`}</div>` : ''}</div></li>`).join('')
+        ${i === zv ? `<div class="ulaz__sifra">${secretHtml(items[dc], dc)}${UNLOCKED ? '' : `<p class="ulaz__nap">${ico('clock', 'ic--sm')}${esc(STARI_LINK ? t('Šifru vrata i Wi-Fi lozinku dobivate u osobnom linku od domaćina.') : t('Šifra vrata i Wi-Fi pojavit će se ovdje sat prije prijave.'))}</p>`}</div>` : ''}</div></li>`).join('')
   ULAZ = k
   return zv >= 0
 }
@@ -1380,7 +1382,7 @@ function spremiPredmemoriju() {
   try {
     const sek = UNLOCKED ? SECTION : { ...SECTION,
       door_code: SECTION.door_code ? true : SECTION.door_code, wifi_pass: SECTION.wifi_pass ? true : SECTION.wifi_pass }
-    localStorage.setItem(KLJUC, JSON.stringify({ t: Date.now(), PROP, SECTION: sek, BOOKING, UNLOCK_AT, CO_END, IZ_FUNKCIJE, LISTE, JEZIK: L.stanje() }))
+    localStorage.setItem(KLJUC, JSON.stringify({ t: Date.now(), PROP, SECTION: sek, BOOKING, UNLOCK_AT, CO_END, IZ_FUNKCIJE, STARI_LINK, LISTE, JEZIK: L.stanje() }))
   } catch {}
 }
 function izPredmemorije() {
@@ -1389,7 +1391,7 @@ function izPredmemorije() {
   if (!c || !c.PROP) return false
   const kraj = c.CO_END ? new Date(c.CO_END) : null
   if (kraj && Date.now() > kraj.getTime() + 86400000) { try { localStorage.removeItem(KLJUC) } catch {} return false }
-  PROP = c.PROP; SECTION = c.SECTION || {}; BOOKING = c.BOOKING || null; IZ_FUNKCIJE = !!c.IZ_FUNKCIJE
+  PROP = c.PROP; SECTION = c.SECTION || {}; BOOKING = c.BOOKING || null; IZ_FUNKCIJE = !!c.IZ_FUNKCIJE; STARI_LINK = !!c.STARI_LINK
   UNLOCK_AT = c.UNLOCK_AT ? new Date(c.UNLOCK_AT) : null; CO_END = kraj
   const sad = new Date()
   const uProzoru = (!UNLOCK_AT || sad >= UNLOCK_AT) && (!CO_END || sad <= CO_END)

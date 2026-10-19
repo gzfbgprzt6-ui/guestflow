@@ -3,6 +3,11 @@
 <head>
 <meta charset="utf-8">
 <link rel="icon" href="/assets/logo/ikona.svg" type="image/svg+xml">
+<link rel="manifest" href="/manifest-domacin.webmanifest">
+<link rel="apple-touch-icon" href="/assets/logo/apple-touch-icon.png">
+<meta name="theme-color" content="#103D4B">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Odmoria">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dashboard — Odmoria</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -993,6 +998,16 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
 .tb-ob small { display: -webkit-box; overflow: hidden; color: var(--muted); font-size: 12.5px; line-height: 1.4; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
 .tb-ob em { display: inline-block; margin-top: 4px; color: var(--ink); font: 700 12px/1 var(--font-ui); font-style: normal; text-decoration: underline; text-underline-offset: 3px; }
 .tb-prazno { margin: 0; padding: 16px 10px 18px; color: var(--muted); font-size: 13.5px; text-align: center; }
+/* obavijesti na mobitel (Web Push, sql/add-push.sql, push-sw.js) */
+.tb-push { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 10px; margin-top: 6px; padding: 12px 10px 6px; border-top: 1px solid rgba(16,24,28,.08); align-items: start; }
+.tb-push__ik { display: grid; width: 34px; height: 34px; place-items: center; border-radius: 12px; background: #EDF5F6; color: var(--copper); }
+.tb-push__tx b { display: block; font: 700 13.5px/1.3 var(--font-ui); }
+.tb-push__tx small { display: block; color: var(--muted); font-size: 12.5px; line-height: 1.4; }
+.tb-push__akc { display: flex; flex-wrap: wrap; gap: 8px; grid-column: 2; }
+.tb-push__btn { padding: 8px 14px; border: 0; border-radius: 99px; background: var(--crna, #14181A); color: #fff; cursor: pointer; font: 700 13px/1 var(--font-ui); }
+.tb-push__btn.je-ukljuceno { border: 1px solid rgba(16,24,28,.18); background: #fff; color: var(--ink); }
+.tb-push__proba { padding: 8px 4px; border: 0; background: none; color: var(--ink); cursor: pointer; font: 700 13px/1 var(--font-ui); text-decoration: underline; text-underline-offset: 3px; }
+.tb-push__btn[hidden], .tb-push__proba[hidden] { display: none; }
 .tb-pop--trazi { width: 420px; }
 .tb-trazi-polje { display: flex; align-items: center; gap: 8px; margin: 2px 2px 8px; padding: 0 12px; border-radius: 14px; background: #F4F5F5; color: var(--muted); }
 .tb-trazi-polje input { width: 100%; min-height: 44px; border: 0; background: transparent; color: var(--ink); outline: none; font: 600 15px/1.2 var(--font-body); }
@@ -1416,6 +1431,12 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
           <div class="tb-pop tb-pop--obav" id="tb-obav-pop" hidden>
             <div class="tb-pop__h"><b>Obavijesti</b><small id="tb-obav-objekt" translate="no"></small></div>
             <div class="tb-obav-lista" id="tb-obav-lista"><p class="tb-prazno">Provjeravam…</p></div>
+            <div class="tb-push" id="tb-push">
+              <span class="tb-push__ik" aria-hidden="true"><svg class="ic ic--sm"><use href="#i-bell"/></svg></span>
+              <div class="tb-push__tx"><b>Obavijesti na ovom uređaju</b><small id="tb-push-tx">Novi upit, čistačica ne može doći, otkazano na Bookingu ili Airbnbu.</small></div>
+              <div class="tb-push__akc"><button class="tb-push__btn" type="button" id="tb-push-btn" onclick="pushPrekidac()">Uključi</button>
+                <button class="tb-push__proba" type="button" id="tb-push-proba" onclick="pushProba()" hidden>Pošalji probnu</button></div>
+            </div>
           </div>
         </div>
         <a class="tb-ik tb-ik--postavke" href="/account.html" aria-label="Postavke računa" title="Postavke računa"><svg class="ic" aria-hidden="true"><use href="#i-settings"/></svg></a>
@@ -1469,7 +1490,7 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
             <p id="panelSubtitle">Što se događa ovih dana i na što obratiti pažnju.</p>
           </div>
           <div class="ph-akcije">
-            <button class="btn secondary" type="button" onclick="viewGuest()"><span>Privatni vodič</span><svg class="ic" aria-hidden="true"><use href="#i-book-open"/></svg></button>
+            <button class="btn secondary" type="button" onclick="viewGuest()"><span>Pregled vodiča</span><svg class="ic" aria-hidden="true"><use href="#i-book-open"/></svg></button>
             <button class="btn" type="button" onclick="viewPub()"><span>Pogledaj stranicu</span><svg class="ic" aria-hidden="true"><use href="#i-eye"/></svg></button>
           </div>
           <div class="header-progress" hidden>
@@ -1562,7 +1583,7 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
             <div class="card-head"><div class="card-title-wrap"><span class="card-number">✓</span><div><h2 id="ov-title">Objekt je objavljen</h2><p>Vaši linkovi rade i promjene se prikazuju odmah nakon spremanja.</p></div></div></div>
             <div class="link-blocks">
               <article class="link-block light"><small>Javna stranica</small><h3>Predstavite objekt</h3><p>Fotografije, lokacija, sadržaji i preporuke.</p><div class="link-url"><span id="ov-pub-url">—</span><button type="button" onclick="copyLink('pub')">Kopiraj</button></div></article>
-              <article class="link-block"><small>Privatni vodič</small><h3>Pošaljite gostu</h3><p>Dolazak, Wi-Fi, kod vrata i kućna pravila.</p><div class="link-url"><span id="ov-priv-url">—</span><button type="button" onclick="copyLink('guest')">Kopiraj</button></div></article>
+              <article class="link-block"><small>Privatni vodič</small><h3>Svaki gost svoj link</h3><p>Link nastaje uz rezervaciju: šifra vrata otključa se sat prije prijave i prestaje vrijediti nakon odlaska.</p><div class="link-url"><span>Uz rezervaciju</span><button type="button" onclick="linkZaGosta()">Napravi link</button></div></article>
             </div>
           </div>
           <div class="card">
@@ -2069,7 +2090,7 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
             <div class="card-head"><div class="card-title-wrap"><span class="card-number">↗</span><div><h2>Linkovi objekta</h2><p>Dva odvojena prikaza za dvije različite svrhe.</p></div></div></div>
             <div class="link-blocks">
               <article class="link-block light"><small>Javna stranica</small><h3>Za promociju</h3><p>Sigurno za dijeljenje na društvenim mrežama i oglasima.</p><div class="link-url"><span id="pub-url-d">—</span><button type="button" onclick="copyLink('pub')">Kopiraj</button></div></article>
-              <article class="link-block"><small>Privatni vodič</small><h3>Za potvrđenog gosta</h3><p>Sadrži dolazak, Wi-Fi i druge privatne informacije.</p><div class="link-url"><span id="priv-url-d">—</span><button type="button" onclick="copyLink('guest')">Kopiraj</button></div></article>
+              <article class="link-block"><small>Privatni vodič</small><h3>Za potvrđenog gosta</h3><p>Svaki gost dobiva svoj link uz rezervaciju — šifra vrata i Wi-Fi otključaju se sat prije njegove prijave i prestaju vrijediti nakon odlaska.</p><div class="link-url"><span>Uz rezervaciju</span><button type="button" onclick="linkZaGosta()">Napravi link</button></div></article>
             </div>
           </div>
           <!-- LINK ZA ČISTAČICU (sql/add-cleaner-links.sql) -->
@@ -2278,7 +2299,7 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
 <script type="module">
 import{createClient}from'https://esm.sh/@supabase/supabase-js@2'
 import{loadPlans,getPlan,listPlans,limitFor,canAdd,limitMessage,effectivePlanId,popustZa,cijenaPlana,formatEur,rokPopusta,trajanjePopusta}from'./plans.js'
-import{publicUrl,bookingUrl,legacyGuestUrl,prettyUrl,cleanerUrl,calendarUrl,inviteUrl}from'./links.js'
+import{publicUrl,bookingUrl,prettyUrl,cleanerUrl,calendarUrl,inviteUrl}from'./links.js'
 import{billingStatus,startCheckout,openBillingPortal,povratakSPlacanja,cekajPlan}from'./billing.js'
 import * as A from'./analitika.js'
 import * as O from'./objave.js'
@@ -2372,6 +2393,10 @@ async function init(){
     nav('reservations',document.querySelector('.panelnav [data-panel=reservations]'));window.showAddBooking()
   }
   if(otvori==='upiti')window.openInquiries()
+  // iz obavijesti na mobitelu (api/_push.js)
+  if(otvori==='kalendar')nav('availability',document.querySelector('.panelnav [data-panel=availability]'))
+  if(otvori==='cistacica'){nav('links',document.querySelector('.panelnav [data-panel=links]'));setTimeout(()=>document.getElementById('cist-card')?.scrollIntoView({block:'start'}),200)}
+  pushStanje()
 }
 
 /* Plan koji korisnik stvarno ima (istekao → Free) i limiti koji iz njega slijede */
@@ -2531,11 +2556,8 @@ async function selectProp(p){
   document.getElementById('bannerName').textContent=p.name||'—'
   document.getElementById('bannerLocation').textContent=p.location||'—'
   const pubUrl=prettyUrl(publicUrl(p.slug))
-  const privUrl=prettyUrl(legacyGuestUrl(p.slug,p.guest_token||'…'))
   document.getElementById('ov-pub-url').textContent=pubUrl
-  document.getElementById('ov-priv-url').textContent=privUrl
   document.getElementById('pub-url-d').textContent=pubUrl
-  document.getElementById('priv-url-d').textContent=privUrl
   fillPropForm()
   loadPhotos()
   await loadSection()
@@ -4367,10 +4389,12 @@ window.delBk=async(id)=>{if(!await potvrdi('Trajno obriši ovu rezervaciju?',{da
 // ── LINKS + QR ────────────────────────────────────────
 window.copyLink=(type)=>{
   if(!PROP)return
-  const url=type==='pub'?publicUrl(PROP.slug):legacyGuestUrl(PROP.slug,PROP.guest_token)
-  navigator.clipboard?.writeText(url);toast(type==='pub'?'Javni link kopiran!':'Gostinski link kopiran!')
+  // stari opći link vodiča se više ne dijeli (šifre preko njega nikad — stari_link_otkljucava = false u sql/sections-security.sql); gost dobiva link uz rezervaciju
+  navigator.clipboard?.writeText(publicUrl(PROP.slug));toast('Javni link kopiran!')
 }
-/* ?domacin=1: vlastiti pregledi domaćina ne ulaze u statistiku (p.html, h.html) */
+window.linkZaGosta=()=>{nav('reservations',document.querySelector('.panelnav [data-panel=reservations]'));setTimeout(()=>{window.showAddBooking&&window.showAddBooking();const i=document.getElementById('bk-name');i?.scrollIntoView({block:'center'});i?.focus()},300)}
+/* ?domacin=1: vlastiti pregledi domaćina ne ulaze u statistiku (p.html, h.html).
+   Pregled vodiča ide starim općim linkom — on šifre više ne otključava, pa domaćin vidi vodič kao gost prije dolaska */
 window.viewPub=()=>{if(PROP)window.open('/p.html?slug='+PROP.slug+'&domacin=1','_blank')}
 window.viewGuest=()=>{if(PROP)window.open('/h.html?slug='+PROP.slug+'&token='+(PROP.guest_token||'')+'&domacin=1','_blank')}
 async function renderQr(){
@@ -5293,8 +5317,63 @@ function tbObavijesti(){
     :'<p class="tb-prazno">Sve je u redu — nema novih obavijesti.</p>'
   el.onclick=e=>{const b=e.target.closest('.tb-ob');if(!b)return;window.tbZatvori();new Function(sv[+b.dataset.i].on)()}
 }
+/* ── Obavijesti na mobitel (Web Push) ─────────────────────────────────────
+   push-sw.js (opseg /dashboard) prikaže poruku; pretplata ide u bazu kroz
+   push_prijava() (sql/add-push.sql); ključ za pretplatu daje /api/obavijest.
+   iPhone: radi tek kad je dashboard dodan na početni zaslon (iOS 16.4+). */
+const pushPodrzan=()=>'serviceWorker' in navigator&&'PushManager' in window&&'Notification' in window
+const jeIOS=()=>/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)
+const samostalno=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone===true
+const b64uUint8=s=>{const b=atob((s+'==='.slice((s.length+3)%4)).replace(/-/g,'+').replace(/_/g,'/'));return Uint8Array.from(b,c=>c.charCodeAt(0))}
+async function pushPretplata(){
+  if(!pushPodrzan())return null
+  const reg=await navigator.serviceWorker.getRegistration('/dashboard');return reg?reg.pushManager.getSubscription():null
+}
+async function pushStanje(){
+  const tx=document.getElementById('tb-push-tx'),btn=document.getElementById('tb-push-btn'),pr=document.getElementById('tb-push-proba');if(!tx)return
+  btn.hidden=false;pr.hidden=true;btn.classList.remove('je-ukljuceno')
+  if(!pushPodrzan()){
+    btn.hidden=true
+    tx.textContent=jeIOS()&&!samostalno()?'Na iPhoneu: Dijeli → „Dodaj na početni zaslon”, pa otvorite Odmoriju s početnog zaslona i ovdje uključite obavijesti.':'Ovaj preglednik ne podržava obavijesti. Probajte Chrome, Edge, Firefox ili Safari.'
+    return
+  }
+  if(Notification.permission==='denied'){btn.hidden=true;tx.textContent='Obavijesti su blokirane — dopustite ih u postavkama preglednika za ovu stranicu.';return}
+  const sub=await pushPretplata().catch(()=>null)
+  if(sub){btn.textContent='Isključi';btn.classList.add('je-ukljuceno');pr.hidden=false;tx.textContent='Uključeno — ovdje stižu novi upiti i hitne obavijesti.'}
+  else{btn.textContent='Uključi';tx.textContent='Novi upit, čistačica ne može doći, otkazano na Bookingu ili Airbnbu.'}
+}
+window.pushPrekidac=async()=>{
+  const btn=document.getElementById('tb-push-btn');btn.disabled=true
+  try{
+    const stara=await pushPretplata()
+    if(stara){
+      await sb.rpc('push_odjava',{p_endpoint:stara.endpoint}).catch(()=>{})
+      await stara.unsubscribe().catch(()=>{});toast('Obavijesti na ovom uređaju su isključene')
+    }else{
+      if(await Notification.requestPermission()!=='granted'){toast('Obavijesti nisu dopuštene');return}
+      const k=await fetch('/api/obavijest?kljuc=1').then(r=>r.json()).catch(()=>({}))
+      if(!k.javni){toast('Obavijesti još nisu postavljene na poslužitelju — pokušajte kasnije.');return}
+      const reg=await navigator.serviceWorker.register('/push-sw.js',{scope:'/dashboard'})
+      await navigator.serviceWorker.ready
+      const sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64uUint8(k.javni)})
+      const j=sub.toJSON(),en=(()=>{try{return localStorage.getItem('odm-jezik-domacina')==='en'}catch{return false}})()
+      const uredaj=jeIOS()?'iPhone / iPad':/Android/i.test(navigator.userAgent)?'Android':'Računalo'
+      const{data,error}=await sb.rpc('push_prijava',{p_endpoint:j.endpoint,p_p256dh:j.keys.p256dh,p_auth:j.keys.auth,p_jezik:en?'en':'hr',p_uredaj:uredaj})
+      if(error||data?.stanje!=='ok'){await sub.unsubscribe().catch(()=>{})
+        toast(/push_prijava|function|schema cache/i.test(error?.message||'')?'Obavijesti se još ne mogu spremiti — u Supabaseu pokrenite sql/add-push.sql.':'Obavijesti nisu uključene: '+(error?.message||data?.stanje));return}
+      toast('Obavijesti su uključene ✓');window.pushProba(true)
+    }
+  }catch(e){toast('Obavijesti nisu uključene: '+(e.message||e))}
+  finally{btn.disabled=false;pushStanje()}
+}
+window.pushProba=async(tiho)=>{
+  const{data,error}=await sb.rpc('push_proba')
+  if(!tiho)toast(error?'Probna obavijest nije poslana: '+error.message:data?.stanje==='ok'?'Probna obavijest je poslana — stiže za par sekundi':'Na ovom računu još nema uključenih obavijesti')
+}
+
 /* Traži: dijelovi dashboarda (podtabovi), objekti i česte radnje */
 const TB_RADNJE=[
+  ['Obavijesti na mobitel',"setTimeout(()=>document.getElementById('tb-obav-btn')?.click(),50)",'radnja'],
   ['Nova rezervacija i link za gosta',"nav('reservations',document.querySelector('.panelnav [data-panel=reservations]'));setTimeout(()=>window.showAddBooking&&showAddBooking(),300)",'radnja'],
   ['Wi-Fi i šifra vrata',"nav('wifi')",'Objekt'],
   ['Upute za ulazak',"nav('arrival')",'Objekt'],
@@ -5303,7 +5382,8 @@ const TB_RADNJE=[
   ['Napravi kopiju objekta',"otvoriDuplikat()",'radnja'],
   ['Dodaj objekt',"location.href='/add-property.html'",'radnja'],
   ['Pogledaj javnu stranicu',"viewPub()",'radnja'],
-  ['Otvori privatni vodič',"viewGuest()",'radnja'],
+  ['Pregled privatnog vodiča',"viewGuest()",'radnja'],
+  ['Napravi link za gosta',"linkZaGosta()",'radnja'],
   ['Postavke računa',"location.href='/account.html'",'račun'],
   ['Pretplata',"openGroup('pretplata')",'račun']
 ]

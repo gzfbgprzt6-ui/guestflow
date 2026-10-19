@@ -36,6 +36,12 @@ Vercel su postavljeni i provjereni.
 
 ## 2. Ostaje vama (ništa hitno)
 
+- [ ] **Nakon puštanja u main (19. 10.)**: u Supabaseu pokrenuti `sql/add-push.sql`
+      (obavijesti na mobitel) i ponovno KORAK 1 iz `sql/sections-security.sql`
+      (stari link više ne otključava šifre) — Claude to radi uz vašu potvrdu
+- [ ] Na mobitelu: dashboard → 🔔 → „Uključi” (iPhone: prvo Dijeli → Dodaj na
+      početni zaslon, pa otvoriti s početnog zaslona)
+
 - [ ] **Isprobati na produkciji**: Osnovno (vrsta, kapacitet, stil), Dolazak
       (koraci, parking), Sadržaji, Prijevodi → „Prevedi besplatno”, kalendar 2
       mjeseca, link čistačice → „Potvrđujem” (vidi se u 🔔), vodič rezervacije

@@ -45,6 +45,8 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 ├── h.html                  # Privatni gostinski hub (?token=xxx) — AKTIVNA, **redizajn v2** (`odmoria.css`), podstranice preko #adrese; /h/demo = primjer
 ├── c.html                  # Raspored za čistačicu (/c/<token>) — dolasci i odlasci, bez šifri i imena
 ├── sw.js                   # service worker vodiča (opseg /h/) — rad bez interneta
+├── push-sw.js              # service worker obavijesti domaćina (opseg /dashboard) — samo push i klik, bez predmemorije
+├── manifest-domacin.webmanifest  # dashboard kao aplikacija na početnom zaslonu (iPhone obavijesti to traže)
 ├── dashboard.html          # Glavni host dashboard — AKTIVNA, **redizajn v2** (vlastiti CSS, ista imena tokena), navigacija po grupama
 ├── login.html               register.html            reset-password.html
 ├── email-confirm.html       onboarding.html          add-property.html
@@ -87,6 +89,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 │   ├── kalendar.js           # iCal IZVOZ /kalendar/<token>.ics (+ testni feed ?test=1, stara /api/test-calendar)
 │   ├── track.js              # upis pregleda s državom (x-vercel-ip-country), bez IP adrese
 │   ├── prevedi.js            # prijevod teksta domaćina (Claude) za /h/ i /p/, spremljen u tablicu prijevodi
+│   ├── _push.js              # Web Push bez npm-a: VAPID (ES256) + aes128gcm; /api/obavijest → sync-all?push=1
 │   ├── _stripe.js            # zajedničko za Stripe rute (s „_” → Vercel ga ne objavljuje kao rutu)
 │   ├── billing-status.js     # je li plaćanje karticom uključeno (i testni način)
 │   ├── create-checkout-session.js  # Stripe Checkout; iznos iz cijena_plana_za_mene, popust kao kupon
@@ -120,6 +123,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
     ├── add-parking.sql                  # sections.parking_foto / parking_lat / parking_lon — parking sa slikom i pribadačom (samo vodič)
     ├── add-cleaner-status.sql           # cleaning_status + javi_ciscenje(token…) + kalendar_promjene (otkazano/novo s platformi); raspored_ciscenja + javljanja
     ├── add-referrals.sql                # moje_preporuke(), admin_preporuke() — Preporuči domaćina (user_metadata.preporucio)
+    ├── add-push.sql                     # obavijesti na mobitel: push_pretplate, push_prijava/odjava/proba, VAPID u Vaultu, okidači → /api/obavijest
     ├── add-arrival-steps.sql            # sections.ulazak_koraci (jsonb, ≤ 12): „Kako ući” po koracima sa slikama, samo vodič
     └── fix-missing-columns-and-storage.sql # ALTER TABLE dopune (photo_urls, ical_*, beds/bathrooms/size_m2) + storage bucket policy
 ```
@@ -628,6 +632,28 @@ Dashboard **ne učitava `odmoria.css`** — ima vlastiti potpun CSS s istim vrij
   bez zvjezdice šifra ostaje ispod koraka (`#codes-arr`). Wi-Fi mreža nema
   „Kopiraj” (samo lozinka i šifra); u kućnim pravilima prijava i odjava su
   jedan red. Stari opći link nema datume — kartica tada samo s vremenima.
+- **Stari opći link vodiča ukinut za šifre** (19. 10., odluke 32): u
+  `vodic_gosta()` je `stari_link_otkljucava = false` — `/h/<slug>-<guest_token>`
+  otvori vodič, ali šifre vrata i Wi-Fi lozinka nikad ne izlaze iz baze
+  (`STARI_LINK` u `h.html`: „dobivate u osobnom linku od domaćina”).
+  Dashboard ga više ne nudi za dijeljenje: kartice „Privatni vodič” imaju
+  „Napravi link” (`linkZaGosta()` → nova rezervacija), a gumb je „Pregled
+  vodiča” (domaćin vidi vodič kao gost prije dolaska). `guest_token` NE
+  poništavati — tada prestaje i pregled.
+- **Obavijesti na mobitel** (Web Push, `sql/add-push.sql`, odluke 26/32):
+  🔔 → „Obavijesti na ovom uređaju” (`pushPrekidac()`, `pushStanje()`,
+  `pushProba()`): `push-sw.js` (opseg `/dashboard`), ključ s
+  `/api/obavijest?kljuc=1`, pretplata kroz `push_prijava()`. Okidači na
+  `inquiries` (novi upit), `cleaning_status` (`ne_mogu`) i `kalendar_promjene`
+  (otkazano/novo) → `_push_posalji()` → pg_net → `/api/obavijest` (Bearer
+  `odmoria_cron_secret`; adresa iz Vaulta `odmoria_adresa` ili iz zadatka
+  `odmoria-ical-sync`). **VAPID ključeve napravi ruta sama** i spremi u Vault
+  (`push_vapid_spremi`, samo service_role) — nitko ih ne upisuje. Ruta je u
+  `api/sync-all.js` (`?push=1`, `api/_push.js`) jer je 12/12 funkcija. Tekst
+  hr/en po `push_pretplate.jezik`; 404/410 briše pretplatu. Šifriranje
+  provjereno referentnom bibliotekom (`http_ece`). iPhone: tek s početnog
+  zaslona (`manifest-domacin.webmanifest`, `apple-touch-icon.png`).
+  Duboki linkovi: `?otvori=upiti|kalendar|cistacica&objekt=`.
 - **Preporuči domaćina** (`sql/add-referrals.sql`): link
   `/register.html?preporuka=<prvih 8 znakova id-ja>` → `user_metadata.preporucio`
   (Google prijava: kod čeka u `localStorage` `odm-preporuka`, `upisiPreporuku()`);
@@ -764,7 +790,7 @@ Ako ikad zatreba da linkovi uvijek pokazuju na jednu domenu bez obzira odakle su
 - **Stari put** (izravno čitanje tablica) ostaje samo kao rezerva dok KORAK 1 nije pokrenut. KORAK 2 zatvara `sections` i `bookings` za anonimne (samo vlasnik; admin čita `bookings`). **Redoslijed: KORAK 1 → objava h.html → KORAK 2** — obrnuto bi slomilo vodič. Dok KORAK 2 nije pokrenut, ranjivost iz `docs/odluke.md` (točka 0) i dalje postoji, pa vodič još ne smije tvrditi da se šifre „ne šalju u preglednik”.
 - `const zvatiFunkciju` i `let IZ_FUNKCIJE` moraju stajati **iznad** poziva `loadHub()` — ista zamka kao `STATES`: inače `loadHub` baci grešku, `try` je proguta i vodič tiho padne na stari put (dogodilo se, test je pokazao `rpc: 0`).
 - Novi SQL se provjerava na **lokalnom PostgreSQL-u 16** (instaliran u okruženju: `/usr/lib/postgresql/16/bin`, `initdb` kao ne-root korisnik) s ulogama `anon`/`authenticated` i `auth.uid()` iz `request.jwt.claims` — tako je provjeren `sections-security.sql`.
-- Postoji i stariji link (`slug` + `properties.guest_token`) koji **odmah** otključava bez vremenskog ograničenja (i kroz funkciju: `stari_link_otkljucava`). Dashboard ga i dalje nudi kao „Privatni vodič”; ukidanje čeka odluku (odluke, točka 0).
+- Stariji opći link (`slug` + `properties.guest_token`) od 19. 10. 2026. **nikad ne otključava šifre** (`stari_link_otkljucava = false` u `vodic_gosta()`, i na starom putu `UNLOCKED = false`); dashboard ga koristi samo za „Pregled vodiča”.
 - Booking token se deaktivira ručno (`is_active=false`) ili istječe (`token_expires_at`).
 - Nema service role ključa u klijentskom kodu — sve stranice koriste samo publishable/anon key. Poslužiteljski ključ postoji **samo** kao Vercel varijabla `SUPABASE_SERVICE_ROLE_KEY` i koriste ga **samo** `api/stripe-webhook.js`, `api/sync-all.js`/`keepalive.js` (iCal) i `api/prevedi.js` (koji iz `sections` bira stupce izričito — nikad `door_code`, `wifi_pass`, `wifi_name`, `address`).
 - Admin panel (`admin.html`) je ispravno zaštićen i na RLS razini (`sql/admin-access.sql`, politike scope-ane na `auth.uid()` vlasnikovog računa), ne samo klijentskom provjerom.

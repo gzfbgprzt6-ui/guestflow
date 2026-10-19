@@ -17,6 +17,10 @@
       "destination": "/api/kalendar?t=:file"
     },
     {
+      "source": "/api/obavijest",
+      "destination": "/api/sync-all?push=1"
+    },
+    {
       "source": "/api/test-calendar",
       "destination": "/api/kalendar?test=1"
     },
@@ -102,6 +106,15 @@
         {
           "key": "X-Robots-Tag",
           "value": "noindex, nofollow"
+        }
+      ]
+    },
+    {
+      "source": "/push-sw.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache"
         }
       ]
     },
