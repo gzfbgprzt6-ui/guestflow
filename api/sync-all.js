@@ -8,11 +8,17 @@
 //
 // Obradi najdulje nesinkronizirane objekte dok ima vremena (serije),
 // objekt sinkroniziran u zadnjih 20 min preskoči.
+//
+// Ista funkcija nosi i /api/obavijest (?push=1 → api/_push.js) — na Hobby
+// planu je svih 12 funkcija zauzeto.
 // ============================================================
 
 const I = require('./_ical.js');
+const PUSH = require('./_push.js');
 
 module.exports = async (req, res) => {
+  // /api/obavijest (vercel.json) — obavijesti na mobitel domaćina, vidi api/_push.js
+  if (req.query && req.query.push) return PUSH.obradi(req, res);
   const tajna = process.env.CRON_SECRET || '';
   if (!tajna) { res.status(503).json({ ok: false, error: 'CRON_SECRET nije postavljen.' }); return; }
   if ((req.headers.authorization || '') !== 'Bearer ' + tajna) { res.status(401).json({ ok: false, error: 'Unauthorized' }); return; }

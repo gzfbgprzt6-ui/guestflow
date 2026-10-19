@@ -69,10 +69,11 @@ security definer
 set search_path = public, pg_temp
 as $$
 declare
-  -- Stari opći link (slug + properties.guest_token) nema datume, pa šifre
-  -- pokazuje odmah — kao i dosad. Postaviti na false kad se stari link ukine
-  -- (vidi KORAK 3), pa ponovno pokrenuti ovaj korak.
-  stari_link_otkljucava constant boolean := true;
+  -- Stari opći link (slug + properties.guest_token) nema datume. Od 19. 10.
+  -- 2026. (odluke, točka 32) ukinut je za šifre: vodič se otvori, šifre
+  -- vrata i Wi-Fi lozinka NIKAD — gost ih dobiva u linku rezervacije.
+  -- Dashboard ga koristi samo kao „Pregled vodiča” za domaćina.
+  stari_link_otkljucava constant boolean := false;
 
   b        public.bookings%rowtype;
   p        public.properties%rowtype;
@@ -220,15 +221,15 @@ commit;
 
 
 -- ============================================================================
---  KORAK 3 — stari opći link (odluka vlasnika, ne pokretati bez nje)
+--  KORAK 3 — stari opći link: UKINUT 19. 10. 2026. (odluke, točka 32)
 -- ============================================================================
---  Stari link /h.html?slug=…&token=<properties.guest_token> nema datume i
---  šifre pokazuje odmah. Dashboard ga i danas nudi kao „Privatni vodič”.
---  Ako je `properties` javno čitljiv (vidi 0a/0c), `guest_token` je čitljiv
---  svima — pa i šifre iza njega. Kad se stari link ukine u aplikaciji:
---    a) u KORAKU 1 postaviti  stari_link_otkljucava := false  i pokrenuti ga,
---    b) po želji poništiti tokene:  update public.properties set guest_token = null;
---  Do tada vrijedi: linkovi po rezervaciji su sigurni, stari link nije.
+--  Stari link /h.html?slug=…&token=<properties.guest_token> nema datume.
+--  `guest_token` je čitljiv svima koji čitaju `properties`, pa je link sada
+--  samo pregled vodiča: u KORAKU 1 je  stari_link_otkljucava := false  —
+--  šifre vrata i Wi-Fi lozinka preko njega nikad ne izlaze iz baze. Dashboard
+--  ga više ne nudi za dijeljenje (samo „Pregled vodiča” za domaćina).
+--  Tokene NE poništavati (update … set guest_token = null) — tada prestaje
+--  raditi i pregled vodiča u dashboardu.
 
 
 -- ============================================================================

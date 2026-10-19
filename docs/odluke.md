@@ -1242,7 +1242,7 @@ ključevi (Vercel varijable), slanje iz baze ili rute. Rad ~2 dana.
 Prava aplikacija u App Storeu / Google Playu: ~99 $/god (Apple) + 25 $
 (Google), tjedni rada — ne isplati se sada.
 
-- [ ] Odluka: napraviti PWA s obavijestima?
+- [x] Odluka: napraviti PWA s obavijestima? — **DA** (vlasnik, 19. 10. 2026., točka 32). Ključeve ne upisuje vlasnik: ruta ih napravi sama i spremi u Supabase Vault.
 
 ## 27. Puštanje u produkciju (main) — redoslijed i provjere
 
@@ -1348,3 +1348,65 @@ pročitati https://mymemory.translated.net/doc/usagelimits.php. Rezerva:
 Claude (oko 1–3 centa po objektu, jednokratno) ili ručni prijevod.
 - [ ] Provjeriti uvjete MyMemoryja.
 
+
+## 32. Iskreni pregled stanja, naplata i redoslijed (19. 10. 2026.)
+
+Vlasnik je tražio iskren popis: što fali, što nije dobro, što pojednostaviti
+i kako naplaćivati. Sažetak razgovora — **odluke su označene**.
+
+### Najveći problemi
+1. **Nema pravih korisnika** — u bazi 2 računa i 8 objekata, od toga 6 testnih
+   duplikata. Najveći rizik: ne znamo što stvarno treba, a što je višak.
+2. **Stari opći link vodiča** (slug + `guest_token`) pokazivao je šifru odmah i
+   zauvijek. → **riješeno (točka 1 niže)**.
+3. **Domaćin ne dozna za upit** dok ne otvori dashboard (e-mail nije spojen).
+   → **obavijesti na mobitel (točka 2 niže)**.
+4. **Pravni tekst** ne odgovara aplikaciji (eVisitor, e-mail gosta) — GDPR,
+   mora prije prvog pravog korisnika (točka 8).
+5. **Vercel Hobby** je samo za nekomercijalnu upotrebu — čim se naplaćuje,
+   Vercel Pro (~20 $/mj) ili selidba (Cloudflare Pages besplatno dopušta
+   komercijalnu upotrebu, ali traži preradu ruta u `api/`).
+6. **Supabase Free** nema sigurnosne kopije koje vlasnik sam vraća; Pro
+   ~25 $/mj čim dođu pravi gosti.
+7. **Dashboard je prenatrpan** za prosječnog iznajmljivača.
+8. Tehnički dug: velik `dashboard.html`, testovi nisu u repozitoriju, 12/12
+   funkcija na Vercelu.
+9. Tablica `plans` ne odgovara kodu: „8 jezika” (postoji 6), Business
+   „5 suradnika” (baza dopušta 3), `season_price_eur` prazan.
+
+### Što fali (sve besplatno)
+- Obavijesti na mobitel (Web Push) — **radi se (točka 2)**
+- „Javi problem” u vodiču (gost pošalje fotografiju i opis)
+- Sezonske cijene (pred / sezona / posezona)
+- Gotove WhatsApp poruke gostu jednim klikom (link, dan prije, odjava)
+- Ispis vodiča / PDF
+- „Preuzmi moje podatke” (GDPR + kopija)
+- Kratki početak u 3 koraka (naziv i fotografija → šifra i Wi-Fi → link)
+
+### Pojednostaviti
+- Jedan link po gostu (stari opći ukinut — točka 1)
+- Napredno iza „Više mogućnosti” (suradnici, preporuke, FB grupe, eVisitor, analitika)
+- Objave + Preporuke + FB grupe → jedan tab „Promocija”
+- Prijevod: Claude 1–3 centa po objektu jednokratno je jednostavniji od
+  besplatnog MyMemoryja (klik po jeziku, slabija kvaliteta)
+- Planovi: ograničavati broj objekata i 2–3 premium značajke, ne 15 limita
+
+### Modeli naplate (Booking uzima 15–18 %; jedna izravna rezervacija od 600 € = ~100 € uštede)
+- **A — „Sezonska karta” (preporuka):** Free 1 objekt s oznakom Odmoria;
+  Sezona 49 €/god za prvi objekt, +19 € svaki sljedeći.
+- **B — freemium:** Free 1 objekt; Pro 9 €/mj ili 59 €/god do 5 objekata;
+  Agencija 29 €/mj do 20 objekata.
+- **C — besplatna osnova + dodaci:** e-mail gostima, AI prijevod, vlastita
+  domena, bez oznake — svaki zasebno.
+- **Ne:** naplata po rezervaciji ili linku (ruši „bez provizije”).
+- Uz svaki model: probno razdoblje bez kartice, naplata ne prije ožujka.
+- Trošak kad se naplaćuje: ~45 €/mj (Vercel Pro + Supabase Pro) → s modelom A
+  ~12 domaćina pokriva trošak. Fiskalizacija / PDV: knjigovođa.
+
+### Redoslijed
+1. [x] Ukinuti stari opći link — **u izradi 19. 10.**
+2. [x] Obavijesti na mobitel (Web Push) — **u izradi 19. 10.**
+3. [ ] Kratki početak u 3 koraka + sakriti napredno
+4. [ ] Sezonske cijene
+5. [ ] 5–10 pravih iznajmljivača na probu prije novih značajki
+6. [ ] Pravni tekst + odluka o modelu naplate (A / B / C), pa tek onda Stripe
