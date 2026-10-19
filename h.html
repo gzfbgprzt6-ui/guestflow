@@ -589,6 +589,147 @@ body[data-v="ulaz"] .gfoot{display:none}
 .istaknuto h3{margin:12px 0 0;font:400 26px/1.15 var(--font-editorial)}
 .istaknuto p{margin:6px 0 0;color:var(--text-warm);font-weight:600}
 .istaknuto .btn{margin-top:14px}
+
+/* ==========================================================================
+   VODIČ NA JEDNOJ STRANICI (v4, 19. 10. 2026.) — odjeljci umjesto podstranica
+   ========================================================================== */
+.btn--sunce{background:#F2B33D;color:var(--text);border:0}
+.btn--sunce:hover{background:#E9A72B}
+.skok{position:sticky;top:68px;z-index:20;margin:0 -16px;padding:10px 16px;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;background:rgba(252,252,250,.94);backdrop-filter:blur(10px)}
+.skok::-webkit-scrollbar{display:none}
+.skok button{flex:none;display:inline-flex;align-items:center;gap:6px;min-height:38px;padding:0 13px;border-radius:99px;border:1px solid var(--border);background:var(--bg-surface);color:var(--text);cursor:pointer;font:700 13px/1 var(--font-ui)}
+.skok button .ic{width:15px;height:15px;color:var(--text-accent)}
+.skok button.got{color:var(--text-muted)}
+.skok button.got .ic{color:#1F7A4F}
+#odjeljci{display:grid;gap:14px}
+#odjeljci > [hidden]{display:none}
+.odj{border-radius:22px;background:var(--bg-surface);box-shadow:0 16px 34px -30px rgba(16,61,75,.6),0 1px 3px rgba(16,61,75,.05);overflow:hidden;scroll-margin-top:130px}
+.odj__g{display:flex;align-items:center;gap:12px;padding:16px 18px 0}
+.odj__ik{display:grid;place-items:center;width:44px;height:44px;border-radius:14px;background:var(--ton-bg,#E1ECEF);color:var(--ton,#103D4B);flex:none}
+.odj__ik .ic{width:21px;height:21px}
+.odj__g h2{margin:0;font:800 18px/1.2 var(--font-ui);letter-spacing:-.01em}
+.odj__g h2:focus{outline:none}
+.odj__g small{display:block;margin-top:2px;font-size:13px;color:var(--text-muted)}
+.odj__oz{margin-left:auto}
+.odj__t{display:grid;gap:12px;padding:14px 18px 18px}
+.odj__t > [hidden]{display:none}
+.odj__t p{margin:0;line-height:1.6;color:#2F4C55;white-space:pre-line}
+.odj__saz{display:none;align-items:center;gap:10px;padding:4px 18px 16px 74px;font-size:14px;color:var(--text-muted)}
+.odj__saz span{flex:1;min-width:0;overflow-wrap:anywhere}
+.odj__vrati{border:0;background:none;color:var(--text-accent);cursor:pointer;font:800 13px/1 var(--font-ui);min-height:36px}
+.odj--got{box-shadow:none;border:1px solid var(--border);background:transparent}
+.odj--got .odj__t{display:none}
+.odj--got .odj__saz{display:flex}
+.odj--got .odj__ik{width:36px;height:36px;border-radius:11px;background:#E2F2E9;color:#1F7A4F}
+.odj--got .odj__g h2{font-size:15.5px}
+.odj--got .odj__g small,.odj--got .odj__oz{display:none}
+.got-oz{display:flex;align-items:center;gap:8px;margin:4px 4px -2px;font:800 11.5px/1 var(--font-ui);letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)}
+.got-oz::after{content:"";flex:1;border-top:1px solid var(--border)}
+.odj .blk{margin:0}
+.odj .blk h2,.odj .blk h3.h{display:flex;align-items:center;gap:8px;margin:0 0 6px;font:800 15px/1.3 var(--font-ui)}
+.odj .blk h2 .ic,.odj .blk h3.h .ic{width:17px;height:17px;color:var(--text-accent)}
+.odj .blk p{color:#2F4C55}
+.odj .btnrow{margin-top:10px}
+.odj .btnrow .btn{border-radius:99px;min-height:44px}
+.odj .map{height:190px;margin-top:10px;border:0;border-radius:16px}
+.odj #arr-steps{display:grid;gap:12px}
+.odj .park-g__m{margin-top:8px}
+.odj .secret{border:0;background:#FFF4DC;border-radius:16px}
+.odj .secret > .ic{box-sizing:content-box;width:20px;height:20px;padding:10px;border-radius:12px;background:var(--bg-inverse);color:#F2B33D}
+.odj .palci{margin:0 -18px;padding:0 18px}
+.odj .ulaz-cta{display:grid;gap:12px}
+.odj .ulaz-cta .btn{min-height:50px;border-radius:99px}
+.koraci-tx{margin:0;padding:0;list-style:none;counter-reset:k;display:grid;gap:10px}
+.koraci-tx li{counter-increment:k;display:grid;grid-template-columns:30px minmax(0,1fr);gap:2px 10px}
+.koraci-tx li::before{content:counter(k);grid-row:span 2;display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--bg-inverse);color:#fff;font:800 13px/1 var(--font-ui)}
+.koraci-tx b{font:800 15px/1.35 var(--font-ui)}
+.koraci-tx span{font-size:14.5px;line-height:1.55;color:#2F4C55;white-space:pre-line}
+/* Wi-Fi: tamna kartica */
+.odj .wifi-k{display:grid;gap:8px;padding:14px;border-radius:18px;background:linear-gradient(150deg,#0F7480,#0B4F58);color:#fff}
+.odj .wifi-k .secret{background:rgba(255,255,255,.1)}
+.odj .wifi-k .secret.open{background:rgba(255,255,255,.14)}
+.odj .wifi-k .secret > .ic{background:rgba(255,255,255,.16);color:#fff}
+.odj .wifi-k .secret__k{color:#BFE3E5}
+.odj .wifi-k .secret__v{color:#fff}
+.odj .wifi-k .secret__lock{color:#D7EEEF}
+.odj .wifi-k .copybtn{border:0;border-radius:99px;background:#fff;color:var(--text)}
+.odj .wifi-k .ulaz__nap{color:#D7EEEF}
+/* Kuća: pločice uređaja */
+.uredaji{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.ur{border-radius:16px;background:#F1F6F6}
+.ur[open]{grid-column:1/-1;background:#E6F3F2}
+.ur summary{display:grid;gap:6px;justify-items:start;min-height:76px;padding:12px;list-style:none;cursor:pointer}
+.ur summary::-webkit-details-marker{display:none}
+.ur summary .ic{color:var(--text-accent)}
+.ur summary b{font:800 14px/1.25 var(--font-ui)}
+.ur p{padding:0 12px 12px;font-size:14.5px}
+/* Pravila */
+.odj .rules .rule{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border);line-height:1.5}
+.odj .rules .rule:last-child{border-bottom:0}
+.odj .rules .rule .ic{box-sizing:content-box;flex:none;width:16px;height:16px;padding:7px;border-radius:10px;background:var(--ton-bg,#EAF0DC);color:var(--ton,#4E6420)}
+.odj .rules .rule span{padding-top:5px}
+.odj .rules .rule--kv{justify-content:space-between;padding:10px 12px;margin-bottom:4px;border:0;border-radius:12px;background:#F5F8F8}
+.odj .rules .rule--kv span{padding:0;color:var(--text-muted)}
+.odj .rules .rule--kv b{font:800 14px/1.4 var(--font-ui);text-align:right}
+.odj #faq-blk h2{margin-top:6px}
+/* Okolica */
+.odj .fchips{display:flex;flex-wrap:nowrap;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0}
+.odj .fchips::-webkit-scrollbar{display:none}
+.odj .fchip{flex:none;min-height:36px;padding:0 13px;border-radius:99px;border:0;background:#F1F6F6;font:700 13px/1 var(--font-ui)}
+.odj .fchip[aria-pressed="true"]{border:0;background:var(--bg-inverse);color:#fff}
+.odj .fchip[aria-pressed="true"] .ic{color:#F2B33D}
+.odj .mjesta{margin:0;padding:0 2px;box-shadow:none;border-radius:0}
+.odj .mjesta .lrow{min-height:68px}
+.odj .mjesta .lrow__ic{border-radius:14px;background:var(--ic-bg,#F7ECD3);color:var(--ic,#8A5A12)}
+.odj .istaknuto{margin:0;background:linear-gradient(150deg,#FFF4DC,#F7E7C4)}
+/* Odlazak */
+.odj .checklist{margin:0}
+.odj .checklist label{border:0;background:#F5F8F8;border-radius:14px;min-height:46px;align-items:center}
+.odj .out-done{margin:0}
+.odj .kasnije{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:14px;border-radius:16px;background:#FFF6EF}
+.odj .kasnije .btn{border-radius:99px}
+.odj .ocjena{margin:0;padding:16px;border:0;border-radius:16px;background:#FFFBF0}
+.odj .ocjena h2{display:flex;align-items:center;gap:10px;font:800 17px/1.3 var(--font-ui)}
+.odj__pred{color:var(--text-muted)!important}
+/* Domaćin */
+.odj--dom{background:linear-gradient(160deg,#F1F8F4,#FFFFFF 55%)}
+.dom-g{display:flex;align-items:center;gap:14px}
+.dom-g .host__av{width:56px;height:56px;font-size:22px;background:linear-gradient(150deg,#2A7F57,#1F5E46)}
+.dom-g h2{margin:0;font:800 19px/1.2 var(--font-ui)}
+.dom-g small{display:block;margin-top:2px;font-size:13px;color:var(--text-muted)}
+.odj--dom .pisi{padding:0;border:0;background:none;display:grid;gap:10px}
+.odj--dom .pisi__btn .btn,.odj--dom .host__btns .btn{border-radius:99px;min-height:48px}
+.odj--dom .host__btns{display:flex;flex-wrap:wrap;gap:8px;margin:0}
+.odj--dom .host__btns .btn{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis}
+/* Hitno */
+.hitno{border-radius:18px;background:#FBE1E1;color:#9B1C1C;scroll-margin-top:130px}
+.hitno summary{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:54px;padding:0 16px;list-style:none;cursor:pointer;font:800 14.5px/1.2 var(--font-ui)}
+.hitno summary::-webkit-details-marker{display:none}
+.hitno summary span{display:flex;align-items:center;gap:8px}
+.hitno summary b{font-size:22px}
+.hitno__t{display:grid;gap:10px;padding:0 12px 14px}
+.hitno .sos{border-radius:16px;padding:14px 16px}
+.hitno .sos b{font-size:30px}
+.hitno .brojevi{margin:0}
+.hitno .broj{border:0;border-radius:14px}
+.hitno .blk{margin:0;padding:14px;border-radius:14px;background:#fff;color:var(--text)}
+.hitno .blk h2{display:flex;gap:8px;align-items:center;font:800 15px/1.3 var(--font-ui);margin:0 0 4px}
+.pokrece{margin:4px 0 0;text-align:center;font:700 12.5px/1 var(--font-ui);color:var(--text-muted)}
+.pokrece a{color:var(--text)}
+.sada .btn--sunce{border-radius:99px}
+.sada{background:linear-gradient(140deg,#1E5664,#0F3440)!important;border:0!important;color:#fff;box-shadow:0 22px 40px -26px rgba(16,61,75,.8)}
+.sada .sada__oz{color:#F2B33D}
+.sada h2{color:#fff}
+.sada p{color:#D7E8EA!important}
+.sada .vremena button{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.25);color:#fff}
+.sada .vremena button:hover{border-color:#F2B33D}
+.sada .preporuka{background:rgba(255,255,255,.08)}
+.sada .preporuka__ik{background:rgba(255,255,255,.14);color:#fff}
+.sada .preporuka b{color:#fff}.sada .preporuka div span{color:#CFE3E6}
+.sada .napredak{background:rgba(255,255,255,.14)}
+.sada .btn--secondary{background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.25)}
+.sada .btn--primary{background:#F2B33D;color:var(--text);border:0}
+@media (max-width:420px){.odj__g{padding:14px 14px 0}.odj__t{padding:12px 14px 16px}.odj__saz{padding-left:64px}}
 </style>
 </head>
 <body>
@@ -617,6 +758,7 @@ body[data-v="ulaz"] .gfoot{display:none}
   <symbol id="i-waves" viewBox="0 0 24 24"><path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1" /> <path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1" /> <path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1" /></symbol>
   <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /> <circle cx="9" cy="7" r="4" /> <path d="M22 21v-2a4 4 0 0 0-3-3.87" /> <path d="M16 3.13a4 4 0 0 1 0 7.75" /></symbol>
   <symbol id="i-bell" viewBox="0 0 24 24"><path d="M10.268 21a2 2 0 0 0 3.464 0" /> <path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326" /></symbol>
+  <symbol id="i-arrow-down" viewBox="0 0 24 24"><path d="M12 5v14" /> <path d="m19 12-7 7-7-7" /></symbol>
   <symbol id="i-chevron-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></symbol>
   <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14" /> <path d="m12 5 7 7-7 7" /></symbol>
   <symbol id="i-shield-check" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" /> <path d="m9 12 2 2 4-4" /></symbol>
@@ -682,13 +824,14 @@ body[data-v="ulaz"] .gfoot{display:none}
 
 <main id="sadrzaj">
 
-<!-- zaglavlje podstranice (boja teme, naslov, kratki opis) — puni route() -->
+<!-- zaglavlje podstranice (samo prijava boravka) — puni route() -->
 <section class="vglava" id="vglava" hidden></section>
 
-<!-- ============ POČETNA ============ -->
-<!-- Karta za odmor (dolazak → odlazak, odbrojavanje, šifra u sefu), brzi odgovori,
-     kartica „sada” po fazi boravka, kartice s fotografijama, riječ domaćina i
-     poruka domaćinu (WhatsApp / SMS / e-mail — ide ravno njemu). -->
+<!-- ============ VODIČ NA JEDNOJ STRANICI ============ -->
+<!-- Karta za odmor, trake za skok, kartica „sada” po fazi i odjeljci redom po
+     danu boravka (poredaj()). Obavljeno (GOTOVO) se sažme u jedan red i spusti
+     pod „Već obavljeno”. Preko cijelog zaslona otvara se samo ulazak korak po
+     korak (#ulaz), a zasebna stranica je samo obrazac za eVisitor (#prijava). -->
 <div data-view="home">
   <section class="naslov" id="hero" aria-labelledby="hero-name">
     <div class="naslov__in">
@@ -700,40 +843,16 @@ body[data-v="ulaz"] .gfoot{display:none}
 
   <div class="pocetna">
     <section class="karta" id="karta" aria-label="Vaš boravak"></section>
-
-    <section class="brzo" id="brzo-blk" aria-labelledby="brzo-h">
-      <h2 class="pocetna__h" id="brzo-h">Brzo do informacije</h2>
-      <div class="brzo__niz" id="brzo" role="group" aria-labelledby="brzo-h"></div>
-      <div class="odgovor" id="odgovor" aria-live="polite" hidden></div>
-    </section>
-
+    <nav class="skok" id="skok" aria-label="Skoči na"></nav>
     <section class="sada" id="sada" hidden></section>
 
-    <section class="istrazi" aria-labelledby="tiles-h">
-      <h2 class="pocetna__h" id="tiles-h">Sve za boravak</h2>
-      <div id="tiles"></div>
-    </section>
-
-
-    <section class="pisi" id="pisi" hidden aria-labelledby="pisi-h">
-      <div class="pisi__glava">
-        <span class="host__av" id="pisi-av" aria-hidden="true"></span>
-        <div><h2 id="pisi-h"></h2><span class="pisi__sub" id="pisi-sub"></span></div>
-      </div>
-      <label class="sr-only" for="pisi-tx">Vaša poruka domaćinu</label>
-      <textarea id="pisi-tx" rows="3" maxlength="1000" placeholder="Npr. Možemo li doći ranije, oko 13 h?"></textarea>
-      <div class="pisi__btn" id="pisi-btn"></div>
-    </section>
-  </div>
-</div>
-
-<!-- ============ DOLAZAK ============ -->
-<div class="wrap view" data-view="dolazak" hidden>
-  <p class="eyebrow view__lbl" id="arr-lbl"></p>
-  <!-- redom: kada (s odbrojavanjem) → koraci ulaska (šifra na koraku sa zvjezdicom) → upute i parking → adresa -->
-  <section class="kad" id="arr-kad" hidden aria-labelledby="kad-h"></section>
+    <div id="odjeljci">
+    <section class="odj" id="o-ulaz" data-ton="dolazak" hidden aria-labelledby="o-ulaz-h">
+      <div class="odj__g"><span class="odj__ik" aria-hidden="true"><svg class="ic"><use href="#i-door-open"/></svg></span><div><h2 id="o-ulaz-h" tabindex="-1">Kako ući</h2><small id="o-ulaz-sub">Dolazak, parking i adresa</small></div><span class="odj__oz" id="o-ulaz-oz"></span></div>
+      <div class="odj__saz"><span id="o-ulaz-saz"></span><button type="button" class="odj__vrati" data-vrati="ulaz">Prikaži</button></div>
+      <div class="odj__t">
   <section class="ulaz-cta" id="ulaz-blk" hidden aria-labelledby="ulaz-h"></section>
-  <div id="codes-arr"></div>
+    <div id="codes-arr"></div>
   <div id="arr-steps"></div>
   <div class="blk" id="arr-adr" hidden>
     <h2 tabindex="-1"><svg class="ic"><use href="#i-map-pin"/></svg>Kako do nas</h2>
@@ -744,46 +863,66 @@ body[data-v="ulaz"] .gfoot{display:none}
     </div>
     <div class="map" id="map" hidden><iframe id="map-frame" title="Karta" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
   </div>
-</div>
-
-<!-- ============ ULAZAK KORAK PO KORAK (preko cijelog zaslona) ============ -->
-<div data-view="ulaz" hidden><div class="ux" id="ux"></div></div>
-
-<!-- ============ WI-FI I KUĆA ============ -->
-<div class="wrap view" data-view="kuca" hidden>
-  <p class="eyebrow view__lbl" id="kuca-lbl"></p>
-  <section class="karticaw wifi-k" id="wifi-blk" hidden aria-labelledby="wifi-h">
-    <div class="wifi-k__h"><b id="wifi-h"><svg class="ic"><use href="#i-wifi"/></svg>Wi-Fi</b></div>
-    <div id="codes-wifi" style="display:grid;gap:10px"></div>
+      </div>
+    </section>
+    <section class="odj" id="o-wifi" data-ton="kuca" hidden aria-labelledby="o-wifi-h">
+      <div class="odj__g"><span class="odj__ik" aria-hidden="true"><svg class="ic"><use href="#i-wifi"/></svg></span><div><h2 id="o-wifi-h" tabindex="-1">Wi-Fi</h2><small id="o-wifi-sub">Za mobitel i laptop</small></div><span class="odj__oz" id="o-wifi-oz"></span></div>
+      <div class="odj__saz"><span id="o-wifi-saz"></span><button type="button" class="odj__vrati" data-vrati="wifi">Prikaži</button></div>
+      <div class="odj__t">
+        <div class="wifi-k">
+        <div id="codes-wifi" style="display:grid;gap:10px"></div>
     <p class="ulaz__nap" id="wifi-nap" hidden></p>
-  </section>
-  <div class="blk" id="dev-blk" hidden>
-    <h2 id="uredaji" tabindex="-1"><svg class="ic"><use href="#i-info"/></svg>Kako što radi</h2>
-    <div id="dev-list"></div>
-  </div>
-  <div class="blk" id="rules-blk" hidden>
-    <h2 id="pravila" tabindex="-1"><svg class="ic"><use href="#i-book-open"/></svg>Kućna pravila</h2>
-    <div class="rules" id="rules"></div>
-  </div>
-  <div class="blk" id="faq-blk" hidden>
+        </div>
+      </div>
+    </section>
+    <section class="odj" id="o-kuca" data-ton="kuca" hidden aria-labelledby="o-kuca-h">
+      <div class="odj__g"><span class="odj__ik" aria-hidden="true"><svg class="ic"><use href="#i-house"/></svg></span><div><h2 id="o-kuca-h" tabindex="-1">Kuća</h2><small id="o-kuca-sub">Dodirnite za upute</small></div><span class="odj__oz" id="o-kuca-oz"></span></div>
+      <div class="odj__saz"><span id="o-kuca-saz"></span><button type="button" class="odj__vrati" data-vrati="kuca">Prikaži</button></div>
+      <div class="odj__t">
+        <div id="dev-list"></div>
+      </div>
+    </section>
+    <section class="odj" id="o-pravila" data-ton="pravila" hidden aria-labelledby="o-pravila-h">
+      <div class="odj__g"><span class="odj__ik" aria-hidden="true"><svg class="ic"><use href="#i-book-open"/></svg></span><div><h2 id="o-pravila-h" tabindex="-1">Kućna pravila</h2><small id="o-pravila-sub">Ukratko</small></div><span class="odj__oz" id="o-pravila-oz"></span></div>
+      <div class="odj__saz"><span id="o-pravila-saz"></span><button type="button" class="odj__vrati" data-vrati="pravila">Prikaži</button></div>
+      <div class="odj__t">
+        <div class="rules" id="rules"></div>
+    <div class="blk" id="faq-blk" hidden>
     <h2 id="pitanja" tabindex="-1"><svg class="ic"><use href="#i-message-circle"/></svg>Česta pitanja</h2>
     <div id="faq-list"></div>
   </div>
-</div>
-
-<!-- ============ ODLAZAK (popis i ocjena) — stara adresa #kuca/odlazak vodi ovamo ============ -->
-<div class="wrap view" data-view="odlazak" hidden>
-  <div class="outcard" id="out-blk">
-    <h3 id="odlazak-h" tabindex="-1"><svg class="ic"><use href="#i-log-out"/></svg>Prije nego krenete</h3>
-    <p id="out-text"></p>
+      </div>
+    </section>
+    <section class="odj" id="o-okolica" data-ton="preporuke" hidden aria-labelledby="o-okolica-h">
+      <div class="odj__g"><span class="odj__ik" aria-hidden="true"><svg class="ic"><use href="#i-umbrella"/></svg></span><div><h2 id="o-okolica-h" tabindex="-1">Preporuke</h2><small id="o-okolica-sub">Plaže, hrana i izleti u blizini</small></div><span class="odj__oz" id="o-okolica-oz"></span></div>
+      <div class="odj__saz"><span id="o-okolica-saz"></span><button type="button" class="odj__vrati" data-vrati="okolica">Prikaži</button></div>
+      <div class="odj__t">
+    <div class="fchips" id="fchips" role="group" aria-label="Vrsta preporuke"></div>
+  <div id="places"></div>
+      </div>
+    </section>
+    <section class="odj" id="o-prijava" data-ton="prijava" hidden aria-labelledby="o-prijava-h">
+      <div class="odj__g"><span class="odj__ik" aria-hidden="true"><svg class="ic"><use href="#i-id-card"/></svg></span><div><h2 id="o-prijava-h" tabindex="-1">Prijava boravka</h2><small id="o-prijava-sub">Podaci za eVisitor · oko 2 minute</small></div><span class="odj__oz" id="o-prijava-oz"></span></div>
+      <div class="odj__saz"><span id="o-prijava-saz"></span><button type="button" class="odj__vrati" data-vrati="prijava">Prikaži</button></div>
+      <div class="odj__t">
+        <p>Domaćin mora prijaviti svakog gosta u roku 24 sata. Upišite podatke ovdje — on ih samo prepiše.</p>
+        <a class="btn btn--primary" href="#prijava">Ispuni prijavu<svg class="ic ic--sm"><use href="#i-arrow-right"/></svg></a>
+      </div>
+    </section>
+    <section class="odj" id="o-odlazak" data-ton="odlazak" hidden aria-labelledby="o-odlazak-h">
+      <div class="odj__g"><span class="odj__ik" aria-hidden="true"><svg class="ic"><use href="#i-log-out"/></svg></span><div><h2 id="o-odlazak-h" tabindex="-1">Odlazak</h2><small id="o-odlazak-sub">Prije nego krenete</small></div><span class="odj__oz" id="o-odlazak-oz"></span></div>
+      <div class="odj__saz"><span id="o-odlazak-saz"></span><button type="button" class="odj__vrati" data-vrati="odlazak">Prikaži</button></div>
+      <div class="odj__t">
+        <div class="napredak napredak--l" id="out-nap" aria-hidden="true"><span></span></div>
+        <p id="out-text"></p>
     <ul class="checklist" id="out-list"></ul>
     <p class="out-done" id="out-done" hidden>Sve je spremno. Sretan put!</p>
-  </div>
-  <section class="karticaw kasnije" id="kasnije-blk" hidden>
+        <p class="odj__pred" id="out-pred" hidden>Popis za kvačice pojavi se ovdje dan prije odlaska.</p>
+    <section class="karticaw kasnije" id="kasnije-blk" hidden>
     <div><b>Trebate kasniju odjavu?</b><span>Često se može dogovoriti — pitajte domaćina.</span></div>
     <a class="btn btn--secondary" href="#domacin" data-poruka="kasnije">Pitaj domaćina</a>
   </section>
-  <section class="ocjena" id="ocjena-blk" aria-labelledby="ocjena-h" hidden>
+    <section class="ocjena" id="ocjena-blk" aria-labelledby="ocjena-h" hidden>
     <h2 id="ocjena-h" tabindex="-1"><svg class="ic" style="box-sizing:content-box;width:20px;height:20px;padding:10px;border-radius:13px;background:#FFF4DC;color:#C98A0B"><use href="#i-star"/></svg>Kako vam je bilo?</h2>
     <div id="ocjena-forma">
       <p class="t-muted" style="margin-bottom:12px">Kratka ocjena pomaže domaćinu da sljedećim gostima bude još bolje.</p>
@@ -798,18 +937,28 @@ body[data-v="ulaz"] .gfoot{display:none}
     </div>
     <p class="poruka poruka--ok" id="oc-hvala" hidden>Hvala! Ocjena je poslana domaćinu.</p>
   </section>
-</div>
+      </div>
+    </section>
+      <p class="got-oz" id="got-oz" hidden><svg class="ic ic--sm"><use href="#i-check"/></svg>Već obavljeno</p>
+    </div>
 
-<!-- ============ PREPORUKE ============ -->
-<div class="wrap view" data-view="preporuke" hidden>
-  <div class="izbor-glava" id="izbor-glava"></div>
-  <div class="fchips" id="fchips" role="group" aria-label="Vrsta preporuke"></div>
-  <div id="places"></div>
-</div>
+    <section class="odj odj--dom" id="o-domacin" data-ton="domacin" hidden aria-labelledby="host-name">
+      <div class="odj__t">
+        <div class="dom-g"><span class="host__av" id="host-av" aria-hidden="true"></span><div><h2 class="host__n" id="host-name"></h2><small id="host-kako">Vaš domaćin</small></div></div>
+        <div class="pisi pisi--d" id="dom-pisi" hidden>
+        <div class="brze" id="dom-brze" role="group" aria-label="Brze poruke"></div>
+    <label class="sr-only" for="dom-tx">Vaša poruka domaćinu</label>
+    <textarea id="dom-tx" rows="4" maxlength="1000" placeholder="Upišite poruku…"></textarea>
+    <div class="pisi__btn" id="dom-btn"></div>
+        </div>
+        <div class="host__btns" id="host-btns"></div>
+      </div>
+    </section>
 
-<!-- ============ HITNO ============ -->
-<div class="wrap view" data-view="hitno" hidden>
-  <a class="sos" href="tel:112"><div><b>112</b><span>Hitne službe · besplatno, s bilo kojeg telefona, na hrvatskom i engleskom</span></div><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg></a>
+    <details class="hitno" id="o-hitno">
+      <summary><span><svg class="ic"><use href="#i-siren"/></svg>Hitno · besplatno, 0–24</span><b>112</b></summary>
+      <div class="hitno__t">
+    <a class="sos" href="tel:112"><div><b>112</b><span>Hitne službe · besplatno, s bilo kojeg telefona, na hrvatskom i engleskom</span></div><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg></a>
   <div class="brojevi">
     <a class="broj" href="tel:194"><div><b>194</b><br><span>Hitna medicinska pomoć</span></div><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg></a>
     <a class="broj" href="tel:192"><div><b>192</b><br><span>Policija</span></div><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg></a>
@@ -818,7 +967,7 @@ body[data-v="ulaz"] .gfoot{display:none}
     <a class="broj" href="tel:+38511987"><div><b>1987</b><br><span>Pomoć na cesti (HAK)</span></div><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg></a>
     <a class="broj" id="sos-domacin" hidden><div><b id="sos-dom-n"></b><br><span>Vaš domaćin</span></div><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg></a>
   </div>
-  <div class="blk" id="sos-adr-blk" hidden>
+    <div class="blk" id="sos-adr-blk" hidden>
     <h2><svg class="ic"><use href="#i-map-pin"/></svg>Vaša adresa</h2>
     <p>Recite je dispečeru ako zovete hitnu službu:</p>
     <p style="font:700 20px/1.4 var(--font-ui);margin-top:6px" id="sos-adr"></p>
@@ -827,7 +976,14 @@ body[data-v="ulaz"] .gfoot{display:none}
       <a class="btn btn--secondary" id="sos-bolnica" target="_blank" rel="noopener">Hitna i bolnica<svg class="ic ic--sm"><use href="#i-arrow-up-right"/></svg></a>
     </div>
   </div>
+      </div>
+    </details>
+    <p class="pokrece" id="pokrece" hidden>Vodič pokreće <a href="/">Odmoria</a></p>
+  </div>
 </div>
+
+<!-- ============ ULAZAK KORAK PO KORAK (preko cijelog zaslona) ============ -->
+<div data-view="ulaz" hidden><div class="ux" id="ux"></div></div>
 
 <!-- ============ PRIJAVA BORAVKA (eVisitor) ============ -->
 <div class="wrap view" data-view="prijava" hidden>
@@ -842,25 +998,6 @@ body[data-v="ulaz"] .gfoot{display:none}
     <p class="poruka poruka--ok" id="pr-ok" hidden style="margin-top:12px"></p>
   </form>
   <p class="t-meta" style="margin-top:16px">Podatke vidi samo vaš domaćin. Brišu se 30 dana nakon odlaska. Dok link vrijedi, možete ih ispraviti i poslati ponovno.</p>
-</div>
-
-<!-- ============ DOMAĆIN ============ -->
-<div class="wrap view" data-view="domacin" hidden>
-  <div class="card host">
-    <span class="host__av" id="host-av" aria-hidden="true"></span>
-    <div><div class="host__n" id="host-name"></div><div class="t-muted" id="host-kako">Vaš domaćin</div></div>
-  </div>
-  <section class="karticaw pisi pisi--d" id="dom-pisi" hidden aria-labelledby="dom-pisi-h">
-    <h2 id="dom-pisi-h"><svg class="ic"><use href="#i-message-circle"/></svg>Napišite poruku</h2>
-    <div class="brze" id="dom-brze" role="group" aria-label="Brze poruke"></div>
-    <label class="sr-only" for="dom-tx">Vaša poruka domaćinu</label>
-    <textarea id="dom-tx" rows="4" maxlength="1000" placeholder="Upišite poruku…"></textarea>
-    <div class="pisi__btn" id="dom-btn"></div>
-  </section>
-  <section class="karticaw" id="dom-kontakt" hidden>
-    <h2 class="kontakt-h"><svg class="ic"><use href="#i-phone"/></svg>Izravno</h2>
-    <div class="host__btns" id="host-btns"></div>
-  </section>
 </div>
 
 </main>
@@ -898,6 +1035,12 @@ const fmtShort = d => L.datumKratko(d)
 const fmtHM = d => `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
 
 let PROP = null, SECTION = null, BOOKING = null
+/* Što vodič smije pokazati ovisi o planu domaćina (plans.mogucnosti, funkcija
+   mogucnosti_vodica iz sql/add-plan-features.sql). Dok funkcije nema, MOG je
+   null i sve radi kao prije. Free: šifra, Wi-Fi, kuća, pravila, odlazak, domaćin.
+   Gost nikad ne vidi ništa „zaključano” — što nije u planu, jednostavno ne postoji. */
+let MOG = null, OZNAKA = false
+const imaM = k => !MOG || MOG.includes(k)
 
 /* Statistika za domaćina (page_views: objekt, vrsta, vrijeme — bez podataka o
    gostu). Svaka vrsta jednom po otvaranju. `?domacin=1` dodaje dashboard kad
@@ -929,11 +1072,13 @@ const KLJUC = 'odm-vodic:' + token
 const KLJUC_GOTOVO = 'odm-gotovo:' + token
 let GOTOVO = {}
 try { GOTOVO = JSON.parse(localStorage.getItem(KLJUC_GOTOVO) || '{}') || {} } catch {}
-function oznaci(id) {
+function oznaci(id, odmah = true) {
   if (GOTOVO[id] || DEMO && id === 'prijava') return
   GOTOVO[id] = Date.now()
   try { localStorage.setItem(KLJUC_GOTOVO, JSON.stringify(GOTOVO)) } catch {}
-  if (PROP && SECTION) { renderTiles(); if (id === 'ulaz') renderUlaz() }
+  // odmah = false: zapamti, ali kartica ostaje gdje jest dok gost ne otvori vodič ponovno
+  if (!odmah) OTVORENO.add(id)
+  if (PROP && SECTION) { if (id === 'ulaz') renderUlaz(); poredaj() }
 }
 let BEZ_MREZE = false, LISTE = null
 
@@ -1076,6 +1221,13 @@ async function finish(pre) {
     sb.from('faq').select('*').eq('property_id', PROP.id).order('sort_order')
   ])
   LISTE = liste.map(x => ({ data: (x && x.data) || [] }))
+  if (pre && pre.mog !== undefined) { MOG = pre.mog; OZNAKA = !!pre.oznaka }
+  else if (!DEMO) {
+    try {
+      const { data, error } = await sb.rpc('mogucnosti_vodica', { p_token: token, p_slug: params.get('slug') || null })
+      if (!error && data && Array.isArray(data.mogucnosti)) { MOG = data.mogucnosti; OZNAKA = !!data.oznaka }
+    } catch {}
+  }
 
   await pripremiJezik(pre)
   nacrtaj()
@@ -1096,8 +1248,9 @@ async function finish(pre) {
 function nacrtaj() {
   const [places, txs, atts, rules, faqs] = LISTE
   renderTop(); renderVault(); renderArrival(); renderHouse(rules.data, faqs.data)
-  renderRecs(places.data, txs.data, atts.data); renderHost(); renderHitno(); renderTiles()
-  renderKarta(); renderSada(); renderBrzo(); renderPisi()
+  renderRecs(places.data, txs.data, atts.data); renderHost(); renderHitno()
+  renderKarta(); renderSada(); poredaj()
+  show('#pokrece', OZNAKA)
 }
 
 /* Jezik: plan domaćina određuje koji su jezici dopušteni, a /api/prevedi
@@ -1158,61 +1311,83 @@ function datesTxt() {
     : `${L.datum(a)} – ${L.datum(b)}`
 }
 
-// „Sve za boravak” — popis koji se slaže sam: gore je ono što je sada važno
-// (po fazi boravka), a ono što je gost već odradio (ušao, vidio Wi-Fi, poslao
-// prijavu, pročitao pravila, spremio se za odlazak) spušta se u „Već
-// pogledano” — i dalje jedan dodir daleko. Prva stavka je velika kartica;
-// fotografija samo ako je stvarno njezina (prvi korak ulaska), bez ponavljanja.
-let TILES = [], PRIJAVA_DOSTUPNA = false
-function renderTiles() {
-  const s = SECTION, f = faza()
-  const kontakt = [PROP.host_name, PROP.phone ? 'WhatsApp' : PROP.email ? t('e-mail') : null].filter(Boolean).join(' · ')
-  const koraci = ulazKoraci()
-  const korakFoto = (koraci.find(x => x.foto) || {}).foto
-  const zv = s.door_code ? koraci.findIndex(x => x.sifra) : -1
-  const naUlaz = koraci.length && f === 'boravak'
-  const tez = (p, b, o) => ({ prije: p, boravak: b, odlazak: o })[f]
-  const mj = (PROP.location || '').split(',').map(x => x.trim()).filter(Boolean).pop()
-  TILES = [
-    { id: 'dolazak', ton: 'dolazak', ic: 'door-open', h: naUlaz && !GOTOVO.ulaz ? '#ulaz/1' : '#dolazak',
-      n: naUlaz && !GOTOVO.ulaz ? t('Kako ući') : t('Dolazak'),
-      sub: f === 'prije' ? [s.checkin_time && t('Prijava od {v}', { v: s.checkin_time }), koraci.length ? L.n(koraci.length, 'korak') + ' ' + t('s fotografijama') : t('adresa i parking')].filter(Boolean).join(' · ')
-        : koraci.length ? L.n(koraci.length, 'korak') + ' ' + t('s fotografijama') + (zv >= 0 ? ' · ' + t('šifra na koraku {k}', { k: zv + 1 }) : '') : t('Adresa, parking, upute'),
-      cta: naUlaz ? t('Kreni korak po korak') : t('Pogledaj dolazak'), foto: korakFoto,
-      ima: !$('#arr-adr').hidden || koraci.length > 0 || !!$('#arr-steps').innerHTML || !!s.door_code || !$('#arr-kad').hidden,
-      w: tez(1, 1, 90), gotovo: !!GOTOVO.ulaz, gsub: t('Ušli ste · upute ostaju ovdje') },
-    { id: 'kuca', ton: 'kuca', ic: 'wifi', h: '#kuca', n: t('Wi-Fi i kuća'),
-      sub: s.wifi_name ? t('Mreža {m} · uređaji i upute', { m: s.wifi_name }) : t('Uređaji i upute'), cta: t('Otvori'),
-      ima: !!(s.wifi_name || s.wifi_pass || !$('#dev-blk').hidden), w: tez(6, 2, 5), gotovo: !!GOTOVO.wifi, gsub: t('Lozinka je uvijek ovdje') },
-    { id: 'preporuke', ton: 'preporuke', ic: 'umbrella', h: '#preporuke', n: t('Preporuke'),
-      sub: RECS.filter(r => r.cat !== t('Prijevoz')).slice(0, 2).map(r => r.name).join(' · ') || t('Plaže, hrana, izleti'), cta: t('Pogledaj preporuke'),
-      ima: RECS.length > 0, w: tez(5, 3, 6) },
-    { id: 'prijava', ton: 'prijava', ic: 'id-card', h: '#prijava', n: t('Prijava boravka'), sub: t('Podaci za eVisitor · oko 2 minute'), cta: t('Ispuni prijavu'),
-      ima: PRIJAVA_DOSTUPNA, w: tez(2, 4, 7), gotovo: !!GOTOVO.prijava, gsub: t('Poslano domaćinu') },
-    { id: 'domacin', ton: 'domacin', ic: 'message-circle', h: '#domacin', n: t('Domaćin'), sub: kontakt || t('Kontakt'), cta: t('Javi se'),
-      ima: !!(PROP.host_name || PROP.phone || PROP.email), w: tez(3, 5, 3) },
-    { id: 'pravila', ton: 'pravila', ic: 'book-open', h: '#kuca/pravila', n: t('Kućna pravila'), sub: t('I česta pitanja'), cta: t('Pročitaj'),
-      ima: !$('#rules-blk').hidden || !$('#faq-blk').hidden, w: tez(7, 6, 8), gotovo: !!GOTOVO.pravila, gsub: t('Pročitano') },
-    { id: 'odlazak', ton: 'odlazak', ic: 'log-out', h: '#odlazak', n: f === 'odlazak' ? t('Danas je odlazak') : t('Odlazak'),
-      sub: s.checkout_time ? t('Odjava do {v} · popis i ocjena', { v: s.checkout_time }) : t('Popis i ocjena boravka'), cta: t('Otvori popis'),
-      ima: true, w: tez(9, 8, 1), gotovo: !!GOTOVO.odlazak, gsub: t('Sve je spremno') },
-    { id: 'hitno', ton: 'hitno', ic: 'siren', h: '#hitno', n: t('Hitno i pomoć'), sub: t('112, hitna, ljekarna'), ima: true, w: 99 }
-  ].filter(x => x.ima)
-  const aktivne = TILES.filter(x => !x.gotovo).sort((a, b) => a.w - b.w)
-  const gotove = TILES.filter(x => x.gotovo).sort((a, b) => a.w - b.w)
-  const glavna = aktivne[0] && aktivne[0].id !== 'hitno' ? aktivne.shift() : null
-  const red = (x, ok) => `<a class="stavka" href="${x.h}" data-ton="${x.ton}"><span class="stavka__ik">${ico(ok ? 'check' : x.ic)}</span>
-    <span class="stavka__tx"><b>${esc(x.n)}</b><span>${esc(ok ? x.gsub : x.sub)}</span></span>
-    <span class="stavka__d">${x.id === 'odlazak' && f === 'odlazak' && !ok ? `<span class="oznaka oznaka--sad">${esc(t('Danas'))}</span>` : ''}${ico('chevron-right')}</span></a>`
-  $('#tiles').innerHTML = (glavna ? `<a class="stavka stavka--glavna" href="${glavna.h}" data-ton="${glavna.ton}">
-      <span class="stavka__tela"><span class="sada__oz">${ico(glavna.ic, 'ic--sm')}${esc(t('Sada je na redu'))}</span>
-        <span class="stavka__tx"><b>${esc(glavna.n)}</b><span>${esc(glavna.sub)}</span></span>
-        <span class="stavka__ide">${esc(glavna.cta)}${ico('arrow-right', 'ic--sm')}</span></span>
-      ${glavna.foto ? `<span class="stavka__sl" aria-hidden="true"><img src="${esc(glavna.foto)}" alt="" loading="lazy" decoding="async"></span>` : `<span class="stavka__veliki" aria-hidden="true">${ico(glavna.ic)}</span>`}</a>` : '')
-    + (aktivne.length ? `<div class="popis">${aktivne.map(x => red(x)).join('')}</div>` : '')
-    + (gotove.length ? `<p class="popis__oz">${ico('check', 'ic--sm')}${esc(t('Već pogledano'))}</p><div class="popis popis--gotovo">${gotove.map(x => red(x, true)).join('')}</div>` : '')
-  show('#tiles-h', TILES.length > 0)
+// ── Vodič na jednoj stranici: odjeljci redom po danu boravka ──
+// Redoslijed ovisi o fazi (prije | dolazak | boravak | odlazak). Što je gost
+// već obavio (GOTOVO: ušao, kopirao lozinku, pročitao pravila, poslao prijavu,
+// spremio se za odlazak) sažme se u jedan red i spusti pod „Već obavljeno” —
+// podatak ostaje vidljiv, a „Prikaži” ga otvori na mjestu. Odjeljci se samo
+// premještaju u DOM-u (appendChild), pa obrasci (ocjena) ne gube upisano.
+let PRIJAVA_DOSTUPNA = false
+const OTVORENO = new Set()   // sažeti odjeljci koje je gost ponovno otvorio
+const REDOSLIJED = {
+  prije:   ['ulaz', 'prijava', 'kuca', 'pravila', 'okolica', 'wifi', 'odlazak'],
+  dolazak: ['ulaz', 'wifi', 'prijava', 'kuca', 'okolica', 'pravila', 'odlazak'],
+  boravak: ['wifi', 'okolica', 'kuca', 'pravila', 'prijava', 'ulaz', 'odlazak'],
+  odlazak: ['odlazak', 'wifi', 'okolica', 'kuca', 'pravila', 'ulaz', 'prijava']
 }
+function imaOdjeljak(id) {
+  const s = SECTION
+  return {
+    ulaz: !$('#arr-adr').hidden || !$('#ulaz-blk').hidden || !!$('#arr-steps').innerHTML || !!s.door_code,
+    wifi: !!(s.wifi_name || s.wifi_pass),
+    kuca: !!$('#dev-list').innerHTML,
+    pravila: !!$('#rules').innerHTML || !$('#faq-blk').hidden,
+    okolica: imaM('preporuke') && RECS.length > 0,
+    prijava: imaM('evisitor') && PRIJAVA_DOSTUPNA,
+    odlazak: true
+  }[id]
+}
+// sažimaju se samo odjeljci s jasnom radnjom gosta; pravila i odlazak ostaju otvoreni
+const GOT_KLJUC = { ulaz: 'ulaz', wifi: 'wifi', prijava: 'prijava' }
+function sazetak(id) {
+  const s = SECTION, items = vaultItems(), w = items.findIndex(x => x.id === 'wifi_pass')
+  return {
+    ulaz: t('Ušli ste · upute ostaju ovdje'),
+    wifi: [s.wifi_name && 'Wi-Fi: ' + s.wifi_name, w >= 0 && UNLOCKED ? t('lozinka') + ' ' + items[w].v : ''].filter(Boolean).join(' · '),
+    pravila: t('Pročitano'),
+    prijava: t('Poslano domaćinu'),
+    odlazak: t('Sve je spremno')
+  }[id] || ''
+}
+function poredaj() {
+  if (!PROP || !SECTION) return
+  const f = faza(), box = $('#odjeljci'), oz = $('#got-oz')
+  const red = REDOSLIJED[f] || REDOSLIJED.boravak
+  const vidljivi = red.filter(imaOdjeljak)
+  const got = id => GOT_KLJUC[id] && GOTOVO[GOT_KLJUC[id]] && !OTVORENO.has(id)
+  for (const id of red) show('#o-' + id, vidljivi.includes(id))
+  for (const id of vidljivi.filter(x => !got(x))) box.insertBefore($('#o-' + id), oz)
+  const dolje = vidljivi.filter(got)
+  for (const id of dolje) box.appendChild($('#o-' + id))
+  show(oz, dolje.length > 0)
+  for (const id of red) {
+    const el = $('#o-' + id); el.classList.toggle('odj--got', !!got(id))
+    if (got(id)) $('#o-' + id + '-saz').textContent = sazetak(id)
+  }
+  // oznake u zaglavlju odjeljka
+  $('#o-odlazak-oz').innerHTML = f === 'odlazak' ? `<span class="oznaka oznaka--sad">${esc(t('Danas'))}</span>` : ''
+  $('#o-ulaz-oz').innerHTML = f === 'dolazak' && !GOTOVO.ulaz ? `<span class="oznaka oznaka--sad">${esc(t('Danas'))}</span>` : ''
+  // trake za skok — redom kao odjeljci, obavljeno s kvačicom
+  const IK = { ulaz: ['door-open', t('Ulaz')], wifi: ['wifi', 'Wi-Fi'], kuca: ['house', t('Kuća')], pravila: ['book-open', t('Pravila')],
+    okolica: ['umbrella', t('Okolica')], prijava: ['id-card', t('Prijava')], odlazak: ['log-out', t('Odlazak')] }
+  const skok = [...vidljivi.filter(x => !got(x)), ...dolje]
+  $('#skok').innerHTML = [...skok.map(id => [id, ...IK[id]]), ['domacin', 'message-circle', t('Domaćin')]]
+    .filter(x => x[0] !== 'domacin' || !$('#o-domacin').hidden)
+    .map(([id, i, n]) => `<button type="button" data-skok="${id}" class="${got(id) ? 'got' : ''}">${ico(got(id) ? 'check' : i)}${esc(n)}</button>`).join('')
+  show('#skok', skok.length > 1)
+}
+function skociNa(id) {
+  const el = $('#o-' + id); if (!el || el.hidden) return
+  if (el.classList.contains('odj--got')) { OTVORENO.add(id); poredaj() }
+  if (el.tagName === 'DETAILS') el.open = true
+  el.scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })
+  const h = el.querySelector('h2'); if (h) h.focus({ preventScroll: true })
+  biljezi('guide:' + id)
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-skok]'); if (b) { e.preventDefault(); skociNa(b.dataset.skok); return }
+  const v = e.target.closest('[data-vrati]'); if (v) { OTVORENO.add(v.dataset.vrati); poredaj() }
+})
 
 // ══════════════════════════════════════════════════════
 //  PRISTUP — jedino mjesto gdje se prikazuju šifre
@@ -1260,25 +1435,18 @@ function renderVault() {
   // (šifra na koraku sa zvjezdicom ili ispod koraka — renderUlaz/renderArrival; odbrojavanje je u kartici „kada”)
   const nap = STARI_LINK ? t('Šifru vrata i Wi-Fi lozinku dobivate u osobnom linku od domaćina.') : t('Šifra vrata i Wi-Fi pojavit će se ovdje sat prije prijave.')
   $('#codes-arr').innerHTML = dc >= 0 ? `<div class="karticaw">${secretHtml(items[dc], dc)}${UNLOCKED ? '' : `<p class="ulaz__nap" style="margin-top:10px">${ico('clock', 'ic--sm')}${esc(nap)}</p>`}</div>` : ''
-  $('#arr-lbl').textContent = UNLOCKED
-    ? (CO_END ? t('Otključano · vrijedi do {d} u 23:59', { d: fmtShort(CO_END) }) : t('Otključano'))
-    : (UNLOCK_AT && new Date() < UNLOCK_AT ? t('Zaključano do {d} u {t}', { d: fmtShort(UNLOCK_AT), t: fmtHM(UNLOCK_AT) }) : '')
-  show('#arr-lbl', !!$('#arr-lbl').textContent)
 
   // Wi-Fi i kuća: mreža i lozinka
   const wifi = ['wifi_name', 'wifi_pass'].map(idx).filter(i => i >= 0)
   $('#codes-wifi').innerHTML = wifi.map(i => secretHtml(items[i], i)).join('')
-  show('#wifi-blk', wifi.length > 0)
   $('#wifi-nap').innerHTML = idx('wifi_pass') >= 0 && !UNLOCKED ? ico('clock', 'ic--sm') + esc(nap) : ''
   show('#wifi-nap', !!$('#wifi-nap').innerHTML)
-  $('#kuca-lbl').textContent = $('#arr-lbl').textContent
-  show('#kuca-lbl', !!$('#kuca-lbl').textContent && wifi.length > 0)
 }
 
 window.copyVal = async i => {
   const v = (window.__VALS || [])[i]
   if (!v) return
-  if ((vaultItems()[i] || {}).id === 'wifi_pass') oznaci('wifi')
+  if ((vaultItems()[i] || {}).id === 'wifi_pass') oznaci('wifi', false)
   try { await navigator.clipboard.writeText(v); toast(t('Kopirano.')); kvacica(document.activeElement?.closest('button'), t('Kopirano.')) }
   catch { toast(t('Kopiranje nije uspjelo — označite tekst i kopirajte ga ručno.')) }
 }
@@ -1308,7 +1476,7 @@ async function otkljucaj() {
     CO_END = r.zavrsava ? new Date(r.zavrsava) : CO_END
   }
   UNLOCKED = true
-  renderVault(); renderArrival(); renderTiles(); renderKarta(); renderSada(); renderBrzo(); renderUx()
+  renderVault(); renderArrival(); renderKarta(); renderSada(); renderUx(); poredaj()
   if (!DEMO) spremiPredmemoriju()
   document.querySelectorAll('.secret.open, .sef--otv').forEach(el => el.classList.add('je-novo'))   // kratki „puls” otključavanja
   toast(t('Šifra i Wi-Fi su sada dostupni.'))
@@ -1323,10 +1491,11 @@ async function otkljucaj() {
 // prije | boravak | odlazak — po datumima rezervacije; stari opći link nema datume
 function faza() {
   if (!BOOKING || !BOOKING.checkin_date) return 'boravak'
-  const { dolazak } = kadTrenuci()
-  if (dolazak && new Date() < dolazak) return 'prije'
-  if (BOOKING.checkout_date && String(BOOKING.checkout_date).slice(0, 10) <= danasISO()) return 'odlazak'
-  return 'boravak'
+  // dan dolaska je „dolazak” cijeli dan (i prije sata prijave — karta tada odbrojava)
+  const dan = danasISO(), ci = String(BOOKING.checkin_date).slice(0, 10)
+  if (dan < ci) return 'prije'
+  if (BOOKING.checkout_date && String(BOOKING.checkout_date).slice(0, 10) <= dan) return 'odlazak'
+  return dan === ci ? 'dolazak' : 'boravak'
 }
 const danKratko = d => d ? `${new Intl.DateTimeFormat(L.lokal(), { weekday: 'short' }).format(d).replace('.', '')}, ${fmtShort(d)}` : ''
 function kartaBrojevi(cilj) {
@@ -1348,7 +1517,8 @@ function renderKarta() {
     ? `<button type="button" class="sef sef--otv" onclick="copyVal(${dc})" aria-label="${esc(t('Šifra vrata'))}: ${esc(items[dc].v)}. ${esc(t('Kopiraj'))}">${ico('lock-open')}<b>${esc(items[dc].v)}</b><span>${esc(t('šifra vrata'))}</span></button>`
     : `<a class="sef" href="#dolazak" aria-label="${esc(t('Šifra vrata'))} · ${esc(t('Zaključano'))}">${ico('lock')}<b>••••</b><span>${esc(t('šifra vrata'))}</span></a>`
   let st
-  if (f === 'prije' && dolazak)
+  const prijeDol = !!(BOOKING && dolazak && new Date() < dolazak)
+  if (prijeDol)
     st = `<span class="karta__lbl"><span class="karta__tocka" aria-hidden="true"></span>${esc(t('Dolazak moguć za'))}</span><div class="karta__br" id="karta-br" role="timer">${kartaBrojevi(dolazak)}</div>`
   else if (f === 'odlazak' && odjava && new Date() < odjava)
     st = `<span class="karta__lbl"><span class="karta__tocka" aria-hidden="true"></span>${esc(t('Odjava za'))}</span><div class="karta__br" id="karta-br" role="timer">${kartaBrojevi(odjava)}</div>`
@@ -1363,7 +1533,7 @@ function renderKarta() {
       ${strana(t('Odlazak'), s.checkout_time, danKratko(BOOKING && odjava), true)}</div>
     <div class="karta__crta"></div>
     <div class="karta__dno"><div class="karta__st">${st}</div>${sef}</div>`
-  const cilj = f === 'prije' ? dolazak : f === 'odlazak' ? odjava : null
+  const cilj = prijeDol ? dolazak : f === 'odlazak' ? odjava : null
   if (cilj && new Date() < cilj) KARTA_TICK = setInterval(() => {
     const b = $('#karta-br'); if (!b) return
     if (new Date() >= cilj) { renderKarta(); renderSada(); renderTop(); return }
@@ -1384,14 +1554,20 @@ function renderSada() {
       <p>${esc(PROP.host_name ? t('{n} će vas lakše dočekati. Javlja se jednim dodirom.', { n: PROP.host_name }) : t('Domaćin će vas lakše dočekati. Javlja se jednim dodirom.'))}</p>
       <div class="vremena" role="group" aria-label="${esc(t('Vrijeme dolaska'))}">${['14–15 h', '15–17 h', '17–19 h', '19–21 h'].map(v =>
         `<button type="button" onclick="javiDolazak('${v}')">${v}</button>`).join('')}<button type="button" onclick="javiDolazak('')">${esc(t('Kasnije'))}</button></div>`
-  } else if (f === 'boravak' && RECS.some(x => x.cat !== t('Prijevoz'))) {
+  } else if (f === 'dolazak' && !GOTOVO.ulaz && ULAZ.length) {
+    const zv = SECTION.door_code ? ULAZ.findIndex(x => x.sifra) : -1
+    h = `<div class="sada__oz">${ico('door-open', 'ic--sm')}${esc(t('Danas'))}</div>
+      <h2>${esc(t('Kako ući'))} · ${esc(L.n(ULAZ.length, 'korak'))}</h2>
+      <p>${esc(t('Fotografije od ceste do vrata.') + (zv >= 0 ? ' ' + t('Šifra je na koraku {k}.', { k: zv + 1 }) : ''))}</p>
+      <div class="odgovor__akc"><a class="btn btn--sunce btn--sm" href="#ulaz/1">${esc(t('Kreni korak po korak'))}${ico('arrow-right', 'ic--sm')}</a></div>`
+  } else if ((f === 'boravak' || f === 'dolazak') && imaM('preporuke') && RECS.some(x => x.cat !== t('Prijevoz'))) {
     // preporuka dana: svaki dan druga, redom kako ih je domaćin složio
     const izbor = RECS.filter(x => x.cat !== t('Prijevoz')), dan = Math.floor(Date.now() / 864e5), r = izbor[dan % izbor.length]
     h = `<div class="sada__oz">${ico('star', 'ic--sm')}${esc(t('Preporuka dana'))}</div>
       <h2>${esc(PROP.host_name ? t('{n} preporučuje', { n: PROP.host_name }) : t('Domaćin preporučuje'))}</h2>
       <div class="preporuka"><span class="preporuka__ik">${ico(r.ic)}</span><div><b>${esc(r.name)}</b>${r.dt ? `<span>${esc(r.dt)}</span>` : ''}</div></div>
       <div class="odgovor__akc">${r.maps ? `<a class="btn btn--primary btn--sm" href="${esc(mapsUrl(r.maps))}" target="_blank" rel="noopener">${esc(t('Odvedi me'))}${ico('arrow-up-right', 'ic--sm')}</a>` : ''}
-        <a class="btn btn--secondary btn--sm" href="#preporuke">${esc(t('Sve preporuke'))}</a></div>`
+        <a class="btn btn--secondary btn--sm" href="#preporuke" data-skok="okolica">${esc(t('Sve preporuke'))}</a></div>`
   } else if (f === 'odlazak') {
     const n = (String(s.checkout_notes || '').split(/\n+/).filter(x => x.trim()).length) || 4
     let gotovo = 0
@@ -1401,7 +1577,7 @@ function renderSada() {
       <h2>${esc(t('Prije nego krenete'))}</h2>
       <p>${esc(gotovo >= n ? t('Sve je spremno. Sretan put!') : t('Još {a} od {b} — kvačice su u popisu za odlazak.', { a: n - gotovo, b: n }))}</p>
       <div class="napredak" aria-hidden="true"><span style="width:${Math.round(gotovo / n * 100)}%"></span></div>
-      <div class="odgovor__akc"><a class="btn btn--primary btn--sm" href="#odlazak">${esc(t('Otvori popis'))}${ico('arrow-up-right', 'ic--sm')}</a></div>`
+      <div class="odgovor__akc"><a class="btn btn--sunce btn--sm" href="#odlazak" data-skok="odlazak">${esc(t('Otvori popis'))}${ico('arrow-down', 'ic--sm')}</a></div>`
   }
   el.innerHTML = h
   show(el, !!h)
@@ -1410,81 +1586,15 @@ window.javiDolazak = v => {
   const ime = BOOKING && BOOKING.guest_name && BOOKING.guest_name !== 'Gost' ? BOOKING.guest_name : ''
   const tekst = v ? t('Pozdrav! Ovdje {ime}. Stižemo otprilike {v}.', { ime: ime || t('vaš gost'), v })
     : t('Pozdrav! Ovdje {ime}. Stižemo kasnije, javit ćemo točno vrijeme.', { ime: ime || t('vaš gost') })
-  $('#pisi-tx').value = tekst
-  $('#pisi').scrollIntoView({ block: 'center', behavior: 'smooth' })
-  $('#pisi-tx').focus({ preventScroll: true })
+  $('#dom-tx').value = tekst
+  $('#o-domacin').scrollIntoView({ block: 'center', behavior: 'smooth' })
+  $('#dom-tx').focus({ preventScroll: true })
 }
-
-// ══════════════════════════════════════════════════════
-//  BRZO DO INFORMACIJE — dodir odmah pokaže odgovor (iz podataka domaćina)
-// ══════════════════════════════════════════════════════
-let BRZO = []
-function renderBrzo() {
-  const s = SECTION, items = vaultItems()
-  const idx = id => items.findIndex(x => x.id === id)
-  const koraci = (Array.isArray(s.ulazak_koraci) ? s.ulazak_koraci : []).filter(x => x && (x.naslov || x.tekst || x.foto))
-  const prvi = re => RECS.find(r => re.test((r.cat + ' ' + r.name).toLowerCase()))
-  const akc = (href, tekst, van) => `<a class="btn btn--secondary btn--sm" href="${esc(href)}"${van ? ' target="_blank" rel="noopener"' : ''}>${esc(tekst)}${ico(van ? 'arrow-up-right' : 'arrow-up-right', 'ic--sm')}</a>`
-  const pLat = s.parking_lat, pLon = s.parking_lon, pin = pLat != null && pLon != null
-  const adr = punaAdresa(s.address, PROP.location)
-  const plaza = prvi(/plaž|beach|kupal/), hrana = prvi(/restoran|konob|hran|jelo|pizz|grill/)
-  const sl = (r) => `<p>${esc(r.name)}${r.dt ? ' · ' + esc(r.dt) : ''}</p><div class="odgovor__akc">${r.maps ? akc(mapsUrl(r.maps), t('Odvedi me'), true) : ''}${akc('#preporuke', t('Sve preporuke'))}</div>`
-  BRZO = [
-    (koraci.length || s.checkin_notes || idx('door_code') >= 0) && { id: 'ulaz', ic: 'door-open', q: t('Kako ući?'), h: () => {
-      const zv = koraci.findIndex(x => x.sifra)
-      const tx = koraci.length ? t('{n} s fotografijama, od ulice do vrata.', { n: L.n(koraci.length, 'korak') }) + (zv >= 0 && idx('door_code') >= 0 ? ' ' + t('Šifra je na koraku {k}.', { k: zv + 1 }) : '') : H(s.checkin_notes || '')
-      const d = idx('door_code')
-      return `<p>${esc(tx)}</p>${d >= 0 ? secretHtml(items[d], d) : ''}<div class="odgovor__akc">${akc(koraci.length ? '#ulaz/1' : '#dolazak', koraci.length ? t('Korak po korak') : t('Upute za dolazak'))}</div>` } },
-    (s.wifi_name || s.wifi_pass) && { id: 'wifi', ic: 'wifi', q: 'Wi-Fi', h: () => {
-      const n = idx('wifi_name'), w = idx('wifi_pass')
-      return [n, w].filter(i => i >= 0).map(i => secretHtml(items[i], i)).join('') +
-        (w >= 0 && !UNLOCKED ? `<p>${esc(STARI_LINK ? t('Šifru vrata i Wi-Fi lozinku dobivate u osobnom linku od domaćina.') : UNLOCK_AT ? t('Lozinka se otključa {d} u {t}.', { d: fmtShort(UNLOCK_AT), t: fmtHM(UNLOCK_AT) }) : t('Lozinka se otključa sat prije prijave.'))}</p>` : '') } },
-    (s.parking_info || pin) && { id: 'parking', ic: 'car', q: t('Parking'), h: () =>
-      `${s.parking_info ? `<p>${esc(H(s.parking_info))}</p>` : ''}<div class="odgovor__akc">${pin ? akc(`https://www.google.com/maps/dir/?api=1&destination=${(+pLat).toFixed(6)},${(+pLon).toFixed(6)}`, t('Navigiraj do parkinga'), true) : ''}${akc('#dolazak', t('Dolazak'))}</div>` },
-    adr && { id: 'adresa', ic: 'map-pin', q: t('Adresa'), h: () =>
-      `<p translate="no" style="font-weight:700;color:var(--text)">${esc(adr)}</p><div class="odgovor__akc">${akc('https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(adr), 'Google Maps', true)}</div>` },
-    (s.checkout_time) && { id: 'odjava', ic: 'log-out', q: t('Odjava'), h: () =>
-      `<p>${esc(t('Odjava je do {v}.', { v: s.checkout_time }))}${PROP.phone || PROP.email ? ' ' + esc(t('Trebate kasniju? Napišite domaćinu — često se može dogovoriti.')) : ''}</p><div class="odgovor__akc">${akc('#odlazak', t('Popis za odlazak'))}</div>` },
-    plaza && { id: 'plaza', ic: 'umbrella', q: t('Plaža'), h: () => sl(plaza) },
-    hrana && { id: 'hrana', ic: 'utensils', q: t('Gdje jesti'), h: () => sl(hrana) },
-    !$('#rules-blk').hidden && { id: 'pravila', ic: 'book-open', q: t('Kućna pravila'), h: () =>
-      `<p>${[...document.querySelectorAll('#rules .rule:not(.rule--kv)')].slice(0, 3).map(x => '• ' + esc(x.textContent)).join('<br>') || esc(t('Prijava, odjava i pravila kuće.'))}</p><div class="odgovor__akc">${akc('#kuca/pravila', t('Sva pravila'))}</div>` }
-  ].filter(Boolean)
-  $('#brzo').innerHTML = BRZO.map(b => `<button type="button" class="bcip" data-brzo="${b.id}" aria-expanded="false" aria-controls="odgovor">${ico(b.ic)}${esc(b.q)}</button>`).join('')
-  show('#brzo-blk', BRZO.length > 0)
-  show('#odgovor', false)
-}
-document.addEventListener('click', e => {
-  const b = e.target.closest('[data-brzo]'); if (!b) return
-  const o = $('#odgovor'), otvoren = b.getAttribute('aria-expanded') === 'true'
-  document.querySelectorAll('[data-brzo]').forEach(x => x.setAttribute('aria-expanded', 'false'))
-  if (otvoren) { show(o, false); return }
-  const x = BRZO.find(y => y.id === b.dataset.brzo); if (!x) return
-  b.setAttribute('aria-expanded', 'true')
-  o.innerHTML = `<h3>${ico(x.ic)}${esc(x.q)}</h3>${x.h()}`
-  if (x.id === 'wifi' && (UNLOCKED || !SECTION.wifi_pass)) oznaci('wifi')
-  show(o)
-  biljezi('guide:brzo')
-})
 
 // ══════════════════════════════════════════════════════
 //  PORUKA DOMAĆINU — ide ravno njemu (WhatsApp, SMS ili e-mail)
 // ══════════════════════════════════════════════════════
-function renderPisi() {
-  const tel = String(PROP.phone || '').replace(/[^\d+]/g, ''), wa = tel.replace(/\D/g, '')
-  if (!tel && !PROP.email) { show('#pisi', false); return }
-  $('#pisi-av').textContent = (PROP.host_name || 'D')[0].toUpperCase()
-  // ime ide u podnaslov — „Napišite {ime}” bi tražilo padež
-  $('#pisi-h').textContent = t('Napišite domaćinu')
-  $('#pisi-sub').textContent = (PROP.host_name ? PROP.host_name + ' · ' : '') + t('Poruka stiže ravno domaćinu — odgovor dobivate na svoj mobitel.')
-  $('#pisi-btn').innerHTML = [
-    wa && `<button type="button" class="btn btn--primary" onclick="posaljiDomacinu('wa')">${ico('message-circle')}WhatsApp</button>`,
-    tel && `<button type="button" class="btn btn--secondary" onclick="posaljiDomacinu('sms')">SMS</button>`,
-    PROP.email && `<button type="button" class="btn btn--secondary" onclick="posaljiDomacinu('mail')">${ico('mail')}${esc(t('E-mail'))}</button>`
-  ].filter(Boolean).join('')
-  show('#pisi')
-}
-window.posaljiDomacinu = (kanal, polje = '#pisi-tx') => {
+window.posaljiDomacinu = (kanal, polje = '#dom-tx') => {
   const tx = $(polje).value.trim()
   if (!tx) { $(polje).focus(); toast(t('Upišite poruku.')); return }
   const tel = String(PROP.phone || '').replace(/[^\d+]/g, ''), msg = encodeURIComponent(tx)
@@ -1537,27 +1647,8 @@ function kadOdbrojavanje() {
   if (dolazak && odjava && sad < odjava) return `<div class="kad__tim kad__tim--da"><span class="kad__lbl"><span class="kad__tocka" aria-hidden="true"></span>${esc(t('Prijava je otvorena — dobrodošli!'))}</span></div>`
   return ''
 }
-function renderKad() {
-  const s = SECTION, el = $('#arr-kad')
-  clearInterval(KAD_TICK)
-  if (!s.checkin_time && !s.checkout_time) { show('#arr-kad', false); return }
-  const { dolazak, odjava } = kadTrenuci()
-  const red = (ic, k, dan, v) => `<div class="kad__r">${ico(ic)}<span>${esc(k)}</span><b>${dan ? esc(fmtShort(dan)) + ' · ' : ''}${esc(v)}</b></div>`
-  el.innerHTML = `<h2 class="kad__h" id="kad-h">${esc(t('Prijava'))} · ${esc(t('Odjava'))}</h2>
-    <div id="kad-tim">${kadOdbrojavanje()}</div>
-    <div class="kad__rr">${s.checkin_time ? red('log-in', t('Prijava'), dolazak, t('od {vrijeme}', { vrijeme: s.checkin_time })) : ''}
-      ${s.checkout_time ? red('log-out', t('Odjava'), odjava, t('do {vrijeme}', { vrijeme: s.checkout_time })) : ''}</div>`
-  show('#arr-kad')
-  if (dolazak && new Date() < dolazak) KAD_TICK = setInterval(() => {
-    const tim = $('#kad-tim'); if (!tim) return
-    tim.innerHTML = kadOdbrojavanje()
-    if (new Date() >= dolazak) renderKad()
-  }, 1000)
-}
-
 function renderArrival() {
   const s = SECTION, steps = []
-  renderKad()
   if (s.checkin_notes) steps.push(['door-open', t('Upute za dolazak'), H(s.checkin_notes)])
   const pLat = s.parking_lat, pLon = s.parking_lon, pPin = pLat != null && pLon != null
   if (s.parking_info || s.parking_foto || pPin) steps.push(['car', t('Parking'), H(s.parking_info || ''), 'parking'])
@@ -1593,15 +1684,17 @@ const ulazKoraci = () => (Array.isArray(SECTION.ulazak_koraci) ? SECTION.ulazak_
 // Dolazak: kartica „Kako ući” sa sličicama koraka → ekran korak po korak (#ulaz)
 function renderUlaz() {
   const k = ulazKoraci(), el = $('#ulaz-blk')
-  ULAZ = k
-  show(el, k.length > 0)
-  if (!k.length) { el.innerHTML = ''; return false }
   const zv = SECTION.door_code ? k.findIndex(x => x.sifra) : -1
-  el.innerHTML = `<div class="ulaz-cta__glava" data-ton="dolazak"><span class="stavka__ik">${ico('door-open')}</span>
-      <div><b id="ulaz-h">${esc(t('Kako ući'))}</b><span>${esc(L.n(k.length, 'korak') + ' ' + t('s fotografijama') + (zv >= 0 ? ' · ' + t('šifra na koraku {k}', { k: zv + 1 }) : ''))}</span></div></div>
-    ${GOTOVO.ulaz ? `<span class="oznaka oznaka--ok">${ico('check')}${esc(t('Ušli ste'))}</span>` : ''}
-    <ol class="palci">${k.map((x, i) => `<li><a class="palac${i === zv ? ' palac--zv' : ''}" href="#ulaz/${i + 1}" aria-label="${esc(t('Korak {n} od {u}', { n: i + 1, u: k.length }))}">${x.foto ? `<img src="${esc(x.foto)}" alt="" loading="lazy" decoding="async">` : ''}<i>${i === zv ? '★' : i + 1}</i><span>${esc(x.naslov ? H(x.naslov) : t('Korak {n}', { n: i + 1 }))}</span></a></li>`).join('')}</ol>
-    <a class="btn btn--primary" href="#ulaz/1">${esc(GOTOVO.ulaz ? t('Pogledaj korake ponovno') : t('Kreni korak po korak'))}${ico('arrow-right', 'ic--sm')}</a>`
+  // koraci sa slikama i ekran preko cijelog zaslona su u planu domaćina (mogućnost „koraci”);
+  // bez nje gost dobije iste korake kao kratak popis teksta
+  ULAZ = imaM('koraci') ? k : []
+  show(el, k.length > 0)
+  $('#o-ulaz-sub').textContent = k.length ? L.n(k.length, 'korak') + (ULAZ.length ? ' ' + t('s fotografijama') : '') + (zv >= 0 ? ' · ' + t('šifra na koraku {k}', { k: zv + 1 }) : '') : t('Dolazak, parking i adresa')
+  if (!k.length) { el.innerHTML = ''; return false }
+  el.innerHTML = ULAZ.length
+    ? `<ol class="palci">${k.map((x, i) => `<li><a class="palac${i === zv ? ' palac--zv' : ''}" href="#ulaz/${i + 1}" aria-label="${esc(t('Korak {n} od {u}', { n: i + 1, u: k.length }))}">${x.foto ? `<img src="${esc(x.foto)}" alt="" loading="lazy" decoding="async">` : ''}<i>${i === zv ? '★' : i + 1}</i><span>${esc(x.naslov ? H(x.naslov) : t('Korak {n}', { n: i + 1 }))}</span></a></li>`).join('')}</ol>
+      <a class="btn btn--primary" href="#ulaz/1">${esc(GOTOVO.ulaz ? t('Pogledaj korake ponovno') : t('Kreni korak po korak'))}${ico('arrow-right', 'ic--sm')}</a>`
+    : `<ol class="koraci-tx">${k.map((x, i) => `<li><b>${esc(x.naslov ? H(x.naslov) : t('Korak {n}', { n: i + 1 }))}</b>${x.tekst ? `<span>${esc(H(x.tekst))}</span>` : ''}</li>`).join('')}</ol>`
   return zv >= 0
 }
 
@@ -1748,10 +1841,10 @@ function renderHouse(rules, faqs) {
   const d = [['snowflake', t('Klima-uređaj'), H(s.ac_info)], ['flame', t('Grijanje'), H(s.heating_info)],
              ['droplets', t('Topla voda'), H(s.hot_water_info)], ['utensils', t('Kuhinja'), H(s.kitchen_info)]].filter(x => x[2])
   if (d.length) {
-    show('#dev-blk')
+    // pločice koje se otvore na mjestu (otvorena zauzme cijeli red)
     $('#dev-list').innerHTML = `<div class="uredaji">${d.map(([ic, n, v]) =>
-      `<div class="ured"><span class="ured__ik">${ico(ic)}</span><div><b>${esc(n)}</b><p>${esc(v)}</p></div></div>`).join('')}</div>`
-  }
+      `<details class="ur"><summary>${ico(ic)}<b>${esc(n)}</b></summary><p>${esc(v)}</p></details>`).join('')}</div>`
+  } else $('#dev-list').innerHTML = ''
 
   const rows = []
   // prijava i odjava u jednom redu (detalji s datumima su u Dolasku)
@@ -1759,7 +1852,7 @@ function renderHouse(rules, faqs) {
   if (pr.length) rows.push(`<div class="rule rule--kv"><span>${esc(pr.map(x => x[0]).join(' · '))}</span><b>${esc(pr.map(x => x[1]).join(' · '))}</b></div>`)
   if (PROP.max_guests) rows.push(`<div class="rule rule--kv"><span>${esc(t('Najviše gostiju'))}</span><b>${esc(String(PROP.max_guests))}</b></div>`)
   for (const r of (rules || [])) if (r.rule_text) rows.push(`<div class="rule">${ico(pick(r.rule_text, RULE_IC, 'check'))}<span>${esc(H(r.rule_text))}</span></div>`)
-  if (rows.length) { show('#rules-blk'); $('#rules').innerHTML = rows.join('') }
+  $('#rules').innerHTML = rows.join('')
 
   renderOdlazak()
 
@@ -1801,8 +1894,9 @@ function renderRecs(places, txs, atts) {
     ...(atts || []).map(a => ({ cat: t('Izleti'), ic: pick((a.type || '') + ' ' + a.name, AT_IC, 'camera'), name: H(a.name),
       dt: [a.type ? H(a.type) : t('Izlet'), H(a.distance), H(a.price)].filter(Boolean).join(' · '), desc: H(a.description), maps: a.maps_query }))
   ]
+  if (!imaM('preporuke')) RECS = []
   if (!RECS.length) return
-  $('#izbor-glava').innerHTML = `<small>${esc(PROP.host_name ? t('{n} preporučuje', { n: PROP.host_name }) : t('Domaćin preporučuje'))}</small><b>${esc(t('Naš izbor'))}</b>`
+  $('#o-okolica-h').textContent = PROP.host_name ? t('{n} preporučuje', { n: PROP.host_name }) : t('Domaćin preporučuje')
   const cats = [...new Set(RECS.map(r => r.cat))]
   const ch = $('#fchips')
   if (cats.length > 1) {
@@ -1837,7 +1931,8 @@ function paintRecs(cat) {
 //  DOMAĆIN
 // ══════════════════════════════════════════════════════
 function renderHost() {
-  if (!PROP.host_name && !PROP.phone && !PROP.email) { show('#dock', false); return }
+  show('#o-domacin', !!(PROP.host_name || PROP.phone || PROP.email))
+  if (!PROP.host_name && !PROP.phone && !PROP.email) return
   $('#host-av').textContent = (PROP.host_name || 'D')[0].toUpperCase()
   $('#host-name').textContent = PROP.host_name || t('Domaćin')
   const phone = (PROP.phone || '').replace(/\D/g, '')
@@ -1846,7 +1941,6 @@ function renderHost() {
   if (PROP.phone) h += `<a class="btn btn--secondary" href="tel:${esc(String(PROP.phone).replace(/[^\d+]/g, ''))}">${ico('phone')}${esc(t('Nazovi'))} · <span translate="no">${esc(PROP.phone)}</span></a>`
   if (PROP.email) h += `<a class="btn btn--secondary" href="mailto:${esc(PROP.email)}">${ico('mail')}<span translate="no">${esc(PROP.email)}</span></a>`
   $('#host-btns').innerHTML = h
-  show('#dom-kontakt', !!h)
   $('#host-kako').textContent = t('Vaš domaćin') + (phone ? ' · ' + t('najbrže preko WhatsAppa') : '')
   const tel = String(PROP.phone || '').replace(/[^\d+]/g, '')
   show('#dom-pisi', !!(tel || PROP.email))
@@ -1856,7 +1950,6 @@ function renderHost() {
     tel && `<button type="button" class="btn btn--secondary" onclick="posaljiDomacinu('sms','#dom-tx')">SMS</button>`,
     PROP.email && `<button type="button" class="btn btn--secondary" onclick="posaljiDomacinu('mail','#dom-tx')">${ico('mail')}${esc(t('E-mail'))}</button>`
   ].filter(Boolean).join('')
-  document.body.classList.add('has-dock')
 }
 
 // brze poruke domaćinu (Domaćin, Odlazak → „Pitaj domaćina”): tekst ide u polje, gost ga može doraditi
@@ -1907,7 +2000,7 @@ function vglava(view) {
   }[view]
   const el = $('#vglava')
   if (!G) { show(el, false); return null }
-  const st = (view === 'dolazak' || view === 'kuca') && (s.door_code || s.wifi_pass) ? $('#arr-lbl').textContent : ''
+  const st = ''
   const ch = [st && [UNLOCKED ? 'shield-check' : 'lock', st], ...G[4]].filter(Boolean)
   el.innerHTML = `<span class="vglava__veliki" aria-hidden="true">${ico(G[1])}</span><div class="wrap vglava__in">
     <div><span class="eyebrow" translate="no">${esc(PROP.name || t('Vaš smještaj'))}</span><h1>${esc(G[2])}</h1><p>${esc(G[3])}</p>
@@ -1916,13 +2009,14 @@ function vglava(view) {
   show(el)
   return G[0]
 }
+// stare adrese podstranica (e-mail gostu, obavijesti, oznake) vode na odjeljak početne
+const ODJ_ZA = { dolazak: 'ulaz', kuca: 'wifi', odlazak: 'odlazak', preporuke: 'okolica', domacin: 'domacin', hitno: 'hitno' }
+const ODJ_SIDRO = { pravila: 'pravila', pitanja: 'pravila', uredaji: 'kuca', odlazak: 'odlazak' }
 function route() {
   let [v, anchor] = location.hash.slice(1).split('/')
-  // ekran korak po korak postoji samo s koracima; bez njih → Dolazak
+  // ekran korak po korak postoji samo s koracima; bez njih → odjeljak „Kako ući”
   if (v === 'ulaz' && !ULAZ.length) v = 'dolazak'
-  // stara adresa (e-mail gostu, stari linkovi): #kuca/odlazak → #odlazak
-  if (v === 'kuca' && anchor === 'odlazak') { v = 'odlazak'; anchor = '' }
-  const view = VIEWS[v] ? v : 'home'
+  const view = v === 'ulaz' || v === 'prijava' ? v : 'home'
   if (view !== 'home') biljezi('guide:' + view)
   document.querySelectorAll('[data-view]').forEach(el => { el.hidden = el.dataset.view !== view })
   const home = view === 'home'
@@ -1932,20 +2026,18 @@ function route() {
   show('#h-badge', home)
   $('#h-title').textContent = home ? (PROP.name || t('Vaš smještaj')) : t(VIEWS[view][0])
   $('#h-sub').textContent = home ? t('Vaš privatni vodič') : t('{n} · privatni vodič', { n: PROP.name || t('Vaš smještaj') })
-  show('#dock', view !== 'domacin' && view !== 'home' && view !== 'ulaz' && !!(PROP.host_name || PROP.phone || PROP.email))
+  show('#dock', false)
   if (view === 'ulaz') {
     const n = parseInt(anchor, 10)
     UK = Number.isFinite(n) ? n - 1 : 0; UK_SMJER = 1
     renderUx(); scrollTo(0, 0)
     return
   }
-  // što je gost pogledao spušta se niže u „Sve za boravak”
-  if (view === 'kuca' && anchor === 'pravila') oznaci('pravila')
-  else if (view === 'kuca' && !anchor && (UNLOCKED || !SECTION.wifi_pass) && (SECTION.wifi_name || SECTION.wifi_pass)) oznaci('wifi')
-  if (view === 'dolazak' && !ULAZ.length && faza() !== 'prije') oznaci('ulaz')
-  const target = anchor && document.getElementById(anchor)
-  if (target) { target.scrollIntoView({ block: 'start' }); target.focus({ preventScroll: true }) }
-  else scrollTo(0, 0)
+  if (view === 'prijava') { scrollTo(0, 0); return }
+  if (v === 'dolazak' && !ULAZ.length && faza() !== 'prije') oznaci('ulaz')
+  const cilj = ODJ_SIDRO[anchor] || ODJ_ZA[v]
+  if (cilj) requestAnimationFrame(() => skociNa(cilj))
+  else if (!v) scrollTo(0, 0)
 }
 addEventListener('hashchange', route)
 window.goHome = () => {
@@ -1992,18 +2084,25 @@ function renderOdlazak() {
   show('#out-text', !!$('#out-text').textContent)
   $('#out-list').innerHTML = stavke.map((t, i) =>
     `<li><label><input type="checkbox" data-i="${i}"${kvacice.includes(i) ? ' checked' : ''}><span>${esc(t)}</span></label></li>`).join('')
-  if (!$('#out-nap')) $('#out-list').insertAdjacentHTML('beforebegin', '<div class="napredak napredak--l" id="out-nap" aria-hidden="true"><span></span></div>')
+  // popis za kvačice tek dan prije odlaska (i na dan odlaska); stari opći link nema datume → uvijek
+  const sutraOdl = (() => { if (!BOOKING || !BOOKING.checkout_date) return true
+    const d = new Date(String(BOOKING.checkout_date).slice(0, 10) + 'T00:00:00'); d.setDate(d.getDate() - 1)
+    return danasISO() >= `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}` })()
+  show('#out-list', sutraOdl); show('#out-nap', sutraOdl); show('#out-pred', !sutraOdl)
+  $('#o-odlazak-sub').textContent = BOOKING && BOOKING.checkout_date
+    ? [danKratko(new Date(String(BOOKING.checkout_date).slice(0, 10) + 'T00:00:00')), s.checkout_time && t('do {vrijeme}', { vrijeme: s.checkout_time })].filter(Boolean).join(' · ')
+    : (s.checkout_time ? t('Odjava je do {v}.', { v: s.checkout_time }) : t('Prije nego krenete'))
   show('#kasnije-blk', !!(PROP.phone || PROP.email))
   const gotovo = () => {
     const sv = $$('#out-list input'), da = sv.filter(x => x.checked).length
     $('#out-nap span').style.width = (sv.length ? Math.round(da / sv.length * 100) : 0) + '%'
-    show('#out-done', sv.every(x => x.checked))
+    show('#out-done', sutraOdl && sv.every(x => x.checked))
   }
   $('#out-list').onchange = () => {
     const sada = $$('#out-list input').filter(x => x.checked).map(x => Number(x.dataset.i))
     try { localStorage.setItem(kljuc, JSON.stringify(sada)) } catch {}
     gotovo(); renderSada()
-    if ($$('#out-list input').every(x => x.checked)) oznaci('odlazak')
+    if ($$('#out-list input').every(x => x.checked)) oznaci('odlazak', false)
   }
   gotovo()
 }
@@ -2012,6 +2111,7 @@ const danasISO = () => { const d = new Date(); return `${d.getFullYear()}-${Stri
 
 let OCJENA = 0
 async function pripremiOcjenu() {
+  if (!imaM('ocjena')) return
   // samo s linkom rezervacije i tek od dana dolaska
   if (!BOOKING || !BOOKING.checkin_date || danasISO() < String(BOOKING.checkin_date).slice(0, 10)) return
   if (DEMO) return prikaziOcjenu(false)
@@ -2070,6 +2170,7 @@ const POLJA = [
 ]
 let OSOBE = []
 async function pripremiPrijavu() {
+  if (!imaM('evisitor')) return
   if (!BOOKING) return                      // stari opći link nema rezervaciju
   let upisano = []
   if (DEMO) upisano = [{ ime: 'Ana', prezime: 'Horvat', drzavljanstvo: 'Hrvatska' }]
@@ -2086,7 +2187,7 @@ async function pripremiPrijavu() {
   if (upisano.length && !DEMO) poruka('#pr-ok', t('Podaci su poslani ({n}). Ako nešto ne valja, ispravite i pošaljite ponovno.', { n: L.n(upisano.length, 'osoba') }))
   PRIJAVA_DOSTUPNA = true
   if (upisano.length && !DEMO) oznaci('prijava')
-  renderTiles()
+  poredaj()
 }
 function poruka(sel, t) { $(sel).textContent = t || ''; show(sel, !!t) }
 function crtajOsobe() {
@@ -2135,7 +2236,7 @@ function spremiPredmemoriju() {
   try {
     const sek = UNLOCKED ? SECTION : { ...SECTION,
       door_code: SECTION.door_code ? true : SECTION.door_code, wifi_pass: SECTION.wifi_pass ? true : SECTION.wifi_pass }
-    localStorage.setItem(KLJUC, JSON.stringify({ t: Date.now(), PROP, SECTION: sek, BOOKING, UNLOCK_AT, CO_END, IZ_FUNKCIJE, STARI_LINK, LISTE, JEZIK: L.stanje() }))
+    localStorage.setItem(KLJUC, JSON.stringify({ t: Date.now(), PROP, SECTION: sek, BOOKING, UNLOCK_AT, CO_END, IZ_FUNKCIJE, STARI_LINK, LISTE, MOG, OZNAKA, JEZIK: L.stanje() }))
   } catch {}
 }
 function izPredmemorije() {
@@ -2155,7 +2256,7 @@ function izPredmemorije() {
   $('#mreza-txt').textContent = t('Nema interneta — prikazujem vodič spremljen {d} u {t}.', { d: fmtShort(kad), t: fmtHM(kad) })
     + (uProzoru && !UNLOCKED ? ' ' + t('Šifre će se pojaviti kad se spojite.') : '')
   show('#mreza-traka')
-  finish({ liste: c.LISTE || [], jezik: c.JEZIK || null })
+  finish({ liste: c.LISTE || [], jezik: c.JEZIK || null, mog: c.MOG === undefined ? null : c.MOG, oznaka: c.OZNAKA })
   return true
 }
 addEventListener('online', () => { if (BEZ_MREZE) location.reload() })
