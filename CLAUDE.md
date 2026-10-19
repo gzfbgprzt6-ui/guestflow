@@ -593,7 +593,7 @@ Dashboard **ne učitava `odmoria.css`** — ima vlastiti potpun CSS s istim vrij
   skupinama (`renderAmenityCatalog()`), `amenities.icon` = ime Lucide ikone;
   p.html: `ikonaZa(name) || pick(…AMEN_IC)`. Nova ikona = simbol `i-<ime>` u
   spriteu dashboarda **i** p.html (`lucide-static`, kao skripta `ikone.py`).
-  `sadrzaji.js` je u predmemoriji `sw.js` (`VERZIJA` `odmoria-vodic-8`).
+  `sadrzaji.js` je u predmemoriji `sw.js` (`VERZIJA` `odmoria-vodic-9`).
 - **`data-bez-spremanja`** na polju = ne pali kapljicu (pretraga sadržaja,
   FB grupe…). Paneli koji se spremaju odmah inače bi lažno tražili „Spremi”.
 - **Predlošci** (`PREDLOSCI.faq` 20, `.rules` 12, `nacrtajPredloske()`): klik
@@ -629,10 +629,19 @@ Dashboard **ne učitava `odmoria.css`** — ima vlastiti potpun CSS s istim vrij
   informacije” (`renderBrzo()`: odgovor se odmah prikaže u `#odgovor`, šifre
   samo kroz `secretHtml()`), `#sada` po fazi (`faza()`: prije = vrijeme
   dolaska puni poruku, boravak = preporuka dana, odlazak = napredak popisa),
-  foto kartice umjesto pločica (`renderTiles()`, bez fotografije `kart--boja`),
-  pismo domaćina i `#pisi` (`renderPisi()`, `posaljiDomacinu()` → wa.me / sms /
+  „Sve za boravak” = **pametni popis** (`renderTiles()`: težina po fazi,
+  prva stavka velika „Sada je na redu”; odrađeno — `GOTOVO` u localStorage
+  `odm-gotovo:<token>`, `oznaci(id)`: ulaz, wifi, prijava, pravila, odlazak —
+  spušta se u „Već pogledano”), pismo domaćina i `#pisi` (`renderPisi()`, `posaljiDomacinu()` → wa.me / sms /
   mailto — poruka ide domaćinu izravno). Donja traka se na početnoj ne vidi.
   `otkljucaj()` ponovno crta kartu, „Sada” i brza pitanja.
+  **Ulazak korak po korak** (`#ulaz/<n>`, `renderUx()`, `uxIdi()`): tamni
+  ekran preko cijelog zaslona, jedan korak, crtice napretka, povlačenje prsta i
+  strelice; šifra na koraku sa zvjezdicom kroz `secretHtml()`; kraj „Ušli ste” +
+  „Javi domaćinu da ste stigli” (wa.me / mailto). Dolazak ima karticu sa
+  sličicama koraka (`renderUlaz()`). **Podstranice** imaju zaglavlje u boji teme
+  (`vglava(view)`, `#sadrzaj[data-ton]`, `body[data-v]`) i sadržaj u bijelim
+  karticama na sivoj podlozi.
 - **Dolazak u vodiču, redom** (vlasnik, 16. 10.): kartica „Prijava · Odjava”
   (`renderKad()`: datumi iz rezervacije + **živo odbrojavanje** do prijave,
   `KAD_TICK` svake sekunde, zatim „Prijava je otvorena”) → koraci ulaska →
@@ -995,7 +1004,7 @@ objekata je **odbijen** (`docs/odluke.md`, točka 19).
 učitava). **Sve pod `prefers-reduced-motion: no-preference`**, a `veselje()`
 sam provjeri postavku — testovi rade s `reducedMotion:'reduce'`, pa iskrica
 tamo namjerno nema. `pokret.js` je u predmemoriji service workera (`sw.js`,
-`VERZIJA` sada `odmoria-vodic-8`). Dashboard: svaki gumb čiji natpis počinje s
+`VERZIJA` sada `odmoria-vodic-9`). Dashboard: svaki gumb čiji natpis počinje s
 „Kopiraj” sam dobije kvačicu (jedan slušač na `document`); iskrice u
 dashboardu nema.
 
