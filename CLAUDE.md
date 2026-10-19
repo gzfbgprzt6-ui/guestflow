@@ -125,6 +125,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
     ├── add-referrals.sql                # moje_preporuke(), admin_preporuke() — Preporuči domaćina (user_metadata.preporucio)
     ├── add-push.sql                     # obavijesti na mobitel: push_pretplate, push_prijava/odjava/proba, VAPID u Vaultu, okidači → /api/obavijest
     ├── add-arrival-steps.sql            # sections.ulazak_koraci (jsonb, ≤ 12): „Kako ući” po koracima sa slikama, samo vodič
+    ├── add-guest-arrived.sql            # bookings.usao_at + gost_usao(token): „Ušli smo” u vodiču → push domaćinu (jednom)
     └── fix-missing-columns-and-storage.sql # ALTER TABLE dopune (photo_urls, ical_*, beds/bathrooms/size_m2) + storage bucket policy
 ```
 
@@ -637,11 +638,22 @@ Dashboard **ne učitava `odmoria.css`** — ima vlastiti potpun CSS s istim vrij
   `otkljucaj()` ponovno crta kartu, „Sada” i brza pitanja.
   **Ulazak korak po korak** (`#ulaz/<n>`, `renderUx()`, `uxIdi()`): tamni
   ekran preko cijelog zaslona, jedan korak, crtice napretka, povlačenje prsta i
-  strelice; šifra na koraku sa zvjezdicom kroz `secretHtml()`; kraj „Ušli ste” +
-  „Javi domaćinu da ste stigli” (wa.me / mailto). Dolazak ima karticu sa
+  strelice; šifra na koraku sa zvjezdicom kroz `secretHtml()`; „Ušli smo” →
+  `javiUlazak()` → `gost_usao(token)` (`sql/add-guest-arrived.sql`, push
+  `usao` u `api/_push.js`, jednom po rezervaciji; iznad gumba piše da domaćin
+  dobiva obavijest — odluke 33). Bez funkcije ili bez domaćinove push
+  pretplate kraj nudi „Javi domaćinu da ste stigli” (wa.me / mailto); prije
+  dolaska gumb je „Gotovo” i ništa se ne šalje. Dashboard u popisu
+  rezervacija pokazuje „✓ Gost je ušao · vrijeme”. Dolazak ima karticu sa
   sličicama koraka (`renderUlaz()`). **Podstranice** imaju zaglavlje u boji teme
-  (`vglava(view)`, `#sadrzaj[data-ton]`, `body[data-v]`) i sadržaj u bijelim
-  karticama na sivoj podlozi.
+  (`vglava(view)`: naslov, opis, činjenice u kapsulama; `#sadrzaj[data-ton]`,
+  `body[data-v]`) i sadržaj u bijelim karticama na sivoj podlozi. **Odlazak je
+  zasebna stranica `#odlazak`** (popis s trakom napretka, „Trebate kasniju
+  odjavu?”, ocjena) — stara adresa `#kuca/odlazak` (e-mail gostu) vodi
+  ovamo; Kuća je samo Wi-Fi, uređaji, pravila (ikone po riječi, `RULE_IC`) i
+  pitanja. **Domaćin**: brze poruke (`BRZE_PORUKE`, `[data-poruka]`) puni
+  `#dom-tx`, slanje istim `posaljiDomacinu(kanal, polje)`. Riječ domaćina
+  (`welcome_msg`) se na početnoj vodiča **više ne prikazuje** (vlasnik, 19. 10.).
 - **Dolazak u vodiču, redom** (vlasnik, 16. 10.): kartica „Prijava · Odjava”
   (`renderKad()`: datumi iz rezervacije + **živo odbrojavanje** do prijave,
   `KAD_TICK` svake sekunde, zatim „Prijava je otvorena”) → koraci ulaska →

@@ -1410,3 +1410,26 @@ i kako naplaćivati. Sažetak razgovora — **odluke su označene**.
 4. [ ] Sezonske cijene
 5. [ ] 5–10 pravih iznajmljivača na probu prije novih značajki
 6. [ ] Pravni tekst + odluka o modelu naplate (A / B / C), pa tek onda Stripe
+
+---
+
+## 33. „Ušli smo” — obavijest domaćinu i GDPR (19. 10. 2026.)
+
+**Što radi:** na kraju „Kako ući, korak po korak” gost sam pritisne „Ušli
+smo”. Baza (`gost_usao()`, `sql/add-guest-arrived.sql`) zapiše samo vrijeme
+(`bookings.usao_at`) i domaćinu pošalje push „Gost je ušao — <objekt>”.
+Jednom po rezervaciji, samo s valjanim linkom, od dana dolaska do odlaska.
+
+**Smije li se (GDPR)?** Po našoj procjeni da — uz uvjete koji su ugrađeni:
+- nema automatskog praćenja ni lokacije — samo **gostov vlastiti klik**;
+- gost je **unaprijed obaviješten**: iznad gumba piše „Kad pritisnete „Ušli
+  smo”, domaćin dobiva obavijest.”;
+- podatak je **minimalan** (samo vrijeme) i vezan uz rezervaciju koju gost
+  ima s domaćinom (izvršenje ugovora / legitimni interes — predaja smještaja);
+- briše se s rezervacijom; ne ide nikome osim domaćinu.
+
+**Ostaje vama:** u `privacy.html` dodati jednu rečenicu (npr. „Ako u vodiču
+potvrdite ulazak, domaćin dobiva obavijest s vremenom ulaska.”). Ovo nije
+pravni savjet — ako imate pravnika za Uvjete i Privatnost (točka 8), neka
+pogleda i ovo.
+

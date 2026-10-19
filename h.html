@@ -427,6 +427,30 @@ body:not([data-v="home"]):not([data-v="ulaz"]){background:#F2F5F5}
 .view .fchips::-webkit-scrollbar{display:none}
 .view .fchip{flex:none}
 .palac{text-decoration:none}
+.vglava__ch{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.vglava__c{display:inline-flex;align-items:center;gap:6px;padding:7px 11px;border-radius:99px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.14);font:700 12.5px/1.2 var(--font-ui);color:#fff;max-width:100%}
+.vglava__c .ic{width:14px;height:14px;color:#F2B33D;flex:none}
+.vglava__c span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.view .rules .rule .ic{box-sizing:content-box;flex:none;width:16px;height:16px;padding:7px;border-radius:10px;background:var(--ton-bg,#EAF0DC);color:var(--ton,#4E6420)}
+.view .rules .rule span{padding-top:5px}
+.view .rules .rule:not(.rule--kv)::before{display:none}
+.kasnije{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.kasnije b{display:block;font:800 16px/1.3 var(--font-ui)}
+.kasnije span{font-size:14px;color:var(--text-muted)}
+.kasnije .btn{border-radius:99px}
+.napredak--l{height:10px;margin:4px 0 14px}
+.pisi--d h2,.kontakt-h{display:flex;align-items:center;gap:12px;margin:0 0 4px;font:800 19px/1.25 var(--font-ui)}
+.pisi--d h2 .ic,.kontakt-h .ic{box-sizing:content-box;width:20px;height:20px;padding:10px;border-radius:13px;background:var(--ton-bg,#E2F2E9);color:var(--ton,#1F6E4A)}
+.brze{display:flex;flex-wrap:wrap;gap:8px}
+.brze button{min-height:40px;padding:0 14px;border-radius:99px;border:1px solid var(--border-control);background:var(--bg-surface);color:var(--text);cursor:pointer;font:700 13.5px/1 var(--font-ui)}
+.brze button:hover,.brze button[aria-pressed="true"]{border-color:var(--bg-inverse);background:var(--bg-inverse);color:#fff}
+.pisi--d .pisi__btn .btn{border-radius:99px}
+.view .host{background:linear-gradient(150deg,#F1F8F4,#FFFFFF 70%)!important}
+.ux-nap{display:flex;align-items:center;justify-content:center;gap:6px;margin:14px 0 0;font-size:13px;color:#CFE3E6;text-align:center}
+.ux-nap .ic{width:15px;height:15px;color:#F2B33D;flex:none}
+.ux-kraj__st{display:flex;align-items:center;gap:10px;max-width:380px;width:100%;padding:12px 14px;border-radius:16px;background:rgba(255,255,255,.08);text-align:left;font-size:14.5px;line-height:1.45;color:#fff}
+.ux-kraj__st .ic{flex:none;color:#7FD3A8}
+.ux-kraj__st--ceka .ic{color:#F2B33D}
 .view .map{border:0;border-radius:16px}
 .view .btnrow .btn{border-radius:99px}
 .view .secret{border:0;background:#F1F6F6;border-radius:16px}
@@ -586,6 +610,13 @@ body[data-v="ulaz"] .gfoot{display:none}
   <symbol id="i-mail" viewBox="0 0 24 24"><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" /> <rect x="2" y="4" width="20" height="16" rx="2" /></symbol>
   <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" /></symbol>
   <symbol id="i-chevron-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6" /></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" /></symbol>
+  <symbol id="i-cigarette-off" viewBox="0 0 24 24"><path d="M12 12H3a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h13" /> <path d="M18 8c0-2.5-2-2.5-2-5" /> <path d="m2 2 20 20" /> <path d="M21 12a1 1 0 0 1 1 1v2a1 1 0 0 1-.5.866" /> <path d="M22 8c0-2.5-2-2.5-2-5" /> <path d="M7 12v4" /></symbol>
+  <symbol id="i-paw-print" viewBox="0 0 24 24"><circle cx="11" cy="4" r="2" /> <circle cx="18" cy="8" r="2" /> <circle cx="20" cy="16" r="2" /> <path d="M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.045Q6.52 17.48 4.46 16.84A3.5 3.5 0 0 1 5.5 10Z" /></symbol>
+  <symbol id="i-trash-2" viewBox="0 0 24 24"><path d="M3 6h18" /> <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /> <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></symbol>
+  <symbol id="i-waves" viewBox="0 0 24 24"><path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1" /> <path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1" /> <path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1" /></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /> <circle cx="9" cy="7" r="4" /> <path d="M22 21v-2a4 4 0 0 0-3-3.87" /> <path d="M16 3.13a4 4 0 0 1 0 7.75" /></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M10.268 21a2 2 0 0 0 3.464 0" /> <path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326" /></symbol>
   <symbol id="i-chevron-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></symbol>
   <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14" /> <path d="m12 5 7 7-7 7" /></symbol>
   <symbol id="i-shield-check" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" /> <path d="m9 12 2 2 4-4" /></symbol>
@@ -683,11 +714,6 @@ body[data-v="ulaz"] .gfoot{display:none}
       <div id="tiles"></div>
     </section>
 
-    <section class="pismo" id="letter" hidden>
-      <span class="eyebrow">Riječ domaćina</span>
-      <p class="pismo__tx" id="welcome"></p>
-      <p class="pismo__potpis" id="sig" hidden></p>
-    </section>
 
     <section class="pisi" id="pisi" hidden aria-labelledby="pisi-h">
       <div class="pisi__glava">
@@ -739,12 +765,24 @@ body[data-v="ulaz"] .gfoot{display:none}
     <h2 id="pravila" tabindex="-1"><svg class="ic"><use href="#i-book-open"/></svg>Kućna pravila</h2>
     <div class="rules" id="rules"></div>
   </div>
+  <div class="blk" id="faq-blk" hidden>
+    <h2 id="pitanja" tabindex="-1"><svg class="ic"><use href="#i-message-circle"/></svg>Česta pitanja</h2>
+    <div id="faq-list"></div>
+  </div>
+</div>
+
+<!-- ============ ODLAZAK (popis i ocjena) — stara adresa #kuca/odlazak vodi ovamo ============ -->
+<div class="wrap view" data-view="odlazak" hidden>
   <div class="outcard" id="out-blk">
-    <h3 id="odlazak" tabindex="-1"><svg class="ic"><use href="#i-door-open"/></svg>Prije nego krenete</h3>
+    <h3 id="odlazak-h" tabindex="-1"><svg class="ic"><use href="#i-log-out"/></svg>Prije nego krenete</h3>
     <p id="out-text"></p>
     <ul class="checklist" id="out-list"></ul>
     <p class="out-done" id="out-done" hidden>Sve je spremno. Sretan put!</p>
   </div>
+  <section class="karticaw kasnije" id="kasnije-blk" hidden>
+    <div><b>Trebate kasniju odjavu?</b><span>Često se može dogovoriti — pitajte domaćina.</span></div>
+    <a class="btn btn--secondary" href="#domacin" data-poruka="kasnije">Pitaj domaćina</a>
+  </section>
   <section class="ocjena" id="ocjena-blk" aria-labelledby="ocjena-h" hidden>
     <h2 id="ocjena-h" tabindex="-1"><svg class="ic" style="box-sizing:content-box;width:20px;height:20px;padding:10px;border-radius:13px;background:#FFF4DC;color:#C98A0B"><use href="#i-star"/></svg>Kako vam je bilo?</h2>
     <div id="ocjena-forma">
@@ -760,10 +798,6 @@ body[data-v="ulaz"] .gfoot{display:none}
     </div>
     <p class="poruka poruka--ok" id="oc-hvala" hidden>Hvala! Ocjena je poslana domaćinu.</p>
   </section>
-  <div class="blk" id="faq-blk" hidden>
-    <h2 id="pitanja" tabindex="-1"><svg class="ic"><use href="#i-message-circle"/></svg>Česta pitanja</h2>
-    <div id="faq-list"></div>
-  </div>
 </div>
 
 <!-- ============ PREPORUKE ============ -->
@@ -814,9 +848,19 @@ body[data-v="ulaz"] .gfoot{display:none}
 <div class="wrap view" data-view="domacin" hidden>
   <div class="card host">
     <span class="host__av" id="host-av" aria-hidden="true"></span>
-    <div><div class="host__n" id="host-name"></div><div class="t-muted">Vaš domaćin</div></div>
+    <div><div class="host__n" id="host-name"></div><div class="t-muted" id="host-kako">Vaš domaćin</div></div>
   </div>
-  <div class="host__btns" id="host-btns"></div>
+  <section class="karticaw pisi pisi--d" id="dom-pisi" hidden aria-labelledby="dom-pisi-h">
+    <h2 id="dom-pisi-h"><svg class="ic"><use href="#i-message-circle"/></svg>Napišite poruku</h2>
+    <div class="brze" id="dom-brze" role="group" aria-label="Brze poruke"></div>
+    <label class="sr-only" for="dom-tx">Vaša poruka domaćinu</label>
+    <textarea id="dom-tx" rows="4" maxlength="1000" placeholder="Upišite poruku…"></textarea>
+    <div class="pisi__btn" id="dom-btn"></div>
+  </section>
+  <section class="karticaw" id="dom-kontakt" hidden>
+    <h2 class="kontakt-h"><svg class="ic"><use href="#i-phone"/></svg>Izravno</h2>
+    <div class="host__btns" id="host-btns"></div>
+  </section>
 </div>
 
 </main>
@@ -1105,11 +1149,6 @@ function renderTop() {
     if (img.getAttribute('src') !== cover) img.src = cover
   } else if (img) img.remove()
 
-  if (PROP.welcome_msg || PROP.host_name) {
-    show('#letter')
-    $('#welcome').textContent = H(PROP.welcome_msg) || t('Nadamo se da ćete uživati u boravku.')
-    if (PROP.host_name) { $('#sig').textContent = '— ' + PROP.host_name; show('#sig') }
-  }
 }
 
 function datesTxt() {
@@ -1154,7 +1193,7 @@ function renderTiles() {
       ima: !!(PROP.host_name || PROP.phone || PROP.email), w: tez(3, 5, 3) },
     { id: 'pravila', ton: 'pravila', ic: 'book-open', h: '#kuca/pravila', n: t('Kućna pravila'), sub: t('I česta pitanja'), cta: t('Pročitaj'),
       ima: !$('#rules-blk').hidden || !$('#faq-blk').hidden, w: tez(7, 6, 8), gotovo: !!GOTOVO.pravila, gsub: t('Pročitano') },
-    { id: 'odlazak', ton: 'odlazak', ic: 'log-out', h: '#kuca/odlazak', n: f === 'odlazak' ? t('Danas je odlazak') : t('Odlazak'),
+    { id: 'odlazak', ton: 'odlazak', ic: 'log-out', h: '#odlazak', n: f === 'odlazak' ? t('Danas je odlazak') : t('Odlazak'),
       sub: s.checkout_time ? t('Odjava do {v} · popis i ocjena', { v: s.checkout_time }) : t('Popis i ocjena boravka'), cta: t('Otvori popis'),
       ima: true, w: tez(9, 8, 1), gotovo: !!GOTOVO.odlazak, gsub: t('Sve je spremno') },
     { id: 'hitno', ton: 'hitno', ic: 'siren', h: '#hitno', n: t('Hitno i pomoć'), sub: t('112, hitna, ljekarna'), ima: true, w: 99 }
@@ -1362,7 +1401,7 @@ function renderSada() {
       <h2>${esc(t('Prije nego krenete'))}</h2>
       <p>${esc(gotovo >= n ? t('Sve je spremno. Sretan put!') : t('Još {a} od {b} — kvačice su u popisu za odlazak.', { a: n - gotovo, b: n }))}</p>
       <div class="napredak" aria-hidden="true"><span style="width:${Math.round(gotovo / n * 100)}%"></span></div>
-      <div class="odgovor__akc"><a class="btn btn--primary btn--sm" href="#kuca/odlazak">${esc(t('Otvori popis'))}${ico('arrow-up-right', 'ic--sm')}</a></div>`
+      <div class="odgovor__akc"><a class="btn btn--primary btn--sm" href="#odlazak">${esc(t('Otvori popis'))}${ico('arrow-up-right', 'ic--sm')}</a></div>`
   }
   el.innerHTML = h
   show(el, !!h)
@@ -1405,7 +1444,7 @@ function renderBrzo() {
     adr && { id: 'adresa', ic: 'map-pin', q: t('Adresa'), h: () =>
       `<p translate="no" style="font-weight:700;color:var(--text)">${esc(adr)}</p><div class="odgovor__akc">${akc('https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(adr), 'Google Maps', true)}</div>` },
     (s.checkout_time) && { id: 'odjava', ic: 'log-out', q: t('Odjava'), h: () =>
-      `<p>${esc(t('Odjava je do {v}.', { v: s.checkout_time }))}${PROP.phone || PROP.email ? ' ' + esc(t('Trebate kasniju? Napišite domaćinu — često se može dogovoriti.')) : ''}</p><div class="odgovor__akc">${akc('#kuca/odlazak', t('Popis za odlazak'))}</div>` },
+      `<p>${esc(t('Odjava je do {v}.', { v: s.checkout_time }))}${PROP.phone || PROP.email ? ' ' + esc(t('Trebate kasniju? Napišite domaćinu — često se može dogovoriti.')) : ''}</p><div class="odgovor__akc">${akc('#odlazak', t('Popis za odlazak'))}</div>` },
     plaza && { id: 'plaza', ic: 'umbrella', q: t('Plaža'), h: () => sl(plaza) },
     hrana && { id: 'hrana', ic: 'utensils', q: t('Gdje jesti'), h: () => sl(hrana) },
     !$('#rules-blk').hidden && { id: 'pravila', ic: 'book-open', q: t('Kućna pravila'), h: () =>
@@ -1445,9 +1484,9 @@ function renderPisi() {
   ].filter(Boolean).join('')
   show('#pisi')
 }
-window.posaljiDomacinu = kanal => {
-  const tx = $('#pisi-tx').value.trim()
-  if (!tx) { $('#pisi-tx').focus(); toast(t('Upišite poruku.')); return }
+window.posaljiDomacinu = (kanal, polje = '#pisi-tx') => {
+  const tx = $(polje).value.trim()
+  if (!tx) { $(polje).focus(); toast(t('Upišite poruku.')); return }
   const tel = String(PROP.phone || '').replace(/[^\d+]/g, ''), msg = encodeURIComponent(tx)
   const url = kanal === 'wa' ? `https://wa.me/${tel.replace(/\D/g, '')}?text=${msg}`
     : kanal === 'sms' ? `sms:${tel}?&body=${msg}`
@@ -1569,7 +1608,7 @@ function renderUlaz() {
 // ── Ulazak korak po korak — jedan korak na zaslonu, na kraju „Ušli smo” ──
 // Šifra vrata stoji na koraku sa zvjezdicom kroz istu secretHtml(): dok je
 // zaključano, vrijednost ne ulazi u HTML.
-let UK = 0, UK_SMJER = 1
+let UK = 0, UK_SMJER = 1, USAO = null
 function renderUx() {
   const k = ULAZ, el = $('#ux')
   if (!el || !k.length) { if (el) el.innerHTML = ''; return }
@@ -1577,14 +1616,21 @@ function renderUx() {
   const tren = Math.min(UK + 1, k.length)
   const crte = `<div class="ux-crte" role="progressbar" aria-valuemin="1" aria-valuemax="${k.length}" aria-valuenow="${tren}" aria-label="${esc(t('Korak {n} od {u}', { n: tren, u: k.length }))}">${k.map((_, j) => `<span class="${j <= UK ? 'da' : ''}"></span>`).join('')}</div>`
   if (UK === k.length) {
+    const prije = faza() === 'prije'
+    const tel = String(PROP.phone || '').replace(/\D/g, '')
     const ime = BOOKING && BOOKING.guest_name && BOOKING.guest_name !== 'Gost' ? BOOKING.guest_name : t('vaš gost')
-    const tel = String(PROP.phone || '').replace(/\D/g, ''), msg = encodeURIComponent(t('Pozdrav! Ovdje {ime}. Stigli smo i ušli — sve je u redu, hvala!', { ime }))
+    const msg = encodeURIComponent(t('Pozdrav! Ovdje {ime}. Stigli smo i ušli — sve je u redu, hvala!', { ime }))
     const javi = tel ? `https://wa.me/${tel}?text=${msg}` : PROP.email ? `mailto:${PROP.email}?subject=${encodeURIComponent(t('Stigli smo'))}&body=${msg}` : ''
+    // stanje obavijesti domaćinu: šalje se | poslano | bez (domaćin nema obavijesti ili funkcije nema → gost može javiti sam)
+    const st = prije ? '' : USAO === 'salje' ? `<p class="ux-kraj__st ux-kraj__st--ceka">${ico('bell')}${esc(t('Javljam domaćinu…'))}</p>`
+      : USAO === 'ok' ? `<p class="ux-kraj__st">${ico('check')}${esc(PROP.host_name ? t('Obavijest je poslana — {n} zna da ste ušli.', { n: PROP.host_name }) : t('Obavijest je poslana — domaćin zna da ste ušli.'))}</p>`
+      : USAO === 'demo' ? `<p class="ux-kraj__st">${ico('check')}${esc(t('U primjeru se obavijest ne šalje — vaš domaćin bi je sada dobio.'))}</p>` : ''
     el.innerHTML = crte + `<div class="ux-kraj"><span class="ux-kraj__kv">${ico('check')}</span>
-      <h2>${esc(t('Ušli ste. Dobro došli!'))}</h2>
-      <p>${esc(t('Wi-Fi, upute za kuću i preporuke čekaju vas u vodiču. Ako nešto ne štima, javite se domaćinu.'))}</p>
-      <div class="ux-kraj__akc">${javi ? `<a class="btn btn--sunce" href="${esc(javi)}"${tel ? ' target="_blank" rel="noopener"' : ''} data-javi>${ico('message-circle')}${esc(t('Javi domaćinu da ste stigli'))}</a>` : ''}
-        ${SECTION.wifi_name || SECTION.wifi_pass ? `<a class="btn btn--prozirno" href="#kuca">${ico('wifi')}${esc(t('Wi-Fi i kuća'))}</a>` : ''}
+      <h2>${esc(prije ? t('Spremni ste za dolazak') : t('Čestitamo, ušli ste!'))}</h2>
+      <p>${esc(prije ? t('Na dan dolaska upute su ovdje, a šifra se pojavi sat prije prijave.') : t('Dobro došli! Wi-Fi i upute za kuću su sljedeće.'))}</p>
+      ${st}
+      <div class="ux-kraj__akc">${!prije && SECTION.wifi_name || !prije && SECTION.wifi_pass ? `<a class="btn btn--sunce" href="#kuca">${ico('wifi')}${esc(t('Wi-Fi i kuća'))}</a>` : ''}
+        ${!prije && USAO === 'bez' && javi ? `<a class="btn btn--prozirno" href="${esc(javi)}"${tel ? ' target="_blank" rel="noopener"' : ''} data-javi>${ico('message-circle')}${esc(t('Javi domaćinu da ste stigli'))}</a>` : ''}
         <a class="btn btn--prozirno" href="#" data-pocetna>${esc(t('Na početak vodiča'))}</a></div>
       <button type="button" class="ux-ponovo" data-uk="0">${esc(t('Pogledaj korake ponovno'))}</button></div>`
     return
@@ -1603,13 +1649,30 @@ function renderUx() {
   el.innerHTML = crte + `<article class="ux-k${UK_SMJER < 0 ? ' nazad' : ''}">${sl}
       <div class="ux-k__tx"><span class="ux-k__oz">${esc(t('Korak {n} od {u}', { n: UK + 1, u: k.length }))}</span>
         ${x.naslov ? `<h2 tabindex="-1">${esc(H(x.naslov))}</h2>` : ''}${x.tekst ? `<p>${esc(H(x.tekst))}</p>` : ''}${sifra}</div></article>${mk}
+    ${zadnji && faza() !== 'prije' ? `<p class="ux-nap">${ico('bell')}${esc(t('Kad pritisnete „Ušli smo”, domaćin dobiva obavijest.'))}</p>` : ''}
     <div class="ux-gumbi"><button type="button" class="ux-nat" data-uk="-1"${UK ? '' : ' disabled'}>${esc(t('Natrag'))}</button>
-      <button type="button" class="ux-dalje" data-uk="1">${esc(zadnji ? t('Ušli smo') : t('Sljedeći korak'))}${ico(zadnji ? 'check' : 'arrow-right', 'ic--sm')}</button></div>`
+      <button type="button" class="ux-dalje" data-uk="1">${esc(zadnji ? (faza() === 'prije' ? t('Gotovo') : t('Ušli smo')) : t('Sljedeći korak'))}${ico(zadnji ? 'check' : 'arrow-right', 'ic--sm')}</button></div>`
+}
+/* „Ušli smo” → gost_usao(token) (sql/add-guest-arrived.sql): baza zapiše vrijeme
+   i pošalje domaćinu obavijest — jednom po rezervaciji. Gost to vidi napisano
+   prije klika. Bez funkcije ili bez domaćinovih obavijesti gost može javiti sam. */
+async function javiUlazak() {
+  if (USAO === 'ok' || USAO === 'salje') return
+  if (DEMO) { USAO = 'demo'; return }
+  if (!BOOKING) { USAO = 'bez'; return }
+  USAO = 'salje'
+  let r = null
+  try { const { data, error } = await sb.rpc('gost_usao', { p_token: token }); r = error ? null : data } catch {}
+  USAO = r && (r.stanje === 'ok' || r.stanje === 'vec') && r.obavijest ? 'ok' : 'bez'
+  if (document.body.dataset.v === 'ulaz' && UK === ULAZ.length) renderUx()
 }
 function uxIdi(v) {
   UK_SMJER = v === 0 ? -1 : v
   UK = v === 0 ? 0 : UK + v
-  if (UK >= ULAZ.length) { UK = ULAZ.length; oznaci('ulaz'); biljezi('guide:usao') }
+  if (UK >= ULAZ.length) {
+    UK = ULAZ.length
+    if (faza() !== 'prije') { oznaci('ulaz'); biljezi('guide:usao'); if (v === 1) javiUlazak() }
+  }
   renderUx()
   scrollTo(0, 0)
   const h = $('#ux h2'); if (h) h.focus({ preventScroll: true })
@@ -1695,7 +1758,7 @@ function renderHouse(rules, faqs) {
   const pr = [s.checkin_time && [t('Prijava'), t('od {vrijeme}', { vrijeme: s.checkin_time })], s.checkout_time && [t('Odjava'), t('do {vrijeme}', { vrijeme: s.checkout_time })]].filter(Boolean)
   if (pr.length) rows.push(`<div class="rule rule--kv"><span>${esc(pr.map(x => x[0]).join(' · '))}</span><b>${esc(pr.map(x => x[1]).join(' · '))}</b></div>`)
   if (PROP.max_guests) rows.push(`<div class="rule rule--kv"><span>${esc(t('Najviše gostiju'))}</span><b>${esc(String(PROP.max_guests))}</b></div>`)
-  for (const r of (rules || [])) if (r.rule_text) rows.push(`<div class="rule">${esc(H(r.rule_text))}</div>`)
+  for (const r of (rules || [])) if (r.rule_text) rows.push(`<div class="rule">${ico(pick(r.rule_text, RULE_IC, 'check'))}<span>${esc(H(r.rule_text))}</span></div>`)
   if (rows.length) { show('#rules-blk'); $('#rules').innerHTML = rows.join('') }
 
   renderOdlazak()
@@ -1724,6 +1787,8 @@ const AT_IC = [[/nacional|park prirode|slap|priroda|planin/,'trees'],[/grad|muze
 const TON_IC = { umbrella: ['#DDEFF5', '#0E5A73'], utensils: ['#FBE5DC', '#9A3F1E'], coffee: ['#F3E9DF', '#7A4A26'], 'shopping-basket': ['#EAF0DC', '#4E6420'],
   trees: ['#E2F2E9', '#1F6E4A'], plane: ['#E1ECEF', '#103D4B'], bus: ['#E1ECEF', '#103D4B'], ship: ['#E1ECEF', '#103D4B'], car: ['#E1ECEF', '#103D4B'],
   landmark: ['#ECE8F6', '#4F3E8C'], camera: ['#ECE8F6', '#4F3E8C'], wine: ['#F6E3EA', '#8A2A4E'], fish: ['#DDEFF5', '#0E5A73'] }
+const RULE_IC = [[/tišin|buk|mir|glazb|noć/,'moon'],[/puš|cigar/,'cigarette-off'],[/ljubim|pas|psa|mačk|životinj/,'paw-print'],[/smeć|otpad|reciklir/,'trash-2'],
+  [/bazen|jacuzz|more/,'waves'],[/gost|posjet|osob|zabav/,'users'],[/klim|grijan|struj|svjetl/,'snowflake']]
 const mapsUrl = q => 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(q)
 
 let RECS = []
@@ -1777,37 +1842,76 @@ function renderHost() {
   $('#host-name').textContent = PROP.host_name || t('Domaćin')
   const phone = (PROP.phone || '').replace(/\D/g, '')
   let h = ''
-  if (phone) h += `<a class="btn btn--primary" href="https://wa.me/${phone}" target="_blank" rel="noopener">WhatsApp${ico('message-circle')}</a>`
-  if (PROP.phone) h += `<a class="btn btn--secondary" href="tel:${esc(PROP.phone)}">${esc(t('Nazovi'))}${ico('phone')}</a>`
-  if (PROP.email) h += `<a class="btn btn--secondary" href="mailto:${esc(PROP.email)}">${esc(t('E-mail'))}${ico('mail')}</a>`
+  // poruka ide kroz „Napišite poruku” iznad; ovdje samo poziv i adresa (vidljivi broj i e-mail)
+  if (PROP.phone) h += `<a class="btn btn--secondary" href="tel:${esc(String(PROP.phone).replace(/[^\d+]/g, ''))}">${ico('phone')}${esc(t('Nazovi'))} · <span translate="no">${esc(PROP.phone)}</span></a>`
+  if (PROP.email) h += `<a class="btn btn--secondary" href="mailto:${esc(PROP.email)}">${ico('mail')}<span translate="no">${esc(PROP.email)}</span></a>`
   $('#host-btns').innerHTML = h
+  show('#dom-kontakt', !!h)
+  $('#host-kako').textContent = t('Vaš domaćin') + (phone ? ' · ' + t('najbrže preko WhatsAppa') : '')
+  const tel = String(PROP.phone || '').replace(/[^\d+]/g, '')
+  show('#dom-pisi', !!(tel || PROP.email))
+  $('#dom-brze').innerHTML = BRZE_PORUKE.map(([k, n]) => `<button type="button" data-poruka="${k}">${esc(t(n))}</button>`).join('')
+  $('#dom-btn').innerHTML = [
+    phone && `<button type="button" class="btn btn--primary" onclick="posaljiDomacinu('wa','#dom-tx')">${ico('message-circle')}WhatsApp</button>`,
+    tel && `<button type="button" class="btn btn--secondary" onclick="posaljiDomacinu('sms','#dom-tx')">SMS</button>`,
+    PROP.email && `<button type="button" class="btn btn--secondary" onclick="posaljiDomacinu('mail','#dom-tx')">${ico('mail')}${esc(t('E-mail'))}</button>`
+  ].filter(Boolean).join('')
   document.body.classList.add('has-dock')
 }
+
+// brze poruke domaćinu (Domaćin, Odlazak → „Pitaj domaćina”): tekst ide u polje, gost ga može doraditi
+const BRZE_PORUKE = [
+  ['ranije', 'Raniji dolazak', 'Pozdrav! Možemo li doći nešto ranije?'],
+  ['kasnije', 'Kasnija odjava', 'Pozdrav! Bi li bila moguća kasnija odjava?'],
+  ['problem', 'Nešto ne radi', 'Pozdrav! Imamo mali problem: '],
+  ['rucnici', 'Još ručnika', 'Pozdrav! Možemo li dobiti još ručnika?'],
+  ['hvala', 'Hvala!', 'Hvala na svemu, sve je super!']
+]
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-poruka]'); if (!b) return
+  const x = BRZE_PORUKE.find(y => y[0] === b.dataset.poruka); if (!x) return
+  const polje = $('#dom-tx'); polje.value = t(x[2])
+  $$('#dom-brze button').forEach(y => y.setAttribute('aria-pressed', String(y.dataset.poruka === x[0])))
+  if (b.closest('#dom-brze')) { polje.focus(); polje.setSelectionRange(polje.value.length, polje.value.length) }
+  else setTimeout(() => { $('#dom-pisi').scrollIntoView({ block: 'center' }); polje.focus({ preventScroll: true }) }, 60)
+})
 
 // ══════════════════════════════════════════════════════
 //  PODSTRANICE — #dolazak, #kuca(/pravila|/odlazak|/uredaji), #preporuke, #domacin
 // ══════════════════════════════════════════════════════
 const VIEWS = {
   dolazak: ['Dolazak'], kuca: ['Wi-Fi i kuća'], preporuke: ['Preporuke domaćina'], domacin: ['Domaćin'],
-  hitno: ['Hitno i pomoć'], prijava: ['Prijava boravka'], ulaz: ['Kako ući']
+  hitno: ['Hitno i pomoć'], prijava: ['Prijava boravka'], ulaz: ['Kako ući'], odlazak: ['Odlazak']
 }
-// zaglavlje podstranice: [boja teme, ikona, naslov, opis]
+// zaglavlje podstranice: [boja teme, ikona, naslov, opis, činjenice [[ikona, tekst]]]
 function vglava(view) {
   const s = SECTION, mj = (PROP.location || '').split(',').map(x => x.trim()).filter(Boolean).pop()
+  const k = ulazKoraci(), zv = s.door_code ? k.findIndex(x => x.sifra) : -1
+  const uredaji = [[s.ac_info, 'snowflake', t('Klima-uređaj')], [s.heating_info, 'flame', t('Grijanje')], [s.hot_water_info, 'droplets', t('Topla voda')], [s.kitchen_info, 'utensils', t('Kuhinja')]].filter(x => x[0])
+  const { odjava } = kadTrenuci()
+  const kat = {}; for (const r of RECS) kat[r.cat] = (kat[r.cat] || 0) + 1
   const G = {
-    dolazak: ['dolazak', 'door-open', t('Dolazak'), [s.checkin_time && t('Prijava od {v}', { v: s.checkin_time }), mj].filter(Boolean).join(' · ') || t('Adresa, parking, upute')],
-    kuca: ['kuca', 'house', t('Wi-Fi i kuća'), t('Mreža, uređaji, pravila i odlazak')],
-    preporuke: ['preporuke', 'umbrella', t('Naš izbor'), PROP.host_name ? t('{n} preporučuje', { n: PROP.host_name }) : t('Domaćin preporučuje')],
-    domacin: ['domacin', 'message-circle', PROP.host_name || t('Domaćin'), t('Vaš domaćin') + ' · ' + t('Poruka stiže ravno domaćinu — odgovor dobivate na svoj mobitel.')],
-    hitno: ['hitno', 'siren', t('Hitno i pomoć'), t('Brojevi vrijede u cijeloj Hrvatskoj i besplatni su.')],
-    prijava: ['prijava', 'id-card', t('Prijava boravka'), t('Podaci za eVisitor · oko 2 minute')]
+    dolazak: ['dolazak', 'door-open', t('Dolazak'), t('Sve za lak dolazak — od ceste do vrata.'),
+      [s.checkin_time && ['log-in', t('Prijava od {v}', { v: s.checkin_time })], k.length && ['door-open', L.n(k.length, 'korak')],
+       zv >= 0 && ['key-round', t('šifra na koraku {k}', { k: zv + 1 })], (s.parking_info || s.parking_lat != null) && ['car', t('Parking')], mj && ['map-pin', mj]]],
+    kuca: ['kuca', 'house', t('Wi-Fi i kuća'), t('Wi-Fi, uređaji i kućna pravila.'),
+      [s.wifi_name && ['wifi', s.wifi_name], ...uredaji.map(x => [x[1], x[2]]), PROP.max_guests && ['users', t('Najviše gostiju') + ': ' + PROP.max_guests]]],
+    odlazak: ['odlazak', 'log-out', t('Odlazak'), t('Kratki popis prije polaska i ocjena boravka.'),
+      [s.checkout_time && ['clock', t('Odjava do {v}', { v: s.checkout_time })], BOOKING && odjava && ['log-out', danKratko(odjava)]]],
+    preporuke: ['preporuke', 'umbrella', t('Naš izbor'), PROP.host_name ? t('{n} preporučuje', { n: PROP.host_name }) : t('Domaćin preporučuje'),
+      Object.entries(kat).slice(0, 5).map(([c, n]) => ['star', c + ' · ' + n])],
+    domacin: ['domacin', 'message-circle', PROP.host_name || t('Domaćin'), t('Javite se kad god nešto trebate — poruka ide ravno domaćinu.'),
+      [PROP.phone && ['message-circle', 'WhatsApp'], PROP.phone && ['phone', t('Nazovi')], PROP.email && ['mail', t('E-mail')]]],
+    hitno: ['hitno', 'siren', t('Hitno i pomoć'), t('Brojevi vrijede u cijeloj Hrvatskoj i besplatni su.'), [['phone', '112 · 0–24']]],
+    prijava: ['prijava', 'id-card', t('Prijava boravka'), t('Podaci za eVisitor · oko 2 minute'), [['shield-check', t('Vidi ih samo domaćin')]]]
   }[view]
   const el = $('#vglava')
   if (!G) { show(el, false); return null }
   const st = (view === 'dolazak' || view === 'kuca') && (s.door_code || s.wifi_pass) ? $('#arr-lbl').textContent : ''
+  const ch = [st && [UNLOCKED ? 'shield-check' : 'lock', st], ...G[4]].filter(Boolean)
   el.innerHTML = `<span class="vglava__veliki" aria-hidden="true">${ico(G[1])}</span><div class="wrap vglava__in">
     <div><span class="eyebrow" translate="no">${esc(PROP.name || t('Vaš smještaj'))}</span><h1>${esc(G[2])}</h1><p>${esc(G[3])}</p>
-      ${st ? `<span class="vglava__st">${ico(UNLOCKED ? 'shield-check' : 'lock')}${esc(st)}</span>` : ''}</div>
+      ${ch.length ? `<div class="vglava__ch">${ch.map(([i, x]) => `<span class="vglava__c">${ico(i)}<span>${esc(x)}</span></span>`).join('')}</div>` : ''}</div>
     <span class="vglava__ik" aria-hidden="true">${ico(G[1])}</span></div>`
   show(el)
   return G[0]
@@ -1816,6 +1920,8 @@ function route() {
   let [v, anchor] = location.hash.slice(1).split('/')
   // ekran korak po korak postoji samo s koracima; bez njih → Dolazak
   if (v === 'ulaz' && !ULAZ.length) v = 'dolazak'
+  // stara adresa (e-mail gostu, stari linkovi): #kuca/odlazak → #odlazak
+  if (v === 'kuca' && anchor === 'odlazak') { v = 'odlazak'; anchor = '' }
   const view = VIEWS[v] ? v : 'home'
   if (view !== 'home') biljezi('guide:' + view)
   document.querySelectorAll('[data-view]').forEach(el => { el.hidden = el.dataset.view !== view })
@@ -1886,7 +1992,13 @@ function renderOdlazak() {
   show('#out-text', !!$('#out-text').textContent)
   $('#out-list').innerHTML = stavke.map((t, i) =>
     `<li><label><input type="checkbox" data-i="${i}"${kvacice.includes(i) ? ' checked' : ''}><span>${esc(t)}</span></label></li>`).join('')
-  const gotovo = () => show('#out-done', $$('#out-list input').every(x => x.checked))
+  if (!$('#out-nap')) $('#out-list').insertAdjacentHTML('beforebegin', '<div class="napredak napredak--l" id="out-nap" aria-hidden="true"><span></span></div>')
+  show('#kasnije-blk', !!(PROP.phone || PROP.email))
+  const gotovo = () => {
+    const sv = $$('#out-list input'), da = sv.filter(x => x.checked).length
+    $('#out-nap span').style.width = (sv.length ? Math.round(da / sv.length * 100) : 0) + '%'
+    show('#out-done', sv.every(x => x.checked))
+  }
   $('#out-list').onchange = () => {
     const sada = $$('#out-list input').filter(x => x.checked).map(x => Number(x.dataset.i))
     try { localStorage.setItem(kljuc, JSON.stringify(sada)) } catch {}

@@ -1303,6 +1303,7 @@ export const T = {
   "limit plana": "plan limit",
   "link je još aktivan": "link is still active",
   "link poslan": "link sent",
+  "✓ Gost je ušao": "✓ Guest is in",
   "link prije dolaska": "link before arrival",
   "linka su još aktivna": "links are still active",
   "linkova je još aktivno": "links are still active",
