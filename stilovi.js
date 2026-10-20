@@ -18,10 +18,10 @@
 const GF = 'https://fonts.googleapis.com/css2?'
 
 export const STILOVI = [
-  { id: '', ime: 'Odmoria', opis: 'Zadani izgled — perla, petrol i more.', pisma: '',
-    t: { bg: '#FCFCFA', surface: '#FFFFFF', wash: '#EDF5F6', ink: '#103D4B', muted: '#536D77', accent: '#116D76',
-         action: '#116D76', actionInk: '#FFFFFF', line: '#E0E8EB', display: "Georgia,'Gelasio',serif", ui: "'Manrope',system-ui,sans-serif",
-         body: "'DM Sans',system-ui,sans-serif", r: '14px', rBtn: '7px', tint: '10,42,51' } },
+  { id: '', ime: 'Odmoria', opis: 'Zadani izgled — perla, tinta i sunce.', pisma: '',
+    t: { bg: '#F6F5F1', surface: '#FFFFFF', wash: '#EFEEE8', ink: '#12303A', muted: '#5B6F75', accent: '#12303A',
+         action: '#12303A', actionInk: '#FFFFFF', line: '#E3E5E0', display: "Georgia,'Gelasio',serif", ui: "'Manrope',system-ui,sans-serif",
+         body: "'DM Sans',system-ui,sans-serif", r: '14px', rBtn: '7px', tint: '14,34,41' } },
   { id: 'priroda', ime: 'Priroda', opis: 'Lan i maslina, organski oblici, pismo domaćina.',
     pisma: 'family=Cormorant+Garamond:ital,wght@0,500;0,600;1,400;1,500;1,600&family=Karla:wght@400;500;600;700',
     t: { bg: '#F4F0E6', surface: '#FBF8F1', wash: '#E9E8D6', ink: '#33402A', muted: '#5B5A44', accent: '#4E5C33',

@@ -29,23 +29,23 @@ const CSS = `
 .odm-adr-omot{position:relative}
 /* fixed (ne absolute): kartica s overflow:hidden ga inače odreže; mjesto računa smjesti() */
 .odm-adr{position:fixed;z-index:1000;margin:0;padding:6px 0 0;box-sizing:border-box;
-  background:var(--paper,var(--bg-surface,#fff));color:var(--ink,var(--text,#103D4B));
+  background:var(--paper,var(--bg-surface,#fff));color:var(--ink,var(--text,#12303A));
   border:1px solid var(--line,var(--border,#D5DEE1));border-radius:var(--radius-sm,var(--radius-control,10px));
-  box-shadow:0 12px 32px rgba(10,42,51,.16);font:500 15px/1.35 var(--font-body,"DM Sans",system-ui,sans-serif);overflow:hidden}
+  box-shadow:0 12px 32px rgba(14,34,41,.16);font:500 15px/1.35 var(--font-body,"DM Sans",system-ui,sans-serif);overflow:hidden}
 .odm-adr[hidden]{display:none}
 /* mobitel: popis u toku stranice ispod polja — nikad preko polja (tipkovnica
    pomiče vidljivi dio zaslona, pa lebdeći popis zna pasti na upisani tekst) */
-.odm-adr.odm-adr--tok{position:static;margin-top:6px;box-shadow:0 8px 20px rgba(10,42,51,.12)}
+.odm-adr.odm-adr--tok{position:static;margin-top:6px;box-shadow:0 8px 20px rgba(14,34,41,.12)}
 .odm-adr-omot input{scroll-margin-top:96px}
 .odm-adr ul{list-style:none;margin:0;padding:0;max-height:320px;overflow:auto}
 .odm-adr li{display:flex;gap:10px;align-items:flex-start;padding:9px 14px;cursor:pointer}
-.odm-adr li[aria-selected="true"],.odm-adr li:hover{background:var(--paper-2,var(--bg-wash,#EDF5F6))}
-.odm-adr li.odm-adr__ne{cursor:default;color:var(--muted,var(--text-muted,#536D77))}
+.odm-adr li[aria-selected="true"],.odm-adr li:hover{background:var(--paper-2,var(--bg-wash,#EFEEE8))}
+.odm-adr li.odm-adr__ne{cursor:default;color:var(--muted,var(--text-muted,#5B6F75))}
 .odm-adr li.odm-adr__ne:hover{background:none}
-.odm-adr svg{flex:none;width:18px;height:18px;margin-top:1px;color:var(--copper,var(--action,#116D76))}
+.odm-adr svg{flex:none;width:18px;height:18px;margin-top:1px;color:var(--copper,var(--action,#12303A))}
 .odm-adr b{display:block;font-weight:600}
-.odm-adr small{display:block;color:var(--muted,var(--text-muted,#536D77));font-size:13px}
-.odm-adr__izvor{margin:0;padding:6px 14px 8px;font-size:12px;color:var(--muted,var(--text-muted,#536D77));border-top:1px solid var(--line,var(--border,#E3E9EB))}
+.odm-adr small{display:block;color:var(--muted,var(--text-muted,#5B6F75));font-size:13px}
+.odm-adr__izvor{margin:0;padding:6px 14px 8px;font-size:12px;color:var(--muted,var(--text-muted,#5B6F75));border-top:1px solid var(--line,var(--border,#E3E9EB))}
 `
 const IKONA_PIN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 5-8 12-8 12s-8-7-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>'
 const IKONA_GEO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 11 19-9-9 19-2-8-8-2z"/></svg>'

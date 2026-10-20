@@ -25,7 +25,7 @@
 .bar a{display:inline-flex;align-items:center;gap:4px;font-weight:600;text-underline-offset:3px;min-height:28px}
 
 /* navigacija */
-.nav{position:sticky;top:0;z-index:30;background:rgba(252,252,250,.94);backdrop-filter:saturate(1.4) blur(8px);border-bottom:1px solid transparent}
+.nav{position:sticky;top:0;z-index:30;background:rgba(246,245,241,.94);backdrop-filter:saturate(1.4) blur(8px);border-bottom:1px solid transparent}
 .nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:var(--s5);min-height:88px}
 .logo{font:800 30px/1 var(--font-ui);letter-spacing:-.04em;text-decoration:none;color:var(--text)}
 .logo span{color:var(--text-accent)}
@@ -128,7 +128,7 @@
 .step .t-muted{color:var(--text-muted)}
 .step[aria-pressed="true"]{background:var(--bg-inverse);border-color:var(--bg-inverse);color:#fff}
 .step[aria-pressed="true"] .eyebrow{color:var(--text-on-inverse-accent)}
-.step[aria-pressed="true"] .step__ic{background:rgba(168,226,216,.16);color:var(--text-on-inverse-accent)}
+.step[aria-pressed="true"] .step__ic{background:rgba(242,179,61,.16);color:var(--text-on-inverse-accent)}
 .step[aria-pressed="true"] .t-muted{color:rgba(255,255,255,.88)}
 
 /* privatni vodič */
@@ -681,7 +681,7 @@ try {
 ;(()=>{const q=new URLSearchParams(location.search);if(q.get('racun')!=='obrisan')return
   q.delete('racun');history.replaceState(null,'',location.pathname+(q.toString()?'?'+q:'')+location.hash)
   const d=document.createElement('div');d.setAttribute('role','status')
-  d.style.cssText='position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:200;max-width:calc(100vw - 32px);padding:14px 20px;border-radius:10px;background:#103D4B;color:#fff;font:600 15px/1.4 Manrope,system-ui,sans-serif;box-shadow:0 12px 32px rgba(16,61,75,.25)'
+  d.style.cssText='position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:200;max-width:calc(100vw - 32px);padding:14px 20px;border-radius:10px;background:#12303A;color:#fff;font:600 15px/1.4 Manrope,system-ui,sans-serif;box-shadow:0 12px 32px rgba(18,48,58,.25)'
   d.textContent='Vaš račun i svi podaci su obrisani. Hvala što ste koristili Odmoriju.'
   document.body.append(d);setTimeout(()=>d.remove(),7000)})()
 </script>
