@@ -103,8 +103,7 @@ begin
   return new;
 end;
 $$;
-drop trigger if exists inquiries_iznos on public.inquiries;
-create trigger inquiries_iznos before insert on public.inquiries
+create or replace trigger inquiries_iznos before insert on public.inquiries
   for each row execute function public.inquiries_iznos();
 
 -- mogućnost „izravno” (sql/add-plan-features.sql): Domaćin i Agencija, ne Free
