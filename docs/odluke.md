@@ -1410,3 +1410,151 @@ i kako naplaćivati. Sažetak razgovora — **odluke su označene**.
 4. [ ] Sezonske cijene
 5. [ ] 5–10 pravih iznajmljivača na probu prije novih značajki
 6. [ ] Pravni tekst + odluka o modelu naplate (A / B / C), pa tek onda Stripe
+
+---
+
+## 33. „Ušli smo” — obavijest domaćinu i GDPR (19. 10. 2026.)
+
+**Što radi:** na kraju „Kako ući, korak po korak” gost sam pritisne „Ušli
+smo”. Baza (`gost_usao()`, `sql/add-guest-arrived.sql`) zapiše samo vrijeme
+(`bookings.usao_at`) i domaćinu pošalje push „Gost je ušao — <objekt>”.
+Jednom po rezervaciji, samo s valjanim linkom, od dana dolaska do odlaska.
+
+**Smije li se (GDPR)?** Po našoj procjeni da — uz uvjete koji su ugrađeni:
+- nema automatskog praćenja ni lokacije — samo **gostov vlastiti klik**;
+- gost je **unaprijed obaviješten**: iznad gumba piše „Kad pritisnete „Ušli
+  smo”, domaćin dobiva obavijest.”;
+- podatak je **minimalan** (samo vrijeme) i vezan uz rezervaciju koju gost
+  ima s domaćinom (izvršenje ugovora / legitimni interes — predaja smještaja);
+- briše se s rezervacijom; ne ide nikome osim domaćinu.
+
+**Ostaje vama:** u `privacy.html` dodati jednu rečenicu (npr. „Ako u vodiču
+potvrdite ulazak, domaćin dobiva obavijest s vremenom ulaska.”). Ovo nije
+pravni savjet — ako imate pravnika za Uvjete i Privatnost (točka 8), neka
+pogleda i ovo.
+
+---
+
+## 34. v4: vodič na jednoj stranici, dashboard u 4 dijela, mogućnosti po planu (19. 10. 2026.)
+
+Vlasnik je odobrio prijedlog (artifact „Odmoria v4 — prijedlog”): „sviđa mi
+se, napravi zasad tako”. Preneseno na probnu granu:
+
+- **Vodič**: sve na jednoj stranici, redom po danu boravka; obavljeno se
+  sažme dolje; preko cijelog zaslona samo ulazak korak po korak.
+- **Dashboard**: Danas · Gosti · Vodič · Javna stranica. Paneli i logika su
+  isti, promijenjen je samo raspored; zaključano je jedan sivi red.
+- **Mogućnosti po planu** (`sql/add-plan-features.sql`, mijenja se u tablici
+  `plans`, ne u kodu):
+  - Free: šifra i Wi-Fi s otključavanjem, kuća, pravila, odlazak, domaćin,
+    javna stranica s kalendarom i upitima, 1 objekt, 5 fotografija, HR + EN.
+  - Pro: + koraci sa slikama i „Ušli smo”, preporuke, ocjena, eVisitor,
+    stilovi, čistačica.
+  - Business: + promocija (objave, letak, FB grupe), automatski e-mail gostu.
+  - SQL usput ispravlja: jezika 6 (ne 8), suradnika najviše 3 (ne 5).
+
+**Otvoreno:**
+- [x] **Cijene** — riješeno u točki 35 (cijena po objektu).
+- [ ] **Oznaka „pokreće Odmoria” na Pro** — po staroj odluci (sql/add-reviews.sql)
+      vidi se i na Pro; prijedlog v4 je bez nje na Pro. Ostavljeno kako je u bazi
+      (`can_remove_branding`) dok vlasnik ne odluči.
+- [ ] **Automatska iCal sinkronizacija samo za Pro** — u prijedlogu, ali još
+      nije provedeno (sync-all sinkronizira sve objekte); prvo odluka.
+- [ ] **Prevedi besplatno** — gumb je ostao (u Vodič → Jezici). Automatski
+      prijevod pri spremanju traži `ANTHROPIC_API_KEY` u Vercelu (1–3 centa po
+      objektu); kad se ključ postavi, gumb se može maknuti.
+- [ ] **Naslovnica: vizualna usporedba planova** (vlasnik: „kasnije”) — što
+      domaćin dobiva na Free, Pro i Business, s pregledom vodiča po planu
+      (kao kartica „Planovi” u prijedlogu). Puni se iz `plans` (`mogucnosti`).
+- [ ] Pregled gosta u dashboardu (telefon desno) još pokazuje stari vodič s
+      pločicama — uskladiti s v4.
+
+
+---
+
+## 35. v5: brend u dvije boje, cijena po objektu (20. 10. 2026.)
+
+Vlasnik je odobrio prijedlog v5 („ostalo je okej, dodaj i riješi, kreni sa
+radom”). Na probnoj grani:
+
+- **Brend**: logo „Sunce u o” (prvo „o” je prsten s pola sunca), dvije boje —
+  tinta `#12303A` i sunce `#F2B33D`, uz perlu `#F6F5F1` i bijelu. Crvena
+  `#B42318` samo za hitno. Odjeljci vodiča više nemaju svaki svoju boju.
+  Stilovi javne stranice zadržavaju svoje boje (to je domaćinov izbor).
+- **Planovi** (`sql/add-per-object-plans.sql`, id-jevi ostaju `pro`/`business`):
+  - Free — 1 objekt, 0 €
+  - Domaćin — 1–5 objekata, **12 € po objektu mjesečno** ili 99 € godišnje
+  - Agencija — 6 i više, **9 € po objektu mjesečno** ili 89 € godišnje
+    (plaća se najmanje 6)
+  - Stripe naplaćuje `quantity` = broj objekata; webhook je upiše u
+    `subscriptions.kolicina`, a baza po njoj pušta nove objekte
+    (`plan_limit`). Ručno dodijeljen plan (admin, bez Stripea) nema
+    količinu → vrijedi limit plana kao prije.
+  - Promjena broja objekata ide iz dashboarda → Pretplata (bez novog
+    checkouta): ista pretplata, razlika razmjerno odmah
+    (`proration_behavior=always_invoice`).
+- **Računica na naslovnici**: domaćin upiše broj objekata, cijenu noćenja i
+  proviziju (zadano 15 %) — usporedba je jasno označena kao računica, ne
+  obećanje.
+
+**Otvoreno:**
+- [ ] Stripeov portal: u Stripeu (Settings → Billing → Customer portal)
+      isključiti „promjenu plana” ili je dopustiti samo s količinom — inače
+      domaćin u portalu može promijeniti nešto što naš kod ne očekuje.
+      Broj objekata se mijenja u dashboardu.
+- [ ] Postojeće plaćene pretplate (ako ih ima) ostaju na staroj cijeni dok se
+      ne promijene; na testnom načinu nema pravih.
+
+---
+
+## 36. v5: izravne rezervacije bez naplate preko Odmorije (20. 10. 2026.)
+
+Odmoria **ne obrađuje plaćanje i nije posrednik** (odluka iz točke 32 i
+razgovora o 10 %): sve ispod samo slaže poruku koju domaćin sam pošalje.
+
+- **Sezonske cijene** (`properties.sezonske_cijene`, do 12): gost u upitu
+  vidi okvirni iznos; u bazi ga računa `cijena_boravka()` pri upisu upita
+  (gost ga ne može podmetnuti).
+- **Ponuda s kaparom** (Upiti → „Pošalji ponudu s kaparom”): iznos, kapara %,
+  rok, IBAN i primatelj domaćina, na jeziku gosta (hr/en/de/it, po domeni
+  e-maila). IBAN je u `user_metadata` domaćina, **ne** u javnom redu objekta.
+  Kad kapara stigne, domaćin klikne „Prihvati i napravi link”. Odmoria ne
+  prati uplatu i ne odgovara za nju.
+- **Povratni gosti**: gost u obrascu upita kvačicom pristane na ponude
+  (`inquiries.pristanak_ponude`); domaćin vidi popis i šalje kod za popust
+  (kod i postotak u `user_metadata.povratni`). Popust daje i plaća domaćin.
+- **Link s datumima** (kalendar → praznine): `/p/<slug>?od=&do=`.
+- Mogućnost `izravno` — Domaćin i Agencija (ne Free).
+
+**Otvoreno:**
+- [ ] Privatnost: kvačica „Domaćin mi smije slati ponude” — rečenica u
+      Privatnosti (svrha: ponude domaćina; voditelj obrade je domaćin; povlačenje
+      privole odgovorom domaćinu).
+- [ ] Uvjeti: rečenica da Odmoria ne sudjeluje u plaćanju kapare ni boravka.
+
+---
+
+## 37. v5: Agencija — svi objekti na jednom mjestu (20. 10. 2026.)
+
+Napravljeno (mogućnost `agencija`, samo plan Agencija; tab „Svi objekti” u
+Danas vidi se tek s više objekata):
+- **Danas i sutra u svim objektima** — dolasci, odlasci (= čišćenje).
+- **Kalendar svih objekata** — 30 dana, red po objektu, iste boje kao kalendar.
+- **Predložak za više objekata** — isti prijenos kao „Preuzmi sadržaj”, u više
+  objekata odjednom (dodaje, ne briše; nikad šifre, Wi-Fi, adresa).
+- **Mjesečni izvještaj vlasniku** — stranica za ispis/PDF: popunjenost, noći
+  izravno / Booking / Airbnb / ručno, upiti, pregledi, ocjene. Bez iznosa
+  (Odmoria ne vidi plaćanja).
+
+**Dovršeno 20. 10. na zahtjev vlasnika („napravi to”)** — `sql/add-team-roles.sql`:
+- [x] **Uloge u timu**: upravitelj (sve), recepcija (kalendar, rezervacije,
+      upiti, prijave gostiju, ocjene; sadržaj samo čita; **tablica `sections`
+      zatvorena** — nema šifre ni Wi-Fija), vlasnik objekta (samo čita objekt,
+      kalendar, ocjene i preglede). Čistačica ne treba račun — link za čistačicu.
+      Mijenjaju se samo politike „suradnik”; vlasnikove ostaju. Postojeći
+      suradnici dobiju „upravitelj”.
+- [x] **Ime i boja agencije u vodiču**: `properties.brend` (sve vlastite
+      objekte odjednom), mogućnost `brend` (Agencija), `mogucnosti_vodica()`
+      vraća brend; dashboard pušta samo boje s kontrastom ≥ 4,5:1.
+- [ ] Pristup vlasnika objekta (read-only izvještaj preko linka) — zasad
+      agencija izvještaj šalje sama.

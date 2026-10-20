@@ -12,7 +12,7 @@
 //   POST /api/obavijest           → šalje obavijest; zove je SAMO baza
 //                                    (okidač → pg_net, sql/add-push.sql) s
 //                                    `Authorization: Bearer <CRON_SECRET>`.
-//        tijelo: { user_id, vrsta: upit | cistacica | kalendar, podaci }
+//        tijelo: { user_id, vrsta: upit | cistacica | kalendar | usao, podaci }
 //
 // Namjerno bez npm ovisnosti: VAPID (RFC 8292) potpis ES256 i šifriranje
 // poruke aes128gcm (RFC 8291 / 8188) rade preko Node `crypto`.
@@ -117,6 +117,10 @@ function poruka(vrsta, p, jezik) {
       body: `${o} · ${fmtDan(p.od, en)} – ${fmtDan(p.do, en)}`,
       url: url('kalendar'), tag: 'kal-' + id + '-' + p.od };
   }
+  if (vrsta === 'usao') return {
+    title: en ? `Your guest is in — ${o}` : `Gost je ušao — ${o}`,
+    body: p.ime ? (en ? `${p.ime} just got in using the guide.` : `${p.ime} · ulazak potvrđen u vodiču, upravo sada.`) : (en ? 'Your guest just got in using the guide.' : 'Gost je potvrdio ulazak u vodiču, upravo sada.'),
+    url: url('kalendar'), tag: 'usao-' + (p.booking_id || id) };
   if (vrsta === 'proba') return {
     title: en ? 'Notifications are on' : 'Obavijesti su uključene',
     body: en ? 'This device will get new inquiries and urgent notices.' : 'Na ovaj uređaj stižu novi upiti i hitne obavijesti.',

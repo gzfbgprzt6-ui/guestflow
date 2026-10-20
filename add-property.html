@@ -62,18 +62,18 @@
         <!-- nazivi, cijene i limiti dolaze iz tablice `plans`; ovo su samo rezervne vrijednosti -->
         <div class="plan-compare">
           <div class="pc-card feat" data-plan="pro">
-            <div class="pc-tier" data-name>Pro</div>
-            <div class="pc-price"><span data-price>15 €</span> <small>mjesečno</small></div>
+            <div class="pc-tier" data-name>Domaćin</div>
+            <div class="pc-price"><span data-price>12 € / objekt</span> <small>mjesečno</small></div>
             <div class="pc-props" data-limits>do 5 objekata · 30 fotografija po objektu</div>
           </div>
           <div class="pc-card" data-plan="business">
-            <div class="pc-tier" data-name>Business</div>
-            <div class="pc-price"><span data-price>49 €</span> <small>mjesečno</small></div>
-            <div class="pc-props" data-limits>do 15 objekata · 50 fotografija po objektu</div>
+            <div class="pc-tier" data-name>Agencija</div>
+            <div class="pc-price"><span data-price>9 € / objekt</span> <small>mjesečno</small></div>
+            <div class="pc-props" data-limits>6 i više objekata · 50 fotografija po objektu</div>
           </div>
         </div>
-        <p class="t-meta">Plan mijenjate u Računu (Pretplata i limiti).</p>
-        <a class="btn-blue btn-full" href="/account.html#pretplata">Pogledaj planove</a>
+        <p class="t-meta">Broj objekata i plan mijenjate u Pretplati.</p>
+        <a class="btn-blue btn-full" href="/dashboard.html?otvori=pretplata">Otvori Pretplatu</a>
         <a href="/dashboard.html" class="nav-back">Natrag</a>
       </div>
     </div>
@@ -207,7 +207,7 @@
 
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-import { loadPlans, getPlan, limitFor, effectivePlanId, limitMessage, popustZa, formatEur } from './plans.js'
+import { loadPlans, getPlan, limitFor, effectivePlanId, limitMessage, popustZa, formatEur, limitObjekata } from './plans.js'
 import { publicUrl, prettyUrl } from './links.js'
 
 const SURL = 'https://wtojzqjhipdfbrnmprmz.supabase.co'
@@ -226,14 +226,14 @@ async function init() {
   await loadPlans(sb, { userId: USER.id })
 
   // Get plan
-  const { data: sub } = await sb.from('subscriptions').select('plan,period_end').eq('user_id', USER.id).maybeSingle()
+  const { data: sub } = await sb.from('subscriptions').select('*').eq('user_id', USER.id).maybeSingle()
   PLAN = effectivePlanId(sub)
 
   // Count existing properties
   const { count } = await sb.from('properties').select('id', { count: 'exact', head: true }).eq('user_id', USER.id)
   PROP_COUNT = count || 0
 
-  const limit = limitFor(PLAN, 'properties')
+  const limit = limitObjekata(PLAN, sub)   // plaćeno po objektu → plaćena količina
 
   document.getElementById('loading').style.display = 'none'
   document.getElementById('main-app').style.display = 'flex'
@@ -262,13 +262,13 @@ async function init() {
 function fillPlans(limit) {
   const broj = (n, a, b, c) => n < 0 || n === Infinity ? 'neograničeno' : `do ${n} ${n % 10 === 1 && n % 100 !== 11 ? a : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? b : c}`
   document.getElementById('uw-p').textContent =
-    `Na planu ${getPlan(PLAN).name} iskoristili ste sve objekte (${PROP_COUNT} od ${limit}). Za još jedan potrebna je viša razina. Postojeći objekti i njihovi linkovi rade normalno.`
+    `Na planu ${getPlan(PLAN).name} iskoristili ste sve objekte (${PROP_COUNT} od ${limit}). ${getPlan(PLAN).poObjektu && PROP_COUNT < getPlan(PLAN).maxProperties ? 'Dodajte objekt u pretplatu (Pretplata → broj objekata) — plaća se samo razlika.' : 'Za još jedan potrebna je viša razina.'} Postojeći objekti i njihovi linkovi rade normalno.`
   document.querySelectorAll('.pc-card[data-plan]').forEach(card => {
     const p = getPlan(card.dataset.plan); if (!p) return
     card.querySelector('[data-name]').textContent = p.name
     const pop = popustZa(card.dataset.plan, 'month')
-    card.querySelector('[data-price]').innerHTML = pop ? `<s class="cijena-stara">${formatEur(pop.redovna)}</s>${formatEur(pop.cijena)}` : `${p.monthlyPriceEur} €`
-    const obj = p.maxProperties < 0 || p.maxProperties === Infinity ? 'neograničeno objekata' : broj(p.maxProperties, 'objekt', 'objekta', 'objekata')
+    card.querySelector('[data-price]').innerHTML = (pop ? `<s class="cijena-stara">${formatEur(pop.redovna)}</s>${formatEur(pop.cijena)}` : formatEur(p.monthlyPriceEur)) + (p.poObjektu ? ' / objekt' : '')
+    const obj = p.minProperties > 1 ? `${p.minProperties} i više objekata` : p.maxProperties < 0 || p.maxProperties === Infinity ? 'neograničeno objekata' : broj(p.maxProperties, 'objekt', 'objekta', 'objekata')
     const fot = p.maxPhotosPerProperty < 0 || p.maxPhotosPerProperty === Infinity ? 'neograničeno fotografija' : `${p.maxPhotosPerProperty} fotografija`
     card.querySelector('[data-limits]').textContent = `${obj} · ${fot} po objektu`
   })

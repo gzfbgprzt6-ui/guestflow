@@ -13,9 +13,9 @@
 <style>
 /* Račun (Figma: Profil i sigurnost · Pretplata i limiti) */
 .tabs{display:flex;gap:6px;margin:8px 0 24px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none}
-.tab{flex:none;min-height:40px;padding:0 16px;border:1px solid rgba(16,24,28,.12);border-radius:999px;background:#fff;color:var(--text-muted);cursor:pointer;font:600 15px/1 var(--font-ui)}
-.tab:hover{color:var(--text);border-color:rgba(16,24,28,.25)}
-.tab[aria-selected="true"]{color:#fff;font-weight:700;border-color:#14181A;background:#14181A}
+.tab{flex:none;min-height:40px;padding:0 16px;border:1px solid rgba(18,48,58,.12);border-radius:999px;background:#fff;color:var(--text-muted);cursor:pointer;font:600 15px/1 var(--font-ui)}
+.tab:hover{color:var(--text);border-color:rgba(18,48,58,.25)}
+.tab[aria-selected="true"]{color:#fff;font-weight:700;border-color:#12303A;background:#12303A}
 .save-row{margin-top:4px}
 .strength{height:4px;border-radius:2px;background:var(--border);width:0;transition:width .2s}
 .strength.weak{width:33%;background:var(--danger)}.strength.medium{width:66%;background:var(--text-warm)}.strength.strong{width:100%;background:var(--action)}
@@ -271,9 +271,8 @@ async function init() {
   const imaKarticu = !!(sub && sub.stripe_subscription_id && plan !== 'free')
   const kupi = p => {
     if (!BILLING.stripe || p.id === plan || !(p.monthlyPriceEur > 0)) return ''
-    if (imaKarticu) return `<div class="plan__kupi"><button type="button" class="btn-out" onclick="upravljajPretplatom(this)">Promijeni u portalu</button></div>`
-    return `<div class="plan__kupi"><button type="button" class="btn-blue" onclick="kupiPlan('${p.id}','month',this)">Mjesečno · ${formatEur(cijenaPlana(p.id, 'month'))}</button>`
-      + (p.yearlyPriceEur > 0 ? `<button type="button" class="btn-out" onclick="kupiPlan('${p.id}','year',this)">Godišnje · ${formatEur(cijenaPlana(p.id, 'year'))}</button>` : '') + '</div>'
+    // broj objekata (cijena je po objektu) bira se na jednom mjestu: dashboard → Pretplata
+    return `<div class="plan__kupi"><a class="btn-blue" style="text-decoration:none" href="/dashboard.html?otvori=pretplata">${imaKarticu ? 'Promijeni' : 'Odaberi'} · broj objekata</a></div>`
   }
 
   // planovi — nazivi, cijene i limiti iz baze
@@ -281,8 +280,8 @@ async function init() {
   document.getElementById('plans').innerHTML = listPlans().map(p => `
     <div class="plan${p.id === plan ? ' cur' : ''}">
       <div class="plan__n">${p.name}${p.id === plan ? ' <span class="badge badge--status">Vaš plan</span>' : ''}</div>
-      ${(pop => `<div class="plan__p">${pop ? `<s class="cijena-stara">${formatEur(pop.redovna)}</s>${formatEur(pop.cijena)}` : p.monthlyPriceEur + ' €'} <small>${p.monthlyPriceEur > 0 ? 'mjesečno' : 'bez pretplate'}</small></div>${pop ? `<span class="ponuda">${pop.osobni ? 'Vaš popust' : pop.naziv.replace(/[<>&"]/g, '')} · −${pop.posto} %${trajanjePopusta(pop) ? ' ' + trajanjePopusta(pop) : ''}${rokPopusta(pop) ? ' · ' + rokPopusta(pop) : ''}</span>` : ''}`)(popustZa(p.id, 'month'))}
-      <ul><li>${lim(p.maxProperties, 'objekt', 'objekta', 'objekata')}</li>
+      ${(pop => `<div class="plan__p">${pop ? `<s class="cijena-stara">${formatEur(pop.redovna)}</s>${formatEur(pop.cijena)}` : formatEur(p.monthlyPriceEur)} <small>${p.monthlyPriceEur > 0 ? (p.poObjektu ? 'po objektu / mj.' : 'mjesečno') : 'zauvijek'}</small></div>${pop ? `<span class="ponuda">${pop.osobni ? 'Vaš popust' : pop.naziv.replace(/[<>&"]/g, '')} · −${pop.posto} %${trajanjePopusta(pop) ? ' ' + trajanjePopusta(pop) : ''}${rokPopusta(pop) ? ' · ' + rokPopusta(pop) : ''}</span>` : ''}`)(popustZa(p.id, 'month'))}
+      <ul><li>${p.minProperties > 1 ? p.minProperties + ' i više objekata' : lim(p.maxProperties, 'objekt', 'objekta', 'objekata')}</li>
           <li>${p.maxPhotosPerProperty === Infinity ? 'Neograničeno fotografija' : p.maxPhotosPerProperty + ' fotografija'} po objektu</li>
           <li>Javna stranica i privatni vodič</li></ul>
       ${kupi(p)}

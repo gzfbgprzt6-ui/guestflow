@@ -173,7 +173,7 @@ export function tekstovi(d, j, termin) {
 
 // ── slika (canvas) ────────────────────────────────────────────
 export const FORMATI = { post: [1080, 1350], story: [1080, 1920] }
-const BOJE = { petrol: '#103D4B', akcija: '#116D76', menta: '#A8E2D8', sunce: '#FFC93C', tinta: '#0A2A33' }
+const BOJE = { petrol: '#12303A', akcija: '#12303A', menta: '#F2B33D', sunce: '#F2B33D', tinta: '#0A1F26' }
 
 function prelomi(ctx, tekst, sirina, maxRedova = 2) {
   const rijeci = String(tekst).split(/[ \t\n]+/), redovi = []   // tvrdi razmak (\u00a0) ne lomi
@@ -223,7 +223,7 @@ function naljepnica(ctx, x, y, R, d, j) {
   if (!d.cijena) return
   const [pre, post] = r('cijenaKratko', j, { c: '|' }).split('|').map(t => t.replace('/', '').trim())
   ctx.save(); ctx.translate(x, y); ctx.rotate(-0.16)
-  ctx.shadowColor = 'rgba(10,42,51,.28)'; ctx.shadowBlur = 24; ctx.shadowOffsetY = 8
+  ctx.shadowColor = 'rgba(14,34,41,.28)'; ctx.shadowBlur = 24; ctx.shadowOffsetY = 8
   ctx.fillStyle = BOJE.sunce
   ctx.beginPath()
   const zubi = 16
@@ -253,7 +253,7 @@ function oznaka(ctx, x, y, tekst, { pozadina, boja, sa_suncem }) {
 function kartica(ctx, x, y, w, h, o, { pozadina = '#FFFFFF', sjena = true } = {}) {
   const j = o.j
   ctx.save()
-  if (sjena) { ctx.shadowColor = 'rgba(10,42,51,.25)'; ctx.shadowBlur = 30; ctx.shadowOffsetY = 10 }
+  if (sjena) { ctx.shadowColor = 'rgba(14,34,41,.25)'; ctx.shadowBlur = 30; ctx.shadowOffsetY = 10 }
   zaobljeno(ctx, x, y, w, h, 28); ctx.fillStyle = pozadina; ctx.fill(); ctx.restore()
   const qS = h - 48
   if (o.qr) ctx.drawImage(o.qr, x + 24, y + 24, qS, qS)
@@ -261,7 +261,7 @@ function kartica(ctx, x, y, w, h, o, { pozadina = '#FFFFFF', sjena = true } = {}
   ctx.textBaseline = 'alphabetic'; ctx.textAlign = 'left'
   ctx.fillStyle = BOJE.petrol; stani(ctx, r('izravnoKratko', j), ts, 800, 44, 'Manrope'); ctx.fillText(r('izravnoKratko', j), tx, y + h * 0.36)
   ctx.fillStyle = BOJE.akcija; stani(ctx, o.adresa || '', ts, 700, 32, 'Manrope'); ctx.fillText(o.adresa || '', tx, y + h * 0.6)
-  ctx.fillStyle = '#536D77'; stani(ctx, r('bezProvizije', j), ts, 400, 26, '"DM Sans"'); ctx.fillText(r('bezProvizije', j), tx, y + h * 0.82)
+  ctx.fillStyle = '#5B6F75'; stani(ctx, r('bezProvizije', j), ts, 400, 26, '"DM Sans"'); ctx.fillText(r('bezProvizije', j), tx, y + h * 0.82)
 }
 /** Lukovi: fotografija u obliku kamenog luka (zaobljen vrh). */
 function luk(ctx, x, y, w, h) {
@@ -319,9 +319,9 @@ export function nacrtaj(canvas, o) {
   if (pred === 'foto') {
     pozadinaFoto(0, 0, W, H)
     let v = ctx.createLinearGradient(0, 0, 0, H * 0.25)
-    v.addColorStop(0, 'rgba(10,42,51,.45)'); v.addColorStop(1, 'rgba(10,42,51,0)'); ctx.fillStyle = v; ctx.fillRect(0, 0, W, H * 0.25)
+    v.addColorStop(0, 'rgba(14,34,41,.45)'); v.addColorStop(1, 'rgba(14,34,41,0)'); ctx.fillStyle = v; ctx.fillRect(0, 0, W, H * 0.25)
     v = ctx.createLinearGradient(0, H * 0.34, 0, H)
-    v.addColorStop(0, 'rgba(10,42,51,0)'); v.addColorStop(0.42, 'rgba(10,42,51,.8)'); v.addColorStop(1, 'rgba(10,42,51,.96)')
+    v.addColorStop(0, 'rgba(14,34,41,0)'); v.addColorStop(0.42, 'rgba(14,34,41,.8)'); v.addColorStop(1, 'rgba(14,34,41,.96)')
     ctx.fillStyle = v; ctx.fillRect(0, H * 0.34, W, H * 0.66)
     oznaka(ctx, M, top, t.oznaka, { pozadina: t.sunce ? BOJE.sunce : 'rgba(255,255,255,.94)', boja: BOJE.petrol, sa_suncem: t.sunce })
     naljepnica(ctx, W - M - 118, top + 150, 118, d, j)
@@ -345,7 +345,7 @@ export function nacrtaj(canvas, o) {
     ctx.fillStyle = '#FBF6EA'; ctx.fillRect(0, 0, W, H)           // topli papir
     const fx = 48, fy = story ? top - 40 : 48, fw = W - 96, fh = Math.round(H * (story ? 0.48 : 0.5))
     ctx.save(); zaobljeno(ctx, fx, fy, fw, fh, 32); ctx.clip(); pozadinaFoto(fx, fy, fw, fh)
-    const v = ctx.createLinearGradient(0, fy, 0, fy + 160); v.addColorStop(0, 'rgba(10,42,51,.35)'); v.addColorStop(1, 'rgba(10,42,51,0)')
+    const v = ctx.createLinearGradient(0, fy, 0, fy + 160); v.addColorStop(0, 'rgba(14,34,41,.35)'); v.addColorStop(1, 'rgba(14,34,41,0)')
     ctx.fillStyle = v; ctx.fillRect(fx, fy, fw, 160); ctx.restore()
     oznaka(ctx, fx + 28, fy + 28, t.oznaka, { pozadina: t.sunce ? BOJE.sunce : 'rgba(255,255,255,.94)', boja: BOJE.petrol, sa_suncem: t.sunce })
     naljepnica(ctx, W - 150, fy + fh - 10, 112, d, j)
@@ -355,11 +355,11 @@ export function nacrtaj(canvas, o) {
     for (const red of prelomi(ctx, t.naslov, W - 2 * M - (d.cijena ? 150 : 0), 2)) { ctx.fillText(red, M, y); y += vel + 4 }
     y += 6; ctx.font = '700 38px Manrope'; ctx.fillStyle = BOJE.akcija
     if (t.pod) for (const red of prelomi(ctx, t.pod, W - 2 * M, 2)) { ctx.fillText(red, M, y); y += 48 }
-    ctx.font = '500 30px "DM Sans"'; ctx.fillStyle = '#536D77'
+    ctx.font = '500 30px "DM Sans"'; ctx.fillStyle = '#5B6F75'
     if (t.sitno) { ctx.fillText(prelomi(ctx, t.sitno, W - 2 * M, 1)[0], M, y + 4) }
     // crtkana crta kao na razglednici, pa QR
     const kH = 216, kY = H - dno - kH
-    ctx.save(); ctx.setLineDash([14, 12]); ctx.strokeStyle = 'rgba(16,61,75,.25)'; ctx.lineWidth = 3
+    ctx.save(); ctx.setLineDash([14, 12]); ctx.strokeStyle = 'rgba(18,48,58,.25)'; ctx.lineWidth = 3
     ctx.beginPath(); ctx.moveTo(M, kY - 34); ctx.lineTo(W - M, kY - 34); ctx.stroke(); ctx.restore()
     kartica(ctx, M - 24, kY, W - 2 * M + 48, kH, o, { pozadina: '#FBF6EA', sjena: false })
   }
@@ -370,7 +370,7 @@ export function nacrtaj(canvas, o) {
     sunce(ctx, W - 150, story ? top + 40 : 120, 26, 'rgba(255,201,60,.9)')
     const lw = story ? 760 : 640, lh = story ? 880 : 640, lx = (W - lw) / 2, ly = story ? top + 60 : 96
     ctx.save(); luk(ctx, lx, ly, lw, lh); ctx.clip(); pozadinaFoto(lx, ly, lw, lh); ctx.restore()
-    ctx.save(); luk(ctx, lx - 14, ly - 14, lw + 28, lh + 14); ctx.strokeStyle = 'rgba(168,226,216,.55)'; ctx.lineWidth = 4; ctx.stroke(); ctx.restore()
+    ctx.save(); luk(ctx, lx - 14, ly - 14, lw + 28, lh + 14); ctx.strokeStyle = 'rgba(242,179,61,.55)'; ctx.lineWidth = 4; ctx.stroke(); ctx.restore()
     naljepnica(ctx, lx + lw - 20, ly + lh - 40, 104, d, j)
     ctx.textAlign = 'center'
     let y = ly + lh + (story ? 130 : 96)
@@ -414,22 +414,22 @@ setTimeout(ispis,4000)})()</script>
 <style>
 @page{size:A4;margin:0}
 *{box-sizing:border-box}
-body{margin:0;font-family:"DM Sans",system-ui,sans-serif;color:#103D4B;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+body{margin:0;font-family:"DM Sans",system-ui,sans-serif;color:#12303A;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 .list{width:210mm;height:297mm;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr}
 .k{border:.2mm dashed #B9C7CC;display:flex;flex-direction:column;overflow:hidden}
-.f{height:44mm;background:#116D76 center/cover no-repeat}
-.f--bez{background:linear-gradient(135deg,#116D76,#103D4B)}
+.f{height:44mm;background:#12303A center/cover no-repeat}
+.f--bez{background:linear-gradient(135deg,#12303A,#12303A)}
 .t{flex:1;padding:6mm 7mm;display:flex;flex-direction:column;gap:1.6mm}
 h1{margin:0;font:800 6.2mm/1.15 Manrope,sans-serif;letter-spacing:-.02em}
-.m{margin:0;color:#536D77;font-size:3.4mm}
-.h{margin:1.5mm 0 0;font:700 4.1mm/1.3 Manrope,sans-serif;color:#116D76}
+.m{margin:0;color:#5B6F75;font-size:3.4mm}
+.h{margin:1.5mm 0 0;font:700 4.1mm/1.3 Manrope,sans-serif;color:#12303A}
 p{margin:0;font-size:3.5mm;line-height:1.4}
 .q{margin-top:auto;display:flex;gap:4mm;align-items:center}
 .q img{width:30mm;height:30mm;display:block}
 .q b{display:block;font:700 3.4mm/1.3 Manrope,sans-serif}
-.q span{display:block;margin-top:1mm;font-weight:600;font-size:3.3mm;color:#116D76;word-break:break-all}
-.q small{display:block;margin-top:1.4mm;font-size:2.9mm;color:#536D77}
-.upute{font:14px/1.5 "DM Sans",sans-serif;padding:16px 20px;background:#EDF5F6}
+.q span{display:block;margin-top:1mm;font-weight:600;font-size:3.3mm;color:#12303A;word-break:break-all}
+.q small{display:block;margin-top:1.4mm;font-size:2.9mm;color:#5B6F75}
+.upute{font:14px/1.5 "DM Sans",sans-serif;padding:16px 20px;background:#EFEEE8}
 @media print{.upute{display:none}}
 </style></head><body>
 <p class="upute">Četiri kartice na jednom listu A4 — izrežite po isprekidanim crtama. Ispis se otvara sam; ako ne, pritisnite Ctrl + P (na Macu ⌘ + P).</p>

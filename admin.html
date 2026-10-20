@@ -19,7 +19,7 @@
    plans) — bez novih stupaca. Grafikoni i pločice dolaze iz analitika.js/.css
    (isti modul kao analitika domaćina u dashboardu).
    ========================================================================== */
-:root{--ink-mut:#536D77}
+:root{--ink-mut:#5B6F75}
 body{background:var(--bg-page)}
 #gate,#denied{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;text-align:center;padding:24px;background:var(--bg-page);z-index:99}
 #denied{display:none}
@@ -120,8 +120,8 @@ textarea.inp{padding:12px 14px;min-height:140px;resize:vertical}
 .sys__d.no{background:transparent;box-shadow:inset 0 0 0 2px var(--text-warm)}
 
 /* detalji domaćina */
-.dlg{width:min(880px,calc(100vw - 32px));max-height:calc(100vh - 32px);padding:0;border:0;border-radius:var(--radius-feature);background:var(--bg-surface);color:var(--text);box-shadow:0 24px 64px rgba(10,42,51,.28)}
-.dlg::backdrop{background:rgba(10,42,51,.45)}
+.dlg{width:min(880px,calc(100vw - 32px));max-height:calc(100vh - 32px);padding:0;border:0;border-radius:var(--radius-feature);background:var(--bg-surface);color:var(--text);box-shadow:0 24px 64px rgba(14,34,41,.28)}
+.dlg::backdrop{background:rgba(14,34,41,.45)}
 .dlg__head{position:sticky;top:0;z-index:1;display:flex;justify-content:space-between;gap:16px;align-items:flex-start;padding:20px 24px;border-bottom:1px solid var(--border);background:var(--bg-surface)}
 .dlg__head h2{font:800 24px/1.2 var(--font-ui);letter-spacing:-.02em;margin-top:4px}
 .dlg__body{padding:20px 24px 28px;display:grid;gap:20px}
@@ -697,7 +697,9 @@ function dovrsenost(p){
 const cijena=id=>Number(ODMORIA_PLANS[id]?.monthlyPriceEur||0)
 /* Stvarni mjesečni iznos domaćina: osobni popust (ako ga ima) se računa;
    općenite akcije vrijede za nove kupnje, pa ne mijenjaju postojeći MRR. */
-const cijenaDom=h=>{const pop=popustZa(h.efektivni,'month',h.user_id,{samoOsobni:true});return pop?pop.cijena:cijena(h.efektivni)}
+/* v5: cijena po objektu × plaćeni objekti (subscriptions.kolicina); ručno dodijeljen plan → broj objekata */
+const objektaDom=h=>{const P=ODMORIA_PLANS[h.efektivni];if(!P?.poObjektu)return 1;return Math.max(P.minProperties||1,Number(h.sub?.kolicina)||h.props.length||1)}
+const cijenaDom=h=>{const pop=popustZa(h.efektivni,'month',h.user_id,{samoOsobni:true});return (pop?pop.cijena:cijena(h.efektivni))*objektaDom(h)}
 const planIme=id=>ODMORIA_PLANS[id]?.name||id
 const icalStar=p=>(p.ical_booking_url||p.ical_airbnb_url)&&(!p.ical_last_sync||(Date.now()-new Date(p.ical_last_sync))/864e5>=7)
 function relTs(ts){ if(!ts)return 'nema u 90 dana'; const n=A.razlikaDana(A.tsUDan(ts),A.danas()); return n===0?'danas':n===1?'jučer':'prije '+n+' '+A.mn(n,'dan','dana','dana') }

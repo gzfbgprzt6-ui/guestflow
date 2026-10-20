@@ -14,7 +14,7 @@ const FALLBACK = {
   free: {
     id: "free",
     name: "Free",
-    description: "Za prvi digitalni vodič",
+    description: "Za prvi objekt",
     sortOrder: 1,
     monthlyPriceEur: 0,
     yearlyPriceEur: 0,
@@ -32,14 +32,17 @@ const FALLBACK = {
     canRemoveBranding: false,
     canCloneProperty: false,
     whiteLabel: false,
+    mogucnosti: [],
   },
   pro: {
     id: "pro",
-    name: "Pro",
-    description: "Za domaćine s do 5 objekata",
+    name: "Domaćin",
+    description: "Za 1–5 objekata, cijena po objektu",
     sortOrder: 2,
-    monthlyPriceEur: 15,
-    yearlyPriceEur: 150,
+    monthlyPriceEur: 12,
+    yearlyPriceEur: 99,
+    poObjektu: true,
+    minProperties: 1,
     seasonPriceEur: null,
     maxProperties: 5,
     maxPhotosPerProperty: 30,
@@ -54,16 +57,19 @@ const FALLBACK = {
     canRemoveBranding: false,   // odluka vlasnika: oznaka i na Pro (sql/add-reviews.sql)
     canCloneProperty: true,
     whiteLabel: false,
+    mogucnosti: ["koraci", "preporuke", "ocjena", "evisitor", "stilovi", "cistacica", "izravno"],
   },
   business: {
     id: "business",
-    name: "Business",
-    description: "Za profesionalce i timove",
+    name: "Agencija",
+    description: "Za 6 i više objekata, cijena po objektu",
     sortOrder: 3,
-    monthlyPriceEur: 49,
-    yearlyPriceEur: 490,
+    monthlyPriceEur: 9,
+    yearlyPriceEur: 89,
+    poObjektu: true,
+    minProperties: 6,
     seasonPriceEur: null,
-    maxProperties: 15,
+    maxProperties: Infinity,
     maxPhotosPerProperty: 50,
     maxLocalPlacesPerProperty: 100,
     maxTransportPerProperty: 50,
@@ -76,6 +82,7 @@ const FALLBACK = {
     canRemoveBranding: true,
     canCloneProperty: true,
     whiteLabel: true,
+    mogucnosti: ["koraci", "preporuke", "ocjena", "evisitor", "stilovi", "cistacica", "promocija", "email", "izravno", "agencija", "brend"],
   },
 };
 
@@ -101,6 +108,9 @@ function fromRow(row) {
     monthlyPriceEur: Number(row.monthly_price_eur ?? base.monthlyPriceEur),
     yearlyPriceEur: Number(row.yearly_price_eur ?? base.yearlyPriceEur),
     seasonPriceEur: row.season_price_eur == null ? null : Number(row.season_price_eur),
+    // cijena po objektu (sql/add-per-object-plans.sql); bez stupca vrijedi rezerva
+    poObjektu: row.po_objektu == null ? !!base.poObjektu : !!row.po_objektu,
+    minProperties: num(row.min_properties, base.minProperties || 1),
     maxProperties: num(row.max_properties, base.maxProperties),
     maxPhotosPerProperty: num(row.max_photos_per_property, base.maxPhotosPerProperty),
     maxLocalPlacesPerProperty: num(row.max_local_places, base.maxLocalPlacesPerProperty),
@@ -114,6 +124,8 @@ function fromRow(row) {
     canRemoveBranding: !!row.can_remove_branding,
     canCloneProperty: !!row.can_clone_property,
     whiteLabel: !!row.white_label,
+    // plans.mogucnosti (sql/add-plan-features.sql); bez stupca vrijedi rezerva gore
+    mogucnosti: Array.isArray(row.mogucnosti) ? row.mogucnosti : base.mogucnosti,
   };
 }
 
@@ -251,6 +263,60 @@ export function getPlan(planId) {
   return ODMORIA_PLANS[normalizePlanId(planId)];
 }
 
+/**
+ * Otključava li plan mogućnost (koraci, preporuke, ocjena, evisitor, stilovi,
+ * cistacica, promocija, email). Izvor je plans.mogucnosti u bazi.
+ */
+export function imaMogucnost(planId, kljuc) {
+  return (getPlan(planId).mogucnosti || []).includes(kljuc);
+}
+
+/** Najjeftiniji plan koji otključava mogućnost — za oznaku „Pro” / „Business”. */
+export function planZaMogucnost(kljuc) {
+  return Object.values(ODMORIA_PLANS)
+    .filter((p) => (p.mogucnosti || []).includes(kljuc))
+    .sort((a, b) => a.sortOrder - b.sortOrder)[0] || null;
+}
+
+// ---------------------------------------------------------------------------
+//  Cijena po objektu (v5): Domaćin 1–5, Agencija 6+. Račun = cijena × objekti.
+// ---------------------------------------------------------------------------
+
+/** Koliko se objekata plaća za n objekata na planu (Agencija najmanje 6). */
+export function placeniObjekti(planId, n) {
+  const p = getPlan(planId);
+  if (!p.poObjektu) return 1;
+  return Math.max(p.minProperties || 1, Math.max(1, Math.floor(Number(n) || 1)));
+}
+
+/** Ukupno za n objekata (s popustom ako vrijedi). */
+export function ukupnoZa(planId, interval, n) {
+  return Math.round(cijenaPlana(planId, interval) * placeniObjekti(planId, n) * 100) / 100;
+}
+
+/** Plan koji odgovara broju objekata: 1 → Free, do 5 → Domaćin, više → Agencija. */
+export function planZaBroj(n, { besplatno = true } = {}) {
+  const lista = listPlans().filter((p) => p.monthlyPriceEur > 0 || besplatno);
+  return lista.find((p) => Number(n) <= p.maxProperties && (p.poObjektu || p.monthlyPriceEur === 0)) || lista[lista.length - 1];
+}
+
+/** „ / objekt” uz cijenu kad je cijena po objektu */
+export function poObjektuTxt(planId) {
+  return getPlan(planId).poObjektu ? " / objekt" : "";
+}
+
+/**
+ * Koliko objekata korisnik smije imati: plan, a kad je plaćeno po objektu,
+ * plaćena količina (subscriptions.kolicina) — ista pravila kao plan_limit().
+ */
+export function limitObjekata(planId, sub) {
+  const p = getPlan(planId);
+  const max = p.maxProperties;
+  const kol = sub && Number(sub.kolicina);
+  if (p.poObjektu && normalizePlanId(planId) !== "free" && kol >= 1) return Math.min(max, Math.max(p.minProperties || 1, kol));
+  return max;
+}
+
 export function listPlans() {
   return Object.values(ODMORIA_PLANS).sort((a, b) => a.sortOrder - b.sortOrder);
 }
@@ -344,5 +410,9 @@ export function limitMessage(resource, planId) {
   const max = limitFor(planId, resource);
   const label = RESOURCE_LABEL[resource];
   if (max === Infinity || !label) return "Dosegnuli ste limit trenutnog plana.";
+  if (resource === "properties" && plan.id !== "free" && plan.poObjektu)
+    return `Pretplata pokriva ${max} ${plural(max, label)}. Dodajte objekt u Pretplati — plaća se samo razlika.`;
+  if (resource === "properties" && plan.id === "free")
+    return `Free plan uključuje 1 objekt. Za više objekata odaberite Domaćin — plaća se po objektu.`;
   return `${plan.name} plan uključuje ${max} ${plural(max, label)}. Nadogradite plan za više.`;
 }

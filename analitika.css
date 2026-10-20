@@ -4,8 +4,8 @@
    Boje su v2 vrijednosti (iste u odmoria.css i u dashboardu): jedna
    sekvencijalna petrol rampa, nikad kategorijske boje.
    ========================================================================== */
-.an{--an-ink:#103D4B;--an-mut:#536D77;--an-bar:#116D76;--an-bar-hi:#0B535B;--an-soft:#EDF5F6;
-  --an-line:#E0E8EB;--an-grid:rgba(16,61,75,.10);--an-warm:#F5E9CE;--an-warm-ink:#7A5A1E;--an-paper:#fff}
+.an{--an-ink:#12303A;--an-mut:#5B6F75;--an-bar:#12303A;--an-bar-hi:#1E4654;--an-soft:#EFEEE8;
+  --an-line:#E3E5E0;--an-grid:rgba(18,48,58,.10);--an-warm:#FCEFD2;--an-warm-ink:#7A5A1E;--an-paper:#fff}
 
 /* pločice */
 .an-kpis{display:grid;gap:16px;grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:16px}
@@ -18,7 +18,7 @@
 
 /* traka s rasponom */
 .an-bar-top{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:16px}
-.an-seg{display:inline-flex;border:1px solid #768B94;border-radius:7px;overflow:hidden;background:var(--an-paper)}
+.an-seg{display:inline-flex;border:1px solid #7D8A8C;border-radius:7px;overflow:hidden;background:var(--an-paper)}
 .an-seg button{min-height:40px;padding:0 14px;border:0;border-left:1px solid var(--an-line);background:none;color:var(--an-ink);cursor:pointer;font:700 14px/1 "Manrope",system-ui,sans-serif}
 .an-seg button:first-child{border-left:0}
 .an-seg button[aria-pressed="true"]{background:var(--an-ink);color:#fff}
@@ -72,7 +72,7 @@
 .an-tag.is-out{background:#F2F4F5;color:#3E5660}
 .an-tag.is-warn{background:var(--an-warm);color:var(--an-warm-ink)}
 .an-src{font-size:13px;color:var(--an-mut)}
-.an-empty{margin:0;padding:24px;border:1px dashed var(--an-line);border-radius:10px;background:#FCFCFA;text-align:center;color:var(--an-mut);font-size:14px}
+.an-empty{margin:0;padding:24px;border:1px dashed var(--an-line);border-radius:10px;background:#F6F5F1;text-align:center;color:var(--an-mut);font-size:14px}
 
 .an-grid2{display:grid;gap:16px;grid-template-columns:repeat(2,minmax(0,1fr))}
 .an-grid2 > *{min-width:0}
@@ -101,5 +101,5 @@
   .an-kpi:nth-child(3),.an-item:nth-child(3){animation-delay:.1s}
   .an-kpi:nth-child(4),.an-item:nth-child(4){animation-delay:.15s}
   .an-kpi,.an-item{transition:box-shadow .2s ease,transform .2s ease}
-  .an-kpi:hover{box-shadow:0 10px 28px rgba(16,61,75,.08);transform:translateY(-1px)}
+  .an-kpi:hover{box-shadow:0 10px 28px rgba(18,48,58,.08);transform:translateY(-1px)}
 }

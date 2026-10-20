@@ -44,7 +44,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 ├── p.html                  # Javna stranica objekta (?slug=xxx) — AKTIVNA, **redizajn v2 iz Figme** (`odmoria.css`), teme se NE primjenjuju
 ├── h.html                  # Privatni gostinski hub (?token=xxx) — AKTIVNA, **redizajn v2** (`odmoria.css`), podstranice preko #adrese; /h/demo = primjer
 ├── c.html                  # Raspored za čistačicu (/c/<token>) — dolasci i odlasci, bez šifri i imena
-├── sw.js                   # service worker vodiča (opseg /h/) — rad bez interneta
+├── sw.js                   # service worker vodiča (opseg /h/) — rad bez interneta (VERZIJA odmoria-vodic-13)
 ├── push-sw.js              # service worker obavijesti domaćina (opseg /dashboard) — samo push i klik, bez predmemorije
 ├── manifest-domacin.webmanifest  # dashboard kao aplikacija na početnom zaslonu (iPhone obavijesti to traže)
 ├── dashboard.html          # Glavni host dashboard — AKTIVNA, **redizajn v2** (vlastiti CSS, ista imena tokena), navigacija po grupama
@@ -125,6 +125,11 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
     ├── add-referrals.sql                # moje_preporuke(), admin_preporuke() — Preporuči domaćina (user_metadata.preporucio)
     ├── add-push.sql                     # obavijesti na mobitel: push_pretplate, push_prijava/odjava/proba, VAPID u Vaultu, okidači → /api/obavijest
     ├── add-arrival-steps.sql            # sections.ulazak_koraci (jsonb, ≤ 12): „Kako ući” po koracima sa slikama, samo vodič
+    ├── add-guest-arrived.sql            # bookings.usao_at + gost_usao(token): „Ušli smo” u vodiču → push domaćinu (jednom)
+    ├── add-team-roles.sql               # v5: property_members.uloga (upravitelj/recepcija/vlasnik), ima_ulogu(), politike „suradnik” po ulozi; properties.brend + mogucnosti_vodica() s brendom
+    ├── add-direct-bookings.sql          # v5: sezonske_cijene, kapara_posto, inquiries.iznos (računa baza: cijena_boravka), kod, pristanak_ponude; mogućnost „izravno”
+    ├── add-per-object-plans.sql         # v5: cijena po objektu (po_objektu, min_properties, subscriptions.kolicina), plan_limit, moji_objekti_limit()
+    ├── add-plan-features.sql            # plans.mogucnosti (koraci, preporuke, ocjena, evisitor, stilovi, cistacica, promocija, email) + mogucnosti_vodica(token, slug)
     └── fix-missing-columns-and-storage.sql # ALTER TABLE dopune (photo_urls, ical_*, beds/bathrooms/size_m2) + storage bucket policy
 ```
 
@@ -436,11 +441,22 @@ URL-ovi vraćenih fotografija spremaju se u `properties.photo_urls` (jsonb) i `p
 
 ## Planovi i limiti
 
-| Plan | Objekti | Fotografije | Cijena |
+| Plan (id) | Objekti | Fotografije | Cijena |
 |------|---------|-------------|--------|
-| Free | 1 | 5 | €0 zauvijek |
-| Pro | 5 | 30 | €15/mj ili €150/god |
-| Business | 15 | 50 | €49/mj ili €490/god |
+| Free (`free`) | 1 | 5 | €0 zauvijek |
+| Domaćin (`pro`) | 1–5 | 30 | **€12 po objektu/mj** ili €99 po objektu/god |
+| Agencija (`business`) | 6+ (plaća se najmanje 6) | 50 | **€9 po objektu/mj** ili €89 po objektu/god |
+
+**Cijena po objektu (v5, `sql/add-per-object-plans.sql`):** `plans.po_objektu`,
+`plans.min_properties`, `subscriptions.kolicina` (upisuje samo webhook iz
+Stripeove `quantity`). `plan_limit(…,'properties')` = plaćena količina u
+granicama plana; bez količine (admin) = `max_properties`. U kodu:
+`limitObjekata(plan, sub)`, `placeniObjekti()`, `ukupnoZa()`, `planZaBroj()`
+(`plans.js`). Checkout prima `objekata`; postojeću pretplatu **mijenja**
+(isti kupac, razmjerno) i vraća `{promijenjeno:true}`. Broj objekata bira
+se samo u dashboardu → Pretplata (`OBJ_N`, `brojObjekata()`); Račun i zid
+limita vode tamo (`?otvori=pretplata`). Naslovnica ima računicu
+(`#racunica`) s upisivom provizijom.
 
 **Kako limiti rade (od rujna 2026.):**
 
@@ -575,7 +591,11 @@ Dashboard **ne učitava `odmoria.css`** — ima vlastiti potpun CSS s istim vrij
 
 ## Dorade vlasnika (16. 10. 2026.)
 
-- **Logo B2** („izlazak sunca” na „i”, Manrope): `assets/logo/*.svg`, u svim
+- **Logo C „Sunce u o”** (v5, 20. 10.; zamijenio B2): prvo „o” je prsten s
+  pola sunca u otvoru, točka na „i” je obična. Dvije boje: tinta `#12303A`,
+  sunce `#F2B33D` (+ perla `#F6F5F1`, crvena samo hitno) — tokeni u
+  `odmoria.css` (`--sunce`, `--sunce-meko`), dashboardu i zadanom stilu.
+- **Logo B2** (stari, opis ostaje radi povijesti): `assets/logo/*.svg`, u svim
   stranicama `<img class="o-logo">` (visina 1,12 em, `odmoria.css` +
   dashboard) i `<link rel="icon" href="/assets/logo/ikona.svg">`.
 - **Osnovno**: jedna zbijena kartica; vrsta = kapsule `TYPES` + „Drugo…” s
@@ -593,7 +613,7 @@ Dashboard **ne učitava `odmoria.css`** — ima vlastiti potpun CSS s istim vrij
   skupinama (`renderAmenityCatalog()`), `amenities.icon` = ime Lucide ikone;
   p.html: `ikonaZa(name) || pick(…AMEN_IC)`. Nova ikona = simbol `i-<ime>` u
   spriteu dashboarda **i** p.html (`lucide-static`, kao skripta `ikone.py`).
-  `sadrzaji.js` je u predmemoriji `sw.js` (`VERZIJA` `odmoria-vodic-7`).
+  `sadrzaji.js` je u predmemoriji `sw.js` (`VERZIJA` `odmoria-vodic-10`).
 - **`data-bez-spremanja`** na polju = ne pali kapljicu (pretraga sadržaja,
   FB grupe…). Paneli koji se spremaju odmah inače bi lažno tražili „Spremi”.
 - **Predlošci** (`PREDLOSCI.faq` 20, `.rules` 12, `nacrtajPredloske()`): klik
@@ -623,6 +643,116 @@ Dashboard **ne učitava `odmoria.css`** — ima vlastiti potpun CSS s istim vrij
   Facebook sharer / wa.me / Njuškalo. **Moje Facebook grupe** u
   `user_metadata.fb_grupe` (bez SQL-a): klik kopira tekst, preuzme sliku,
   otvori grupu. Objava u grupe preko API-ja ne postoji (Meta, 2024.).
+- **Nova početna vodiča** (19. 10., proba): umjesto pločica i „Vaš pristup”
+  — `#karta` (karta za odmor: datumi, vremena, živo odbrojavanje, „sef” sa
+  šifrom kroz `UNLOCKED`, zapečaćeno `••••` → `#dolazak`), `#brzo` „Brzo do
+  informacije” (`renderBrzo()`: odgovor se odmah prikaže u `#odgovor`, šifre
+  samo kroz `secretHtml()`), `#sada` po fazi (`faza()`: prije = vrijeme
+  dolaska puni poruku, boravak = preporuka dana, odlazak = napredak popisa),
+  „Sve za boravak” = **pametni popis** (`renderTiles()`: težina po fazi,
+  prva stavka velika „Sada je na redu”; odrađeno — `GOTOVO` u localStorage
+  `odm-gotovo:<token>`, `oznaci(id)`: ulaz, wifi, prijava, pravila, odlazak —
+  spušta se u „Već pogledano”), pismo domaćina i `#pisi` (`renderPisi()`, `posaljiDomacinu()` → wa.me / sms /
+  mailto — poruka ide domaćinu izravno). Donja traka se na početnoj ne vidi.
+  `otkljucaj()` ponovno crta kartu, „Sada” i brza pitanja.
+  **Ulazak korak po korak** (`#ulaz/<n>`, `renderUx()`, `uxIdi()`): tamni
+  ekran preko cijelog zaslona, jedan korak, crtice napretka, povlačenje prsta i
+  strelice; šifra na koraku sa zvjezdicom kroz `secretHtml()`; „Ušli smo” →
+  `javiUlazak()` → `gost_usao(token)` (`sql/add-guest-arrived.sql`, push
+  `usao` u `api/_push.js`, jednom po rezervaciji; iznad gumba piše da domaćin
+  dobiva obavijest — odluke 33). Bez funkcije ili bez domaćinove push
+  pretplate kraj nudi „Javi domaćinu da ste stigli” (wa.me / mailto); prije
+  dolaska gumb je „Gotovo” i ništa se ne šalje. Dashboard u popisu
+  rezervacija pokazuje „✓ Gost je ušao · vrijeme”. Dolazak ima karticu sa
+  sličicama koraka (`renderUlaz()`). **Podstranice** imaju zaglavlje u boji teme
+  (`vglava(view)`: naslov, opis, činjenice u kapsulama; `#sadrzaj[data-ton]`,
+  `body[data-v]`) i sadržaj u bijelim karticama na sivoj podlozi. **Odlazak je
+  zasebna stranica `#odlazak`** (popis s trakom napretka, „Trebate kasniju
+  odjavu?”, ocjena) — stara adresa `#kuca/odlazak` (e-mail gostu) vodi
+  ovamo; Kuća je samo Wi-Fi, uređaji, pravila (ikone po riječi, `RULE_IC`) i
+  pitanja. **Domaćin**: brze poruke (`BRZE_PORUKE`, `[data-poruka]`) puni
+  `#dom-tx`, slanje istim `posaljiDomacinu(kanal, polje)`. Riječ domaćina
+  (`welcome_msg`) se na početnoj vodiča **više ne prikazuje** (vlasnik, 19. 10.).
+- **v5 čišćenje dashboarda (20. 10., odluke 35):** tab Analitika skriven
+  (`data-skriven`; panel i `renderAnalytics()` ostaju za `nav('analytics')`),
+  Danas = popunjenost (gore) + Upiti + **Noći izravno** (`nociPoIzvoru().odmoria`);
+  pregled gosta (telefon desno) skriven CSS-om (`--preview-width:0`); traka
+  mjeseca iznad kalendara skrivena; stilovi u izboru samo `izbor:true`
+  (Svijetli = zadani, Topli = `priroda`, Tamni = `luksuz`; stari stil objekta
+  ostaje vidljiv); sadržaji = `AM_NAJCESCI` (12) + „Još sadržaja”; prijevoz i
+  atrakcije = vrste preporuke (stari popisi `.v5-prazno` dok su prazni);
+  „Preuzmi sadržaj” je red u Upravljanju objektom; **„Prevedi besplatno” je
+  automatski**: `autoPrevedi()` nakon `saveBasic/saveArrival/saveKoraci/
+  saveDeviceInfo/saveListItem/saveWifi` (omotane) i pri otvaranju Jezika —
+  MyMemory → `prijevodi_rucni`, tiho. Preporuči domaćina ima napomenu „nagrada
+  uskoro”. **Tražilica** (`tbIndeks()`): dijelovi, naslovi kartica, natpisi
+  polja (`label[for]`), radnje, objekti, gosti (`AN.bookings`), upiti, preporuke,
+  pravila, pitanja i katalog sadržaja; `tbPokazi(sel)` skrolne i bljesne
+  (`.tb-bljesak`).
+- **Agencija v5** (20. 10., odluke 37): panel `sviobjekti` (Danas → „Svi
+  objekti”, `data-mog="agencija"`, tab `data-skriven` dok je samo 1 objekt i
+  nije Agencija — `primijeniPlan()`): `agOtvori()` (availability i bookings za
+  sve `PROPS`, `agNizovi()`), `#ag-kal` (30 dana × objekti), `agPrimijeni()`
+  (= `prenesiSadrzaj()` za više objekata), `agIzvjestaj()` (novi prozor,
+  ispis/PDF, bez iznosa). Mogućnost `agencija` dodaje `add-per-object-plans.sql`.
+- **Uloge i brend v5** (20. 10., odluke 37, `sql/add-team-roles.sql`): `PROP.__uloga`
+  na dijeljenom objektu; `ULOGA_PANELI` + `ulogaDopusta()` / `primijeniUlogu()`
+  skrivaju (`data-uloga-skriven`) i `nav()`/`openGroup()` preusmjere — **baza
+  to provodi RLS-om**, UI samo ne nudi. Tim: `#tim-uloga`, `promijeniUlogu()`,
+  „Čistačica” vodi na link za čistačicu. Brend: `#brend-card` (`spremiBrend()`,
+  `kontrastSBijelim()` ≥ 4,5), vodič `BREND` → `primijeniBrend()` (tokeni
+  `--bg-inverse/--action/--ton/--brend`, `#brend-ime`, `#brend-dno`).
+  Naslovnica: zvjezdica `#i-star` (`.ic--zv`) = novo u planu; računica kaže
+  noći **po objektu** (`#rac-isp-s`).
+- **Izravne rezervacije v5** (20. 10., odluke 36, `sql/add-direct-bookings.sql`):
+  `cijene.js` (`cijenaNoci`, `cijenaBoravka`, `najnizaCijena`, `uMD`/`izMD`) =
+  ista pravila kao `cijena_noci()`/`cijena_boravka()` u bazi — mijenjati
+  zajedno. p.html: „od … / noć” = najniža cijena, iznos odabranog termina po
+  sezonama, obrazac upita ima `#iq-kod` i `#iq-ponude` (bez stupaca upis se
+  ponovi bez njih). Dashboard: Cijene → `#izravno-card` (`SEZ`,
+  `saveIzravno()`; IBAN/primatelj u `user_metadata`), Upiti → oznake iznos /
+  kod / pristanak i `otvoriPonudu()` → `#ponuda-dlg` (`PO_TX` hr/en/de/it,
+  jezik po `jezikIzMaila`), `#povratni-card` (`POVRATNI()`,
+  `savePovratni()`, `renderPovratni()`). Sve pod `data-mog="izravno"`.
+- **Kalendar v5** (20. 10.): `.day.busy.rez` tinta (izravno), `.day.ical`
+  sivo + značka `.plt` B/A na početku trake, ručno = svijetlo šrafirano,
+  **praznine** 1–3 noći između boravaka (`racunajPraznine()` →
+  `CAL_PRAZ`, `A.praznine(…,3)`) = sunce, crtkano (`.praz`), danas = sunčani
+  krug oko broja. Ispod kalendara `#cal-strana` (`calStrana()`): popunjenost
+  30 dana, noći izravno, s platformi + popis praznina s
+  **„Kopiraj link s datumima”** (`kopirajLinkSDatumima()` →
+  `/p/<slug>?od=&do=`) i „Objava” (`otvoriObjave`). `p.html`
+  `terminIzAdrese()` označi termin iz `?od=&do=` (samo budući, `od < do`) i
+  skrolne do kalendara. Traka mjeseca (`.cal-traka`) i `#cal-stat` skriveni.
+- **v4 (19. 10., odluke 34) — vodič na jednoj stranici i dashboard u 4 dijela.**
+  *Vodič:* nema podstranica osim `#ulaz` (korak po korak) i `#prijava`
+  (eVisitor obrazac). Početna: karta → trake `#skok` (skrolaju do odjeljka,
+  `skociNa()`) → `#sada` (tamna kartica po fazi) → `#odjeljci`: statični
+  `section.odj#o-<id>` (ulaz, wifi, kuca, pravila, okolica, prijava,
+  odlazak) u koje je **premješten stari HTML** (isti ID-jevi: `#codes-arr`,
+  `#codes-wifi`, `#dev-list`, `#rules`, `#faq-blk`, `#out-list`, `#stars`…),
+  pa stari rendereri rade kao prije. `poredaj()` ih slaže po fazi
+  (`REDOSLIJED`; `faza()` sad ima i `dolazak` = cijeli dan dolaska) **samo
+  premještanjem u DOM-u** (ocjena ne gubi upisano); obavljeno (`GOT_KLJUC`:
+  ulaz, wifi, prijava) dobije `.odj--got` (sažetak u jednom redu, „Prikaži”)
+  i ide pod `#got-oz`. `oznaci(id, false)` (kopirana lozinka) ne miče
+  karticu dok gost ne otvori vodič ponovno (`OTVORENO`). Stare adrese
+  (`#dolazak`, `#kuca[/pravila|/odlazak]`, `#preporuke`, `#domacin`,
+  `#hitno`, `#odlazak`) skrolaju do odjeljka (`ODJ_ZA`, `ODJ_SIDRO`). Popis za
+  odlazak tek dan prije odlaska (`#out-pred`). Kuća = `details.ur` pločice.
+  Domaćin i Hitno su kartice na dnu; „Vodič pokreće Odmoria” (`#pokrece`) po
+  `oznaka` iz baze. **Po planu** (`MOG`, `imaM(k)` iz `mogucnosti_vodica`):
+  bez `koraci` koraci su tekst bez slika i bez `#ulaz`; bez `preporuke`,
+  `ocjena`, `evisitor` tih dijelova nema. Gost nikad ne vidi „zaključano”.
+  Bez SQL-a `MOG = null` → sve kao prije.
+  *Dashboard:* grupe **Danas** (`pregled`) · **Gosti** (`boravci`) ·
+  **Vodič** (`vodic`: arrival, guide = „Preporuke”, prijevodi = „Jezici”) ·
+  **Javna stranica** (`objekt`: basic = „Opis i izgled”, photos, pricing,
+  links, objave = „Promocija”); `linkovi` je spojen (openGroup('linkovi') →
+  Linkovi i QR). Dijelovi s `data-mog="…"` se zaključaju po
+  `imaMogucnost(planObjekta(), k)` (`plans.js`, rezerva u `FALLBACK`):
+  `primijeniPlan()` u `selectProp()` ubaci jedan red `.zakl` s gumbom plana;
+  `data-mog-tiho` = sakrij bez reda (prijevoz, atrakcije uz preporuke).
 - **Dolazak u vodiču, redom** (vlasnik, 16. 10.): kartica „Prijava · Odjava”
   (`renderKad()`: datumi iz rezervacije + **živo odbrojavanje** do prijave,
   `KAD_TICK` svake sekunde, zatim „Prijava je otvorena”) → koraci ulaska →
@@ -985,7 +1115,7 @@ objekata je **odbijen** (`docs/odluke.md`, točka 19).
 učitava). **Sve pod `prefers-reduced-motion: no-preference`**, a `veselje()`
 sam provjeri postavku — testovi rade s `reducedMotion:'reduce'`, pa iskrica
 tamo namjerno nema. `pokret.js` je u predmemoriji service workera (`sw.js`,
-`VERZIJA` sada `odmoria-vodic-7`). Dashboard: svaki gumb čiji natpis počinje s
+`VERZIJA` sada `odmoria-vodic-10`). Dashboard: svaki gumb čiji natpis počinje s
 „Kopiraj” sam dobije kvačicu (jedan slušač na `document`); iskrice u
 dashboardu nema.
 

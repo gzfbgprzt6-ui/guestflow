@@ -1,4 +1,4 @@
-# Odmoria — MUST DO i stanje (16. 10. 2026.)
+# Odmoria — MUST DO i stanje (19. 10. 2026.)
 
 Kratko: što je u produkciji, što je postavljeno, što još ostaje vama.
 Stripe i obrt su namjerno izostavljeni (kasnije).
@@ -36,11 +36,17 @@ Vercel su postavljeni i provjereni.
 
 ## 2. Ostaje vama (ništa hitno)
 
-- [ ] **Nakon puštanja u main (19. 10.)**: u Supabaseu pokrenuti `sql/add-push.sql`
-      (obavijesti na mobitel) i ponovno KORAK 1 iz `sql/sections-security.sql`
-      (stari link više ne otključava šifre) — Claude to radi uz vašu potvrdu
-- [ ] Na mobitelu: dashboard → 🔔 → „Uključi” (iPhone: prvo Dijeli → Dodaj na
-      početni zaslon, pa otvoriti s početnog zaslona)
+- [x] `sql/add-push.sql` (obavijesti na mobitel) i KORAK 1 iz
+      `sql/sections-security.sql` (stari link ne otključava šifre) — pokrenuto 19. 10.,
+      obavijest provjerena na iPhoneu
+- [ ] **Uz puštanje novog vodiča u main** (Claude pokreće uz vašu potvrdu, jednim paketom):
+      `sql/add-guest-arrived.sql` („Ušli smo” → obavijest domaćinu) i
+      `sql/add-plan-features.sql` (što koji plan otključava; jezika 6, suradnika 3) i
+      `sql/add-per-object-plans.sql` (Domaćin 12 € / Agencija 9 € po objektu, broj objekata iz Stripea) i
+      `sql/add-direct-bookings.sql` (sezonske cijene, iznos upita, kod povratnika, pristanak na ponude) i
+      `sql/add-team-roles.sql` (uloge u timu, brend agencije u vodiču)
+- [ ] Privatnost: dodati rečenicu da vodič na gostov klik „Ušli smo” javlja
+      domaćinu vrijeme ulaska (vidi `docs/odluke.md`, točka 33)
 
 - [ ] **Isprobati na produkciji**: Osnovno (vrsta, kapacitet, stil), Dolazak
       (koraci, parking), Sadržaji, Prijevodi → „Prevedi besplatno”, kalendar 2

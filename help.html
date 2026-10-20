@@ -197,8 +197,8 @@
           <!-- Puni se iz tablice `plans` (plans.js); ovo je rezerva. -->
           <ul id="plan-list">
             <li><strong>Free (0 €)</strong> — 1 objekt, 5 fotografija i 5 preporuka po objektu</li>
-            <li><strong>Pro (15 €/mj)</strong> — 5 objekata, 30 fotografija i 30 preporuka po objektu</li>
-            <li><strong>Business (49 €/mj)</strong> — 15 objekata, 50 fotografija i 100 preporuka po objektu</li>
+            <li><strong>Domaćin (12 € po objektu/mj)</strong> — 1–5 objekata, 30 fotografija i 30 preporuka po objektu</li>
+            <li><strong>Agencija (9 € po objektu/mj)</strong> — 6 i više objekata, 50 fotografija i 100 preporuka po objektu</li>
           </ul>
           <p>Svi planovi imaju javnu stranicu, privatni vodič, rezervacije s linkovima i kalendar.</p>
         </div>
@@ -237,8 +237,8 @@
         <div class="acc__a">
           <ul id="photo-list">
             <li><strong>Free:</strong> 5 fotografija po objektu</li>
-            <li><strong>Pro:</strong> 30 fotografija po objektu</li>
-            <li><strong>Business:</strong> 50 fotografija po objektu</li>
+            <li><strong>Domaćin:</strong> 30 fotografija po objektu</li>
+            <li><strong>Agencija:</strong> 50 fotografija po objektu</li>
           </ul>
           <p>Fotografije dodajete u aplikaciji pod <em>Fotografije</em> ili pri postavljanju objekta. Podržani su JPG, PNG i WEBP do 5 MB po fotografiji.</p>
           <p>Prva fotografija je naslovna. Drugu postavite kao naslovnu klikom na nju.</p>
@@ -368,8 +368,9 @@ try {
     const pop = popustZa(p.id, 'month')
     const cijena = p.monthlyPriceEur === 0 ? '0 €'
       : pop ? `${formatEur(pop.cijena)}/mj, ${pop.naziv} ${rokPopusta(pop)} — inače ${formatEur(pop.redovna)}`.replace(/\s+—/, ' —')
-      : formatPlanPrice(p.id) + '/mj'
-    return `<li><strong>${esc(p.name)} (${esc(cijena)})</strong> — ${n(p.maxProperties, 'objekt', 'objekta', 'objekata')}, ` +
+      : formatPlanPrice(p.id) + (p.poObjektu ? ' po objektu/mj' : '/mj')
+    const broj = p.minProperties > 1 ? `${p.minProperties} i više objekata` : p.poObjektu ? `1–${n(p.maxProperties, 'objekt', 'objekta', 'objekata')}` : n(p.maxProperties, 'objekt', 'objekta', 'objekata')
+    return `<li><strong>${esc(p.name)} (${esc(cijena)})</strong> — ${broj}, ` +
       `${n(p.maxPhotosPerProperty, 'fotografija', 'fotografije', 'fotografija')} i ` +
       `${n(p.maxLocalPlacesPerProperty, 'preporuka', 'preporuke', 'preporuka')} po objektu</li>`
   }).join('')

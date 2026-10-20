@@ -42,7 +42,7 @@
 
 /* prvi ekran */
 .hero{position:relative;min-height:360px;display:flex;align-items:flex-end;color:#fff;padding-block:48px;
-  background:linear-gradient(180deg,#A3C4DA 0%,#5E8FA3 30%,#173D4B 62%,#22393F 100%) center/cover no-repeat}
+  background:linear-gradient(180deg,#A3C4DA 0%,#5B6F75 30%,#12303A 62%,#22393F 100%) center/cover no-repeat}
 .hero::after{content:"";position:absolute;inset:0;background:var(--scrim);pointer-events:none}
 .hero > *{position:relative;z-index:1}
 .hero .eyebrow{color:#fff}
@@ -141,7 +141,7 @@
 .gfoot a{color:var(--text);font-weight:600}
 
 /* traka „Trebate nešto?” na mobitelu */
-.dock{position:fixed;left:0;right:0;bottom:0;z-index:40;display:none;background:var(--bg-surface);border-top:1px solid var(--border);box-shadow:0 -8px 24px rgba(16,61,75,.08)}
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:40;display:none;background:var(--bg-surface);border-top:1px solid var(--border);box-shadow:0 -8px 24px rgba(18,48,58,.08)}
 .dock__in{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 16px calc(10px + env(safe-area-inset-bottom))}
 .dock__in span{font-size:14px}
 .dock__in .btn{flex:none;white-space:nowrap}
@@ -222,11 +222,11 @@
 .ulaz__uvod { margin: -4px 0 16px; color: var(--muted); }
 .ulaz__lista { display: grid; gap: 16px; margin: 0; padding: 0; list-style: none; counter-reset: none; }
 .ulaz__k { position: relative; display: grid; overflow: hidden; border: 1px solid var(--border); border-radius: var(--radius-feature); background: var(--bg-surface); box-shadow: 0 10px 30px -22px rgba(10,42,51,.35); }
-.ulaz__f { display: block; width: 100%; padding: 0; border: 0; background: var(--wash, #EDF5F6); cursor: zoom-in; aspect-ratio: 4 / 3; overflow: hidden; }
+.ulaz__f { display: block; width: 100%; padding: 0; border: 0; background: var(--wash, #EFEEE8); cursor: zoom-in; aspect-ratio: 4 / 3; overflow: hidden; }
 .ulaz__f img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; }
 .ulaz__f:hover img { transform: scale(1.03); }
 .ulaz__t { padding: 14px 16px 16px; }
-.ulaz__br { display: inline-block; margin-bottom: 6px; padding: 4px 10px; border-radius: 99px; background: var(--ink, #103D4B); color: #fff; font: 700 11.5px/1 var(--font-ui); letter-spacing: .02em; }
+.ulaz__br { display: inline-block; margin-bottom: 6px; padding: 4px 10px; border-radius: 99px; background: var(--ink, #12303A); color: #fff; font: 700 11.5px/1 var(--font-ui); letter-spacing: .02em; }
 .ulaz__t h3 { margin: 0 0 4px; font: 700 18px/1.3 var(--font-ui); }
 .ulaz__t p { margin: 0; white-space: pre-line; }
 .ulaz__k:not(:last-child)::after { content: ""; position: absolute; left: 50%; bottom: -14px; width: 2px; height: 12px; background: var(--border); }
@@ -245,7 +245,7 @@
 .ulaz-dlg__s { right: 12px; }
 /* parking u vodiču (fotografija + pribadača) */
 .park-g__m { display: grid; gap: 10px; margin-top: 12px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
-.park-g__f { display: block; overflow: hidden; border-radius: var(--radius-feature); aspect-ratio: 4 / 3; background: var(--wash, #EDF5F6); }
+.park-g__f { display: block; overflow: hidden; border-radius: var(--radius-feature); aspect-ratio: 4 / 3; background: var(--wash, #EFEEE8); }
 .park-g__f img { width: 100%; height: 100%; object-fit: cover; }
 .park-g__k { margin: 0; aspect-ratio: 4 / 3; height: auto; }
 .park-g__k iframe { width: 100%; height: 100%; border: 0; }
@@ -257,7 +257,7 @@
 .kad__lbl { display: flex; align-items: center; gap: 8px; font: 700 14px/1.3 var(--font-ui); }
 .kad__tocka { width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex: none; }
 .kad__br { display: flex; gap: 8px; flex-wrap: wrap; }
-.kad__d { display: grid; justify-items: center; min-width: 58px; padding: 8px 6px; border-radius: 10px; background: var(--bg-surface); color: var(--text, #103D4B); }
+.kad__d { display: grid; justify-items: center; min-width: 58px; padding: 8px 6px; border-radius: 10px; background: var(--bg-surface); color: var(--text, #12303A); }
 .kad__d b { font: 800 24px/1 var(--font-ui); font-variant-numeric: tabular-nums; }
 .kad__d i { font: 600 11.5px/1.4 var(--font-ui); font-style: normal; color: var(--text-muted); }
 .kad__rr { display: grid; gap: 8px; }
@@ -270,6 +270,462 @@
 .ulaz__k--sifra { border-color: var(--text-accent); }
 .ulaz__sifra { display: grid; gap: 8px; margin-top: 12px; }
 .ulaz__nap { display: flex; gap: 6px; align-items: center; margin: 0; font-size: 13.5px; color: var(--text-muted); }
+
+/* ==========================================================================
+   NOVA POČETNA (19. 10. 2026.) — karta za odmor, brzi odgovori, faze boravka
+   ========================================================================== */
+.naslov{position:relative;overflow:hidden;color:#fff;background:linear-gradient(180deg,#5B6F75 0%,#12303A 70%,#14313B 100%)}
+.naslov__foto{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.naslov::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,30,38,.18) 0%,rgba(8,30,38,.62) 100%);pointer-events:none}
+.naslov__in{position:relative;z-index:1;max-width:720px;margin-inline:auto;padding:72px max(20px,env(safe-area-inset-right,0px)) 104px max(20px,env(safe-area-inset-left,0px))}
+.naslov .eyebrow{color:#fff;opacity:.95}
+.naslov__ime{margin:8px 0 0;font:400 clamp(34px,7vw,56px)/1.05 var(--font-editorial);letter-spacing:-.015em;overflow-wrap:anywhere;text-wrap:balance}
+.naslov__mj{margin:8px 0 0;display:flex;align-items:center;gap:6px;font-size:15px;color:rgba(255,255,255,.9)}
+.pocetna{position:relative;z-index:2;max-width:720px;margin:-72px auto 0;padding:0 16px 48px;display:grid;gap:18px}
+.pocetna > *{min-width:0}
+.pocetna__h{margin:0 0 10px;font:800 18px/1.25 var(--font-ui);letter-spacing:-.01em}
+@media (prefers-reduced-motion:no-preference){.naslov__foto{animation:o-disi 22s ease-in-out infinite alternate}}
+@keyframes o-disi{to{transform:scale(1.07)}}
+
+/* karta za odmor */
+.karta{position:relative;border-radius:22px;background:var(--bg-surface);box-shadow:0 22px 48px -24px rgba(18,48,58,.55),0 2px 6px rgba(18,48,58,.06)}
+.karta__red{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:10px;padding:20px 22px 18px}
+.karta__s{display:grid;gap:3px;min-width:0}
+.karta__s--d{text-align:right}
+.karta__oz{font:700 11px/1 var(--font-ui);letter-spacing:.13em;text-transform:uppercase;color:var(--text-muted)}
+.karta__sat{font:800 28px/1.05 var(--font-ui);letter-spacing:-.01em;font-variant-numeric:tabular-nums;margin-top:3px}
+.karta__dan{font-size:13.5px;color:var(--text-muted)}
+.karta__let{color:var(--text-accent)}
+.karta__crta{position:relative;margin:0 18px;border-top:2px dashed var(--border)}
+.karta__crta::before,.karta__crta::after{content:"";position:absolute;top:-11px;width:20px;height:20px;border-radius:50%;background:var(--bg-page)}
+.karta__crta::before{left:-28px}.karta__crta::after{right:-28px}
+.karta__dno{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px 18px}
+.karta__st{min-width:0;display:grid;gap:7px}
+.karta__lbl{display:flex;align-items:center;gap:7px;font:700 12.5px/1.3 var(--font-ui);color:var(--text-warm)}
+.karta__lbl--ok{color:#12303A}
+.karta__lbl .ic{width:16px;height:16px}
+.karta__tocka{width:8px;height:8px;border-radius:50%;background:#C98A12;flex:none}
+@media (prefers-reduced-motion:no-preference){.karta__tocka{animation:kad-puls 1.6s ease-in-out infinite}}
+.karta__br{display:flex;gap:5px}
+.karta__d{display:grid;justify-items:center;min-width:42px;padding:6px 3px;border-radius:10px;background:var(--bg-warm)}
+.karta__d b{font:800 18px/1 var(--font-ui);font-variant-numeric:tabular-nums;color:var(--text)}
+.karta__d i{font:600 10px/1.4 var(--font-ui);font-style:normal;color:var(--text-warm)}
+.karta__mali{font-size:13.5px;color:var(--text-muted);line-height:1.4}
+.karta__mali b{color:var(--text)}
+.sef{flex:none;display:grid;justify-items:center;gap:3px;min-width:84px;padding:10px 12px;border:0;border-radius:16px;background:var(--bg-inverse);color:#fff;font:inherit;cursor:pointer;text-decoration:none}
+.sef .ic{color:#F2B33D}
+.sef b{font:800 18px/1.1 var(--font-ui);letter-spacing:.2em;font-variant-numeric:tabular-nums}
+.sef span{font-size:11px;color:#E3E5E0}
+.sef--otv{background:#F2B33D;color:var(--text)}
+.sef--otv .ic,.sef--otv span{color:var(--text)}
+.sef:focus-visible{outline:3px solid var(--action);outline-offset:3px}
+@media (prefers-reduced-motion:no-preference){.sef.je-novo{animation:o-sef 1s cubic-bezier(.2,1.4,.4,1)}}
+@keyframes o-sef{0%{transform:scale(.9);box-shadow:0 0 0 0 rgba(242,179,61,.7)}70%{box-shadow:0 0 0 16px rgba(242,179,61,0)}}
+
+/* brzo do informacije */
+.brzo__niz{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 4px;margin:0 -2px;scrollbar-width:none;scroll-snap-type:x proximity}
+.brzo__niz::-webkit-scrollbar{display:none}
+.bcip{flex:none;display:inline-flex;align-items:center;gap:7px;min-height:44px;padding:0 15px;border-radius:99px;border:1px solid var(--border-control);background:var(--bg-surface);color:var(--text);cursor:pointer;font:700 14px/1 var(--font-ui);scroll-snap-align:start}
+.bcip .ic{width:17px;height:17px;color:var(--text-accent)}
+.bcip[aria-expanded="true"]{background:var(--bg-inverse);border-color:var(--bg-inverse);color:#fff}
+.bcip[aria-expanded="true"] .ic{color:#F2B33D}
+.odgovor{margin-top:10px;padding:16px 18px;border-radius:18px;background:var(--bg-surface);border:1px solid var(--border);box-shadow:0 12px 30px -24px rgba(18,48,58,.6)}
+.odgovor h3{margin:0;display:flex;align-items:center;gap:8px;font:800 17px/1.3 var(--font-ui)}
+.odgovor h3 .ic{color:var(--text-accent)}
+.odgovor p{margin:6px 0 0;white-space:pre-line;color:var(--text-muted);line-height:1.55}
+.odgovor .secret{margin-top:10px}
+.odgovor__akc{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.odgovor__akc .btn{min-height:44px}
+@media (prefers-reduced-motion:no-preference){.odgovor:not([hidden]){animation:o-dizi .3s var(--ease) both}}
+
+/* sada — po fazi boravka */
+.sada{padding:18px 20px;border-radius:20px;background:var(--bg-surface);border:1px solid var(--border)}
+.sada__oz{display:flex;align-items:center;gap:7px;font:700 11.5px/1 var(--font-ui);letter-spacing:.13em;text-transform:uppercase;color:var(--text-accent)}
+.sada h2{margin:8px 0 0;font:800 20px/1.25 var(--font-ui);letter-spacing:-.01em}
+.sada p{margin:6px 0 0;color:var(--text-muted);line-height:1.55}
+.vremena{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.vremena button{min-height:44px;padding:0 14px;border-radius:12px;border:1px solid var(--border-control);background:var(--bg-page);color:var(--text);cursor:pointer;font:700 14px/1 var(--font-ui)}
+.vremena button:hover{border-color:var(--action)}
+.preporuka{display:grid;grid-template-columns:52px minmax(0,1fr);gap:14px;align-items:center;margin-top:14px;padding:12px;border-radius:16px;background:var(--bg-wash)}
+.preporuka__ik{display:grid;place-items:center;width:52px;height:52px;border-radius:14px;background:var(--bg-surface);color:var(--text-accent)}
+.preporuka b{display:block;font:800 16px/1.25 var(--font-ui)}
+.preporuka div span{display:block;margin-top:2px;font-size:14px;color:var(--text-muted)}
+.napredak{height:8px;margin-top:14px;border-radius:99px;background:var(--bg-wash);overflow:hidden}
+.napredak span{display:block;height:100%;border-radius:99px;background:#2E8B5E;transition:width .3s}
+
+/* sve za boravak — pametni popis: što je sada važno gore, odrađeno se spušta */
+.popis{border-radius:22px;background:var(--bg-surface);box-shadow:0 18px 40px -30px rgba(18,48,58,.55),0 1px 3px rgba(18,48,58,.06);overflow:hidden}
+.stavka{position:relative;display:grid;grid-template-columns:48px minmax(0,1fr) auto;align-items:center;gap:14px;min-height:72px;padding:12px 16px 12px 14px;color:var(--text);text-decoration:none}
+.stavka + .stavka::before{content:"";position:absolute;top:0;left:76px;right:16px;border-top:1px solid var(--border)}
+.stavka:hover{background:#F6F5F1}
+.stavka:focus-visible{outline:3px solid var(--action);outline-offset:-3px;border-radius:22px}
+.stavka__ik{display:grid;place-items:center;width:48px;height:48px;border-radius:15px;background:var(--ton-bg,#EFEEE8);color:var(--ton,#12303A)}
+.stavka__ik .ic{width:22px;height:22px}
+.stavka__tx{display:grid;gap:2px;min-width:0}
+.stavka__tx b{font:800 16px/1.25 var(--font-ui);letter-spacing:-.005em}
+.stavka__tx span{font-size:13.5px;line-height:1.4;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.stavka__d{display:flex;align-items:center;gap:6px;color:var(--text-muted)}
+.stavka__d .ic{width:18px;height:18px}
+.oznaka{display:inline-flex;align-items:center;gap:4px;padding:5px 9px;border-radius:99px;font:800 11px/1 var(--font-ui);white-space:nowrap}
+.oznaka--sad{background:#F2B33D;color:var(--text)}
+.oznaka--ok{background:#EFEEE8;color:#12303A}
+.oznaka .ic{width:12px;height:12px}
+/* prva stavka = „sada je na redu”, veća */
+.stavka--glavna{grid-template-columns:minmax(0,1fr) auto;min-height:0;padding:0;color:#fff;background:linear-gradient(140deg,var(--ton-tamno,#1E4654),#12303A);border-radius:22px;margin-bottom:12px;overflow:hidden;isolation:isolate;box-shadow:0 22px 44px -26px rgba(18,48,58,.75)}
+.stavka--glavna:hover{background:linear-gradient(140deg,var(--ton-tamno,#1E4654),#12303A)}
+.stavka--glavna .stavka__tela{display:grid;gap:8px;padding:18px 18px 18px 20px;min-width:0}
+.stavka--glavna .stavka__ik{width:44px;height:44px;border-radius:14px;background:rgba(255,255,255,.14);color:#fff}
+.stavka--glavna b{font:800 20px/1.2 var(--font-ui);letter-spacing:-.01em}
+.stavka--glavna .stavka__tx span{color:rgba(255,255,255,.86);font-size:14px}
+.stavka--glavna .stavka__ide{display:inline-flex;align-items:center;gap:6px;margin-top:4px;font:800 14px/1 var(--font-ui);color:#F2B33D}
+.stavka--glavna .stavka__sl{position:relative;width:132px;align-self:stretch;overflow:hidden}
+.stavka--glavna .stavka__sl img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.stavka--glavna .stavka__sl::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,#163F4D 0%,rgba(22,63,77,0) 55%)}
+.stavka--glavna .stavka__veliki{display:grid;place-items:center;width:112px;align-self:stretch;color:rgba(255,255,255,.12)}
+.stavka--glavna .stavka__veliki .ic{width:84px;height:84px;stroke-width:1.3}
+.popis__oz{display:flex;align-items:center;gap:8px;margin:18px 4px 8px;font:700 12px/1.3 var(--font-ui);letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted)}
+.popis__oz::after{content:"";flex:1;border-top:1px solid var(--border)}
+.popis--gotovo{box-shadow:none;border:1px solid var(--border);background:transparent}
+.popis--gotovo .stavka__ik{background:#EFEEE8;color:var(--text-muted)}
+.popis--gotovo .stavka__tx b{font-weight:700}
+@media (max-width:420px){.stavka--glavna .stavka__sl,.stavka--glavna .stavka__veliki{width:96px}}
+@media (prefers-reduced-motion:no-preference){.stavka{transition:background .15s}.stavka--glavna{transition:transform .2s var(--ease)}.stavka--glavna:hover{transform:translateY(-2px)}}
+/* boje tema (ikona i glavna kartica) */
+[data-ton]{--ton:#12303A;--ton-bg:#EFEEE8;--ton-tamno:#1E4654}
+[data-ton="hitno"]{--ton:#9B1C1C;--ton-bg:#FBE1E1;--ton-tamno:#A82424}
+
+/* ── PODSTRANICE: zaglavlje u boji teme + sadržaj u karticama ── */
+body:not([data-v="home"]):not([data-v="ulaz"]){background:#F3F2EC}
+.vglava{position:relative;overflow:hidden;color:#fff;background:linear-gradient(150deg,var(--ton-tamno,#1E4654) 0%,#0E2229 100%);isolation:isolate}
+.vglava::after{content:"";position:absolute;inset:auto -10% -60% 40%;height:140%;z-index:-1;background:radial-gradient(closest-side,rgba(242,179,61,.22),transparent 70%)}
+.vglava__in{max-width:760px;margin-inline:auto;padding-block:28px 64px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;align-items:end}
+.vglava .eyebrow{color:rgba(255,255,255,.82)}
+.vglava h1{margin:6px 0 0;font:400 clamp(32px,6vw,46px)/1.08 var(--font-editorial);letter-spacing:-.015em;text-wrap:balance}
+.vglava p{margin:8px 0 0;font-size:15px;line-height:1.5;color:rgba(255,255,255,.88);max-width:46ch}
+.vglava__ik{display:grid;place-items:center;width:64px;height:64px;border-radius:20px;background:rgba(255,255,255,.13);color:#fff;backdrop-filter:blur(4px)}
+.vglava__ik .ic{width:30px;height:30px}
+.vglava__veliki{position:absolute;right:-26px;top:-18px;z-index:-1;color:rgba(255,255,255,.06)}
+.vglava__veliki .ic{width:220px;height:220px;stroke-width:1}
+.view{position:relative;z-index:1;margin-top:-40px;padding-top:0}
+.view .blk,.view .kad,.view .outcard,.view .ocjena,.view .card.host,.view .ulaz-cta,.view .karticaw{margin-top:14px;padding:20px;border:0;border-radius:22px;background:var(--bg-surface);box-shadow:0 16px 36px -30px rgba(18,48,58,.6),0 1px 3px rgba(18,48,58,.05)}
+.view > :first-child{margin-top:0}
+.view .blk h2,.view .blk h3.h,.view .outcard h3,.view .ocjena h2{display:flex;align-items:center;gap:12px;margin:0 0 12px;font:800 19px/1.25 var(--font-ui);letter-spacing:-.01em}
+.view .blk h2 .ic,.view .blk h3.h .ic,.view .outcard h3 .ic{box-sizing:content-box;width:20px;height:20px;padding:10px;border-radius:13px;background:var(--ton-bg,#EFEEE8);color:var(--ton,#12303A);flex:none}
+.view .blk p{margin:0;line-height:1.6;color:#2E4A54}
+.view .view__lbl{display:none}
+.vglava__st{display:inline-flex;align-items:center;gap:7px;margin-top:12px;padding:7px 12px;border-radius:99px;background:rgba(255,255,255,.13);font:700 13px/1.2 var(--font-ui)}
+.vglava__st .ic{width:15px;height:15px;color:#F2B33D}
+.stavka--glavna .sada__oz{color:#F2B33D}
+@media (max-width:560px){.vglava__ik{display:none}.vglava__in{grid-template-columns:minmax(0,1fr)}}
+.view .fchips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-inline:-2px;padding:2px}
+.view .fchips::-webkit-scrollbar{display:none}
+.view .fchip{flex:none}
+.palac{text-decoration:none}
+.vglava__ch{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.vglava__c{display:inline-flex;align-items:center;gap:6px;padding:7px 11px;border-radius:99px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.14);font:700 12.5px/1.2 var(--font-ui);color:#fff;max-width:100%}
+.vglava__c .ic{width:14px;height:14px;color:#F2B33D;flex:none}
+.vglava__c span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.view .rules .rule .ic{box-sizing:content-box;flex:none;width:16px;height:16px;padding:7px;border-radius:10px;background:var(--ton-bg,#EFEEE8);color:var(--ton,#12303A)}
+.view .rules .rule span{padding-top:5px}
+.view .rules .rule:not(.rule--kv)::before{display:none}
+.kasnije{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.kasnije b{display:block;font:800 16px/1.3 var(--font-ui)}
+.kasnije span{font-size:14px;color:var(--text-muted)}
+.kasnije .btn{border-radius:99px}
+.napredak--l{height:10px;margin:4px 0 14px}
+.pisi--d h2,.kontakt-h{display:flex;align-items:center;gap:12px;margin:0 0 4px;font:800 19px/1.25 var(--font-ui)}
+.pisi--d h2 .ic,.kontakt-h .ic{box-sizing:content-box;width:20px;height:20px;padding:10px;border-radius:13px;background:var(--ton-bg,#EFEEE8);color:var(--ton,#12303A)}
+.brze{display:flex;flex-wrap:wrap;gap:8px}
+.brze button{min-height:40px;padding:0 14px;border-radius:99px;border:1px solid var(--border-control);background:var(--bg-surface);color:var(--text);cursor:pointer;font:700 13.5px/1 var(--font-ui)}
+.brze button:hover,.brze button[aria-pressed="true"]{border-color:var(--bg-inverse);background:var(--bg-inverse);color:#fff}
+.pisi--d .pisi__btn .btn{border-radius:99px}
+.view .host{background:linear-gradient(150deg,#FCEFD2,#FFFFFF 70%)!important}
+.ux-nap{display:flex;align-items:center;justify-content:center;gap:6px;margin:14px 0 0;font-size:13px;color:#E3E5E0;text-align:center}
+.ux-nap .ic{width:15px;height:15px;color:#F2B33D;flex:none}
+.ux-kraj__st{display:flex;align-items:center;gap:10px;max-width:380px;width:100%;padding:12px 14px;border-radius:16px;background:rgba(255,255,255,.08);text-align:left;font-size:14.5px;line-height:1.45;color:#fff}
+.ux-kraj__st .ic{flex:none;color:#7FD3A8}
+.ux-kraj__st--ceka .ic{color:#F2B33D}
+.view .map{border:0;border-radius:16px}
+.view .btnrow .btn{border-radius:99px}
+.view .secret{border:0;background:#F3F2EC;border-radius:16px}
+.view .secret.open{background:#FFF7E3}
+.view .secret > .ic{box-sizing:content-box;width:20px;height:20px;padding:10px;border-radius:12px;background:var(--bg-inverse);color:#F2B33D}
+/* Kuća: Wi-Fi kartica, uređaji u mreži, pravila s kvačicama */
+.wifi-k{display:grid;gap:10px}
+.wifi-k__h{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.wifi-k__h b{display:flex;align-items:center;gap:10px;font:800 19px/1.25 var(--font-ui)}
+.uredaji{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr))}
+.ured{display:grid;grid-template-columns:44px minmax(0,1fr);gap:12px;align-items:start;padding:14px;border-radius:16px;background:#F6F5F1}
+.ured__ik{display:grid;place-items:center;width:44px;height:44px;border-radius:13px;background:var(--bg-surface);color:var(--ton,#12303A)}
+.ured b{display:block;font:800 15.5px/1.3 var(--font-ui)}
+.ured p{margin:4px 0 0!important;font-size:14.5px;line-height:1.55;white-space:pre-line}
+.view .rules .rule{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--border);line-height:1.5}
+.view .rules .rule:last-child{border-bottom:0}
+.view .rules .rule:not(.rule--kv)::before{content:"";flex:none;width:8px;height:8px;margin-top:8px;border-radius:50%;background:var(--ton,#12303A)}
+.view .rules .rule--kv{justify-content:space-between;padding:12px 14px;margin-bottom:6px;border:0;border-radius:14px;background:#F6F5F1}
+.view .acc{border-color:var(--border)}
+.view .checklist label{border:0;background:#F6F5F1;border-radius:14px;min-height:48px;align-items:center}
+.view .outcard{background:linear-gradient(160deg,#FFF6EF,#FFFFFF 60%)}
+/* Preporuke: popis u kartici, filtri kao kapsule */
+.view .fchip{border-radius:99px;border:0;background:var(--bg-surface);box-shadow:0 1px 3px rgba(18,48,58,.08)}
+.view .fchip[aria-pressed="true"]{border:0;background:var(--bg-inverse);color:#fff}
+.view .fchip[aria-pressed="true"] .ic{color:#F2B33D}
+.mjesta{margin-top:12px;padding:4px 18px;border-radius:22px;background:var(--bg-surface);box-shadow:0 16px 36px -30px rgba(18,48,58,.6)}
+.mjesta .lrow:last-child{border-bottom:0}
+.mjesta .lrow__ic{border-radius:14px;background:var(--ic-bg,#F7ECD3);color:var(--ic,#8A5A12)}
+.view .istaknuto{margin:0 0 4px;background:linear-gradient(150deg,#FFF4DC,#F7E7C4);box-shadow:0 16px 36px -30px rgba(120,80,20,.6)}
+.view .izbor-glava{display:none}
+/* Domaćin */
+.view .card.host{gap:16px}
+.view .host__av{width:64px;height:64px;font-size:26px;background:#12303A}
+.view .host__btns{margin-top:14px}
+.view .host__btns .btn{min-height:54px;border-radius:99px}
+/* Hitno */
+.view .sos{border-radius:22px;box-shadow:0 20px 40px -26px rgba(155,28,28,.8)}
+.view .broj{border:0;border-radius:18px;box-shadow:0 10px 26px -24px rgba(18,48,58,.7),0 1px 2px rgba(18,48,58,.06)}
+.view .osoba{border:0;background:var(--bg-surface);box-shadow:0 16px 36px -30px rgba(18,48,58,.6)}
+.view .t-lead{padding:18px 20px;border-radius:22px;background:var(--bg-surface)}
+
+/* Dolazak: „Kako ući” — ulaz u prikaz korak po korak */
+.ulaz-cta{display:grid;gap:14px}
+.ulaz-cta__glava{display:flex;align-items:center;gap:12px}
+.ulaz-cta__glava b{display:block;font:800 19px/1.25 var(--font-ui)}
+.ulaz-cta__glava span{font-size:14px;color:var(--text-muted)}
+.ulaz-cta__glava .stavka__ik{flex:none}
+.palci{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(110px,1fr);gap:8px;overflow-x:auto;scrollbar-width:none;margin:0;padding:0;list-style:none}
+.palci::-webkit-scrollbar{display:none}
+.palac{position:relative;display:block;aspect-ratio:4/3;border:0;padding:0;border-radius:14px;overflow:hidden;cursor:pointer;background:linear-gradient(150deg,#1E4654,#12303A);color:#fff;text-align:left}
+.palac img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.palac::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(8,30,38,.7))}
+.palac span{position:absolute;z-index:1;left:8px;bottom:7px;right:8px;font:700 12px/1.25 var(--font-ui);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.palac i{position:absolute;z-index:1;left:8px;top:8px;display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,.92);color:var(--text);font:800 12px/1 var(--font-ui);font-style:normal}
+.palac--zv i{background:#F2B33D}
+.ulaz-cta .btn{min-height:54px;border-radius:99px;justify-self:stretch}
+.ulaz-cta .oznaka{justify-self:start}
+
+/* ── ULAZAK KORAK PO KORAK — preko cijelog zaslona, tamno ── */
+body[data-v="ulaz"]{background:#0E2229}
+body[data-v="ulaz"] .ghead{background:rgba(15,52,64,.94);border-color:rgba(255,255,255,.08);color:#fff}
+body[data-v="ulaz"] .ghead__back{color:#fff}
+body[data-v="ulaz"] .ghead__back:hover{background:rgba(255,255,255,.1)}
+body[data-v="ulaz"] .ghead__s{color:#E3E5E0}
+body[data-v="ulaz"] .gfoot{display:none}
+.ux{max-width:640px;margin-inline:auto;padding:14px 16px calc(24px + env(safe-area-inset-bottom));color:#fff;min-height:calc(100dvh - 68px);display:flex;flex-direction:column}
+.ux-crte{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:6px}
+.ux-crte span{height:4px;border-radius:99px;background:rgba(255,255,255,.2);transition:background .3s}
+.ux-crte span.da{background:#F2B33D}
+.ux-k{margin-top:16px;border-radius:26px;overflow:hidden;background:var(--bg-surface);color:var(--text);box-shadow:0 30px 60px -30px rgba(0,0,0,.6)}
+.ux-k__sl{position:relative;display:block;width:100%;aspect-ratio:4/3;max-height:52dvh;padding:0;border:0;background:linear-gradient(150deg,#1E4654,#12303A);overflow:hidden;cursor:zoom-in}
+.ux-k__sl img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ux-k__sl--bez{display:grid;place-items:center;aspect-ratio:auto;height:150px;cursor:default;color:rgba(255,255,255,.18)}
+.ux-k__sl--bez .ic{width:72px;height:72px;stroke-width:1.2}
+.ux-k__n{position:absolute;left:14px;top:14px;display:grid;place-items:center;width:42px;height:42px;border-radius:50%;background:#12303A;color:#fff;font:800 17px/1 var(--font-ui);box-shadow:0 4px 12px rgba(0,0,0,.25)}
+.ux-k__zv{position:absolute;right:14px;top:14px;display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:99px;background:#F2B33D;color:var(--text);font:800 12px/1 var(--font-ui)}
+.ux-k__zv .ic{width:14px;height:14px}
+.ux-k__tx{padding:20px 20px 22px}
+.ux-k__oz{font:700 12px/1 var(--font-ui);letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted)}
+.ux-k__tx h2{margin:8px 0 0;font:800 23px/1.2 var(--font-ui);letter-spacing:-.01em;text-wrap:balance}
+.ux-k__tx p{margin:8px 0 0;font-size:16px;line-height:1.6;color:#3F5A63;white-space:pre-line}
+.ux-k__tx .secret{margin-top:14px;border:0;background:#FFF4DC}
+.ux-k__tx .secret > .ic{box-sizing:content-box;width:20px;height:20px;padding:10px;border-radius:12px;background:#12303A;color:#F2B33D}
+.ux-k__tx .ulaz__nap{margin-top:8px}
+.ux-mk{display:flex;align-items:center;gap:12px;margin-top:12px;padding:12px 14px;border-radius:18px;background:rgba(255,255,255,.08)}
+.ux-mk .ic{color:#F2B33D;flex:none}
+.ux-mk div{min-width:0;flex:1}
+.ux-mk b{display:block;font:700 14.5px/1.3 var(--font-ui);overflow-wrap:anywhere}
+.ux-mk small{display:block;margin-top:2px;font-size:12.5px;color:#E3E5E0}
+.ux-mk a{flex:none;display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 14px;border-radius:99px;background:#F2B33D;color:var(--text);font:800 13.5px/1 var(--font-ui);text-decoration:none}
+.ux-gumbi{position:sticky;bottom:calc(12px + env(safe-area-inset-bottom));display:grid;grid-template-columns:1fr 2fr;gap:10px;margin-top:auto;padding-top:18px}
+.ux-gumbi button{min-height:56px;border-radius:99px;cursor:pointer;font:800 15.5px/1 var(--font-ui)}
+.ux-gumbi button:disabled{opacity:.4;cursor:default}
+.ux-gumbi .ux-nat{border:1px solid rgba(255,255,255,.3);background:rgba(15,52,64,.92);color:#fff}
+.ux-gumbi .ux-dalje{border:0;background:#F2B33D;color:var(--text);box-shadow:0 14px 30px -14px rgba(242,179,61,.9)}
+.ux-gumbi button:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.ux-kraj{display:grid;justify-items:center;gap:14px;padding:48px 8px 12px;text-align:center}
+.ux-kraj__kv{display:grid;place-items:center;width:92px;height:92px;border-radius:50%;background:#F2B33D;color:var(--text)}
+.ux-kraj__kv .ic{width:44px;height:44px;stroke-width:2.6}
+.ux-kraj h2{margin:0;font:400 clamp(30px,7vw,40px)/1.1 var(--font-editorial);text-wrap:balance}
+.ux-kraj p{margin:0;max-width:40ch;font-size:16px;line-height:1.55;color:#E3E5E0}
+.ux-kraj__akc{display:grid;gap:10px;width:100%;max-width:380px;margin-top:8px}
+.ux-kraj__akc .btn{min-height:54px;border-radius:99px}
+.ux-kraj .btn--sunce{background:#F2B33D;color:var(--text);border:0}
+.ux-kraj .btn--prozirno{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.25)}
+.ux-kraj .ux-ponovo{border:0;background:none;color:#E3E5E0;text-decoration:underline;cursor:pointer;font:600 14px/1 var(--font-ui);min-height:44px}
+@media (prefers-reduced-motion:no-preference){
+  .ux-k,.ux-kraj{animation:ux-ulaz .38s cubic-bezier(.2,.9,.3,1) both}
+  .ux-k.nazad{animation-name:ux-nazad}
+  .ux-kraj__kv{animation:o-sef .9s cubic-bezier(.2,1.4,.4,1) .1s both}
+}
+@keyframes ux-ulaz{from{opacity:0;transform:translateX(28px)}}
+@keyframes ux-nazad{from{opacity:0;transform:translateX(-28px)}}
+
+/* riječ domaćina i poruka */
+.pismo{padding:20px 22px;border-radius:20px;background:var(--bg-warm)}
+.pismo .eyebrow{color:var(--text-warm)}
+.pismo__tx{margin:10px 0 0;font:italic 400 20px/1.5 var(--font-editorial);white-space:pre-line}
+.pismo__potpis{margin:10px 0 0;text-align:right;font:italic 400 16px/1.3 var(--font-editorial);color:var(--text-warm)}
+.pisi{padding:18px 20px 20px;border-radius:20px;background:var(--bg-surface);border:1px solid var(--border);display:grid;gap:12px}
+.pisi__glava{display:flex;align-items:center;gap:12px}
+.pisi__glava .host__av{width:46px;height:46px;font-size:18px}
+.pisi h2{margin:0;font:800 18px/1.25 var(--font-ui)}
+.pisi__sub{font-size:13.5px;color:var(--text-muted)}
+.pisi textarea{width:100%;min-height:88px;padding:12px 14px;border:1px solid var(--border-control);border-radius:14px;background:var(--bg-page);font:400 16px/1.45 var(--font-body);color:var(--text);resize:vertical;box-sizing:border-box}
+.pisi textarea:focus-visible{outline:2px solid var(--action);outline-offset:1px}
+.pisi__btn{display:flex;flex-wrap:wrap;gap:8px}
+.pisi__btn .btn{min-height:46px}
+
+/* preporuke — „naš izbor” */
+.izbor-glava{margin:4px 0 14px}
+.izbor-glava small{display:block;font:italic 400 15px/1.3 var(--font-editorial);color:var(--text-warm)}
+.izbor-glava b{display:block;margin-top:2px;font:400 28px/1.15 var(--font-editorial)}
+.istaknuto{position:relative;margin:4px 0 14px;padding:20px;border-radius:22px;background:var(--bg-warm)}
+.istaknuto__z{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:99px;background:#F2B33D;color:var(--text);font:800 11.5px/1 var(--font-ui)}
+.istaknuto h3{margin:12px 0 0;font:400 26px/1.15 var(--font-editorial)}
+.istaknuto p{margin:6px 0 0;color:var(--text-warm);font-weight:600}
+.istaknuto .btn{margin-top:14px}
+
+/* ==========================================================================
+   VODIČ NA JEDNOJ STRANICI (v4, 19. 10. 2026.) — odjeljci umjesto podstranica
+   ========================================================================== */
+.btn--sunce{background:#F2B33D;color:var(--text);border:0}
+.btn--sunce:hover{background:#E9A72B}
+.skok{position:sticky;top:68px;z-index:20;margin:0 -16px;padding:10px 16px;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;background:rgba(252,252,250,.94);backdrop-filter:blur(10px)}
+.skok::-webkit-scrollbar{display:none}
+.skok button{flex:none;display:inline-flex;align-items:center;gap:6px;min-height:38px;padding:0 13px;border-radius:99px;border:1px solid var(--border);background:var(--bg-surface);color:var(--text);cursor:pointer;font:700 13px/1 var(--font-ui)}
+.skok button .ic{width:15px;height:15px;color:var(--text-accent)}
+.skok button.got{color:var(--text-muted)}
+.skok button.got .ic{color:#12303A}
+#odjeljci{display:grid;gap:14px}
+#odjeljci > [hidden]{display:none}
+.odj{border-radius:22px;background:var(--bg-surface);box-shadow:0 16px 34px -30px rgba(18,48,58,.6),0 1px 3px rgba(18,48,58,.05);overflow:hidden;scroll-margin-top:130px}
+.odj__g{display:flex;align-items:center;gap:12px;padding:16px 18px 0}
+.odj__ik{display:grid;place-items:center;width:44px;height:44px;border-radius:14px;background:var(--ton-bg,#EFEEE8);color:var(--ton,#12303A);flex:none}
+.odj__ik .ic{width:21px;height:21px}
+.odj__g h2{margin:0;font:800 18px/1.2 var(--font-ui);letter-spacing:-.01em}
+.odj__g h2:focus{outline:none}
+.odj__g small{display:block;margin-top:2px;font-size:13px;color:var(--text-muted)}
+.odj__oz{margin-left:auto}
+.odj__t{display:grid;gap:12px;padding:14px 18px 18px}
+.odj__t > [hidden]{display:none}
+.odj__t p{margin:0;line-height:1.6;color:#2E4A54;white-space:pre-line}
+.odj__saz{display:none;align-items:center;gap:10px;padding:4px 18px 16px 74px;font-size:14px;color:var(--text-muted)}
+.odj__saz span{flex:1;min-width:0;overflow-wrap:anywhere}
+.odj__vrati{border:0;background:none;color:var(--text-accent);cursor:pointer;font:800 13px/1 var(--font-ui);min-height:36px}
+.odj--got{box-shadow:none;border:1px solid var(--border);background:transparent}
+.odj--got .odj__t{display:none}
+.odj--got .odj__saz{display:flex}
+.odj--got .odj__ik{width:36px;height:36px;border-radius:11px;background:#EFEEE8;color:#12303A}
+.odj--got .odj__g h2{font-size:15.5px}
+.odj--got .odj__g small,.odj--got .odj__oz{display:none}
+.got-oz{display:flex;align-items:center;gap:8px;margin:4px 4px -2px;font:800 11.5px/1 var(--font-ui);letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)}
+.got-oz::after{content:"";flex:1;border-top:1px solid var(--border)}
+.odj .blk{margin:0}
+.odj .blk h2,.odj .blk h3.h{display:flex;align-items:center;gap:8px;margin:0 0 6px;font:800 15px/1.3 var(--font-ui)}
+.odj .blk h2 .ic,.odj .blk h3.h .ic{width:17px;height:17px;color:var(--text-accent)}
+.odj .blk p{color:#2E4A54}
+.odj .btnrow{margin-top:10px}
+.odj .btnrow .btn{border-radius:99px;min-height:44px}
+.odj .map{height:190px;margin-top:10px;border:0;border-radius:16px}
+.odj #arr-steps{display:grid;gap:12px}
+.odj .park-g__m{margin-top:8px}
+.odj .secret{border:0;background:#FFF4DC;border-radius:16px}
+.odj .secret > .ic{box-sizing:content-box;width:20px;height:20px;padding:10px;border-radius:12px;background:var(--bg-inverse);color:#F2B33D}
+.odj .palci{margin:0 -18px;padding:0 18px}
+.odj .ulaz-cta{display:grid;gap:12px}
+.odj .ulaz-cta .btn{min-height:50px;border-radius:99px}
+.koraci-tx{margin:0;padding:0;list-style:none;counter-reset:k;display:grid;gap:10px}
+.koraci-tx li{counter-increment:k;display:grid;grid-template-columns:30px minmax(0,1fr);gap:2px 10px}
+.koraci-tx li::before{content:counter(k);grid-row:span 2;display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--bg-inverse);color:#fff;font:800 13px/1 var(--font-ui)}
+.koraci-tx b{font:800 15px/1.35 var(--font-ui)}
+.koraci-tx span{font-size:14.5px;line-height:1.55;color:#2E4A54;white-space:pre-line}
+/* Wi-Fi: tamna kartica */
+.odj .wifi-k{display:grid;gap:8px;padding:14px;border-radius:18px;background:linear-gradient(150deg,#0F7480,#0B4F58);color:#fff}
+.odj .wifi-k .secret{background:rgba(255,255,255,.1)}
+.odj .wifi-k .secret.open{background:rgba(255,255,255,.14)}
+.odj .wifi-k .secret > .ic{background:rgba(255,255,255,.16);color:#fff}
+.odj .wifi-k .secret__k{color:#BFE3E5}
+.odj .wifi-k .secret__v{color:#fff}
+.odj .wifi-k .secret__lock{color:#EFEEE8}
+.odj .wifi-k .copybtn{border:0;border-radius:99px;background:#fff;color:var(--text)}
+.odj .wifi-k .ulaz__nap{color:#EFEEE8}
+/* Kuća: pločice uređaja */
+.uredaji{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.ur{border-radius:16px;background:#F3F2EC}
+.ur[open]{grid-column:1/-1;background:#E6F3F2}
+.ur summary{display:grid;gap:6px;justify-items:start;min-height:76px;padding:12px;list-style:none;cursor:pointer}
+.ur summary::-webkit-details-marker{display:none}
+.ur summary .ic{color:var(--text-accent)}
+.ur summary b{font:800 14px/1.25 var(--font-ui)}
+.ur p{padding:0 12px 12px;font-size:14.5px}
+/* Pravila */
+.odj .rules .rule{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border);line-height:1.5}
+.odj .rules .rule:last-child{border-bottom:0}
+.odj .rules .rule .ic{box-sizing:content-box;flex:none;width:16px;height:16px;padding:7px;border-radius:10px;background:var(--ton-bg,#EFEEE8);color:var(--ton,#12303A)}
+.odj .rules .rule span{padding-top:5px}
+.odj .rules .rule--kv{justify-content:space-between;padding:10px 12px;margin-bottom:4px;border:0;border-radius:12px;background:#F6F5F1}
+.odj .rules .rule--kv span{padding:0;color:var(--text-muted)}
+.odj .rules .rule--kv b{font:800 14px/1.4 var(--font-ui);text-align:right}
+.odj #faq-blk h2{margin-top:6px}
+/* Okolica */
+.odj .fchips{display:flex;flex-wrap:nowrap;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0}
+.odj .fchips::-webkit-scrollbar{display:none}
+.odj .fchip{flex:none;min-height:36px;padding:0 13px;border-radius:99px;border:0;background:#F3F2EC;font:700 13px/1 var(--font-ui)}
+.odj .fchip[aria-pressed="true"]{border:0;background:var(--bg-inverse);color:#fff}
+.odj .fchip[aria-pressed="true"] .ic{color:#F2B33D}
+.odj .mjesta{margin:0;padding:0 2px;box-shadow:none;border-radius:0}
+.odj .mjesta .lrow{min-height:68px}
+.odj .mjesta .lrow__ic{border-radius:14px;background:var(--ic-bg,#F7ECD3);color:var(--ic,#8A5A12)}
+.odj .istaknuto{margin:0;background:linear-gradient(150deg,#FFF4DC,#F7E7C4)}
+/* Odlazak */
+.odj .checklist{margin:0}
+.odj .checklist label{border:0;background:#F6F5F1;border-radius:14px;min-height:46px;align-items:center}
+.odj .out-done{margin:0}
+.odj .kasnije{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:14px;border-radius:16px;background:#FFF6EF}
+.odj .kasnije .btn{border-radius:99px}
+.odj .ocjena{margin:0;padding:16px;border:0;border-radius:16px;background:#FFFBF0}
+.odj .ocjena h2{display:flex;align-items:center;gap:10px;font:800 17px/1.3 var(--font-ui)}
+.odj__pred{color:var(--text-muted)!important}
+/* Domaćin */
+.odj--dom{background:linear-gradient(160deg,#FCEFD2,#FFFFFF 55%)}
+.dom-g{display:flex;align-items:center;gap:14px}
+.dom-g .host__av{width:56px;height:56px;font-size:22px;background:#12303A}
+.dom-g h2{margin:0;font:800 19px/1.2 var(--font-ui)}
+.dom-g small{display:block;margin-top:2px;font-size:13px;color:var(--text-muted)}
+.odj--dom .pisi{padding:0;border:0;background:none;display:grid;gap:10px}
+.odj--dom .pisi__btn .btn,.odj--dom .host__btns .btn{border-radius:99px;min-height:48px}
+.odj--dom .host__btns{display:flex;flex-wrap:wrap;gap:8px;margin:0}
+.odj--dom .host__btns .btn{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis}
+/* Hitno */
+.hitno{border-radius:18px;background:#FBE1E1;color:#9B1C1C;scroll-margin-top:130px}
+.hitno summary{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:54px;padding:0 16px;list-style:none;cursor:pointer;font:800 14.5px/1.2 var(--font-ui)}
+.hitno summary::-webkit-details-marker{display:none}
+.hitno summary span{display:flex;align-items:center;gap:8px}
+.hitno summary b{font-size:22px}
+.hitno__t{display:grid;gap:10px;padding:0 12px 14px}
+.hitno .sos{border-radius:16px;padding:14px 16px}
+.hitno .sos b{font-size:30px}
+.hitno .brojevi{margin:0}
+.hitno .broj{border:0;border-radius:14px}
+.hitno .blk{margin:0;padding:14px;border-radius:14px;background:#fff;color:var(--text)}
+.hitno .blk h2{display:flex;gap:8px;align-items:center;font:800 15px/1.3 var(--font-ui);margin:0 0 4px}
+.pokrece{margin:4px 0 0;text-align:center;font:700 12.5px/1 var(--font-ui);color:var(--text-muted)}
+.pokrece a{color:var(--text)}
+.sada .btn--sunce{border-radius:99px}
+.sada{background:linear-gradient(140deg,var(--brend-sv,#1E4654),var(--brend,#0E2229))!important;border:0!important;color:#fff;box-shadow:0 22px 40px -26px rgba(18,48,58,.8)}
+.sada .sada__oz{color:#F2B33D}
+.sada h2{color:#fff}
+.sada p{color:#D7E8EA!important}
+.sada .vremena button{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.25);color:#fff}
+.sada .vremena button:hover{border-color:#F2B33D}
+.sada .preporuka{background:rgba(255,255,255,.08)}
+.sada .preporuka__ik{background:rgba(255,255,255,.14);color:#fff}
+.sada .preporuka b{color:#fff}.sada .preporuka div span{color:#E3E5E0}
+.sada .napredak{background:rgba(255,255,255,.14)}
+.sada .btn--secondary{background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.25)}
+.sada .btn--primary{background:#F2B33D;color:var(--text);border:0}
+@media (max-width:420px){.odj__g{padding:14px 14px 0}.odj__t{padding:12px 14px 16px}.odj__saz{padding-left:64px}}
+.naslov__brend{display:inline-flex;align-items:center;gap:8px;margin:8px 0 0;font:700 13px/1.2 var(--font-ui);letter-spacing:.02em}
+.naslov__brend::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--bg-inverse)}
 </style>
 </head>
 <body>
@@ -291,6 +747,16 @@
   <symbol id="i-mail" viewBox="0 0 24 24"><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" /> <rect x="2" y="4" width="20" height="16" rx="2" /></symbol>
   <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" /></symbol>
   <symbol id="i-chevron-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6" /></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" /></symbol>
+  <symbol id="i-cigarette-off" viewBox="0 0 24 24"><path d="M12 12H3a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h13" /> <path d="M18 8c0-2.5-2-2.5-2-5" /> <path d="m2 2 20 20" /> <path d="M21 12a1 1 0 0 1 1 1v2a1 1 0 0 1-.5.866" /> <path d="M22 8c0-2.5-2-2.5-2-5" /> <path d="M7 12v4" /></symbol>
+  <symbol id="i-paw-print" viewBox="0 0 24 24"><circle cx="11" cy="4" r="2" /> <circle cx="18" cy="8" r="2" /> <circle cx="20" cy="16" r="2" /> <path d="M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.045Q6.52 17.48 4.46 16.84A3.5 3.5 0 0 1 5.5 10Z" /></symbol>
+  <symbol id="i-trash-2" viewBox="0 0 24 24"><path d="M3 6h18" /> <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /> <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></symbol>
+  <symbol id="i-waves" viewBox="0 0 24 24"><path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1" /> <path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1" /> <path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1" /></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /> <circle cx="9" cy="7" r="4" /> <path d="M22 21v-2a4 4 0 0 0-3-3.87" /> <path d="M16 3.13a4 4 0 0 1 0 7.75" /></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M10.268 21a2 2 0 0 0 3.464 0" /> <path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326" /></symbol>
+  <symbol id="i-arrow-down" viewBox="0 0 24 24"><path d="M12 5v14" /> <path d="m19 12-7 7-7-7" /></symbol>
+  <symbol id="i-chevron-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></symbol>
+  <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14" /> <path d="m12 5 7 7-7 7" /></symbol>
   <symbol id="i-shield-check" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" /> <path d="m9 12 2 2 4-4" /></symbol>
   <symbol id="i-flame" viewBox="0 0 24 24"><path d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4" /></symbol>
   <symbol id="i-droplets" viewBox="0 0 24 24"><path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z" /> <path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97" /></symbol>
@@ -354,56 +820,36 @@
 
 <main id="sadrzaj">
 
-<!-- ============ POČETNA ============ -->
+<!-- zaglavlje podstranice (samo prijava boravka) — puni route() -->
+<section class="vglava" id="vglava" hidden></section>
+
+<!-- ============ VODIČ NA JEDNOJ STRANICI ============ -->
+<!-- Karta za odmor, trake za skok, kartica „sada” po fazi i odjeljci redom po
+     danu boravka (poredaj()). Obavljeno (GOTOVO) se sažme u jedan red i spusti
+     pod „Već obavljeno”. Preko cijelog zaslona otvara se samo ulazak korak po
+     korak (#ulaz), a zasebna stranica je samo obrazac za eVisitor (#prijava). -->
 <div data-view="home">
-  <section class="hero" id="hero" aria-labelledby="hero-name">
-    <div class="wrap">
-      <span class="eyebrow">Vaš boravak</span>
-      <h1 class="hero__name" id="hero-name"></h1>
-      <div class="chips" id="hero-chips"></div>
+  <section class="naslov" id="hero" aria-labelledby="hero-name">
+    <div class="naslov__in">
+      <span class="eyebrow" id="hero-poz">Dobro došli</span>
+      <h1 class="naslov__ime" id="hero-name"></h1>
+      <p class="naslov__mj" id="hero-mj" hidden></p>
+      <p class="naslov__brend" id="brend-ime" hidden translate="no"></p>
     </div>
   </section>
 
-  <div class="wrap home">
-    <div>
-      <div class="letter" id="letter" hidden>
-        <span class="eyebrow">Riječ domaćina</span>
-        <p class="letter__txt" id="welcome"></p>
-        <p class="letter__sig" id="sig" hidden></p>
-      </div>
-      <h2 class="t-small-head" style="font-size:22px" id="tiles-h">Sve za boravak</h2>
-      <nav class="tiles" id="tiles" aria-labelledby="tiles-h"></nav>
-    </div>
+  <div class="pocetna">
+    <section class="karta" id="karta" aria-label="Vaš boravak"></section>
+    <nav class="skok" id="skok" aria-label="Skoči na"></nav>
+    <section class="sada" id="sada" hidden></section>
 
-    <aside class="home__side">
-      <section class="card access" id="access" hidden aria-labelledby="access-h">
-        <div class="access__head">
-          <h2 id="access-h">Vaš pristup</h2>
-          <span class="badge" id="lockstate"></span>
-        </div>
-        <div id="when-home"></div>
-        <div id="codes-home" style="display:grid;gap:12px"></div>
-        <p class="access__note"><svg class="ic ic--sm"><use href="#i-shield-check"/></svg><span id="access-note"></span></p>
-      </section>
-      <div class="helpcard on-dark" id="helpcard" hidden>
-        <div><b>Trebate nešto?</b><span id="help-sub">Javite se domaćinu.</span></div>
-        <a class="btn btn--inverse btn--sm" id="help-btn" href="#domacin">Javi se<svg class="ic ic--sm"><use href="#i-message-circle"/></svg></a>
-      </div>
-    </aside>
-  </div>
-</div>
-
-<!-- ============ DOLAZAK ============ -->
-<div class="wrap view" data-view="dolazak" hidden>
-  <p class="eyebrow view__lbl" id="arr-lbl"></p>
-  <!-- redom: kada (s odbrojavanjem) → koraci ulaska (šifra na koraku sa zvjezdicom) → upute i parking → adresa -->
-  <section class="kad" id="arr-kad" hidden aria-labelledby="kad-h"></section>
-  <div class="blk ulaz" id="ulaz-blk" hidden>
-    <h2 tabindex="-1"><svg class="ic"><use href="#i-door-open"/></svg>Kako ući</h2>
-    <p class="ulaz__uvod">Korak po korak, s fotografijama — od ulice do vrata.</p>
-    <ol class="ulaz__lista" id="ulaz-lista"></ol>
-  </div>
-  <div id="codes-arr" style="display:grid;gap:12px;margin-top:12px"></div>
+    <div id="odjeljci">
+    <section class="odj" id="o-ulaz" data-ton="dolazak" hidden aria-labelledby="o-ulaz-h">
+      <div class="odj__g"><span class="odj__ik" aria-hidden="true"><svg class="ic"><use href="#i-door-open"/></svg></span><div><h2 id="o-ulaz-h" tabindex="-1">Kako ući</h2><small id="o-ulaz-sub">Dolazak, parking i adresa</small></div><span class="odj__oz" id="o-ulaz-oz"></span></div>
+      <div class="odj__saz"><span id="o-ulaz-saz"></span><button type="button" class="odj__vrati" data-vrati="ulaz">Prikaži</button></div>
+      <div class="odj__t">
+  <section class="ulaz-cta" id="ulaz-blk" hidden aria-labelledby="ulaz-h"></section>
+    <div id="codes-arr"></div>
   <div id="arr-steps"></div>
   <div class="blk" id="arr-adr" hidden>
     <h2 tabindex="-1"><svg class="ic"><use href="#i-map-pin"/></svg>Kako do nas</h2>
@@ -414,28 +860,67 @@
     </div>
     <div class="map" id="map" hidden><iframe id="map-frame" title="Karta" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
   </div>
-</div>
-
-<!-- ============ WI-FI I KUĆA ============ -->
-<div class="wrap view" data-view="kuca" hidden>
-  <p class="eyebrow view__lbl" id="kuca-lbl"></p>
-  <div id="codes-wifi" style="display:grid;gap:12px"></div>
-  <div class="blk" id="dev-blk" hidden>
-    <h2 id="uredaji" tabindex="-1">Kako što radi</h2>
-    <div id="dev-list"></div>
+      </div>
+    </section>
+    <section class="odj" id="o-wifi" data-ton="kuca" hidden aria-labelledby="o-wifi-h">
+      <div class="odj__g"><span class="odj__ik" aria-hidden="true"><svg class="ic"><use href="#i-wifi"/></svg></span><div><h2 id="o-wifi-h" tabindex="-1">Wi-Fi</h2><small id="o-wifi-sub">Za mobitel i laptop</small></div><span class="odj__oz" id="o-wifi-oz"></span></div>
+      <div class="odj__saz"><span id="o-wifi-saz"></span><button type="button" class="odj__vrati" data-vrati="wifi">Prikaži</button></div>
+      <div class="odj__t">
+        <div class="wifi-k">
+        <div id="codes-wifi" style="display:grid;gap:10px"></div>
+    <p class="ulaz__nap" id="wifi-nap" hidden></p>
+        </div>
+      </div>
+    </section>
+    <section class="odj" id="o-kuca" data-ton="kuca" hidden aria-labelledby="o-kuca-h">
+      <div class="odj__g"><span class="odj__ik" aria-hidden="true"><svg class="ic"><use href="#i-house"/></svg></span><div><h2 id="o-kuca-h" tabindex="-1">Kuća</h2><small id="o-kuca-sub">Dodirnite za upute</small></div><span class="odj__oz" id="o-kuca-oz"></span></div>
+      <div class="odj__saz"><span id="o-kuca-saz"></span><button type="button" class="odj__vrati" data-vrati="kuca">Prikaži</button></div>
+      <div class="odj__t">
+        <div id="dev-list"></div>
+      </div>
+    </section>
+    <section class="odj" id="o-pravila" data-ton="pravila" hidden aria-labelledby="o-pravila-h">
+      <div class="odj__g"><span class="odj__ik" aria-hidden="true"><svg class="ic"><use href="#i-book-open"/></svg></span><div><h2 id="o-pravila-h" tabindex="-1">Kućna pravila</h2><small id="o-pravila-sub">Ukratko</small></div><span class="odj__oz" id="o-pravila-oz"></span></div>
+      <div class="odj__saz"><span id="o-pravila-saz"></span><button type="button" class="odj__vrati" data-vrati="pravila">Prikaži</button></div>
+      <div class="odj__t">
+        <div class="rules" id="rules"></div>
+    <div class="blk" id="faq-blk" hidden>
+    <h2 id="pitanja" tabindex="-1"><svg class="ic"><use href="#i-message-circle"/></svg>Česta pitanja</h2>
+    <div id="faq-list"></div>
   </div>
-  <div class="blk" id="rules-blk" hidden>
-    <h2 id="pravila" tabindex="-1">Kućna pravila</h2>
-    <div class="rules" id="rules"></div>
-  </div>
-  <div class="outcard" id="out-blk">
-    <h3 id="odlazak" tabindex="-1"><svg class="ic"><use href="#i-door-open"/></svg>Prije nego krenete</h3>
-    <p id="out-text"></p>
+      </div>
+    </section>
+    <section class="odj" id="o-okolica" data-ton="preporuke" hidden aria-labelledby="o-okolica-h">
+      <div class="odj__g"><span class="odj__ik" aria-hidden="true"><svg class="ic"><use href="#i-umbrella"/></svg></span><div><h2 id="o-okolica-h" tabindex="-1">Preporuke</h2><small id="o-okolica-sub">Plaže, hrana i izleti u blizini</small></div><span class="odj__oz" id="o-okolica-oz"></span></div>
+      <div class="odj__saz"><span id="o-okolica-saz"></span><button type="button" class="odj__vrati" data-vrati="okolica">Prikaži</button></div>
+      <div class="odj__t">
+    <div class="fchips" id="fchips" role="group" aria-label="Vrsta preporuke"></div>
+  <div id="places"></div>
+      </div>
+    </section>
+    <section class="odj" id="o-prijava" data-ton="prijava" hidden aria-labelledby="o-prijava-h">
+      <div class="odj__g"><span class="odj__ik" aria-hidden="true"><svg class="ic"><use href="#i-id-card"/></svg></span><div><h2 id="o-prijava-h" tabindex="-1">Prijava boravka</h2><small id="o-prijava-sub">Podaci za eVisitor · oko 2 minute</small></div><span class="odj__oz" id="o-prijava-oz"></span></div>
+      <div class="odj__saz"><span id="o-prijava-saz"></span><button type="button" class="odj__vrati" data-vrati="prijava">Prikaži</button></div>
+      <div class="odj__t">
+        <p>Domaćin mora prijaviti svakog gosta u roku 24 sata. Upišite podatke ovdje — on ih samo prepiše.</p>
+        <a class="btn btn--primary" href="#prijava">Ispuni prijavu<svg class="ic ic--sm"><use href="#i-arrow-right"/></svg></a>
+      </div>
+    </section>
+    <section class="odj" id="o-odlazak" data-ton="odlazak" hidden aria-labelledby="o-odlazak-h">
+      <div class="odj__g"><span class="odj__ik" aria-hidden="true"><svg class="ic"><use href="#i-log-out"/></svg></span><div><h2 id="o-odlazak-h" tabindex="-1">Odlazak</h2><small id="o-odlazak-sub">Prije nego krenete</small></div><span class="odj__oz" id="o-odlazak-oz"></span></div>
+      <div class="odj__saz"><span id="o-odlazak-saz"></span><button type="button" class="odj__vrati" data-vrati="odlazak">Prikaži</button></div>
+      <div class="odj__t">
+        <div class="napredak napredak--l" id="out-nap" aria-hidden="true"><span></span></div>
+        <p id="out-text"></p>
     <ul class="checklist" id="out-list"></ul>
     <p class="out-done" id="out-done" hidden>Sve je spremno. Sretan put!</p>
-  </div>
-  <section class="ocjena" id="ocjena-blk" aria-labelledby="ocjena-h" hidden>
-    <h2 id="ocjena-h" tabindex="-1">Kako vam je bilo?</h2>
+        <p class="odj__pred" id="out-pred" hidden>Popis za kvačice pojavi se ovdje dan prije odlaska.</p>
+    <section class="karticaw kasnije" id="kasnije-blk" hidden>
+    <div><b>Trebate kasniju odjavu?</b><span>Često se može dogovoriti — pitajte domaćina.</span></div>
+    <a class="btn btn--secondary" href="#domacin" data-poruka="kasnije">Pitaj domaćina</a>
+  </section>
+    <section class="ocjena" id="ocjena-blk" aria-labelledby="ocjena-h" hidden>
+    <h2 id="ocjena-h" tabindex="-1"><svg class="ic" style="box-sizing:content-box;width:20px;height:20px;padding:10px;border-radius:13px;background:#FFF4DC;color:#C98A0B"><use href="#i-star"/></svg>Kako vam je bilo?</h2>
     <div id="ocjena-forma">
       <p class="t-muted" style="margin-bottom:12px">Kratka ocjena pomaže domaćinu da sljedećim gostima bude još bolje.</p>
       <div class="stars" role="radiogroup" aria-label="Ocjena od 1 do 5" id="stars"></div>
@@ -449,21 +934,28 @@
     </div>
     <p class="poruka poruka--ok" id="oc-hvala" hidden>Hvala! Ocjena je poslana domaćinu.</p>
   </section>
-  <div class="blk" id="faq-blk" hidden>
-    <h2 id="pitanja" tabindex="-1">Česta pitanja</h2>
-    <div id="faq-list"></div>
-  </div>
-</div>
+      </div>
+    </section>
+      <p class="got-oz" id="got-oz" hidden><svg class="ic ic--sm"><use href="#i-check"/></svg>Već obavljeno</p>
+    </div>
 
-<!-- ============ PREPORUKE ============ -->
-<div class="wrap view" data-view="preporuke" hidden>
-  <div class="fchips" id="fchips" role="group" aria-label="Vrsta preporuke"></div>
-  <div id="places"></div>
-</div>
+    <section class="odj odj--dom" id="o-domacin" data-ton="domacin" hidden aria-labelledby="host-name">
+      <div class="odj__t">
+        <div class="dom-g"><span class="host__av" id="host-av" aria-hidden="true"></span><div><h2 class="host__n" id="host-name"></h2><small id="host-kako">Vaš domaćin</small></div></div>
+        <div class="pisi pisi--d" id="dom-pisi" hidden>
+        <div class="brze" id="dom-brze" role="group" aria-label="Brze poruke"></div>
+    <label class="sr-only" for="dom-tx">Vaša poruka domaćinu</label>
+    <textarea id="dom-tx" rows="4" maxlength="1000" placeholder="Upišite poruku…"></textarea>
+    <div class="pisi__btn" id="dom-btn"></div>
+        </div>
+        <div class="host__btns" id="host-btns"></div>
+      </div>
+    </section>
 
-<!-- ============ HITNO ============ -->
-<div class="wrap view" data-view="hitno" hidden>
-  <a class="sos" href="tel:112"><div><b>112</b><span>Hitne službe · besplatno, s bilo kojeg telefona, na hrvatskom i engleskom</span></div><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg></a>
+    <details class="hitno" id="o-hitno">
+      <summary><span><svg class="ic"><use href="#i-siren"/></svg>Hitno · besplatno, 0–24</span><b>112</b></summary>
+      <div class="hitno__t">
+    <a class="sos" href="tel:112"><div><b>112</b><span>Hitne službe · besplatno, s bilo kojeg telefona, na hrvatskom i engleskom</span></div><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg></a>
   <div class="brojevi">
     <a class="broj" href="tel:194"><div><b>194</b><br><span>Hitna medicinska pomoć</span></div><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg></a>
     <a class="broj" href="tel:192"><div><b>192</b><br><span>Policija</span></div><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg></a>
@@ -472,7 +964,7 @@
     <a class="broj" href="tel:+38511987"><div><b>1987</b><br><span>Pomoć na cesti (HAK)</span></div><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg></a>
     <a class="broj" id="sos-domacin" hidden><div><b id="sos-dom-n"></b><br><span>Vaš domaćin</span></div><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg></a>
   </div>
-  <div class="blk" id="sos-adr-blk" hidden>
+    <div class="blk" id="sos-adr-blk" hidden>
     <h2><svg class="ic"><use href="#i-map-pin"/></svg>Vaša adresa</h2>
     <p>Recite je dispečeru ako zovete hitnu službu:</p>
     <p style="font:700 20px/1.4 var(--font-ui);margin-top:6px" id="sos-adr"></p>
@@ -481,7 +973,15 @@
       <a class="btn btn--secondary" id="sos-bolnica" target="_blank" rel="noopener">Hitna i bolnica<svg class="ic ic--sm"><use href="#i-arrow-up-right"/></svg></a>
     </div>
   </div>
+      </div>
+    </details>
+    <p class="pokrece brend-dno" id="brend-dno" hidden translate="no"></p>
+    <p class="pokrece" id="pokrece" hidden>Vodič pokreće <a href="/">Odmoria</a></p>
+  </div>
 </div>
+
+<!-- ============ ULAZAK KORAK PO KORAK (preko cijelog zaslona) ============ -->
+<div data-view="ulaz" hidden><div class="ux" id="ux"></div></div>
 
 <!-- ============ PRIJAVA BORAVKA (eVisitor) ============ -->
 <div class="wrap view" data-view="prijava" hidden>
@@ -496,15 +996,6 @@
     <p class="poruka poruka--ok" id="pr-ok" hidden style="margin-top:12px"></p>
   </form>
   <p class="t-meta" style="margin-top:16px">Podatke vidi samo vaš domaćin. Brišu se 30 dana nakon odlaska. Dok link vrijedi, možete ih ispraviti i poslati ponovno.</p>
-</div>
-
-<!-- ============ DOMAĆIN ============ -->
-<div class="wrap view" data-view="domacin" hidden>
-  <div class="card host">
-    <span class="host__av" id="host-av" aria-hidden="true"></span>
-    <div><div class="host__n" id="host-name"></div><div class="t-muted">Vaš domaćin</div></div>
-  </div>
-  <div class="host__btns" id="host-btns"></div>
 </div>
 
 </main>
@@ -542,6 +1033,25 @@ const fmtShort = d => L.datumKratko(d)
 const fmtHM = d => `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
 
 let PROP = null, SECTION = null, BOOKING = null
+/* Što vodič smije pokazati ovisi o planu domaćina (plans.mogucnosti, funkcija
+   mogucnosti_vodica iz sql/add-plan-features.sql). Dok funkcije nema, MOG je
+   null i sve radi kao prije. Free: šifra, Wi-Fi, kuća, pravila, odlazak, domaćin.
+   Gost nikad ne vidi ništa „zaključano” — što nije u planu, jednostavno ne postoji. */
+let MOG = null, OZNAKA = false, BREND = null
+/* Brend agencije (properties.brend, samo plan Agencija — mogucnosti_vodica):
+   boja zamijeni tamne plohe i gumbe (tinta), ime stoji uz naslov i na dnu.
+   Dashboard pušta samo boje s kontrastom ≥ 4,5:1 prema bijelom. */
+function primijeniBrend() {
+  const b = BREND, r = document.documentElement
+  const boja = b && /^#[0-9a-f]{6}$/i.test(b.boja || '') ? b.boja : null
+  ;['--bg-inverse', '--action', '--action-hover', '--ton', '--ton-tamno', '--brend'].forEach(v => boja ? r.style.setProperty(v, boja) : r.style.removeProperty(v))
+  if (boja) r.style.setProperty('--brend-sv', `color-mix(in srgb, ${boja} 78%, #ffffff)`); else r.style.removeProperty('--brend-sv')
+  const el = document.getElementById('brend-ime')
+  if (el) { el.textContent = b && b.ime ? b.ime : ''; el.hidden = !(b && b.ime) }
+  const dno = document.getElementById('brend-dno')
+  if (dno) { dno.textContent = b && b.ime ? t('Vaš domaćin: {ime}', { ime: b.ime }) : ''; dno.hidden = !(b && b.ime) }
+}
+const imaM = k => !MOG || MOG.includes(k)
 
 /* Statistika za domaćina (page_views: objekt, vrsta, vrijeme — bez podataka o
    gostu). Svaka vrsta jednom po otvaranju. `?domacin=1` dodaje dashboard kad
@@ -568,6 +1078,19 @@ if (!token) token = location.pathname.split('/h/')[1]?.split('/')[0]
 const DEMO = token === 'demo'
 // zadnje učitano stanje za rad bez interneta (samo na ovom uređaju)
 const KLJUC = 'odm-vodic:' + token
+// što je gost već odradio na ovom uređaju (ušao, vidio Wi-Fi, poslao prijavu…) —
+// takve stavke se u „Sve za boravak” spuštaju niže; samo localStorage
+const KLJUC_GOTOVO = 'odm-gotovo:' + token
+let GOTOVO = {}
+try { GOTOVO = JSON.parse(localStorage.getItem(KLJUC_GOTOVO) || '{}') || {} } catch {}
+function oznaci(id, odmah = true) {
+  if (GOTOVO[id] || DEMO && id === 'prijava') return
+  GOTOVO[id] = Date.now()
+  try { localStorage.setItem(KLJUC_GOTOVO, JSON.stringify(GOTOVO)) } catch {}
+  // odmah = false: zapamti, ali kartica ostaje gdje jest dok gost ne otvori vodič ponovno
+  if (!odmah) OTVORENO.add(id)
+  if (PROP && SECTION) { if (id === 'ulaz') renderUlaz(); poredaj() }
+}
 let BEZ_MREZE = false, LISTE = null
 
 const STATES = {
@@ -709,6 +1232,13 @@ async function finish(pre) {
     sb.from('faq').select('*').eq('property_id', PROP.id).order('sort_order')
   ])
   LISTE = liste.map(x => ({ data: (x && x.data) || [] }))
+  if (pre && pre.mog !== undefined) { MOG = pre.mog; OZNAKA = !!pre.oznaka; BREND = pre.brend || null }
+  else if (!DEMO) {
+    try {
+      const { data, error } = await sb.rpc('mogucnosti_vodica', { p_token: token, p_slug: params.get('slug') || null })
+      if (!error && data && Array.isArray(data.mogucnosti)) { MOG = data.mogucnosti; OZNAKA = !!data.oznaka; BREND = data.brend || null }
+    } catch {}
+  }
 
   await pripremiJezik(pre)
   nacrtaj()
@@ -729,7 +1259,10 @@ async function finish(pre) {
 function nacrtaj() {
   const [places, txs, atts, rules, faqs] = LISTE
   renderTop(); renderVault(); renderArrival(); renderHouse(rules.data, faqs.data)
-  renderRecs(places.data, txs.data, atts.data); renderHost(); renderHitno(); renderTiles()
+  renderRecs(places.data, txs.data, atts.data); renderHost(); renderHitno()
+  renderKarta(); renderSada(); poredaj()
+  show('#pokrece', OZNAKA)
+  primijeniBrend()
 }
 
 /* Jezik: plan domaćina određuje koji su jezici dopušteni, a /api/prevedi
@@ -742,7 +1275,7 @@ async function pripremiJezik(pre) {
     kasnije: () => {
       nacrtaj()
       const v = location.hash.slice(1).split('/')[0]
-      if (VIEWS[v]) $('#h-title').textContent = t(VIEWS[v][0])
+      if (VIEWS[v]) { $('#h-title').textContent = t(VIEWS[v][0]); vglava(v) }
       napomenaJezika()
       if (!DEMO && !BEZ_MREZE) spremiPredmemoriju()
     }
@@ -766,26 +1299,21 @@ function renderTop() {
   document.title = t('{n} — vaš vodič', { n: name })
   $('#h-title').textContent = name
 
-  const ime = BOOKING && BOOKING.guest_name && BOOKING.guest_name !== 'Gost' ? BOOKING.guest_name : null
-  $('#hero-name').textContent = ime ? t('Dobro došli, {ime}.', { ime }) : t('Dobro došli.')
-  const cover = orderedPhotos()[0]
+  const ime = BOOKING && BOOKING.guest_name && BOOKING.guest_name !== 'Gost' ? BOOKING.guest_name.split(' ')[0] : null
+  const f = faza()
+  $('#hero-poz').textContent = f === 'odlazak' ? (ime ? t('Hvala što ste bili s nama, {ime}', { ime }) : t('Hvala što ste bili s nama'))
+    : ime ? t('Dobro došli, {ime}', { ime }) : t('Dobro došli')
+  $('#hero-name').textContent = name
+  const mj = (PROP.location || '').split(',').map(x => x.trim()).filter(Boolean).pop()
+  $('#hero-mj').innerHTML = mj ? ico('map-pin', 'ic--sm') + esc(mj) : ''
+  show('#hero-mj', !!mj)
+  const cover = orderedPhotos()[0], hero = $('#hero')
+  let img = hero.querySelector('.naslov__foto')
   if (cover) {
-    const u = cover.replace(/['"()\\\s]/g, c => '%' + c.charCodeAt(0).toString(16).toUpperCase().padStart(2, '0'))
-    $('#hero').style.backgroundImage = `url('${u}')`
-  }
+    if (!img) { img = document.createElement('img'); img.className = 'naslov__foto'; img.alt = ''; img.decoding = 'async'; hero.prepend(img) }
+    if (img.getAttribute('src') !== cover) img.src = cover
+  } else if (img) img.remove()
 
-  const c = []
-  if (BOOKING) c.push(datesTxt())
-  if (SECTION.checkin_time) c.push(t('Prijava od {v}', { v: SECTION.checkin_time }))
-  if (SECTION.checkout_time) c.push(t('Odjava do {v}', { v: SECTION.checkout_time }))
-  if (PROP.max_guests) c.push(L.n(PROP.max_guests, 'gost'))
-  $('#hero-chips').innerHTML = c.map(t => `<span class="chip">${esc(t)}</span>`).join('')
-
-  if (PROP.welcome_msg || PROP.host_name) {
-    show('#letter')
-    $('#welcome').textContent = H(PROP.welcome_msg) || t('Nadamo se da ćete uživati u boravku.')
-    if (PROP.host_name) { $('#sig').textContent = '— ' + PROP.host_name; show('#sig') }
-  }
 }
 
 function datesTxt() {
@@ -795,25 +1323,83 @@ function datesTxt() {
     : `${L.datum(a)} – ${L.datum(b)}`
 }
 
-// pločice „Sve za boravak” — samo one iza kojih ima sadržaja
-let TILES = [], PRIJAVA_DOSTUPNA = false
-function renderTiles() {
-  const s = SECTION
-  const kontakt = [PROP.host_name, PROP.phone ? 'WhatsApp' : PROP.email ? t('e-mail') : null].filter(Boolean).join(' · ')
-  TILES = [
-    ['#dolazak', 'map-pin', t('Dolazak'), t('Adresa, parking, upute'), !$('#arr-adr').hidden || !$('#ulaz-blk').hidden || !!$('#arr-steps').innerHTML || !!(s.door_code)],
-    ['#kuca', 'wifi', t('Wi-Fi i kuća'), t('Mreža, lozinka, uređaji'), !!(s.wifi_name || s.wifi_pass || !$('#dev-blk').hidden)],
-    ['#preporuke', 'umbrella', t('Preporuke'), t('Plaže, hrana, izleti'), !!$('#places').innerHTML],
-    ['#prijava', 'id-card', t('Prijava boravka'), t('Podaci za eVisitor'), PRIJAVA_DOSTUPNA],
-    ['#kuca/pravila', 'book-open', t('Kućna pravila'), t('I česta pitanja'), !$('#rules-blk').hidden || !$('#faq-blk').hidden],
-    ['#kuca/odlazak', 'door-open', t('Odlazak'), BOOKING ? t('Popis i ocjena boravka') : t('Prije nego krenete'), true],
-    ['#domacin', 'message-circle', t('Domaćin'), kontakt || t('Kontakt'), !!(PROP.host_name || PROP.phone || PROP.email)],
-    ['#hitno', 'siren', t('Hitno i pomoć'), t('112, hitna, ljekarna'), true]
-  ].filter(x => x[4])
-  $('#tiles').innerHTML = TILES.map(([h, ic, t, sub]) =>
-    `<a class="tile" href="${h}">${ico(ic)}<b>${esc(t)}</b><span>${esc(sub)}</span></a>`).join('')
-  show('#tiles-h', TILES.length > 0)
+// ── Vodič na jednoj stranici: odjeljci redom po danu boravka ──
+// Redoslijed ovisi o fazi (prije | dolazak | boravak | odlazak). Što je gost
+// već obavio (GOTOVO: ušao, kopirao lozinku, pročitao pravila, poslao prijavu,
+// spremio se za odlazak) sažme se u jedan red i spusti pod „Već obavljeno” —
+// podatak ostaje vidljiv, a „Prikaži” ga otvori na mjestu. Odjeljci se samo
+// premještaju u DOM-u (appendChild), pa obrasci (ocjena) ne gube upisano.
+let PRIJAVA_DOSTUPNA = false
+const OTVORENO = new Set()   // sažeti odjeljci koje je gost ponovno otvorio
+const REDOSLIJED = {
+  prije:   ['ulaz', 'prijava', 'kuca', 'pravila', 'okolica', 'wifi', 'odlazak'],
+  dolazak: ['ulaz', 'wifi', 'prijava', 'kuca', 'okolica', 'pravila', 'odlazak'],
+  boravak: ['wifi', 'okolica', 'kuca', 'pravila', 'prijava', 'ulaz', 'odlazak'],
+  odlazak: ['odlazak', 'wifi', 'okolica', 'kuca', 'pravila', 'ulaz', 'prijava']
 }
+function imaOdjeljak(id) {
+  const s = SECTION
+  return {
+    ulaz: !$('#arr-adr').hidden || !$('#ulaz-blk').hidden || !!$('#arr-steps').innerHTML || !!s.door_code,
+    wifi: !!(s.wifi_name || s.wifi_pass),
+    kuca: !!$('#dev-list').innerHTML,
+    pravila: !!$('#rules').innerHTML || !$('#faq-blk').hidden,
+    okolica: imaM('preporuke') && RECS.length > 0,
+    prijava: imaM('evisitor') && PRIJAVA_DOSTUPNA,
+    odlazak: true
+  }[id]
+}
+// sažimaju se samo odjeljci s jasnom radnjom gosta; pravila i odlazak ostaju otvoreni
+const GOT_KLJUC = { ulaz: 'ulaz', wifi: 'wifi', prijava: 'prijava' }
+function sazetak(id) {
+  const s = SECTION, items = vaultItems(), w = items.findIndex(x => x.id === 'wifi_pass')
+  return {
+    ulaz: t('Ušli ste · upute ostaju ovdje'),
+    wifi: [s.wifi_name && 'Wi-Fi: ' + s.wifi_name, w >= 0 && UNLOCKED ? t('lozinka') + ' ' + items[w].v : ''].filter(Boolean).join(' · '),
+    pravila: t('Pročitano'),
+    prijava: t('Poslano domaćinu'),
+    odlazak: t('Sve je spremno')
+  }[id] || ''
+}
+function poredaj() {
+  if (!PROP || !SECTION) return
+  const f = faza(), box = $('#odjeljci'), oz = $('#got-oz')
+  const red = REDOSLIJED[f] || REDOSLIJED.boravak
+  const vidljivi = red.filter(imaOdjeljak)
+  const got = id => GOT_KLJUC[id] && GOTOVO[GOT_KLJUC[id]] && !OTVORENO.has(id)
+  for (const id of red) show('#o-' + id, vidljivi.includes(id))
+  for (const id of vidljivi.filter(x => !got(x))) box.insertBefore($('#o-' + id), oz)
+  const dolje = vidljivi.filter(got)
+  for (const id of dolje) box.appendChild($('#o-' + id))
+  show(oz, dolje.length > 0)
+  for (const id of red) {
+    const el = $('#o-' + id); el.classList.toggle('odj--got', !!got(id))
+    if (got(id)) $('#o-' + id + '-saz').textContent = sazetak(id)
+  }
+  // oznake u zaglavlju odjeljka
+  $('#o-odlazak-oz').innerHTML = f === 'odlazak' ? `<span class="oznaka oznaka--sad">${esc(t('Danas'))}</span>` : ''
+  $('#o-ulaz-oz').innerHTML = f === 'dolazak' && !GOTOVO.ulaz ? `<span class="oznaka oznaka--sad">${esc(t('Danas'))}</span>` : ''
+  // trake za skok — redom kao odjeljci, obavljeno s kvačicom
+  const IK = { ulaz: ['door-open', t('Ulaz')], wifi: ['wifi', 'Wi-Fi'], kuca: ['house', t('Kuća')], pravila: ['book-open', t('Pravila')],
+    okolica: ['umbrella', t('Okolica')], prijava: ['id-card', t('Prijava')], odlazak: ['log-out', t('Odlazak')] }
+  const skok = [...vidljivi.filter(x => !got(x)), ...dolje]
+  $('#skok').innerHTML = [...skok.map(id => [id, ...IK[id]]), ['domacin', 'message-circle', t('Domaćin')]]
+    .filter(x => x[0] !== 'domacin' || !$('#o-domacin').hidden)
+    .map(([id, i, n]) => `<button type="button" data-skok="${id}" class="${got(id) ? 'got' : ''}">${ico(got(id) ? 'check' : i)}${esc(n)}</button>`).join('')
+  show('#skok', skok.length > 1)
+}
+function skociNa(id) {
+  const el = $('#o-' + id); if (!el || el.hidden) return
+  if (el.classList.contains('odj--got')) { OTVORENO.add(id); poredaj() }
+  if (el.tagName === 'DETAILS') el.open = true
+  el.scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })
+  const h = el.querySelector('h2'); if (h) h.focus({ preventScroll: true })
+  biljezi('guide:' + id)
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-skok]'); if (b) { e.preventDefault(); skociNa(b.dataset.skok); return }
+  const v = e.target.closest('[data-vrati]'); if (v) { OTVORENO.add(v.dataset.vrati); poredaj() }
+})
 
 // ══════════════════════════════════════════════════════
 //  PRISTUP — jedino mjesto gdje se prikazuju šifre
@@ -853,44 +1439,26 @@ function renderVault() {
   const items = vaultItems()
   // zapečaćene vrijednosti ne ostaju nigdje dostupne
   window.__VALS = items.map(it => (it.sensitive && !UNLOCKED) ? '' : it.v)
-  if (!items.length) { show('#access', false); return }
-  show('#access')
-
-  const ls = $('#lockstate')
-  ls.className = 'badge ' + (UNLOCKED ? 'badge--status' : 'badge--locked')
-  ls.innerHTML = UNLOCKED ? ico('lock-open', 'ic--sm') + esc(t('Otključano'))
-    : ico('lock', 'ic--sm') + esc(UNLOCK_AT && new Date() < UNLOCK_AT ? t('Otključava se prije dolaska') : t('Zaključano'))
-  $('#access-note').textContent = UNLOCKED
-    ? (CO_END ? t('Vrijedi do {d} u 23:59.', { d: fmtShort(CO_END) }) : t('Podijelite samo s osobama koje borave s vama.'))
-    : STARI_LINK ? t('Šifru vrata i Wi-Fi lozinku dobivate u osobnom linku od domaćina.')
-    : t('Šifra i lozinka prikazuju se tek kad se pristup otključa.')
-
-  // početna: šifra vrata i Wi-Fi lozinka (mreža je u „Wi-Fi i kuća”)
+  // početna: šifra je u „sefu” na karti (renderKarta), Wi-Fi u brzom odgovoru
   const idx = id => items.findIndex(x => x.id === id)
-  const home = ['door_code', 'wifi_pass'].map(idx).filter(i => i >= 0)
-  const homeList = home.length ? home : items.map((_, i) => i)
-  $('#codes-home').innerHTML = homeList.map(i => secretHtml(items[i], i)).join('')
-  $('#when-home').innerHTML = whenHtml(false)
 
   // Dolazak: samo šifra vrata
   const dc = idx('door_code')
   // (šifra na koraku sa zvjezdicom ili ispod koraka — renderUlaz/renderArrival; odbrojavanje je u kartici „kada”)
-  $('#codes-arr').innerHTML = dc >= 0 ? secretHtml(items[dc], dc) : ''
-  $('#arr-lbl').textContent = UNLOCKED
-    ? (CO_END ? t('Otključano · vrijedi do {d} u 23:59', { d: fmtShort(CO_END) }) : t('Otključano'))
-    : (UNLOCK_AT && new Date() < UNLOCK_AT ? t('Zaključano do {d} u {t}', { d: fmtShort(UNLOCK_AT), t: fmtHM(UNLOCK_AT) }) : '')
-  show('#arr-lbl', !!$('#arr-lbl').textContent)
+  const nap = STARI_LINK ? t('Šifru vrata i Wi-Fi lozinku dobivate u osobnom linku od domaćina.') : t('Šifra vrata i Wi-Fi pojavit će se ovdje sat prije prijave.')
+  $('#codes-arr').innerHTML = dc >= 0 ? `<div class="karticaw">${secretHtml(items[dc], dc)}${UNLOCKED ? '' : `<p class="ulaz__nap" style="margin-top:10px">${ico('clock', 'ic--sm')}${esc(nap)}</p>`}</div>` : ''
 
   // Wi-Fi i kuća: mreža i lozinka
   const wifi = ['wifi_name', 'wifi_pass'].map(idx).filter(i => i >= 0)
   $('#codes-wifi').innerHTML = wifi.map(i => secretHtml(items[i], i)).join('')
-  $('#kuca-lbl').textContent = $('#arr-lbl').textContent
-  show('#kuca-lbl', !!$('#kuca-lbl').textContent && wifi.length > 0)
+  $('#wifi-nap').innerHTML = idx('wifi_pass') >= 0 && !UNLOCKED ? ico('clock', 'ic--sm') + esc(nap) : ''
+  show('#wifi-nap', !!$('#wifi-nap').innerHTML)
 }
 
 window.copyVal = async i => {
   const v = (window.__VALS || [])[i]
   if (!v) return
+  if ((vaultItems()[i] || {}).id === 'wifi_pass') oznaci('wifi', false)
   try { await navigator.clipboard.writeText(v); toast(t('Kopirano.')); kvacica(document.activeElement?.closest('button'), t('Kopirano.')) }
   catch { toast(t('Kopiranje nije uspjelo — označite tekst i kopirajte ga ručno.')) }
 }
@@ -903,8 +1471,7 @@ function startCountdown(unlockAt) {
       otkljucaj()
       return
     }
-    // osvježi samo odbrojavanje; vrijednosti ostaju zapečaćene
-    $('#when-home').innerHTML = whenHtml(false)
+    // odbrojavanje na karti ide svake sekunde (KARTA_TICK); vrijednosti ostaju zapečaćene
   }
   tick = setInterval(paint, 30000)
 }
@@ -921,11 +1488,133 @@ async function otkljucaj() {
     CO_END = r.zavrsava ? new Date(r.zavrsava) : CO_END
   }
   UNLOCKED = true
-  renderVault(); renderArrival(); renderTiles()
+  renderVault(); renderArrival(); renderKarta(); renderSada(); renderUx(); poredaj()
   if (!DEMO) spremiPredmemoriju()
-  document.querySelectorAll('.secret.open').forEach(el => el.classList.add('je-novo'))   // kratki „puls” otključavanja
+  document.querySelectorAll('.secret.open, .sef--otv').forEach(el => el.classList.add('je-novo'))   // kratki „puls” otključavanja
   toast(t('Šifra i Wi-Fi su sada dostupni.'))
-  veselje(document.querySelector('.secret.open'))
+  veselje(document.querySelector('.sef--otv') || document.querySelector('.secret.open'))
+}
+
+// ══════════════════════════════════════════════════════
+//  KARTA ZA ODMOR — dolazak → odlazak, odbrojavanje, sef sa šifrom
+//  Šifra u sefu ide kroz vaultItems() kao i drugdje: dok je zaključano,
+//  vrijednost ne postoji u HTML-u (samo ••••).
+// ══════════════════════════════════════════════════════
+// prije | boravak | odlazak — po datumima rezervacije; stari opći link nema datume
+function faza() {
+  if (!BOOKING || !BOOKING.checkin_date) return 'boravak'
+  // dan dolaska je „dolazak” cijeli dan (i prije sata prijave — karta tada odbrojava)
+  const dan = danasISO(), ci = String(BOOKING.checkin_date).slice(0, 10)
+  if (dan < ci) return 'prije'
+  if (BOOKING.checkout_date && String(BOOKING.checkout_date).slice(0, 10) <= dan) return 'odlazak'
+  return dan === ci ? 'dolazak' : 'boravak'
+}
+const danKratko = d => d ? `${new Intl.DateTimeFormat(L.lokal(), { weekday: 'short' }).format(d).replace('.', '')}, ${fmtShort(d)}` : ''
+function kartaBrojevi(cilj) {
+  const r = Math.max(0, cilj - new Date()), p = n => String(n).padStart(2, '0')
+  const d = Math.floor(r / 864e5), h = Math.floor(r % 864e5 / 36e5), m = Math.floor(r % 36e5 / 6e4), sk = Math.floor(r % 6e4 / 1e3)
+  const dio = (n, j) => `<span class="karta__d"><b>${n}</b><i>${esc(j)}</i></span>`
+  return (d ? dio(d, L.n(d, 'dan').replace(/^\d+\s*/, '')) : '') + dio(p(h), 'h') + dio(p(m), 'min') + dio(p(sk), 's')
+}
+let KARTA_TICK = null
+function renderKarta() {
+  const el = $('#karta'), s = SECTION, f = faza(), { dolazak, odjava } = kadTrenuci()
+  clearInterval(KARTA_TICK)
+  const items = vaultItems(), dc = items.findIndex(x => x.id === 'door_code')
+  const strana = (oz, sat, dan, desno) => `<div class="karta__s${desno ? ' karta__s--d' : ''}"><span class="karta__oz">${esc(oz)}</span>
+    <b class="karta__sat">${esc(sat || '—')}</b>${dan ? `<span class="karta__dan">${esc(dan)}</span>` : ''}</div>`
+  // sef: šifra vrata (zapečaćena = samo točkice), dodir otvara korake ili kopira
+  let sef = ''
+  if (dc >= 0) sef = UNLOCKED
+    ? `<button type="button" class="sef sef--otv" onclick="copyVal(${dc})" aria-label="${esc(t('Šifra vrata'))}: ${esc(items[dc].v)}. ${esc(t('Kopiraj'))}">${ico('lock-open')}<b>${esc(items[dc].v)}</b><span>${esc(t('šifra vrata'))}</span></button>`
+    : `<a class="sef" href="#dolazak" aria-label="${esc(t('Šifra vrata'))} · ${esc(t('Zaključano'))}">${ico('lock')}<b>••••</b><span>${esc(t('šifra vrata'))}</span></a>`
+  let st
+  const prijeDol = !!(BOOKING && dolazak && new Date() < dolazak)
+  if (prijeDol)
+    st = `<span class="karta__lbl"><span class="karta__tocka" aria-hidden="true"></span>${esc(t('Dolazak moguć za'))}</span><div class="karta__br" id="karta-br" role="timer">${kartaBrojevi(dolazak)}</div>`
+  else if (f === 'odlazak' && odjava && new Date() < odjava)
+    st = `<span class="karta__lbl"><span class="karta__tocka" aria-hidden="true"></span>${esc(t('Odjava za'))}</span><div class="karta__br" id="karta-br" role="timer">${kartaBrojevi(odjava)}</div>`
+  else if (UNLOCKED)
+    st = `<span class="karta__lbl karta__lbl--ok">${ico('shield-check')}${esc(CO_END ? t('Otključano · vrijedi do {d} u 23:59', { d: fmtShort(CO_END) }) : t('Otključano'))}</span>`
+      + (s.wifi_name ? `<span class="karta__mali">Wi-Fi: <b translate="no">${esc(s.wifi_name)}</b></span>` : '')
+  else
+    st = `<span class="karta__lbl">${ico('lock')}${esc(STARI_LINK ? t('Šifru dobivate u osobnom linku') : t('Zaključano'))}</span>`
+      + (s.wifi_name ? `<span class="karta__mali">Wi-Fi: <b translate="no">${esc(s.wifi_name)}</b></span>` : '')
+  el.innerHTML = `<div class="karta__red">${strana(t('Dolazak'), s.checkin_time, danKratko(BOOKING && dolazak))}
+      <svg class="karta__let" width="54" height="22" viewBox="0 0 54 22" aria-hidden="true"><path d="M2 11h44" stroke="currentColor" stroke-opacity=".35" stroke-width="2" stroke-dasharray="3 4" fill="none"/><path d="M44 5l7 6-7 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      ${strana(t('Odlazak'), s.checkout_time, danKratko(BOOKING && odjava), true)}</div>
+    <div class="karta__crta"></div>
+    <div class="karta__dno"><div class="karta__st">${st}</div>${sef}</div>`
+  const cilj = prijeDol ? dolazak : f === 'odlazak' ? odjava : null
+  if (cilj && new Date() < cilj) KARTA_TICK = setInterval(() => {
+    const b = $('#karta-br'); if (!b) return
+    if (new Date() >= cilj) { renderKarta(); renderSada(); renderTop(); return }
+    b.innerHTML = kartaBrojevi(cilj)
+  }, 1000)
+}
+
+// ══════════════════════════════════════════════════════
+//  „SADA” — jedna kartica po fazi boravka
+// ══════════════════════════════════════════════════════
+const KLJUC_ODLAZAK = () => 'odm-odlazak:' + token
+function renderSada() {
+  const el = $('#sada'), f = faza(), s = SECTION
+  let h = ''
+  if (f === 'prije' && (PROP.phone || PROP.email)) {
+    h = `<div class="sada__oz">${ico('clock', 'ic--sm')}${esc(t('Prije dolaska'))}</div>
+      <h2>${esc(t('Kad otprilike stižete?'))}</h2>
+      <p>${esc(PROP.host_name ? t('{n} će vas lakše dočekati. Javlja se jednim dodirom.', { n: PROP.host_name }) : t('Domaćin će vas lakše dočekati. Javlja se jednim dodirom.'))}</p>
+      <div class="vremena" role="group" aria-label="${esc(t('Vrijeme dolaska'))}">${['14–15 h', '15–17 h', '17–19 h', '19–21 h'].map(v =>
+        `<button type="button" onclick="javiDolazak('${v}')">${v}</button>`).join('')}<button type="button" onclick="javiDolazak('')">${esc(t('Kasnije'))}</button></div>`
+  } else if (f === 'dolazak' && !GOTOVO.ulaz && ULAZ.length) {
+    const zv = SECTION.door_code ? ULAZ.findIndex(x => x.sifra) : -1
+    h = `<div class="sada__oz">${ico('door-open', 'ic--sm')}${esc(t('Danas'))}</div>
+      <h2>${esc(t('Kako ući'))} · ${esc(L.n(ULAZ.length, 'korak'))}</h2>
+      <p>${esc(t('Fotografije od ceste do vrata.') + (zv >= 0 ? ' ' + t('Šifra je na koraku {k}.', { k: zv + 1 }) : ''))}</p>
+      <div class="odgovor__akc"><a class="btn btn--sunce btn--sm" href="#ulaz/1">${esc(t('Kreni korak po korak'))}${ico('arrow-right', 'ic--sm')}</a></div>`
+  } else if ((f === 'boravak' || f === 'dolazak') && imaM('preporuke') && RECS.some(x => x.cat !== t('Prijevoz'))) {
+    // preporuka dana: svaki dan druga, redom kako ih je domaćin složio
+    const izbor = RECS.filter(x => x.cat !== t('Prijevoz')), dan = Math.floor(Date.now() / 864e5), r = izbor[dan % izbor.length]
+    h = `<div class="sada__oz">${ico('star', 'ic--sm')}${esc(t('Preporuka dana'))}</div>
+      <h2>${esc(PROP.host_name ? t('{n} preporučuje', { n: PROP.host_name }) : t('Domaćin preporučuje'))}</h2>
+      <div class="preporuka"><span class="preporuka__ik">${ico(r.ic)}</span><div><b>${esc(r.name)}</b>${r.dt ? `<span>${esc(r.dt)}</span>` : ''}</div></div>
+      <div class="odgovor__akc">${r.maps ? `<a class="btn btn--primary btn--sm" href="${esc(mapsUrl(r.maps))}" target="_blank" rel="noopener">${esc(t('Odvedi me'))}${ico('arrow-up-right', 'ic--sm')}</a>` : ''}
+        <a class="btn btn--secondary btn--sm" href="#preporuke" data-skok="okolica">${esc(t('Sve preporuke'))}</a></div>`
+  } else if (f === 'odlazak') {
+    const n = (String(s.checkout_notes || '').split(/\n+/).filter(x => x.trim()).length) || 4
+    let gotovo = 0
+    try { gotovo = JSON.parse(localStorage.getItem(KLJUC_ODLAZAK()) || '[]').length } catch {}
+    gotovo = Math.min(gotovo, n)
+    h = `<div class="sada__oz">${ico('log-out', 'ic--sm')}${esc(s.checkout_time ? t('Odjava do {v}', { v: s.checkout_time }) : t('Odlazak'))}</div>
+      <h2>${esc(t('Prije nego krenete'))}</h2>
+      <p>${esc(gotovo >= n ? t('Sve je spremno. Sretan put!') : t('Još {a} od {b} — kvačice su u popisu za odlazak.', { a: n - gotovo, b: n }))}</p>
+      <div class="napredak" aria-hidden="true"><span style="width:${Math.round(gotovo / n * 100)}%"></span></div>
+      <div class="odgovor__akc"><a class="btn btn--sunce btn--sm" href="#odlazak" data-skok="odlazak">${esc(t('Otvori popis'))}${ico('arrow-down', 'ic--sm')}</a></div>`
+  }
+  el.innerHTML = h
+  show(el, !!h)
+}
+window.javiDolazak = v => {
+  const ime = BOOKING && BOOKING.guest_name && BOOKING.guest_name !== 'Gost' ? BOOKING.guest_name : ''
+  const tekst = v ? t('Pozdrav! Ovdje {ime}. Stižemo otprilike {v}.', { ime: ime || t('vaš gost'), v })
+    : t('Pozdrav! Ovdje {ime}. Stižemo kasnije, javit ćemo točno vrijeme.', { ime: ime || t('vaš gost') })
+  $('#dom-tx').value = tekst
+  $('#o-domacin').scrollIntoView({ block: 'center', behavior: 'smooth' })
+  $('#dom-tx').focus({ preventScroll: true })
+}
+
+// ══════════════════════════════════════════════════════
+//  PORUKA DOMAĆINU — ide ravno njemu (WhatsApp, SMS ili e-mail)
+// ══════════════════════════════════════════════════════
+window.posaljiDomacinu = (kanal, polje = '#dom-tx') => {
+  const tx = $(polje).value.trim()
+  if (!tx) { $(polje).focus(); toast(t('Upišite poruku.')); return }
+  const tel = String(PROP.phone || '').replace(/[^\d+]/g, ''), msg = encodeURIComponent(tx)
+  const url = kanal === 'wa' ? `https://wa.me/${tel.replace(/\D/g, '')}?text=${msg}`
+    : kanal === 'sms' ? `sms:${tel}?&body=${msg}`
+    : `mailto:${PROP.email}?subject=${encodeURIComponent(t('Poruka gosta — {n}', { n: PROP.name || '' }))}&body=${msg}`
+  biljezi('guide:poruka')
+  if (kanal === 'wa') window.open(url, '_blank', 'noopener'); else location.href = url
 }
 
 // ══════════════════════════════════════════════════════
@@ -970,27 +1659,8 @@ function kadOdbrojavanje() {
   if (dolazak && odjava && sad < odjava) return `<div class="kad__tim kad__tim--da"><span class="kad__lbl"><span class="kad__tocka" aria-hidden="true"></span>${esc(t('Prijava je otvorena — dobrodošli!'))}</span></div>`
   return ''
 }
-function renderKad() {
-  const s = SECTION, el = $('#arr-kad')
-  clearInterval(KAD_TICK)
-  if (!s.checkin_time && !s.checkout_time) { show('#arr-kad', false); return }
-  const { dolazak, odjava } = kadTrenuci()
-  const red = (ic, k, dan, v) => `<div class="kad__r">${ico(ic)}<span>${esc(k)}</span><b>${dan ? esc(fmtShort(dan)) + ' · ' : ''}${esc(v)}</b></div>`
-  el.innerHTML = `<h2 class="kad__h" id="kad-h">${esc(t('Prijava'))} · ${esc(t('Odjava'))}</h2>
-    <div id="kad-tim">${kadOdbrojavanje()}</div>
-    <div class="kad__rr">${s.checkin_time ? red('log-in', t('Prijava'), dolazak, t('od {vrijeme}', { vrijeme: s.checkin_time })) : ''}
-      ${s.checkout_time ? red('log-out', t('Odjava'), odjava, t('do {vrijeme}', { vrijeme: s.checkout_time })) : ''}</div>`
-  show('#arr-kad')
-  if (dolazak && new Date() < dolazak) KAD_TICK = setInterval(() => {
-    const tim = $('#kad-tim'); if (!tim) return
-    tim.innerHTML = kadOdbrojavanje()
-    if (new Date() >= dolazak) renderKad()
-  }, 1000)
-}
-
 function renderArrival() {
   const s = SECTION, steps = []
-  renderKad()
   if (s.checkin_notes) steps.push(['door-open', t('Upute za dolazak'), H(s.checkin_notes)])
   const pLat = s.parking_lat, pLon = s.parking_lon, pPin = pLat != null && pLon != null
   if (s.parking_info || s.parking_foto || pPin) steps.push(['car', t('Parking'), H(s.parking_info || ''), 'parking'])
@@ -1007,8 +1677,8 @@ function renderArrival() {
     show('#map')
     show('#arr-adr')
   }
-  // šifra vrata stoji na koraku sa zvjezdicom; bez njega ispod koraka (kao prije)
-  if (renderUlaz()) $('#codes-arr').innerHTML = ''
+  // šifra vrata: na koraku sa zvjezdicom (ekran korak po korak) i ovdje u kartici
+  renderUlaz(); renderUx()
   $('#arr-steps').innerHTML = steps.map(([ic, nas, sub, vrsta]) => {
     if (vrsta !== 'parking') return `<div class="blk"><h3 class="h">${ico(ic)}${esc(nas)}</h3><p>${esc(sub)}</p></div>`
     // parking: tekst, fotografija (otvara se u punoj veličini), mala karta s pribadačom i „Navigiraj” (sql/add-parking.sql)
@@ -1022,21 +1692,115 @@ function renderArrival() {
 }
 
 // upute za ulazak po koracima (sections.ulazak_koraci, sql/add-arrival-steps.sql)
+const ulazKoraci = () => (Array.isArray(SECTION.ulazak_koraci) ? SECTION.ulazak_koraci : []).filter(x => x && (x.naslov || x.tekst || x.foto))
+// Dolazak: kartica „Kako ući” sa sličicama koraka → ekran korak po korak (#ulaz)
 function renderUlaz() {
-  const k = (Array.isArray(SECTION.ulazak_koraci) ? SECTION.ulazak_koraci : []).filter(x => x && (x.naslov || x.tekst || x.foto))
-  show('#ulaz-blk', k.length > 0)
-  // korak sa zvjezdicom (domaćin: „ovdje gost upisuje šifru”) nosi šifru vrata —
-  // ista secretHtml() kao drugdje: zapečaćena vrijednost ne ulazi u HTML
-  const items = vaultItems(), dc = items.findIndex(x => x.id === 'door_code')
-  const zv = dc >= 0 ? k.findIndex(x => x.sifra) : -1
-  $('#ulaz-lista').innerHTML = k.map((x, i) => `<li class="ulaz__k${i === zv ? ' ulaz__k--sifra' : ''}">
-      ${x.foto ? `<button type="button" class="ulaz__f" data-ulaz="${i}" aria-label="${esc(t('Povećaj fotografiju'))} · ${esc(t('Korak {n}', { n: i + 1 }))}"><img src="${esc(x.foto)}" alt="" loading="lazy" decoding="async"></button>` : ''}
-      <div class="ulaz__t"><span class="ulaz__br">${esc(t('Korak {n} od {u}', { n: i + 1, u: k.length }))}</span>
-        ${x.naslov ? `<h3>${esc(H(x.naslov))}</h3>` : ''}${x.tekst ? `<p>${esc(H(x.tekst))}</p>` : ''}
-        ${i === zv ? `<div class="ulaz__sifra">${secretHtml(items[dc], dc)}${UNLOCKED ? '' : `<p class="ulaz__nap">${ico('clock', 'ic--sm')}${esc(STARI_LINK ? t('Šifru vrata i Wi-Fi lozinku dobivate u osobnom linku od domaćina.') : t('Šifra vrata i Wi-Fi pojavit će se ovdje sat prije prijave.'))}</p>`}</div>` : ''}</div></li>`).join('')
-  ULAZ = k
+  const k = ulazKoraci(), el = $('#ulaz-blk')
+  const zv = SECTION.door_code ? k.findIndex(x => x.sifra) : -1
+  // koraci sa slikama i ekran preko cijelog zaslona su u planu domaćina (mogućnost „koraci”);
+  // bez nje gost dobije iste korake kao kratak popis teksta
+  ULAZ = imaM('koraci') ? k : []
+  show(el, k.length > 0)
+  $('#o-ulaz-sub').textContent = k.length ? L.n(k.length, 'korak') + (ULAZ.length ? ' ' + t('s fotografijama') : '') + (zv >= 0 ? ' · ' + t('šifra na koraku {k}', { k: zv + 1 }) : '') : t('Dolazak, parking i adresa')
+  if (!k.length) { el.innerHTML = ''; return false }
+  el.innerHTML = ULAZ.length
+    ? `<ol class="palci">${k.map((x, i) => `<li><a class="palac${i === zv ? ' palac--zv' : ''}" href="#ulaz/${i + 1}" aria-label="${esc(t('Korak {n} od {u}', { n: i + 1, u: k.length }))}">${x.foto ? `<img src="${esc(x.foto)}" alt="" loading="lazy" decoding="async">` : ''}<i>${i === zv ? '★' : i + 1}</i><span>${esc(x.naslov ? H(x.naslov) : t('Korak {n}', { n: i + 1 }))}</span></a></li>`).join('')}</ol>
+      <a class="btn btn--primary" href="#ulaz/1">${esc(GOTOVO.ulaz ? t('Pogledaj korake ponovno') : t('Kreni korak po korak'))}${ico('arrow-right', 'ic--sm')}</a>`
+    : `<ol class="koraci-tx">${k.map((x, i) => `<li><b>${esc(x.naslov ? H(x.naslov) : t('Korak {n}', { n: i + 1 }))}</b>${x.tekst ? `<span>${esc(H(x.tekst))}</span>` : ''}</li>`).join('')}</ol>`
   return zv >= 0
 }
+
+// ── Ulazak korak po korak — jedan korak na zaslonu, na kraju „Ušli smo” ──
+// Šifra vrata stoji na koraku sa zvjezdicom kroz istu secretHtml(): dok je
+// zaključano, vrijednost ne ulazi u HTML.
+let UK = 0, UK_SMJER = 1, USAO = null
+function renderUx() {
+  const k = ULAZ, el = $('#ux')
+  if (!el || !k.length) { if (el) el.innerHTML = ''; return }
+  UK = Math.max(0, Math.min(k.length, UK))
+  const tren = Math.min(UK + 1, k.length)
+  const crte = `<div class="ux-crte" role="progressbar" aria-valuemin="1" aria-valuemax="${k.length}" aria-valuenow="${tren}" aria-label="${esc(t('Korak {n} od {u}', { n: tren, u: k.length }))}">${k.map((_, j) => `<span class="${j <= UK ? 'da' : ''}"></span>`).join('')}</div>`
+  if (UK === k.length) {
+    const prije = faza() === 'prije'
+    const tel = String(PROP.phone || '').replace(/\D/g, '')
+    const ime = BOOKING && BOOKING.guest_name && BOOKING.guest_name !== 'Gost' ? BOOKING.guest_name : t('vaš gost')
+    const msg = encodeURIComponent(t('Pozdrav! Ovdje {ime}. Stigli smo i ušli — sve je u redu, hvala!', { ime }))
+    const javi = tel ? `https://wa.me/${tel}?text=${msg}` : PROP.email ? `mailto:${PROP.email}?subject=${encodeURIComponent(t('Stigli smo'))}&body=${msg}` : ''
+    // stanje obavijesti domaćinu: šalje se | poslano | bez (domaćin nema obavijesti ili funkcije nema → gost može javiti sam)
+    const st = prije ? '' : USAO === 'salje' ? `<p class="ux-kraj__st ux-kraj__st--ceka">${ico('bell')}${esc(t('Javljam domaćinu…'))}</p>`
+      : USAO === 'ok' ? `<p class="ux-kraj__st">${ico('check')}${esc(PROP.host_name ? t('Obavijest je poslana — {n} zna da ste ušli.', { n: PROP.host_name }) : t('Obavijest je poslana — domaćin zna da ste ušli.'))}</p>`
+      : USAO === 'demo' ? `<p class="ux-kraj__st">${ico('check')}${esc(t('U primjeru se obavijest ne šalje — vaš domaćin bi je sada dobio.'))}</p>` : ''
+    el.innerHTML = crte + `<div class="ux-kraj"><span class="ux-kraj__kv">${ico('check')}</span>
+      <h2>${esc(prije ? t('Spremni ste za dolazak') : t('Čestitamo, ušli ste!'))}</h2>
+      <p>${esc(prije ? t('Na dan dolaska upute su ovdje, a šifra se pojavi sat prije prijave.') : t('Dobro došli! Wi-Fi i upute za kuću su sljedeće.'))}</p>
+      ${st}
+      <div class="ux-kraj__akc">${!prije && SECTION.wifi_name || !prije && SECTION.wifi_pass ? `<a class="btn btn--sunce" href="#kuca">${ico('wifi')}${esc(t('Wi-Fi i kuća'))}</a>` : ''}
+        ${!prije && USAO === 'bez' && javi ? `<a class="btn btn--prozirno" href="${esc(javi)}"${tel ? ' target="_blank" rel="noopener"' : ''} data-javi>${ico('message-circle')}${esc(t('Javi domaćinu da ste stigli'))}</a>` : ''}
+        <a class="btn btn--prozirno" href="#" data-pocetna>${esc(t('Na početak vodiča'))}</a></div>
+      <button type="button" class="ux-ponovo" data-uk="0">${esc(t('Pogledaj korake ponovno'))}</button></div>`
+    return
+  }
+  const x = k[UK], items = vaultItems(), dc = items.findIndex(i => i.id === 'door_code')
+  const zv = dc >= 0 ? k.findIndex(y => y.sifra) : -1
+  const oznake = `<span class="ux-k__n">${UK + 1}</span>${UK === zv ? `<span class="ux-k__zv">${ico('star')}${esc(t('Ovdje je šifra'))}</span>` : ''}`
+  const sl = x.foto
+    ? `<button type="button" class="ux-k__sl" data-ulaz="${UK}" aria-label="${esc(t('Povećaj fotografiju'))}"><img src="${esc(x.foto)}" alt="" decoding="async">${oznake}</button>`
+    : `<div class="ux-k__sl ux-k__sl--bez">${ico(UK === zv ? 'key-round' : 'door-open')}${oznake}</div>`
+  const adr = punaAdresa(SECTION.address, PROP.location)
+  const mk = UK === 0 && adr ? `<div class="ux-mk">${ico('map-pin')}<div><b translate="no">${esc(adr)}</b><small>Google Maps</small></div>
+    <a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(adr)}" target="_blank" rel="noopener">${ico('car', 'ic--sm')}${esc(t('Vodi me'))}</a></div>` : ''
+  const sifra = UK === zv ? secretHtml(items[dc], dc) + (UNLOCKED ? '' : `<p class="ulaz__nap">${ico('clock', 'ic--sm')}${esc(STARI_LINK ? t('Šifru vrata i Wi-Fi lozinku dobivate u osobnom linku od domaćina.') : t('Šifra vrata i Wi-Fi pojavit će se ovdje sat prije prijave.'))}</p>`) : ''
+  const zadnji = UK === k.length - 1
+  el.innerHTML = crte + `<article class="ux-k${UK_SMJER < 0 ? ' nazad' : ''}">${sl}
+      <div class="ux-k__tx"><span class="ux-k__oz">${esc(t('Korak {n} od {u}', { n: UK + 1, u: k.length }))}</span>
+        ${x.naslov ? `<h2 tabindex="-1">${esc(H(x.naslov))}</h2>` : ''}${x.tekst ? `<p>${esc(H(x.tekst))}</p>` : ''}${sifra}</div></article>${mk}
+    ${zadnji && faza() !== 'prije' ? `<p class="ux-nap">${ico('bell')}${esc(t('Kad pritisnete „Ušli smo”, domaćin dobiva obavijest.'))}</p>` : ''}
+    <div class="ux-gumbi"><button type="button" class="ux-nat" data-uk="-1"${UK ? '' : ' disabled'}>${esc(t('Natrag'))}</button>
+      <button type="button" class="ux-dalje" data-uk="1">${esc(zadnji ? (faza() === 'prije' ? t('Gotovo') : t('Ušli smo')) : t('Sljedeći korak'))}${ico(zadnji ? 'check' : 'arrow-right', 'ic--sm')}</button></div>`
+}
+/* „Ušli smo” → gost_usao(token) (sql/add-guest-arrived.sql): baza zapiše vrijeme
+   i pošalje domaćinu obavijest — jednom po rezervaciji. Gost to vidi napisano
+   prije klika. Bez funkcije ili bez domaćinovih obavijesti gost može javiti sam. */
+async function javiUlazak() {
+  if (USAO === 'ok' || USAO === 'salje') return
+  if (DEMO) { USAO = 'demo'; return }
+  if (!BOOKING) { USAO = 'bez'; return }
+  USAO = 'salje'
+  let r = null
+  try { const { data, error } = await sb.rpc('gost_usao', { p_token: token }); r = error ? null : data } catch {}
+  USAO = r && (r.stanje === 'ok' || r.stanje === 'vec') && r.obavijest ? 'ok' : 'bez'
+  if (document.body.dataset.v === 'ulaz' && UK === ULAZ.length) renderUx()
+}
+function uxIdi(v) {
+  UK_SMJER = v === 0 ? -1 : v
+  UK = v === 0 ? 0 : UK + v
+  if (UK >= ULAZ.length) {
+    UK = ULAZ.length
+    if (faza() !== 'prije') { oznaci('ulaz'); biljezi('guide:usao'); if (v === 1) javiUlazak() }
+  }
+  renderUx()
+  scrollTo(0, 0)
+  const h = $('#ux h2'); if (h) h.focus({ preventScroll: true })
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-uk]'); if (b) { uxIdi(+b.dataset.uk); return }
+  if (e.target.closest('[data-pocetna]')) { e.preventDefault(); goHome() }
+  if (e.target.closest('[data-javi]')) biljezi('guide:poruka')
+})
+document.addEventListener('keydown', e => {
+  if (document.body.dataset.v !== 'ulaz' || document.querySelector('dialog[open]') || e.target.closest('input,textarea,select')) return
+  if (e.key === 'ArrowRight' && UK < ULAZ.length) uxIdi(1)
+  if (e.key === 'ArrowLeft' && UK > 0) uxIdi(-1)
+})
+;(() => {
+  let x0 = null, y0 = 0
+  document.addEventListener('touchstart', e => { x0 = e.target.closest('.ux-k') ? e.touches[0].clientX : null; y0 = e.touches[0].clientY }, { passive: true })
+  document.addEventListener('touchend', e => {
+    if (x0 == null) return
+    const dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0; x0 = null
+    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) { if (dx < 0) uxIdi(1); else if (UK > 0) uxIdi(-1) }
+  }, { passive: true })
+})()
 let ULAZ = []
 function ulazPrikaz(i) {
   let d = document.getElementById('ulaz-dlg')
@@ -1089,18 +1853,18 @@ function renderHouse(rules, faqs) {
   const d = [['snowflake', t('Klima-uređaj'), H(s.ac_info)], ['flame', t('Grijanje'), H(s.heating_info)],
              ['droplets', t('Topla voda'), H(s.hot_water_info)], ['utensils', t('Kuhinja'), H(s.kitchen_info)]].filter(x => x[2])
   if (d.length) {
-    show('#dev-blk')
-    $('#dev-list').innerHTML = d.map(([ic, t, v]) =>
-      `<div class="blk" style="margin-top:16px"><h3 class="h" style="font-size:18px;margin-bottom:4px">${ico(ic)}${esc(t)}</h3><p>${esc(v)}</p></div>`).join('')
-  }
+    // pločice koje se otvore na mjestu (otvorena zauzme cijeli red)
+    $('#dev-list').innerHTML = `<div class="uredaji">${d.map(([ic, n, v]) =>
+      `<details class="ur"><summary>${ico(ic)}<b>${esc(n)}</b></summary><p>${esc(v)}</p></details>`).join('')}</div>`
+  } else $('#dev-list').innerHTML = ''
 
   const rows = []
   // prijava i odjava u jednom redu (detalji s datumima su u Dolasku)
   const pr = [s.checkin_time && [t('Prijava'), t('od {vrijeme}', { vrijeme: s.checkin_time })], s.checkout_time && [t('Odjava'), t('do {vrijeme}', { vrijeme: s.checkout_time })]].filter(Boolean)
   if (pr.length) rows.push(`<div class="rule rule--kv"><span>${esc(pr.map(x => x[0]).join(' · '))}</span><b>${esc(pr.map(x => x[1]).join(' · '))}</b></div>`)
   if (PROP.max_guests) rows.push(`<div class="rule rule--kv"><span>${esc(t('Najviše gostiju'))}</span><b>${esc(String(PROP.max_guests))}</b></div>`)
-  for (const r of (rules || [])) if (r.rule_text) rows.push(`<div class="rule">${esc(H(r.rule_text))}</div>`)
-  if (rows.length) { show('#rules-blk'); $('#rules').innerHTML = rows.join('') }
+  for (const r of (rules || [])) if (r.rule_text) rows.push(`<div class="rule">${ico(pick(r.rule_text, RULE_IC, 'check'))}<span>${esc(H(r.rule_text))}</span></div>`)
+  $('#rules').innerHTML = rows.join('')
 
   renderOdlazak()
 
@@ -1124,6 +1888,10 @@ const PLACE_IC = [[/plaž|kupal/,'umbrella'],[/restoran|konob|pizz|hran|jelo|gri
 const TX_IC = [[/zrač|aerodrom|airport/,'plane'],[/autobus|kolodvor|bus/,'bus'],[/trajekt|luk|brod|katamaran/,'ship'],[/taksi|taxi|auto|rent/,'car']]
 const AT_IC = [[/nacional|park prirode|slap|priroda|planin/,'trees'],[/grad|muzej|crkv|katedral|tvrđav|povijes/,'landmark'],
   [/brod|izlet|otok|kajak|ronj/,'ship'],[/vino|vinarij|kušanj/,'wine'],[/ribolov|rib/,'fish']]
+// boja ikone po vrsti mjesta (pozadina, ikona)
+const TON_IC = {}  // v5: sve ikone mjesta u istoj boji (dvije boje brenda)
+const RULE_IC = [[/tišin|buk|mir|glazb|noć/,'moon'],[/puš|cigar/,'cigarette-off'],[/ljubim|pas|psa|mačk|životinj/,'paw-print'],[/smeć|otpad|reciklir/,'trash-2'],
+  [/bazen|jacuzz|more/,'waves'],[/gost|posjet|osob|zabav/,'users'],[/klim|grijan|struj|svjetl/,'snowflake']]
 const mapsUrl = q => 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(q)
 
 let RECS = []
@@ -1136,7 +1904,9 @@ function renderRecs(places, txs, atts) {
     ...(atts || []).map(a => ({ cat: t('Izleti'), ic: pick((a.type || '') + ' ' + a.name, AT_IC, 'camera'), name: H(a.name),
       dt: [a.type ? H(a.type) : t('Izlet'), H(a.distance), H(a.price)].filter(Boolean).join(' · '), desc: H(a.description), maps: a.maps_query }))
   ]
+  if (!imaM('preporuke')) RECS = []
   if (!RECS.length) return
+  $('#o-okolica-h').textContent = PROP.host_name ? t('{n} preporučuje', { n: PROP.host_name }) : t('Domaćin preporučuje')
   const cats = [...new Set(RECS.map(r => r.cat))]
   const ch = $('#fchips')
   if (cats.length > 1) {
@@ -1152,55 +1922,132 @@ function renderRecs(places, txs, atts) {
   paintRecs('*')
 }
 function paintRecs(cat) {
-  const list = cat === '*' ? RECS : RECS.filter(r => r.cat === cat)
-  $('#places').innerHTML = list.map(r => {
+  const sve = cat === '*' ? RECS : RECS.filter(r => r.cat === cat)
+  // prvo mjesto na popisu domaćina = „prvi izbor”, istaknuto (redoslijed je domaćinov)
+  const prvi = cat === '*' && sve.length > 1 ? sve[0] : null, list = prvi ? sve.slice(1) : sve
+  $('#places').innerHTML = (prvi ? `<article class="istaknuto"><span class="istaknuto__z">${ico('star', 'ic--sm')}${esc(t('Prvi izbor domaćina'))}</span>
+      <h3>${esc(prvi.name)}</h3>${prvi.dt ? `<p>${esc(prvi.dt)}</p>` : ''}${prvi.desc ? `<p style="font-weight:400">${esc(prvi.desc)}</p>` : ''}
+      ${prvi.maps ? `<a class="btn btn--primary btn--sm" href="${esc(mapsUrl(prvi.maps))}" target="_blank" rel="noopener">${esc(t('Odvedi me'))}${ico('arrow-up-right', 'ic--sm')}</a>` : ''}</article>` : '') + (list.length ? '<div class="mjesta">' : '') + list.map(r => {
     const go = r.maps
       ? `<a class="lrow__go" href="${esc(mapsUrl(r.maps))}" target="_blank" rel="noopener" aria-label="${esc(t('{n} na karti', { n: r.name }))}">${esc(t('Karta'))}${ico('arrow-up-right', 'ic--sm')}</a>`
       : r.phone ? `<a class="lrow__go" href="tel:${esc(String(r.phone).replace(/[^\d+]/g, ''))}">${esc(t('Nazovi'))}${ico('phone', 'ic--sm')}</a>` : ''
-    return `<div class="lrow"><span class="lrow__ic">${ico(r.ic)}</span>
+    const [ib, ic] = TON_IC[r.ic] || ['#EFEEE8', '#12303A']
+    return `<div class="lrow"><span class="lrow__ic" style="--ic-bg:${ib};--ic:${ic}">${ico(r.ic)}</span>
       <div class="lrow__tx"><span class="lrow__nm">${esc(r.name)}</span>${r.dt ? `<span class="lrow__dt">${esc(r.dt)}</span>` : ''}${r.desc ? `<span class="lrow__dt">${esc(r.desc)}</span>` : ''}</div>${go}</div>`
-  }).join('')
+  }).join('') + (list.length ? '</div>' : '')
 }
 
 // ══════════════════════════════════════════════════════
 //  DOMAĆIN
 // ══════════════════════════════════════════════════════
 function renderHost() {
-  if (!PROP.host_name && !PROP.phone && !PROP.email) { show('#dock', false); return }
+  show('#o-domacin', !!(PROP.host_name || PROP.phone || PROP.email))
+  if (!PROP.host_name && !PROP.phone && !PROP.email) return
   $('#host-av').textContent = (PROP.host_name || 'D')[0].toUpperCase()
   $('#host-name').textContent = PROP.host_name || t('Domaćin')
   const phone = (PROP.phone || '').replace(/\D/g, '')
   let h = ''
-  if (phone) h += `<a class="btn btn--primary" href="https://wa.me/${phone}" target="_blank" rel="noopener">WhatsApp${ico('message-circle')}</a>`
-  if (PROP.phone) h += `<a class="btn btn--secondary" href="tel:${esc(PROP.phone)}">${esc(t('Nazovi'))}${ico('phone')}</a>`
-  if (PROP.email) h += `<a class="btn btn--secondary" href="mailto:${esc(PROP.email)}">${esc(t('E-mail'))}${ico('mail')}</a>`
+  // poruka ide kroz „Napišite poruku” iznad; ovdje samo poziv i adresa (vidljivi broj i e-mail)
+  if (PROP.phone) h += `<a class="btn btn--secondary" href="tel:${esc(String(PROP.phone).replace(/[^\d+]/g, ''))}">${ico('phone')}${esc(t('Nazovi'))} · <span translate="no">${esc(PROP.phone)}</span></a>`
+  if (PROP.email) h += `<a class="btn btn--secondary" href="mailto:${esc(PROP.email)}">${ico('mail')}<span translate="no">${esc(PROP.email)}</span></a>`
   $('#host-btns').innerHTML = h
-  if (PROP.host_name) $('#help-sub').textContent = phone ? t('{n} odgovara na WhatsApp.', { n: PROP.host_name }) : t('{n} odgovara.', { n: PROP.host_name })
-  show('#helpcard')
-  document.body.classList.add('has-dock')
+  $('#host-kako').textContent = t('Vaš domaćin') + (phone ? ' · ' + t('najbrže preko WhatsAppa') : '')
+  const tel = String(PROP.phone || '').replace(/[^\d+]/g, '')
+  show('#dom-pisi', !!(tel || PROP.email))
+  $('#dom-brze').innerHTML = BRZE_PORUKE.map(([k, n]) => `<button type="button" data-poruka="${k}">${esc(t(n))}</button>`).join('')
+  $('#dom-btn').innerHTML = [
+    phone && `<button type="button" class="btn btn--primary" onclick="posaljiDomacinu('wa','#dom-tx')">${ico('message-circle')}WhatsApp</button>`,
+    tel && `<button type="button" class="btn btn--secondary" onclick="posaljiDomacinu('sms','#dom-tx')">SMS</button>`,
+    PROP.email && `<button type="button" class="btn btn--secondary" onclick="posaljiDomacinu('mail','#dom-tx')">${ico('mail')}${esc(t('E-mail'))}</button>`
+  ].filter(Boolean).join('')
 }
+
+// brze poruke domaćinu (Domaćin, Odlazak → „Pitaj domaćina”): tekst ide u polje, gost ga može doraditi
+const BRZE_PORUKE = [
+  ['ranije', 'Raniji dolazak', 'Pozdrav! Možemo li doći nešto ranije?'],
+  ['kasnije', 'Kasnija odjava', 'Pozdrav! Bi li bila moguća kasnija odjava?'],
+  ['problem', 'Nešto ne radi', 'Pozdrav! Imamo mali problem: '],
+  ['rucnici', 'Još ručnika', 'Pozdrav! Možemo li dobiti još ručnika?'],
+  ['hvala', 'Hvala!', 'Hvala na svemu, sve je super!']
+]
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-poruka]'); if (!b) return
+  const x = BRZE_PORUKE.find(y => y[0] === b.dataset.poruka); if (!x) return
+  const polje = $('#dom-tx'); polje.value = t(x[2])
+  $$('#dom-brze button').forEach(y => y.setAttribute('aria-pressed', String(y.dataset.poruka === x[0])))
+  if (b.closest('#dom-brze')) { polje.focus(); polje.setSelectionRange(polje.value.length, polje.value.length) }
+  else setTimeout(() => { $('#dom-pisi').scrollIntoView({ block: 'center' }); polje.focus({ preventScroll: true }) }, 60)
+})
 
 // ══════════════════════════════════════════════════════
 //  PODSTRANICE — #dolazak, #kuca(/pravila|/odlazak|/uredaji), #preporuke, #domacin
 // ══════════════════════════════════════════════════════
 const VIEWS = {
   dolazak: ['Dolazak'], kuca: ['Wi-Fi i kuća'], preporuke: ['Preporuke domaćina'], domacin: ['Domaćin'],
-  hitno: ['Hitno i pomoć'], prijava: ['Prijava boravka']
+  hitno: ['Hitno i pomoć'], prijava: ['Prijava boravka'], ulaz: ['Kako ući'], odlazak: ['Odlazak']
 }
+// zaglavlje podstranice: [boja teme, ikona, naslov, opis, činjenice [[ikona, tekst]]]
+function vglava(view) {
+  const s = SECTION, mj = (PROP.location || '').split(',').map(x => x.trim()).filter(Boolean).pop()
+  const k = ulazKoraci(), zv = s.door_code ? k.findIndex(x => x.sifra) : -1
+  const uredaji = [[s.ac_info, 'snowflake', t('Klima-uređaj')], [s.heating_info, 'flame', t('Grijanje')], [s.hot_water_info, 'droplets', t('Topla voda')], [s.kitchen_info, 'utensils', t('Kuhinja')]].filter(x => x[0])
+  const { odjava } = kadTrenuci()
+  const kat = {}; for (const r of RECS) kat[r.cat] = (kat[r.cat] || 0) + 1
+  const G = {
+    dolazak: ['dolazak', 'door-open', t('Dolazak'), t('Sve za lak dolazak — od ceste do vrata.'),
+      [s.checkin_time && ['log-in', t('Prijava od {v}', { v: s.checkin_time })], k.length && ['door-open', L.n(k.length, 'korak')],
+       zv >= 0 && ['key-round', t('šifra na koraku {k}', { k: zv + 1 })], (s.parking_info || s.parking_lat != null) && ['car', t('Parking')], mj && ['map-pin', mj]]],
+    kuca: ['kuca', 'house', t('Wi-Fi i kuća'), t('Wi-Fi, uređaji i kućna pravila.'),
+      [s.wifi_name && ['wifi', s.wifi_name], ...uredaji.map(x => [x[1], x[2]]), PROP.max_guests && ['users', t('Najviše gostiju') + ': ' + PROP.max_guests]]],
+    odlazak: ['odlazak', 'log-out', t('Odlazak'), t('Kratki popis prije polaska i ocjena boravka.'),
+      [s.checkout_time && ['clock', t('Odjava do {v}', { v: s.checkout_time })], BOOKING && odjava && ['log-out', danKratko(odjava)]]],
+    preporuke: ['preporuke', 'umbrella', t('Naš izbor'), PROP.host_name ? t('{n} preporučuje', { n: PROP.host_name }) : t('Domaćin preporučuje'),
+      Object.entries(kat).slice(0, 5).map(([c, n]) => ['star', c + ' · ' + n])],
+    domacin: ['domacin', 'message-circle', PROP.host_name || t('Domaćin'), t('Javite se kad god nešto trebate — poruka ide ravno domaćinu.'),
+      [PROP.phone && ['message-circle', 'WhatsApp'], PROP.phone && ['phone', t('Nazovi')], PROP.email && ['mail', t('E-mail')]]],
+    hitno: ['hitno', 'siren', t('Hitno i pomoć'), t('Brojevi vrijede u cijeloj Hrvatskoj i besplatni su.'), [['phone', '112 · 0–24']]],
+    prijava: ['prijava', 'id-card', t('Prijava boravka'), t('Podaci za eVisitor · oko 2 minute'), [['shield-check', t('Vidi ih samo domaćin')]]]
+  }[view]
+  const el = $('#vglava')
+  if (!G) { show(el, false); return null }
+  const st = ''
+  const ch = [st && [UNLOCKED ? 'shield-check' : 'lock', st], ...G[4]].filter(Boolean)
+  el.innerHTML = `<span class="vglava__veliki" aria-hidden="true">${ico(G[1])}</span><div class="wrap vglava__in">
+    <div><span class="eyebrow" translate="no">${esc(PROP.name || t('Vaš smještaj'))}</span><h1>${esc(G[2])}</h1><p>${esc(G[3])}</p>
+      ${ch.length ? `<div class="vglava__ch">${ch.map(([i, x]) => `<span class="vglava__c">${ico(i)}<span>${esc(x)}</span></span>`).join('')}</div>` : ''}</div>
+    <span class="vglava__ik" aria-hidden="true">${ico(G[1])}</span></div>`
+  show(el)
+  return G[0]
+}
+// stare adrese podstranica (e-mail gostu, obavijesti, oznake) vode na odjeljak početne
+const ODJ_ZA = { dolazak: 'ulaz', kuca: 'wifi', odlazak: 'odlazak', preporuke: 'okolica', domacin: 'domacin', hitno: 'hitno' }
+const ODJ_SIDRO = { pravila: 'pravila', pitanja: 'pravila', uredaji: 'kuca', odlazak: 'odlazak' }
 function route() {
-  const [v, anchor] = location.hash.slice(1).split('/')
-  const view = VIEWS[v] ? v : 'home'
+  let [v, anchor] = location.hash.slice(1).split('/')
+  // ekran korak po korak postoji samo s koracima; bez njih → odjeljak „Kako ući”
+  if (v === 'ulaz' && !ULAZ.length) v = 'dolazak'
+  const view = v === 'ulaz' || v === 'prijava' ? v : 'home'
   if (view !== 'home') biljezi('guide:' + view)
   document.querySelectorAll('[data-view]').forEach(el => { el.hidden = el.dataset.view !== view })
   const home = view === 'home'
+  document.body.dataset.v = view
+  $('#sadrzaj').dataset.ton = vglava(view) || ''
   show('#back', !home)
   show('#h-badge', home)
   $('#h-title').textContent = home ? (PROP.name || t('Vaš smještaj')) : t(VIEWS[view][0])
   $('#h-sub').textContent = home ? t('Vaš privatni vodič') : t('{n} · privatni vodič', { n: PROP.name || t('Vaš smještaj') })
-  show('#dock', view !== 'domacin' && !!(PROP.host_name || PROP.phone || PROP.email))
-  const target = anchor && document.getElementById(anchor)
-  if (target) { target.scrollIntoView({ block: 'start' }); target.focus({ preventScroll: true }) }
-  else scrollTo(0, 0)
+  show('#dock', false)
+  if (view === 'ulaz') {
+    const n = parseInt(anchor, 10)
+    UK = Number.isFinite(n) ? n - 1 : 0; UK_SMJER = 1
+    renderUx(); scrollTo(0, 0)
+    return
+  }
+  if (view === 'prijava') { scrollTo(0, 0); return }
+  if (v === 'dolazak' && !ULAZ.length && faza() !== 'prije') oznaci('ulaz')
+  const cilj = ODJ_SIDRO[anchor] || ODJ_ZA[v]
+  if (cilj) requestAnimationFrame(() => skociNa(cilj))
+  else if (!v) scrollTo(0, 0)
 }
 addEventListener('hashchange', route)
 window.goHome = () => {
@@ -1247,11 +2094,25 @@ function renderOdlazak() {
   show('#out-text', !!$('#out-text').textContent)
   $('#out-list').innerHTML = stavke.map((t, i) =>
     `<li><label><input type="checkbox" data-i="${i}"${kvacice.includes(i) ? ' checked' : ''}><span>${esc(t)}</span></label></li>`).join('')
-  const gotovo = () => show('#out-done', $$('#out-list input').every(x => x.checked))
+  // popis za kvačice tek dan prije odlaska (i na dan odlaska); stari opći link nema datume → uvijek
+  const sutraOdl = (() => { if (!BOOKING || !BOOKING.checkout_date) return true
+    const d = new Date(String(BOOKING.checkout_date).slice(0, 10) + 'T00:00:00'); d.setDate(d.getDate() - 1)
+    return danasISO() >= `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}` })()
+  show('#out-list', sutraOdl); show('#out-nap', sutraOdl); show('#out-pred', !sutraOdl)
+  $('#o-odlazak-sub').textContent = BOOKING && BOOKING.checkout_date
+    ? [danKratko(new Date(String(BOOKING.checkout_date).slice(0, 10) + 'T00:00:00')), s.checkout_time && t('do {vrijeme}', { vrijeme: s.checkout_time })].filter(Boolean).join(' · ')
+    : (s.checkout_time ? t('Odjava je do {v}.', { v: s.checkout_time }) : t('Prije nego krenete'))
+  show('#kasnije-blk', !!(PROP.phone || PROP.email))
+  const gotovo = () => {
+    const sv = $$('#out-list input'), da = sv.filter(x => x.checked).length
+    $('#out-nap span').style.width = (sv.length ? Math.round(da / sv.length * 100) : 0) + '%'
+    show('#out-done', sutraOdl && sv.every(x => x.checked))
+  }
   $('#out-list').onchange = () => {
     const sada = $$('#out-list input').filter(x => x.checked).map(x => Number(x.dataset.i))
     try { localStorage.setItem(kljuc, JSON.stringify(sada)) } catch {}
-    gotovo()
+    gotovo(); renderSada()
+    if ($$('#out-list input').every(x => x.checked)) oznaci('odlazak', false)
   }
   gotovo()
 }
@@ -1260,6 +2121,7 @@ const danasISO = () => { const d = new Date(); return `${d.getFullYear()}-${Stri
 
 let OCJENA = 0
 async function pripremiOcjenu() {
+  if (!imaM('ocjena')) return
   // samo s linkom rezervacije i tek od dana dolaska
   if (!BOOKING || !BOOKING.checkin_date || danasISO() < String(BOOKING.checkin_date).slice(0, 10)) return
   if (DEMO) return prikaziOcjenu(false)
@@ -1318,6 +2180,7 @@ const POLJA = [
 ]
 let OSOBE = []
 async function pripremiPrijavu() {
+  if (!imaM('evisitor')) return
   if (!BOOKING) return                      // stari opći link nema rezervaciju
   let upisano = []
   if (DEMO) upisano = [{ ime: 'Ana', prezime: 'Horvat', drzavljanstvo: 'Hrvatska' }]
@@ -1333,7 +2196,8 @@ async function pripremiPrijavu() {
   crtajOsobe()
   if (upisano.length && !DEMO) poruka('#pr-ok', t('Podaci su poslani ({n}). Ako nešto ne valja, ispravite i pošaljite ponovno.', { n: L.n(upisano.length, 'osoba') }))
   PRIJAVA_DOSTUPNA = true
-  renderTiles()
+  if (upisano.length && !DEMO) oznaci('prijava')
+  poredaj()
 }
 function poruka(sel, t) { $(sel).textContent = t || ''; show(sel, !!t) }
 function crtajOsobe() {
@@ -1368,7 +2232,7 @@ window.posaljiPrijavu = async () => {
     if (!error && data) { st = data.stanje; n = data.osoba || 0 }
   } catch {}
   btn.disabled = false
-  if (st === 'ok') { poruka('#pr-ok', t('Poslano domaćinu: {n}. Hvala!', { n: L.n(n, 'osoba') })); veselje($('#pr-ok')); return }
+  if (st === 'ok') { oznaci('prijava'); poruka('#pr-ok', t('Poslano domaćinu: {n}. Hvala!', { n: L.n(n, 'osoba') })); veselje($('#pr-ok')); return }
   poruka('#pr-err', t({ expired: 'Link je istekao — podatke pošaljite domaćinu izravno.', neispravno: 'Upišite ime i prezime za svaku osobu.' }[st]
     || 'Slanje nije uspjelo. Provjerite vezu i pokušajte ponovno.'))
 }
@@ -1382,7 +2246,7 @@ function spremiPredmemoriju() {
   try {
     const sek = UNLOCKED ? SECTION : { ...SECTION,
       door_code: SECTION.door_code ? true : SECTION.door_code, wifi_pass: SECTION.wifi_pass ? true : SECTION.wifi_pass }
-    localStorage.setItem(KLJUC, JSON.stringify({ t: Date.now(), PROP, SECTION: sek, BOOKING, UNLOCK_AT, CO_END, IZ_FUNKCIJE, STARI_LINK, LISTE, JEZIK: L.stanje() }))
+    localStorage.setItem(KLJUC, JSON.stringify({ t: Date.now(), PROP, SECTION: sek, BOOKING, UNLOCK_AT, CO_END, IZ_FUNKCIJE, STARI_LINK, LISTE, MOG, OZNAKA, BREND, JEZIK: L.stanje() }))
   } catch {}
 }
 function izPredmemorije() {
@@ -1402,7 +2266,7 @@ function izPredmemorije() {
   $('#mreza-txt').textContent = t('Nema interneta — prikazujem vodič spremljen {d} u {t}.', { d: fmtShort(kad), t: fmtHM(kad) })
     + (uProzoru && !UNLOCKED ? ' ' + t('Šifre će se pojaviti kad se spojite.') : '')
   show('#mreza-traka')
-  finish({ liste: c.LISTE || [], jezik: c.JEZIK || null })
+  finish({ liste: c.LISTE || [], jezik: c.JEZIK || null, mog: c.MOG === undefined ? null : c.MOG, oznaka: c.OZNAKA, brend: c.BREND || null })
   return true
 }
 addEventListener('online', () => { if (BEZ_MREZE) location.reload() })
@@ -1415,6 +2279,7 @@ async function prikaziPrimjer() {
   const dan = n => { const d = new Date(); d.setDate(d.getDate() + n); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}` }
   PROP = { id: 'demo', name: 'Villa Maslina', location: 'Primošten', host_name: 'Marija', email: 'marija@example.com', max_guests: 6,
     cover_photo_url: '/assets/landing/villa-1600.jpg',
+    photo_urls: ['/assets/landing/villa-1600.jpg', '/assets/landing/villa-900.jpg'],
     welcome_msg: 'Dobro došli! Kuća je spremna, bazen očišćen, a u hladnjaku vas čeka domaće maslinovo ulje. Ako išta zatreba, javite se.' }
   SECTION = { wifi_name: 'Maslina-Gost', wifi_pass: 'primjer-2026', door_code: '7305', checkin_time: '15:00', checkout_time: '10:00',
     address: 'Put maslina 12 (izmišljeno)', parking_info: 'Dva mjesta ispred kuće, lijevo od ulaza.', parking_lat: 43.5862, parking_lon: 15.9238,

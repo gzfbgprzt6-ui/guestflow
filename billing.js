@@ -25,15 +25,18 @@ export async function billingStatus() {
   }
 }
 
-// Otvara Stripe Checkout. Ako korisnik već ima pretplatu karticom,
-// poslužitelj vrati 409 pa se umjesto toga otvara portal.
-export async function startCheckout(supabase, plan, interval = "month", povratak = "dashboard") {
+// Otvara Stripe Checkout za `objekata` objekata (cijena je po objektu).
+// Ako korisnik već ima pretplatu karticom, poslužitelj je sam promijeni
+// (broj objekata, plan) i vrati { promijenjeno: true } — tada nema
+// preusmjeravanja. Stari odgovor 409 i dalje otvara portal.
+export async function startCheckout(supabase, plan, interval = "month", povratak = "dashboard", objekata = null) {
   const response = await fetch("/api/create-checkout-session", {
     method: "POST",
     headers: await authHeaders(supabase),
-    body: JSON.stringify({ plan, interval, povratak }),
+    body: JSON.stringify({ plan, interval, povratak, objekata }),
   });
   const result = await response.json().catch(() => ({}));
+  if (response.ok && result.promijenjeno) return result;
   if (response.status === 409 && result.portal) return openBillingPortal(supabase, povratak);
   if (!response.ok || !result.url) throw new Error(result.error || "Plaćanje nije pokrenuto.");
   window.location.assign(result.url);

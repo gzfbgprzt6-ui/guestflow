@@ -5,7 +5,7 @@
    ===================================================================== */
 
 /* gornja traka */
-.tnav{position:sticky;top:0;z-index:30;background:rgba(252,252,250,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+.tnav{position:sticky;top:0;z-index:30;background:rgba(246,245,241,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
 .tnav__in{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:68px}
 .tnav__logo{font:800 22px/1 var(--font-ui);letter-spacing:-.03em;text-decoration:none}
 .tnav__logo i{color:var(--action);font-style:normal}

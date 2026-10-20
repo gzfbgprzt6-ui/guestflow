@@ -16,17 +16,17 @@
 
 const CSS = `
 .odm-potvrda{width:min(420px,calc(100vw - 32px));padding:24px;border:0;border-radius:var(--radius-lg,var(--radius-feature,14px));
-  background:var(--paper,var(--bg-surface,#fff));color:var(--ink,var(--text,#103D4B));box-shadow:0 24px 64px rgba(10,42,51,.28);
+  background:var(--paper,var(--bg-surface,#fff));color:var(--ink,var(--text,#12303A));box-shadow:0 24px 64px rgba(14,34,41,.28);
   font:500 16px/1.5 var(--font-body,"DM Sans",system-ui,sans-serif)}
-.odm-potvrda::backdrop{background:rgba(10,42,51,.45)}
+.odm-potvrda::backdrop{background:rgba(14,34,41,.45)}
 .odm-potvrda__t{margin:0 0 20px;white-space:pre-line;font:700 18px/1.4 var(--font-ui,"Manrope",system-ui,sans-serif)}
 .odm-potvrda__akc{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
 .odm-potvrda button{min-height:44px;padding:0 18px;border-radius:var(--radius-sm,var(--radius-control,7px));cursor:pointer;
   font:700 15px/1 var(--font-ui,"Manrope",system-ui,sans-serif)}
-.odm-potvrda .ne{border:1px solid var(--line,var(--border-control,#768B94));background:transparent;color:inherit}
-.odm-potvrda .da{border:0;background:var(--copper,var(--action,#116D76));color:#fff}
+.odm-potvrda .ne{border:1px solid var(--line,var(--border-control,#7D8A8C));background:transparent;color:inherit}
+.odm-potvrda .da{border:0;background:var(--copper,var(--action,#12303A));color:#fff}
 .odm-potvrda .da.opasno{background:var(--danger,#B42318)}
-.odm-potvrda button:focus-visible{outline:2px solid var(--brown,var(--focus,#103D4B));outline-offset:2px}
+.odm-potvrda button:focus-visible{outline:2px solid var(--brown,var(--focus,#12303A));outline-offset:2px}
 @media (prefers-reduced-motion:no-preference){.odm-potvrda[open]{animation:odm-potvrda-in .16s ease-out}}
 @keyframes odm-potvrda-in{from{opacity:0;transform:translateY(6px) scale(.98)}}
 `

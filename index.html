@@ -25,7 +25,7 @@
 .bar a{display:inline-flex;align-items:center;gap:4px;font-weight:600;text-underline-offset:3px;min-height:28px}
 
 /* navigacija */
-.nav{position:sticky;top:0;z-index:30;background:rgba(252,252,250,.94);backdrop-filter:saturate(1.4) blur(8px);border-bottom:1px solid transparent}
+.nav{position:sticky;top:0;z-index:30;background:rgba(246,245,241,.94);backdrop-filter:saturate(1.4) blur(8px);border-bottom:1px solid transparent}
 .nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:var(--s5);min-height:88px}
 .logo{font:800 30px/1 var(--font-ui);letter-spacing:-.04em;text-decoration:none;color:var(--text)}
 .logo span{color:var(--text-accent)}
@@ -128,7 +128,7 @@
 .step .t-muted{color:var(--text-muted)}
 .step[aria-pressed="true"]{background:var(--bg-inverse);border-color:var(--bg-inverse);color:#fff}
 .step[aria-pressed="true"] .eyebrow{color:var(--text-on-inverse-accent)}
-.step[aria-pressed="true"] .step__ic{background:rgba(168,226,216,.16);color:var(--text-on-inverse-accent)}
+.step[aria-pressed="true"] .step__ic{background:rgba(242,179,61,.16);color:var(--text-on-inverse-accent)}
 .step[aria-pressed="true"] .t-muted{color:rgba(255,255,255,.88)}
 
 /* privatni vodič */
@@ -157,6 +157,30 @@
 .plan--featured .t-muted,.plan--featured .t-meta{color:rgba(255,255,255,.86)}
 .plan--featured .checks .ic{color:var(--text-on-inverse-accent)}
 .plan .btn{margin-top:auto}
+.plan__za{margin-top:calc(-1*var(--s4))}
+.plan--featured .plan__za{color:rgba(255,255,255,.86)}
+.plan__price .n small{font:600 14px/1 var(--font-body);letter-spacing:0;opacity:.8}
+.checks .ic--zv{color:var(--sunce-tamno)}
+.plan--featured .checks .ic--zv{color:var(--sunce)}
+.checks .plan__gr{display:block;padding-left:0;font:700 12px/1.3 var(--font-ui);letter-spacing:.06em;text-transform:uppercase;opacity:.75}
+.racun{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:var(--s6) var(--s7);margin-top:var(--s6);padding:32px;background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-feature)}
+.racun__ul{display:grid;gap:10px;align-content:start}
+.racun__n{font:800 34px/1.1 var(--font-ui);letter-spacing:-.03em}
+.racun input[type=range]{width:100%;accent-color:var(--text)}
+.racun__polje{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:8px;border-top:1px solid var(--border);font:600 14px/1.3 var(--font-ui)}
+.racun__polje input{width:76px;min-height:40px;padding:0 10px;border:1px solid var(--border-control);border-radius:var(--radius-control);font:700 15px/1 var(--font-ui);text-align:right;color:var(--text);background:var(--bg-surface)}
+.racun__usp{display:grid;gap:0;margin:0}
+.racun__usp>div{min-width:0;display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:12px 0;border-bottom:1px solid var(--border)}
+.racun__usp dt{color:var(--text-muted);font-size:15px}
+.racun__usp dd{margin:0;font:800 20px/1.2 var(--font-ui);white-space:nowrap}
+.racun__gl dt{color:var(--text);font-weight:600}
+.racun__gl dd{font-size:32px;letter-spacing:-.03em}
+.racun__isp{background:var(--sunce-meko);margin-top:12px;padding:14px 16px!important;border-radius:var(--radius-panel);border:0!important}
+.racun__isp dt{color:var(--text)}
+.racun__isp{flex-wrap:wrap}
+.racun__isp p{flex:1 1 100%;min-width:0;max-width:100%;margin:4px 0 0;color:var(--text-muted);font-size:14px}
+.racun__nap{grid-column:1/-1;margin:0}
+@media (max-width:860px){.racun{grid-template-columns:minmax(0,1fr);padding:22px}.racun__usp dd{font-size:18px}.racun__gl dd{font-size:28px}.racun__usp>div>dt{min-width:0;flex:1}.racun__isp{flex-direction:column;gap:4px!important}.racun__isp p{flex:none;width:100%}}
 .plan__note{margin-top:calc(-1*var(--s3));text-align:center;font-size:13px;line-height:1.4;color:rgba(255,255,255,.86)}
 
 /* FAQ */
@@ -233,7 +257,7 @@
 
 <!-- Lucide ikone (ISC), iste kao u Figmi -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></symbol><symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
   <symbol id="i-up" viewBox="0 0 24 24"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></symbol>
   <symbol id="i-right" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
   <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol>
@@ -521,40 +545,74 @@
   </div>
 </section>
 
-<!-- PLANOVI — nazivi, cijene i limiti dolaze iz tablice `plans` -->
+<!-- PLANOVI — nazivi, cijene i limiti dolaze iz tablice `plans` (v5: cijena po objektu) -->
 <section class="sec sec--wash" id="planovi">
   <div class="wrap">
-    <div class="head"><p class="eyebrow">Planovi</p><h2 class="t-section">Plan za vaš način domaćinstva.</h2><p class="t-lead">Plan određuje broj objekata i fotografija. Bez provizije na rezervacije ni na jednom planu.</p></div>
+    <div class="head"><p class="eyebrow">Planovi</p><h2 class="t-section">Plaćate po objektu. Provizije nema.</h2><p class="t-lead">Jedan objekt je besplatan zauvijek. Za više objekata plaćate fiksno po objektu — koliko god rezervacija dobili.</p></div>
     <div class="plans">
       <article class="plan" data-plan="free">
         <h3 class="t-card" data-name>Free</h3>
-        <div class="plan__price"><span class="n" data-price>0 €</span><span class="t-meta" data-period>bez pretplate</span></div>
+        <p class="t-meta plan__za">1 objekt · da isprobate</p>
+        <div class="plan__price"><span class="n" data-price>0 €</span><span class="t-meta" data-period>zauvijek, bez kartice</span></div>
         <ul class="checks">
+          <li><svg class="ic"><use href="#i-check"/></svg>Vodič: šifra i Wi-Fi koji se otključaju sami</li>
+          <li><svg class="ic"><use href="#i-check"/></svg>Javna stranica s kalendarom i upitima</li>
+          <li><svg class="ic"><use href="#i-check"/></svg>Kalendar Bookinga i Airbnba (iCal)</li>
           <li><svg class="ic"><use href="#i-check"/></svg><span data-limits>1 objekt · 5 fotografija</span></li>
-          <li><svg class="ic"><use href="#i-check"/></svg>Javna stranica i privatni vodič</li>
-          <li><svg class="ic"><use href="#i-check"/></svg>Bez provizije na rezervacije</li>
         </ul>
         <a href="/register.html" class="btn btn--secondary">Započni besplatno</a>
       </article>
       <article class="plan plan--featured" data-plan="pro">
-        <h3 class="t-card" data-name>Pro</h3>
-        <div class="plan__price"><span class="n" data-price>15 €</span><span class="t-meta" data-period>mjesečno · ili 150 € godišnje</span></div>
+        <h3 class="t-card" data-name>Domaćin</h3>
+        <p class="t-meta plan__za">1–5 objekata</p>
+        <div class="plan__price"><span class="n"><span data-price>12 €</span> <small>po objektu / mj.</small></span><span class="t-meta" data-period>ili 99 € po objektu godišnje</span></div>
         <ul class="checks">
+          <li class="plan__gr">Sve iz Free, plus</li>
+          <li><svg class="ic ic--zv"><use href="#i-star"/></svg>Izravne rezervacije: cijena u upitu, ponuda s kaparom na vaš račun</li>
+          <li><svg class="ic ic--zv"><use href="#i-star"/></svg>Povratni gosti s kodom za popust</li>
+          <li><svg class="ic ic--zv"><use href="#i-star"/></svg>Ulazak korak po korak i obavijest „Ušli smo”</li>
+          <li><svg class="ic ic--zv"><use href="#i-star"/></svg>Preporuke u blizini, ocjene gostiju</li>
+          <li><svg class="ic ic--zv"><use href="#i-star"/></svg>Prijava gostiju za eVisitor, link za čistačicu</li>
           <li><svg class="ic"><use href="#i-check"/></svg><span data-limits>5 objekata · 30 fotografija</span></li>
-          <li><svg class="ic"><use href="#i-check"/></svg>Sve iz besplatnog plana</li>
         </ul>
         <a href="/register.html" class="btn btn--inverse">Započni besplatno</a>
         <p class="plan__note">Nadogradite kad vam zatreba.</p>
       </article>
       <article class="plan" data-plan="business">
-        <h3 class="t-card" data-name>Business</h3>
-        <div class="plan__price"><span class="n" data-price>49 €</span><span class="t-meta" data-period>mjesečno · ili 490 € godišnje</span></div>
+        <h3 class="t-card" data-name>Agencija</h3>
+        <p class="t-meta plan__za">6 i više objekata</p>
+        <div class="plan__price"><span class="n"><span data-price>9 €</span> <small>po objektu / mj.</small></span><span class="t-meta" data-period>ili 89 € po objektu godišnje</span></div>
         <ul class="checks">
-          <li><svg class="ic"><use href="#i-check"/></svg><span data-limits>15 objekata · 50 fotografija</span></li>
-          <li><svg class="ic"><use href="#i-check"/></svg>Sve iz besplatnog plana</li>
+          <li class="plan__gr">Sve iz Domaćina, plus</li>
+          <li><svg class="ic ic--zv"><use href="#i-star"/></svg>Nadzorna ploča: svi objekti, danas i kalendar</li>
+          <li><svg class="ic ic--zv"><use href="#i-star"/></svg>Predlošci vodiča za sve objekte</li>
+          <li><svg class="ic ic--zv"><use href="#i-star"/></svg>Tim s ulogama: recepcija, čistačice, vlasnici</li>
+          <li><svg class="ic ic--zv"><use href="#i-star"/></svg>Mjesečni izvještaj vlasniku</li>
+          <li><svg class="ic ic--zv"><use href="#i-star"/></svg>Vaše ime i boja u vodiču</li>
+          <li><svg class="ic ic--zv"><use href="#i-star"/></svg>Gotove objave i automatski e-mail gostu</li>
+          <li><svg class="ic"><use href="#i-check"/></svg><span data-limits>neograničeno objekata · 50 fotografija</span></li>
         </ul>
         <a href="/register.html" class="btn btn--secondary">Započni besplatno</a>
       </article>
+    </div>
+
+    <div class="racun" id="racunica">
+      <div class="racun__ul">
+        <label for="rac-n" class="eyebrow">Koliko objekata imate?</label>
+        <b class="racun__n"><span id="rac-n-tx">3 objekta</span></b>
+        <input id="rac-n" type="range" min="1" max="40" value="3" aria-describedby="rac-plan">
+        <p class="t-meta" id="rac-plan">Plan: Domaćin</p>
+        <label class="racun__polje"><span>Cijena noćenja</span><span><input id="rac-noc" type="number" min="10" max="2000" step="5" value="100" inputmode="numeric"> €</span></label>
+        <label class="racun__polje"><span>Provizija platforme</span><span><input id="rac-prov" type="number" min="0" max="40" step="1" value="15" inputmode="numeric"> %</span></label>
+      </div>
+      <dl class="racun__usp" aria-live="polite">
+        <div class="racun__gl"><dt id="rac-o-tx">Odmoria · 3 objekta · mjesečno</dt><dd id="rac-o">36 €</dd></div>
+        <div><dt>ili godišnje</dt><dd id="rac-og">297 €</dd></div>
+        <div><dt id="rac-b1-tx">Provizija ako svaki objekt ima <b>1 noć</b> mjesečno</dt><dd id="rac-b1">~45 €</dd></div>
+        <div><dt id="rac-b7-tx">Provizija ako svaki objekt ima <b>1 tjedan</b> mjesečno</dt><dd id="rac-b7">~315 €</dd></div>
+        <div class="racun__isp"><dt>Svaki objekt pokrije svoju pretplatu s</dt><dd id="rac-isp">1 izravnom noći mjesečno</dd><p id="rac-isp-s">Dakle 1 noć po objektu — ukupno 3 noći u svim objektima.</p></div>
+      </dl>
+      <p class="racun__nap t-meta">Usporedba je računica, ne obećanje: provizija se plaća samo na rezervacije preko platforme, a Odmoria ne jamči nove goste. Provizije Bookinga i Airbnba razlikuju se po objektu i ugovoru — upišite svoju.</p>
     </div>
   </div>
 </section>
@@ -568,7 +626,7 @@
       <details class="acc"><summary><span>Kako gosti pronalaze moju stranicu?</span><svg class="ic"><use href="#i-down"/></svg></summary><p>Link dijelite na društvenim mrežama, u porukama i drugim vlastitim kanalima. Odmoria ne jamči posjete niti nove rezervacije.</p></details>
       <details class="acc"><summary><span>Treba li mi dizajner ili programer?</span><svg class="ic"><use href="#i-down"/></svg></summary><p>Ne. Unosite fotografije, opis, sadržaje i upute, a stranica prikazuje vaše podatke.</p></details>
       <details class="acc"><summary><span>Tko vidi osjetljive informacije?</span><svg class="ic"><use href="#i-down"/></svg></summary><p>Kod vrata, Wi-Fi i privatne upute vide samo gosti s linkom svog boravka, i to tek od sata prije prijave. Javna stranica ih nikad ne prikazuje.</p></details>
-      <details class="acc"><summary><span>Kako funkcioniraju planovi?</span><svg class="ic"><use href="#i-down"/></svg></summary><p>Postoji besplatna razina i plaćeni planovi s fiksnom mjesečnom ili godišnjom pretplatom. Plan određuje broj objekata i fotografija; provizije na rezervacije nema.</p></details>
+      <details class="acc"><summary><span>Kako funkcioniraju planovi?</span><svg class="ic"><use href="#i-down"/></svg></summary><p>Jedan objekt je besplatan zauvijek. Domaćin (1–5 objekata) i Agencija (6 i više) plaćaju fiksno po objektu, mjesečno ili godišnje. Dodate li objekt, razlika se obračuna razmjerno; provizije na rezervacije nema.</p></details>
     </div>
   </div>
 </section>
@@ -644,7 +702,7 @@
    ostatak aplikacije (plans.js). Ako baza nije dostupna, ostaju vrijednosti
    upisane u HTML-u. */
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-import { loadPlans, getPlan, popustZa, cijenaPlana, formatEur, rokPopusta, trajanjePopusta } from '/plans.js'
+import { loadPlans, getPlan, popustZa, cijenaPlana, formatEur, rokPopusta, trajanjePopusta, planZaBroj, ukupnoZa, placeniObjekti } from '/plans.js'
 try {
   const sb = createClient('https://wtojzqjhipdfbrnmprmz.supabase.co',
                           'sb_publishable_tmZAZTDbQ7ktc1N-8y4q4w_ztAu_62F')
@@ -662,9 +720,10 @@ try {
     const n = card.querySelector('[data-price]'), per = card.querySelector('[data-period]')
     // popust (plan_promotions) — precrtana redovna cijena i naziv ponude s rokom
     const pop = popustZa(card.dataset.plan, 'month'), popG = popustZa(card.dataset.plan, 'year')
-    if (n) n.innerHTML = pop ? `<s class="cijena-stara">${formatEur(pop.redovna)}</s>${formatEur(pop.cijena)}` : `${plan.monthlyPriceEur} €`
+    if (n) n.innerHTML = pop ? `<s class="cijena-stara">${formatEur(pop.redovna)}</s>${formatEur(pop.cijena)}` : formatEur(plan.monthlyPriceEur)
+    const po = plan.poObjektu ? ' po objektu' : ''
     if (per && plan.monthlyPriceEur > 0)
-      per.textContent = plan.yearlyPriceEur > 0 ? `mjesečno · ili ${formatEur(cijenaPlana(card.dataset.plan, 'year'))} godišnje` : 'mjesečno'
+      per.textContent = plan.yearlyPriceEur > 0 ? `ili ${formatEur(cijenaPlana(card.dataset.plan, 'year'))}${po} godišnje` : 'mjesečno'
     const akcija = pop || popG
     if (per && akcija) per.insertAdjacentHTML('beforebegin', `<span class="ponuda">${akcija.naziv.replace(/[<>&"]/g, '')} · −${akcija.posto} %${trajanjePopusta(akcija) ? ' ' + trajanjePopusta(akcija) : ''}${rokPopusta(akcija) ? ' · ' + rokPopusta(akcija) : ''}</span>`)
     const lim = card.querySelector('[data-limits]')
@@ -675,13 +734,44 @@ try {
 } catch {
   /* ostaju vrijednosti upisane u HTML-u */
 }
+
+// Računica: cijena po objektu iz `plans` (ili rezerva u plans.js) prema proviziji
+;(() => {
+  const $ = id => document.getElementById(id)
+  const n = $('rac-n'); if (!n) return
+  const obj = v => `${v} ${v % 10 === 1 && v % 100 !== 11 ? 'objekt' : v % 10 >= 2 && v % 10 <= 4 && (v % 100 < 12 || v % 100 > 14) ? 'objekta' : 'objekata'}`
+  const noci = v => `${v} ${v % 10 === 1 && v % 100 !== 11 ? 'izravne noći' : 'izravnih noći'}`
+  const eur = v => formatEur(Math.round(v))
+  const crtaj = () => {
+    const k = Math.max(1, Number(n.value) || 1)
+    const noc = Math.max(1, Number($('rac-noc').value) || 100), pr = Math.max(0, Number($('rac-prov').value) || 0) / 100
+    const plan = k === 1 ? getPlan('pro') : planZaBroj(k, { besplatno: false })
+    const mj = ukupnoZa(plan.id, 'month', k), god = ukupnoZa(plan.id, 'year', k), m = placeniObjekti(plan.id, k)
+    const jedna = noc * pr
+    $('rac-n-tx').textContent = obj(k)
+    $('rac-plan').textContent = `Plan: ${plan.name}` + (m > k ? ` · plaća se najmanje ${m}` : '') + (k === 1 ? ' · jedan objekt može i besplatno (Free)' : '')
+    $('rac-o-tx').textContent = `Odmoria · ${obj(k)} · mjesečno`
+    $('rac-o').textContent = eur(mj)
+    $('rac-og').textContent = eur(god)
+    $('rac-b1-tx').innerHTML = `Platforma uzme ako svaki objekt ima samo <b>1 noć</b> mjesečno (${k} × ${eur(noc)})`
+    $('rac-b1').textContent = '~' + eur(jedna * k)
+    $('rac-b7-tx').innerHTML = `Platforma uzme ako svaki objekt ima <b>1 tjedan</b> mjesečno (${k} × 7 noći)`
+    $('rac-b7').textContent = '~' + eur(jedna * 7 * k)
+    // po objektu: koliko izravnih noći mjesečno jedan objekt treba da pokrije svoju pretplatu
+    const poObj = jedna > 0 ? Math.max(1, Math.ceil((mj / k) / jedna)) : null
+    $('rac-isp').textContent = poObj ? `${poObj} ${poObj === 1 ? 'izravnom noći' : 'izravnih noći'} mjesečno` : '—'
+    $('rac-isp-s').textContent = poObj ? `To je ${poObj === 1 ? '1 noć' : poObj + ' noći'} po objektu, ne ukupno — ${k > 1 ? `ukupno ${poObj * k} noći u svih ${k} objekata` : 'za cijeli objekt'}. Sve ostale izravne noći su vaša ušteda.` : ''
+  }
+  ;['input', 'change'].forEach(e => ['rac-n', 'rac-noc', 'rac-prov'].forEach(id => $(id).addEventListener(e, crtaj)))
+  crtaj()
+})()
 </script>
 <!-- poruka nakon brisanja računa (account.html → /?racun=obrisan) -->
 <script>
 ;(()=>{const q=new URLSearchParams(location.search);if(q.get('racun')!=='obrisan')return
   q.delete('racun');history.replaceState(null,'',location.pathname+(q.toString()?'?'+q:'')+location.hash)
   const d=document.createElement('div');d.setAttribute('role','status')
-  d.style.cssText='position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:200;max-width:calc(100vw - 32px);padding:14px 20px;border-radius:10px;background:#103D4B;color:#fff;font:600 15px/1.4 Manrope,system-ui,sans-serif;box-shadow:0 12px 32px rgba(16,61,75,.25)'
+  d.style.cssText='position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:200;max-width:calc(100vw - 32px);padding:14px 20px;border-radius:10px;background:#12303A;color:#fff;font:600 15px/1.4 Manrope,system-ui,sans-serif;box-shadow:0 12px 32px rgba(18,48,58,.25)'
   d.textContent='Vaš račun i svi podaci su obrisani. Hvala što ste koristili Odmoriju.'
   document.body.append(d);setTimeout(()=>d.remove(),7000)})()
 </script>
