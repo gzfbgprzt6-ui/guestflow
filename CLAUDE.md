@@ -44,7 +44,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 ├── p.html                  # Javna stranica objekta (?slug=xxx) — AKTIVNA, **redizajn v2 iz Figme** (`odmoria.css`), teme se NE primjenjuju
 ├── h.html                  # Privatni gostinski hub (?token=xxx) — AKTIVNA, **redizajn v2** (`odmoria.css`), podstranice preko #adrese; /h/demo = primjer
 ├── c.html                  # Raspored za čistačicu (/c/<token>) — dolasci i odlasci, bez šifri i imena
-├── sw.js                   # service worker vodiča (opseg /h/) — rad bez interneta (VERZIJA odmoria-vodic-12)
+├── sw.js                   # service worker vodiča (opseg /h/) — rad bez interneta (VERZIJA odmoria-vodic-13)
 ├── push-sw.js              # service worker obavijesti domaćina (opseg /dashboard) — samo push i klik, bez predmemorije
 ├── manifest-domacin.webmanifest  # dashboard kao aplikacija na početnom zaslonu (iPhone obavijesti to traže)
 ├── dashboard.html          # Glavni host dashboard — AKTIVNA, **redizajn v2** (vlastiti CSS, ista imena tokena), navigacija po grupama
@@ -126,6 +126,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
     ├── add-push.sql                     # obavijesti na mobitel: push_pretplate, push_prijava/odjava/proba, VAPID u Vaultu, okidači → /api/obavijest
     ├── add-arrival-steps.sql            # sections.ulazak_koraci (jsonb, ≤ 12): „Kako ući” po koracima sa slikama, samo vodič
     ├── add-guest-arrived.sql            # bookings.usao_at + gost_usao(token): „Ušli smo” u vodiču → push domaćinu (jednom)
+    ├── add-team-roles.sql               # v5: property_members.uloga (upravitelj/recepcija/vlasnik), ima_ulogu(), politike „suradnik” po ulozi; properties.brend + mogucnosti_vodica() s brendom
     ├── add-direct-bookings.sql          # v5: sezonske_cijene, kapara_posto, inquiries.iznos (računa baza: cijena_boravka), kod, pristanak_ponude; mogućnost „izravno”
     ├── add-per-object-plans.sql         # v5: cijena po objektu (po_objektu, min_properties, subscriptions.kolicina), plan_limit, moji_objekti_limit()
     ├── add-plan-features.sql            # plans.mogucnosti (koraci, preporuke, ocjena, evisitor, stilovi, cistacica, promocija, email) + mogucnosti_vodica(token, slug)
@@ -694,6 +695,15 @@ Dashboard **ne učitava `odmoria.css`** — ima vlastiti potpun CSS s istim vrij
   sve `PROPS`, `agNizovi()`), `#ag-kal` (30 dana × objekti), `agPrimijeni()`
   (= `prenesiSadrzaj()` za više objekata), `agIzvjestaj()` (novi prozor,
   ispis/PDF, bez iznosa). Mogućnost `agencija` dodaje `add-per-object-plans.sql`.
+- **Uloge i brend v5** (20. 10., odluke 37, `sql/add-team-roles.sql`): `PROP.__uloga`
+  na dijeljenom objektu; `ULOGA_PANELI` + `ulogaDopusta()` / `primijeniUlogu()`
+  skrivaju (`data-uloga-skriven`) i `nav()`/`openGroup()` preusmjere — **baza
+  to provodi RLS-om**, UI samo ne nudi. Tim: `#tim-uloga`, `promijeniUlogu()`,
+  „Čistačica” vodi na link za čistačicu. Brend: `#brend-card` (`spremiBrend()`,
+  `kontrastSBijelim()` ≥ 4,5), vodič `BREND` → `primijeniBrend()` (tokeni
+  `--bg-inverse/--action/--ton/--brend`, `#brend-ime`, `#brend-dno`).
+  Naslovnica: zvjezdica `#i-star` (`.ic--zv`) = novo u planu; računica kaže
+  noći **po objektu** (`#rac-isp-s`).
 - **Izravne rezervacije v5** (20. 10., odluke 36, `sql/add-direct-bookings.sql`):
   `cijene.js` (`cijenaNoci`, `cijenaBoravka`, `najnizaCijena`, `uMD`/`izMD`) =
   ista pravila kao `cijena_noci()`/`cijena_boravka()` u bazi — mijenjati

@@ -185,7 +185,9 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
 /* v5: pregled gosta (telefon desno) maknut — „Pregled vodiča” i „Pogledaj stranicu” otvaraju prave stranice */
 :root { --preview-width: 0px; }
 .preview-pane { display: none !important; }
-.panelnav .nav-item[data-skriven] { display: none !important; }
+.panelnav .nav-item[data-skriven], .panelnav .nav-item[data-uloga-skriven], .side-link[data-uloga-skriven], .bottom-nav [data-uloga-skriven] { display: none !important; }
+.uloga-traka { margin: 0 0 14px; padding: 10px 14px; border-radius: var(--radius-sm); background: var(--sunce-meko); color: var(--ink); font: 600 14px/1.45 var(--font-ui); }
+.uloga-traka[hidden] { display: none; }
 .editor { min-width: 0; padding: 32px 40px 120px; }
 .page-header { display: flex; align-items: end; justify-content: space-between; gap: 32px; margin-bottom: 24px; }
 .eyebrow { display: block; margin-bottom: 8px; color: var(--copper); font: 700 12px/1.3 var(--font-body); letter-spacing: .15em; text-transform: uppercase; }
@@ -812,6 +814,7 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
 .auto-mail small { display: block; color: var(--muted); font-size: 13px; }
 .bk-mail { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
 .tim-lista { display: grid; gap: 8px; margin-bottom: 16px; }
+.tim-uloga { min-height: 36px; padding: 0 10px; font-size: 13.5px; max-width: 260px; }
 .tim-red { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; padding: 12px 14px; border-radius: var(--radius-sm); background: var(--paper-2); }
 .tim-red b { display: block; }
 .tim-red small { color: var(--muted); font-size: 13px; }
@@ -1359,6 +1362,10 @@ section.v5-prazno{display:none!important}
 .ag-izbor > div { display: flex; flex-wrap: wrap; gap: 8px 16px; }
 .ag-izbor label { display: inline-flex; gap: 6px; align-items: center; font-size: 14.5px; }
 @media (max-width: 780px) { .ag-danas { grid-template-columns: minmax(0, 1fr); } }
+.brend-pregled { --brend: #12303A; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin: 12px 0; padding: 16px 18px; border-radius: var(--radius); background: var(--brend); color: #fff; }
+.brend-pregled__k small { display: block; opacity: .8; font-size: 12px; }
+.brend-pregled__k b { font: 800 18px/1.2 var(--font-ui); }
+.brend-pregled__g { padding: 10px 16px; border-radius: 99px; background: #fff; color: var(--brend); font: 800 13.5px/1 var(--font-ui); }
 </style>
 <script type="module">import{pokreni,prekidac}from'/domacin-jezik.js';pokreni();prekidac(document.getElementById('jezik-sw'))</script>
 </head>
@@ -1602,6 +1609,7 @@ section.v5-prazno{display:none!important}
           </nav>
         </div>
 
+        <p class="uloga-traka" id="uloga-traka" role="status" hidden></p>
         <div class="page-header">
           <div>
             <span class="eyebrow" id="panelEyebrow">Danas</span>
@@ -1731,6 +1739,16 @@ section.v5-prazno{display:none!important}
             <div class="ag-izbor"><b>Što prenijeti</b><div id="ag-pred-vrste"></div></div>
             <p class="helper" id="ag-pred-st" role="status"></p>
             <div style="display:flex;justify-content:flex-end"><button class="btn" type="button" id="ag-pred-da" onclick="agPrimijeni()">Primijeni predložak</button></div>
+          </div>
+          <div class="card" id="brend-card" data-mog="brend">
+            <div class="card-head"><div class="card-title-wrap"><span class="card-number"><svg class="ic ic--sm" aria-hidden="true"><use href="#i-sparkles"/></svg></span><div><h2>Vaše ime i boja u vodiču</h2><p>Gost u vodiču vidi ime vaše agencije i vašu boju umjesto boje Odmorije — na svim vašim objektima.</p></div></div></div>
+            <div class="form-grid">
+              <div class="field"><label for="brend-ime">Ime agencije</label><input class="input" id="brend-ime" maxlength="60" placeholder="Adria Stan" data-bez-spremanja oninput="brendPregled()"></div>
+              <div class="field"><label for="brend-boja">Boja</label><input class="input" id="brend-boja" type="color" value="#12303A" data-bez-spremanja oninput="brendPregled()" style="height:46px;padding:4px"></div>
+            </div>
+            <div class="brend-pregled" id="brend-pregled" aria-hidden="true"><span class="brend-pregled__k"><small>Vaš vodič</small><b id="brend-pr-ime">Adria Stan</b></span><span class="brend-pregled__g">Kreni korak po korak</span></div>
+            <p class="helper" id="brend-st" role="status"></p>
+            <div style="display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap"><button class="btn ghost" type="button" onclick="spremiBrend(true)">Vrati boju Odmorije</button><button class="btn" type="button" onclick="spremiBrend()">Spremi za sve moje objekte</button></div>
           </div>
           <div class="card">
             <div class="card-head"><div class="card-title-wrap"><span class="card-number"><svg class="ic ic--sm" aria-hidden="true"><use href="#i-chart-no-axes-column"/></svg></span><div><h2>Mjesečni izvještaj vlasniku</h2><p>Noći, popunjenost, izravno i s platformi, upiti i ocjene — jedna stranica za ispis ili PDF.</p></div></div></div>
@@ -2533,9 +2551,27 @@ const MOG_TX={koraci:['Koraci sa slikama i „Ušli smo”','Gost prolazi ulaz k
   promocija:['Promocija','Gotove objave za slobodne termine, letak s QR kodom i Facebook grupe.'],
   izravno:['Izravne rezervacije','Sezonske cijene, iznos u upitu, ponuda s kaparom na vaš IBAN i povratni gosti s kodom.'],
   evisitor:['Prijava gostiju za eVisitor','Gost sam upiše podatke iz putovnice; vi ih prepišete u eVisitor.'],
+  brend:['Vaše ime i boja u vodiču','Gost vidi ime i boju vaše agencije na svim objektima.'],
   agencija:['Svi objekti na jednom mjestu','Danas i kalendar svih objekata, predložak za više objekata i mjesečni izvještaj vlasniku.'],
   email:['Automatski e-mail gostu','Link na vodič 3 dana prije dolaska i zahvala na odlasku.']}
+/* v5: uloga suradnika na dijeljenom objektu (sql/add-team-roles.sql) — baza
+   to provodi RLS-om, ovdje se samo skriva ono što uloga ne smije otvoriti. */
+const ULOGA_PANELI={recepcija:['overview','sviobjekti','inquiries','reservations','availability','reviews','links'],
+  vlasnik:['overview','sviobjekti','availability','reviews']}
+const ulogaObjekta=()=>PROP?.__dijeljen?(PROP.__uloga||'upravitelj'):'vlasnik_racuna'
+function ulogaDopusta(panel){const l=ULOGA_PANELI[ulogaObjekta()];return !l||l.includes(RODITELJ[panel]||panel)}
+function primijeniUlogu(){
+  const l=ULOGA_PANELI[ulogaObjekta()]
+  document.querySelectorAll('.panelnav .nav-item[data-panel]').forEach(b=>{if(b.dataset.panel==='analytics'||b.dataset.panel==='sviobjekti')return;b.toggleAttribute('data-uloga-skriven',!!l&&!l.includes(b.dataset.panel))})
+  const grupe=new Set([...document.querySelectorAll('.panelnav .nav-item[data-panel]')].filter(b=>!l||l.includes(b.dataset.panel)).map(b=>b.dataset.group))
+  document.querySelectorAll('.side-link[data-group],.bottom-nav [data-group]').forEach(a=>{if(a.dataset.group==='pretplata')return;a.toggleAttribute('data-uloga-skriven',!!l&&!grupe.has(a.dataset.group))})
+  const ban=document.getElementById('uloga-traka')
+  if(ban){ban.hidden=!l;if(l)ban.textContent=ulogaObjekta()==='recepcija'?'Uloga: recepcija — vidite kalendar, rezervacije i upite. Šifre, Wi-Fi i sadržaj objekta uređuje upravitelj.':'Uloga: vlasnik objekta — vidite kalendar, ocjene i mjesečni izvještaj (samo čitanje).'}
+  const akt=document.querySelector('.editor-panel.active')?.dataset.panelContent
+  if(l&&akt&&!ulogaDopusta(akt))nav('overview',document.querySelector('.panelnav [data-panel=overview]'))
+}
 function primijeniPlan(){
+  primijeniUlogu()
   const pl=planObjekta()
   // v5: „Svi objekti” tek kad ima smisla — više objekata ili plan Agencija
   {const b=document.querySelector('.panelnav [data-panel="sviobjekti"]');if(b){const da=PROPS.length>1||imaMogucnost(USER_PLAN,'agencija');b.toggleAttribute('data-skriven',!da)}}
@@ -2679,9 +2715,12 @@ async function loadProps(){
   // Objekti na kojima je korisnik suradnik (sql/add-team-access.sql) — bez tablice tiho ništa
   let dijeljeni=[]
   try{
-    const{data:m,error}=await sb.from('property_members').select('property_id,user_id,accepted_at').eq('user_id',USER.id)
-    const ids=(error?[]:(m||[])).filter(x=>x.accepted_at).map(x=>x.property_id).filter(id=>!moji.some(p=>p.id===id))
-    if(ids.length){const{data:d}=await sb.from('properties').select('*').in('id',ids).order('created_at');dijeljeni=(d||[]).map(p=>({...p,__dijeljen:true}))}
+    // uloga (sql/add-team-roles.sql); bez stupca svi su „upravitelj”, kao prije
+    let r=await sb.from('property_members').select('property_id,user_id,accepted_at,uloga').eq('user_id',USER.id)
+    if(r.error)r=await sb.from('property_members').select('property_id,user_id,accepted_at').eq('user_id',USER.id)
+    const m=r.error?[]:(r.data||[]),ul=Object.fromEntries(m.map(x=>[x.property_id,x.uloga||'upravitelj']))
+    const ids=m.filter(x=>x.accepted_at).map(x=>x.property_id).filter(id=>!moji.some(p=>p.id===id))
+    if(ids.length){const{data:d}=await sb.from('properties').select('*').in('id',ids).order('created_at');dijeljeni=(d||[]).map(p=>({...p,__dijeljen:true,__uloga:ul[p.id]||'upravitelj'}))}
   }catch{}
   PROPS=[...moji,...dijeljeni]
   if(!PROPS.length){location.href='/onboarding.html';return}
@@ -3690,6 +3729,37 @@ function agNizovi(rows){
   }
   return out
 }
+
+/* v5: brend agencije u vodiču (properties.brend, sql/add-team-roles.sql) —
+   boja mora imati kontrast ≥ 4,5:1 s bijelim tekstom */
+function kontrastSBijelim(hex){
+  const c=[1,3,5].map(i=>parseInt(hex.slice(i,i+2),16)/255).map(v=>v<=.03928?v/12.92:((v+.055)/1.055)**2.4)
+  const L=.2126*c[0]+.7152*c[1]+.0722*c[2];return 1.05/(L+.05)
+}
+window.brendPregled=()=>{
+  const ime=document.getElementById('brend-ime').value.trim()||'Vaša agencija',boja=document.getElementById('brend-boja').value
+  const pr=document.getElementById('brend-pregled');pr.style.setProperty('--brend',boja)
+  document.getElementById('brend-pr-ime').textContent=ime
+  const k=kontrastSBijelim(boja),st=document.getElementById('brend-st')
+  st.textContent=k<4.5?`Ova boja je presvijetla za bijeli tekst (kontrast ${k.toFixed(1).replace('.',',')}:1, treba barem 4,5:1) — odaberite tamniju.`:`Kontrast ${k.toFixed(1).replace('.',',')}:1 — čitljivo.`
+}
+function puniBrend(){
+  const b=vlastiti().find(p=>p.brend)?.brend||{}
+  const i=document.getElementById('brend-ime');if(!i)return
+  i.value=b.ime||'';document.getElementById('brend-boja').value=b.boja||'#12303A';brendPregled()
+}
+window.spremiBrend=async(vrati)=>{
+  const ime=document.getElementById('brend-ime').value.trim().slice(0,60),boja=document.getElementById('brend-boja').value.toUpperCase()
+  if(!vrati&&kontrastSBijelim(boja)<4.5){toast('Odaberite tamniju boju — bijeli tekst na njoj mora biti čitljiv.');return}
+  const brend=vrati?null:{ime,boja}
+  const ids=vlastiti().map(p=>p.id)
+  const{error}=await sb.from('properties').update({brend}).in('id',ids)
+  if(error){toast(/brend/.test(error.message)?'Brend još nije uključen — u Supabaseu treba pokrenuti sql/add-team-roles.sql.':'Nije spremljeno: '+error.message);return}
+  PROPS.forEach(p=>{if(ids.includes(p.id))p.brend=brend})
+  if(vrati)puniBrend()
+  toast(vrati?'Vodič opet koristi boje Odmorije':'Ime i boja su spremljeni za sve vaše objekte ✓')
+}
+
 async function agOtvori(){
   const t=A.danas(),ids=PROPS.map(p=>p.id)
   let av=[],bk=[]
@@ -3731,6 +3801,7 @@ async function agOtvori(){
   document.getElementById('ag-pred-vrste').innerHTML=KOPIJA.map(x=>`<label><input type="checkbox" value="${x.k}" ${['house_rules','faq','local_places'].includes(x.k)?'checked':''} data-bez-spremanja> ${esc(x.t)}</label>`).join('')
   // izvještaj
   document.getElementById('ag-izv-obj').innerHTML=PROPS.map(p=>`<option value="${p.id}"${p.id===PROP?.id?' selected':''}>${esc(p.name||'Objekt')}</option>`).join('')
+  puniBrend()
   const mj=document.getElementById('ag-izv-mj');if(!mj.value){const x=new Date();x.setMonth(x.getMonth()-1);mj.value=x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')}
 }
 window.agPrimijeni=async()=>{
@@ -4652,6 +4723,7 @@ function loadPhotos(){
 const SPOJ={basic:['basic','izgled'],pricing:['pricing','amenities'],arrival:['arrival','wifi','rules'],guide:['guide','transport','attractions']}
 const RODITELJ=Object.fromEntries(Object.entries(SPOJ).flatMap(([g,l])=>l.map(x=>[x,g])))
 window.nav=(id,el)=>{
+  if(typeof ulogaDopusta==='function'&&PROP&&!ulogaDopusta(id)){id='overview';el=document.querySelector('.panelnav [data-panel=overview]')}
   const glavni=RODITELJ[id]||id
   const aktivan=document.querySelector('.editor-panel.active')?.dataset.panelContent
   const trenutni=RODITELJ[aktivan]||aktivan
@@ -4724,7 +4796,7 @@ function syncGroup(id){
   lastInGroup[g]=id
   const tabs=[...document.querySelectorAll('.panelnav .nav-item')]
   let n=0
-  tabs.forEach(t=>{const on=t.dataset.group===g;t.hidden=!on;if(on&&!t.hasAttribute('data-skriven'))n++;t.setAttribute('aria-current',t===btn?'page':'false')})
+  tabs.forEach(t=>{const on=t.dataset.group===g;t.hidden=!on;if(on&&!t.hasAttribute('data-skriven')&&!t.hasAttribute('data-uloga-skriven'))n++;t.setAttribute('aria-current',t===btn?'page':'false')})
   document.getElementById('panelnav-wrap').hidden=n<2
   document.querySelectorAll('.side-link[data-group],.bottom-nav [data-group]').forEach(l=>{
     const on=l.dataset.group===g
@@ -4737,7 +4809,9 @@ function syncGroup(id){
     if(l<pn.scrollLeft+16||r>pn.scrollLeft+pn.clientWidth-16)pn.scrollTo({left:Math.max(0,l-16),behavior:'smooth'})}
 }
 window.openGroup=g=>{
-  const id=(g!=='linkovi'&&lastInGroup[g])||GROUP_FIRST[g]
+  let id=(g!=='linkovi'&&lastInGroup[g])||GROUP_FIRST[g]
+  // uloga suradnika: prvi dio grupe koji smije otvoriti
+  if(PROP&&!ulogaDopusta(id)){const b=[...document.querySelectorAll(`.panelnav .nav-item[data-group="${g}"]`)].find(x=>ulogaDopusta(x.dataset.panel));if(b)id=b.dataset.panel}
   nav(id,document.querySelector(`.panelnav .nav-item[data-panel="${id}"]`))
 }
 
@@ -5530,32 +5604,46 @@ async function ucitajTim(){
   const el=document.getElementById('tim-body');if(!el||!PROP)return
   const opis=document.getElementById('tim-opis')
   if(PROP.__dijeljen){
-    opis.textContent='Ovaj objekt s vama dijeli njegov vlasnik. Možete uređivati sadržaj, kalendar, rezervacije i upite; pretplatu i suradnike vodi vlasnik.'
+    opis.textContent={recepcija:'Ovaj objekt s vama dijeli njegov vlasnik — vaša uloga je recepcija: kalendar, rezervacije i upiti. Šifre, Wi-Fi i sadržaj uređuje upravitelj.',vlasnik:'Ovaj objekt vodi agencija — vaša uloga je vlasnik objekta: kalendar, ocjene i mjesečni izvještaj, samo za čitanje.'}[PROP.__uloga]||'Ovaj objekt s vama dijeli njegov vlasnik. Možete uređivati sadržaj, kalendar, rezervacije i upite; pretplatu i suradnike vodi vlasnik.'
     el.innerHTML='<button class="btn ghost small" type="button" onclick="napustiObjekt()">Napusti ovaj objekt</button>';return
   }
-  opis.textContent='Suvlasnik, član obitelji ili agencija mogu uređivati ovaj objekt sa svojim računom: sadržaj, kalendar, rezervacije i upite. Pretplatu i suradnike vodite samo vi.'
+  opis.textContent='Pozovite suradnika s ulogom: upravitelj uređuje sve, recepcija vodi kalendar, rezervacije i upite (bez šifri i Wi-Fija), vlasnik objekta samo čita kalendar i izvještaj. Čistačica ne treba račun — dobiva link za čistačicu.'
   const{data,error}=await sb.from('property_members').select('*').eq('property_id',PROP.id).order('created_at')
   if(error){el.innerHTML='<p class="helper">Suradnici još nisu uključeni — u Supabaseu treba pokrenuti <code>sql/add-team-access.sql</code>.</p>';return}
   TIM=data||[]
   const redovi=TIM.map(m=>{
     const tko=esc(m.ime||m.email||'Pozivnica')
-    if(m.accepted_at)return`<div class="tim-red"><div><b>${tko}</b><small>${m.email&&m.ime?esc(m.email)+' · ':''}suradnik od ${new Date(m.accepted_at).toLocaleDateString('hr-HR')}</small></div><button class="btn ghost small" type="button" onclick="ukloniSuradnika('${m.id}')">Ukloni</button></div>`
-    return`<div class="tim-red"><div><b>${tko}</b><small>Čeka da otvori link</small></div><div class="tim-akc"><button class="btn secondary small" type="button" onclick="kopirajPozivnicu('${m.id}')">Kopiraj link</button><button class="btn secondary small" type="button" onclick="posaljiPozivnicu('${m.id}')">WhatsApp</button><button class="btn ghost small" type="button" onclick="ukloniSuradnika('${m.id}')">Povuci</button></div></div>`
+    const ulSel=`<select class="select tim-uloga" aria-label="Uloga: ${tko}" data-bez-spremanja onchange="promijeniUlogu('${m.id}',this.value)">${ULOGE.map(([k,n])=>`<option value="${k}"${(m.uloga||'upravitelj')===k?' selected':''}>${n}</option>`).join('')}</select>`
+    if(m.accepted_at)return`<div class="tim-red"><div><b>${tko}</b><small>${m.email&&m.ime?esc(m.email)+' · ':''}suradnik od ${new Date(m.accepted_at).toLocaleDateString('hr-HR')}</small></div><div class="tim-akc">${'uloga' in m?ulSel:''}<button class="btn ghost small" type="button" onclick="ukloniSuradnika('${m.id}')">Ukloni</button></div></div>`
+    return`<div class="tim-red"><div><b>${tko}</b><small>Čeka da otvori link</small></div><div class="tim-akc">${'uloga' in m?ulSel:''}<button class="btn secondary small" type="button" onclick="kopirajPozivnicu('${m.id}')">Kopiraj link</button><button class="btn secondary small" type="button" onclick="posaljiPozivnicu('${m.id}')">WhatsApp</button><button class="btn ghost small" type="button" onclick="ukloniSuradnika('${m.id}')">Povuci</button></div></div>`
   }).join('')
   const pun=TIM.length>=MAX_SURADNIKA
   el.innerHTML=`${redovi?`<div class="tim-lista">${redovi}</div>`:''}
-    ${pun?`<p class="helper" style="margin:0">Objekt može imati najviše ${MAX_SURADNIKA} suradnika (uključujući pozivnice na čekanju). Za novog uklonite postojećeg ili povucite pozivnicu.</p>`:`<div class="tim-novi"><div class="field"><label for="tim-ime">Ime ili uloga <span class="optional">npr. Marko — suvlasnik</span></label><input class="input" id="tim-ime" maxlength="80" autocomplete="off"></div>
+    ${pun?`<p class="helper" style="margin:0">Objekt može imati najviše ${MAX_SURADNIKA} suradnika (uključujući pozivnice na čekanju). Za novog uklonite postojećeg ili povucite pozivnicu.</p>`:`<div class="tim-novi"><div class="field"><label for="tim-ime">Ime <span class="optional">npr. Marko</span></label><input class="input" id="tim-ime" maxlength="80" autocomplete="off"></div>
+    <div class="field"><label for="tim-uloga">Uloga</label><select class="select" id="tim-uloga" data-bez-spremanja>${ULOGE.map(([k,n])=>`<option value="${k}">${n}</option>`).join('')}<option value="cistacica">Čistačica (link, bez računa)</option></select></div>
     <button class="btn" type="button" onclick="pozoviSuradnika()">Napravi pozivnicu</button></div>`}`
 }
 window.pozoviSuradnika=async()=>{
   if(!PROP||PROP.__dijeljen)return
   if(TIM.length>=MAX_SURADNIKA){toast('Najviše '+MAX_SURADNIKA+' suradnika po objektu.');return}
-  const ime=v('tim-ime').slice(0,80)||null
-  const{data,error}=await sb.from('property_members').insert({property_id:PROP.id,token:noviToken(),ime}).select().single()
+  const ime=v('tim-ime').slice(0,80)||null,uloga=document.getElementById('tim-uloga')?.value||'upravitelj'
+  if(uloga==='cistacica'){toast('Čistačica ne treba račun — pošaljite joj link za čistačicu (kartica iznad).');document.getElementById('cist-card')?.scrollIntoView({block:'center',behavior:'smooth'});return}
+  let{data,error}=await sb.from('property_members').insert({property_id:PROP.id,token:noviToken(),ime,uloga}).select().single()
+  if(error&&/uloga/.test(error.message||'')){
+    if(uloga!=='upravitelj'){toast('Uloge još nisu uključene — u Supabaseu treba pokrenuti sql/add-team-roles.sql.');return}
+    ({data,error}=await sb.from('property_members').insert({property_id:PROP.id,token:noviToken(),ime}).select().single())
+  }
   if(error){toast('Greška: '+error.message);return}
   await ucitajTim()
   if(data){navigator.clipboard?.writeText(inviteUrl(data.token)).catch(()=>{})}
   toast('Pozivnica je spremna — link je kopiran. Pošaljite ga suradniku.')
+}
+const ULOGE=[['upravitelj','Upravitelj — sve'],['recepcija','Recepcija — rezervacije, bez šifri'],['vlasnik','Vlasnik objekta — samo čita']]
+window.promijeniUlogu=async(id,uloga)=>{
+  const{error}=await sb.from('property_members').update({uloga}).eq('id',id)
+  if(error){toast('Uloga nije promijenjena: '+error.message);return}
+  const m=TIM.find(x=>x.id===id);if(m)m.uloga=uloga
+  toast('Uloga je promijenjena ✓')
 }
 window.kopirajPozivnicu=id=>{const m=TIM.find(x=>x.id===id);if(!m)return;navigator.clipboard?.writeText(inviteUrl(m.token));toast('Link kopiran')}
 window.posaljiPozivnicu=id=>{const m=TIM.find(x=>x.id===id);if(!m)return;window.open(waLink('',porukaSuradniku(m)),'_blank','noopener')}

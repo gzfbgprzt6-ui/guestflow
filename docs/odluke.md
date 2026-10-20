@@ -1546,12 +1546,15 @@ Danas vidi se tek s više objekata):
   izravno / Booking / Airbnb / ručno, upiti, pregledi, ocjene. Bez iznosa
   (Odmoria ne vidi plaćanja).
 
-**Nije napravljeno — traži odluku i SQL/RLS (pitati vlasnika):**
-- [ ] **Uloge u timu** (recepcija vidi dolaske ali ne šifre, čistačica samo
-      raspored, vlasnik samo izvještaj) — sad suradnik vidi sve što i
-      domaćin; prave uloge mijenjaju RLS politike (`property_members.uloga`).
-- [ ] **Ime i boja agencije u vodiču** — vodič bi trebao čitati brend iz baze
-      (`vodic_gosta()` ili novi stupac); sad je samo oznaka „pokreće Odmoria”
-      po planu.
+**Dovršeno 20. 10. na zahtjev vlasnika („napravi to”)** — `sql/add-team-roles.sql`:
+- [x] **Uloge u timu**: upravitelj (sve), recepcija (kalendar, rezervacije,
+      upiti, prijave gostiju, ocjene; sadržaj samo čita; **tablica `sections`
+      zatvorena** — nema šifre ni Wi-Fija), vlasnik objekta (samo čita objekt,
+      kalendar, ocjene i preglede). Čistačica ne treba račun — link za čistačicu.
+      Mijenjaju se samo politike „suradnik”; vlasnikove ostaju. Postojeći
+      suradnici dobiju „upravitelj”.
+- [x] **Ime i boja agencije u vodiču**: `properties.brend` (sve vlastite
+      objekte odjednom), mogućnost `brend` (Agencija), `mogucnosti_vodica()`
+      vraća brend; dashboard pušta samo boje s kontrastom ≥ 4,5:1.
 - [ ] Pristup vlasnika objekta (read-only izvještaj preko linka) — zasad
       agencija izvještaj šalje sama.

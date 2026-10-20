@@ -160,6 +160,8 @@
 .plan__za{margin-top:calc(-1*var(--s4))}
 .plan--featured .plan__za{color:rgba(255,255,255,.86)}
 .plan__price .n small{font:600 14px/1 var(--font-body);letter-spacing:0;opacity:.8}
+.checks .ic--zv{color:var(--sunce-tamno)}
+.plan--featured .checks .ic--zv{color:var(--sunce)}
 .checks .plan__gr{display:block;padding-left:0;font:700 12px/1.3 var(--font-ui);letter-spacing:.06em;text-transform:uppercase;opacity:.75}
 .racun{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:var(--s6) var(--s7);margin-top:var(--s6);padding:32px;background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-feature)}
 .racun__ul{display:grid;gap:10px;align-content:start}
@@ -175,8 +177,10 @@
 .racun__gl dd{font-size:32px;letter-spacing:-.03em}
 .racun__isp{background:var(--sunce-meko);margin-top:12px;padding:14px 16px!important;border-radius:var(--radius-panel);border:0!important}
 .racun__isp dt{color:var(--text)}
+.racun__isp{flex-wrap:wrap}
+.racun__isp p{flex:1 1 100%;min-width:0;max-width:100%;margin:4px 0 0;color:var(--text-muted);font-size:14px}
 .racun__nap{grid-column:1/-1;margin:0}
-@media (max-width:860px){.racun{grid-template-columns:minmax(0,1fr);padding:22px}.racun__usp dd{font-size:18px}.racun__gl dd{font-size:28px}.racun__usp>div>dt{min-width:0;flex:1}.racun__isp{flex-direction:column;gap:4px!important}}
+@media (max-width:860px){.racun{grid-template-columns:minmax(0,1fr);padding:22px}.racun__usp dd{font-size:18px}.racun__gl dd{font-size:28px}.racun__usp>div>dt{min-width:0;flex:1}.racun__isp{flex-direction:column;gap:4px!important}.racun__isp p{flex:none;width:100%}}
 .plan__note{margin-top:calc(-1*var(--s3));text-align:center;font-size:13px;line-height:1.4;color:rgba(255,255,255,.86)}
 
 /* FAQ */
@@ -253,7 +257,7 @@
 
 <!-- Lucide ikone (ISC), iste kao u Figmi -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></symbol><symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
   <symbol id="i-up" viewBox="0 0 24 24"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></symbol>
   <symbol id="i-right" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
   <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol>
@@ -564,11 +568,11 @@
         <div class="plan__price"><span class="n"><span data-price>12 €</span> <small>po objektu / mj.</small></span><span class="t-meta" data-period>ili 99 € po objektu godišnje</span></div>
         <ul class="checks">
           <li class="plan__gr">Sve iz Free, plus</li>
-          <li><svg class="ic"><use href="#i-check"/></svg>Izravne rezervacije: cijena u upitu, ponuda s kaparom na vaš račun</li>
-          <li><svg class="ic"><use href="#i-check"/></svg>Povratni gosti s kodom za popust</li>
-          <li><svg class="ic"><use href="#i-check"/></svg>Ulazak korak po korak i obavijest „Ušli smo”</li>
-          <li><svg class="ic"><use href="#i-check"/></svg>Preporuke u blizini, ocjene gostiju</li>
-          <li><svg class="ic"><use href="#i-check"/></svg>Prijava gostiju za eVisitor, link za čistačicu</li>
+          <li><svg class="ic ic--zv"><use href="#i-star"/></svg>Izravne rezervacije: cijena u upitu, ponuda s kaparom na vaš račun</li>
+          <li><svg class="ic ic--zv"><use href="#i-star"/></svg>Povratni gosti s kodom za popust</li>
+          <li><svg class="ic ic--zv"><use href="#i-star"/></svg>Ulazak korak po korak i obavijest „Ušli smo”</li>
+          <li><svg class="ic ic--zv"><use href="#i-star"/></svg>Preporuke u blizini, ocjene gostiju</li>
+          <li><svg class="ic ic--zv"><use href="#i-star"/></svg>Prijava gostiju za eVisitor, link za čistačicu</li>
           <li><svg class="ic"><use href="#i-check"/></svg><span data-limits>5 objekata · 30 fotografija</span></li>
         </ul>
         <a href="/register.html" class="btn btn--inverse">Započni besplatno</a>
@@ -580,11 +584,12 @@
         <div class="plan__price"><span class="n"><span data-price>9 €</span> <small>po objektu / mj.</small></span><span class="t-meta" data-period>ili 89 € po objektu godišnje</span></div>
         <ul class="checks">
           <li class="plan__gr">Sve iz Domaćina, plus</li>
-          <li><svg class="ic"><use href="#i-check"/></svg>Svi objekti na jednom mjestu: danas i kalendar</li>
-          <li><svg class="ic"><use href="#i-check"/></svg>Predložak vodiča za više objekata, mjesečni izvještaj vlasniku</li>
-          <li><svg class="ic"><use href="#i-check"/></svg>Gotove objave i letak za slobodne termine</li>
-          <li><svg class="ic"><use href="#i-check"/></svg>Automatski e-mail gostu prije dolaska</li>
-          <li><svg class="ic"><use href="#i-check"/></svg>Suradnici na objektima</li>
+          <li><svg class="ic ic--zv"><use href="#i-star"/></svg>Nadzorna ploča: svi objekti, danas i kalendar</li>
+          <li><svg class="ic ic--zv"><use href="#i-star"/></svg>Predlošci vodiča za sve objekte</li>
+          <li><svg class="ic ic--zv"><use href="#i-star"/></svg>Tim s ulogama: recepcija, čistačice, vlasnici</li>
+          <li><svg class="ic ic--zv"><use href="#i-star"/></svg>Mjesečni izvještaj vlasniku</li>
+          <li><svg class="ic ic--zv"><use href="#i-star"/></svg>Vaše ime i boja u vodiču</li>
+          <li><svg class="ic ic--zv"><use href="#i-star"/></svg>Gotove objave i automatski e-mail gostu</li>
           <li><svg class="ic"><use href="#i-check"/></svg><span data-limits>neograničeno objekata · 50 fotografija</span></li>
         </ul>
         <a href="/register.html" class="btn btn--secondary">Započni besplatno</a>
@@ -605,7 +610,7 @@
         <div><dt>ili godišnje</dt><dd id="rac-og">297 €</dd></div>
         <div><dt id="rac-b1-tx">Provizija ako svaki objekt ima <b>1 noć</b> mjesečno</dt><dd id="rac-b1">~45 €</dd></div>
         <div><dt id="rac-b7-tx">Provizija ako svaki objekt ima <b>1 tjedan</b> mjesečno</dt><dd id="rac-b7">~315 €</dd></div>
-        <div class="racun__isp"><dt>Odmoria se isplati već od</dt><dd id="rac-isp">3 izravne noći mjesečno</dd></div>
+        <div class="racun__isp"><dt>Svaki objekt pokrije svoju pretplatu s</dt><dd id="rac-isp">1 izravnom noći mjesečno</dd><p id="rac-isp-s">Dakle 1 noć po objektu — ukupno 3 noći u svim objektima.</p></div>
       </dl>
       <p class="racun__nap t-meta">Usporedba je računica, ne obećanje: provizija se plaća samo na rezervacije preko platforme, a Odmoria ne jamči nove goste. Provizije Bookinga i Airbnba razlikuju se po objektu i ugovoru — upišite svoju.</p>
     </div>
@@ -748,11 +753,14 @@ try {
     $('rac-o-tx').textContent = `Odmoria · ${obj(k)} · mjesečno`
     $('rac-o').textContent = eur(mj)
     $('rac-og').textContent = eur(god)
-    $('rac-b1-tx').innerHTML = `Provizija ako svaki objekt ima <b>1 noć</b> mjesečno (${k} × ${eur(noc)})`
+    $('rac-b1-tx').innerHTML = `Platforma uzme ako svaki objekt ima samo <b>1 noć</b> mjesečno (${k} × ${eur(noc)})`
     $('rac-b1').textContent = '~' + eur(jedna * k)
-    $('rac-b7-tx').innerHTML = `Provizija ako svaki objekt ima <b>1 tjedan</b> mjesečno (${k} × 7 noći)`
+    $('rac-b7-tx').innerHTML = `Platforma uzme ako svaki objekt ima <b>1 tjedan</b> mjesečno (${k} × 7 noći)`
     $('rac-b7').textContent = '~' + eur(jedna * 7 * k)
-    $('rac-isp').textContent = jedna > 0 ? noci(Math.max(1, Math.ceil(mj / jedna))) + ' mjesečno' : '—'
+    // po objektu: koliko izravnih noći mjesečno jedan objekt treba da pokrije svoju pretplatu
+    const poObj = jedna > 0 ? Math.max(1, Math.ceil((mj / k) / jedna)) : null
+    $('rac-isp').textContent = poObj ? `${poObj} ${poObj === 1 ? 'izravnom noći' : 'izravnih noći'} mjesečno` : '—'
+    $('rac-isp-s').textContent = poObj ? `To je ${poObj === 1 ? '1 noć' : poObj + ' noći'} po objektu, ne ukupno — ${k > 1 ? `ukupno ${poObj * k} noći u svih ${k} objekata` : 'za cijeli objekt'}. Sve ostale izravne noći su vaša ušteda.` : ''
   }
   ;['input', 'change'].forEach(e => ['rac-n', 'rac-noc', 'rac-prov'].forEach(id => $(id).addEventListener(e, crtaj)))
   crtaj()

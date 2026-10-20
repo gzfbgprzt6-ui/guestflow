@@ -711,7 +711,7 @@ body[data-v="ulaz"] .gfoot{display:none}
 .pokrece{margin:4px 0 0;text-align:center;font:700 12.5px/1 var(--font-ui);color:var(--text-muted)}
 .pokrece a{color:var(--text)}
 .sada .btn--sunce{border-radius:99px}
-.sada{background:linear-gradient(140deg,#1E4654,#0E2229)!important;border:0!important;color:#fff;box-shadow:0 22px 40px -26px rgba(18,48,58,.8)}
+.sada{background:linear-gradient(140deg,var(--brend-sv,#1E4654),var(--brend,#0E2229))!important;border:0!important;color:#fff;box-shadow:0 22px 40px -26px rgba(18,48,58,.8)}
 .sada .sada__oz{color:#F2B33D}
 .sada h2{color:#fff}
 .sada p{color:#D7E8EA!important}
@@ -724,6 +724,8 @@ body[data-v="ulaz"] .gfoot{display:none}
 .sada .btn--secondary{background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.25)}
 .sada .btn--primary{background:#F2B33D;color:var(--text);border:0}
 @media (max-width:420px){.odj__g{padding:14px 14px 0}.odj__t{padding:12px 14px 16px}.odj__saz{padding-left:64px}}
+.naslov__brend{display:inline-flex;align-items:center;gap:8px;margin:8px 0 0;font:700 13px/1.2 var(--font-ui);letter-spacing:.02em}
+.naslov__brend::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--bg-inverse)}
 </style>
 </head>
 <body>
@@ -832,6 +834,7 @@ body[data-v="ulaz"] .gfoot{display:none}
       <span class="eyebrow" id="hero-poz">Dobro došli</span>
       <h1 class="naslov__ime" id="hero-name"></h1>
       <p class="naslov__mj" id="hero-mj" hidden></p>
+      <p class="naslov__brend" id="brend-ime" hidden translate="no"></p>
     </div>
   </section>
 
@@ -972,6 +975,7 @@ body[data-v="ulaz"] .gfoot{display:none}
   </div>
       </div>
     </details>
+    <p class="pokrece brend-dno" id="brend-dno" hidden translate="no"></p>
     <p class="pokrece" id="pokrece" hidden>Vodič pokreće <a href="/">Odmoria</a></p>
   </div>
 </div>
@@ -1033,7 +1037,20 @@ let PROP = null, SECTION = null, BOOKING = null
    mogucnosti_vodica iz sql/add-plan-features.sql). Dok funkcije nema, MOG je
    null i sve radi kao prije. Free: šifra, Wi-Fi, kuća, pravila, odlazak, domaćin.
    Gost nikad ne vidi ništa „zaključano” — što nije u planu, jednostavno ne postoji. */
-let MOG = null, OZNAKA = false
+let MOG = null, OZNAKA = false, BREND = null
+/* Brend agencije (properties.brend, samo plan Agencija — mogucnosti_vodica):
+   boja zamijeni tamne plohe i gumbe (tinta), ime stoji uz naslov i na dnu.
+   Dashboard pušta samo boje s kontrastom ≥ 4,5:1 prema bijelom. */
+function primijeniBrend() {
+  const b = BREND, r = document.documentElement
+  const boja = b && /^#[0-9a-f]{6}$/i.test(b.boja || '') ? b.boja : null
+  ;['--bg-inverse', '--action', '--action-hover', '--ton', '--ton-tamno', '--brend'].forEach(v => boja ? r.style.setProperty(v, boja) : r.style.removeProperty(v))
+  if (boja) r.style.setProperty('--brend-sv', `color-mix(in srgb, ${boja} 78%, #ffffff)`); else r.style.removeProperty('--brend-sv')
+  const el = document.getElementById('brend-ime')
+  if (el) { el.textContent = b && b.ime ? b.ime : ''; el.hidden = !(b && b.ime) }
+  const dno = document.getElementById('brend-dno')
+  if (dno) { dno.textContent = b && b.ime ? t('Vaš domaćin: {ime}', { ime: b.ime }) : ''; dno.hidden = !(b && b.ime) }
+}
 const imaM = k => !MOG || MOG.includes(k)
 
 /* Statistika za domaćina (page_views: objekt, vrsta, vrijeme — bez podataka o
@@ -1215,11 +1232,11 @@ async function finish(pre) {
     sb.from('faq').select('*').eq('property_id', PROP.id).order('sort_order')
   ])
   LISTE = liste.map(x => ({ data: (x && x.data) || [] }))
-  if (pre && pre.mog !== undefined) { MOG = pre.mog; OZNAKA = !!pre.oznaka }
+  if (pre && pre.mog !== undefined) { MOG = pre.mog; OZNAKA = !!pre.oznaka; BREND = pre.brend || null }
   else if (!DEMO) {
     try {
       const { data, error } = await sb.rpc('mogucnosti_vodica', { p_token: token, p_slug: params.get('slug') || null })
-      if (!error && data && Array.isArray(data.mogucnosti)) { MOG = data.mogucnosti; OZNAKA = !!data.oznaka }
+      if (!error && data && Array.isArray(data.mogucnosti)) { MOG = data.mogucnosti; OZNAKA = !!data.oznaka; BREND = data.brend || null }
     } catch {}
   }
 
@@ -1245,6 +1262,7 @@ function nacrtaj() {
   renderRecs(places.data, txs.data, atts.data); renderHost(); renderHitno()
   renderKarta(); renderSada(); poredaj()
   show('#pokrece', OZNAKA)
+  primijeniBrend()
 }
 
 /* Jezik: plan domaćina određuje koji su jezici dopušteni, a /api/prevedi
@@ -2228,7 +2246,7 @@ function spremiPredmemoriju() {
   try {
     const sek = UNLOCKED ? SECTION : { ...SECTION,
       door_code: SECTION.door_code ? true : SECTION.door_code, wifi_pass: SECTION.wifi_pass ? true : SECTION.wifi_pass }
-    localStorage.setItem(KLJUC, JSON.stringify({ t: Date.now(), PROP, SECTION: sek, BOOKING, UNLOCK_AT, CO_END, IZ_FUNKCIJE, STARI_LINK, LISTE, MOG, OZNAKA, JEZIK: L.stanje() }))
+    localStorage.setItem(KLJUC, JSON.stringify({ t: Date.now(), PROP, SECTION: sek, BOOKING, UNLOCK_AT, CO_END, IZ_FUNKCIJE, STARI_LINK, LISTE, MOG, OZNAKA, BREND, JEZIK: L.stanje() }))
   } catch {}
 }
 function izPredmemorije() {
@@ -2248,7 +2266,7 @@ function izPredmemorije() {
   $('#mreza-txt').textContent = t('Nema interneta — prikazujem vodič spremljen {d} u {t}.', { d: fmtShort(kad), t: fmtHM(kad) })
     + (uProzoru && !UNLOCKED ? ' ' + t('Šifre će se pojaviti kad se spojite.') : '')
   show('#mreza-traka')
-  finish({ liste: c.LISTE || [], jezik: c.JEZIK || null, mog: c.MOG === undefined ? null : c.MOG, oznaka: c.OZNAKA })
+  finish({ liste: c.LISTE || [], jezik: c.JEZIK || null, mog: c.MOG === undefined ? null : c.MOG, oznaka: c.OZNAKA, brend: c.BREND || null })
   return true
 }
 addEventListener('online', () => { if (BEZ_MREZE) location.reload() })
