@@ -1331,6 +1331,34 @@ section.v5-prazno{display:none!important}
 #pov-lista .an-row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; padding: 12px 0; border-top: 1px solid var(--line); }
 #pov-lista .an-row small { display: block; color: var(--muted); }
 @media (max-width: 600px) { .sez { grid-template-columns: 1fr 1fr; } .sez label:nth-child(3) { grid-column: 1 / 2; } }
+
+/* v5 agencija */
+.ag-danas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.ag-dan h3 { margin: 0 0 8px; font: 800 16px/1.3 var(--font-ui); }
+.ag-dan h3 small { color: var(--muted); font: 500 13px/1.3 var(--font-body); margin-left: 6px; }
+.ag-r { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 10px; align-items: center; padding: 10px 0; border-top: 1px solid var(--line); }
+.ag-r small { grid-column: 2; color: var(--muted); font-size: 13px; }
+.ag-oz { grid-row: span 2; padding: 4px 8px; border-radius: 99px; font: 800 11px/1 var(--font-ui); text-transform: uppercase; letter-spacing: .04em; }
+.ag-oz.dol { background: var(--ink); color: #fff; }
+.ag-oz.odl { background: var(--sunce-meko); color: var(--ink); }
+.ag-kal-w { overflow-x: auto; }
+.ag-kal { display: grid; gap: 4px; min-width: 860px; }
+.ag-k-r { display: grid; grid-template-columns: 170px repeat(30, minmax(0, 1fr)); gap: 2px; align-items: center; }
+.ag-k-r > span { min-width: 0; padding-right: 8px; }
+.ag-k-r > span b { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 700 13.5px/1.3 var(--font-ui); }
+.ag-k-r > span small { color: var(--muted); font-size: 12px; }
+.ag-k-r > i { display: grid; place-items: center; height: 30px; border-radius: 5px; background: var(--paper-2); font: 800 10px/1 var(--font-ui); font-style: normal; color: var(--ink); }
+.ag-k-g > i { height: auto; background: none; color: var(--muted); font-weight: 600; font-size: 11px; }
+.ag-k-g > i.vk { color: var(--ink); font-weight: 800; }
+.ag-k-r > i.iz { background: var(--ink); color: #fff; }
+.ag-k-r > i.pl { background: #C9CFCC; }
+.ag-k-r > i.ru { background: repeating-linear-gradient(135deg, #D2D7D3 0 3px, #F3F2EC 3px 7px); }
+.ag-k-r > i.pz { background: var(--sunce-meko); box-shadow: inset 0 0 0 1.5px var(--sunce); }
+.ag-izbor { margin: 14px 0; }
+.ag-izbor > b { display: block; margin-bottom: 6px; font: 700 14px/1.3 var(--font-ui); }
+.ag-izbor > div { display: flex; flex-wrap: wrap; gap: 8px 16px; }
+.ag-izbor label { display: inline-flex; gap: 6px; align-items: center; font-size: 14.5px; }
+@media (max-width: 780px) { .ag-danas { grid-template-columns: minmax(0, 1fr); } }
 </style>
 <script type="module">import{pokreni,prekidac}from'/domacin-jezik.js';pokreni();prekidac(document.getElementById('jezik-sw'))</script>
 </head>
@@ -1550,6 +1578,7 @@ section.v5-prazno{display:none!important}
         <div class="panelnav-wrap" id="panelnav-wrap" hidden>
           <nav class="panelnav" id="panelnav" aria-label="Dijelovi objekta">
             <button class="nav-item active" type="button" data-panel="overview" data-group="pregled" onclick="nav('overview',this)">Danas</button>
+            <button class="nav-item" type="button" data-panel="sviobjekti" data-group="pregled" onclick="nav('sviobjekti',this)">Svi objekti</button>
             <!-- v5: tab Analitika maknut iz izbornika (tri broja su u Danas); panel ostaje za adresu ?otvori i tražilicu -->
             <button class="nav-item" type="button" data-panel="analytics" data-group="pregled" data-skriven onclick="nav('analytics',this)">Analitika</button>
             <span class="panelnav__sep" aria-hidden="true"></span>
@@ -1683,6 +1712,36 @@ section.v5-prazno{display:none!important}
         </section>
 
         <!-- 00b ANALITIKA -->
+        <!-- v5 AGENCIJA: svi objekti na jednom mjestu (mogućnost „agencija”) -->
+        <section class="editor-panel an" id="section-sviobjekti" data-panel-content="sviobjekti" data-mog="agencija">
+          <div class="card">
+            <div class="card-head"><div class="card-title-wrap"><span class="card-number"><svg class="ic ic--sm" aria-hidden="true"><use href="#i-calendar-days"/></svg></span><div><h2>Danas i sutra u svim objektima</h2><p>Dolasci, odlasci i čišćenja — bez otvaranja objekta po objekta.</p></div></div></div>
+            <div class="ag-danas" id="ag-danas"><p class="helper">Učitavam…</p></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div class="card-title-wrap"><span class="card-number">30</span><div><h2>Kalendar svih objekata</h2><p>Sljedećih 30 dana. Tinta = izravno, sivo = Booking/Airbnb, šrafirano = blokirano, sunce = praznina 1–3 noći.</p></div></div></div>
+            <div class="ag-kal-w"><div class="ag-kal" id="ag-kal"></div></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div class="card-title-wrap"><span class="card-number">⧉</span><div><h2>Predložak za više objekata</h2><p>Pravila, pitanja, preporuke, sadržaji i upute iz jednog objekta dodajte u odabrane objekte odjednom. Ništa se ne briše; šifre, Wi-Fi i adresa se nikad ne prenose.</p></div></div></div>
+            <div class="form-grid">
+              <div class="field"><label for="ag-pred-od">Iz objekta</label><select class="select" id="ag-pred-od" data-bez-spremanja></select></div>
+            </div>
+            <div class="ag-izbor"><b>U objekte</b><div id="ag-pred-na"></div></div>
+            <div class="ag-izbor"><b>Što prenijeti</b><div id="ag-pred-vrste"></div></div>
+            <p class="helper" id="ag-pred-st" role="status"></p>
+            <div style="display:flex;justify-content:flex-end"><button class="btn" type="button" id="ag-pred-da" onclick="agPrimijeni()">Primijeni predložak</button></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div class="card-title-wrap"><span class="card-number"><svg class="ic ic--sm" aria-hidden="true"><use href="#i-chart-no-axes-column"/></svg></span><div><h2>Mjesečni izvještaj vlasniku</h2><p>Noći, popunjenost, izravno i s platformi, upiti i ocjene — jedna stranica za ispis ili PDF.</p></div></div></div>
+            <div class="form-grid">
+              <div class="field"><label for="ag-izv-obj">Objekt</label><select class="select" id="ag-izv-obj" data-bez-spremanja></select></div>
+              <div class="field"><label for="ag-izv-mj">Mjesec</label><input class="input" id="ag-izv-mj" type="month" data-bez-spremanja></div>
+              <div class="field" style="align-self:end"><button class="btn secondary" type="button" onclick="agIzvjestaj()">Otvori izvještaj</button></div>
+            </div>
+          </div>
+        </section>
+
         <section class="editor-panel an" id="section-analytics" data-panel-content="analytics">
           <div class="an-bar-top">
             <div class="an-seg" role="group" aria-label="Razdoblje">
@@ -2474,9 +2533,12 @@ const MOG_TX={koraci:['Koraci sa slikama i „Ušli smo”','Gost prolazi ulaz k
   promocija:['Promocija','Gotove objave za slobodne termine, letak s QR kodom i Facebook grupe.'],
   izravno:['Izravne rezervacije','Sezonske cijene, iznos u upitu, ponuda s kaparom na vaš IBAN i povratni gosti s kodom.'],
   evisitor:['Prijava gostiju za eVisitor','Gost sam upiše podatke iz putovnice; vi ih prepišete u eVisitor.'],
+  agencija:['Svi objekti na jednom mjestu','Danas i kalendar svih objekata, predložak za više objekata i mjesečni izvještaj vlasniku.'],
   email:['Automatski e-mail gostu','Link na vodič 3 dana prije dolaska i zahvala na odlasku.']}
 function primijeniPlan(){
   const pl=planObjekta()
+  // v5: „Svi objekti” tek kad ima smisla — više objekata ili plan Agencija
+  {const b=document.querySelector('.panelnav [data-panel="sviobjekti"]');if(b){const da=PROPS.length>1||imaMogucnost(USER_PLAN,'agencija');b.toggleAttribute('data-skriven',!da)}}
   document.querySelectorAll('[data-mog]').forEach(el=>{
     const k=el.dataset.mog,ok=imaMogucnost(pl,k)
     el.classList.toggle('mog-zak',!ok)
@@ -3611,6 +3673,114 @@ window.ponudaTekst=()=>{
 }
 document.getElementById('po-tx')?.addEventListener('input',e=>{const t=e.target.value;document.getElementById('po-akc').innerHTML=slanjeHtml(PONUDA,t,'Ponuda — '+PROP.name)+`<button class="btn secondary small" type="button" onclick="navigator.clipboard?.writeText(document.getElementById('po-tx').value).then(()=>toast('Ponuda je kopirana'))">Kopiraj ponudu</button>`})
 
+
+/* ===== v5 AGENCIJA: svi objekti (Danas, kalendar, predložak, izvještaj) ===== */
+function agNizovi(rows){
+  // uzastopne noći istog objekta, izvora i rezervacije = jedan boravak
+  const po={};rows.forEach(r=>{(po[r.property_id]=po[r.property_id]||[]).push(r)})
+  const out=[]
+  for(const[pid,L]of Object.entries(po)){
+    L.sort((a,b)=>a.date<b.date?-1:1)
+    let cur=null
+    for(const r of L){
+      const k=(r.source||'manual')+'|'+(r.booking_id||'')
+      if(cur&&cur.k===k&&A.plusDana(cur.end,0)===r.date){cur.end=A.plusDana(r.date,1);continue}
+      cur={pid,k,source:r.source||'manual',booking_id:r.booking_id||null,start:r.date,end:A.plusDana(r.date,1)};out.push(cur)
+    }
+  }
+  return out
+}
+async function agOtvori(){
+  const t=A.danas(),ids=PROPS.map(p=>p.id)
+  let av=[],bk=[]
+  try{const r=await sb.from('availability').select('*').in('property_id',ids).gte('date',A.plusDana(t,-31)).lt('date',A.plusDana(t,31));av=r.data||[]}catch{}
+  try{const r=await sb.from('bookings').select('id,property_id,guest_name,checkin_date,checkout_date').in('property_id',ids).gte('checkout_date',t);bk=r.data||[]}catch{}
+  const ime=Object.fromEntries(bk.map(b=>[b.id,b.guest_name]))
+  const S=agNizovi(av)
+  const izv=s=>s.source==='ical_booking'?'Booking':s.source==='ical_airbnb'?'Airbnb':s.booking_id?'izravno':'ručno'
+  const naziv=id=>PROPS.find(p=>p.id===id)?.name||'Objekt'
+  // danas i sutra
+  const red=[]
+  for(const[dan,oz]of [[t,'Danas'],[A.plusDana(t,1),'Sutra']]){
+    const dol=S.filter(s=>s.start===dan&&s.source!=='manual'||s.start===dan&&s.booking_id),odl=S.filter(s=>s.end===dan&&(s.source!=='manual'||s.booking_id))
+    red.push(`<div class="ag-dan"><h3>${oz} <small>${A.fmtSDanom(dan)}</small></h3>`
+      +(dol.length||odl.length?[...odl.map(s=>`<div class="ag-r"><span class="ag-oz odl">odlazak</span><b translate="no">${A.esc(naziv(s.pid))}</b><small>${A.esc(ime[s.booking_id]||izv(s))} · čišćenje</small></div>`),
+        ...dol.map(s=>`<div class="ag-r"><span class="ag-oz dol">dolazak</span><b translate="no">${A.esc(naziv(s.pid))}</b><small>${A.esc(ime[s.booking_id]||izv(s))} · ${A.noci(A.razlikaDana(s.start,s.end))}</small></div>`)].join('')
+        :'<p class="helper">Nema dolazaka ni odlazaka.</p>')+'</div>')
+  }
+  document.getElementById('ag-danas').innerHTML=red.join('')
+  // kalendar svih objekata
+  const dani=Array.from({length:30},(_,i)=>A.plusDana(t,i))
+  const glava=`<div class="ag-k-r ag-k-g"><span></span>${dani.map(d=>{const x=A.uDatum(d);return `<i class="${[0,6].includes(x.getDay())?'vk':''}">${x.getDate()}</i>`}).join('')}</div>`
+  const tijelo=PROPS.map(p=>{
+    const zauz=new Set(av.filter(r=>r.property_id===p.id).map(r=>r.date))
+    const praz=new Set();A.praznine(zauz,t,A.plusDana(t,60),3).forEach(g=>{for(let i=0;i<g.nights;i++)praz.add(A.plusDana(g.start,i))})
+    const mapa={};av.filter(r=>r.property_id===p.id).forEach(r=>mapa[r.date]=r)
+    const z=dani.filter(d=>zauz.has(d)).length
+    return `<div class="ag-k-r"><span translate="no"><b>${A.esc(p.name||'Objekt')}</b><small>${Math.round(z/30*100)} %</small></span>${dani.map(d=>{const r=mapa[d]
+      const c=r?(r.source==='ical_booking'||r.source==='ical_airbnb'?'pl':r.booking_id?'iz':'ru'):praz.has(d)?'pz':''
+      const tx=r?(r.source==='ical_booking'?'B':r.source==='ical_airbnb'?'A':''):''
+      return `<i class="${c}" title="${A.esc(A.fmtKratko(d)+(r?' · '+(ime[r.booking_id]||izv({source:r.source,booking_id:r.booking_id})):praz.has(d)?' · praznina':''))}">${tx}</i>`}).join('')}</div>`}).join('')
+  document.getElementById('ag-kal').innerHTML=glava+tijelo
+  // predložak
+  const vl=vlastiti()
+  const od=document.getElementById('ag-pred-od')
+  od.innerHTML=vl.map(p=>`<option value="${p.id}"${p.id===PROP?.id?' selected':''}>${esc(p.name||'Objekt')}</option>`).join('')
+  const crtajNa=()=>{document.getElementById('ag-pred-na').innerHTML=vl.filter(p=>p.id!==od.value).map(p=>`<label><input type="checkbox" value="${p.id}" checked data-bez-spremanja> <span translate="no">${esc(p.name||'Objekt')}</span></label>`).join('')||'<p class="helper">Za predložak trebate barem dva vlastita objekta.</p>'}
+  od.onchange=crtajNa;crtajNa()
+  document.getElementById('ag-pred-vrste').innerHTML=KOPIJA.map(x=>`<label><input type="checkbox" value="${x.k}" ${['house_rules','faq','local_places'].includes(x.k)?'checked':''} data-bez-spremanja> ${esc(x.t)}</label>`).join('')
+  // izvještaj
+  document.getElementById('ag-izv-obj').innerHTML=PROPS.map(p=>`<option value="${p.id}"${p.id===PROP?.id?' selected':''}>${esc(p.name||'Objekt')}</option>`).join('')
+  const mj=document.getElementById('ag-izv-mj');if(!mj.value){const x=new Date();x.setMonth(x.getMonth()-1);mj.value=x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')}
+}
+window.agPrimijeni=async()=>{
+  const od=document.getElementById('ag-pred-od').value
+  const na=[...document.querySelectorAll('#ag-pred-na input:checked')].map(i=>i.value)
+  const vrste=[...document.querySelectorAll('#ag-pred-vrste input:checked')].map(i=>i.value)
+  const st=document.getElementById('ag-pred-st'),btn=document.getElementById('ag-pred-da')
+  if(!od||!na.length||!vrste.length){st.textContent='Odaberite barem jedan objekt i jednu vrstu sadržaja.';return}
+  btn.disabled=true
+  const out=[]
+  for(const[i,id]of na.entries()){
+    st.textContent=`Prenosim… ${i+1} / ${na.length}`
+    const rez=await prenesiSadrzaj(od,id,vrste)
+    out.push(`<b>${esc(PROPS.find(p=>p.id===id)?.name||'Objekt')}</b>: ${rez.map(esc).join(' · ')}`)
+  }
+  st.innerHTML=out.join('<br>');btn.disabled=false
+  if(na.includes(PROP?.id)){await loadSection();await loadListSections();await loadAmenities();renderChecklist()}
+  toast('Predložak je primijenjen ✓')
+}
+window.agIzvjestaj=async()=>{
+  const pid=document.getElementById('ag-izv-obj').value,mj=document.getElementById('ag-izv-mj').value
+  if(!pid||!/^\d{4}-\d{2}$/.test(mj))return
+  const w=window.open('','_blank');if(!w){toast('Preglednik je blokirao novi prozor — dopustite skočne prozore.');return}
+  w.document.write('<p style="font-family:system-ui;padding:24px">Pripremam izvještaj…</p>')
+  const p=PROPS.find(x=>x.id===pid),[y,m]=mj.split('-').map(Number)
+  const od=`${mj}-01`,doD=m===12?`${y+1}-01-01`:`${y}-${String(m+1).padStart(2,'0')}-01`,dana=A.razlikaDana(od,doD)
+  const[{data:av},{data:iq},{data:rv},{count:pv}]=await Promise.all([
+    sb.from('availability').select('*').eq('property_id',pid).gte('date',od).lt('date',doD),
+    sb.from('inquiries').select('id,status,created_at').eq('property_id',pid).gte('created_at',od).lt('created_at',doD).then(r=>r,()=>({data:[]})),
+    sb.from('reviews').select('ocjena,created_at').eq('property_id',pid).gte('created_at',od).lt('created_at',doD).then(r=>r,()=>({data:[]})),
+    sb.from('page_views').select('id',{count:'exact',head:true}).eq('property_id',pid).eq('view_type','public').gte('timestamp',od).lt('timestamp',doD).then(r=>r,()=>({count:0}))])
+  const R=av||[],n=k=>R.filter(k).length
+  const iz=n(r=>r.booking_id),bo=n(r=>r.source==='ical_booking'),ab=n(r=>r.source==='ical_airbnb'),ru=n(r=>!r.booking_id&&(r.source||'manual')==='manual')
+  const z=R.length,boravaka=agNizovi(R).filter(s=>s.source!=='manual'||s.booking_id).length
+  const oc=(rv||[]).map(r=>Number(r.ocjena)).filter(Boolean),prosjek=oc.length?(oc.reduce((a,b)=>a+b,0)/oc.length).toFixed(1).replace('.',','):'—'
+  const naslov=`${MONTHS[m-1]} ${y}.`
+  const red=(a,b)=>`<tr><td>${a}</td><td>${b}</td></tr>`
+  const html=`<!doctype html><html lang="hr"><head><meta charset="utf-8"><title>Izvještaj — ${esc(p?.name||'')} — ${naslov}</title>
+<style>body{margin:0;font:15px/1.5 system-ui,sans-serif;color:#12303A;background:#F6F5F1}main{max-width:760px;margin:32px auto;padding:32px;background:#fff;border-radius:16px}
+h1{margin:0;font-size:26px}p.s{margin:4px 0 24px;color:#5B6F75}.br{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px}.br div{padding:14px;border-radius:12px;background:#EFEEE8}.br small{display:block;color:#5B6F75}.br b{font-size:26px}
+table{width:100%;border-collapse:collapse}td{padding:10px 0;border-top:1px solid #E3E5E0}td:last-child{text-align:right;font-weight:700}.nap{margin-top:24px;color:#5B6F75;font-size:13px}
+button{margin-top:20px;padding:10px 18px;border:0;border-radius:99px;background:#12303A;color:#fff;font-weight:700;cursor:pointer}@media print{body{background:#fff}main{margin:0;padding:0}button{display:none}}</style></head>
+<body><main><h1>${esc(p?.name||'Objekt')}</h1><p class="s">Mjesečni izvještaj · ${naslov}${p?.location?' · '+esc(p.location):''}</p>
+<div class="br"><div><small>Popunjenost</small><b>${Math.round(z/dana*100)} %</b></div><div><small>Zauzetih noći</small><b>${z}</b></div><div><small>Boravaka</small><b>${boravaka}</b></div></div>
+<table>${red('Noći izravno (bez provizije)',iz)}${red('Noći preko Bookinga',bo)}${red('Noći preko Airbnba',ab)}${red('Blokirano ručno',ru)}${red('Upiti gostiju',(iq||[]).length)}${red('Pregledi javne stranice',pv||0)}${red('Ocjene gostiju',oc.length?`${prosjek} / 5 (${oc.length})`:'—')}</table>
+<p class="nap">Podaci iz kalendara i aplikacije Odmoria. Iznosi plaćanja nisu uključeni — Odmoria ne obrađuje plaćanje.</p>
+<button onclick="print()">Ispiši ili spremi kao PDF</button></main></body></html>`
+  w.document.open();w.document.write(html);w.document.close()
+}
+
 function renderUpiti(){
   const el=document.getElementById('iq-list');if(!el)return
   if(UPITI_OK===false){el.innerHTML=A.prazno('Upiti se još ne spremaju. Kad se u Supabaseu pokrene sql/add-inquiries.sql, gosti će s vaše javne stranice moći poslati upit s imenom i kontaktom, a vi ćete ga vidjeti ovdje.');return}
@@ -4495,6 +4665,7 @@ window.nav=(id,el)=>{
   const meta={
     overview:['Danas','Danas','Što se događa ovih dana i na što obratiti pažnju.'],
     analytics:['Danas','Analitika','Posjećenost, upiti, popunjenost i praznine u kalendaru.'],
+    sviobjekti:['Danas','Svi objekti','Dolasci, kalendar, predlošci i izvještaji za sve objekte odjednom.'],
     basic:['Javna stranica','Opis i izgled','Naziv, lokacija, opis, kontakt i izgled javne stranice.'],
     photos:['Javna stranica','Fotografije','Složite galeriju koja predstavlja vaš objekt.'],
     izgled:['Javna stranica','Izgled stranice','Izaberite temu koja odlučuje što gost vidi prvo.'],
@@ -4534,6 +4705,7 @@ window.nav=(id,el)=>{
   if(id==='prijevodi')ucitajPrijevode()
   if((SPOJ[id]||[]).includes('izgled'))window.initStil&&window.initStil()
   if(id==='analytics')renderAnalytics()
+  if(id==='sviobjekti')agOtvori()
   if(id==='inquiries')ucitajUpite().then(renderUpiti)
   if(id==='overview'&&PROP)renderOverviewOps()
   syncGroup(id)

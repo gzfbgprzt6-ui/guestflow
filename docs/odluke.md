@@ -1531,3 +1531,27 @@ razgovora o 10 %): sve ispod samo slaže poruku koju domaćin sam pošalje.
       Privatnosti (svrha: ponude domaćina; voditelj obrade je domaćin; povlačenje
       privole odgovorom domaćinu).
 - [ ] Uvjeti: rečenica da Odmoria ne sudjeluje u plaćanju kapare ni boravka.
+
+---
+
+## 37. v5: Agencija — svi objekti na jednom mjestu (20. 10. 2026.)
+
+Napravljeno (mogućnost `agencija`, samo plan Agencija; tab „Svi objekti” u
+Danas vidi se tek s više objekata):
+- **Danas i sutra u svim objektima** — dolasci, odlasci (= čišćenje).
+- **Kalendar svih objekata** — 30 dana, red po objektu, iste boje kao kalendar.
+- **Predložak za više objekata** — isti prijenos kao „Preuzmi sadržaj”, u više
+  objekata odjednom (dodaje, ne briše; nikad šifre, Wi-Fi, adresa).
+- **Mjesečni izvještaj vlasniku** — stranica za ispis/PDF: popunjenost, noći
+  izravno / Booking / Airbnb / ručno, upiti, pregledi, ocjene. Bez iznosa
+  (Odmoria ne vidi plaćanja).
+
+**Nije napravljeno — traži odluku i SQL/RLS (pitati vlasnika):**
+- [ ] **Uloge u timu** (recepcija vidi dolaske ali ne šifre, čistačica samo
+      raspored, vlasnik samo izvještaj) — sad suradnik vidi sve što i
+      domaćin; prave uloge mijenjaju RLS politike (`property_members.uloga`).
+- [ ] **Ime i boja agencije u vodiču** — vodič bi trebao čitati brend iz baze
+      (`vodic_gosta()` ili novi stupac); sad je samo oznaka „pokreće Odmoria”
+      po planu.
+- [ ] Pristup vlasnika objekta (read-only izvještaj preko linka) — zasad
+      agencija izvještaj šalje sama.

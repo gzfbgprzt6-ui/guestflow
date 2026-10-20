@@ -82,7 +82,7 @@ const FALLBACK = {
     canRemoveBranding: true,
     canCloneProperty: true,
     whiteLabel: true,
-    mogucnosti: ["koraci", "preporuke", "ocjena", "evisitor", "stilovi", "cistacica", "promocija", "email", "izravno"],
+    mogucnosti: ["koraci", "preporuke", "ocjena", "evisitor", "stilovi", "cistacica", "promocija", "email", "izravno", "agencija"],
   },
 };
 

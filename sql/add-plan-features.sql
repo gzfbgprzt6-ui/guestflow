@@ -13,6 +13,7 @@
 --    promocija  — objave, letak, Facebook grupe
 --    email      — automatski e-mail gostu
 --    izravno    — sezonske cijene, ponuda s kaparom, povratni gosti (add-direct-bookings.sql)
+--    agencija   — svi objekti, predložak za više objekata, izvještaj vlasniku (add-per-object-plans.sql)
 --
 --  Free nema ništa od toga: šifra i Wi-Fi s otključavanjem, kuća, pravila,
 --  odlazak, domaćin, javna stranica s kalendarom i upitima. Broj objekata,

@@ -688,6 +688,12 @@ Dashboard **ne učitava `odmoria.css`** — ima vlastiti potpun CSS s istim vrij
   polja (`label[for]`), radnje, objekti, gosti (`AN.bookings`), upiti, preporuke,
   pravila, pitanja i katalog sadržaja; `tbPokazi(sel)` skrolne i bljesne
   (`.tb-bljesak`).
+- **Agencija v5** (20. 10., odluke 37): panel `sviobjekti` (Danas → „Svi
+  objekti”, `data-mog="agencija"`, tab `data-skriven` dok je samo 1 objekt i
+  nije Agencija — `primijeniPlan()`): `agOtvori()` (availability i bookings za
+  sve `PROPS`, `agNizovi()`), `#ag-kal` (30 dana × objekti), `agPrimijeni()`
+  (= `prenesiSadrzaj()` za više objekata), `agIzvjestaj()` (novi prozor,
+  ispis/PDF, bez iznosa). Mogućnost `agencija` dodaje `add-per-object-plans.sql`.
 - **Izravne rezervacije v5** (20. 10., odluke 36, `sql/add-direct-bookings.sql`):
   `cijene.js` (`cijenaNoci`, `cijenaBoravka`, `najnizaCijena`, `uMD`/`izMD`) =
   ista pravila kao `cijena_noci()`/`cijena_boravka()` u bazi — mijenjati

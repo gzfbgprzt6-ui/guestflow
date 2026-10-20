@@ -47,6 +47,13 @@ update public.plans set name = 'Agencija', description = 'Za 6 i više objekata,
   min_properties = 6, max_properties = -1
  where id = 'business';
 
+-- mogućnost „agencija” (svi objekti, predložak za više objekata, izvještaj
+-- vlasniku) — samo Agencija; plans.mogucnosti je iz sql/add-plan-features.sql
+do $$ begin
+  update public.plans set mogucnosti = mogucnosti || '["agencija"]'::jsonb
+   where id = 'business' and not mogucnosti ? 'agencija';
+exception when undefined_column then null; end $$;
+
 create or replace function public.plan_limit(p_user uuid, p_key text)
 returns int
 language plpgsql
