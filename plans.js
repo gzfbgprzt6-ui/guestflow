@@ -410,5 +410,9 @@ export function limitMessage(resource, planId) {
   const max = limitFor(planId, resource);
   const label = RESOURCE_LABEL[resource];
   if (max === Infinity || !label) return "Dosegnuli ste limit trenutnog plana.";
+  if (resource === "properties" && plan.id !== "free" && plan.poObjektu)
+    return `Pretplata pokriva ${max} ${plural(max, label)}. Dodajte objekt u Pretplati — plaća se samo razlika.`;
+  if (resource === "properties" && plan.id === "free")
+    return `Free plan uključuje 1 objekt. Za više objekata odaberite Domaćin — plaća se po objektu.`;
   return `${plan.name} plan uključuje ${max} ${plural(max, label)}. Nadogradite plan za više.`;
 }

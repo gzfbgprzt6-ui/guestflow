@@ -18,16 +18,16 @@
 const GF = 'https://fonts.googleapis.com/css2?'
 
 export const STILOVI = [
-  { id: '', ime: 'Odmoria', opis: 'Zadani izgled — perla, tinta i sunce.', pisma: '',
+  { id: '', ime: 'Svijetli', opis: 'Zadani izgled — perla, tinta i sunce.', pisma: '', izbor: true,
     t: { bg: '#F6F5F1', surface: '#FFFFFF', wash: '#EFEEE8', ink: '#12303A', muted: '#5B6F75', accent: '#12303A',
          action: '#12303A', actionInk: '#FFFFFF', line: '#E3E5E0', display: "Georgia,'Gelasio',serif", ui: "'Manrope',system-ui,sans-serif",
          body: "'DM Sans',system-ui,sans-serif", r: '14px', rBtn: '7px', tint: '14,34,41' } },
-  { id: 'priroda', ime: 'Priroda', opis: 'Lan i maslina, organski oblici, pismo domaćina.',
+  { id: 'priroda', ime: 'Topli', opis: 'Lan i maslina, organski oblici, pismo domaćina.', izbor: true,
     pisma: 'family=Cormorant+Garamond:ital,wght@0,500;0,600;1,400;1,500;1,600&family=Karla:wght@400;500;600;700',
     t: { bg: '#F4F0E6', surface: '#FBF8F1', wash: '#E9E8D6', ink: '#33402A', muted: '#5B5A44', accent: '#4E5C33',
          action: '#56653A', actionInk: '#FBF8F1', line: '#D8CCB2', display: "'Cormorant Garamond',Georgia,serif", ui: "Karla,system-ui,sans-serif",
          body: "Karla,system-ui,sans-serif", r: '28px', rBtn: '999px', tint: '40,48,30' } },
-  { id: 'luksuz', ime: 'Luksuz', opis: 'Crno, bjelokost i zlato — puno zraka, tanke linije.',
+  { id: 'luksuz', ime: 'Tamni', opis: 'Crno, bjelokost i zlato — puno zraka, tanke linije.', izbor: true,
     pisma: 'family=Playfair+Display:ital,wght@0,400..700;1,400..700&family=Jost:wght@400;500;600',
     t: { bg: '#0F0E0C', surface: '#191714', wash: '#221F1B', ink: '#F3EEE5', muted: '#B8AFA1', accent: '#D8BC85',
          action: '#C6A66B', actionInk: '#0F0E0C', line: '#3A352E', display: "'Playfair Display',Georgia,serif", ui: "Jost,system-ui,sans-serif",

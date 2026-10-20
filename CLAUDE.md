@@ -671,6 +671,22 @@ Dashboard **ne učitava `odmoria.css`** — ima vlastiti potpun CSS s istim vrij
   pitanja. **Domaćin**: brze poruke (`BRZE_PORUKE`, `[data-poruka]`) puni
   `#dom-tx`, slanje istim `posaljiDomacinu(kanal, polje)`. Riječ domaćina
   (`welcome_msg`) se na početnoj vodiča **više ne prikazuje** (vlasnik, 19. 10.).
+- **v5 čišćenje dashboarda (20. 10., odluke 35):** tab Analitika skriven
+  (`data-skriven`; panel i `renderAnalytics()` ostaju za `nav('analytics')`),
+  Danas = popunjenost (gore) + Upiti + **Noći izravno** (`nociPoIzvoru().odmoria`);
+  pregled gosta (telefon desno) skriven CSS-om (`--preview-width:0`); traka
+  mjeseca iznad kalendara skrivena; stilovi u izboru samo `izbor:true`
+  (Svijetli = zadani, Topli = `priroda`, Tamni = `luksuz`; stari stil objekta
+  ostaje vidljiv); sadržaji = `AM_NAJCESCI` (12) + „Još sadržaja”; prijevoz i
+  atrakcije = vrste preporuke (stari popisi `.v5-prazno` dok su prazni);
+  „Preuzmi sadržaj” je red u Upravljanju objektom; **„Prevedi besplatno” je
+  automatski**: `autoPrevedi()` nakon `saveBasic/saveArrival/saveKoraci/
+  saveDeviceInfo/saveListItem/saveWifi` (omotane) i pri otvaranju Jezika —
+  MyMemory → `prijevodi_rucni`, tiho. Preporuči domaćina ima napomenu „nagrada
+  uskoro”. **Tražilica** (`tbIndeks()`): dijelovi, naslovi kartica, natpisi
+  polja (`label[for]`), radnje, objekti, gosti (`AN.bookings`), upiti, preporuke,
+  pravila, pitanja i katalog sadržaja; `tbPokazi(sel)` skrolne i bljesne
+  (`.tb-bljesak`).
 - **v4 (19. 10., odluke 34) — vodič na jednoj stranici i dashboard u 4 dijela.**
   *Vodič:* nema podstranica osim `#ulaz` (korak po korak) i `#prijava`
   (eVisitor obrazac). Početna: karta → trake `#skok` (skrolaju do odjeljka,
