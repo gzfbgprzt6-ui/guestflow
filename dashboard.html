@@ -1319,6 +1319,18 @@ section.v5-prazno{display:none!important}
 .cal-traka { display: none !important; }
 .cs-nap { margin: 6px 0 0; color: var(--muted); font-size: 13px; }
 @media (max-width: 780px) { .cal-strana { padding: 14px; } .cs-br { gap: 6px; } .cs-br > div { padding: 10px; } .cs-br small { font-size: 11.5px; } .cs-br b { font-size: 20px; } .day.ical .plt { width: 15px; height: 15px; right: 4px; bottom: 4px; font-size: 9px; } .day.danas > span:first-child { min-width: 22px; height: 22px; margin: -2px 0 0 -2px; } }
+
+/* v5: izravne rezervacije */
+.sez-lista { display: grid; gap: 8px; margin-bottom: 12px; }
+.sez { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)) auto; gap: 8px; align-items: end; }
+.sez label span { display: block; margin-bottom: 4px; color: var(--muted); font: 600 12.5px/1.2 var(--font-ui); }
+.ponuda-dlg { width: min(620px, calc(100vw - 32px)); max-height: calc(100vh - 48px); overflow: auto; }
+.ponuda-dlg h2 { font: 700 22px/1.3 var(--font-ui); letter-spacing: -.02em; }
+.po-akc { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.an-tag.is-ok { background: var(--sunce-meko); color: var(--ink); }
+#pov-lista .an-row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; padding: 12px 0; border-top: 1px solid var(--line); }
+#pov-lista .an-row small { display: block; color: var(--muted); }
+@media (max-width: 600px) { .sez { grid-template-columns: 1fr 1fr; } .sez label:nth-child(3) { grid-column: 1 / 2; } }
 </style>
 <script type="module">import{pokreni,prekidac}from'/domacin-jezik.js';pokreni();prekidac(document.getElementById('jezik-sw'))</script>
 </head>
@@ -2008,6 +2020,19 @@ section.v5-prazno{display:none!important}
             </div>
             <div style="margin-top:18px;display:flex;justify-content:flex-end"><button class="btn" onclick="savePricing()">Spremi promjene</button></div>
           </div>
+          <!-- v5: izravne rezervacije (sql/add-direct-bookings.sql) — Odmoria ne obrađuje plaćanje -->
+          <div class="card" id="izravno-card" data-mog="izravno">
+            <div class="card-head"><div class="card-title-wrap"><span class="card-number">€</span><div><h2>Sezonske cijene i kapara</h2><p>Gost u upitu odmah vidi okvirni iznos, a vi iz upita šaljete ponudu s kaparom na svoj račun.</p></div></div><span class="card-hint">Novac ide izravno vama — Odmoria ga ne dira.</span></div>
+            <div id="sez-lista" class="sez-lista"></div>
+            <button class="btn secondary small" type="button" onclick="dodajSezonu()">+ Dodaj sezonu</button>
+            <div class="form-grid" style="margin-top:18px">
+              <div class="field"><label for="prop-kapara">Kapara (% iznosa)</label><input class="input" id="prop-kapara" type="number" min="0" max="100" step="5" placeholder="30"></div>
+              <div class="field"><label for="dom-iban">IBAN za kaparu</label><input class="input" id="dom-iban" autocomplete="off" placeholder="HR12 3456 7890 1234 5678 9" translate="no"></div>
+              <div class="field"><label for="dom-primatelj">Primatelj (ime ili obrt)</label><input class="input" id="dom-primatelj" autocomplete="off" placeholder="Marko Horvat"></div>
+            </div>
+            <p class="helper">IBAN i primatelj spremaju se samo u vaš račun (ne na javnu stranicu) i upisuju se u ponudu koju šaljete gostu.</p>
+            <div style="margin-top:14px;display:flex;justify-content:flex-end"><button class="btn" type="button" onclick="saveIzravno()">Spremi sezone i kaparu</button></div>
+          </div>
         </section>
 
         <!-- 10 RULES + FAQ -->
@@ -2070,6 +2095,15 @@ section.v5-prazno{display:none!important}
                 <button type="button" data-iqf="svi" aria-pressed="false">Svi</button>
               </div></div>
             <div class="an-list" id="iq-list" aria-live="polite"></div>
+          </div>
+          <div class="card" id="povratni-card" data-mog="izravno">
+            <div class="card-head"><div class="card-title-wrap"><span class="card-number"><svg class="ic ic--sm" aria-hidden="true"><use href="#i-users"/></svg></span><div><h2>Povratni gosti</h2><p>Gosti koji su u upitu pristali da im šaljete ponude. Pošaljite im kod za popust — u sljedećem upitu ga upišu, a vi ga vidite uz upit.</p></div></div></div>
+            <div class="form-grid">
+              <div class="field"><label for="pov-kod">Vaš kod za povratnike</label><input class="input" id="pov-kod" maxlength="20" placeholder="POVRATAK10" style="text-transform:uppercase" translate="no"></div>
+              <div class="field"><label for="pov-posto">Popust (%)</label><input class="input" id="pov-posto" type="number" min="0" max="50" step="1" placeholder="10"></div>
+              <div class="field" style="align-self:end"><button class="btn secondary" type="button" onclick="savePovratni()">Spremi kod</button></div>
+            </div>
+            <div class="an-list" id="pov-lista"></div>
           </div>
         </section>
 
@@ -2330,6 +2364,23 @@ section.v5-prazno{display:none!important}
 
 <!-- Pitanje pri odlasku s nespremljenim promjenama (panel ili objekt) -->
 <!-- Podaci gostiju za eVisitor + boravišna pristojba (sql/add-guest-registration.sql) -->
+<!-- v5: ponuda s kaparom — poruka koju domaćin sam pošalje; Odmoria ne obrađuje plaćanje -->
+<dialog class="dirty-dlg ponuda-dlg" id="ponuda-dlg" aria-labelledby="ponuda-t">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px"><div><h2 id="ponuda-t">Ponuda s kaparom</h2><p class="helper" id="ponuda-sub"></p></div><button type="button" class="btn ghost small" onclick="document.getElementById('ponuda-dlg').close()" aria-label="Zatvori">✕</button></div>
+  <div class="form-grid" style="margin-top:12px">
+    <div class="field"><label for="po-iznos">Iznos boravka (€)</label><input class="input" id="po-iznos" type="number" min="0" step="1" data-bez-spremanja oninput="ponudaTekst()"></div>
+    <div class="field"><label for="po-kapara">Kapara (%)</label><input class="input" id="po-kapara" type="number" min="0" max="100" step="5" data-bez-spremanja oninput="ponudaTekst()"></div>
+    <div class="field"><label for="po-rok">Rok za kaparu (dana)</label><input class="input" id="po-rok" type="number" min="1" max="14" value="3" data-bez-spremanja oninput="ponudaTekst()"></div>
+    <div class="field"><label for="po-jezik">Jezik poruke</label><select class="input" id="po-jezik" data-bez-spremanja onchange="ponudaTekst()"><option value="hr">Hrvatski</option><option value="en">Engleski</option><option value="de">Njemački</option><option value="it">Talijanski</option></select></div>
+  </div>
+  <p class="helper" id="po-pop" hidden></p>
+  <label for="po-tx" class="sr-only">Poruka gostu</label>
+  <textarea class="textarea" id="po-tx" rows="11" data-bez-spremanja style="margin-top:10px"></textarea>
+  <p class="helper" id="po-upoz" hidden></p>
+  <div class="po-akc" id="po-akc"></div>
+  <p class="helper" style="margin-top:10px">Kad kapara stigne na vaš račun, kliknite „Prihvati i napravi link” — gost dobiva link za vodič.</p>
+</dialog>
+
 <dialog class="dirty-dlg gosti-dlg" id="gosti-dlg" aria-labelledby="gosti-t">
   <div class="gosti-dlg__in">
     <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px"><div><h2 id="gosti-t">Podaci gostiju</h2><p class="helper" id="gosti-sub"></p></div><button type="button" class="btn ghost small" onclick="document.getElementById('gosti-dlg').close()" aria-label="Zatvori">✕</button></div>
@@ -2390,6 +2441,7 @@ import * as A from'./analitika.js'
 import * as O from'./objave.js'
 import * as JZ from'./jezici.js'
 import{kvacica}from'./pokret.js'
+import{cijenaBoravka,uMD,izMD}from'./cijene.js'
 import{SADRZAJI,SKUPINE}from'./sadrzaji.js'
 import * as OSMM from'./mjesta-osm.js'
 import{predloziAdresu}from'./adresa-predlozi.js'
@@ -2420,6 +2472,7 @@ const MOG_TX={koraci:['Koraci sa slikama i „Ušli smo”','Gost prolazi ulaz k
   stilovi:['Stilovi javne stranice','Svijetli, topli ili tamni — isti sadržaj, drugačiji izgled.'],
   cistacica:['Link za čistačicu','Raspored dolazaka i odlazaka bez šifri; čistačica javlja „gotovo”.'],
   promocija:['Promocija','Gotove objave za slobodne termine, letak s QR kodom i Facebook grupe.'],
+  izravno:['Izravne rezervacije','Sezonske cijene, iznos u upitu, ponuda s kaparom na vaš IBAN i povratni gosti s kodom.'],
   evisitor:['Prijava gostiju za eVisitor','Gost sam upiše podatke iz putovnice; vi ih prepišete u eVisitor.'],
   email:['Automatski e-mail gostu','Link na vodič 3 dana prije dolaska i zahvala na odlasku.']}
 function primijeniPlan(){
@@ -2801,6 +2854,7 @@ function fillPropForm(){
   document.getElementById('prop-phone').value=PROP.phone||''
   document.getElementById('prop-email').value=PROP.email||''
   document.getElementById('prop-price').value=PROP.price_per_night||0
+  puniIzravno()
   document.getElementById('prop-minstay').value=PROP.min_stay||1
   document.getElementById('prop-gapfill').checked=!!PROP.allow_gap_fill_stays
   document.getElementById('prop-mingap').value=PROP.min_gap_stay??3
@@ -3432,11 +3486,137 @@ function slanjeHtml(u,txt,subj){
   return (u.guest_phone?`<a class="btn small" href="${A.esc(waLink(u.guest_phone,txt))}" target="_blank" rel="noopener">WhatsAppom</a>`:'')
     +(u.guest_email?`<a class="btn ${u.guest_phone?'secondary ':''}small" href="${A.esc(mailLink(u.guest_email,subj,txt))}">E-mailom</a>`:'')
 }
+
+/* ===== v5: izravne rezervacije (sql/add-direct-bookings.sql) =====
+   Sezone su u properties.sezonske_cijene, kapara u properties.kapara_posto.
+   IBAN, primatelj i kod za povratnike su u user_metadata domaćina (ne u
+   javnom redu objekta). Odmoria ništa ne naplaćuje — gradi se samo poruka. */
+let SEZ=[]
+const META=()=>USER?.user_metadata||{}
+const POVRATNI=()=>{const p=META().povratni||{};return{kod:String(p.kod||'').toUpperCase(),posto:Number(p.posto)||0}}
+function nacrtajSezone(){
+  const el=document.getElementById('sez-lista');if(!el)return
+  el.innerHTML=SEZ.length?SEZ.map((x,i)=>`<div class="sez" data-i="${i}">
+      <label><span>Od</span><input class="input" data-sz="od" value="${esc(izMD(x.od))}" placeholder="01.07." inputmode="numeric" aria-label="Sezona ${i+1} od (dan.mjesec.)"></label>
+      <label><span>Do</span><input class="input" data-sz="do" value="${esc(izMD(x.do))}" placeholder="31.08." inputmode="numeric" aria-label="Sezona ${i+1} do (dan.mjesec.)"></label>
+      <label><span>€ / noć</span><input class="input" data-sz="cijena" type="number" min="1" step="1" value="${esc(String(x.cijena||''))}" aria-label="Sezona ${i+1} cijena"></label>
+      <button type="button" class="item-btn del" onclick="ukloniSezonu(${i})" aria-label="Ukloni sezonu">✕</button></div>`).join('')
+    :'<p class="helper">Bez sezona vrijedi cijena po noćenju iznad. Dodajte npr. 01.07.–31.08. po višoj cijeni.</p>'
+}
+function citajSezone(){
+  SEZ=[...document.querySelectorAll('#sez-lista .sez')].map(r=>({od:uMD(r.querySelector('[data-sz=od]').value)||r.querySelector('[data-sz=od]').value.trim(),do:uMD(r.querySelector('[data-sz=do]').value)||r.querySelector('[data-sz=do]').value.trim(),cijena:Number(r.querySelector('[data-sz=cijena]').value)||0}))
+}
+window.dodajSezonu=()=>{citajSezone();if(SEZ.length>=12){toast('Najviše 12 sezona');return}SEZ.push({od:'',do:'',cijena:''});nacrtajSezone();document.querySelector('#sez-lista .sez:last-child input')?.focus();window.markDirty&&markDirty(document.getElementById('section-pricing'))}
+window.ukloniSezonu=i=>{citajSezone();SEZ.splice(i,1);nacrtajSezone();window.markDirty&&markDirty(document.getElementById('section-pricing'))}
+function puniIzravno(){
+  SEZ=Array.isArray(PROP?.sezonske_cijene)?PROP.sezonske_cijene.map(x=>({...x})):[]
+  nacrtajSezone()
+  const k=document.getElementById('prop-kapara');if(k)k.value=PROP?.kapara_posto??''
+  const m=META()
+  const ib=document.getElementById('dom-iban');if(ib)ib.value=m.iban||''
+  const pr=document.getElementById('dom-primatelj');if(pr)pr.value=m.primatelj||''
+  const pv=POVRATNI()
+  const pk=document.getElementById('pov-kod');if(pk)pk.value=pv.kod
+  const pp=document.getElementById('pov-posto');if(pp)pp.value=pv.posto||''
+}
+window.saveIzravno=async()=>{
+  if(!PROP)return
+  citajSezone()
+  const lose=SEZ.find(x=>!/^\d{2}-\d{2}$/.test(x.od)||!/^\d{2}-\d{2}$/.test(x.do)||!(x.cijena>0))
+  if(lose){toast('Svaka sezona treba datume u obliku 01.07. i cijenu veću od 0');return}
+  const kap=document.getElementById('prop-kapara').value
+  const u={sezonske_cijene:SEZ,kapara_posto:kap===''?null:Math.max(0,Math.min(100,parseInt(kap)||0))}
+  const{error}=await sb.from('properties').update(u).eq('id',PROP.id)
+  if(error){toast(/sezonske_cijene|kapara_posto|column/i.test(error.message)?'Sezone još nisu uključene — u Supabaseu treba pokrenuti sql/add-direct-bookings.sql.':'Nije spremljeno: '+error.message);return}
+  Object.assign(PROP,u)
+  const iban=document.getElementById('dom-iban').value.replace(/\s+/g,' ').trim().toUpperCase(),prim=document.getElementById('dom-primatelj').value.trim()
+  if(iban!==(META().iban||'')||prim!==(META().primatelj||'')){
+    const{data,error:e2}=await sb.auth.updateUser({data:{iban,primatelj:prim}})
+    if(e2){toast('Sezone su spremljene, IBAN nije: '+e2.message);return}
+    if(data?.user)USER=data.user
+  }
+  window.clearDirty&&clearDirty();toast('Sezone i kapara su spremljene ✓')
+}
+window.savePovratni=async()=>{
+  const kod=document.getElementById('pov-kod').value.trim().toUpperCase().replace(/[^A-Z0-9-]/g,''),posto=Math.max(0,Math.min(50,parseInt(document.getElementById('pov-posto').value)||0))
+  const{data,error}=await sb.auth.updateUser({data:{povratni:{kod,posto}}})
+  if(error){toast('Nije spremljeno: '+error.message);return}
+  if(data?.user)USER=data.user
+  document.getElementById('pov-kod').value=kod
+  window.clearDirty&&clearDirty();toast('Kod za povratnike je spremljen ✓');renderPovratni();renderUpiti()
+}
+function renderPovratni(){
+  const el=document.getElementById('pov-lista');if(!el)return
+  const vidjeno=new Set(),L=[]
+  for(const u of UPITI){if(!u.pristanak_ponude)continue;const k=(u.guest_email||u.guest_phone||'').toLowerCase();if(!k||vidjeno.has(k))continue;vidjeno.add(k);L.push(u)}
+  if(!L.length){el.innerHTML=A.prazno('Još nema gostiju koji su pristali na ponude. Kvačica je u obrascu upita na vašoj javnoj stranici.');return}
+  const pv=POVRATNI()
+  el.innerHTML=L.map(u=>{
+    const ime=(u.guest_name||'').split(' ')[0]
+    const txt=`Dobar dan${ime?', '+ime:''}! Hvala što ste nam se javili za ${PROP.name}.`+(pv.kod&&pv.posto?` Za vaš sljedeći boravak imate ${pv.posto} % popusta — u upitu upišite kod ${pv.kod}.`:'')+` Slobodne termine vidite na ${publicUrl(PROP.slug)}`
+    return `<div class="an-row"><div><b>${A.esc(u.guest_name)}</b><small>${u.checkin_date?A.fmtKratko(u.checkin_date)+' – '+A.fmtKratko(u.checkout_date)+' · ':''}${kontaktHtml(u)}</small></div><div class="iq__act">${slanjeHtml(u,txt,'Ponuda za '+PROP.name)}</div></div>`
+  }).join('')
+}
+let PONUDA=null
+window.otvoriPonudu=id=>{
+  const u=UPITI.find(x=>x.id===id);if(!u)return
+  PONUDA=u
+  const n=A.razlikaDana(u.checkin_date,u.checkout_date)
+  const iz=u.iznos!=null?Number(u.iznos):cijenaBoravka(PROP,u.checkin_date,u.checkout_date)
+  document.getElementById('ponuda-sub').textContent=`${u.guest_name} · ${A.fmtKratko(u.checkin_date)} – ${A.fmtKratko(u.checkout_date)} · ${A.noci(n)}`
+  document.getElementById('po-iznos').value=iz?Math.round(iz):''
+  document.getElementById('po-kapara').value=PROP.kapara_posto??30
+  const pv=POVRATNI(),pop=document.getElementById('po-pop')
+  const kodOk=u.kod&&pv.kod&&String(u.kod).toUpperCase()===pv.kod&&pv.posto>0
+  pop.hidden=!kodOk;pop.textContent=kodOk?`Gost je upisao vaš kod ${pv.kod} — popust ${pv.posto} % je uračunat u ponudu.`:''
+  const jz=jezikIzMaila(u.guest_email);document.getElementById('po-jezik').value=['hr','en','de','it'].includes(jz)?jz:'en'
+  ponudaTekst()
+  document.getElementById('ponuda-dlg').showModal()
+}
+/* Ponuda na jeziku gosta (hr, en, de, it); pl/cs → engleski, kao poruka s javne stranice */
+const PO_TX={
+  hr:{poz:i=>`Dobar dan${i?', '+i:''}!`,slob:(t,n,o)=>`Termin ${t} (${n}) u objektu ${o} je slobodan.`,cij:(x,p,s)=>`Cijena boravka: ${x}${p?` (s ${p} % popusta za povratne goste, umjesto ${s})`:''}.`,bez:'Cijena boravka: [upišite iznos].',
+      kap:(k,p,d)=>`Za potvrdu rezervacije molim kaparu od ${k} (${p} %) do ${d}:`,opis:'Opis plaćanja: Kapara',prim:'Primatelj',ost:x=>`Ostatak (${x}) plaćate pri dolasku.`,link:'Kad kapara stigne, poslat ću vam link s uputama za dolazak.',kraj:'Lijep pozdrav,',noc:n=>A.noci(n)},
+  en:{poz:i=>`Hello${i?' '+i:''},`,slob:(t,n,o)=>`${o} is available for ${t} (${n}).`,cij:(x,p,s)=>`Price for the stay: ${x}${p?` (${p} % returning-guest discount, instead of ${s})`:''}.`,bez:'Price for the stay: [enter amount].',
+      kap:(k,p,d)=>`To confirm the booking, please pay a deposit of ${k} (${p} %) by ${d}:`,opis:'Payment reference: Deposit',prim:'Beneficiary',ost:x=>`The rest (${x}) is paid on arrival.`,link:'Once the deposit arrives, I will send you a link with arrival instructions.',kraj:'Kind regards,',noc:n=>n+' '+(n===1?'night':'nights')},
+  de:{poz:i=>`Hallo${i?' '+i:''},`,slob:(t,n,o)=>`${o} ist für ${t} (${n}) frei.`,cij:(x,p,s)=>`Preis für den Aufenthalt: ${x}${p?` (${p} % Rabatt für wiederkehrende Gäste, statt ${s})`:''}.`,bez:'Preis für den Aufenthalt: [Betrag eintragen].',
+      kap:(k,p,d)=>`Zur Bestätigung der Buchung bitte ich um eine Anzahlung von ${k} (${p} %) bis ${d}:`,opis:'Verwendungszweck: Anzahlung',prim:'Empfänger',ost:x=>`Den Rest (${x}) zahlen Sie bei Ankunft.`,link:'Sobald die Anzahlung eingeht, schicke ich Ihnen einen Link mit der Anreisebeschreibung.',kraj:'Viele Grüße,',noc:n=>n+' '+(n===1?'Nacht':'Nächte')},
+  it:{poz:i=>`Buongiorno${i?' '+i:''},`,slob:(t,n,o)=>`${o} è disponibile per ${t} (${n}).`,cij:(x,p,s)=>`Prezzo del soggiorno: ${x}${p?` (sconto ${p} % per ospiti abituali, invece di ${s})`:''}.`,bez:'Prezzo del soggiorno: [inserire importo].',
+      kap:(k,p,d)=>`Per confermare la prenotazione chiedo una caparra di ${k} (${p} %) entro il ${d}:`,opis:'Causale: Caparra',prim:'Beneficiario',ost:x=>`Il resto (${x}) si paga all'arrivo.`,link:"Appena arriva la caparra, le invio il link con le istruzioni per l'arrivo.",kraj:'Cordiali saluti,',noc:n=>n+' '+(n===1?'notte':'notti')}
+}
+window.ponudaTekst=()=>{
+  const u=PONUDA;if(!u)return
+  const j=PO_TX[document.getElementById('po-jezik').value]||PO_TX.hr
+  const n=A.razlikaDana(u.checkin_date,u.checkout_date)
+  const pv=POVRATNI(),kodOk=u.kod&&pv.kod&&String(u.kod).toUpperCase()===pv.kod&&pv.posto>0
+  let iznos=Number(document.getElementById('po-iznos').value)||0
+  const puni=iznos
+  if(kodOk)iznos=Math.round(iznos*(1-pv.posto/100))
+  const posto=Math.max(0,Math.min(100,Number(document.getElementById('po-kapara').value)||0))
+  const kap=Math.round(iznos*posto/100),rok=Math.max(1,Number(document.getElementById('po-rok').value)||3)
+  const doD=new Date();doD.setDate(doD.getDate()+rok)
+  const m=META(),iban=m.iban||'',potpis=PROP.host_name||m.full_name||'',prim=m.primatelj||potpis
+  const ime=(u.guest_name||'').split(' ')[0]
+  const termin=`${A.fmtKratko(u.checkin_date)} – ${A.fmtKratko(u.checkout_date)}`
+  const red=[j.poz(ime),'',j.slob(termin,j.noc(n),PROP.name),iznos?j.cij(formatEur(iznos),kodOk?pv.posto:0,formatEur(puni)):j.bez]
+  if(posto>0&&iznos){
+    red.push('',j.kap(formatEur(kap),posto,`${doD.getDate()}. ${doD.getMonth()+1}.`),
+      `IBAN: ${iban||'[IBAN]'}`,`${j.prim}: ${prim}`,`${j.opis} ${PROP.name} ${A.fmtKratko(u.checkin_date)}`,'',j.ost(formatEur(iznos-kap)))
+  }
+  red.push('',j.link,'',j.kraj+(potpis?'\n'+potpis:''))
+  const tx=red.join('\n')
+  document.getElementById('po-tx').value=tx
+  const up=document.getElementById('po-upoz');up.hidden=!!iban||!(posto>0);up.textContent=iban?'':'Još niste upisali IBAN — ponuda ga traži. Upišite ga u Cijene i sadržaji → Sezonske cijene i kapara.'
+  document.getElementById('po-akc').innerHTML=slanjeHtml(u,tx,'Ponuda — '+PROP.name)+`<button class="btn secondary small" type="button" onclick="navigator.clipboard?.writeText(document.getElementById('po-tx').value).then(()=>toast('Ponuda je kopirana'))">Kopiraj ponudu</button>`
+}
+document.getElementById('po-tx')?.addEventListener('input',e=>{const t=e.target.value;document.getElementById('po-akc').innerHTML=slanjeHtml(PONUDA,t,'Ponuda — '+PROP.name)+`<button class="btn secondary small" type="button" onclick="navigator.clipboard?.writeText(document.getElementById('po-tx').value).then(()=>toast('Ponuda je kopirana'))">Kopiraj ponudu</button>`})
+
 function renderUpiti(){
   const el=document.getElementById('iq-list');if(!el)return
   if(UPITI_OK===false){el.innerHTML=A.prazno('Upiti se još ne spremaju. Kad se u Supabaseu pokrene sql/add-inquiries.sql, gosti će s vaše javne stranice moći poslati upit s imenom i kontaktom, a vi ćete ga vidjeti ovdje.');return}
   const L=UPITI.filter(u=>IQ_FILTAR==='svi'||u.status===IQ_FILTAR||u.id===IQ_ISTAKNI)
   if(!L.length){el.innerHTML=A.prazno(IQ_FILTAR==='novi'?'Nema novih upita. Gost ga šalje s javne stranice nakon što odabere termin.':'Nema upita u ovom popisu.');return}
+  renderPovratni()
   el.innerHTML=L.map(u=>{
     const n=u.checkin_date&&u.checkout_date?A.razlikaDana(u.checkin_date,u.checkout_date):0
     const prije=Math.max(0,Math.round((Date.now()-new Date(u.created_at))/6e4))
@@ -3450,9 +3630,18 @@ function renderUpiti(){
     }
     let akcije=''
     const tok=u.booking_id&&UPITI_TOKENI[u.booking_id]
+    const iznos=u.iznos!=null?Number(u.iznos):(n?cijenaBoravka(PROP,u.checkin_date,u.checkout_date):null)
+    const pov=POVRATNI()
+    const kodOk=u.kod&&pov.kod&&String(u.kod).toUpperCase()===pov.kod
+    const izravno=imaMogucnost(planObjekta(),'izravno')
+    let dodatno=''
+    if(iznos)dodatno+=`<span class="an-tag">okvirno ${formatEur(iznos)}</span>`
+    if(u.kod)dodatno+=kodOk?`<span class="an-tag is-ok">kod ${A.esc(u.kod)} · −${pov.posto||0} %</span>`:`<span class="an-tag is-warn">kod ${A.esc(u.kod)} ne odgovara vašem</span>`
+    if(u.pristanak_ponude)dodatno+='<span class="an-tag">pristao/la na ponude</span>'
+    if(u.status==='novi'&&n&&izravno)akcije+=`<button class="btn small" type="button" onclick="otvoriPonudu('${u.id}')">Pošalji ponudu s kaparom</button>`
     if(u.status==='novi'){
       const odg=`Dobar dan${u.guest_name?', '+u.guest_name.split(' ')[0]:''}! Hvala na upitu za ${PROP.name}${n?` od ${A.fmtKratko(u.checkin_date)} do ${A.fmtKratko(u.checkout_date)}`:''}. `
-      akcije=`${n?`<button class="btn small" type="button" onclick="prihvatiUpit('${u.id}')">Prihvati i napravi link</button>`:`<button class="btn small" type="button" onclick="napraviLinkZa('','','upit bez datuma');document.getElementById('bk-name').value=${A.esc(JSON.stringify(u.guest_name))};provjeriBk()">Napravi link</button>`}
+      akcije+=`${n?`<button class="btn ${izravno?'secondary ':''}small" type="button" onclick="prihvatiUpit('${u.id}')">Prihvati i napravi link</button>`:`<button class="btn small" type="button" onclick="napraviLinkZa('','','upit bez datuma');document.getElementById('bk-name').value=${A.esc(JSON.stringify(u.guest_name))};provjeriBk()">Napravi link</button>`}
         <button class="btn secondary small" type="button" onclick="odbijUpit('${u.id}')">Odbij</button>
         ${u.guest_phone?`<a class="btn ghost small" href="${A.esc(waLink(u.guest_phone,odg))}" target="_blank" rel="noopener">Odgovori WhatsAppom</a>`:''}
         ${u.guest_email?`<a class="btn ghost small" href="${A.esc(mailLink(u.guest_email,'Upit za '+PROP.name,odg))}">Odgovori e-mailom</a>`:''}`
@@ -3468,6 +3657,7 @@ function renderUpiti(){
     return `<article class="iq${u.status==='novi'?' is-new':''}" id="iq-${u.id}">
       <div class="iq__h"><div><strong>${A.esc(u.guest_name)}</strong><span class="iq__t">${kad}</span></div><span class="an-tag${status[1]}">${status[0]}</span></div>
       <div class="iq__row">${termin} ${slobodno}</div>
+      ${dodatno?`<div class="iq__row">${dodatno}</div>`:''}
       <div class="iq__row">${kontaktHtml(u)}</div>
       ${u.message?`<p class="iq__msg">${A.esc(u.message)}</p>`:''}
       <div class="iq__act">${akcije}</div></article>`

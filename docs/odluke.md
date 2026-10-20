@@ -1504,3 +1504,30 @@ radom”). Na probnoj grani:
       Broj objekata se mijenja u dashboardu.
 - [ ] Postojeće plaćene pretplate (ako ih ima) ostaju na staroj cijeni dok se
       ne promijene; na testnom načinu nema pravih.
+
+---
+
+## 36. v5: izravne rezervacije bez naplate preko Odmorije (20. 10. 2026.)
+
+Odmoria **ne obrađuje plaćanje i nije posrednik** (odluka iz točke 32 i
+razgovora o 10 %): sve ispod samo slaže poruku koju domaćin sam pošalje.
+
+- **Sezonske cijene** (`properties.sezonske_cijene`, do 12): gost u upitu
+  vidi okvirni iznos; u bazi ga računa `cijena_boravka()` pri upisu upita
+  (gost ga ne može podmetnuti).
+- **Ponuda s kaparom** (Upiti → „Pošalji ponudu s kaparom”): iznos, kapara %,
+  rok, IBAN i primatelj domaćina, na jeziku gosta (hr/en/de/it, po domeni
+  e-maila). IBAN je u `user_metadata` domaćina, **ne** u javnom redu objekta.
+  Kad kapara stigne, domaćin klikne „Prihvati i napravi link”. Odmoria ne
+  prati uplatu i ne odgovara za nju.
+- **Povratni gosti**: gost u obrascu upita kvačicom pristane na ponude
+  (`inquiries.pristanak_ponude`); domaćin vidi popis i šalje kod za popust
+  (kod i postotak u `user_metadata.povratni`). Popust daje i plaća domaćin.
+- **Link s datumima** (kalendar → praznine): `/p/<slug>?od=&do=`.
+- Mogućnost `izravno` — Domaćin i Agencija (ne Free).
+
+**Otvoreno:**
+- [ ] Privatnost: kvačica „Domaćin mi smije slati ponude” — rečenica u
+      Privatnosti (svrha: ponude domaćina; voditelj obrade je domaćin; povlačenje
+      privole odgovorom domaćinu).
+- [ ] Uvjeti: rečenica da Odmoria ne sudjeluje u plaćanju kapare ni boravka.

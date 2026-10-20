@@ -12,6 +12,7 @@
 --    cistacica  — link za čistačicu
 --    promocija  — objave, letak, Facebook grupe
 --    email      — automatski e-mail gostu
+--    izravno    — sezonske cijene, ponuda s kaparom, povratni gosti (add-direct-bookings.sql)
 --
 --  Free nema ništa od toga: šifra i Wi-Fi s otključavanjem, kuća, pravila,
 --  odlazak, domaćin, javna stranica s kalendarom i upitima. Broj objekata,

@@ -44,7 +44,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 ├── p.html                  # Javna stranica objekta (?slug=xxx) — AKTIVNA, **redizajn v2 iz Figme** (`odmoria.css`), teme se NE primjenjuju
 ├── h.html                  # Privatni gostinski hub (?token=xxx) — AKTIVNA, **redizajn v2** (`odmoria.css`), podstranice preko #adrese; /h/demo = primjer
 ├── c.html                  # Raspored za čistačicu (/c/<token>) — dolasci i odlasci, bez šifri i imena
-├── sw.js                   # service worker vodiča (opseg /h/) — rad bez interneta (VERZIJA odmoria-vodic-11)
+├── sw.js                   # service worker vodiča (opseg /h/) — rad bez interneta (VERZIJA odmoria-vodic-12)
 ├── push-sw.js              # service worker obavijesti domaćina (opseg /dashboard) — samo push i klik, bez predmemorije
 ├── manifest-domacin.webmanifest  # dashboard kao aplikacija na početnom zaslonu (iPhone obavijesti to traže)
 ├── dashboard.html          # Glavni host dashboard — AKTIVNA, **redizajn v2** (vlastiti CSS, ista imena tokena), navigacija po grupama
@@ -126,6 +126,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
     ├── add-push.sql                     # obavijesti na mobitel: push_pretplate, push_prijava/odjava/proba, VAPID u Vaultu, okidači → /api/obavijest
     ├── add-arrival-steps.sql            # sections.ulazak_koraci (jsonb, ≤ 12): „Kako ući” po koracima sa slikama, samo vodič
     ├── add-guest-arrived.sql            # bookings.usao_at + gost_usao(token): „Ušli smo” u vodiču → push domaćinu (jednom)
+    ├── add-direct-bookings.sql          # v5: sezonske_cijene, kapara_posto, inquiries.iznos (računa baza: cijena_boravka), kod, pristanak_ponude; mogućnost „izravno”
     ├── add-per-object-plans.sql         # v5: cijena po objektu (po_objektu, min_properties, subscriptions.kolicina), plan_limit, moji_objekti_limit()
     ├── add-plan-features.sql            # plans.mogucnosti (koraci, preporuke, ocjena, evisitor, stilovi, cistacica, promocija, email) + mogucnosti_vodica(token, slug)
     └── fix-missing-columns-and-storage.sql # ALTER TABLE dopune (photo_urls, ical_*, beds/bathrooms/size_m2) + storage bucket policy
@@ -687,6 +688,16 @@ Dashboard **ne učitava `odmoria.css`** — ima vlastiti potpun CSS s istim vrij
   polja (`label[for]`), radnje, objekti, gosti (`AN.bookings`), upiti, preporuke,
   pravila, pitanja i katalog sadržaja; `tbPokazi(sel)` skrolne i bljesne
   (`.tb-bljesak`).
+- **Izravne rezervacije v5** (20. 10., odluke 36, `sql/add-direct-bookings.sql`):
+  `cijene.js` (`cijenaNoci`, `cijenaBoravka`, `najnizaCijena`, `uMD`/`izMD`) =
+  ista pravila kao `cijena_noci()`/`cijena_boravka()` u bazi — mijenjati
+  zajedno. p.html: „od … / noć” = najniža cijena, iznos odabranog termina po
+  sezonama, obrazac upita ima `#iq-kod` i `#iq-ponude` (bez stupaca upis se
+  ponovi bez njih). Dashboard: Cijene → `#izravno-card` (`SEZ`,
+  `saveIzravno()`; IBAN/primatelj u `user_metadata`), Upiti → oznake iznos /
+  kod / pristanak i `otvoriPonudu()` → `#ponuda-dlg` (`PO_TX` hr/en/de/it,
+  jezik po `jezikIzMaila`), `#povratni-card` (`POVRATNI()`,
+  `savePovratni()`, `renderPovratni()`). Sve pod `data-mog="izravno"`.
 - **Kalendar v5** (20. 10.): `.day.busy.rez` tinta (izravno), `.day.ical`
   sivo + značka `.plt` B/A na početku trake, ručno = svijetlo šrafirano,
   **praznine** 1–3 noći između boravaka (`racunajPraznine()` →
