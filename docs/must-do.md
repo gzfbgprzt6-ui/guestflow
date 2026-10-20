@@ -51,6 +51,11 @@ Vercel su postavljeni i provjereni.
 - [ ] Privatnost: dodati rečenicu da vodič na gostov klik „Ušli smo” javlja
       domaćinu vrijeme ulaska (vidi `docs/odluke.md`, točka 33)
 
+- [x] **SQL paket v6 pokrenut 20. 10.** (konektorom, uz potvrdu vlasnika): `add-ical-sukobi.sql`
+      (sinkronizacija svakih 10 min, dvostruka rezervacija, stanje uvoza), `add-evisitor.sql`,
+      `add-cleaner-checklist.sql`
+- [ ] **eVisitor** ostaje isključen (`EVISITOR` nije postavljen u Vercelu) dok jedan
+      domaćin s eVisitor računom ne prijavi prvog gosta — vidi `docs/odluke.md`, točka 40
 - [ ] **Isprobati na produkciji**: Osnovno (vrsta, kapacitet, stil), Dolazak
       (koraci, parking), Sadržaji, Prijevodi → „Prevedi besplatno”, kalendar 2
       mjeseca, link čistačice → „Potvrđujem” (vidi se u 🔔), vodič rezervacije

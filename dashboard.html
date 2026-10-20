@@ -801,6 +801,9 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
 .dirty-dlg { width: min(440px, calc(100vw - 32px)); padding: 24px; border: 0; border-radius: var(--radius-lg); background: var(--paper); color: var(--ink); box-shadow: 0 24px 64px rgba(14,34,41,.28); }
 .dirty-dlg.gosti-dlg { width: min(980px, calc(100vw - 32px)); max-height: calc(100vh - 48px); overflow: auto; }
 .gosti-dlg h2 { font: 700 22px/1.3 var(--font-ui); letter-spacing: -.02em; }
+.ev-rez { list-style: none; display: grid; gap: 4px; margin: 0; padding: 0; font-size: 14px; }
+.ev-rez li.ok { color: var(--ink); }
+.ev-rez li.ne { color: var(--danger); }
 .dirty-dlg::backdrop { background: rgba(14,34,41,.45); }
 .dirty-dlg h2 { font: 800 22px/1.25 var(--font-ui); margin: 0 0 8px; }
 .dirty-dlg p { color: var(--muted); margin: 0 0 20px; }
@@ -1260,6 +1263,9 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
 .cist-jav { margin-top: 16px; }
 .cist-r { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; padding: 8px 0; border-top: 1px solid #F0F2F2; font-size: 13.5px; }
 .cist-r small { color: var(--ink); }
+.cist-f { display: flex; gap: 4px; flex-wrap: wrap; }
+.cist-f img { width: 44px; height: 44px; border-radius: 8px; object-fit: cover; display: block; }
+.cist-pop { margin-top: 16px; }
 .cist-r em { margin-left: auto; color: var(--muted); font-style: normal; font-size: 12px; }
 
 /* objave: Objavi + Facebook grupe */
@@ -1325,16 +1331,26 @@ section.v5-prazno{display:none!important}
 
 /* v5: izravne rezervacije */
 .sez-lista { display: grid; gap: 8px; margin-bottom: 12px; }
+.cij-pr:empty { display: none; }
+.cij-pr:has(> .cij-pr__vrati:only-child) { background: none; padding: 0; }
+.cij-pr { display: grid; gap: 8px; margin-bottom: 16px; padding: 14px; border-radius: var(--radius); background: var(--paper-2); }
+.cij-pr h3 { font: 700 15px/1.3 var(--font-ui); }
+.cij-pr__i { display: flex; gap: 12px; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; padding: 10px 0; border-top: 1px solid var(--line); }
+.cij-pr__i > div:first-child { flex: 1 1 280px; min-width: 0; }
+.cij-pr__i p { margin: 2px 0 0; font-size: 14px; color: var(--muted); }
+.cij-pr__b { display: flex; gap: 6px; flex-wrap: wrap; }
 .sez { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)) auto; gap: 8px; align-items: end; }
 .sez-op { grid-column: 1 / -1; color: var(--muted); font-size: 12.5px; margin-top: -2px; }
 .sez label span { display: block; margin-bottom: 4px; color: var(--muted); font: 600 12.5px/1.2 var(--font-ui); }
+.sez label { min-width: 0; }
+.sez .input { min-width: 0; width: 100%; }
 .ponuda-dlg { width: min(620px, calc(100vw - 32px)); max-height: calc(100vh - 48px); overflow: auto; }
 .ponuda-dlg h2 { font: 700 22px/1.3 var(--font-ui); letter-spacing: -.02em; }
 .po-akc { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
 .an-tag.is-ok { background: var(--sunce-meko); color: var(--ink); }
 #pov-lista .an-row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; padding: 12px 0; border-top: 1px solid var(--line); }
 #pov-lista .an-row small { display: block; color: var(--muted); }
-@media (max-width: 600px) { .sez { grid-template-columns: 1fr 1fr; } .sez label:nth-child(3) { grid-column: 1 / 2; } }
+@media (max-width: 600px) { .sez { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .sez label:nth-child(3) { grid-column: 1 / 2; } }
 
 /* v5 agencija */
 .ag-danas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
@@ -2105,6 +2121,7 @@ section.v5-prazno{display:none!important}
           <!-- v5: izravne rezervacije (sql/add-direct-bookings.sql) — Odmoria ne obrađuje plaćanje -->
           <div class="card" id="izravno-card" data-mog="izravno">
             <div class="card-head"><div class="card-title-wrap"><span class="card-number">€</span><div><h2>Sezonske cijene i kapara</h2><p>Gost u upitu odmah vidi okvirni iznos, a vi iz upita šaljete ponudu s kaparom na svoj račun.</p></div></div><span class="card-hint">Novac ide izravno vama — Odmoria ga ne dira.</span></div>
+            <div id="cij-prijedlozi" class="cij-pr" aria-live="polite"></div>
             <div id="sez-lista" class="sez-lista"></div>
             <button class="btn secondary small" type="button" onclick="dodajSezonu()">+ Dodaj sezonu</button>
             <div class="form-grid" style="margin-top:18px">
@@ -2528,8 +2545,9 @@ import * as A from'./analitika.js'
 import * as O from'./objave.js'
 import * as JZ from'./jezici.js'
 import{kvacica}from'./pokret.js'
-import{cijenaBoravka,uMD,izMD}from'./cijene.js'
+import{cijenaBoravka,uMD,izMD,prijedloziCijena}from'./cijene.js'
 import{SADRZAJI,SKUPINE}from'./sadrzaji.js'
+import * as DR from'./drzave.js'
 import * as OSMM from'./mjesta-osm.js'
 import{predloziAdresu}from'./adresa-predlozi.js'
 import * as STIL from'./stilovi.js'
@@ -3476,6 +3494,13 @@ async function renderOverviewOps(){
   try{const r=await sb.from('cleaning_status').select('*').eq('property_id',PROP.id).gte('dan',A.plusDana(t,-2));if(!r.error)CIS=r.data||[]}catch{}
   try{const r=await sb.from('kalendar_promjene').select('*').eq('property_id',PROP.id).eq('vidjeno',false).order('created_at',{ascending:false}).limit(20);if(!r.error)PROM=r.data||[]}catch{}
   CIS_RED=CIS
+  // moguća dvostruka rezervacija (sql/add-ical-sukobi.sql)
+  let SUK=[];try{const r=await sb.from('kalendar_sukobi').select('*').eq('property_id',PROP.id).eq('vidjeno',false).gte('do_',t).order('od').limit(20);if(!r.error)SUK=r.data||[]}catch{}
+  SUK.forEach(x=>{const iz=A.IZVOR[x.izvor]||x.izvor,s=x.s_cim==='rezervacija'?'vašom izravnom rezervacijom':(A.IZVOR[x.s_cim]||x.s_cim)
+    R.push({r:'hitno',n:`Moguća dvostruka rezervacija: ${A.fmtSDanom(x.od)} – ${A.fmtKratko(x.do_)}`,tx:`${iz} je prodao noći koje su već zauzete ${x.s_cim==='rezervacija'?s:'na '+s}. Provjerite na platformi; ako je to isti gost, zanemarite.`,btn:'U redu',on:`sukobVidjen('${x.id}')`})})
+  // na platformi je, a platforma ne povlači naš izvoz → izravne rezervacije tamo ostaju otvorene
+  await ucitajUvoz()
+  nePovlaci().forEach(ime=>R.push({r:'vazno',n:`${ime} ne uvozi vaš kalendar`,tx:'Izravne rezervacije i ručno zatvoreni dani tamo ostaju otvoreni. Zalijepite naš link za izvoz u platformu (Gosti → Booking i Airbnb) ili ih zatvorite ručno.',btn:'Booking i Airbnb',on:"nav('ical',document.querySelector('.panelnav [data-panel=ical]'))"}))
   CIS.sort((a,b)=>a.dan<b.dan?-1:1).forEach(c=>{
     const kad=`${A.fmtSDanom(c.dan)} (${relDan(c.dan)})`
     if(c.stanje==='ne_mogu'&&c.dan>=t)R.push({r:'hitno',n:`Čistačica ne može doći — ${kad}`,tx:c.napomena?`„${c.napomena}”`:'Dogovorite zamjenu ili drugi termin.',btn:'Čistačica',on:"nav('links',document.querySelector('.panelnav [data-panel=links]'))"})
@@ -3561,6 +3586,9 @@ function ovTablicaNacrtaj(){
 document.getElementById('ov-tbl')?.addEventListener('click',e=>{const b=e.target.closest('button[data-id]');if(!b)return;const sel=document.getElementById('prop-sel');sel.value=b.dataset.id;window.onPropChange()})
 
 
+/* preklapanje pregledano (kalendar_sukobi.vidjeno) */
+window.sukobVidjen=async id=>{try{await sb.from('kalendar_sukobi').update({vidjeno:true}).eq('id',id)}catch{}
+  OBAV=(OBAV||[]).filter(x=>!String(x.on).includes(id));tbObavijesti();if(PROP)renderOverviewOps()}
 /* promjena s platforme pregledana (kalendar_promjene.vidjeno) */
 window.promVidjeno=async id=>{try{await sb.from('kalendar_promjene').update({vidjeno:true}).eq('id',id)}catch{}
   OBAV=(OBAV||[]).filter(x=>!String(x.on).includes(id));tbObavijesti();if(PROP)renderOverviewOps()}
@@ -3621,7 +3649,29 @@ function nacrtajSezone(){
       <small class="sez-op">${x.od&&x.do?`Svake godine ${esc(izMD(x.od))} – ${esc(izMD(x.do))}`:'Odaberite datume u kalendaru'}</small></div>`).join('')
     :'<p class="helper">Bez sezona vrijedi cijena po noćenju iznad. Dodajte npr. 1. 7. – 31. 8. po višoj cijeni — sezona vrijedi svake godine.</p>'
   el.querySelectorAll('input[type=date]').forEach(i=>i.addEventListener('change',()=>{citajSezone();nacrtajSezone()}))
+  nacrtajPrijedloge()
 }
+/* Prijedlozi cijena po pravilima (cijene.js) — iz kalendara i trenutnih sezona.
+   „Primijeni” samo popuni sezone ispod; spremanje je i dalje domaćinovo. */
+let CIJ_PR=[]
+const prSkriveni=()=>{try{return JSON.parse(localStorage.getItem('odm-cij-skriveno:'+PROP?.id)||'[]')}catch{return[]}}
+function nacrtajPrijedloge(){
+  const el=document.getElementById('cij-prijedlozi');if(!el||!PROP)return
+  const zauz=new Set((AVAIL_ROWS||[]).filter(r=>r.is_booked!==false).map(r=>r.date))
+  const skr=prSkriveni()
+  const svi=prijedloziCijena({...PROP,sezonske_cijene:SEZ},zauz,A.danas())
+  CIJ_PR=svi.filter(x=>!skr.includes(x.id))
+  const nSkr=svi.length-CIJ_PR.length
+  const vrati=nSkr?`<button class="btn ghost small" type="button" onclick="prikaziSkrivene()">Prikaži skrivene prijedloge (${nSkr})</button>`:''
+  el.innerHTML=!CIJ_PR.length?(vrati?`<div class="cij-pr__vrati">${vrati}</div>`:''):`<h3>Prijedlozi cijena</h3>${CIJ_PR.map((x,i)=>`<div class="cij-pr__i"><div><b>${esc(x.naslov)}</b><p>${esc(x.tekst)}</p></div>
+    <div class="cij-pr__b">${x.sezone?`<button class="btn small" type="button" onclick="primijeniPrijedlog(${i})">Primijeni</button>`:''}${x.objava?`<button class="btn secondary small" type="button" onclick="otvoriObjave('${x.objava.od}','${x.objava.do}')">Napravi objavu</button>`:''}<button class="btn ghost small" type="button" onclick="sakrijPrijedlog('${x.id}')" aria-label="Sakrij prijedlog">Sakrij</button></div></div>`).join('')}
+    <p class="helper">Prijedlozi gledaju samo vaš kalendar i cijene — nijedna cijena se ne mijenja dok ne spremite.</p>${vrati}`
+}
+window.prikaziSkrivene=()=>{try{localStorage.removeItem('odm-cij-skriveno:'+PROP.id)}catch{};nacrtajPrijedloge()}
+window.primijeniPrijedlog=i=>{const x=CIJ_PR[i];if(!x?.sezone)return
+  SEZ=x.sezone.slice(0,12).map(s=>({...s}));nacrtajSezone()
+  window.markDirty&&markDirty(document.getElementById('section-pricing'));toast('Sezone su popunjene — pregledajte ih i spremite')}
+window.sakrijPrijedlog=id=>{try{localStorage.setItem('odm-cij-skriveno:'+PROP.id,JSON.stringify([...prSkriveni(),id].slice(-30)))}catch{};nacrtajPrijedloge()}
 function citajSezone(){
   const md=v=>/^\d{4}-\d{2}-\d{2}$/.test(v||'')?v.slice(5):''
   SEZ=[...document.querySelectorAll('#sez-lista .sez')].map(r=>({od:md(r.querySelector('[data-sz=od]').value),do:md(r.querySelector('[data-sz=do]').value),cijena:Number(r.querySelector('[data-sz=cijena]').value)||0}))
@@ -4552,6 +4602,7 @@ async function loadAvail(){
   const{data}=await sb.from('availability').select('*').eq('property_id',PROP.id)
   AVAIL_ROWS=data||[]
   AVAIL_MAP=Object.fromEntries(AVAIL_ROWS.map(r=>[r.date,r]))
+  nacrtajPrijedloge()
   if(AVAIL_ROWS.some(r=>r.booking_id)){
     const{data:bk}=await sb.from('bookings').select('id,guest_name').eq('property_id',PROP.id)
     CAL_BK=Object.fromEntries((bk||[]).map(b=>[b.id,String(b.guest_name||'Gost').trim().split(/\s+/)[0]]))
@@ -4899,14 +4950,34 @@ async function loadIcal(){
 // ── IZVOZ KALENDARA (sql/add-ical-export.sql, api/kalendar.js) ──
 // Jedan token po objektu; ?za=booking / ?za=airbnb izostavlja dane koji su
 // došli s tog portala. „Novi link” zamijeni token (stari prestaje raditi).
-let IZVOZ=null
+let IZVOZ=null,UVOZ={id:null,red:null}
+// kad je platforma zadnji put povukla naš izvoz (sql/add-ical-sukobi.sql); bez stupaca null
+async function ucitajUvoz(){
+  if(!PROP)return
+  try{const{data,error}=await sb.from('calendar_exports').select('dohvat_booking,dohvat_airbnb').eq('property_id',PROP.id).maybeSingle()
+    UVOZ={id:PROP.id,red:error?null:(data||{}),greska:!!error}}catch{UVOZ={id:PROP.id,red:null,greska:true}}
+}
+// platforme na kojima domaćin jest (iCal uvoz upisan), a koje naš kalendar ne povlače (48 h)
+function nePovlaci(){
+  if(!PROP||UVOZ.id!==PROP.id||UVOZ.greska)return[]
+  const star=k=>!UVOZ.red?.[k]||Date.now()-Date.parse(UVOZ.red[k])>48*3600e3
+  return [[PROP.ical_booking_url,'dohvat_booking','Booking.com'],[PROP.ical_airbnb_url,'dohvat_airbnb','Airbnb']]
+    .filter(([u,k])=>(u||'').trim()&&star(k)).map(x=>x[2])
+}
+function prijeKoliko(iso){
+  const m=Math.round((Date.now()-Date.parse(iso))/60000)
+  return m<60?`prije ${Math.max(1,m)} min`:m<48*60?`prije ${Math.round(m/60)} h`:`prije ${Math.round(m/1440)} dana`
+}
 async function ucitajIzvoz(){
   const el=document.getElementById('izvoz-body');if(!el||!PROP)return
   const{data,error}=await sb.from('calendar_exports').select('*').eq('property_id',PROP.id).maybeSingle()
   if(error){el.innerHTML='<p class="helper">Izvoz kalendara još nije uključen — u Supabaseu treba pokrenuti <code>sql/add-ical-export.sql</code>.</p>';return}
   IZVOZ=data||null
   if(!IZVOZ){el.innerHTML='<button class="btn" type="button" onclick="napraviIzvoz()">Napravi link za Booking i Airbnb</button>';return}
-  const red=(za,ime,mark,gdje)=>`<div class="sync-row"><div class="sync-row-top"><span class="sync-mark ${mark}">${mark.toUpperCase()}</span><span class="sync-name">Za ${ime}</span></div>
+  await ucitajUvoz()
+  const dohvat=za=>{if(UVOZ.greska)return'';const v=UVOZ.red?.['dohvat_'+za]
+    return v?`<span class="sync-pill ${Date.now()-Date.parse(v)>48*3600e3?'off':'on'}">Povukao ${prijeKoliko(v)}</span>`:'<span class="sync-pill off">Još nije povukao</span>'}
+  const red=(za,ime,mark,gdje)=>`<div class="sync-row"><div class="sync-row-top"><span class="sync-mark ${mark}">${mark.toUpperCase()}</span><span class="sync-name">Za ${ime}</span>${dohvat(za)}</div>
     <div class="link-url"><span>${esc(prettyUrl(calendarUrl(IZVOZ.token,za)))}</span><button type="button" onclick="kopirajIzvoz('${za}')">Kopiraj</button></div>
     <p class="helper" style="margin:6px 0 0">${gdje}</p></div>`
   el.innerHTML=`<div class="sync-list">${red('booking','Booking.com','b','Booking Extranet → Cijene i dostupnost → Sinkronizacija kalendara → Uvezi kalendar.')}${red('airbnb','Airbnb','a','Airbnb → Kalendar → Dostupnost → Poveži kalendare → Uvezi kalendar.')}</div>
@@ -5038,13 +5109,20 @@ async function napraviRezervaciju({name,note,ci,co,email,lang}){
     ({data,error}=await sb.from('bookings').insert(red).select().single());bezMaila=true
   }
   if(error)return{error:error.message}
-  const nights=datesBetween(ci,co).slice(0,-1)
+  // noći koje kalendar već drži (Booking/Airbnb gost, ručno) se ne diraju — inače bi
+  // upis pao na jedinstvenom (property_id, date), a noć s platforme mora ostati njena
+  const drzi=new Set((ap.id===PROP?.id?AVAIL_ROWS:[]).map(r=>r.date))
+  const nights=datesBetween(ci,co).slice(0,-1).filter(d=>!drzi.has(d))
   let upozorenje=''
   if(nights.length){
     const{error:availErr}=await sb.from('availability').upsert(nights.map(d=>({property_id:ap.id,date:d,is_booked:true,source:'manual',booking_id:data.id})))
     if(availErr)upozorenje='Rezervacija je spremljena, ali kalendar nije ažuriran: '+availErr.message
   }
   if(bezMaila&&!upozorenje)upozorenje='Rezervacija je spremljena, ali automatski e-mail gostu još nije uključen (sql/add-guest-emails.sql).'
+  // nova izravna rezervacija, a platforma ne uvozi naš kalendar → neka domaćin zatvori ručno
+  if(nights.length&&!upozorenje&&ap.id===PROP?.id){await ucitajUvoz();const np=nePovlaci()
+    const na={'Booking.com':'Bookingu','Airbnb':'Airbnbu'}
+    if(np.length)upozorenje=`Rezervacija je spremljena. Zatvorite ${A.fmtKratko(ci)} – ${A.fmtKratko(co)} i na ${np.map(x=>na[x]).join(' i ')} — tamo se kalendar ne osvježava sam.`}
   return{booking:data,url:bookingUrl(data.token),upozorenje}
 }
 /* Jezik poruka gostu po domeni e-maila (domaćin ga može promijeniti) */
@@ -5750,13 +5828,36 @@ async function ucitajCistacicu(){
   el.innerHTML=`<div class="link-url" style="margin-bottom:12px"><span>${esc(prettyUrl(url))}</span><button type="button" onclick="kopirajCistacicu()">Kopiraj</button></div>
     <div class="form-grid" style="margin-bottom:12px"><div class="field"><label for="cist-tel">Broj čistačice <span class="optional">za WhatsApp, pamti se na ovom uređaju</span></label><input class="input" id="cist-tel" type="tel" placeholder="+385 91 123 4567" value="${esc(tel)}" autocomplete="off"></div></div>
     <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn small" type="button" onclick="posaljiCistacici('wa')">Pošalji WhatsAppom</button><button class="btn secondary small" type="button" onclick="posaljiCistacici('mail')">E-mailom</button><a class="btn secondary small" href="${esc(url)}" target="_blank" rel="noopener">Otvori</a><button class="btn ghost small" type="button" onclick="noviCistacica()">Novi link (stari prestaje raditi)</button></div>
+    <div class="cist-pop" id="cist-pop"></div>
     <div class="cist-jav" id="cist-jav"></div>`
+  nacrtajPopisCist()
   // javljanja čistačice (sql/add-cleaner-status.sql) — bez tablice samo napomena
   const r=await sb.from('cleaning_status').select('*').eq('property_id',PROP.id).gte('dan',A.plusDana(A.danas(),-7)).order('dan')
   const j=document.getElementById('cist-jav');if(!j)return
   if(r.error){j.innerHTML='<p class="helper">Da vam čistačica može javiti „potvrđujem / dolazim u… / gotovo / ne mogu”, u Supabaseu pokrenite <code>sql/add-cleaner-status.sql</code>.</p>';return}
   const OP={potvrdeno:['Potvrdila','is-ok'],dolazim:['Dolazi','is-ok'],gotovo:['Gotovo','is-ok'],ne_mogu:['Ne može doći','is-ne']}
-  j.innerHTML=`<h3 class="pr-gr">Javljanja čistačice</h3>`+((r.data||[]).length?(r.data||[]).map(c=>`<div class="cist-r"><b>${A.fmtSDanom(c.dan)}</b><span class="ov-st ${OP[c.stanje][1]==='is-ne'?'is-warn':'is-ok'}">${OP[c.stanje][0]}${c.vrijeme?' u '+esc(c.vrijeme):''}</span>${c.napomena?`<small>„${esc(c.napomena)}”</small>`:''}<em>${new Date(c.updated_at).toLocaleString('hr-HR',{day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit'})}</em></div>`).join(''):'<p class="helper">Još nema javljanja. Čistačica na svom linku uz svako čišćenje može potvrditi, javiti vrijeme dolaska, „gotovo” ili da ne može doći.</p>')
+  const pop=Array.isArray(CIST.popis)?CIST.popis:[]
+  const kvTxt=c=>pop.length&&Array.isArray(c.kvacice)?`<span class="ov-st ${c.kvacice.length===pop.length?'is-ok':''}">Popis ${c.kvacice.length} / ${pop.length}</span>`:''
+  const foto=c=>Array.isArray(c.fotke)&&c.fotke.length?`<span class="cist-f">${c.fotke.map(u=>`<a href="${esc(u)}" target="_blank" rel="noopener"><img src="${esc(String(u).replace('/image/upload/','/image/upload/w_120,h_120,c_fill,q_auto/'))}" alt="Fotografija čistačice" loading="lazy"></a>`).join('')}</span>`:''
+  j.innerHTML=`<h3 class="pr-gr">Javljanja čistačice</h3>`+((r.data||[]).length?(r.data||[]).map(c=>`<div class="cist-r"><b>${A.fmtSDanom(c.dan)}</b><span class="ov-st ${OP[c.stanje][1]==='is-ne'?'is-warn':'is-ok'}">${OP[c.stanje][0]}${c.vrijeme?' u '+esc(c.vrijeme):''}</span>${kvTxt(c)}${c.napomena?`<small>„${esc(c.napomena)}”</small>`:''}${foto(c)}<em>${new Date(c.updated_at).toLocaleString('hr-HR',{day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit'})}</em></div>`).join(''):'<p class="helper">Još nema javljanja. Čistačica na svom linku uz svako čišćenje može potvrditi, javiti vrijeme dolaska, „gotovo” ili da ne može doći.</p>')
+}
+/* Popis zadataka za čistačicu (sql/add-cleaner-checklist.sql → cleaner_links.popis) */
+const POPIS_PREDLOZAK=['Promijeniti posteljinu i ručnike','Očistiti kupaonicu i WC','Očistiti kuhinju, hladnjak i sudoper','Isprazniti smeće i staviti nove vrećice','Usisati i oprati podove','Provjeriti terasu i namještaj','Nadopuniti toaletni papir, sapun i kavu','Provjeriti štete i zaboravljene stvari']
+function nacrtajPopisCist(){
+  const el=document.getElementById('cist-pop');if(!el||!CIST)return
+  if(!('popis' in CIST)){el.innerHTML='<p class="helper">Popis zadataka s fotografijama uključuje se s <code>sql/add-cleaner-checklist.sql</code>.</p>';return}
+  const p=Array.isArray(CIST.popis)?CIST.popis:[]
+  el.innerHTML=`<h3 class="pr-gr">Popis za čišćenje</h3>
+    <p class="helper" style="margin-bottom:8px">Čistačica uz svako čišćenje kvači stavke i može dodati fotografije — vi to vidite ispod, u javljanjima. Jedna stavka po retku, najviše 30.</p>
+    <textarea class="input" id="cist-popis" rows="6" data-bez-spremanja placeholder="Promijeniti posteljinu i ručnike">${esc(p.join('\n'))}</textarea>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;margin-top:8px">${p.length?'':'<button class="btn ghost small" type="button" onclick="popisPredlozak()">Uzmi uobičajeni popis</button>'}<button class="btn secondary small" type="button" onclick="spremiPopisCist()">Spremi popis</button></div>`
+}
+window.popisPredlozak=()=>{const t=document.getElementById('cist-popis');if(t){t.value=POPIS_PREDLOZAK.join('\n');t.focus()}}
+window.spremiPopisCist=async()=>{
+  const popis=(document.getElementById('cist-popis')?.value||'').split('\n').map(x=>x.trim().slice(0,120)).filter(Boolean).slice(0,30)
+  const{error}=await sb.from('cleaner_links').update({popis}).eq('id',CIST.id)
+  if(error){toast(/popis|column/i.test(error.message)?'Popis još nije uključen — pokrenite sql/add-cleaner-checklist.sql.':'Greška: '+error.message);return}
+  CIST.popis=popis;await ucitajCistacicu();toast(popis.length?`Popis je spremljen (${popis.length})`:'Popis je uklonjen')
 }
 window.napraviCistacicu=async()=>{
   if(!PROP)return
@@ -5970,6 +6071,8 @@ async function ucitajPrijave(){
 }
 const POLJA_GOSTA=[['ime','Ime'],['prezime','Prezime'],['spol','Spol'],['datum_rodjenja','Datum rođenja'],['drzavljanstvo','Državljanstvo'],
   ['drzava_prebivalista','Država prebivališta'],['grad_prebivalista','Grad prebivališta'],['vrsta_isprave','Vrsta isprave'],['broj_isprave','Broj isprave']]
+// vrijednost polja za prikaz: država kao ime (vodič sprema dvoslovni kod), datum po hrvatski
+const prikazPolja=(k,v)=>!v?'':k==='datum_rodjenja'?new Date(v+'T12:00:00').toLocaleDateString('hr-HR'):(k==='drzavljanstvo'||k==='drzava_prebivalista')&&/^[A-Z]{2}$/.test(v)?DR.ime(v,'hr'):v
 function dobNaDan(rodj,dan){if(!rodj)return null;const a=new Date(rodj+'T12:00:00'),b=new Date(dan+'T12:00:00');let g=b.getFullYear()-a.getFullYear();if(b<new Date(b.getFullYear(),a.getMonth(),a.getDate(),12))g--;return g}
 /* Pristojba po noćenju: djeca do 12 godina ne plaćaju, od 12 do 18 plaćaju pola.
    Paušal: iznos je godišnji po krevetu i ne ovisi o boravku. */
@@ -5992,9 +6095,10 @@ window.otvoriGoste=id=>{
   document.getElementById('gosti-sub').textContent=`${fmtD(bk.checkin_date)} – ${fmtD(bk.checkout_date)} · prijaviti u eVisitor u roku 24 sata od dolaska`
   const p=pristojba(bk,osobe)
   document.getElementById('gosti-body').innerHTML=(osobe.length
-    ?`<div class="an-tblwrap" style="margin-top:12px"><table class="an-tbl"><thead><tr>${POLJA_GOSTA.map(([,l])=>`<th scope="col">${l}</th>`).join('')}</tr></thead><tbody>${osobe.map(o=>`<tr>${POLJA_GOSTA.map(([k])=>`<td>${esc(k==='datum_rodjenja'&&o[k]?new Date(o[k]+'T12:00:00').toLocaleDateString('hr-HR'):o[k]||'—')}</td>`).join('')}</tr>`).join('')}</tbody></table></div>
+    ?`<div class="an-tblwrap" style="margin-top:12px"><table class="an-tbl"><thead><tr>${POLJA_GOSTA.map(([,l])=>`<th scope="col">${l}</th>`).join('')}</tr></thead><tbody>${osobe.map(o=>`<tr>${POLJA_GOSTA.map(([k])=>`<td>${esc(prikazPolja(k,o[k])||'—')}</td>`).join('')}</tr>`).join('')}</tbody></table></div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px"><button class="btn small" type="button" onclick="kopirajGoste('${id}')">Kopiraj kao tekst</button><button class="btn secondary small" type="button" onclick="csvGosti('${id}')">Preuzmi CSV</button><button class="btn ghost small" type="button" onclick="obrisiPrijavu('${id}')">Obriši podatke</button></div>
-      <p class="helper" style="margin-top:8px">Zadnje ažurirao gost: ${new Date(g.updated_at||g.created_at).toLocaleString('hr-HR')}. Podaci se brišu sami 30 dana nakon odlaska.</p>`
+      <p class="helper" style="margin-top:8px">Zadnje ažurirao gost: ${new Date(g.updated_at||g.created_at).toLocaleString('hr-HR')}. Podaci se brišu sami 30 dana nakon odlaska.</p>
+      <div id="ev-blok"></div>`
     :`<p class="helper" style="margin-top:12px">Gost još nije upisao podatke. U vodiču ih upisuje pod „Prijava boravka” — link ste mu već poslali.</p>`)
     +`<div class="card" style="margin:16px 0 0;background:var(--cream)"><h3 style="font:700 16px/1.3 var(--font-ui);margin-bottom:8px">Boravišna pristojba</h3>
       ${p?`<p style="margin-bottom:10px"><b>${esc(p.txt)}</b></p>`:''}
@@ -6003,6 +6107,71 @@ window.otvoriGoste=id=>{
       <div style="display:flex;justify-content:flex-end;margin-top:10px"><button class="btn secondary small" type="button" onclick="spremiPristojbu('${id}')">Spremi i izračunaj</button></div>
       <p class="helper" style="margin-top:6px">Iznos određuje vaša općina/grad. Djeca do 12 godina ne plaćaju, od 12 do 18 plaćaju pola.</p></div>`
   document.getElementById('gosti-dlg').showModal()
+  if(osobe.length)evNacrtaj(id)
+}
+
+// ── eVisitor iz dashboarda (api/_evisitor.js, sql/add-evisitor.sql) ──
+// Isključeno dok EVISITOR u Vercelu nije test/live — tada se blok ni ne pokazuje.
+// Lozinka za eVisitor se ne sprema nigdje: ide uz svaki zahtjev i ruta je zaboravi.
+let EV_NACIN=null,EV_SIF=null
+async function evNacin(){
+  if(EV_NACIN)return EV_NACIN
+  try{const r=await fetch('/api/sync-ical?evisitor=1');EV_NACIN=r.ok?((await r.json()).nacin||'off'):'off'}catch{EV_NACIN='off'}
+  return EV_NACIN
+}
+const evMeta=()=>USER?.user_metadata?.evisitor||{}
+const evPost=()=>(evMeta().objekti||{})[PROP?.id]||{}
+async function evPoziv(tijelo){
+  const{data:{session}}=await sb.auth.getSession()
+  const r=await fetch('/api/sync-ical?evisitor=1',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+(session?.access_token||'')},body:JSON.stringify(tijelo)})
+  const j=await r.json().catch(()=>({}))
+  return{ok:r.ok,...j}
+}
+async function evNacrtaj(id){
+  const el=document.getElementById('ev-blok');if(!el)return
+  const nacin=await evNacin();if(nacin==='off'){el.innerHTML='';return}
+  const g=PRIJAVE[id],st=g?.evisitor,p=evPost()
+  const sel=(k,l,lista)=>{const opc=(lista||(p[k]?[{kod:p[k],naziv:p[k+'_naziv']||p[k]}]:[]))
+    return`<div class="field"><label for="ev-${k}">${l}</label><select class="input" id="ev-${k}" data-bez-spremanja><option value="">${lista?'Odaberite':'Učitajte iz eVisitora'}</option>${opc.map(o=>`<option value="${esc(String(o.kod))}"${String(o.kod)===String(p[k]||'')?' selected':''}>${esc(String(o.naziv))}</option>`).join('')}</select></div>`}
+  const s=EV_SIF
+  el.innerHTML=`<div class="card" style="margin:16px 0 0;background:var(--cream)">
+    <h3 style="font:700 16px/1.3 var(--font-ui);margin-bottom:4px">Prijavi u eVisitor ${nacin==='test'?'<span class="sync-pill off">Testna okolina — prijave nisu stvarne</span>':''}</h3>
+    <p class="helper" style="margin-bottom:10px">Šaljemo podatke koje je gost upisao, vašim eVisitor računom. Lozinku ne spremamo — upisujete je pri svakom slanju.</p>
+    ${st?`<p style="margin-bottom:10px"><b>Zadnje slanje ${new Date(st.poslano_at).toLocaleString('hr-HR')}${st.nacin==='test'?' (test)':''}: ${st.osobe.filter(x=>x.ok).length} od ${st.osobe.length} prijavljeno.</b></p>`:''}
+    <div class="form-grid"><div class="field"><label for="ev-korisnik">Korisničko ime za eVisitor</label><input class="input" id="ev-korisnik" autocomplete="username" data-bez-spremanja value="${esc(evMeta().korisnik||'')}"></div>
+    <div class="field"><label for="ev-lozinka">Lozinka za eVisitor</label><input class="input" id="ev-lozinka" type="password" autocomplete="current-password" data-bez-spremanja></div>
+    ${sel('objekt','Objekt u eVisitoru',s?.objekti)}${sel('pristojba','Kategorija pristojbe',s?.pristojba)}${sel('dolazak','Organizacija dolaska',s?.dolazak)}${sel('usluga','Vrsta usluge',s?.usluga)}</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;margin-top:10px"><button class="btn ghost small" type="button" onclick="evSifrarnici('${id}')">Učitaj iz eVisitora</button><button class="btn small" type="button" id="ev-posalji" onclick="evPrijavi('${id}')">Prijavi ${g.osobe.length} ${A.mn(g.osobe.length,'osobu','osobe','osoba')}</button></div>
+    <div id="ev-rez" aria-live="polite" style="margin-top:10px">${st?evRezultati(st):''}</div></div>`
+}
+const evRezultati=st=>`<ul class="ev-rez">${st.osobe.map(o=>`<li class="${o.ok?'ok':'ne'}">${o.ok?'✓':'✕'} <b>${esc(o.ime||'Gost')}</b>${o.poruka?' — '+esc(o.poruka):''}</li>`).join('')}</ul>`
+const evPrijava=()=>({korisnik:v('ev-korisnik'),lozinka:document.getElementById('ev-lozinka')?.value||''})
+window.evSifrarnici=async id=>{
+  const pr=evPrijava();if(!pr.korisnik||!pr.lozinka){toast('Upišite korisničko ime i lozinku za eVisitor.');return}
+  const rez=document.getElementById('ev-rez');rez.textContent='Prijavljujem se u eVisitor…'
+  const r=await evPoziv({radnja:'sifrarnici',...pr})
+  if(!r.ok){rez.innerHTML=`<p class="helper" style="color:var(--danger)">${esc(r.error||'eVisitor nije odgovorio.')}</p>`;return}
+  EV_SIF=r;await evNacrtaj(id);document.getElementById('ev-korisnik').value=pr.korisnik;document.getElementById('ev-lozinka').value=pr.lozinka
+  // jedini ponuđeni izbor odaberi sam
+  ;['objekt','pristojba','dolazak','usluga'].forEach(k=>{const e=document.getElementById('ev-'+k);if(e&&!e.value&&e.options.length===2)e.selectedIndex=1})
+  document.getElementById('ev-rez').innerHTML=`<p class="helper">Učitano: ${r.objekti.length} ${A.mn(r.objekti.length,'objekt','objekta','objekata')}. Odaberite i prijavite.</p>`
+}
+window.evPrijavi=async id=>{
+  const pr=evPrijava();if(!pr.korisnik||!pr.lozinka){toast('Upišite korisničko ime i lozinku za eVisitor.');return}
+  const post={};for(const k of['objekt','pristojba','dolazak','usluga']){const e=document.getElementById('ev-'+k);post[k]=e?.value||'';post[k+'_naziv']=e?.selectedOptions[0]?.textContent||''}
+  if(!post.objekt||!post.pristojba||!post.dolazak||!post.usluga){toast('Odaberite objekt, kategoriju pristojbe, organizaciju dolaska i vrstu usluge (Učitaj iz eVisitora).');return}
+  const sec=SECTION||{}
+  const b=document.getElementById('ev-posalji');b.disabled=true
+  const rez=document.getElementById('ev-rez');rez.textContent='Šaljem u eVisitor…'
+  const r=await evPoziv({radnja:'prijavi',...pr,booking_id:id,postavke:{objekt:post.objekt,pristojba:post.pristojba,dolazak:post.dolazak,usluga:post.usluga,vrijeme_dolaska:sec.checkin_time||'',vrijeme_odlaska:sec.checkout_time||''}})
+  b.disabled=false
+  if(!r.ok){rez.innerHTML=`<p class="helper" style="color:var(--danger)">${esc(r.error||'eVisitor nije odgovorio.')}</p>`;return}
+  if(PRIJAVE[id])PRIJAVE[id].evisitor=r
+  rez.innerHTML=evRezultati(r)
+  const n=r.osobe.filter(x=>x.ok).length;toast(n===r.osobe.length?`Prijavljeno u eVisitor: ${n}`:`Prijavljeno ${n} od ${r.osobe.length} — pogledajte što nedostaje`)
+  // korisničko ime i postavke objekta pamte se (lozinka ne)
+  const m=evMeta();const objekti={...(m.objekti||{}),[PROP.id]:post}
+  try{const{data}=await sb.auth.updateUser({data:{evisitor:{korisnik:pr.korisnik,objekti}}});if(data?.user)USER=data.user}catch{}
 }
 window.spremiPristojbu=async id=>{
   const nacin=v('pr-nacin')||null,iznos=v('pr-iznos')===''?null:Number(v('pr-iznos'))
@@ -6010,12 +6179,12 @@ window.spremiPristojbu=async id=>{
   if(error){toast(/pristojba/.test(error.message)?'Postavke pristojbe još nisu uključene — pokrenite sql/add-guest-registration.sql.':'Greška: '+error.message);return}
   PROP.pristojba_nacin=nacin;PROP.pristojba_iznos=iznos;toast('Spremljeno');window.otvoriGoste(id)
 }
-const tekstGosta=o=>POLJA_GOSTA.map(([k,l])=>o[k]?l+': '+(k==='datum_rodjenja'?new Date(o[k]+'T12:00:00').toLocaleDateString('hr-HR'):o[k]):'').filter(Boolean).join('\n')
+const tekstGosta=o=>POLJA_GOSTA.map(([k,l])=>o[k]?l+': '+prikazPolja(k,o[k]):'').filter(Boolean).join('\n')
 window.kopirajGoste=id=>{const o=(PRIJAVE[id]?.osobe)||[];navigator.clipboard?.writeText(o.map((x,i)=>`Osoba ${i+1}\n`+tekstGosta(x)).join('\n\n'));toast('Kopirano')}
 window.csvGosti=id=>{
   const o=(PRIJAVE[id]?.osobe)||[],bk=(window.BK_LISTA||[]).find(b=>b.id===id)
   const q=x=>'"'+String(x??'').replace(/"/g,'""')+'"'
-  const csv='﻿'+[['Dolazak','Odlazak',...POLJA_GOSTA.map(([,l])=>l)].map(q).join(';'),...o.map(x=>[bk?.checkin_date,bk?.checkout_date,...POLJA_GOSTA.map(([k])=>x[k])].map(q).join(';'))].join('\r\n')
+  const csv='﻿'+[['Dolazak','Odlazak',...POLJA_GOSTA.map(([,l])=>l)].map(q).join(';'),...o.map(x=>[bk?.checkin_date,bk?.checkout_date,...POLJA_GOSTA.map(([k])=>k==='datum_rodjenja'?x[k]:prikazPolja(k,x[k]))].map(q).join(';'))].join('\r\n')
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download=`gosti-${bk?.checkin_date||'boravak'}.csv`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)
 }
 window.obrisiPrijavu=async id=>{if(!await potvrdi('Obrisati podatke gostiju za ovaj boravak? (npr. nakon što ste ih prijavili u eVisitor)',{da:'Obriši',opasno:true}))return;const{error}=await sb.from('guest_registrations').delete().eq('booking_id',id);if(error){toast('Greška: '+error.message);return}delete PRIJAVE[id];document.getElementById('gosti-dlg').close();toast('Podaci obrisani');window.loadBookings()}

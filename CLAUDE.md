@@ -74,6 +74,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 ├── domacin-jezik.js          # jezik sučelja DOMAĆINA (HR/EN): prekidač, prijevod DOM-a preko rječnika — vidi „Engleski za domaćina”
 ├── domacin-en.js             # engleski rječnik (T) i uzorci (P) za domacin-jezik.js; ključ = hrvatski tekst
 ├── sadrzaji.js               # KATALOG SADRŽAJA (75, 9 skupina): naziv, skupina, Lucide ikona, prijevodi — dashboard, p.html, jezici.js
+├── drzave.js                 # države ISO 3166 za prijavu boravka (vodič bira s popisa, sprema kod) — kopija u api/_evisitor.js
 ├── billing.js                # Stripe iz preglednika: billingStatus, startCheckout, openBillingPortal, povratak s plaćanja (dashboard, account)
 ├── assets/                   # landing/villa-1600.jpg i villa-900.jpg (naslovnica i prijava); logo/ (B2 „izlazak sunca”: odmoria.svg, odmoria-bijeli.svg, ikona.svg, ikona-svijetla.svg)
 ├── docs/must-do.md           # KRATKO za vlasnika: što je postavljeno (SQL, Vercel), što je u mainu, što ostaje
@@ -89,6 +90,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 │   ├── kalendar.js           # iCal IZVOZ /kalendar/<token>.ics (+ testni feed ?test=1, stara /api/test-calendar)
 │   ├── track.js              # upis pregleda s državom (x-vercel-ip-country), bez IP adrese
 │   ├── prevedi.js            # prijevod teksta domaćina (Claude) za /h/ i /p/, spremljen u tablicu prijevodi
+│   ├── _evisitor.js          # prijava gostiju u eVisitor (kroz sync-ical.js?evisitor=1), ISKLJUČENO: EVISITOR=off|test|live
 │   ├── _push.js              # Web Push bez npm-a: VAPID (ES256) + aes128gcm; /api/obavijest → sync-all?push=1
 │   ├── _stripe.js            # zajedničko za Stripe rute (s „_” → Vercel ga ne objavljuje kao rutu)
 │   ├── billing-status.js     # je li plaćanje karticom uključeno (i testni način)
@@ -131,6 +133,9 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
     ├── add-direct-bookings.sql          # v5: sezonske_cijene, kapara_posto, inquiries.iznos (računa baza: cijena_boravka), kod, pristanak_ponude; mogućnost „izravno”
     ├── add-per-object-plans.sql         # v5: cijena po objektu (po_objektu, min_properties, subscriptions.kolicina), plan_limit, moji_objekti_limit()
     ├── add-plan-features.sql            # plans.mogucnosti (koraci, preporuke, ocjena, evisitor, stilovi, cistacica, promocija, email) + mogucnosti_vodica(token, slug)
+    ├── add-ical-sukobi.sql              # v6: kalendar_sukobi (dvostruka rezervacija), calendar_exports.dohvat_*, kalendar_izvoz_za(), cron 10 min
+    ├── add-evisitor.sql                 # v6: guest_registrations.evisitor (što je poslano u eVisitor)
+    ├── add-cleaner-checklist.sql        # v6: cleaner_links.popis, cleaning_status.kvacice/fotke, ciscenje_popis()
     └── fix-missing-columns-and-storage.sql # ALTER TABLE dopune (photo_urls, ical_*, beds/bathrooms/size_m2) + storage bucket policy
 ```
 
@@ -798,6 +803,29 @@ Dashboard **ne učitava `odmoria.css`** — ima vlastiti potpun CSS s istim vrij
   (Google prijava: kod čeka u `localStorage` `odm-preporuka`, `upisiPreporuku()`);
   brojač `moje_preporuke()`. **Nagrada nije obećana u sučelju** — odluka
   vlasnika (odluke, točka 30); admin vidi popis kroz `admin_preporuke()`.
+
+## v6 — besplatna poboljšanja (20. 10. 2026., odluke 39–43)
+
+- **iCal:** `api/_ical.js` `nadjiSukobe()` → `kalendar_sukobi` (jednom po rasponu,
+  `on_conflict` + `ignore-duplicates`), push `sukob`. „Jeka” = platforma je
+  povukla naš izvoz NAKON nastanka rezervacije (`calendar_exports.dohvat_*`,
+  upisuje `kalendar_izvoz_za()` iz `api/kalendar.js`, rezerva stara funkcija).
+  Airbnb „Not available” nije prodaja (`stvarnaRezervacija()`). Dashboard:
+  `ucitajUvoz()`, `nePovlaci()`, „Povukao prije …”, `sukobVidjen()`.
+  `napraviRezervaciju()` **ne upisuje noći koje kalendar već drži**
+  (jedinstveni `(property_id, date)` je prije rušio cijeli upis).
+- **eVisitor:** `api/_evisitor.js` — prijava domaćinovim računom, lozinka se
+  **nikad ne sprema**, šifrarnici, `CheckInTourist` s ID-jem iz rezervacije,
+  odjava u `finally`. Sve nepotvrđeno označeno „PROVJERITI”. Dashboard blok
+  `#ev-blok` u Podacima gostiju (`evNacrtaj`, `evSifrarnici`, `evPrijavi`),
+  samo kad GET vrati `nacin` ≠ `off`. Test: lažni eVisitor (`scratchpad/lazni-evisitor.cjs`).
+- **Prijedlozi cijena:** `cijene.js` `prijedloziCijena()`; dashboard
+  `#cij-prijedlozi` (`nacrtajPrijedloge()` zove `nacrtajSezone()` i `loadAvail()`).
+- **Čistačica:** `c.html` `popisHtml()`/`spremiPopis()` → `ciscenje_popis()`;
+  dashboard `nacrtajPopisCist()`, `spremiPopisCist()`.
+- Zamka: PostgreSQL regex ne prima ponavljanje > 255 (`{1,300}` baca grešku).
+- Zamka: `.sez` redak s `input type=date` treba `min-width:0` na labeli i polju,
+  inače na 390 px raširi stranicu.
 
 ## Redizajn v2 — prijenos iz Figme u kod (u tijeku)
 

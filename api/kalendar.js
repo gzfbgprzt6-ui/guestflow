@@ -109,10 +109,15 @@ module.exports = async (req, res) => {
 
   let d;
   try {
-    const r = await fetch(SUPABASE_URL + '/rest/v1/rpc/kalendar_izvoz', {
-      method: 'POST',
-      headers: { apikey: SUPABASE_ANON, Authorization: 'Bearer ' + SUPABASE_ANON, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ p_token: token })
+    // kalendar_izvoz_za (sql/add-ical-sukobi.sql) usput zabilježi koja ga je
+    // platforma povukla; bez nje ista stara funkcija
+    const zag = { apikey: SUPABASE_ANON, Authorization: 'Bearer ' + SUPABASE_ANON, 'Content-Type': 'application/json' };
+    const za = String(q.za || '').toLowerCase();
+    let r = await fetch(SUPABASE_URL + '/rest/v1/rpc/kalendar_izvoz_za', {
+      method: 'POST', headers: zag, body: JSON.stringify({ p_token: token, p_za: IZVOR[za] ? za : null })
+    });
+    if (r.status === 404) r = await fetch(SUPABASE_URL + '/rest/v1/rpc/kalendar_izvoz', {
+      method: 'POST', headers: zag, body: JSON.stringify({ p_token: token })
     });
     if (!r.ok) throw new Error('supabase ' + r.status);
     d = await r.json();
