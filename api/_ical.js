@@ -150,6 +150,63 @@ async function zabiljeziPromjene(propertyId, izvor, stari, novi, kljuc) {
   try { await rest('kalendar_promjene', kljuc, { method: 'POST', body: JSON.stringify(redovi.slice(0, 50)), headers: { Prefer: 'return=minimal' } }); } catch (e) {}
 }
 
+// ---------- moguća dvostruka rezervacija (sql/add-ical-sukobi.sql) ----------
+// Airbnbov izvoz uz prave rezervacije („Reserved”) nosi i blokirane dane
+// („Airbnb (Not available)”) — među njima i datume koje je uvezao od nas.
+// Takvi dani zatvaraju kalendar, ali nisu prodani, pa nisu sukob.
+// Booking sve piše kao „CLOSED - Not available”, pa se tu ne razlikuje.
+function stvarnaRezervacija(izvor, ev) {
+  if (izvor !== 'ical_airbnb') return true;
+  return !/not available|unavailable|blocked|nedostupno/i.test(ev.summary || '');
+}
+
+// Sukob = noć koju je platforma prodala, a već je zauzeta:
+//  a) izravnom rezervacijom (availability.booking_id) — osim ako je platforma
+//     NAKON nastanka te rezervacije povukla naš izvoz: tada je to vjerojatno
+//     naš vlastiti datum koji nam vraća („jeka”), a ne nova prodaja;
+//  b) drugom platformom — Airbnb „Reserved” i Booking iste noći, i to samo
+//     kad Booking ne uvozi naš kalendar (inače ne znamo je li Bookingov dan jeka).
+// Samo buduće noći. Upis jednom po rasponu (jedinstveni ključ); bez tablice
+// kalendar_sukobi upis tiho ne uspije.
+const PLATFORMA = { ical_booking: 'dohvat_booking', ical_airbnb: 'dohvat_airbnb' };
+function nadjiSukobe(postojeci, prodano, rezervacije, dohvat, danas) {
+  const out = [];
+  const poBookingu = {};
+  for (const r of postojeci) if (r.booking_id && r.date >= danas) (poBookingu[r.booking_id] = poBookingu[r.booking_id] || []).push(r.date);
+  for (const izvor of Object.keys(prodano)) {
+    const zadnji = dohvat && dohvat[PLATFORMA[izvor]] ? Date.parse(dohvat[PLATFORMA[izvor]]) : 0;
+    for (const bid of Object.keys(poBookingu)) {
+      const b = rezervacije[bid];
+      if (!b || b.is_active === false) continue;
+      if (zadnji && b.created_at && zadnji > Date.parse(b.created_at)) continue;   // jeka
+      const noci = poBookingu[bid].filter(d => prodano[izvor].has(d));
+      for (const r of rasponi(noci)) out.push({ izvor, s_cim: 'rezervacija', booking_id: bid, od: r.od, do_: r.do_ });
+    }
+  }
+  if (prodano.ical_booking && prodano.ical_airbnb && !(dohvat && dohvat.dohvat_booking)) {
+    const noci = [...prodano.ical_airbnb].filter(d => d >= danas && prodano.ical_booking.has(d));
+    for (const r of rasponi(noci)) out.push({ izvor: 'ical_airbnb', s_cim: 'ical_booking', booking_id: null, od: r.od, do_: r.do_ });
+  }
+  return out;
+}
+async function zabiljeziSukobe(propertyId, postojeci, prodano, kljuc) {
+  if (!Object.keys(prodano).length) return;
+  const danas = new Date().toISOString().slice(0, 10);
+  const ids = [...new Set(postojeci.filter(r => r.booking_id && r.date >= danas).map(r => r.booking_id))];
+  const rezervacije = {};
+  if (ids.length) {
+    const r = await rest('bookings?id=in.(' + ids.map(encodeURIComponent).join(',') + ')&select=id,created_at,is_active', kljuc);
+    if (r.ok) for (const b of await r.json()) rezervacije[b.id] = b;
+  }
+  let dohvat = null;
+  const d = await rest('calendar_exports?property_id=eq.' + encodeURIComponent(propertyId) + '&select=dohvat_booking,dohvat_airbnb', kljuc);
+  if (d.ok) dohvat = (await d.json())[0] || null;
+  const redovi = nadjiSukobe(postojeci, prodano, rezervacije, dohvat, danas).map(x => Object.assign({ property_id: propertyId }, x));
+  if (!redovi.length) return;
+  await rest('kalendar_sukobi?on_conflict=property_id,izvor,s_cim,od,do_', kljuc, {
+    method: 'POST', body: JSON.stringify(redovi.slice(0, 50)), headers: { Prefer: 'resolution=ignore-duplicates,return=minimal' } });
+}
+
 // ---------- sinkronizacija jednog objekta ----------
 // prop = { id, ical_booking_url, ical_airbnb_url }. Vraća { ok, results, ical_last_sync, error }.
 async function syncProperty(prop, kljuc) {
@@ -162,8 +219,11 @@ async function syncProperty(prop, kljuc) {
 
   // dani koje već drži drugi izvor (ručno, rezervacija, drugi kalendar)
   let postojeci = [];
-  const ex = await rest('availability?property_id=eq.' + encodeURIComponent(propertyId) + '&select=date,source', kljuc);
+  let ex = await rest('availability?property_id=eq.' + encodeURIComponent(propertyId) + '&select=date,source,booking_id', kljuc);
+  if (!ex.ok) ex = await rest('availability?property_id=eq.' + encodeURIComponent(propertyId) + '&select=date,source', kljuc);
   if (ex.ok) postojeci = await ex.json();
+  const pocetni = postojeci.slice();
+  const prodano = {};   // izvor → noći koje je platforma stvarno prodala (ovaj krug)
 
   const results = [];
   for (const feed of feeds) {
@@ -173,8 +233,12 @@ async function syncProperty(prop, kljuc) {
     let dates;
     try {
       const events = parseIcal(await fetchFeed(url));
-      const set = new Set();
-      for (const ev of events) for (const d of nightsBetween(ev.start, ev.end)) set.add(d);
+      const set = new Set(), stvarno = new Set();
+      for (const ev of events) for (const d of nightsBetween(ev.start, ev.end)) {
+        set.add(d);
+        if (stvarnaRezervacija(feed.source, ev)) stvarno.add(d);
+      }
+      prodano[feed.source] = stvarno;
       const tudji = new Set(postojeci.filter(r => r.source !== feed.source).map(r => r.date));
       dates = Array.from(set).filter(d => !tudji.has(d)).sort();
     } catch (e) {
@@ -203,6 +267,8 @@ async function syncProperty(prop, kljuc) {
     results.push({ source: feed.source, label: feed.label, dates: dates.length });
   }
 
+  try { await zabiljeziSukobe(propertyId, pocetni, prodano, kljuc); } catch (e) {}
+
   const syncedAt = new Date().toISOString();
   await rest('properties?id=eq.' + encodeURIComponent(propertyId), kljuc, {
     method: 'PATCH', body: JSON.stringify({ ical_last_sync: syncedAt }), headers: { Prefer: 'return=minimal' }
@@ -217,7 +283,7 @@ async function syncProperty(prop, kljuc) {
 // ---------- svi objekti (automatski) ----------
 // Najdulje nesinkronizirani prvi; staje prije isteka vremena funkcije.
 // Objekt sinkroniziran u zadnjih `razmakMin` minuta preskače se.
-async function syncAll({ rokMs = 45000, najvise = 40, razmakMin = 20 } = {}) {
+async function syncAll({ rokMs = 45000, najvise = 40, razmakMin = 8 } = {}) {
   const kljuc = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
   if (!kljuc) return { ok: false, error: 'SUPABASE_SERVICE_ROLE_KEY nije postavljen', obradeno: 0 };
   const pocetak = Date.now();
@@ -237,4 +303,4 @@ async function syncAll({ rokMs = 45000, najvise = 40, razmakMin = 20 } = {}) {
   return { ok: true, obradeno, greske, na_redu: lista.length - obradeno };
 }
 
-module.exports = { _rasponi: rasponi, parseIcal, nightsBetween, safeUrl, fetchFeed, rest, syncProperty, syncAll, SUPABASE_ANON };
+module.exports = { _rasponi: rasponi, _nadjiSukobe: nadjiSukobe, _stvarnaRezervacija: stvarnaRezervacija, parseIcal, nightsBetween, safeUrl, fetchFeed, rest, syncProperty, syncAll, SUPABASE_ANON };

@@ -1,13 +1,13 @@
 // ============================================================
 // /api/sync-all — automatska iCal sinkronizacija svih objekata
 //
-// Zove je zakazani zadatak (Supabase pg_cron svakih 30 min, vidi
+// Zove je zakazani zadatak (Supabase pg_cron svakih 10 min, vidi
 // sql/auto-ical-sync.sql) i dnevni Vercel Cron preko api/keepalive.js.
 // Ruta je zaključana tajnom: zaglavlje `Authorization: Bearer <CRON_SECRET>`.
 // Bez CRON_SECRET ili SUPABASE_SERVICE_ROLE_KEY u Vercelu ne radi ništa.
 //
 // Obradi najdulje nesinkronizirane objekte dok ima vremena (serije),
-// objekt sinkroniziran u zadnjih 20 min preskoči.
+// objekt sinkroniziran u zadnjih 8 min preskoči.
 //
 // Ista funkcija nosi i /api/obavijest (?push=1 → api/_push.js) — na Hobby
 // planu je svih 12 funkcija zauzeto.

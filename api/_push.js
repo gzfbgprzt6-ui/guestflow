@@ -12,7 +12,7 @@
 //   POST /api/obavijest           → šalje obavijest; zove je SAMO baza
 //                                    (okidač → pg_net, sql/add-push.sql) s
 //                                    `Authorization: Bearer <CRON_SECRET>`.
-//        tijelo: { user_id, vrsta: upit | cistacica | kalendar | usao, podaci }
+//        tijelo: { user_id, vrsta: upit | cistacica | kalendar | sukob | usao, podaci }
 //
 // Namjerno bez npm ovisnosti: VAPID (RFC 8292) potpis ES256 i šifriranje
 // poruke aes128gcm (RFC 8291 / 8188) rade preko Node `crypto`.
@@ -116,6 +116,13 @@ function poruka(vrsta, p, jezik) {
       title: otk ? (en ? `Cancelled on ${izvor}` : `Otkazano na ${izvor}`) : (en ? `New booking on ${izvor}` : `Nova rezervacija (${izvor})`),
       body: `${o} · ${fmtDan(p.od, en)} – ${fmtDan(p.do, en)}`,
       url: url('kalendar'), tag: 'kal-' + id + '-' + p.od };
+  }
+  if (vrsta === 'sukob') {
+    const iz = s => s === 'ical_airbnb' ? 'Airbnb' : s === 'ical_booking' ? 'Booking.com' : (en ? 'a direct booking' : 'izravna rezervacija');
+    return {
+      title: en ? `Possible double booking — ${o}` : `Moguća dvostruka rezervacija — ${o}`,
+      body: `${iz(p.izvor)} + ${iz(p.s_cim)} · ${fmtDan(p.od, en)} – ${fmtDan(p.do, en)}`,
+      url: url('kalendar'), tag: 'sukob-' + id + '-' + p.od };
   }
   if (vrsta === 'usao') return {
     title: en ? `Your guest is in — ${o}` : `Gost je ušao — ${o}`,

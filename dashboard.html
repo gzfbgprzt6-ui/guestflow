@@ -3476,6 +3476,13 @@ async function renderOverviewOps(){
   try{const r=await sb.from('cleaning_status').select('*').eq('property_id',PROP.id).gte('dan',A.plusDana(t,-2));if(!r.error)CIS=r.data||[]}catch{}
   try{const r=await sb.from('kalendar_promjene').select('*').eq('property_id',PROP.id).eq('vidjeno',false).order('created_at',{ascending:false}).limit(20);if(!r.error)PROM=r.data||[]}catch{}
   CIS_RED=CIS
+  // moguća dvostruka rezervacija (sql/add-ical-sukobi.sql)
+  let SUK=[];try{const r=await sb.from('kalendar_sukobi').select('*').eq('property_id',PROP.id).eq('vidjeno',false).gte('do_',t).order('od').limit(20);if(!r.error)SUK=r.data||[]}catch{}
+  SUK.forEach(x=>{const iz=A.IZVOR[x.izvor]||x.izvor,s=x.s_cim==='rezervacija'?'vašom izravnom rezervacijom':(A.IZVOR[x.s_cim]||x.s_cim)
+    R.push({r:'hitno',n:`Moguća dvostruka rezervacija: ${A.fmtSDanom(x.od)} – ${A.fmtKratko(x.do_)}`,tx:`${iz} je prodao noći koje su već zauzete ${x.s_cim==='rezervacija'?s:'na '+s}. Provjerite na platformi; ako je to isti gost, zanemarite.`,btn:'U redu',on:`sukobVidjen('${x.id}')`})})
+  // na platformi je, a platforma ne povlači naš izvoz → izravne rezervacije tamo ostaju otvorene
+  await ucitajUvoz()
+  nePovlaci().forEach(ime=>R.push({r:'vazno',n:`${ime} ne uvozi vaš kalendar`,tx:'Izravne rezervacije i ručno zatvoreni dani tamo ostaju otvoreni. Zalijepite naš link za izvoz u platformu (Gosti → Booking i Airbnb) ili ih zatvorite ručno.',btn:'Booking i Airbnb',on:"nav('ical',document.querySelector('.panelnav [data-panel=ical]'))"}))
   CIS.sort((a,b)=>a.dan<b.dan?-1:1).forEach(c=>{
     const kad=`${A.fmtSDanom(c.dan)} (${relDan(c.dan)})`
     if(c.stanje==='ne_mogu'&&c.dan>=t)R.push({r:'hitno',n:`Čistačica ne može doći — ${kad}`,tx:c.napomena?`„${c.napomena}”`:'Dogovorite zamjenu ili drugi termin.',btn:'Čistačica',on:"nav('links',document.querySelector('.panelnav [data-panel=links]'))"})
@@ -3561,6 +3568,9 @@ function ovTablicaNacrtaj(){
 document.getElementById('ov-tbl')?.addEventListener('click',e=>{const b=e.target.closest('button[data-id]');if(!b)return;const sel=document.getElementById('prop-sel');sel.value=b.dataset.id;window.onPropChange()})
 
 
+/* preklapanje pregledano (kalendar_sukobi.vidjeno) */
+window.sukobVidjen=async id=>{try{await sb.from('kalendar_sukobi').update({vidjeno:true}).eq('id',id)}catch{}
+  OBAV=(OBAV||[]).filter(x=>!String(x.on).includes(id));tbObavijesti();if(PROP)renderOverviewOps()}
 /* promjena s platforme pregledana (kalendar_promjene.vidjeno) */
 window.promVidjeno=async id=>{try{await sb.from('kalendar_promjene').update({vidjeno:true}).eq('id',id)}catch{}
   OBAV=(OBAV||[]).filter(x=>!String(x.on).includes(id));tbObavijesti();if(PROP)renderOverviewOps()}
@@ -4899,14 +4909,34 @@ async function loadIcal(){
 // ── IZVOZ KALENDARA (sql/add-ical-export.sql, api/kalendar.js) ──
 // Jedan token po objektu; ?za=booking / ?za=airbnb izostavlja dane koji su
 // došli s tog portala. „Novi link” zamijeni token (stari prestaje raditi).
-let IZVOZ=null
+let IZVOZ=null,UVOZ={id:null,red:null}
+// kad je platforma zadnji put povukla naš izvoz (sql/add-ical-sukobi.sql); bez stupaca null
+async function ucitajUvoz(){
+  if(!PROP)return
+  try{const{data,error}=await sb.from('calendar_exports').select('dohvat_booking,dohvat_airbnb').eq('property_id',PROP.id).maybeSingle()
+    UVOZ={id:PROP.id,red:error?null:(data||{}),greska:!!error}}catch{UVOZ={id:PROP.id,red:null,greska:true}}
+}
+// platforme na kojima domaćin jest (iCal uvoz upisan), a koje naš kalendar ne povlače (48 h)
+function nePovlaci(){
+  if(!PROP||UVOZ.id!==PROP.id||UVOZ.greska)return[]
+  const star=k=>!UVOZ.red?.[k]||Date.now()-Date.parse(UVOZ.red[k])>48*3600e3
+  return [[PROP.ical_booking_url,'dohvat_booking','Booking.com'],[PROP.ical_airbnb_url,'dohvat_airbnb','Airbnb']]
+    .filter(([u,k])=>(u||'').trim()&&star(k)).map(x=>x[2])
+}
+function prijeKoliko(iso){
+  const m=Math.round((Date.now()-Date.parse(iso))/60000)
+  return m<60?`prije ${Math.max(1,m)} min`:m<48*60?`prije ${Math.round(m/60)} h`:`prije ${Math.round(m/1440)} dana`
+}
 async function ucitajIzvoz(){
   const el=document.getElementById('izvoz-body');if(!el||!PROP)return
   const{data,error}=await sb.from('calendar_exports').select('*').eq('property_id',PROP.id).maybeSingle()
   if(error){el.innerHTML='<p class="helper">Izvoz kalendara još nije uključen — u Supabaseu treba pokrenuti <code>sql/add-ical-export.sql</code>.</p>';return}
   IZVOZ=data||null
   if(!IZVOZ){el.innerHTML='<button class="btn" type="button" onclick="napraviIzvoz()">Napravi link za Booking i Airbnb</button>';return}
-  const red=(za,ime,mark,gdje)=>`<div class="sync-row"><div class="sync-row-top"><span class="sync-mark ${mark}">${mark.toUpperCase()}</span><span class="sync-name">Za ${ime}</span></div>
+  await ucitajUvoz()
+  const dohvat=za=>{if(UVOZ.greska)return'';const v=UVOZ.red?.['dohvat_'+za]
+    return v?`<span class="sync-pill ${Date.now()-Date.parse(v)>48*3600e3?'off':'on'}">Povukao ${prijeKoliko(v)}</span>`:'<span class="sync-pill off">Još nije povukao</span>'}
+  const red=(za,ime,mark,gdje)=>`<div class="sync-row"><div class="sync-row-top"><span class="sync-mark ${mark}">${mark.toUpperCase()}</span><span class="sync-name">Za ${ime}</span>${dohvat(za)}</div>
     <div class="link-url"><span>${esc(prettyUrl(calendarUrl(IZVOZ.token,za)))}</span><button type="button" onclick="kopirajIzvoz('${za}')">Kopiraj</button></div>
     <p class="helper" style="margin:6px 0 0">${gdje}</p></div>`
   el.innerHTML=`<div class="sync-list">${red('booking','Booking.com','b','Booking Extranet → Cijene i dostupnost → Sinkronizacija kalendara → Uvezi kalendar.')}${red('airbnb','Airbnb','a','Airbnb → Kalendar → Dostupnost → Poveži kalendare → Uvezi kalendar.')}</div>
@@ -5038,13 +5068,20 @@ async function napraviRezervaciju({name,note,ci,co,email,lang}){
     ({data,error}=await sb.from('bookings').insert(red).select().single());bezMaila=true
   }
   if(error)return{error:error.message}
-  const nights=datesBetween(ci,co).slice(0,-1)
+  // noći koje kalendar već drži (Booking/Airbnb gost, ručno) se ne diraju — inače bi
+  // upis pao na jedinstvenom (property_id, date), a noć s platforme mora ostati njena
+  const drzi=new Set((ap.id===PROP?.id?AVAIL_ROWS:[]).map(r=>r.date))
+  const nights=datesBetween(ci,co).slice(0,-1).filter(d=>!drzi.has(d))
   let upozorenje=''
   if(nights.length){
     const{error:availErr}=await sb.from('availability').upsert(nights.map(d=>({property_id:ap.id,date:d,is_booked:true,source:'manual',booking_id:data.id})))
     if(availErr)upozorenje='Rezervacija je spremljena, ali kalendar nije ažuriran: '+availErr.message
   }
   if(bezMaila&&!upozorenje)upozorenje='Rezervacija je spremljena, ali automatski e-mail gostu još nije uključen (sql/add-guest-emails.sql).'
+  // nova izravna rezervacija, a platforma ne uvozi naš kalendar → neka domaćin zatvori ručno
+  if(nights.length&&!upozorenje&&ap.id===PROP?.id){await ucitajUvoz();const np=nePovlaci()
+    const na={'Booking.com':'Bookingu','Airbnb':'Airbnbu'}
+    if(np.length)upozorenje=`Rezervacija je spremljena. Zatvorite ${A.fmtKratko(ci)} – ${A.fmtKratko(co)} i na ${np.map(x=>na[x]).join(' i ')} — tamo se kalendar ne osvježava sam.`}
   return{booking:data,url:bookingUrl(data.token),upozorenje}
 }
 /* Jezik poruka gostu po domeni e-maila (domaćin ga može promijeniti) */
