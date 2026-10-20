@@ -1581,3 +1581,92 @@ Vlasnik: „fali onaj dio da bude ime.odmoria.hr — ali po xxx cijeni koju odre
       u Vercelu dodati `*.odmoria.hr` (wildcard traži Vercelove nameservere
       za tu domenu) i `odmoria.hr`.
 - [ ] Konačna cijena dodatka (zadano 19 €/god).
+
+## 39. iCal v6 — dvostruka rezervacija i stanje uvoza (20. 10. 2026.)
+
+Vlasnik: „kreni redom, sve što se plaća preskačemo”. Sve ovo je besplatno.
+
+- **Sinkronizacija svakih 10 min** (bila 30): pg_cron `odmoria-ical-sync`
+  (`sql/add-ical-sukobi.sql`), objekt sinkroniziran u zadnjih 8 min se preskače.
+  Booking/Airbnb sami osvježavaju naš izvoz rjeđe (obično svakih par sati) —
+  to ne možemo ubrzati.
+- **Moguća dvostruka rezervacija** (`kalendar_sukobi`, obavijest „Hitno” + push
+  `sukob`): noć koju platforma proda, a već je zauzeta izravnom rezervacijom
+  ili drugom platformom. Lažne uzbune („jeka” — platforma nam vrati naš
+  vlastiti datum iz izvoza) razlikuju se po tome **kad je platforma zadnji put
+  povukla naš izvoz**: ako ga je povukla nakon nastanka rezervacije, to je
+  jeka. Airbnbovi „Not available” dani zatvaraju kalendar, ali nisu sukob.
+  Booking sve piše kao „CLOSED”, pa Booking–Airbnb sukob javljamo samo kad
+  Booking ne uvozi naš kalendar. **PROVJERITI na prvom pravom objektu**
+  (u testu radi, s pravim platformama se nije moglo).
+- **Stanje uvoza**: Gosti → Booking i Airbnb pokazuje „Povukao prije 2 h” /
+  „Još nije povukao” (`calendar_exports.dohvat_*`, upisuje
+  `kalendar_izvoz_za()`); obavijest „Booking ne uvozi vaš kalendar” kad je
+  objekt na platformi, a izvoz nije povučen 48 h.
+- Nova izravna rezervacija, a platforma ne uvozi kalendar → poruka „Zatvorite
+  … i na Bookingu”.
+- Rezervacija za gosta s platforme više ne dira noći koje kalendar već drži
+  (prije je upis padao na jedinstvenom ključu i rezervacija ostajala bez noći).
+
+## 40. eVisitor iz dashboarda — ISKLJUČENO dok se ne provjeri (20. 10. 2026.)
+
+Vlasnik nema eVisitor račun (ni testni). Napravljeno prema javnoj dokumentaciji
+(eVisitor Wiki → Web API): prijava `Resources/AspNetFormsAuth/Authentication/Login`,
+gost `Rest/Htz/CheckInTourist/`, testna adresa `https://www.evisitor.hr/testApi`.
+
+- **Uključuje se samo u Vercelu:** `EVISITOR=test` (testna okolina) ili
+  `EVISITOR=live`. Bez varijable blok se u dashboardu ni ne prikazuje.
+- Ruta `api/sync-ical.js?evisitor=1` → `api/_evisitor.js` (12/12 funkcija).
+  Korisnikov token (RLS) — podatke gostiju čita ruta sama.
+- **Lozinka za eVisitor se nigdje ne sprema**; korisničko ime i odabrani objekt,
+  kategorija pristojbe, organizacija dolaska i vrsta usluge pamte se u
+  `user_metadata.evisitor` (po objektu).
+- Isti gost uvijek ima isti ID (iz rezervacije) → ponovno slanje je ispravak.
+- Vodič: država se bira s popisa (`drzave.js`, dvoslovni kod, ime na jeziku
+  gosta); stari upisi slobodnim tekstom se prepoznaju.
+- **Nepoznato do prvog pravog računa (PROVJERITI):** imena šifrarnika
+  (`Facility`, `CountryLookup`, `DocumentTypeLookup`, `TTPaymentCategoryLookup`,
+  `ArrivalOrganisationLookup`, `OfferedServiceTypeLookup`), atributi
+  `DocumentNumber`, `DateOfBirth`, `Citizenship`, `CountryOfResidence`,
+  `CityOfResidence`, `TimeEstimatedStay` i oblik šifre države. Ruta pri
+  „Učitaj iz eVisitora” vraća i imena polja zapisa (`*_polja`) — po tome se
+  popravi u jednom mjestu (`SIFRARNICI`, `zapis()`, `zaEvisitor()`).
+- **Kako do provjere:** (1) jedan domaćin s eVisitor računom, uz njegov pristanak,
+  prvo `EVISITOR=test` ako testni pristup postoji; (2) upit eVisitor podršci
+  za testni pristup integratora; (3) tek nakon jednog točno prijavljenog gosta
+  `EVISITOR=live`.
+- `sql/add-evisitor.sql`: `guest_registrations.evisitor` (što je poslano),
+  vlasnik smije mijenjati samo taj stupac.
+
+## 41. Prijedlozi cijena po pravilima (20. 10. 2026.)
+
+Bez plaćenih podataka o tržištu — samo kalendar i cijene objekta
+(`cijene.js` `prijedloziCijena()`), u Cijene → Sezonske cijene:
+- nema sezona → jadranski raspored (srpanj–kolovoz +30 %, 15. 10.–14. 5. −20 %);
+- mjesec za 3+ tjedna zauzet ≥ 80 % → +10 %;
+- mjesec za 2–8 tjedana zauzet < 20 % → −10 % ili objava;
+- 7+ slobodnih noći u 14 dana → objava (bez mijenjanja sezona).
+„Primijeni” samo popuni sezone; spremanje je domaćinovo. Sezone su godišnje
+(MM-DD) — prijedlog to kaže. „Sakrij” se pamti na uređaju.
+Prava dinamička cijena (podaci konkurencije) ostaje plaćena opcija za kasnije.
+
+## 42. Čistačica — popis zadataka s fotografijama (20. 10. 2026.)
+
+- Domaćin sastavi popis (Linkovi i QR → Čistačica, predložak od 8 stavki).
+- Čistačica na `/c/<token>` uz svaki odlazak kvači stavke i dodaje fotografije
+  (Cloudinary, isti unsigned preset — besplatno), „Javi da je gotovo”.
+- Domaćin u javljanjima vidi „Popis x / y” i sličice.
+- `sql/add-cleaner-checklist.sql`: `ciscenje_popis()` prima samo slike s
+  našeg Cloudinaryja (≤ 12) i samo postojeće stavke.
+
+## 43. Troškovi i redoslijed do pokretanja (20. 10. 2026.)
+
+Vlasnik: pokretanje za ~7 mjeseci; sve što se plaća čeka.
+- **Supabase Pro** (25 $/mj): ~3 mjeseca prije pokretanja — slažemo se.
+  Do tada Free + dva budilnika; Free nema dnevne sigurnosne kopije, pa prije
+  pravih podataka Pro je obavezan.
+- **Vercel Pro** (20 $/mj): Hobby je po uvjetima samo za nekomercijalno —
+  prebaciti kad krene naplata/pravi korisnici. Za razvoj ništa ne treba.
+- **Stripe live, obrt, Resend**: s otvaranjem obrta.
+- **Domena**: vidi odgovor vlasniku (20. 10.) — kupiti ranije je jeftino i
+  čuva ime.
