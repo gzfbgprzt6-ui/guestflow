@@ -51,10 +51,9 @@ Vercel su postavljeni i provjereni.
 - [ ] Privatnost: dodati rečenicu da vodič na gostov klik „Ušli smo” javlja
       domaćinu vrijeme ulaska (vidi `docs/odluke.md`, točka 33)
 
-- [ ] **SQL paket v6 (napravljen 20. 10., NIJE pokrenut)** — pokrenuti zajedno s puštanjem u `main`:
-      `add-ical-sukobi.sql` (dvostruka rezervacija, stanje uvoza, sinkronizacija 10 min),
-      `add-evisitor.sql`, `add-cleaner-checklist.sql`. `add-ical-sukobi.sql` sadrži
-      „on delete cascade” — ako ga konektor ne pusti, zalijepiti u SQL editor.
+- [x] **SQL paket v6 pokrenut 20. 10.** (konektorom, uz potvrdu vlasnika): `add-ical-sukobi.sql`
+      (sinkronizacija svakih 10 min, dvostruka rezervacija, stanje uvoza), `add-evisitor.sql`,
+      `add-cleaner-checklist.sql`
 - [ ] **eVisitor** ostaje isključen (`EVISITOR` nije postavljen u Vercelu) dok jedan
       domaćin s eVisitor računom ne prijavi prvog gosta — vidi `docs/odluke.md`, točka 40
 - [ ] **Isprobati na produkciji**: Osnovno (vrsta, kapacitet, stil), Dolazak
