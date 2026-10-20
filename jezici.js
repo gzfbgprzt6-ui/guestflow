@@ -364,6 +364,8 @@ dodaj([
   ['Osobna iskaznica', 'ID card', 'Personalausweis', "Carta d'identità", 'Dowód osobisty', 'Občanský průkaz'],
   ['Putovnica', 'Passport', 'Reisepass', 'Passaporto', 'Paszport', 'Cestovní pas'],
   ['Odaberite', 'Choose', 'Bitte wählen', 'Scegli', 'Wybierz', 'Vyberte'],
+  ['Najčešće', 'Most common', 'Häufig', 'Più comuni', 'Najczęstsze', 'Nejčastější'],
+  ['Sve države', 'All countries', 'Alle Länder', 'Tutti i paesi', 'Wszystkie kraje', 'Všechny země'],
   ['Osoba {n}', 'Person {n}', 'Person {n}', 'Persona {n}', 'Osoba {n}', 'Osoba {n}'],
   ['Makni', 'Remove', 'Entfernen', 'Rimuovi', 'Usuń', 'Odebrat'],
   ['Podaci su poslani ({n}). Ako nešto ne valja, ispravite i pošaljite ponovno.', 'Details sent ({n}). If anything is wrong, correct it and send again.', 'Daten gesendet ({n}). Falls etwas nicht stimmt, korrigieren und erneut senden.', 'Dati inviati ({n}). Se qualcosa non va, correggi e invia di nuovo.', 'Dane wysłane ({n}). Jeśli coś się nie zgadza, popraw i wyślij ponownie.', 'Údaje odeslány ({n}). Pokud něco nesedí, opravte to a odešlete znovu.'],

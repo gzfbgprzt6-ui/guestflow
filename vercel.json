@@ -176,6 +176,9 @@
     },
     "api/mjesta.js": {
       "maxDuration": 30
+    },
+    "api/sync-ical.js": {
+      "maxDuration": 60
     }
   },
   "redirects": [

@@ -801,6 +801,9 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
 .dirty-dlg { width: min(440px, calc(100vw - 32px)); padding: 24px; border: 0; border-radius: var(--radius-lg); background: var(--paper); color: var(--ink); box-shadow: 0 24px 64px rgba(14,34,41,.28); }
 .dirty-dlg.gosti-dlg { width: min(980px, calc(100vw - 32px)); max-height: calc(100vh - 48px); overflow: auto; }
 .gosti-dlg h2 { font: 700 22px/1.3 var(--font-ui); letter-spacing: -.02em; }
+.ev-rez { list-style: none; display: grid; gap: 4px; margin: 0; padding: 0; font-size: 14px; }
+.ev-rez li.ok { color: var(--ink); }
+.ev-rez li.ne { color: var(--danger); }
 .dirty-dlg::backdrop { background: rgba(14,34,41,.45); }
 .dirty-dlg h2 { font: 800 22px/1.25 var(--font-ui); margin: 0 0 8px; }
 .dirty-dlg p { color: var(--muted); margin: 0 0 20px; }
@@ -2530,6 +2533,7 @@ import * as JZ from'./jezici.js'
 import{kvacica}from'./pokret.js'
 import{cijenaBoravka,uMD,izMD}from'./cijene.js'
 import{SADRZAJI,SKUPINE}from'./sadrzaji.js'
+import * as DR from'./drzave.js'
 import * as OSMM from'./mjesta-osm.js'
 import{predloziAdresu}from'./adresa-predlozi.js'
 import * as STIL from'./stilovi.js'
@@ -6007,6 +6011,8 @@ async function ucitajPrijave(){
 }
 const POLJA_GOSTA=[['ime','Ime'],['prezime','Prezime'],['spol','Spol'],['datum_rodjenja','Datum rođenja'],['drzavljanstvo','Državljanstvo'],
   ['drzava_prebivalista','Država prebivališta'],['grad_prebivalista','Grad prebivališta'],['vrsta_isprave','Vrsta isprave'],['broj_isprave','Broj isprave']]
+// vrijednost polja za prikaz: država kao ime (vodič sprema dvoslovni kod), datum po hrvatski
+const prikazPolja=(k,v)=>!v?'':k==='datum_rodjenja'?new Date(v+'T12:00:00').toLocaleDateString('hr-HR'):(k==='drzavljanstvo'||k==='drzava_prebivalista')&&/^[A-Z]{2}$/.test(v)?DR.ime(v,'hr'):v
 function dobNaDan(rodj,dan){if(!rodj)return null;const a=new Date(rodj+'T12:00:00'),b=new Date(dan+'T12:00:00');let g=b.getFullYear()-a.getFullYear();if(b<new Date(b.getFullYear(),a.getMonth(),a.getDate(),12))g--;return g}
 /* Pristojba po noćenju: djeca do 12 godina ne plaćaju, od 12 do 18 plaćaju pola.
    Paušal: iznos je godišnji po krevetu i ne ovisi o boravku. */
@@ -6029,9 +6035,10 @@ window.otvoriGoste=id=>{
   document.getElementById('gosti-sub').textContent=`${fmtD(bk.checkin_date)} – ${fmtD(bk.checkout_date)} · prijaviti u eVisitor u roku 24 sata od dolaska`
   const p=pristojba(bk,osobe)
   document.getElementById('gosti-body').innerHTML=(osobe.length
-    ?`<div class="an-tblwrap" style="margin-top:12px"><table class="an-tbl"><thead><tr>${POLJA_GOSTA.map(([,l])=>`<th scope="col">${l}</th>`).join('')}</tr></thead><tbody>${osobe.map(o=>`<tr>${POLJA_GOSTA.map(([k])=>`<td>${esc(k==='datum_rodjenja'&&o[k]?new Date(o[k]+'T12:00:00').toLocaleDateString('hr-HR'):o[k]||'—')}</td>`).join('')}</tr>`).join('')}</tbody></table></div>
+    ?`<div class="an-tblwrap" style="margin-top:12px"><table class="an-tbl"><thead><tr>${POLJA_GOSTA.map(([,l])=>`<th scope="col">${l}</th>`).join('')}</tr></thead><tbody>${osobe.map(o=>`<tr>${POLJA_GOSTA.map(([k])=>`<td>${esc(prikazPolja(k,o[k])||'—')}</td>`).join('')}</tr>`).join('')}</tbody></table></div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px"><button class="btn small" type="button" onclick="kopirajGoste('${id}')">Kopiraj kao tekst</button><button class="btn secondary small" type="button" onclick="csvGosti('${id}')">Preuzmi CSV</button><button class="btn ghost small" type="button" onclick="obrisiPrijavu('${id}')">Obriši podatke</button></div>
-      <p class="helper" style="margin-top:8px">Zadnje ažurirao gost: ${new Date(g.updated_at||g.created_at).toLocaleString('hr-HR')}. Podaci se brišu sami 30 dana nakon odlaska.</p>`
+      <p class="helper" style="margin-top:8px">Zadnje ažurirao gost: ${new Date(g.updated_at||g.created_at).toLocaleString('hr-HR')}. Podaci se brišu sami 30 dana nakon odlaska.</p>
+      <div id="ev-blok"></div>`
     :`<p class="helper" style="margin-top:12px">Gost još nije upisao podatke. U vodiču ih upisuje pod „Prijava boravka” — link ste mu već poslali.</p>`)
     +`<div class="card" style="margin:16px 0 0;background:var(--cream)"><h3 style="font:700 16px/1.3 var(--font-ui);margin-bottom:8px">Boravišna pristojba</h3>
       ${p?`<p style="margin-bottom:10px"><b>${esc(p.txt)}</b></p>`:''}
@@ -6040,6 +6047,71 @@ window.otvoriGoste=id=>{
       <div style="display:flex;justify-content:flex-end;margin-top:10px"><button class="btn secondary small" type="button" onclick="spremiPristojbu('${id}')">Spremi i izračunaj</button></div>
       <p class="helper" style="margin-top:6px">Iznos određuje vaša općina/grad. Djeca do 12 godina ne plaćaju, od 12 do 18 plaćaju pola.</p></div>`
   document.getElementById('gosti-dlg').showModal()
+  if(osobe.length)evNacrtaj(id)
+}
+
+// ── eVisitor iz dashboarda (api/_evisitor.js, sql/add-evisitor.sql) ──
+// Isključeno dok EVISITOR u Vercelu nije test/live — tada se blok ni ne pokazuje.
+// Lozinka za eVisitor se ne sprema nigdje: ide uz svaki zahtjev i ruta je zaboravi.
+let EV_NACIN=null,EV_SIF=null
+async function evNacin(){
+  if(EV_NACIN)return EV_NACIN
+  try{const r=await fetch('/api/sync-ical?evisitor=1');EV_NACIN=r.ok?((await r.json()).nacin||'off'):'off'}catch{EV_NACIN='off'}
+  return EV_NACIN
+}
+const evMeta=()=>USER?.user_metadata?.evisitor||{}
+const evPost=()=>(evMeta().objekti||{})[PROP?.id]||{}
+async function evPoziv(tijelo){
+  const{data:{session}}=await sb.auth.getSession()
+  const r=await fetch('/api/sync-ical?evisitor=1',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+(session?.access_token||'')},body:JSON.stringify(tijelo)})
+  const j=await r.json().catch(()=>({}))
+  return{ok:r.ok,...j}
+}
+async function evNacrtaj(id){
+  const el=document.getElementById('ev-blok');if(!el)return
+  const nacin=await evNacin();if(nacin==='off'){el.innerHTML='';return}
+  const g=PRIJAVE[id],st=g?.evisitor,p=evPost()
+  const sel=(k,l,lista)=>{const opc=(lista||(p[k]?[{kod:p[k],naziv:p[k+'_naziv']||p[k]}]:[]))
+    return`<div class="field"><label for="ev-${k}">${l}</label><select class="input" id="ev-${k}" data-bez-spremanja><option value="">${lista?'Odaberite':'Učitajte iz eVisitora'}</option>${opc.map(o=>`<option value="${esc(String(o.kod))}"${String(o.kod)===String(p[k]||'')?' selected':''}>${esc(String(o.naziv))}</option>`).join('')}</select></div>`}
+  const s=EV_SIF
+  el.innerHTML=`<div class="card" style="margin:16px 0 0;background:var(--cream)">
+    <h3 style="font:700 16px/1.3 var(--font-ui);margin-bottom:4px">Prijavi u eVisitor ${nacin==='test'?'<span class="sync-pill off">Testna okolina — prijave nisu stvarne</span>':''}</h3>
+    <p class="helper" style="margin-bottom:10px">Šaljemo podatke koje je gost upisao, vašim eVisitor računom. Lozinku ne spremamo — upisujete je pri svakom slanju.</p>
+    ${st?`<p style="margin-bottom:10px"><b>Zadnje slanje ${new Date(st.poslano_at).toLocaleString('hr-HR')}${st.nacin==='test'?' (test)':''}: ${st.osobe.filter(x=>x.ok).length} od ${st.osobe.length} prijavljeno.</b></p>`:''}
+    <div class="form-grid"><div class="field"><label for="ev-korisnik">Korisničko ime za eVisitor</label><input class="input" id="ev-korisnik" autocomplete="username" data-bez-spremanja value="${esc(evMeta().korisnik||'')}"></div>
+    <div class="field"><label for="ev-lozinka">Lozinka za eVisitor</label><input class="input" id="ev-lozinka" type="password" autocomplete="current-password" data-bez-spremanja></div>
+    ${sel('objekt','Objekt u eVisitoru',s?.objekti)}${sel('pristojba','Kategorija pristojbe',s?.pristojba)}${sel('dolazak','Organizacija dolaska',s?.dolazak)}${sel('usluga','Vrsta usluge',s?.usluga)}</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;margin-top:10px"><button class="btn ghost small" type="button" onclick="evSifrarnici('${id}')">Učitaj iz eVisitora</button><button class="btn small" type="button" id="ev-posalji" onclick="evPrijavi('${id}')">Prijavi ${g.osobe.length} ${A.mn(g.osobe.length,'osobu','osobe','osoba')}</button></div>
+    <div id="ev-rez" aria-live="polite" style="margin-top:10px">${st?evRezultati(st):''}</div></div>`
+}
+const evRezultati=st=>`<ul class="ev-rez">${st.osobe.map(o=>`<li class="${o.ok?'ok':'ne'}">${o.ok?'✓':'✕'} <b>${esc(o.ime||'Gost')}</b>${o.poruka?' — '+esc(o.poruka):''}</li>`).join('')}</ul>`
+const evPrijava=()=>({korisnik:v('ev-korisnik'),lozinka:document.getElementById('ev-lozinka')?.value||''})
+window.evSifrarnici=async id=>{
+  const pr=evPrijava();if(!pr.korisnik||!pr.lozinka){toast('Upišite korisničko ime i lozinku za eVisitor.');return}
+  const rez=document.getElementById('ev-rez');rez.textContent='Prijavljujem se u eVisitor…'
+  const r=await evPoziv({radnja:'sifrarnici',...pr})
+  if(!r.ok){rez.innerHTML=`<p class="helper" style="color:var(--danger)">${esc(r.error||'eVisitor nije odgovorio.')}</p>`;return}
+  EV_SIF=r;await evNacrtaj(id);document.getElementById('ev-korisnik').value=pr.korisnik;document.getElementById('ev-lozinka').value=pr.lozinka
+  // jedini ponuđeni izbor odaberi sam
+  ;['objekt','pristojba','dolazak','usluga'].forEach(k=>{const e=document.getElementById('ev-'+k);if(e&&!e.value&&e.options.length===2)e.selectedIndex=1})
+  document.getElementById('ev-rez').innerHTML=`<p class="helper">Učitano: ${r.objekti.length} ${A.mn(r.objekti.length,'objekt','objekta','objekata')}. Odaberite i prijavite.</p>`
+}
+window.evPrijavi=async id=>{
+  const pr=evPrijava();if(!pr.korisnik||!pr.lozinka){toast('Upišite korisničko ime i lozinku za eVisitor.');return}
+  const post={};for(const k of['objekt','pristojba','dolazak','usluga']){const e=document.getElementById('ev-'+k);post[k]=e?.value||'';post[k+'_naziv']=e?.selectedOptions[0]?.textContent||''}
+  if(!post.objekt||!post.pristojba||!post.dolazak||!post.usluga){toast('Odaberite objekt, kategoriju pristojbe, organizaciju dolaska i vrstu usluge (Učitaj iz eVisitora).');return}
+  const sec=SECTION||{}
+  const b=document.getElementById('ev-posalji');b.disabled=true
+  const rez=document.getElementById('ev-rez');rez.textContent='Šaljem u eVisitor…'
+  const r=await evPoziv({radnja:'prijavi',...pr,booking_id:id,postavke:{objekt:post.objekt,pristojba:post.pristojba,dolazak:post.dolazak,usluga:post.usluga,vrijeme_dolaska:sec.checkin_time||'',vrijeme_odlaska:sec.checkout_time||''}})
+  b.disabled=false
+  if(!r.ok){rez.innerHTML=`<p class="helper" style="color:var(--danger)">${esc(r.error||'eVisitor nije odgovorio.')}</p>`;return}
+  if(PRIJAVE[id])PRIJAVE[id].evisitor=r
+  rez.innerHTML=evRezultati(r)
+  const n=r.osobe.filter(x=>x.ok).length;toast(n===r.osobe.length?`Prijavljeno u eVisitor: ${n}`:`Prijavljeno ${n} od ${r.osobe.length} — pogledajte što nedostaje`)
+  // korisničko ime i postavke objekta pamte se (lozinka ne)
+  const m=evMeta();const objekti={...(m.objekti||{}),[PROP.id]:post}
+  try{const{data}=await sb.auth.updateUser({data:{evisitor:{korisnik:pr.korisnik,objekti}}});if(data?.user)USER=data.user}catch{}
 }
 window.spremiPristojbu=async id=>{
   const nacin=v('pr-nacin')||null,iznos=v('pr-iznos')===''?null:Number(v('pr-iznos'))
@@ -6047,12 +6119,12 @@ window.spremiPristojbu=async id=>{
   if(error){toast(/pristojba/.test(error.message)?'Postavke pristojbe još nisu uključene — pokrenite sql/add-guest-registration.sql.':'Greška: '+error.message);return}
   PROP.pristojba_nacin=nacin;PROP.pristojba_iznos=iznos;toast('Spremljeno');window.otvoriGoste(id)
 }
-const tekstGosta=o=>POLJA_GOSTA.map(([k,l])=>o[k]?l+': '+(k==='datum_rodjenja'?new Date(o[k]+'T12:00:00').toLocaleDateString('hr-HR'):o[k]):'').filter(Boolean).join('\n')
+const tekstGosta=o=>POLJA_GOSTA.map(([k,l])=>o[k]?l+': '+prikazPolja(k,o[k]):'').filter(Boolean).join('\n')
 window.kopirajGoste=id=>{const o=(PRIJAVE[id]?.osobe)||[];navigator.clipboard?.writeText(o.map((x,i)=>`Osoba ${i+1}\n`+tekstGosta(x)).join('\n\n'));toast('Kopirano')}
 window.csvGosti=id=>{
   const o=(PRIJAVE[id]?.osobe)||[],bk=(window.BK_LISTA||[]).find(b=>b.id===id)
   const q=x=>'"'+String(x??'').replace(/"/g,'""')+'"'
-  const csv='﻿'+[['Dolazak','Odlazak',...POLJA_GOSTA.map(([,l])=>l)].map(q).join(';'),...o.map(x=>[bk?.checkin_date,bk?.checkout_date,...POLJA_GOSTA.map(([k])=>x[k])].map(q).join(';'))].join('\r\n')
+  const csv='﻿'+[['Dolazak','Odlazak',...POLJA_GOSTA.map(([,l])=>l)].map(q).join(';'),...o.map(x=>[bk?.checkin_date,bk?.checkout_date,...POLJA_GOSTA.map(([k])=>k==='datum_rodjenja'?x[k]:prikazPolja(k,x[k]))].map(q).join(';'))].join('\r\n')
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download=`gosti-${bk?.checkin_date||'boravak'}.csv`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)
 }
 window.obrisiPrijavu=async id=>{if(!await potvrdi('Obrisati podatke gostiju za ovaj boravak? (npr. nakon što ste ih prijavili u eVisitor)',{da:'Obriši',opasno:true}))return;const{error}=await sb.from('guest_registrations').delete().eq('booking_id',id);if(error){toast('Greška: '+error.message);return}delete PRIJAVE[id];document.getElementById('gosti-dlg').close();toast('Podaci obrisani');window.loadBookings()}

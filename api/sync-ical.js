@@ -5,14 +5,22 @@
 // access tokenom, pa RLS i dalje odlučuje što smije pročitati i
 // upisati — korisnik može sinkronizirati samo vlastiti objekt.
 // Sama sinkronizacija je u api/_ical.js (dijeli je i api/sync-all.js).
+//
+// Ista funkcija nosi i prijavu gostiju u eVisitor (?evisitor=1 → api/_evisitor.js)
+// — isti obrazac: korisnikov token, RLS; na Hobby planu je 12/12 funkcija.
 // ============================================================
 
 const I = require('./_ical.js');
+const EV = require('./_evisitor.js');
 
 module.exports = async (req, res) => {
   const propertyId = (req.query && req.query.property_id) || '';
   const auth = req.headers.authorization || '';
   const token = auth.startsWith('Bearer ') ? auth.slice(7) : '';
+  if (req.query && req.query.evisitor) {
+    try { return await EV.obradi(req, res, token, I.rest); }
+    catch (e) { res.status(500).json({ error: String(e && e.message || e) }); return; }
+  }
 
   if (!propertyId) { res.status(400).json({ error: 'Nedostaje property_id.' }); return; }
   if (!token) { res.status(401).json({ error: 'Niste prijavljeni.' }); return; }

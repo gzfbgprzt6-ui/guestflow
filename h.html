@@ -1014,6 +1014,7 @@ body[data-v="ulaz"] .gfoot{display:none}
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import * as L from '/jezici.js'
 import { veselje, kvacica } from '/pokret.js'
+import * as DR from '/drzave.js'
 
 // jezik sučelja odmah (i za poruke o neispravnom linku); plan domaćina i
 // prijevod njegovih tekstova stižu s /api/prevedi — vidi pripremiJezik()
@@ -2174,7 +2175,7 @@ window.posaljiOcjenu = async () => {
 const POLJA = [
   ['ime', 'Ime', 'text', 'given-name'], ['prezime', 'Prezime', 'text', 'family-name'],
   ['spol', 'Spol', ['', 'M', 'Ž']], ['datum_rodjenja', 'Datum rođenja', 'date', 'bday'],
-  ['drzavljanstvo', 'Državljanstvo', 'text', 'off'], ['drzava_prebivalista', 'Država prebivališta', 'text', 'country-name'],
+  ['drzavljanstvo', 'Državljanstvo', 'drzava'], ['drzava_prebivalista', 'Država prebivališta', 'drzava'],
   ['grad_prebivalista', 'Grad prebivališta', 'text', 'address-level2'],
   ['vrsta_isprave', 'Vrsta isprave', ['', 'Osobna iskaznica', 'Putovnica', 'Ostalo']], ['broj_isprave', 'Broj isprave', 'text', 'off']
 ]
@@ -2205,11 +2206,26 @@ function crtajOsobe() {
   $('#osobe').innerHTML = OSOBE.map((o, i) => `<div class="osoba" role="group" aria-labelledby="os-h${i}">
     <div class="osoba__h"><span id="os-h${i}">${esc(t('Osoba {n}', { n: i + 1 }))}</span>${i ? `<button class="btn btn--text btn--sm" type="button" onclick="makniOsobu(${i})">${esc(t('Makni'))}</button>` : ''}</div>
     <div class="osoba__g">${POLJA.map(([k, l, vrsta, ac]) => `<label class="fld">${esc(t(l))}${k === 'ime' || k === 'prezime' ? ' *' : ''}
-      ${Array.isArray(vrsta)
+      ${vrsta === 'drzava' ? drzavaSelect(k, o[k]) : Array.isArray(vrsta)
         // vrijednost ostaje hrvatska (domaćin je prepisuje u eVisitor), prevodi se samo natpis
         ? `<select data-k="${k}">${vrsta.map(x => `<option value="${esc(x)}"${(o[k] || '') === x ? ' selected' : ''}>${esc(x ? t(x) : t('Odaberite'))}</option>`).join('')}</select>`
         : `<input data-k="${k}" type="${vrsta}" autocomplete="${ac}" value="${esc(o[k] || '')}"${vrsta === 'date' ? ` max="${maks}"` : ' maxlength="60"'}${k === 'ime' || k === 'prezime' ? ' required' : ''}>`}
     </label>`).join('')}</div></div>`).join('')
+}
+// država s popisa: u bazu ide dvoslovni kod (eVisitor ga prepozna), ime na jeziku gosta;
+// stari upis slobodnim tekstom ostaje kao zasebna opcija dok ga gost ne promijeni
+let DRZ_OPCIJE = null
+function drzavaSelect(k, v) {
+  const jez = L.stanje?.().jezik || document.documentElement.lang || 'hr'
+  if (!DRZ_OPCIJE || DRZ_OPCIJE.jez !== jez) {
+    const sve = DR.KODOVI.map(x => [x, DR.ime(x, jez)]).sort((a, b) => a[1].localeCompare(b[1], jez))
+    const prve = DR.PRVE.map(x => [x, DR.ime(x, jez)])
+    DRZ_OPCIJE = { jez, html: `<optgroup label="${esc(t('Najčešće'))}">${prve.map(([c, n]) => `<option value="${c}">${esc(n)}</option>`).join('')}</optgroup><optgroup label="${esc(t('Sve države'))}">${sve.map(([c, n]) => `<option value="${c}">${esc(n)}</option>`).join('')}</optgroup>` }
+  }
+  const kod = DR.uKod(v)
+  const staro = v && !kod ? `<option value="${esc(v)}" selected>${esc(v)}</option>` : ''
+  const html = `<option value="">${esc(t('Odaberite'))}</option>` + staro + DRZ_OPCIJE.html
+  return `<select data-k="${k}" autocomplete="${k === 'drzava_prebivalista' ? 'country' : 'off'}">${kod ? html.replace(`<option value="${kod}">`, `<option value="${kod}" selected>`) : html}</select>`
 }
 function procitajOsobe() {
   OSOBE = $$('#osobe .osoba').map(el => Object.fromEntries([...el.querySelectorAll('[data-k]')].map(x => [x.dataset.k, x.value.trim()])))
