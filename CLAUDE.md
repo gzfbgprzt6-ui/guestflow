@@ -687,6 +687,16 @@ Dashboard **ne učitava `odmoria.css`** — ima vlastiti potpun CSS s istim vrij
   polja (`label[for]`), radnje, objekti, gosti (`AN.bookings`), upiti, preporuke,
   pravila, pitanja i katalog sadržaja; `tbPokazi(sel)` skrolne i bljesne
   (`.tb-bljesak`).
+- **Kalendar v5** (20. 10.): `.day.busy.rez` tinta (izravno), `.day.ical`
+  sivo + značka `.plt` B/A na početku trake, ručno = svijetlo šrafirano,
+  **praznine** 1–3 noći između boravaka (`racunajPraznine()` →
+  `CAL_PRAZ`, `A.praznine(…,3)`) = sunce, crtkano (`.praz`), danas = sunčani
+  krug oko broja. Ispod kalendara `#cal-strana` (`calStrana()`): popunjenost
+  30 dana, noći izravno, s platformi + popis praznina s
+  **„Kopiraj link s datumima”** (`kopirajLinkSDatumima()` →
+  `/p/<slug>?od=&do=`) i „Objava” (`otvoriObjave`). `p.html`
+  `terminIzAdrese()` označi termin iz `?od=&do=` (samo budući, `od < do`) i
+  skrolne do kalendara. Traka mjeseca (`.cal-traka`) i `#cal-stat` skriveni.
 - **v4 (19. 10., odluke 34) — vodič na jednoj stranici i dashboard u 4 dijela.**
   *Vodič:* nema podstranica osim `#ulaz` (korak po korak) i `#prijava`
   (eVisitor obrazac). Početna: karta → trake `#skok` (skrolaju do odjeljka,

@@ -882,6 +882,7 @@ async function loadPage() {
     ZIVO = true; zivo()
     show('#cal-sec')
     renderCal()
+    terminIzAdrese()
   } else {
     // bez kalendara „Provjeri dostupnost” vodi ravno na upit
     $('#sum-cal').href = '#upit'
@@ -902,6 +903,19 @@ async function loadPage() {
   show('#page')
   watchHeader()
   watchDock()
+}
+
+/* „Kopiraj link s datumima” iz dashboarda: /p/<slug>?od=YYYY-MM-DD&do=YYYY-MM-DD
+   otvori kalendar na tom mjesecu i označi termin (ako je još slobodan). */
+function terminIzAdrese() {
+  const q = new URLSearchParams(location.search), od = q.get('od'), dO = q.get('do'), D = /^\d{4}-\d{2}-\d{2}$/
+  if (!D.test(od || '') || !D.test(dO || '') || od >= dO) return
+  const d = new Date(), danas = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+  if (od < danas) return
+  calYear = +od.slice(0, 4); calMonth = +od.slice(5, 7) - 1
+  renderCal()
+  window.pickDate(od); window.pickDate(dO)
+  if (checkinDs === od) setTimeout(() => document.getElementById('dostupnost')?.scrollIntoView({ block: 'start' }), 300)
 }
 
 let PODACI = null

@@ -217,7 +217,7 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
 /* ── PREGLED u stilu „nekretnine” (vlasnik, 4. 10. 2026.): bijele zaobljene
    kartice na perli, crne kapsule, narančasti naglasak; podaci isti kao prije */
 .editor:has(#section-overview.active) .property-banner { display: none; }
-#section-overview { --ov-r: 22px; --ov-sjena: 0 1px 2px rgba(18,48,58,.04), 0 14px 34px -18px rgba(18,48,58,.22); --ov-crna: #12303A; --ov-naranca: #E9B577; }
+#section-overview { --ov-r: 22px; --ov-sjena: 0 1px 2px rgba(18,48,58,.04), 0 14px 34px -18px rgba(18,48,58,.22); --ov-crna: #12303A; --ov-naranca: #F2B33D; }
 #section-overview .card, .ov-hero, .ov-objekti-k, .ov-karta-k { border: 1px solid rgba(18,48,58,.06); border-radius: var(--ov-r); background: #fff; box-shadow: var(--ov-sjena); }
 .ov-hero { display: grid; gap: 18px; margin-bottom: 16px; padding: 18px; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); }
 .ov-hero__l { display: flex; min-width: 0; flex-direction: column; padding: 6px 4px 4px 6px; }
@@ -1282,6 +1282,43 @@ section.v5-prazno{display:none!important}
 .zakl span{font-size:13.5px;line-height:1.45}
 .zakl-plan{flex:none;min-height:34px;padding:0 14px;border:0;border-radius:999px;background:var(--brown,#12303A);color:#fff;cursor:pointer;font:800 12.5px/1 var(--font-ui)}
 .zakl-plan:hover{filter:brightness(1.15)}
+
+/* ===== KALENDAR v5 (20. 10. 2026.): tinta = izravno, sivo + B/A = platforme,
+   šrafirano = blokirano, sunce = praznina 1–3 noći i danas ===== */
+.day { border-color: var(--line); }
+.day.busy.rez { background: var(--ink); }
+.day.busy:not(.rez):not(.ical) { background: repeating-linear-gradient(135deg, #E3E5E0 0 4px, #F3F2EC 4px 9px); color: var(--ink); }
+.day.ical, .day.ical.airbnb { background: #C9CFCC; color: var(--ink); }
+.day.ical .plt { position: absolute; right: 7px; bottom: 7px; display: grid; place-items: center; width: 18px; height: 18px; border-radius: 6px; background: #fff; color: var(--ink); font: 800 10.5px/1 var(--font-ui); }
+.day.praz { background: var(--sunce-meko); border: 1.5px dashed var(--sunce); }
+.day.praz:not(.praz-poc) { margin-left: calc(-1 * var(--cg)); padding-left: calc(10px + var(--cg)); border-left: 0; border-top-left-radius: 0; border-bottom-left-radius: 0; }
+.day.praz:not(.praz-kraj) { border-right: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; }
+.day .dl--praz { color: var(--warm-ink); }
+.day.danas { border-color: var(--line); box-shadow: none; }
+.day.danas > span:first-child { display: inline-grid; place-items: center; min-width: 26px; height: 26px; margin: -4px 0 0 -5px; padding: 0 4px; border-radius: 99px; background: var(--sunce); color: var(--ink); }
+.day.busy.danas, .day.ical.danas { box-shadow: none; }
+.day.proslo.busy, .day.proslo.ical { opacity: .5; }
+.day.rstart { background: var(--ink); border-color: var(--ink); }
+.calendar-legend .lg-rez { background: var(--ink) !important; }
+.calendar-legend .lg-booking { background: #C9CFCC !important; }
+.calendar-legend .lg-rucno { background: repeating-linear-gradient(135deg, #D2D7D3 0 3px, #F3F2EC 3px 6px) !important; }
+.calendar-legend .lg-praz { background: var(--sunce-meko); border: 1.5px dashed var(--sunce); }
+.calendar-legend .lg-danas { background: var(--sunce); border-radius: 99px !important; }
+.calendar-legend .lg-airbnb, .calendar-legend .lg-slobodno { display: none; }
+.cal-strana { display: grid; gap: 16px; margin-top: 18px; padding: 18px; border: 1px solid var(--line); border-radius: var(--radius); background: #fff; }
+.cs-br { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.cs-br > div { padding: 12px 14px; border-radius: var(--radius-sm); background: var(--paper-2); }
+.cs-br small { display: block; color: var(--muted); font: 600 12.5px/1.3 var(--font-ui); }
+.cs-br b { display: block; margin-top: 4px; font: 800 24px/1.1 var(--font-ui); letter-spacing: -.02em; }
+.cs-pr h3 { margin: 0 0 8px; font: 800 16px/1.3 var(--font-ui); }
+.cs-pr h3 span { margin-left: 6px; color: var(--muted); font: 500 13px/1.3 var(--font-body); }
+.cs-pz { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 14px; margin-bottom: 8px; border: 1.5px dashed var(--sunce); border-radius: var(--radius-sm); background: var(--sunce-meko); }
+.cs-pz b { font: 800 15px/1.3 var(--font-ui); }
+.cs-pz small { display: block; color: var(--warm-ink); font-size: 13px; }
+.cs-pz__a { display: flex; flex-wrap: wrap; gap: 8px; }
+.cal-traka { display: none !important; }
+.cs-nap { margin: 6px 0 0; color: var(--muted); font-size: 13px; }
+@media (max-width: 780px) { .cal-strana { padding: 14px; } .cs-br { gap: 6px; } .cs-br > div { padding: 10px; } .cs-br small { font-size: 11.5px; } .cs-br b { font-size: 20px; } .day.ical .plt { width: 15px; height: 15px; right: 4px; bottom: 4px; font-size: 9px; } .day.danas > span:first-child { min-width: 22px; height: 22px; margin: -2px 0 0 -2px; } }
 </style>
 <script type="module">import{pokreni,prekidac}from'/domacin-jezik.js';pokreni();prekidac(document.getElementById('jezik-sw'))</script>
 </head>
@@ -2006,7 +2043,7 @@ section.v5-prazno{display:none!important}
             <div class="card-head"><div class="card-title-wrap"><span class="card-number">11</span><div><h2>Dostupnost</h2><p>Klikni prvi i zadnji datum da označiš cijeli period zauzetim.</p></div></div></div>
             <div class="calendar">
               <div class="calendar-head">
-                <div class="cal-naslov"><strong id="cal-title"></strong><span class="cal-stat" id="cal-stat"></span></div>
+                <div class="cal-naslov"><strong id="cal-title"></strong><span class="cal-stat" id="cal-stat" hidden></span></div>
                 <div class="calendar-nav"><button type="button" class="cal-danas" onclick="calDanas()">Danas</button><button type="button" onclick="calNav(-1)" aria-label="Prethodni mjesec"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button><button type="button" onclick="calNav(1)" aria-label="Sljedeći mjesec"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button></div>
               </div>
               <!-- dva mjeseca jedan do drugog (vlasnik, 16. 10.); na mobitelu jedan, sljedeći povlačenjem prsta -->
@@ -2015,8 +2052,9 @@ section.v5-prazno{display:none!important}
                 <div class="cal-mj cal-mj--2"><div class="cal-mj__t" id="cal-t2"></div><div class="cal-traka" id="cal-traka2" aria-hidden="true"></div><div class="weekdays"><span>Pon</span><span>Uto</span><span>Sri</span><span>Čet</span><span>Pet</span><span>Sub</span><span>Ned</span></div><div class="calendar-days" id="cal-days2"></div></div>
               </div>
               <div class="cal-range-lbl" id="cal-range-lbl"></div>
-              <div class="calendar-legend"><span><i class="lg-slobodno"></i>Slobodno</span><span><i class="lg-rez"></i>Rezervacija (ime gosta)</span><span><i class="lg-rucno"></i>Zauzeto ručno</span><span><i class="lg-booking"></i>Booking.com</span><span><i class="lg-airbnb"></i>Airbnb</span><span class="cal-savjet">Booking i Airbnb se mijenjaju sami (sinkronizacija)</span></div>
+              <div class="calendar-legend"><span><i class="lg-rez"></i>Izravno (vaša rezervacija)</span><span><i class="lg-booking"></i>Booking · Airbnb</span><span><i class="lg-rucno"></i>Blokirano ručno</span><span><i class="lg-praz"></i>Praznina 1–3 noći</span><span><i class="lg-danas"></i>Danas</span><span class="cal-savjet">Klik na slobodan dan ga blokira; Booking i Airbnb se mijenjaju sami.</span></div>
             </div>
+            <div class="cal-strana" id="cal-strana"></div>
           </div>
         </section>
 
@@ -4062,6 +4100,8 @@ function crtajMjesec(y,m,danas){
     if(ical)cls+=' ical'+(red&&red.source==='ical_airbnb'?' airbnb':'')
     else if(rangeStart===ds)cls+=' rstart'
     else if(taken)cls+=' busy'+(red&&red.booking_id?' rez':'')
+    const praz=!ical&&!taken&&CAL_PRAZ.get(ds)
+    if(praz)cls+=' praz'+(praz.start===ds||dt===0||d===1?' praz-poc':'')+(pomakDana(ds,1)===praz.end||dt===6||d===dim?' praz-kraj':'')
     if((ical||taken)&&rangeStart!==ds){if(poc)cls+=' poc';if(kraj)cls+=' kraj'}
     if(dt>4)cls+=' vikend'
     if(ds<danas)cls+=' proslo'
@@ -4070,14 +4110,26 @@ function crtajMjesec(y,m,danas){
     traka+=`<i class="${ical?(red&&red.source==='ical_airbnb'?'a':'b'):taken?(red&&red.booking_id?'z':'r'):''}"></i>`
     // oznaka samo na prvom danu niza u tjednu (da se vidi čije je)
     const pokazi=lbl&&poc
-    const opis=`${d}. ${MONTHS[m].toLowerCase()}: ${lbl||(taken?'zauzeto':'slobodno')}`
-    h+=`<button type="button" class="${cls}" data-ds="${ds}" aria-label="${esc(opis)}" onclick="toggleDay('${ds}')" onmouseover="previewRange('${ds}')"><span>${d}</span>${ds===danas?'<em class="dn">danas</em>':''}${pokazi?`<small class="dl">${esc(lbl)}</small>`:''}</button>`
+    const plt=ical&&poc?`<b class="plt" aria-hidden="true">${red&&red.source==='ical_airbnb'?'A':'B'}</b>`:''
+    const opis=`${d}. ${MONTHS[m].toLowerCase()}: ${lbl||(taken?'zauzeto':praz?'praznina '+praz.nights+' '+(praz.nights===1?'noć':'noći'):'slobodno')}`
+    const pl=praz&&praz.start===ds?`<small class="dl dl--praz">${praz.nights} ${praz.nights===1?'noć':'noći'}</small>`:''
+    h+=`<button type="button" class="${cls}" data-ds="${ds}" aria-label="${esc(opis)}" onclick="toggleDay('${ds}')" onmouseover="previewRange('${ds}')"><span>${d}</span>${ds===danas?'<em class="dn">danas</em>':''}${plt}${pokazi&&!ical?`<small class="dl">${esc(lbl)}</small>`:''}${pl}</button>`
   }
   return {h,traka,zauzeto,dim}
+}
+/* v5: praznine od 1–3 noći između dva boravka — sunce, s radnjama ispod kalendara */
+let CAL_PRAZ=new Map()
+function racunajPraznine(danas){
+  const zauz=new Set([...bookedDays,...icalDays])
+  CAL_PRAZ=new Map()
+  const lista=A.praznine(zauz,danas,A.plusDana(danas,400),3)
+  lista.forEach(g=>{for(let i=0;i<g.nights;i++)CAL_PRAZ.set(A.plusDana(g.start,i),g)})
+  return lista
 }
 function renderCal(){
   const danas=fmtLocal(new Date())
   const y2=calMonth===11?calYear+1:calYear,m2=(calMonth+1)%12
+  const praznine=racunajPraznine(danas)
   filledSet=new Set()
   const a=crtajMjesec(calYear,calMonth,danas),b=crtajMjesec(y2,m2,danas)
   const jedan=matchMedia('(max-width: 1100px)').matches   // tada se vidi samo prvi mjesec
@@ -4090,6 +4142,28 @@ function renderCal(){
   const st=document.getElementById('cal-stat')
   const z=a.zauzeto+(jedan?0:b.zauzeto),n=a.dim+(jedan?0:b.dim)
   if(st)st.textContent=`${z} od ${n} noći zauzeto · popunjenost ${Math.round(z/n*100)} %`
+  calStrana(danas,praznine)
+}
+/* kartica uz kalendar: brojke 30 dana i praznine s radnjama */
+function calStrana(danas,praznine){
+  const el=document.getElementById('cal-strana');if(!el)return
+  const zauz=new Set([...bookedDays,...icalDays])
+  let z=0,iz=0,pl=0
+  for(let i=0;i<30;i++){const ds=A.plusDana(danas,i);if(!zauz.has(ds))continue;z++;const r=AVAIL_MAP[ds];if(icalDays.includes(ds))pl++;else if(r&&r.booking_id)iz++}
+  const bliz=praznine.filter(g=>g.start<A.plusDana(danas,60)).slice(0,4)
+  const dan=x=>A.fmtKratko(x)
+  el.innerHTML=`<div class="cs-br"><div><small>Popunjenost · 30 dana</small><b>${Math.round(z/30*100)} %</b></div><div><small>Noći izravno</small><b>${iz}</b></div><div><small>S platformi</small><b>${pl}</b></div></div>`
+    +`<div class="cs-pr"><h3>Praznine <span>1–3 noći između boravaka</span></h3>`
+    +(bliz.length?bliz.map(g=>`<div class="cs-pz"><div><b>${dan(g.start)} – ${dan(g.end)}</b><small>${g.nights} ${g.nights===1?'noć':'noći'} · teško se proda preko platforme</small></div>
+        <div class="cs-pz__a"><button type="button" class="btn small" onclick="kopirajLinkSDatumima('${g.start}','${g.end}',this)">Kopiraj link s datumima</button><button type="button" class="btn secondary small" onclick="otvoriObjave('${g.start}','${g.end}')">Objava</button></div></div>`).join('')
+      :'<p class="helper">Nema kratkih praznina u sljedeća 2 mjeseca.</p>')
+    +`<p class="cs-nap">„Link s datumima” otvara vašu javnu stranicu s već označenim terminom — gost samo pošalje upit.</p></div>`
+}
+window.kopirajLinkSDatumima=async(od,doD,btn)=>{
+  if(!PROP)return
+  const url=publicUrl(PROP.slug)+(publicUrl(PROP.slug).includes('?')?'&':'?')+'od='+od+'&do='+doD
+  try{await navigator.clipboard.writeText(url);toast('Link je kopiran: '+url)}
+  catch{toast(url)}
 }
 matchMedia('(max-width: 1100px)').addEventListener('change',()=>{if(PROP)renderCal()})
 // mobitel: povlačenje prsta mijenja mjesec
