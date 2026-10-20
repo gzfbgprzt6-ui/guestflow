@@ -1328,16 +1328,25 @@ section.v5-prazno{display:none!important}
 
 /* v5: izravne rezervacije */
 .sez-lista { display: grid; gap: 8px; margin-bottom: 12px; }
+.cij-pr:empty { display: none; }
+.cij-pr { display: grid; gap: 8px; margin-bottom: 16px; padding: 14px; border-radius: var(--radius); background: var(--paper-2); }
+.cij-pr h3 { font: 700 15px/1.3 var(--font-ui); }
+.cij-pr__i { display: flex; gap: 12px; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; padding: 10px 0; border-top: 1px solid var(--line); }
+.cij-pr__i > div:first-child { flex: 1 1 280px; min-width: 0; }
+.cij-pr__i p { margin: 2px 0 0; font-size: 14px; color: var(--muted); }
+.cij-pr__b { display: flex; gap: 6px; flex-wrap: wrap; }
 .sez { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)) auto; gap: 8px; align-items: end; }
 .sez-op { grid-column: 1 / -1; color: var(--muted); font-size: 12.5px; margin-top: -2px; }
 .sez label span { display: block; margin-bottom: 4px; color: var(--muted); font: 600 12.5px/1.2 var(--font-ui); }
+.sez label { min-width: 0; }
+.sez .input { min-width: 0; width: 100%; }
 .ponuda-dlg { width: min(620px, calc(100vw - 32px)); max-height: calc(100vh - 48px); overflow: auto; }
 .ponuda-dlg h2 { font: 700 22px/1.3 var(--font-ui); letter-spacing: -.02em; }
 .po-akc { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
 .an-tag.is-ok { background: var(--sunce-meko); color: var(--ink); }
 #pov-lista .an-row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; padding: 12px 0; border-top: 1px solid var(--line); }
 #pov-lista .an-row small { display: block; color: var(--muted); }
-@media (max-width: 600px) { .sez { grid-template-columns: 1fr 1fr; } .sez label:nth-child(3) { grid-column: 1 / 2; } }
+@media (max-width: 600px) { .sez { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .sez label:nth-child(3) { grid-column: 1 / 2; } }
 
 /* v5 agencija */
 .ag-danas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
@@ -2108,6 +2117,7 @@ section.v5-prazno{display:none!important}
           <!-- v5: izravne rezervacije (sql/add-direct-bookings.sql) — Odmoria ne obrađuje plaćanje -->
           <div class="card" id="izravno-card" data-mog="izravno">
             <div class="card-head"><div class="card-title-wrap"><span class="card-number">€</span><div><h2>Sezonske cijene i kapara</h2><p>Gost u upitu odmah vidi okvirni iznos, a vi iz upita šaljete ponudu s kaparom na svoj račun.</p></div></div><span class="card-hint">Novac ide izravno vama — Odmoria ga ne dira.</span></div>
+            <div id="cij-prijedlozi" class="cij-pr" aria-live="polite"></div>
             <div id="sez-lista" class="sez-lista"></div>
             <button class="btn secondary small" type="button" onclick="dodajSezonu()">+ Dodaj sezonu</button>
             <div class="form-grid" style="margin-top:18px">
@@ -2531,7 +2541,7 @@ import * as A from'./analitika.js'
 import * as O from'./objave.js'
 import * as JZ from'./jezici.js'
 import{kvacica}from'./pokret.js'
-import{cijenaBoravka,uMD,izMD}from'./cijene.js'
+import{cijenaBoravka,uMD,izMD,prijedloziCijena}from'./cijene.js'
 import{SADRZAJI,SKUPINE}from'./sadrzaji.js'
 import * as DR from'./drzave.js'
 import * as OSMM from'./mjesta-osm.js'
@@ -3635,7 +3645,25 @@ function nacrtajSezone(){
       <small class="sez-op">${x.od&&x.do?`Svake godine ${esc(izMD(x.od))} – ${esc(izMD(x.do))}`:'Odaberite datume u kalendaru'}</small></div>`).join('')
     :'<p class="helper">Bez sezona vrijedi cijena po noćenju iznad. Dodajte npr. 1. 7. – 31. 8. po višoj cijeni — sezona vrijedi svake godine.</p>'
   el.querySelectorAll('input[type=date]').forEach(i=>i.addEventListener('change',()=>{citajSezone();nacrtajSezone()}))
+  nacrtajPrijedloge()
 }
+/* Prijedlozi cijena po pravilima (cijene.js) — iz kalendara i trenutnih sezona.
+   „Primijeni” samo popuni sezone ispod; spremanje je i dalje domaćinovo. */
+let CIJ_PR=[]
+const prSkriveni=()=>{try{return JSON.parse(localStorage.getItem('odm-cij-skriveno:'+PROP?.id)||'[]')}catch{return[]}}
+function nacrtajPrijedloge(){
+  const el=document.getElementById('cij-prijedlozi');if(!el||!PROP)return
+  const zauz=new Set((AVAIL_ROWS||[]).filter(r=>r.is_booked!==false).map(r=>r.date))
+  const skr=prSkriveni()
+  CIJ_PR=prijedloziCijena({...PROP,sezonske_cijene:SEZ},zauz,A.danas()).filter(x=>!skr.includes(x.id))
+  el.innerHTML=CIJ_PR.length?`<h3>Prijedlozi cijena</h3>${CIJ_PR.map((x,i)=>`<div class="cij-pr__i"><div><b>${esc(x.naslov)}</b><p>${esc(x.tekst)}</p></div>
+    <div class="cij-pr__b">${x.sezone?`<button class="btn small" type="button" onclick="primijeniPrijedlog(${i})">Primijeni</button>`:''}${x.objava?`<button class="btn secondary small" type="button" onclick="otvoriObjave('${x.objava.od}','${x.objava.do}')">Napravi objavu</button>`:''}<button class="btn ghost small" type="button" onclick="sakrijPrijedlog('${x.id}')" aria-label="Sakrij prijedlog">Sakrij</button></div></div>`).join('')}
+    <p class="helper">Prijedlozi gledaju samo vaš kalendar i cijene — nijedna cijena se ne mijenja dok ne spremite.</p>`:''
+}
+window.primijeniPrijedlog=i=>{const x=CIJ_PR[i];if(!x?.sezone)return
+  SEZ=x.sezone.slice(0,12).map(s=>({...s}));nacrtajSezone()
+  window.markDirty&&markDirty(document.getElementById('section-pricing'));toast('Sezone su popunjene — pregledajte ih i spremite')}
+window.sakrijPrijedlog=id=>{try{localStorage.setItem('odm-cij-skriveno:'+PROP.id,JSON.stringify([...prSkriveni(),id].slice(-30)))}catch{};nacrtajPrijedloge()}
 function citajSezone(){
   const md=v=>/^\d{4}-\d{2}-\d{2}$/.test(v||'')?v.slice(5):''
   SEZ=[...document.querySelectorAll('#sez-lista .sez')].map(r=>({od:md(r.querySelector('[data-sz=od]').value),do:md(r.querySelector('[data-sz=do]').value),cijena:Number(r.querySelector('[data-sz=cijena]').value)||0}))
@@ -4566,6 +4594,7 @@ async function loadAvail(){
   const{data}=await sb.from('availability').select('*').eq('property_id',PROP.id)
   AVAIL_ROWS=data||[]
   AVAIL_MAP=Object.fromEntries(AVAIL_ROWS.map(r=>[r.date,r]))
+  nacrtajPrijedloge()
   if(AVAIL_ROWS.some(r=>r.booking_id)){
     const{data:bk}=await sb.from('bookings').select('id,guest_name').eq('property_id',PROP.id)
     CAL_BK=Object.fromEntries((bk||[]).map(b=>[b.id,String(b.guest_name||'Gost').trim().split(/\s+/)[0]]))
