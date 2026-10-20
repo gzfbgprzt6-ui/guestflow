@@ -3790,6 +3790,9 @@ async function ucitajAdresu(){
   const cij=document.getElementById('adresa-cijena')
   if(!('poddomena' in PROP)||!ADR_DODATAK){cij.textContent='';el.innerHTML='<p class="helper">Vlastita adresa još nije uključena — u Supabaseu treba pokrenuti <code>sql/add-subdomain.sql</code>.</p>';return}
   cij.textContent=formatEur(Number(ADR_DODATAK.cijena_god))+' godišnje po objektu'
+  // dok domena ne radi (dodaci.aktivan = false) ništa se ne prodaje
+  if(!ADR_DODATAK.aktivan&&!(PROP.poddomena_do&&new Date(PROP.poddomena_do)>new Date())){
+    el.innerHTML='<p class="helper"><b>Uskoro.</b> Kratka adresa za vaš objekt (npr. <span translate="no">vila-maslina.odmoria.hr</span>) stiže uskoro — javit ćemo vam kad je možete uzeti.</p>';return}
   const aktivna=PROP.poddomena&&PROP.poddomena_do&&new Date(PROP.poddomena_do)>new Date()
   if(PROP.__dijeljen){el.innerHTML=aktivna?`<p><b translate="no">${esc(PROP.poddomena)}.${ADR_DOMENA}</b> · aktivna</p>`:'<p class="helper">Vlastitu adresu uključuje vlasnik objekta.</p>';return}
   if(aktivna){
