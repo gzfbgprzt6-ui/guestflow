@@ -42,6 +42,18 @@ export async function startCheckout(supabase, plan, interval = "month", povratak
   window.location.assign(result.url);
 }
 
+// Dodatak (npr. vlastita adresa) za jedan objekt — cijenu računa poslužitelj iz tablice `dodaci`.
+export async function startDodatak(supabase, dodatak, objekt) {
+  const response = await fetch("/api/create-checkout-session", {
+    method: "POST",
+    headers: await authHeaders(supabase),
+    body: JSON.stringify({ dodatak, objekt }),
+  });
+  const result = await response.json().catch(() => ({}));
+  if (!response.ok || !result.url) throw new Error(result.error || "Plaćanje nije pokrenuto.");
+  window.location.assign(result.url);
+}
+
 export async function openBillingPortal(supabase, povratak = "dashboard") {
   const response = await fetch("/api/create-portal-session", {
     method: "POST",

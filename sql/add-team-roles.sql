@@ -19,7 +19,7 @@
 --  (Agencija). Boja mora imati kontrast ≥ 4,5:1 s bijelim (provjera u
 --  dashboardu); ovdje se provjerava samo oblik.
 --
---  Bez riječi za brisanje redova — smije se pokrenuti konektorom. Ponovljivo.
+--  Bez DROP i bez brisanja redova — smije se pokrenuti konektorom. Ponovljivo.
 -- =====================================================================
 
 begin;
@@ -56,9 +56,16 @@ revoke all on function public.ima_ulogu(uuid, text[]) from public;
 grant execute on function public.ima_ulogu(uuid, text[]) to authenticated;
 
 -- objekt: čitaju sve uloge, mijenja samo upravitelj
-drop policy if exists "suradnik mijenja objekt" on public.properties;
-create policy "suradnik mijenja objekt" on public.properties for update to authenticated
-  using (public.ima_ulogu(id, array['upravitelj'])) with check (public.ima_ulogu(id, array['upravitelj']));
+-- (politike se mijenjaju s ALTER POLICY / stvaraju ako ih nema — bez brisanja)
+do $$ begin
+  if exists (select 1 from pg_policies where schemaname = 'public' and tablename = 'properties' and policyname = 'suradnik mijenja objekt') then
+    alter policy "suradnik mijenja objekt" on public.properties
+      using (public.ima_ulogu(id, array['upravitelj'])) with check (public.ima_ulogu(id, array['upravitelj']));
+  else
+    create policy "suradnik mijenja objekt" on public.properties for update to authenticated
+      using (public.ima_ulogu(id, array['upravitelj'])) with check (public.ima_ulogu(id, array['upravitelj']));
+  end if;
+end $$;
 
 -- tablice objekta: „suradnik” (sve radnje) po ulozi + „suradnik čita” (samo čitanje)
 do $$
@@ -80,21 +87,27 @@ begin
   for t in select jsonb_object_keys(pune) loop
     if to_regclass('public.' || t) is null then continue; end if;
     select array_agg(x) into u from jsonb_array_elements_text(pune->t) x;
-    execute format('drop policy if exists "suradnik" on public.%I', t);
-    execute format('create policy "suradnik" on public.%I for all to authenticated
-                    using (public.ima_ulogu(property_id, %L)) with check (public.ima_ulogu(property_id, %L))', t, u, u);
+    if exists (select 1 from pg_policies where schemaname = 'public' and tablename = t and policyname = 'suradnik' and cmd = 'ALL') then
+      execute format('alter policy "suradnik" on public.%I
+                      using (public.ima_ulogu(property_id, %L)) with check (public.ima_ulogu(property_id, %L))', t, u, u);
+    elsif not exists (select 1 from pg_policies where schemaname = 'public' and tablename = t and policyname = 'suradnik') then
+      execute format('create policy "suradnik" on public.%I for all to authenticated
+                      using (public.ima_ulogu(property_id, %L)) with check (public.ima_ulogu(property_id, %L))', t, u, u);
+    end if;
   end loop;
   for t in select jsonb_object_keys(citaj) loop
     if to_regclass('public.' || t) is null then continue; end if;
     select array_agg(x) into u from jsonb_array_elements_text(citaj->t) x;
-    execute format('drop policy if exists "suradnik čita" on public.%I', t);
-    execute format('create policy "suradnik čita" on public.%I for select to authenticated
-                    using (public.ima_ulogu(property_id, %L))', t, u);
+    -- cleaning_status već ima „suradnik” samo za čitanje — mijenja se njen uvjet
+    if t = 'cleaning_status' and exists (select 1 from pg_policies where schemaname = 'public' and tablename = t and policyname = 'suradnik') then
+      execute format('alter policy "suradnik" on public.%I using (public.ima_ulogu(property_id, %L))', t, u);
+    elsif exists (select 1 from pg_policies where schemaname = 'public' and tablename = t and policyname = 'suradnik čita') then
+      execute format('alter policy "suradnik čita" on public.%I using (public.ima_ulogu(property_id, %L))', t, u);
+    else
+      execute format('create policy "suradnik čita" on public.%I for select to authenticated
+                      using (public.ima_ulogu(property_id, %L))', t, u);
+    end if;
   end loop;
-  -- cleaning_status je imao „suradnik” samo za čitanje → zamijenjen „suradnik čita”
-  if to_regclass('public.cleaning_status') is not null then
-    execute 'drop policy if exists "suradnik" on public.cleaning_status';
-  end if;
   -- page_views: sve uloge čitaju (izvještaj) — ostaje je_suradnik
 end $$;
 

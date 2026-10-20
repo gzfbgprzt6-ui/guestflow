@@ -36,6 +36,7 @@ module.exports = async function handler(req, res) {
   if (!u) return S.posalji(res, 401, { error: 'Niste prijavljeni.' });
 
   const b = (req.body && typeof req.body === 'object') ? req.body : {};
+  if (b.dodatak === 'poddomena') return dodatakPoddomena(req, res, u, b);
   const plan = String(b.plan || '');
   const interval = String(b.interval || 'month');
   if (!S.PLACENI.includes(plan)) return S.posalji(res, 400, { error: 'Nepoznat plan.' });
@@ -164,3 +165,48 @@ module.exports = async function handler(req, res) {
     return S.posalji(res, 502, { error: 'Plaćanje se trenutačno ne može otvoriti. Pokušajte ponovno za minutu.' });
   }
 };
+
+// ------------------------------------------------------------
+// Dodatak „Vlastita adresa” (sql/add-subdomain.sql): godišnja pretplata po
+// objektu, cijena iz tablice `dodaci` (nikad iz preglednika). Ime adrese
+// domaćin prvo spremi u properties.poddomena; webhook nakon plaćanja upiše
+// poddomena_do (do kada adresa radi).
+// ------------------------------------------------------------
+async function dodatakPoddomena(req, res, u, b) {
+  const baza = S.ishodiste(req);
+  if (!baza) return S.posalji(res, 400, { error: 'Nepoznata adresa.' });
+  const pid = String(b.objekt || '');
+  if (!/^[0-9a-f-]{36}$/i.test(pid)) return S.posalji(res, 400, { error: 'Nepoznat objekt.' });
+  try {
+    const o = await S.kaoKorisnik(u.token, `/properties?id=eq.${pid}&user_id=eq.${u.id}&select=id,name,poddomena,poddomena_do`);
+    const prop = o.ok && Array.isArray(o.data) ? o.data[0] : null;
+    if (!prop) return S.posalji(res, 404, { error: 'Objekt nije pronađen na vašem računu.' });
+    if (!prop.poddomena) return S.posalji(res, 400, { error: 'Prvo spremite ime adrese.' });
+    if (prop.poddomena_do && new Date(prop.poddomena_do) > new Date()) return S.posalji(res, 409, { error: 'Adresa je već plaćena.', portal: true });
+    const d = await S.kaoKorisnik(u.token, '/dodaci?id=eq.poddomena&aktivan=is.true&select=*');
+    const dod = d.ok && Array.isArray(d.data) ? d.data[0] : null;
+    if (!dod || !(Number(dod.cijena_god) > 0)) return S.posalji(res, 503, { error: 'Dodatak trenutačno nije dostupan.' });
+    const proizvod = await S.dohvatiIliNapravi('products', 'odmoria_poddomena', { name: 'Odmoria — vlastita adresa' });
+    const meta = { user_id: u.id, dodatak: 'poddomena', property_id: prop.id, poddomena: prop.poddomena };
+    const s = await S.kaoKorisnik(u.token, `/subscriptions?user_id=eq.${u.id}&select=stripe_customer_id`);
+    let kupac = null;
+    const cid = s.ok && Array.isArray(s.data) && s.data[0] && s.data[0].stripe_customer_id;
+    if (cid) {
+      const k = await S.stripe('/customers/' + encodeURIComponent(cid)).catch(() => null);
+      if (k && !k.deleted && k.metadata && k.metadata.user_id === u.id) kupac = k.id;
+    }
+    const params = {
+      mode: 'subscription', locale: 'hr', client_reference_id: u.id, metadata: meta,
+      subscription_data: { metadata: meta, description: prop.poddomena + '.odmoria.hr — ' + String(prop.name || '').slice(0, 60) },
+      line_items: [{ quantity: 1, price_data: { currency: 'eur', product: proizvod.id, unit_amount: Math.round(Number(dod.cijena_god) * 100), recurring: { interval: 'year' } } }],
+      success_url: baza + '/dashboard.html?placanje=uspjeh&otvori=adresa',
+      cancel_url: baza + '/dashboard.html?placanje=odustao&otvori=adresa'
+    };
+    if (kupac) params.customer = kupac; else if (u.email) params.customer_email = u.email;
+    const sesija = await S.stripe('/checkout/sessions', { method: 'POST', params });
+    return S.posalji(res, 200, { url: sesija.url, test: S.testniNacin() });
+  } catch (e) {
+    console.error('checkout poddomena:', e.message);
+    return S.posalji(res, 502, { error: 'Plaćanje se trenutačno ne može otvoriti. Pokušajte ponovno za minutu.' });
+  }
+}

@@ -97,14 +97,17 @@ security definer
 set search_path = public, pg_temp
 as $$
 begin
+  -- upit za termin koji je već počeo ili prošao nema smisla (po Europe/Zagreb)
+  if new.checkin_date is not null and new.checkin_date < (now() at time zone 'Europe/Zagreb')::date then
+    raise exception 'Termin je prošao — odaberite novi datum dolaska.' using errcode = 'P0001';
+  end if;
   new.iznos := public.cijena_boravka(new.property_id, new.checkin_date, new.checkout_date);
   new.kod := nullif(upper(btrim(coalesce(new.kod, ''))), '');
   new.pristanak_ponude := coalesce(new.pristanak_ponude, false);
   return new;
 end;
 $$;
-drop trigger if exists inquiries_iznos on public.inquiries;
-create trigger inquiries_iznos before insert on public.inquiries
+create or replace trigger inquiries_iznos before insert on public.inquiries
   for each row execute function public.inquiries_iznos();
 
 -- mogućnost „izravno” (sql/add-plan-features.sql): Domaćin i Agencija, ne Free

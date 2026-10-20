@@ -346,6 +346,7 @@
 .fld .opc{font-style:normal;font-weight:500;color:var(--text-muted)}
 .iqf__kv{display:flex;gap:10px;align-items:flex-start;font-size:14px;line-height:1.45;cursor:pointer}
 .iqf__kv input{flex:none;width:18px;height:18px;margin:2px 0 0;accent-color:var(--text)}
+.cday.past{opacity:.35;cursor:default;text-decoration:line-through;text-decoration-thickness:1px}
 </style>
 </head>
 <body>
@@ -825,6 +826,7 @@ let filledSet = new Set(), GAPS = new Set()
 
 const slug = new URLSearchParams(location.search).get('slug')
   || location.pathname.split('/p/')[1]?.split('/')[0]
+  || document.querySelector('meta[name="odmoria-slug"]')?.content   // vlastita adresa ime.odmoria.hr
 
 if (slug) L.unaprijed({ slug })
 if (!slug) showErr(); else loadPage().catch(showErr)
@@ -1363,10 +1365,13 @@ function drawMonth(slot, year, month) {
     else if (isSelected(ds)) { cls += ' range-preview'; stanje = 'u odabranom rasponu' }
     else if (GAPS.has(ds)) { cls += ' gap'; stanje = 'kraći termin između rezervacija' }
     if (ds === today) cls += ' today'
-    const clickable = !taken || !!rangeStart
+    // prošli dani se ne mogu odabrati (ni kao dolazak ni kao odlazak)
+    const proslo = ds < today
+    if (proslo) { cls += ' past'; stanje = 'prošlo' }
+    const clickable = !proslo && (!taken || !!rangeStart)
     h += `<button type="button" class="${cls}" data-ds="${ds}" aria-label="${esc(L.datum(new Date(year, month, d), { godina: true }) + ', ' + t(stanje))}"` +
       (clickable ? ` onclick="pickDate('${ds}')"` : ' aria-disabled="true"') +
-      (taken ? '' : ` onmouseover="hoverDate('${ds}')" onfocus="hoverDate('${ds}')"`) + `>${d}</button>`
+      (taken || proslo ? '' : ` onmouseover="hoverDate('${ds}')" onfocus="hoverDate('${ds}')"`) + `>${d}</button>`
   }
   $('#cal-days-' + slot).innerHTML = h
 }
@@ -1397,6 +1402,7 @@ window.hoverDate = ds => {
 const focusDay = ds => document.querySelector(`.cday[data-ds="${ds}"]`)?.focus()
 
 window.pickDate = ds => {
+  if (ds < fmtLocal(new Date())) return            // prošli dan
   if (!rangeStart) {
     if (bookedDates.includes(ds)) return
     rangeStart = ds; hoverDs = null; checkinDs = null; checkoutDs = null
@@ -1505,6 +1511,7 @@ window.posaljiUpit = async e => {
   if (mail && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail)) return greska(t('E-mail adresa nije ispravna.'))
   if (tel && !/^[+0-9 ()/.-]{6,30}$/.test(tel)) return greska(t('Telefon smije sadržavati samo brojke, razmake i znak +.'))
   if (!checkinDs || !checkoutDs) return greska(t('Odaberite dolazak i odlazak u kalendaru.'))
+  if (checkinDs < fmtLocal(new Date())) return greska(t('Taj termin je prošao — odaberite novi datum dolaska.'))
   greska('')
   const btn = $('#iq-btn'); btn.disabled = true; btn.textContent = t('Šaljem…')
   const red = {
@@ -1517,6 +1524,7 @@ window.posaljiUpit = async e => {
   if (error && /kod|pristanak_ponude|column/i.test(error.message || '')) ({ error } = await sb.from('inquiries').insert(red))
   btn.disabled = false; btn.textContent = t('Pošalji upit domaćinu')
   if (error) {
+    if (/Termin je prošao/.test(error.message || '')) return greska(t('Taj termin je prošao — odaberite novi datum dolaska.'))
     return greska(/Previše upita/.test(error.message || '')
       ? t('Previše upita u kratkom vremenu. Pokušajte kasnije ili pišite domaćinu izravno.')
       : t('Upit trenutačno nije moguće poslati. Pošaljite poruku izravno — WhatsAppom ili e-mailom ispod.'))

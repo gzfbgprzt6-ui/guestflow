@@ -39,12 +39,14 @@ Vercel su postavljeni i provjereni.
 - [x] `sql/add-push.sql` (obavijesti na mobitel) i KORAK 1 iz
       `sql/sections-security.sql` (stari link ne otključava šifre) — pokrenuto 19. 10.,
       obavijest provjerena na iPhoneu
-- [ ] **Uz puštanje novog vodiča u main** (Claude pokreće uz vašu potvrdu, jednim paketom):
-      `sql/add-guest-arrived.sql` („Ušli smo” → obavijest domaćinu) i
-      `sql/add-plan-features.sql` (što koji plan otključava; jezika 6, suradnika 3) i
-      `sql/add-per-object-plans.sql` (Domaćin 12 € / Agencija 9 € po objektu, broj objekata iz Stripea) i
-      `sql/add-direct-bookings.sql` (sezonske cijene, iznos upita, kod povratnika, pristanak na ponude) i
-      `sql/add-team-roles.sql` (uloge u timu, brend agencije u vodiču)
+- [x] **SQL paket v5 pokrenut 20. 10.** (konektorom, uz potvrdu vlasnika): `add-guest-arrived.sql`,
+      `add-plan-features.sql`, `add-per-object-plans.sql`, `add-direct-bookings.sql`,
+      `add-team-roles.sql` — planovi su sad Free / Domaćin 12 € / Agencija 9 € po objektu
+- [x] Stripe portal bez promjene plana — kod sad sam napravi i koristi takvu konfiguraciju (`api/create-portal-session.js`)
+- [ ] **Vlastita adresa ime.odmoria.hr**: u Vercelu (Settings → Domains) dodati `odmoria.hr` i `*.odmoria.hr`;
+      za wildcard domena mora koristiti Vercelove nameservere (ns1/ns2.vercel-dns.com) kod registrara .hr domene.
+      Cijena dodatka: `update public.dodaci set cijena_god = 19 where id = 'poddomena';` (zadano 19 €/god)
+- [x] Privatnost i Uvjeti dopunjeni (ponude domaćina, „Ušli smo”, eVisitor, treće strane, kapara izvan Odmorije, planovi po objektu) — pravnik neka pregleda prije pravih korisnika
 - [ ] Privatnost: dodati rečenicu da vodič na gostov klik „Ušli smo” javlja
       domaćinu vrijeme ulaska (vidi `docs/odluke.md`, točka 33)
 

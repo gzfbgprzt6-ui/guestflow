@@ -49,11 +49,14 @@
     <li>Podaci o objektu koje unosite (naziv, lokacija, Wi-Fi, šifra, fotografije)</li>
     <li>Podaci o pretplati i plaćanju (obrađuje Stripe — mi ne vidimo broj kartice)</li>
   </ul>
-  <p><strong>Za goste (korisnici vodiča):</strong></p>
+  <p><strong>Za goste:</strong></p>
   <ul>
-    <li>Gosti ne trebaju stvarati račun niti ostavljati email</li>
-    <li>Ne prikupljamo ime, email, telefon ni IP adresu gostiju</li>
-    <li>Privatni link štiti šifru i Wi-Fi lozinku — bez registracije gosta</li>
+    <li>Gosti ne trebaju stvarati račun. Ne spremamo IP adresu gostiju.</li>
+    <li><strong>Upit s javne stranice:</strong> ime, e-mail ili telefon, termin, broj gostiju i poruka koju gost upiše — vidi ih samo domaćin, da odgovori na upit. Ako gost upiše kod povratnog gosta, i on se sprema uz upit.</li>
+    <li><strong>Ponude za buduće boravke:</strong> samo ako gost u upitu označi „Domaćin mi smije slati ponude za buduće boravke”. Tada mu domaćin smije poslati ponudu (npr. kod za popust). Privolu gost povlači odgovorom domaćinu; voditelj te obrade je domaćin.</li>
+    <li><strong>„Ušli smo”:</strong> kad gost u vodiču sam pritisne „Ušli smo”, spremamo samo vrijeme klika i javljamo ga domaćinu. Nema praćenja lokacije.</li>
+    <li><strong>Prijava za eVisitor:</strong> podatke iz putovnice gost upisuje sam; vidi ih samo domaćin, a brišu se 30 dana nakon odlaska.</li>
+    <li>Privatni link štiti šifru i Wi-Fi lozinku — bez registracije gosta.</li>
   </ul>
   <p><strong>Analitika (anonimna):</strong></p>
   <ul>
@@ -79,7 +82,12 @@
     <li><strong>Stripe</strong> (SAD) — obrada plaćanja, skladište podataka kartice</li>
     <li><strong>Vercel</strong> (SAD) — hosting web aplikacije</li>
     <li><strong>Google Fonts</strong> — učitavanje fontova (bez kolačića)</li>
+    <li><strong>Cloudinary</strong> (SAD) — pohrana fotografija objekata</li>
+    <li><strong>Resend</strong> (SAD) — slanje e-mail obavijesti o upitima i poruka gostima</li>
+    <li><strong>OpenStreetMap / Photon</strong> — prijedlozi adrese i mjesta u blizini (šalje se samo upisana adresa)</li>
+    <li><strong>MyMemory i Anthropic</strong> — strojni prijevod teksta koji domaćin upiše u vodič (bez podataka gostiju)</li>
   </ul>
+  <p><strong>Plaćanje boravka</strong> (kapara i ostatak) ide izravno između gosta i domaćina, na domaćinov račun. Odmoria ne obrađuje te uplate i ne vidi bankovne podatke gosta.</p>
   <p>Svi pružatelji usluga imaju potpisane odgovarajuće ugovore o obradi podataka (DPA) u skladu s GDPR-om.</p>
 
   <h2>6. Pohrana i brisanje</h2>
