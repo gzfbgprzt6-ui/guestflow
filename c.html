@@ -48,6 +48,16 @@ main{max-width:760px;margin-inline:auto;padding:32px 16px 64px}
 .jav__dod{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .jav__dod input{min-height:40px;padding:0 12px;border:1px solid var(--border);border-radius:10px;font:500 15px/1 var(--font-body);background:#fff;color:var(--text)}
 .jav__dod input[type=text]{flex:1 1 200px}
+.pop{display:grid;gap:6px;margin-top:4px;padding:12px;border:1px solid var(--border);border-radius:var(--radius-panel);background:var(--bg-surface)}
+.pop__h{display:flex;justify-content:space-between;align-items:center;gap:8px;font:700 14px/1.3 var(--font-ui)}
+.pop__traka{height:6px;border-radius:99px;background:var(--bg-subtle,#EEF1F1);overflow:hidden}.pop__traka i{display:block;height:100%;background:#1E6B45;transition:width .2s}
+.pop>label{display:flex;gap:10px;align-items:flex-start;min-height:40px;padding:8px 0;border-top:1px solid var(--border);font-size:15px;cursor:pointer}
+.pop>label input{width:22px;height:22px;flex:none;margin:0;accent-color:#1E6B45}
+.pop>label.gotov span{color:var(--text-muted);text-decoration:line-through}
+.pop__fotke{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.pop__fotke a,.pop__fotke img{display:block;width:72px;height:72px;border-radius:10px;object-fit:cover}
+.pop__dod{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:4px}
+.pop__dod .t-meta{flex:1 1 160px}
 .boot{min-height:60vh;display:grid;place-items:center}
 @media (max-width:520px){.dan{grid-template-columns:minmax(0,1fr);gap:8px}}
 </style>
@@ -66,7 +76,7 @@ main{max-width:760px;margin-inline:auto;padding:32px 16px 64px}
     </div>
     <div id="dani" aria-live="polite"></div>
     <div class="dno"><span id="osvjezeno"></span><button class="btn btn--secondary btn--sm" type="button" onclick="ucitaj()">Osvježi</button></div>
-    <p class="t-meta" style="margin-top:16px">Stranica pokazuje samo termine. Šifre i podatke gostiju ima domaćin. Što javite (potvrda, vrijeme dolaska, „gotovo”), domaćin vidi odmah.</p>
+    <p class="t-meta" style="margin-top:16px">Stranica pokazuje samo termine. Šifre i podatke gostiju ima domaćin. Što javite (potvrda, vrijeme dolaska, popis, fotografije, „gotovo”), domaćin vidi odmah.</p>
   </div>
 </main>
 <script type="module">
@@ -121,10 +131,67 @@ function javljanje(ds) {
 async function posaljiJav(ds, stanje, vrijeme, napomena) {
   const { data, error } = await sb.rpc('javi_ciscenje', { p_token: token, p_dan: ds, p_stanje: stanje, p_vrijeme: vrijeme || null, p_napomena: napomena || null })
   if (error || !data || data.stanje !== 'ok') { alertJ('Nije poslano — pokušajte ponovno.'); return false }
-  JAV[ds] = { stanje, vrijeme, napomena }
+  JAV[ds] = { ...(JAV[ds] || {}), stanje, vrijeme, napomena }
   return true
 }
 const alertJ = t => { const e = $('#osvjezeno'); if (e) e.textContent = t }
+
+/* Popis zadataka s fotografijama (sql/add-cleaner-checklist.sql → ciscenje_popis).
+   Domaćin sastavlja popis; čistačica kvači i dodaje fotografije (Cloudinary,
+   isti unsigned preset kao fotografije objekta). Bez popisa ovoga nema. */
+let POPIS = []
+const CLOUD = 'sck9mbg9', PRESET = 'odmoria_photos'
+const sicu = u => String(u).replace('/image/upload/', '/image/upload/w_160,h_160,c_fill,q_auto/')
+function popisHtml(ds) {
+  if (!POPIS.length || !JAV) return ''
+  const j = JAV[ds] || {}, kv = new Set(j.kvacice || []), fo = j.fotke || []
+  const n = POPIS.filter((_, i) => kv.has(i)).length
+  return `<div class="pop" data-pop="${ds}">
+    <div class="pop__h"><span>Popis za čišćenje</span><span>${n} / ${POPIS.length}</span></div>
+    <div class="pop__traka" aria-hidden="true"><i style="width:${Math.round(n / POPIS.length * 100)}%"></i></div>
+    ${POPIS.map((t, i) => `<label class="${kv.has(i) ? 'gotov' : ''}"><input type="checkbox" data-kv="${i}"${kv.has(i) ? ' checked' : ''}><span>${esc(t)}</span></label>`).join('')}
+    ${fo.length ? `<div class="pop__fotke">${fo.map(u => `<a href="${esc(u)}" target="_blank" rel="noopener"><img src="${esc(sicu(u))}" alt="Fotografija nakon čišćenja" loading="lazy"></a>`).join('')}</div>` : ''}
+    <div class="pop__dod"><label class="btn btn--secondary btn--sm">Dodaj fotografiju<input type="file" accept="image/*" capture="environment" multiple hidden data-foto></label>
+      <span class="t-meta" data-pop-st>${fo.length ? `${fo.length} ${fo.length === 1 ? 'fotografija' : 'fotografije'} · domaćin ih vidi` : 'Fotografije vidi samo domaćin.'}</span>
+      ${n === POPIS.length && j.stanje !== 'gotovo' ? '<button class="btn btn--primary btn--sm" type="button" data-pop-gotovo>Javi da je gotovo</button>' : ''}</div>
+  </div>`
+}
+async function spremiPopis(ds, kvacice, fotke) {
+  const { data, error } = await sb.rpc('ciscenje_popis', { p_token: token, p_dan: ds, p_kvacice: kvacice, p_fotke: fotke })
+  if (error || !data || data.stanje !== 'ok') { alertJ('Nije spremljeno — pokušajte ponovno.'); return false }
+  JAV[ds] = { ...(JAV[ds] || { stanje: 'potvrdeno' }), kvacice: data.kvacice, fotke: data.fotke }
+  return true
+}
+const popisKutija = ds => document.querySelector(`.pop[data-pop="${ds}"]`)
+function precrtaj(ds) { const el = popisKutija(ds); if (el) el.outerHTML = popisHtml(ds) }
+document.addEventListener('change', async e => {
+  const box = e.target.closest('.pop'); if (!box) return
+  const ds = box.dataset.pop, j = JAV[ds] || {}
+  if (e.target.matches('[data-kv]')) {
+    const kv = [...box.querySelectorAll('[data-kv]:checked')].map(x => +x.dataset.kv)
+    if (await spremiPopis(ds, kv, j.fotke || [])) precrtaj(ds)
+  }
+  if (e.target.matches('[data-foto]')) {
+    const st = box.querySelector('[data-pop-st]'), fo = [...(j.fotke || [])]
+    for (const f of [...e.target.files].slice(0, 12 - fo.length)) {
+      st.textContent = 'Šaljem fotografiju…'
+      try {
+        const fd = new FormData(); fd.append('file', f); fd.append('upload_preset', PRESET)
+        const r = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD}/image/upload`, { method: 'POST', body: fd })
+        const d = await r.json(); if (!r.ok || !d.secure_url) throw new Error()
+        fo.push(d.secure_url)
+      } catch { st.textContent = 'Fotografija nije poslana — provjerite vezu.'; return }
+    }
+    if (fo.length >= 12) alertJ('Najviše 12 fotografija po čišćenju.')
+    if (await spremiPopis(ds, [...(j.kvacice || [])], fo)) precrtaj(ds)
+  }
+})
+document.addEventListener('click', async e => {
+  const b = e.target.closest('[data-pop-gotovo]'); if (!b) return
+  const ds = b.closest('.pop').dataset.pop
+  b.disabled = true
+  if (await posaljiJav(ds, 'gotovo', null, (JAV[ds] || {}).napomena || '')) ucitaj()
+})
 document.addEventListener('click', async e => {
   const box = e.target.closest('.jav'); if (!box) return
   const ds = box.dataset.dan, dod = box.querySelector('.jav__dod')
@@ -151,6 +218,7 @@ window.ucitaj = async () => {
   if (!r || r.stanje !== 'ok') { $('#greska').hidden = false; return }
   document.title = 'Raspored — ' + (r.objekt || 'objekt')
   JAV = Array.isArray(r.javljanja) ? Object.fromEntries(r.javljanja.map(j => [String(j.dan).slice(0, 10), j])) : null
+  POPIS = Array.isArray(r.popis) ? r.popis.filter(x => typeof x === 'string' && x.trim()) : []
   $('#ime').textContent = r.objekt || 'Objekt'
   const adr = [r.adresa, r.mjesto].filter(Boolean).join(', ')
   if (adr) { $('#adresa').textContent = adr; $('#adresa').hidden = false }
@@ -168,7 +236,7 @@ window.ucitaj = async () => {
     const d = new Date(ds + 'T12:00:00'), e = po[ds]
     const kad = ds === danas ? 'danas' : ds === plus(danas, 1) ? 'sutra' : DANI[d.getDay()]
     const ev = []
-    if (e.out) ev.push(`<div class="ev"><span class="tag tag--out">Odlazak</span><b>Čišćenje${r.odjava ? ' od ' + esc(r.odjava) : ''}</b></div>${javljanje(ds)}`)
+    if (e.out) ev.push(`<div class="ev"><span class="tag tag--out">Odlazak</span><b>Čišćenje${r.odjava ? ' od ' + esc(r.odjava) : ''}</b></div>${javljanje(ds)}${popisHtml(ds)}`)
     if (e.in) ev.push(`<div class="ev"><span class="tag tag--in">Dolazak</span><b>Spremno${r.prijava ? ' do ' + esc(r.prijava) : ''}</b></div>`)
     if (e.out && e.in) ev.push(`<div class="izmjena">Izmjena gostiju isti dan${r.odjava && r.prijava ? ` — čišćenje između ${esc(r.odjava)} i ${esc(r.prijava)}` : ''}</div>`)
     return `<div class="dan"><div class="dan__d">${d.getDate()}. ${d.getMonth() + 1}.<small>${kad}</small></div><div class="dog">${ev.join('')}</div></div>`

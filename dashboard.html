@@ -1263,6 +1263,9 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
 .cist-jav { margin-top: 16px; }
 .cist-r { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; padding: 8px 0; border-top: 1px solid #F0F2F2; font-size: 13.5px; }
 .cist-r small { color: var(--ink); }
+.cist-f { display: flex; gap: 4px; flex-wrap: wrap; }
+.cist-f img { width: 44px; height: 44px; border-radius: 8px; object-fit: cover; display: block; }
+.cist-pop { margin-top: 16px; }
 .cist-r em { margin-left: auto; color: var(--muted); font-style: normal; font-size: 12px; }
 
 /* objave: Objavi + Facebook grupe */
@@ -5820,13 +5823,36 @@ async function ucitajCistacicu(){
   el.innerHTML=`<div class="link-url" style="margin-bottom:12px"><span>${esc(prettyUrl(url))}</span><button type="button" onclick="kopirajCistacicu()">Kopiraj</button></div>
     <div class="form-grid" style="margin-bottom:12px"><div class="field"><label for="cist-tel">Broj čistačice <span class="optional">za WhatsApp, pamti se na ovom uređaju</span></label><input class="input" id="cist-tel" type="tel" placeholder="+385 91 123 4567" value="${esc(tel)}" autocomplete="off"></div></div>
     <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn small" type="button" onclick="posaljiCistacici('wa')">Pošalji WhatsAppom</button><button class="btn secondary small" type="button" onclick="posaljiCistacici('mail')">E-mailom</button><a class="btn secondary small" href="${esc(url)}" target="_blank" rel="noopener">Otvori</a><button class="btn ghost small" type="button" onclick="noviCistacica()">Novi link (stari prestaje raditi)</button></div>
+    <div class="cist-pop" id="cist-pop"></div>
     <div class="cist-jav" id="cist-jav"></div>`
+  nacrtajPopisCist()
   // javljanja čistačice (sql/add-cleaner-status.sql) — bez tablice samo napomena
   const r=await sb.from('cleaning_status').select('*').eq('property_id',PROP.id).gte('dan',A.plusDana(A.danas(),-7)).order('dan')
   const j=document.getElementById('cist-jav');if(!j)return
   if(r.error){j.innerHTML='<p class="helper">Da vam čistačica može javiti „potvrđujem / dolazim u… / gotovo / ne mogu”, u Supabaseu pokrenite <code>sql/add-cleaner-status.sql</code>.</p>';return}
   const OP={potvrdeno:['Potvrdila','is-ok'],dolazim:['Dolazi','is-ok'],gotovo:['Gotovo','is-ok'],ne_mogu:['Ne može doći','is-ne']}
-  j.innerHTML=`<h3 class="pr-gr">Javljanja čistačice</h3>`+((r.data||[]).length?(r.data||[]).map(c=>`<div class="cist-r"><b>${A.fmtSDanom(c.dan)}</b><span class="ov-st ${OP[c.stanje][1]==='is-ne'?'is-warn':'is-ok'}">${OP[c.stanje][0]}${c.vrijeme?' u '+esc(c.vrijeme):''}</span>${c.napomena?`<small>„${esc(c.napomena)}”</small>`:''}<em>${new Date(c.updated_at).toLocaleString('hr-HR',{day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit'})}</em></div>`).join(''):'<p class="helper">Još nema javljanja. Čistačica na svom linku uz svako čišćenje može potvrditi, javiti vrijeme dolaska, „gotovo” ili da ne može doći.</p>')
+  const pop=Array.isArray(CIST.popis)?CIST.popis:[]
+  const kvTxt=c=>pop.length&&Array.isArray(c.kvacice)?`<span class="ov-st ${c.kvacice.length===pop.length?'is-ok':''}">Popis ${c.kvacice.length} / ${pop.length}</span>`:''
+  const foto=c=>Array.isArray(c.fotke)&&c.fotke.length?`<span class="cist-f">${c.fotke.map(u=>`<a href="${esc(u)}" target="_blank" rel="noopener"><img src="${esc(String(u).replace('/image/upload/','/image/upload/w_120,h_120,c_fill,q_auto/'))}" alt="Fotografija čistačice" loading="lazy"></a>`).join('')}</span>`:''
+  j.innerHTML=`<h3 class="pr-gr">Javljanja čistačice</h3>`+((r.data||[]).length?(r.data||[]).map(c=>`<div class="cist-r"><b>${A.fmtSDanom(c.dan)}</b><span class="ov-st ${OP[c.stanje][1]==='is-ne'?'is-warn':'is-ok'}">${OP[c.stanje][0]}${c.vrijeme?' u '+esc(c.vrijeme):''}</span>${kvTxt(c)}${c.napomena?`<small>„${esc(c.napomena)}”</small>`:''}${foto(c)}<em>${new Date(c.updated_at).toLocaleString('hr-HR',{day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit'})}</em></div>`).join(''):'<p class="helper">Još nema javljanja. Čistačica na svom linku uz svako čišćenje može potvrditi, javiti vrijeme dolaska, „gotovo” ili da ne može doći.</p>')
+}
+/* Popis zadataka za čistačicu (sql/add-cleaner-checklist.sql → cleaner_links.popis) */
+const POPIS_PREDLOZAK=['Promijeniti posteljinu i ručnike','Očistiti kupaonicu i WC','Očistiti kuhinju, hladnjak i sudoper','Isprazniti smeće i staviti nove vrećice','Usisati i oprati podove','Provjeriti terasu i namještaj','Nadopuniti toaletni papir, sapun i kavu','Provjeriti štete i zaboravljene stvari']
+function nacrtajPopisCist(){
+  const el=document.getElementById('cist-pop');if(!el||!CIST)return
+  if(!('popis' in CIST)){el.innerHTML='<p class="helper">Popis zadataka s fotografijama uključuje se s <code>sql/add-cleaner-checklist.sql</code>.</p>';return}
+  const p=Array.isArray(CIST.popis)?CIST.popis:[]
+  el.innerHTML=`<h3 class="pr-gr">Popis za čišćenje</h3>
+    <p class="helper" style="margin-bottom:8px">Čistačica uz svako čišćenje kvači stavke i može dodati fotografije — vi to vidite ispod, u javljanjima. Jedna stavka po retku, najviše 30.</p>
+    <textarea class="input" id="cist-popis" rows="6" data-bez-spremanja placeholder="Promijeniti posteljinu i ručnike">${esc(p.join('\n'))}</textarea>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;margin-top:8px">${p.length?'':'<button class="btn ghost small" type="button" onclick="popisPredlozak()">Uzmi uobičajeni popis</button>'}<button class="btn secondary small" type="button" onclick="spremiPopisCist()">Spremi popis</button></div>`
+}
+window.popisPredlozak=()=>{const t=document.getElementById('cist-popis');if(t){t.value=POPIS_PREDLOZAK.join('\n');t.focus()}}
+window.spremiPopisCist=async()=>{
+  const popis=(document.getElementById('cist-popis')?.value||'').split('\n').map(x=>x.trim().slice(0,120)).filter(Boolean).slice(0,30)
+  const{error}=await sb.from('cleaner_links').update({popis}).eq('id',CIST.id)
+  if(error){toast(/popis|column/i.test(error.message)?'Popis još nije uključen — pokrenite sql/add-cleaner-checklist.sql.':'Greška: '+error.message);return}
+  CIST.popis=popis;await ucitajCistacicu();toast(popis.length?`Popis je spremljen (${popis.length})`:'Popis je uklonjen')
 }
 window.napraviCistacicu=async()=>{
   if(!PROP)return
