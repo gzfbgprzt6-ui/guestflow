@@ -271,9 +271,8 @@ async function init() {
   const imaKarticu = !!(sub && sub.stripe_subscription_id && plan !== 'free')
   const kupi = p => {
     if (!BILLING.stripe || p.id === plan || !(p.monthlyPriceEur > 0)) return ''
-    if (imaKarticu) return `<div class="plan__kupi"><button type="button" class="btn-out" onclick="upravljajPretplatom(this)">Promijeni u portalu</button></div>`
-    return `<div class="plan__kupi"><button type="button" class="btn-blue" onclick="kupiPlan('${p.id}','month',this)">Mjesečno · ${formatEur(cijenaPlana(p.id, 'month'))}</button>`
-      + (p.yearlyPriceEur > 0 ? `<button type="button" class="btn-out" onclick="kupiPlan('${p.id}','year',this)">Godišnje · ${formatEur(cijenaPlana(p.id, 'year'))}</button>` : '') + '</div>'
+    // broj objekata (cijena je po objektu) bira se na jednom mjestu: dashboard → Pretplata
+    return `<div class="plan__kupi"><a class="btn-blue" style="text-decoration:none" href="/dashboard.html?otvori=pretplata">${imaKarticu ? 'Promijeni' : 'Odaberi'} · broj objekata</a></div>`
   }
 
   // planovi — nazivi, cijene i limiti iz baze
@@ -281,8 +280,8 @@ async function init() {
   document.getElementById('plans').innerHTML = listPlans().map(p => `
     <div class="plan${p.id === plan ? ' cur' : ''}">
       <div class="plan__n">${p.name}${p.id === plan ? ' <span class="badge badge--status">Vaš plan</span>' : ''}</div>
-      ${(pop => `<div class="plan__p">${pop ? `<s class="cijena-stara">${formatEur(pop.redovna)}</s>${formatEur(pop.cijena)}` : p.monthlyPriceEur + ' €'} <small>${p.monthlyPriceEur > 0 ? 'mjesečno' : 'bez pretplate'}</small></div>${pop ? `<span class="ponuda">${pop.osobni ? 'Vaš popust' : pop.naziv.replace(/[<>&"]/g, '')} · −${pop.posto} %${trajanjePopusta(pop) ? ' ' + trajanjePopusta(pop) : ''}${rokPopusta(pop) ? ' · ' + rokPopusta(pop) : ''}</span>` : ''}`)(popustZa(p.id, 'month'))}
-      <ul><li>${lim(p.maxProperties, 'objekt', 'objekta', 'objekata')}</li>
+      ${(pop => `<div class="plan__p">${pop ? `<s class="cijena-stara">${formatEur(pop.redovna)}</s>${formatEur(pop.cijena)}` : formatEur(p.monthlyPriceEur)} <small>${p.monthlyPriceEur > 0 ? (p.poObjektu ? 'po objektu / mj.' : 'mjesečno') : 'zauvijek'}</small></div>${pop ? `<span class="ponuda">${pop.osobni ? 'Vaš popust' : pop.naziv.replace(/[<>&"]/g, '')} · −${pop.posto} %${trajanjePopusta(pop) ? ' ' + trajanjePopusta(pop) : ''}${rokPopusta(pop) ? ' · ' + rokPopusta(pop) : ''}</span>` : ''}`)(popustZa(p.id, 'month'))}
+      <ul><li>${p.minProperties > 1 ? p.minProperties + ' i više objekata' : lim(p.maxProperties, 'objekt', 'objekta', 'objekata')}</li>
           <li>${p.maxPhotosPerProperty === Infinity ? 'Neograničeno fotografija' : p.maxPhotosPerProperty + ' fotografija'} po objektu</li>
           <li>Javna stranica i privatni vodič</li></ul>
       ${kupi(p)}

@@ -65,11 +65,22 @@ async function primijeni(sub, rezervniKorisnik) {
   }
   promjena.stripe_subscription_id = sub.id;
   if (kupac) promjena.stripe_customer_id = kupac;
+  // broj plaćenih objekata (v5): Stripeova „quantity” prve stavke
+  const stavka = sub.items && sub.items.data && sub.items.data[0];
+  const kolicina = stavka && Number(stavka.quantity) >= 1 ? Math.min(500, Math.floor(Number(stavka.quantity))) : null;
+  if (promjena.plan === 'free') promjena.kolicina = null;
+  else if (kolicina) promjena.kolicina = kolicina;
 
-  if (red) {
-    await S.kaoPosluzitelj(`/subscriptions?user_id=eq.${userId}`, { method: 'PATCH', body: promjena, prefer: 'return=minimal' });
-  } else {
-    await S.kaoPosluzitelj('/subscriptions', { method: 'POST', body: Object.assign({ user_id: userId }, promjena), prefer: 'return=minimal' });
+  const upisi = body => red
+    ? S.kaoPosluzitelj(`/subscriptions?user_id=eq.${userId}`, { method: 'PATCH', body, prefer: 'return=minimal' })
+    : S.kaoPosluzitelj('/subscriptions', { method: 'POST', body: Object.assign({ user_id: userId }, body), prefer: 'return=minimal' });
+  try {
+    await upisi(promjena);
+  } catch (e) {
+    // bez sql/add-per-object-plans.sql stupca `kolicina` nema — plan se ipak upiše
+    if (!('kolicina' in promjena) || e.status !== 400) throw e;
+    delete promjena.kolicina;
+    await upisi(promjena);
   }
 
   // Kupcu zapiši čiji je — portal i sljedeći checkout to provjeravaju.
@@ -77,7 +88,7 @@ async function primijeni(sub, rezervniKorisnik) {
     await S.stripe('/customers/' + encodeURIComponent(kupac), { method: 'POST', params: { metadata: { user_id: userId } } })
       .catch(e => console.error('webhook: metapodaci kupca', e.message));
   }
-  return `${userId}: ${promjena.plan} (${promjena.status})`;
+  return `${userId}: ${promjena.plan} × ${promjena.kolicina || 1} (${promjena.status})`;
 }
 
 // Tijelo zahtjeva: Vercel ga obično već pretvori u objekt; inače ga pročitaj.

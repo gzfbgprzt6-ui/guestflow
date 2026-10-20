@@ -602,6 +602,20 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
 .sub-msg { margin: 0 0 16px; padding: 14px 16px; border-radius: var(--radius); background: var(--paper-2); font-size: 15px; }
 .sub-msg[data-vrsta="upoz"] { background: var(--yellow-soft); color: var(--warm-ink); }
 .plan-card .btn[disabled] { opacity: .6; cursor: progress; }
+.sub-broj { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-right: auto; font: 700 14px/1.3 var(--font-ui); }
+.sub-broj small { color: var(--muted); font: 500 13px/1.3 var(--font-body); }
+.sub-broj__k { display: inline-flex; align-items: center; border: 1px solid var(--control); border-radius: 99px; background: #fff; overflow: hidden; }
+.sub-broj__k button { width: 40px; height: 40px; border: 0; background: none; color: var(--ink); font: 700 20px/1 var(--font-ui); cursor: pointer; }
+.sub-broj__k button:disabled { opacity: .35; cursor: default; }
+.sub-broj__k input { width: 56px; height: 40px; border: 0; text-align: center; font: 800 18px/1 var(--font-ui); color: var(--ink); background: none; -moz-appearance: textfield; }
+.sub-broj__k input::-webkit-outer-spin-button, .sub-broj__k input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.plan-card .price small { font: 600 14px/1 var(--font-body); color: var(--muted); letter-spacing: 0; }
+.plan-card .tier em { margin-left: 6px; padding: 3px 8px; border-radius: 99px; background: var(--sunce); color: var(--ink); font: 800 10.5px/1 var(--font-ui); font-style: normal; letter-spacing: .04em; vertical-align: 1px; }
+.plan-card.pogodan { border-color: var(--ink); }
+.plan-card.izvan { opacity: .62; }
+.plan-card .note b { color: var(--ink); }
+.plan-card li.plus { color: var(--muted); font-size: 13.5px; }
+.plan-card li.plus::before { content: none; }
 .plan-card ul { list-style: none; margin: 0 0 16px; padding: 0; display: grid; gap: 8px; }
 .plan-card li { font-size: 15px; display: flex; gap: 8px; align-items: flex-start; }
 .plan-card li::before { content: "✓"; color: var(--copper); font-weight: 800; }
@@ -2315,7 +2329,7 @@ section.mog-zak[data-mog-tiho]{display:none!important}
 
 <script type="module">
 import{createClient}from'https://esm.sh/@supabase/supabase-js@2'
-import{loadPlans,getPlan,listPlans,limitFor,canAdd,limitMessage,effectivePlanId,popustZa,cijenaPlana,formatEur,rokPopusta,trajanjePopusta,imaMogucnost,planZaMogucnost}from'./plans.js'
+import{loadPlans,getPlan,listPlans,limitFor,canAdd,limitMessage,effectivePlanId,popustZa,cijenaPlana,formatEur,rokPopusta,trajanjePopusta,imaMogucnost,planZaMogucnost,placeniObjekti,ukupnoZa,planZaBroj,poObjektuTxt,limitObjekata}from'./plans.js'
 import{publicUrl,bookingUrl,prettyUrl,cleanerUrl,calendarUrl,inviteUrl}from'./links.js'
 import{billingStatus,startCheckout,openBillingPortal,povratakSPlacanja,cekajPlan}from'./billing.js'
 import * as A from'./analitika.js'
@@ -2352,6 +2366,7 @@ const MOG_TX={koraci:['Koraci sa slikama i „Ušli smo”','Gost prolazi ulaz k
   stilovi:['8 stilova javne stranice','Priroda, luksuz, more, moderno… isti sadržaj, drugačiji izgled.'],
   cistacica:['Link za čistačicu','Raspored dolazaka i odlazaka bez šifri; čistačica javlja „gotovo”.'],
   promocija:['Promocija','Gotove objave za slobodne termine, letak s QR kodom i Facebook grupe.'],
+  evisitor:['Prijava gostiju za eVisitor','Gost sam upiše podatke iz putovnice; vi ih prepišete u eVisitor.'],
   email:['Automatski e-mail gostu','Link na vodič 3 dana prije dolaska i zahvala na odlasku.']}
 function primijeniPlan(){
   const pl=planObjekta()
@@ -2364,7 +2379,7 @@ function primijeniPlan(){
     if(!z&&el.dataset.mogTiho===undefined){
       const cilj=planZaMogucnost(k),[n,tx]=MOG_TX[k]||[k,'']
       z=document.createElement('div');z.className='zakl';z.dataset.za=k
-      z.innerHTML=`<svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg><div><b>${esc(n)}</b><span>${esc(tx)}</span></div><button type="button" class="zakl-plan" onclick="nav('sub',document.querySelector('.panelnav [data-panel=sub]'))">${esc(cilj?cilj.name:'Pro')}</button>`
+      z.innerHTML=`<svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg><div><b>${esc(n)}</b><span>${esc(tx)}</span></div><button type="button" class="zakl-plan" onclick="nav('sub',document.querySelector('.panelnav [data-panel=sub]'))">${esc(cilj?cilj.name:'Domaćin')}</button>`
       if(uSebi)el.prepend(z);else el.before(z)
     }
   })
@@ -2374,7 +2389,7 @@ const fotoLimit=()=>PROP&&PROP.__plan?limitFor(PROP.__plan,'photos'):PHOTO_LIMIT
 const vlastiti=()=>PROPS.filter(p=>!p.__dijeljen)
 const zakljucan=p=>!p.__dijeljen&&vlastiti().indexOf(p)>=PLAN_LIMIT
 /* Pretplata: red iz `subscriptions`, je li plaćanje karticom uključeno, odabrano razdoblje */
-let SUB=null,BILLING={stripe:false,test:false},INTERVAL='month'
+let SUB=null,BILLING={stripe:false,test:false},INTERVAL='month',OBJ_N=null
 let calMonth=new Date().getMonth(),calYear=new Date().getFullYear()
 let bookedDays=[],icalDays=[],AVAIL_ROWS=[]
 let rangeStart=null,hoverDs=null,filledSet=new Set()
@@ -2438,6 +2453,7 @@ async function init(){
   if(otvori==='upiti')window.openInquiries()
   // iz obavijesti na mobitelu (api/_push.js)
   if(otvori==='kalendar')nav('availability',document.querySelector('.panelnav [data-panel=availability]'))
+  if(otvori==='pretplata')nav('sub',document.querySelector('[data-panel=sub]'))
   if(otvori==='cistacica'){nav('links',document.querySelector('.panelnav [data-panel=links]'));setTimeout(()=>document.getElementById('cist-card')?.scrollIntoView({block:'start'}),200)}
   pushStanje()
 }
@@ -2446,7 +2462,7 @@ async function init(){
 function primijeniPretplatu(sub){
   SUB=sub||null
   USER_PLAN=effectivePlanId(sub)
-  PLAN_LIMIT=limitFor(USER_PLAN,'properties')
+  PLAN_LIMIT=limitObjekata(USER_PLAN,sub)
   PHOTO_LIMIT=limitFor(USER_PLAN,'photos')
   document.getElementById('user-plan').textContent=document.getElementById('tb-plan').textContent=getPlan(USER_PLAN).name+' plan'
 }
@@ -2631,54 +2647,87 @@ function renderSubPanel(){
   const god=INTERVAL==='year'
   const kartica=BILLING.stripe
   const imaKarticu=!!(SUB&&SUB.stripe_subscription_id&&USER_PLAN!=='free')
-  const cijena=p=>p.monthlyPriceEur>0?formatEur(cijenaPlana(p.id,'month'))+'/mj':'Besplatno'
   const P=getPlan(USER_PLAN)
+  const imam=vlastiti().length
+  const placeno=P.poObjektu&&SUB&&Number(SUB.kolicina)>=1?Number(SUB.kolicina):null
+  if(OBJ_N==null)OBJ_N=Math.max(1,placeno||imam||1)
+  const n=OBJ_N, pogodan=planZaBroj(n)
+  const per=god?'god':'mj'
   document.getElementById('sub-plan-name').textContent=P.name+' plan'
-  document.getElementById('sub-plan-desc').textContent=lim(P.maxProperties,'objekt','objekta','objekata')+' · '+cijena(P)
+  document.getElementById('sub-plan-desc').textContent=(placeno?'Plaćeno: '+lim(placeno,'objekt','objekta','objekata'):lim(P.maxProperties,'objekt','objekta','objekata'))
+    +(P.monthlyPriceEur>0?' · '+formatEur(cijenaPlana(P.id,'month'))+poObjektuTxt(P.id)+'/mj':' · besplatno')
     +(SUB&&SUB.status==='past_due'&&USER_PLAN!=='free'?' · plaćanje kasni':'')
   const bar=document.getElementById('sub-bar')
-  bar.hidden=!kartica
-  if(kartica)bar.innerHTML=`<div class="sub-interval" role="group" aria-label="Razdoblje plaćanja">`
+  bar.hidden=false
+  bar.innerHTML=`<div class="sub-broj"><span id="sub-broj-l">Koliko objekata imate?</span>`
+      +`<div class="sub-broj__k" role="group" aria-labelledby="sub-broj-l"><button type="button" aria-label="Manje" onclick="brojObjekata(-1)" ${n<=1?'disabled':''}>−</button>`
+      +`<input id="sub-broj" type="number" inputmode="numeric" min="1" max="500" value="${n}" data-bez-spremanja aria-label="Broj objekata" onchange="brojObjekata(0,this.value)">`
+      +`<button type="button" aria-label="Više" onclick="brojObjekata(1)">+</button></div>`
+      +`<small>Imate ${lim(imam,'objekt','objekta','objekata')}${placeno?' · plaćeno '+placeno:''}</small></div>`
+      +(kartica?`<div class="sub-interval" role="group" aria-label="Razdoblje plaćanja">`
       +`<button type="button" aria-pressed="${!god}" onclick="razdobljePretplate('month')">Mjesečno</button>`
-      +`<button type="button" aria-pressed="${god}" onclick="razdobljePretplate('year')">Godišnje</button></div>`
-      +(imaKarticu?`<button type="button" class="btn secondary" onclick="upravljajPretplatom(this)">Upravljaj pretplatom</button>`:'')
-      +(BILLING.test?`<span class="sub-test">Testni način — ništa se ne naplaćuje</span>`:'')
+      +`<button type="button" aria-pressed="${god}" onclick="razdobljePretplate('year')">Godišnje</button></div>`:'')
+      +(imaKarticu?`<button type="button" class="btn secondary" onclick="upravljajPretplatom(this)">Kartica i računi</button>`:'')
+      +(kartica&&BILLING.test?`<span class="sub-test">Testni način — ništa se ne naplaćuje</span>`:'')
+  const mogucnosti=p=>(p.mogucnosti||[]).map(k=>(MOG_TX[k]||[k])[0])
   const gumb=(p,cur)=>{
     const st='style="width:100%;justify-content:center"'
-    if(cur)return imaKarticu?`<button type="button" class="btn secondary" ${st} onclick="upravljajPretplatom(this)">Upravljaj pretplatom</button>`
+    const odgovara=n<=p.maxProperties
+    if(!odgovara)return `<span class="btn secondary" ${st} aria-disabled="true">Do ${lim(p.maxProperties,'objekta','objekta','objekata')}</span>`
+    if(cur&&(!p.poObjektu||placeno===placeniObjekti(p.id,n)))return imaKarticu?`<button type="button" class="btn secondary" ${st} onclick="upravljajPretplatom(this)">Kartica i računi</button>`
                             :`<span class="btn secondary" ${st} aria-disabled="true">Vaš plan</span>`
-    if(kartica&&imaKarticu)return `<button type="button" class="btn secondary" ${st} onclick="upravljajPretplatom(this)">${p.monthlyPriceEur>0?'Promijeni u portalu':'Otkaži u portalu'}</button>`
-    if(kartica&&p.monthlyPriceEur>0&&(!god||p.yearlyPriceEur>0))return `<button type="button" class="btn" ${st} onclick="kupiPlan('${p.id}',this)">Odaberi ${esc(p.name)}</button>`
-    return `<a class="btn secondary" ${st.replace('"','"text-decoration:none;')} href="mailto:podrska@odmoria.com?subject=${encodeURIComponent('Promjena plana: '+p.name)}">Javite nam se</a>`
+    if(p.monthlyPriceEur===0)return imaKarticu?`<button type="button" class="btn secondary" ${st} onclick="upravljajPretplatom(this)">Otkaži u portalu</button>`:`<span class="btn secondary" ${st} aria-disabled="true">Besplatno</span>`
+    if(kartica&&(!god||p.yearlyPriceEur>0)){
+      const m=placeniObjekti(p.id,n)
+      const tx=imaKarticu?(cur?`Promijeni na ${lim(m,'objekt','objekta','objekata')}`:`Prijeđi na ${esc(p.name)}`):`Odaberi ${esc(p.name)}`
+      return `<button type="button" class="btn${p.id===pogodan.id?'':' secondary'}" ${st} onclick="kupiPlan('${p.id}',this)">${tx}</button>`
+    }
+    return `<a class="btn secondary" ${st.replace('"','"text-decoration:none;')} href="mailto:podrska@odmoria.com?subject=${encodeURIComponent('Promjena plana: '+p.name+' · '+n+' objekata')}">Javite nam se</a>`
   }
+  let prethodne=[]
   document.getElementById('sub-plans').innerHTML=listPlans().map(p=>{
     const cur=p.id===P.id
     const iv=god&&p.yearlyPriceEur>0?'year':'month'
     const pop=p.monthlyPriceEur>0?popustZa(p.id,iv):null
-    const iznos=p.monthlyPriceEur>0?formatEur(cijenaPlana(p.id,iv)):'0 €'
-    return `<div class="plan-card${cur?' current':''}"><div class="tier">${esc(p.name)}</div>`
-      +`<div class="price">${pop?`<s class="cijena-stara">${formatEur(pop.redovna)}</s>`:''}${iznos}</div>`
-      +`<div class="note">${p.monthlyPriceEur>0?(iv==='year'?'godišnje · '+formatEur(cijenaPlana(p.id,'month'))+'/mj mjesečno'
-          :'mjesečno'+(p.yearlyPriceEur>0?' · '+formatEur(cijenaPlana(p.id,'year'))+'/god':'')):'bez pretplate'}</div>`
+    const m=placeniObjekti(p.id,n)
+    const jed=p.monthlyPriceEur>0?formatEur(cijenaPlana(p.id,iv)):'0 €'
+    const ukupno=p.monthlyPriceEur>0?ukupnoZa(p.id,iv,n):0
+    const nove=mogucnosti(p).filter(x=>!prethodne.includes(x));prethodne=mogucnosti(p)
+    const odgovara=n<=p.maxProperties
+    return `<div class="plan-card${cur?' current':''}${p.id===pogodan.id?' pogodan':''}${odgovara?'':' izvan'}">`
+      +`<div class="tier">${esc(p.name)}${p.id===pogodan.id&&!cur?' <em>za vas</em>':''}</div>`
+      +`<div class="price">${pop?`<s class="cijena-stara">${formatEur(pop.redovna)}</s>`:''}${jed}<small>${p.poObjektu?' / objekt':''}${p.monthlyPriceEur>0?' / '+per:''}</small></div>`
+      +`<div class="note">${p.monthlyPriceEur===0?'zauvijek, bez kartice':p.poObjektu&&odgovara?`<b>${formatEur(ukupno)} / ${per}</b> za ${lim(m,'objekt','objekta','objekata')}${m>n?' (najmanje '+m+')':''}`:esc(p.description||'')}</div>`
       +(pop?`<div class="ponuda">${pop.osobni?'Vaš popust':esc(pop.naziv)} · −${pop.posto} %${trajanjePopusta(pop)?' '+trajanjePopusta(pop):''}${rokPopusta(pop)?' · '+rokPopusta(pop):''}</div>`:'')
-      +`<ul><li>${lim(p.maxProperties,'objekt','objekta','objekata')}</li>`
+      +`<ul><li>${p.minProperties>1?p.minProperties+' i više objekata':p.maxProperties===1?'1 objekt':'1–'+lim(p.maxProperties,'objekt','objekta','objekata')}</li>`
       +`<li>${lim(p.maxPhotosPerProperty,'fotografija','fotografije','fotografija')} po objektu</li>`
-      +`<li>${lim(p.maxLocalPlacesPerProperty,'preporuka','preporuke','preporuka')} po objektu</li>`
-      +`<li>Javna stranica i privatni vodič</li></ul>`
+      +(p.monthlyPriceEur===0?`<li>Javna stranica s kalendarom i upitima</li><li>Vodič sa šifrom i Wi-Fijem</li>`
+        :(nove.length?`<li class="plus">Sve iz prethodnog, plus:</li>`:'')+nove.map(x=>`<li>${esc(x)}</li>`).join(''))
+      +`</ul>`
       +gumb(p,cur)
       +`</div>`
   }).join('')
-  document.getElementById('sub-note').innerHTML=!kartica
+  document.getElementById('sub-note').innerHTML=(!kartica
     ?'Online plaćanje još nije spojeno. Za promjenu plana pišite na <a href="mailto:podrska@odmoria.com">podrska@odmoria.com</a> s adrese svog računa.'
     :BILLING.test
     ?'<b>Testni način:</b> ništa se stvarno ne naplaćuje. Za probu upišite karticu <b>4242 4242 4242 4242</b>, bilo koji budući datum i bilo koji CVC.'
-    :'Plaćanje karticom preko Stripea. Pretplatu možete otkazati bilo kad u portalu; plan vrijedi do kraja plaćenog razdoblja. Pitanja: <a href="mailto:podrska@odmoria.com">podrska@odmoria.com</a>.'
+    :'Plaćanje karticom preko Stripea. Dodate li objekt, razlika se obračuna razmjerno do kraja razdoblja. Pretplatu možete otkazati bilo kad; plan vrijedi do kraja plaćenog razdoblja. Pitanja: <a href="mailto:podrska@odmoria.com">podrska@odmoria.com</a>.')
+    +' Odmoria ne uzima proviziju od rezervacija.'
 }
+window.brojObjekata=(d,v)=>{OBJ_N=Math.min(500,Math.max(1,v!=null?Math.floor(Number(v))||1:(OBJ_N||1)+d));renderSubPanel();if(v==null)document.querySelector(`#sub-bar [aria-label="${d<0?'Manje':'Više'}"]`)?.focus()}
 window.razdobljePretplate=iv=>{INTERVAL=iv;renderSubPanel()}
 const cekaGumb=(btn,t)=>{if(btn){btn.dataset.t=btn.dataset.t||btn.textContent;btn.disabled=!!t;btn.textContent=t||btn.dataset.t}}
 window.kupiPlan=async(plan,btn)=>{
   cekaGumb(btn,'Otvaram plaćanje…')
-  try{await startCheckout(sb,plan,INTERVAL==='year'&&getPlan(plan).yearlyPriceEur>0?'year':'month','dashboard')}
+  try{
+    const r=await startCheckout(sb,plan,INTERVAL==='year'&&getPlan(plan).yearlyPriceEur>0?'year':'month','dashboard',OBJ_N||1)
+    if(r&&r.promijenjeno){
+      cekaGumb(btn,'Spremam…')
+      const sub=await cekajPlan(sb,USER.id,s=>s.plan===plan&&Number(s.kolicina)===Number(r.objekata))
+      if(sub){primijeniPretplatu(sub);OBJ_N=null;renderSubPanel();toast('Pretplata je promijenjena — razlika se obračunava razmjerno.')}
+      else{cekaGumb(btn,'');toast('Promjena je poslana; plan će se osvježiti za minutu.')}
+    }
+  }
   catch(e){cekaGumb(btn,'');toast(e.message)}
 }
 window.upravljajPretplatom=async btn=>{

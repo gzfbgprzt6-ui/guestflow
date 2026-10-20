@@ -1454,8 +1454,7 @@ se, napravi zasad tako”. Preneseno na probnu granu:
   - SQL usput ispravlja: jezika 6 (ne 8), suradnika najviše 3 (ne 5).
 
 **Otvoreno:**
-- [ ] **Cijene** — u bazi Pro 15 € / Business 49 €; prijedlog iz točke 32
-      (model B) je 9 € / 29 €. Mijenja se samo `plans`.
+- [x] **Cijene** — riješeno u točki 35 (cijena po objektu).
 - [ ] **Oznaka „pokreće Odmoria” na Pro** — po staroj odluci (sql/add-reviews.sql)
       vidi se i na Pro; prijedlog v4 je bez nje na Pro. Ostavljeno kako je u bazi
       (`can_remove_branding`) dok vlasnik ne odluči.
@@ -1470,3 +1469,38 @@ se, napravi zasad tako”. Preneseno na probnu granu:
 - [ ] Pregled gosta u dashboardu (telefon desno) još pokazuje stari vodič s
       pločicama — uskladiti s v4.
 
+
+---
+
+## 35. v5: brend u dvije boje, cijena po objektu (20. 10. 2026.)
+
+Vlasnik je odobrio prijedlog v5 („ostalo je okej, dodaj i riješi, kreni sa
+radom”). Na probnoj grani:
+
+- **Brend**: logo „Sunce u o” (prvo „o” je prsten s pola sunca), dvije boje —
+  tinta `#12303A` i sunce `#F2B33D`, uz perlu `#F6F5F1` i bijelu. Crvena
+  `#B42318` samo za hitno. Odjeljci vodiča više nemaju svaki svoju boju.
+  Stilovi javne stranice zadržavaju svoje boje (to je domaćinov izbor).
+- **Planovi** (`sql/add-per-object-plans.sql`, id-jevi ostaju `pro`/`business`):
+  - Free — 1 objekt, 0 €
+  - Domaćin — 1–5 objekata, **12 € po objektu mjesečno** ili 99 € godišnje
+  - Agencija — 6 i više, **9 € po objektu mjesečno** ili 89 € godišnje
+    (plaća se najmanje 6)
+  - Stripe naplaćuje `quantity` = broj objekata; webhook je upiše u
+    `subscriptions.kolicina`, a baza po njoj pušta nove objekte
+    (`plan_limit`). Ručno dodijeljen plan (admin, bez Stripea) nema
+    količinu → vrijedi limit plana kao prije.
+  - Promjena broja objekata ide iz dashboarda → Pretplata (bez novog
+    checkouta): ista pretplata, razlika razmjerno odmah
+    (`proration_behavior=always_invoice`).
+- **Računica na naslovnici**: domaćin upiše broj objekata, cijenu noćenja i
+  proviziju (zadano 15 %) — usporedba je jasno označena kao računica, ne
+  obećanje.
+
+**Otvoreno:**
+- [ ] Stripeov portal: u Stripeu (Settings → Billing → Customer portal)
+      isključiti „promjenu plana” ili je dopustiti samo s količinom — inače
+      domaćin u portalu može promijeniti nešto što naš kod ne očekuje.
+      Broj objekata se mijenja u dashboardu.
+- [ ] Postojeće plaćene pretplate (ako ih ima) ostaju na staroj cijeni dok se
+      ne promijene; na testnom načinu nema pravih.

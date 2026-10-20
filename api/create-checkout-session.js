@@ -1,6 +1,7 @@
 // ============================================================
 // POST /api/create-checkout-session  { plan: 'pro'|'business',
 //                                      interval: 'month'|'year',
+//                                      objekata: broj objekata (v5),
 //                                      povratak: 'dashboard'|'account' }
 // Authorization: Bearer <access token prijavljenog domaćina>
 //
@@ -12,8 +13,14 @@
 // Stripe sam vrati punu cijenu kad istekne „trajanje nakon kupnje”.
 // Ako funkcija još ne postoji, naplaćuje se redovna cijena iz `plans`.
 //
-// Tko već ima aktivnu pretplatu karticom, ne dobiva drugu: vraća se 409
-// i preglednik otvara portal (promjena ili otkaz postojeće).
+// CIJENA PO OBJEKTU (v5, sql/add-per-object-plans.sql): Stripeova
+// „quantity” = broj objekata, u granicama plana (min_properties …
+// max_properties). Webhook je upiše u subscriptions.kolicina, a baza po
+// njoj pušta nove objekte.
+//
+// Tko već ima aktivnu pretplatu karticom, ne dobiva drugu: postojeća se
+// PROMIJENI (broj objekata, plan, razdoblje) uz razmjerni obračun odmah
+// ({ promijenjeno: true }). Bez `objekata` i dalje se vraća 409 → portal.
 // ============================================================
 
 const S = require('./_stripe.js');
@@ -39,7 +46,9 @@ module.exports = async function handler(req, res) {
 
   try {
     // 1. plan i redovna cijena (tablica `plans`, javno čitljiva)
-    const p = await S.kaoKorisnik(u.token,
+    let p = await S.kaoKorisnik(u.token,
+      `/plans?id=eq.${plan}&select=id,name,monthly_price_eur,yearly_price_eur,po_objektu,min_properties,max_properties`);
+    if (!p.ok) p = await S.kaoKorisnik(u.token,   // bez sql/add-per-object-plans.sql
       `/plans?id=eq.${plan}&select=id,name,monthly_price_eur,yearly_price_eur`);
     const red = p.ok && Array.isArray(p.data) ? p.data[0] : null;
     if (!red) return S.posalji(res, 400, { error: 'Plan nije pronađen.' });
@@ -58,12 +67,39 @@ module.exports = async function handler(req, res) {
     }
     if (!(redovna > 0)) return S.posalji(res, 400, { error: 'Plan nema cijenu za to razdoblje.' });
 
+    // broj objekata koji se plaća (cijena je po objektu)
+    let kolicina = 1;
+    if (red.po_objektu) {
+      const min = Math.max(1, Number(red.min_properties) || 1);
+      const max = Number(red.max_properties) > 0 ? Number(red.max_properties) : 500;
+      const trazeno = Math.floor(Number(b.objekata));
+      if (!(trazeno >= 1)) return S.posalji(res, 400, { error: 'Upišite broj objekata.' });
+      if (trazeno > max) return S.posalji(res, 400, { error: `Plan ${red.name} je za najviše ${max} objekata.`, plan_premali: true });
+      kolicina = Math.max(min, trazeno);
+    }
+
     // 3. postojeća pretplata: ne otvarati drugu
     const s = await S.kaoKorisnik(u.token, `/subscriptions?user_id=eq.${u.id}&select=*`);
     const sub = s.ok && Array.isArray(s.data) ? s.data[0] : null;
     if (sub && sub.stripe_subscription_id && AKTIVNA.includes(sub.status)
         && (!sub.period_end || new Date(sub.period_end) > new Date())) {
-      return S.posalji(res, 409, { error: 'Već imate pretplatu karticom — promijenite je u portalu.', portal: true });
+      if (!red.po_objektu || b.objekata == null) {
+        return S.posalji(res, 409, { error: 'Već imate pretplatu karticom — promijenite je u portalu.', portal: true });
+      }
+      // promjena postojeće: isti kupac, ista pretplata, razmjerni obračun odmah
+      const st = await S.stripe('/subscriptions/' + encodeURIComponent(sub.stripe_subscription_id));
+      const stavka = st.items && st.items.data && st.items.data[0];
+      if (!stavka || !st.metadata || st.metadata.user_id !== u.id) {
+        return S.posalji(res, 409, { error: 'Pretplatu promijenite u portalu.', portal: true });
+      }
+      const proizvodP = await S.dohvatiIliNapravi('products', 'odmoria_' + plan, { name: 'Odmoria ' + red.name });
+      await S.stripe('/subscriptions/' + encodeURIComponent(st.id), { method: 'POST', params: {
+        metadata: { user_id: u.id, plan, interval },
+        proration_behavior: 'always_invoice',
+        items: [{ id: stavka.id, quantity: kolicina, price_data: {
+          currency: 'eur', product: proizvodP.id, unit_amount: Math.round(redovna * 100), recurring: { interval } } }]
+      } });
+      return S.posalji(res, 200, { promijenjeno: true, objekata: kolicina, test: S.testniNacin() });
     }
 
     // 4. kupac: postojeći samo ako je stvarno ovog korisnika (metadata)
@@ -78,7 +114,8 @@ module.exports = async function handler(req, res) {
 
     // 6. kupon za popust
     let kupon = null;
-    const popust = Math.round((redovna - cijena) * 100);
+    // kupon je iznos s cijelog računa → popust po objektu × broj objekata
+    const popust = Math.round((redovna - cijena) * 100) * kolicina;
     if (ponuda && popust > 0) {
       const mjeseci = Number(ponuda.trajanje_mjeseci) || null;
       const trajanje = !mjeseci ? { duration: 'forever' }
@@ -91,7 +128,7 @@ module.exports = async function handler(req, res) {
     }
 
     // 7. Checkout
-    const meta = { user_id: u.id, plan, interval };
+    const meta = { user_id: u.id, plan, interval, objekata: String(kolicina) };
     const params = {
       mode: 'subscription',
       locale: 'hr',
@@ -99,7 +136,7 @@ module.exports = async function handler(req, res) {
       metadata: meta,
       subscription_data: { metadata: meta },
       line_items: [{
-        quantity: 1,
+        quantity: kolicina,
         price_data: {
           currency: 'eur',
           product: proizvod.id,

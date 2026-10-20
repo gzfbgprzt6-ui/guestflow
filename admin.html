@@ -697,7 +697,9 @@ function dovrsenost(p){
 const cijena=id=>Number(ODMORIA_PLANS[id]?.monthlyPriceEur||0)
 /* Stvarni mjesečni iznos domaćina: osobni popust (ako ga ima) se računa;
    općenite akcije vrijede za nove kupnje, pa ne mijenjaju postojeći MRR. */
-const cijenaDom=h=>{const pop=popustZa(h.efektivni,'month',h.user_id,{samoOsobni:true});return pop?pop.cijena:cijena(h.efektivni)}
+/* v5: cijena po objektu × plaćeni objekti (subscriptions.kolicina); ručno dodijeljen plan → broj objekata */
+const objektaDom=h=>{const P=ODMORIA_PLANS[h.efektivni];if(!P?.poObjektu)return 1;return Math.max(P.minProperties||1,Number(h.sub?.kolicina)||h.props.length||1)}
+const cijenaDom=h=>{const pop=popustZa(h.efektivni,'month',h.user_id,{samoOsobni:true});return (pop?pop.cijena:cijena(h.efektivni))*objektaDom(h)}
 const planIme=id=>ODMORIA_PLANS[id]?.name||id
 const icalStar=p=>(p.ical_booking_url||p.ical_airbnb_url)&&(!p.ical_last_sync||(Date.now()-new Date(p.ical_last_sync))/864e5>=7)
 function relTs(ts){ if(!ts)return 'nema u 90 dana'; const n=A.razlikaDana(A.tsUDan(ts),A.danas()); return n===0?'danas':n===1?'jučer':'prije '+n+' '+A.mn(n,'dan','dana','dana') }

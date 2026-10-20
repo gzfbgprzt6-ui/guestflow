@@ -44,7 +44,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 ├── p.html                  # Javna stranica objekta (?slug=xxx) — AKTIVNA, **redizajn v2 iz Figme** (`odmoria.css`), teme se NE primjenjuju
 ├── h.html                  # Privatni gostinski hub (?token=xxx) — AKTIVNA, **redizajn v2** (`odmoria.css`), podstranice preko #adrese; /h/demo = primjer
 ├── c.html                  # Raspored za čistačicu (/c/<token>) — dolasci i odlasci, bez šifri i imena
-├── sw.js                   # service worker vodiča (opseg /h/) — rad bez interneta
+├── sw.js                   # service worker vodiča (opseg /h/) — rad bez interneta (VERZIJA odmoria-vodic-11)
 ├── push-sw.js              # service worker obavijesti domaćina (opseg /dashboard) — samo push i klik, bez predmemorije
 ├── manifest-domacin.webmanifest  # dashboard kao aplikacija na početnom zaslonu (iPhone obavijesti to traže)
 ├── dashboard.html          # Glavni host dashboard — AKTIVNA, **redizajn v2** (vlastiti CSS, ista imena tokena), navigacija po grupama
@@ -126,6 +126,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
     ├── add-push.sql                     # obavijesti na mobitel: push_pretplate, push_prijava/odjava/proba, VAPID u Vaultu, okidači → /api/obavijest
     ├── add-arrival-steps.sql            # sections.ulazak_koraci (jsonb, ≤ 12): „Kako ući” po koracima sa slikama, samo vodič
     ├── add-guest-arrived.sql            # bookings.usao_at + gost_usao(token): „Ušli smo” u vodiču → push domaćinu (jednom)
+    ├── add-per-object-plans.sql         # v5: cijena po objektu (po_objektu, min_properties, subscriptions.kolicina), plan_limit, moji_objekti_limit()
     ├── add-plan-features.sql            # plans.mogucnosti (koraci, preporuke, ocjena, evisitor, stilovi, cistacica, promocija, email) + mogucnosti_vodica(token, slug)
     └── fix-missing-columns-and-storage.sql # ALTER TABLE dopune (photo_urls, ical_*, beds/bathrooms/size_m2) + storage bucket policy
 ```
@@ -438,11 +439,22 @@ URL-ovi vraćenih fotografija spremaju se u `properties.photo_urls` (jsonb) i `p
 
 ## Planovi i limiti
 
-| Plan | Objekti | Fotografije | Cijena |
+| Plan (id) | Objekti | Fotografije | Cijena |
 |------|---------|-------------|--------|
-| Free | 1 | 5 | €0 zauvijek |
-| Pro | 5 | 30 | €15/mj ili €150/god |
-| Business | 15 | 50 | €49/mj ili €490/god |
+| Free (`free`) | 1 | 5 | €0 zauvijek |
+| Domaćin (`pro`) | 1–5 | 30 | **€12 po objektu/mj** ili €99 po objektu/god |
+| Agencija (`business`) | 6+ (plaća se najmanje 6) | 50 | **€9 po objektu/mj** ili €89 po objektu/god |
+
+**Cijena po objektu (v5, `sql/add-per-object-plans.sql`):** `plans.po_objektu`,
+`plans.min_properties`, `subscriptions.kolicina` (upisuje samo webhook iz
+Stripeove `quantity`). `plan_limit(…,'properties')` = plaćena količina u
+granicama plana; bez količine (admin) = `max_properties`. U kodu:
+`limitObjekata(plan, sub)`, `placeniObjekti()`, `ukupnoZa()`, `planZaBroj()`
+(`plans.js`). Checkout prima `objekata`; postojeću pretplatu **mijenja**
+(isti kupac, razmjerno) i vraća `{promijenjeno:true}`. Broj objekata bira
+se samo u dashboardu → Pretplata (`OBJ_N`, `brojObjekata()`); Račun i zid
+limita vode tamo (`?otvori=pretplata`). Naslovnica ima računicu
+(`#racunica`) s upisivom provizijom.
 
 **Kako limiti rade (od rujna 2026.):**
 
@@ -577,7 +589,11 @@ Dashboard **ne učitava `odmoria.css`** — ima vlastiti potpun CSS s istim vrij
 
 ## Dorade vlasnika (16. 10. 2026.)
 
-- **Logo B2** („izlazak sunca” na „i”, Manrope): `assets/logo/*.svg`, u svim
+- **Logo C „Sunce u o”** (v5, 20. 10.; zamijenio B2): prvo „o” je prsten s
+  pola sunca u otvoru, točka na „i” je obična. Dvije boje: tinta `#12303A`,
+  sunce `#F2B33D` (+ perla `#F6F5F1`, crvena samo hitno) — tokeni u
+  `odmoria.css` (`--sunce`, `--sunce-meko`), dashboardu i zadanom stilu.
+- **Logo B2** (stari, opis ostaje radi povijesti): `assets/logo/*.svg`, u svim
   stranicama `<img class="o-logo">` (visina 1,12 em, `odmoria.css` +
   dashboard) i `<link rel="icon" href="/assets/logo/ikona.svg">`.
 - **Osnovno**: jedna zbijena kartica; vrsta = kapsule `TYPES` + „Drugo…” s

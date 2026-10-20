@@ -41,7 +41,8 @@ Vercel su postavljeni i provjereni.
       obavijest provjerena na iPhoneu
 - [ ] **Uz puštanje novog vodiča u main** (Claude pokreće uz vašu potvrdu, jednim paketom):
       `sql/add-guest-arrived.sql` („Ušli smo” → obavijest domaćinu) i
-      `sql/add-plan-features.sql` (što koji plan otključava; jezika 6, suradnika 3)
+      `sql/add-plan-features.sql` (što koji plan otključava; jezika 6, suradnika 3) i
+      `sql/add-per-object-plans.sql` (Domaćin 12 € / Agencija 9 € po objektu, broj objekata iz Stripea)
 - [ ] Privatnost: dodati rečenicu da vodič na gostov klik „Ušli smo” javlja
       domaćinu vrijeme ulaska (vidi `docs/odluke.md`, točka 33)
 
