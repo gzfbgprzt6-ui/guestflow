@@ -141,6 +141,19 @@ const alertJ = t => { const e = $('#osvjezeno'); if (e) e.textContent = t }
    isti unsigned preset kao fotografije objekta). Bez popisa ovoga nema. */
 let POPIS = []
 const CLOUD = 'sck9mbg9', PRESET = 'odmoria_photos'
+// Fotografija se prije slanja smanji (dulja strana 1280 px, JPEG 70 %) — s
+// mobitela inače ide 3–6 MB, a ovako oko 150 KB. U mapi „ciscenje” s oznakom,
+// pa se stare mogu obrisati odjednom (Cloudinary → Media Library → oznaka).
+async function smanji(f, max = 1280) {
+  try {
+    const bmp = await createImageBitmap(f, { imageOrientation: 'from-image' })
+    const k = Math.min(1, max / Math.max(bmp.width, bmp.height))
+    const c = document.createElement('canvas'); c.width = Math.round(bmp.width * k); c.height = Math.round(bmp.height * k)
+    c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height)
+    const b = await new Promise(r => c.toBlob(r, 'image/jpeg', 0.7))
+    return b && b.size < f.size ? b : f
+  } catch { return f }
+}
 const sicu = u => String(u).replace('/image/upload/', '/image/upload/w_160,h_160,c_fill,q_auto/')
 function popisHtml(ds) {
   if (!POPIS.length || !JAV) return ''
@@ -176,7 +189,8 @@ document.addEventListener('change', async e => {
     for (const f of [...e.target.files].slice(0, 12 - fo.length)) {
       st.textContent = 'Šaljem fotografiju…'
       try {
-        const fd = new FormData(); fd.append('file', f); fd.append('upload_preset', PRESET)
+        const fd = new FormData(); fd.append('file', await smanji(f), 'ciscenje.jpg'); fd.append('upload_preset', PRESET)
+        fd.append('folder', 'ciscenje'); fd.append('tags', 'ciscenje')
         const r = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD}/image/upload`, { method: 'POST', body: fd })
         const d = await r.json(); if (!r.ok || !d.secure_url) throw new Error()
         fo.push(d.secure_url)

@@ -1788,6 +1788,7 @@ export const P = {
   "Prijavljeno {} od {} — pogledajte što nedostaje": "Registered {} of {} — see what's missing",
   "Prijevod: {}": "Translation: {}",
   "Prijeđi na {}": "Switch to {}",
+  "Prikaži skrivene prijedloge ({})": "Show hidden suggestions ({})",
   "Probna obavijest nije poslana: {}": "Test notification not sent: {}",
   "Promijeni na {}": "Change to {}",
   "Prvi poslužitelj se ne javlja, pokušavam drugi ({}/{})…": "The first server isn't responding, trying another ({}/{})…",

@@ -1332,6 +1332,7 @@ section.v5-prazno{display:none!important}
 /* v5: izravne rezervacije */
 .sez-lista { display: grid; gap: 8px; margin-bottom: 12px; }
 .cij-pr:empty { display: none; }
+.cij-pr:has(> .cij-pr__vrati:only-child) { background: none; padding: 0; }
 .cij-pr { display: grid; gap: 8px; margin-bottom: 16px; padding: 14px; border-radius: var(--radius); background: var(--paper-2); }
 .cij-pr h3 { font: 700 15px/1.3 var(--font-ui); }
 .cij-pr__i { display: flex; gap: 12px; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; padding: 10px 0; border-top: 1px solid var(--line); }
@@ -3658,11 +3659,15 @@ function nacrtajPrijedloge(){
   const el=document.getElementById('cij-prijedlozi');if(!el||!PROP)return
   const zauz=new Set((AVAIL_ROWS||[]).filter(r=>r.is_booked!==false).map(r=>r.date))
   const skr=prSkriveni()
-  CIJ_PR=prijedloziCijena({...PROP,sezonske_cijene:SEZ},zauz,A.danas()).filter(x=>!skr.includes(x.id))
-  el.innerHTML=CIJ_PR.length?`<h3>Prijedlozi cijena</h3>${CIJ_PR.map((x,i)=>`<div class="cij-pr__i"><div><b>${esc(x.naslov)}</b><p>${esc(x.tekst)}</p></div>
+  const svi=prijedloziCijena({...PROP,sezonske_cijene:SEZ},zauz,A.danas())
+  CIJ_PR=svi.filter(x=>!skr.includes(x.id))
+  const nSkr=svi.length-CIJ_PR.length
+  const vrati=nSkr?`<button class="btn ghost small" type="button" onclick="prikaziSkrivene()">Prikaži skrivene prijedloge (${nSkr})</button>`:''
+  el.innerHTML=!CIJ_PR.length?(vrati?`<div class="cij-pr__vrati">${vrati}</div>`:''):`<h3>Prijedlozi cijena</h3>${CIJ_PR.map((x,i)=>`<div class="cij-pr__i"><div><b>${esc(x.naslov)}</b><p>${esc(x.tekst)}</p></div>
     <div class="cij-pr__b">${x.sezone?`<button class="btn small" type="button" onclick="primijeniPrijedlog(${i})">Primijeni</button>`:''}${x.objava?`<button class="btn secondary small" type="button" onclick="otvoriObjave('${x.objava.od}','${x.objava.do}')">Napravi objavu</button>`:''}<button class="btn ghost small" type="button" onclick="sakrijPrijedlog('${x.id}')" aria-label="Sakrij prijedlog">Sakrij</button></div></div>`).join('')}
-    <p class="helper">Prijedlozi gledaju samo vaš kalendar i cijene — nijedna cijena se ne mijenja dok ne spremite.</p>`:''
+    <p class="helper">Prijedlozi gledaju samo vaš kalendar i cijene — nijedna cijena se ne mijenja dok ne spremite.</p>${vrati}`
 }
+window.prikaziSkrivene=()=>{try{localStorage.removeItem('odm-cij-skriveno:'+PROP.id)}catch{};nacrtajPrijedloge()}
 window.primijeniPrijedlog=i=>{const x=CIJ_PR[i];if(!x?.sezone)return
   SEZ=x.sezone.slice(0,12).map(s=>({...s}));nacrtajSezone()
   window.markDirty&&markDirty(document.getElementById('section-pricing'));toast('Sezone su popunjene — pregledajte ih i spremite')}

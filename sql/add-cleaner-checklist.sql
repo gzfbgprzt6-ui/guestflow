@@ -8,7 +8,7 @@
 --
 --  Čistačica nema račun: piše kroz ciscenje_popis(token, dan, kvacice,
 --  fotke) — iste provjere kao javi_ciscenje (valjan token, dan od −3 do +60).
---  Fotografije smiju biti samo s našeg Cloudinaryja (isti unsigned preset
+--  Fotografije (smanjene u pregledniku, mapa i oznaka „ciscenje”) smiju biti samo s našeg Cloudinaryja (isti unsigned preset
 --  kao fotografije objekta), pa link ne može podmetnuti tuđu adresu.
 --  raspored_ciscenja() je ista funkcija kao u add-cleaner-status.sql, uz
 --  'popis' i kvačice/fotke u 'javljanja'.
