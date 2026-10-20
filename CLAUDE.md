@@ -126,6 +126,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
     ├── add-push.sql                     # obavijesti na mobitel: push_pretplate, push_prijava/odjava/proba, VAPID u Vaultu, okidači → /api/obavijest
     ├── add-arrival-steps.sql            # sections.ulazak_koraci (jsonb, ≤ 12): „Kako ući” po koracima sa slikama, samo vodič
     ├── add-guest-arrived.sql            # bookings.usao_at + gost_usao(token): „Ušli smo” u vodiču → push domaćinu (jednom)
+    ├── add-subdomain.sql                # v5: properties.poddomena / poddomena_do (samo webhook), tablica dodaci (cijena 19 €/god), poddomena_slobodna()
     ├── add-team-roles.sql               # v5: property_members.uloga (upravitelj/recepcija/vlasnik), ima_ulogu(), politike „suradnik” po ulozi; properties.brend + mogucnosti_vodica() s brendom
     ├── add-direct-bookings.sql          # v5: sezonske_cijene, kapara_posto, inquiries.iznos (računa baza: cijena_boravka), kod, pristanak_ponude; mogućnost „izravno”
     ├── add-per-object-plans.sql         # v5: cijena po objektu (po_objektu, min_properties, subscriptions.kolicina), plan_limit, moji_objekti_limit()
@@ -695,6 +696,14 @@ Dashboard **ne učitava `odmoria.css`** — ima vlastiti potpun CSS s istim vrij
   sve `PROPS`, `agNizovi()`), `#ag-kal` (30 dana × objekti), `agPrimijeni()`
   (= `prenesiSadrzaj()` za više objekata), `agIzvjestaj()` (novi prozor,
   ispis/PDF, bez iznosa). Mogućnost `agencija` dodaje `add-per-object-plans.sql`.
+- **Vlastita adresa v5** (20. 10., odluke 38): `ime.odmoria.hr` → redirect `/`→`/o`
+  (vercel.json, `has: host`) → `api/stranica.js?pod=` (samo `poddomena_do > now`,
+  slug pregledniku kroz `<meta name="odmoria-slug">`, `p.html` ga čita). Dashboard
+  `#adresa-card` (`ucitajAdresu()`, `adrProvjeri()` → `poddomena_slobodna`, `adrKupi()` →
+  `billing.js startDodatak()` → checkout `{dodatak:'poddomena', objekt}`); webhook
+  `primijeniPoddomenu()` upiše rok. Portal: vlastita konfiguracija `portal-v5` bez
+  `subscription_update`. Prošli datumi: `p.html` `.cday.past` + okidač
+  `inquiries_iznos` odbija `checkin_date < danas`. Sezone: `input type=date`, sprema MM-DD.
 - **Uloge i brend v5** (20. 10., odluke 37, `sql/add-team-roles.sql`): `PROP.__uloga`
   na dijeljenom objektu; `ULOGA_PANELI` + `ulogaDopusta()` / `primijeniUlogu()`
   skrivaju (`data-uloga-skriven`) i `nav()`/`openGroup()` preusmjere — **baza

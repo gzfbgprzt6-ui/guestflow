@@ -1558,3 +1558,26 @@ Danas vidi se tek s više objekata):
       vraća brend; dashboard pušta samo boje s kontrastom ≥ 4,5:1.
 - [ ] Pristup vlasnika objekta (read-only izvještaj preko linka) — zasad
       agencija izvještaj šalje sama.
+
+---
+
+## 38. Vlastita adresa ime.odmoria.hr — plaćeni dodatak (20. 10. 2026.)
+
+Vlasnik: „fali onaj dio da bude ime.odmoria.hr — ali po xxx cijeni koju odredimo”.
+
+- `sql/add-subdomain.sql`: `properties.poddomena` (jedinstvena, a–z 0–9 -,
+  3–40 znakova, rezervirana imena odbijena), `properties.poddomena_do`
+  (upisuje **samo** webhook; okidač brani preglednik), tablica **`dodaci`**
+  s cijenom — **zadano 19 € godišnje po objektu**, mijenja se
+  `update public.dodaci set cijena_god = … where id = 'poddomena';`.
+- Dashboard → Javna stranica → Linkovi i QR → „Vlastita adresa”: ime, provjera
+  je li slobodno, plaćanje (Stripe, godišnja pretplata po objektu, ista ruta
+  checkouta — 12/12 funkcija). Otkaz i račune vidi u portalu.
+- `vercel.json`: `ime.odmoria.hr/` → `/o` (preusmjerenje, jer `index.html`
+  inače ima prednost) → `api/stranica?pod=ime`; radi samo dok je plaćeno.
+
+**Otvoreno (vlasnik):**
+- [ ] Domena **odmoria.hr** (ili koristiti odmoria.com — kod prihvaća oboje):
+      u Vercelu dodati `*.odmoria.hr` (wildcard traži Vercelove nameservere
+      za tu domenu) i `odmoria.hr`.
+- [ ] Konačna cijena dodatka (zadano 19 €/god).

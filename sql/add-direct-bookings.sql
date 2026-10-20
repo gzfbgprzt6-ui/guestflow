@@ -97,6 +97,10 @@ security definer
 set search_path = public, pg_temp
 as $$
 begin
+  -- upit za termin koji je već počeo ili prošao nema smisla (po Europe/Zagreb)
+  if new.checkin_date is not null and new.checkin_date < (now() at time zone 'Europe/Zagreb')::date then
+    raise exception 'Termin je prošao — odaberite novi datum dolaska.' using errcode = 'P0001';
+  end if;
   new.iznos := public.cijena_boravka(new.property_id, new.checkin_date, new.checkout_date);
   new.kod := nullif(upper(btrim(coalesce(new.kod, ''))), '');
   new.pristanak_ponude := coalesce(new.pristanak_ponude, false);

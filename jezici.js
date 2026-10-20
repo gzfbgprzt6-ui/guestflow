@@ -464,6 +464,8 @@ dodaj([
   ['ako ga imate', 'if you have one', 'falls vorhanden', 'se ce l\'hai', 'jeśli masz', 'pokud ho máte'],
   ['Domaćin mi smije slati ponude za buduće boravke', 'The host may send me offers for future stays', 'Der Gastgeber darf mir Angebote für künftige Aufenthalte senden', 'L\'host può inviarmi offerte per soggiorni futuri', 'Gospodarz może wysyłać mi oferty na przyszłe pobyty', 'Hostitel mi smí posílat nabídky na budoucí pobyty'],
   ['Vaš domaćin: {ime}', 'Your host: {ime}', 'Ihr Gastgeber: {ime}', 'Il vostro host: {ime}', 'Twój gospodarz: {ime}', 'Váš hostitel: {ime}'],
+  ['prošlo', 'past', 'vergangen', 'passato', 'minione', 'uplynulo'],
+  ['Taj termin je prošao — odaberite novi datum dolaska.', 'Those dates have passed — please choose a new arrival date.', 'Dieser Termin ist vorbei — bitte wählen Sie ein neues Anreisedatum.', 'Queste date sono passate — scegliete una nuova data di arrivo.', 'Ten termin już minął — wybierz nową datę przyjazdu.', 'Tento termín už uplynul — vyberte nové datum příjezdu.'],
   ['okvirno {cijena}', 'approx. {cijena}', 'ca. {cijena}', 'circa {cijena}', 'około {cijena}', 'přibližně {cijena}'],
   ['Sve fotografije', 'All photos', 'Alle Fotos', 'Tutte le foto', 'Wszystkie zdjęcia', 'Všechny fotky'],
   ['Sve fotografije ({n})', 'All photos ({n})', 'Alle Fotos ({n})', 'Tutte le foto ({n})', 'Wszystkie zdjęcia ({n})', 'Všechny fotky ({n})'],

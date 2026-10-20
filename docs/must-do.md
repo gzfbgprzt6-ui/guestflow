@@ -42,8 +42,11 @@ Vercel su postavljeni i provjereni.
 - [x] **SQL paket v5 pokrenut 20. 10.** (konektorom, uz potvrdu vlasnika): `add-guest-arrived.sql`,
       `add-plan-features.sql`, `add-per-object-plans.sql`, `add-direct-bookings.sql`,
       `add-team-roles.sql` — planovi su sad Free / Domaćin 12 € / Agencija 9 € po objektu
-- [ ] Stripe → Settings → Billing → Customer portal: isključiti promjenu plana (broj objekata se mijenja u dashboardu)
-- [ ] Privatnost: kvačica „Domaćin mi smije slati ponude” i „Ušli smo” (odluke 33, 36); Uvjeti: Odmoria ne sudjeluje u plaćanju kapare
+- [x] Stripe portal bez promjene plana — kod sad sam napravi i koristi takvu konfiguraciju (`api/create-portal-session.js`)
+- [ ] **Vlastita adresa ime.odmoria.hr**: u Vercelu (Settings → Domains) dodati `odmoria.hr` i `*.odmoria.hr`;
+      za wildcard domena mora koristiti Vercelove nameservere (ns1/ns2.vercel-dns.com) kod registrara .hr domene.
+      Cijena dodatka: `update public.dodaci set cijena_god = 19 where id = 'poddomena';` (zadano 19 €/god)
+- [x] Privatnost i Uvjeti dopunjeni (ponude domaćina, „Ušli smo”, eVisitor, treće strane, kapara izvan Odmorije, planovi po objektu) — pravnik neka pregleda prije pravih korisnika
 - [ ] Privatnost: dodati rečenicu da vodič na gostov klik „Ušli smo” javlja
       domaćinu vrijeme ulaska (vidi `docs/odluke.md`, točka 33)
 

@@ -121,14 +121,32 @@ function ubaci(html, novo) {
              '<meta name="viewport" content="width=device-width,initial-scale=1">\n' + novo);
 }
 
+// Vlastita adresa (sql/add-subdomain.sql): ime.odmoria.hr → ?pod=ime (vercel.json).
+// Radi samo dok je plaćena (poddomena_do u budućnosti); slug ide pregledniku
+// kroz <meta name="odmoria-slug">, jer adresa nema /p/<slug>.
+const POD = /^[a-z0-9]([a-z0-9-]{1,38}[a-z0-9])$/;
+
 async function stranica(req, res) {
-  const html = predlozak();
-  const slug = String((req.query && req.query.slug) || '').slice(0, 120);
+  let html = predlozak();
+  const pod = String((req.query && req.query.pod) || '').toLowerCase().slice(0, 40);
+  let slug = String((req.query && req.query.slug) || '').slice(0, 120);
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   try {
-    if (!slug) throw new Error('bez sluga');
-    const redovi = await rest('/properties?select=*&limit=1&slug=eq.' + encodeURIComponent(slug));
+    let redovi
+    if (pod) {
+      if (!POD.test(pod)) throw new Error('neispravna poddomena');
+      redovi = await rest('/properties?select=*&limit=1&poddomena=eq.' + encodeURIComponent(pod) + '&poddomena_do=gt.' + encodeURIComponent(new Date().toISOString()));
+      if (Array.isArray(redovi) && redovi[0]) { slug = redovi[0].slug; html = ubaci(html, `<meta name="odmoria-slug" content="${String(slug).replace(/[^a-z0-9-]/gi, '')}">`); }
+    } else {
+      if (!slug) throw new Error('bez sluga');
+      redovi = await rest('/properties?select=*&limit=1&slug=eq.' + encodeURIComponent(slug));
+    }
     const prop = Array.isArray(redovi) ? redovi[0] : null;
+    if (!prop && pod) {
+      res.statusCode = 404;
+      res.setHeader('Cache-Control', 'public, s-maxage=60');
+      return res.end(ubaci(html, '<title>Adresa nije aktivna — Odmoria</title>\n<meta name="robots" content="noindex">'));
+    }
     if (!prop) {
       res.statusCode = 404;
       res.setHeader('Cache-Control', 'public, s-maxage=60');

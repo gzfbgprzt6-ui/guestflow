@@ -1,6 +1,16 @@
 {
   "rewrites": [
     {
+      "source": "/o",
+      "has": [
+        {
+          "type": "host",
+          "value": "(?<pod>(?!www\\.)[a-z0-9-]+)\\.odmoria\\.(hr|com)"
+        }
+      ],
+      "destination": "/api/stranica?pod=:pod"
+    },
+    {
       "source": "/p/:slug",
       "destination": "/api/stranica?slug=:slug"
     },
@@ -167,5 +177,18 @@
     "api/mjesta.js": {
       "maxDuration": 30
     }
-  }
+  },
+  "redirects": [
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "(?<pod>(?!www\\.)[a-z0-9-]+)\\.odmoria\\.(hr|com)"
+        }
+      ],
+      "destination": "/o",
+      "permanent": false
+    }
+  ]
 }

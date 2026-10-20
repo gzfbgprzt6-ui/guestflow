@@ -1326,6 +1326,7 @@ section.v5-prazno{display:none!important}
 /* v5: izravne rezervacije */
 .sez-lista { display: grid; gap: 8px; margin-bottom: 12px; }
 .sez { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)) auto; gap: 8px; align-items: end; }
+.sez-op { grid-column: 1 / -1; color: var(--muted); font-size: 12.5px; margin-top: -2px; }
 .sez label span { display: block; margin-bottom: 4px; color: var(--muted); font: 600 12.5px/1.2 var(--font-ui); }
 .ponuda-dlg { width: min(620px, calc(100vw - 32px)); max-height: calc(100vh - 48px); overflow: auto; }
 .ponuda-dlg h2 { font: 700 22px/1.3 var(--font-ui); letter-spacing: -.02em; }
@@ -1366,6 +1367,10 @@ section.v5-prazno{display:none!important}
 .brend-pregled__k small { display: block; opacity: .8; font-size: 12px; }
 .brend-pregled__k b { font: 800 18px/1.2 var(--font-ui); }
 .brend-pregled__g { padding: 10px 16px; border-radius: 99px; background: #fff; color: var(--brend); font: 800 13.5px/1 var(--font-ui); }
+.adr-polje { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font: 600 15px/1.3 var(--font-ui); color: var(--muted); }
+.adr-polje .input { flex: 1 1 160px; max-width: 280px; font-weight: 700; color: var(--ink); }
+.adr-akc { margin: 10px 0; }
+.adr-ok { display: inline-block; margin-bottom: 10px; padding: 4px 10px; border-radius: 99px; background: var(--sunce-meko); font: 800 13px/1.3 var(--font-ui); }
 </style>
 <script type="module">import{pokreni,prekidac}from'/domacin-jezik.js';pokreni();prekidac(document.getElementById('jezik-sw'))</script>
 </head>
@@ -2281,6 +2286,11 @@ section.v5-prazno{display:none!important}
 
         <!-- LINKS -->
         <section class="editor-panel" id="section-links" data-panel-content="links">
+          <!-- v5: vlastita adresa ime.odmoria.hr — plaćeni dodatak (sql/add-subdomain.sql, tablica dodaci) -->
+          <div class="card" id="adresa-card">
+            <div class="card-head"><div class="card-title-wrap"><span class="card-number"><svg class="ic ic--sm" aria-hidden="true"><use href="#i-link"/></svg></span><div><h2>Vlastita adresa</h2><p>Kratka adresa za vaš objekt — za vizitku, Instagram i oglase: <b translate="no">ime.odmoria.hr</b>.</p></div></div><span class="card-hint" id="adresa-cijena"></span></div>
+            <div id="adresa-body"><p class="helper">Učitavam…</p></div>
+          </div>
           <div class="card">
             <div class="card-head"><div class="card-title-wrap"><span class="card-number">↗</span><div><h2>Linkovi objekta</h2><p>Dva odvojena prikaza za dvije različite svrhe.</p></div></div></div>
             <div class="link-blocks">
@@ -2513,7 +2523,7 @@ section.v5-prazno{display:none!important}
 import{createClient}from'https://esm.sh/@supabase/supabase-js@2'
 import{loadPlans,getPlan,listPlans,limitFor,canAdd,limitMessage,effectivePlanId,popustZa,cijenaPlana,formatEur,rokPopusta,trajanjePopusta,imaMogucnost,planZaMogucnost,placeniObjekti,ukupnoZa,planZaBroj,poObjektuTxt,limitObjekata}from'./plans.js'
 import{publicUrl,bookingUrl,prettyUrl,cleanerUrl,calendarUrl,inviteUrl}from'./links.js'
-import{billingStatus,startCheckout,openBillingPortal,povratakSPlacanja,cekajPlan}from'./billing.js'
+import{billingStatus,startCheckout,startDodatak,openBillingPortal,povratakSPlacanja,cekajPlan}from'./billing.js'
 import * as A from'./analitika.js'
 import * as O from'./objave.js'
 import * as JZ from'./jezici.js'
@@ -2659,6 +2669,9 @@ async function init(){
   // iz obavijesti na mobitelu (api/_push.js)
   if(otvori==='kalendar')nav('availability',document.querySelector('.panelnav [data-panel=availability]'))
   if(otvori==='pretplata')nav('sub',document.querySelector('[data-panel=sub]'))
+  if(otvori==='adresa'){nav('links',document.querySelector('.panelnav [data-panel=links]'));setTimeout(()=>document.getElementById('adresa-card')?.scrollIntoView({block:'start'}),250)
+    // nakon plaćanja webhook upiše rok — pričeka se do ~20 s
+    ;(async()=>{for(let i=0;i<10&&PROP&&!(PROP.poddomena_do&&new Date(PROP.poddomena_do)>new Date());i++){await new Promise(r=>setTimeout(r,2000));const{data}=await sb.from('properties').select('*').eq('id',PROP.id).maybeSingle();if(data){Object.assign(PROP,data);ucitajAdresu()}}})()}
   if(otvori==='cistacica'){nav('links',document.querySelector('.panelnav [data-panel=links]'));setTimeout(()=>document.getElementById('cist-card')?.scrollIntoView({block:'start'}),200)}
   pushStanje()
 }
@@ -2844,7 +2857,7 @@ async function selectProp(p){
    const pk=document.getElementById('ps-kopiraj');if(pk)pk.hidden=!!p.__dijeljen}
   if(document.querySelector('.editor-panel.active')?.id==='section-prijevodi')ucitajPrijevode()
   if(document.querySelector('.editor-panel.active')?.id==='section-objave')obOtvori(true)
-  if(document.querySelector('.editor-panel.active')?.id==='section-links'){ucitajCistacicu();ucitajTim()}
+  if(document.querySelector('.editor-panel.active')?.id==='section-links'){ucitajCistacicu();ucitajTim();ucitajAdresu()}
 }
 
 /* Nazivi, cijene i limiti iz tablice `plans` (plans.js), kao u account.html.
@@ -3595,17 +3608,23 @@ function slanjeHtml(u,txt,subj){
 let SEZ=[]
 const META=()=>USER?.user_metadata||{}
 const POVRATNI=()=>{const p=META().povratni||{};return{kod:String(p.kod||'').toUpperCase(),posto:Number(p.posto)||0}}
+/* Sezone se biraju kalendarom (input type=date); sprema se samo MM-DD jer
+   sezona vrijedi svake godine. Godina u polju je samo za prikaz kalendara. */
+const MDuDatum=(md,doD,od)=>{if(!/^\d{2}-\d{2}$/.test(md||''))return '';const y=new Date().getFullYear();return `${doD&&od&&md<od?y+1:y}-${md}`}
 function nacrtajSezone(){
   const el=document.getElementById('sez-lista');if(!el)return
   el.innerHTML=SEZ.length?SEZ.map((x,i)=>`<div class="sez" data-i="${i}">
-      <label><span>Od</span><input class="input" data-sz="od" value="${esc(izMD(x.od))}" placeholder="01.07." inputmode="numeric" aria-label="Sezona ${i+1} od (dan.mjesec.)"></label>
-      <label><span>Do</span><input class="input" data-sz="do" value="${esc(izMD(x.do))}" placeholder="31.08." inputmode="numeric" aria-label="Sezona ${i+1} do (dan.mjesec.)"></label>
+      <label><span>Od</span><input class="input" type="date" data-sz="od" value="${esc(MDuDatum(x.od))}" aria-label="Sezona ${i+1} od"></label>
+      <label><span>Do</span><input class="input" type="date" data-sz="do" value="${esc(MDuDatum(x.do,true,x.od))}" aria-label="Sezona ${i+1} do"></label>
       <label><span>€ / noć</span><input class="input" data-sz="cijena" type="number" min="1" step="1" value="${esc(String(x.cijena||''))}" aria-label="Sezona ${i+1} cijena"></label>
-      <button type="button" class="item-btn del" onclick="ukloniSezonu(${i})" aria-label="Ukloni sezonu">✕</button></div>`).join('')
-    :'<p class="helper">Bez sezona vrijedi cijena po noćenju iznad. Dodajte npr. 01.07.–31.08. po višoj cijeni.</p>'
+      <button type="button" class="item-btn del" onclick="ukloniSezonu(${i})" aria-label="Ukloni sezonu">✕</button>
+      <small class="sez-op">${x.od&&x.do?`Svake godine ${esc(izMD(x.od))} – ${esc(izMD(x.do))}`:'Odaberite datume u kalendaru'}</small></div>`).join('')
+    :'<p class="helper">Bez sezona vrijedi cijena po noćenju iznad. Dodajte npr. 1. 7. – 31. 8. po višoj cijeni — sezona vrijedi svake godine.</p>'
+  el.querySelectorAll('input[type=date]').forEach(i=>i.addEventListener('change',()=>{citajSezone();nacrtajSezone()}))
 }
 function citajSezone(){
-  SEZ=[...document.querySelectorAll('#sez-lista .sez')].map(r=>({od:uMD(r.querySelector('[data-sz=od]').value)||r.querySelector('[data-sz=od]').value.trim(),do:uMD(r.querySelector('[data-sz=do]').value)||r.querySelector('[data-sz=do]').value.trim(),cijena:Number(r.querySelector('[data-sz=cijena]').value)||0}))
+  const md=v=>/^\d{4}-\d{2}-\d{2}$/.test(v||'')?v.slice(5):''
+  SEZ=[...document.querySelectorAll('#sez-lista .sez')].map(r=>({od:md(r.querySelector('[data-sz=od]').value),do:md(r.querySelector('[data-sz=do]').value),cijena:Number(r.querySelector('[data-sz=cijena]').value)||0}))
 }
 window.dodajSezonu=()=>{citajSezone();if(SEZ.length>=12){toast('Najviše 12 sezona');return}SEZ.push({od:'',do:'',cijena:''});nacrtajSezone();document.querySelector('#sez-lista .sez:last-child input')?.focus();window.markDirty&&markDirty(document.getElementById('section-pricing'))}
 window.ukloniSezonu=i=>{citajSezone();SEZ.splice(i,1);nacrtajSezone();window.markDirty&&markDirty(document.getElementById('section-pricing'))}
@@ -3624,7 +3643,7 @@ window.saveIzravno=async()=>{
   if(!PROP)return
   citajSezone()
   const lose=SEZ.find(x=>!/^\d{2}-\d{2}$/.test(x.od)||!/^\d{2}-\d{2}$/.test(x.do)||!(x.cijena>0))
-  if(lose){toast('Svaka sezona treba datume u obliku 01.07. i cijenu veću od 0');return}
+  if(lose){toast('Svaka sezona treba datum od, datum do i cijenu veću od 0');return}
   const kap=document.getElementById('prop-kapara').value
   const u={sezonske_cijene:SEZ,kapara_posto:kap===''?null:Math.max(0,Math.min(100,parseInt(kap)||0))}
   const{error}=await sb.from('properties').update(u).eq('id',PROP.id)
@@ -3751,13 +3770,65 @@ function puniBrend(){
 window.spremiBrend=async(vrati)=>{
   const ime=document.getElementById('brend-ime').value.trim().slice(0,60),boja=document.getElementById('brend-boja').value.toUpperCase()
   if(!vrati&&kontrastSBijelim(boja)<4.5){toast('Odaberite tamniju boju — bijeli tekst na njoj mora biti čitljiv.');return}
-  const brend=vrati?null:{ime,boja}
+  const brend=vrati||(!ime&&boja==='#12303A')?null:{ime,boja}
   const ids=vlastiti().map(p=>p.id)
   const{error}=await sb.from('properties').update({brend}).in('id',ids)
   if(error){toast(/brend/.test(error.message)?'Brend još nije uključen — u Supabaseu treba pokrenuti sql/add-team-roles.sql.':'Nije spremljeno: '+error.message);return}
   PROPS.forEach(p=>{if(ids.includes(p.id))p.brend=brend})
   if(vrati)puniBrend()
   toast(vrati?'Vodič opet koristi boje Odmorije':'Ime i boja su spremljeni za sve vaše objekte ✓')
+}
+
+
+/* ===== v5: vlastita adresa ime.odmoria.hr (dodatak po objektu) ===== */
+const ADR_DOMENA='odmoria.hr'
+let ADR_DODATAK=null,ADR_T=null
+const adrIme=window.adrIme=t=>String(t||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/đ/g,'d').replace(/[^a-z0-9-]+/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,'').slice(0,40)
+async function ucitajAdresu(){
+  const el=document.getElementById('adresa-body');if(!el||!PROP)return
+  if(!ADR_DODATAK){try{const{data}=await sb.from('dodaci').select('*').eq('id','poddomena').maybeSingle();ADR_DODATAK=data||null}catch{}}
+  const cij=document.getElementById('adresa-cijena')
+  if(!('poddomena' in PROP)||!ADR_DODATAK){cij.textContent='';el.innerHTML='<p class="helper">Vlastita adresa još nije uključena — u Supabaseu treba pokrenuti <code>sql/add-subdomain.sql</code>.</p>';return}
+  cij.textContent=formatEur(Number(ADR_DODATAK.cijena_god))+' godišnje po objektu'
+  const aktivna=PROP.poddomena&&PROP.poddomena_do&&new Date(PROP.poddomena_do)>new Date()
+  if(PROP.__dijeljen){el.innerHTML=aktivna?`<p><b translate="no">${esc(PROP.poddomena)}.${ADR_DOMENA}</b> · aktivna</p>`:'<p class="helper">Vlastitu adresu uključuje vlasnik objekta.</p>';return}
+  if(aktivna){
+    const url='https://'+PROP.poddomena+'.'+ADR_DOMENA
+    el.innerHTML=`<div class="adr-akt"><span class="adr-ok">✓ Aktivna do ${new Date(PROP.poddomena_do).toLocaleDateString('hr-HR')}</span>
+      <div class="link-url"><span translate="no">${esc(url.replace('https://',''))}</span><button type="button" onclick="navigator.clipboard?.writeText('${url}').then(()=>toast('Adresa je kopirana'))">Kopiraj</button></div>
+      <p class="helper">Produžuje se sama svake godine; otkaz i račune vidite u „Kartica i računi” (Pretplata).</p></div>`
+    return
+  }
+  const pred=PROP.poddomena||adrIme(PROP.name)
+  el.innerHTML=`<div class="adr-novo"><label for="adr-in" class="sr-only">Ime adrese</label>
+      <div class="adr-polje"><span>https://</span><input class="input" id="adr-in" value="${esc(pred)}" maxlength="40" autocomplete="off" data-bez-spremanja translate="no" oninput="adrProvjeri()" onblur="this.value=adrIme(this.value);adrProvjeri()"><span translate="no">.${ADR_DOMENA}</span></div>
+      <p class="helper" id="adr-st" role="status"></p>
+      <div class="adr-akc"><button class="btn" type="button" id="adr-kupi" onclick="adrKupi(this)">Uzmi adresu · ${formatEur(Number(ADR_DODATAK.cijena_god))}/god</button></div>
+      <p class="helper">Javna stranica ostaje i na dosadašnjem linku. Odmoria ne uzima proviziju ni na ovoj adresi.</p></div>`
+  adrProvjeri()
+}
+window.adrProvjeri=()=>{
+  clearTimeout(ADR_T)
+  const i=document.getElementById('adr-in'),st=document.getElementById('adr-st'),b=document.getElementById('adr-kupi');if(!i)return
+  const ime=adrIme(i.value);if(ime!==i.value&&document.activeElement!==i)i.value=ime
+  if(ime.length<3){st.textContent='Najmanje 3 znaka: slova, brojke i crtica.';b.disabled=true;return}
+  st.textContent='Provjeravam…';b.disabled=true
+  ADR_T=setTimeout(async()=>{
+    const{data,error}=await sb.rpc('poddomena_slobodna',{p_ime:ime,p_objekt:PROP.id})
+    if(adrIme(document.getElementById('adr-in')?.value)!==ime)return
+    if(error){st.textContent='Provjera trenutačno ne radi.';return}
+    st.innerHTML=data?`✓ <b translate="no">${esc(ime)}.${ADR_DOMENA}</b> je slobodna.`:`<b translate="no">${esc(ime)}.${ADR_DOMENA}</b> je zauzeta ili rezervirana — probajte drugo ime.`
+    b.disabled=!data
+  },350)
+}
+window.adrKupi=async btn=>{
+  const ime=adrIme(document.getElementById('adr-in').value)
+  const{error}=await sb.from('properties').update({poddomena:ime}).eq('id',PROP.id)
+  if(error){toast(/jedinstvena|duplicate/.test(error.message)?'To ime je upravo zauzeto — probajte drugo.':'Nije spremljeno: '+error.message);return}
+  PROP.poddomena=ime
+  if(!BILLING.stripe){location.href='mailto:podrska@odmoria.com?subject='+encodeURIComponent('Vlastita adresa: '+ime+'.'+ADR_DOMENA);return}
+  cekaGumb(btn,'Otvaram plaćanje…')
+  try{await startDodatak(sb,'poddomena',PROP.id)}catch(e){cekaGumb(btn,'');toast(e.message)}
 }
 
 async function agOtvori(){
@@ -4770,7 +4841,7 @@ window.nav=(id,el)=>{
   id=glavni
   if(id==='reservations')window.loadBookings()
   if(id==='ical')loadIcal()
-  if(id==='links'){ucitajCistacicu();ucitajTim();ucitajPreporuke()}
+  if(id==='links'){ucitajCistacicu();ucitajTim();ucitajPreporuke();ucitajAdresu()}
   if(id==='objave')obOtvori()
   if(id==='reviews')ucitajRecenzije()
   if(id==='arrival')parkKarta()

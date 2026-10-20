@@ -42,6 +42,7 @@ async function primijeni(sub, rezervniKorisnik) {
   const meta = sub.metadata || {};
   const userId = UUID.test(meta.user_id || '') ? meta.user_id : (UUID.test(rezervniKorisnik || '') ? rezervniKorisnik : null);
   if (!userId) return 'preskočeno: pretplata bez user_id';
+  if (meta.dodatak === 'poddomena') return primijeniPoddomenu(sub, userId, meta);
   const kupac = typeof sub.customer === 'string' ? sub.customer : sub.customer && sub.customer.id;
 
   const redovi = await S.kaoPosluzitelj(`/subscriptions?user_id=eq.${userId}&select=*`);
@@ -89,6 +90,17 @@ async function primijeni(sub, rezervniKorisnik) {
       .catch(e => console.error('webhook: metapodaci kupca', e.message));
   }
   return `${userId}: ${promjena.plan} × ${promjena.kolicina || 1} (${promjena.status})`;
+}
+
+// Dodatak „Vlastita adresa”: rok adrese = kraj plaćenog razdoblja (+2 dana).
+// Otkazana pretplata vrijedi do kraja razdoblja; neplaćena (incomplete) ništa.
+async function primijeniPoddomenu(sub, userId, meta) {
+  if (!UUID.test(meta.property_id || '')) return 'preskočeno: dodatak bez objekta';
+  if (!IMA_PLAN.includes(sub.status) && !GOTOVA.includes(sub.status)) return 'preskočeno: dodatak, status ' + sub.status;
+  const kraj = S.krajRazdoblja(sub);
+  const promjena = { poddomena_do: IMA_PLAN.includes(sub.status) ? kraj : (sub.ended_at ? new Date(sub.ended_at * 1000).toISOString() : kraj) };
+  await S.kaoPosluzitelj(`/properties?id=eq.${meta.property_id}&user_id=eq.${userId}`, { method: 'PATCH', body: promjena, prefer: 'return=minimal' });
+  return `${userId}: adresa ${meta.poddomena || '?'} do ${promjena.poddomena_do} (${sub.status})`;
 }
 
 // Tijelo zahtjeva: Vercel ga obično već pretvori u objekt; inače ga pročitaj.
