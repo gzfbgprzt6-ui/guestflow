@@ -17,7 +17,7 @@
 const CSS = `
 .odm-potvrda{width:min(420px,calc(100vw - 32px));padding:24px;border:0;border-radius:var(--radius-lg,var(--radius-feature,14px));
   background:var(--paper,var(--bg-surface,#fff));color:var(--ink,var(--text,#12303A));box-shadow:0 24px 64px rgba(14,34,41,.28);
-  font:500 16px/1.5 var(--font-body,"DM Sans",system-ui,sans-serif)}
+  font:500 16px/1.5 var(--font-body,Manrope,system-ui,sans-serif)}
 .odm-potvrda::backdrop{background:rgba(14,34,41,.45)}
 .odm-potvrda__t{margin:0 0 20px;white-space:pre-line;font:700 18px/1.4 var(--font-ui,"Manrope",system-ui,sans-serif)}
 .odm-potvrda__akc{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}

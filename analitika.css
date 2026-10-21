@@ -13,7 +13,7 @@
 .an-kpi__l{font-size:14px;color:var(--an-mut)}
 .an-kpi__v{font:800 26px/1.15 "Manrope",system-ui,sans-serif;letter-spacing:-.02em;color:var(--an-ink);overflow-wrap:anywhere}
 .an-kpi__s{font-size:13px;line-height:1.4;color:var(--an-mut)}
-.an-delta{display:inline-block;padding:1px 6px;border-radius:6px;background:var(--an-soft);color:var(--an-bar);font:700 12px/1.5 "DM Sans",system-ui,sans-serif}
+.an-delta{display:inline-block;padding:1px 6px;border-radius:6px;background:var(--an-soft);color:var(--an-bar);font:700 12px/1.5 Manrope,system-ui,sans-serif}
 .an-delta.is-down{background:var(--an-warm);color:var(--an-warm-ink)}
 
 /* traka s rasponom */
@@ -33,7 +33,7 @@
 .an-col i{display:block;width:100%;max-width:24px;border-radius:4px 4px 0 0;background:var(--an-bar)}
 .an-col.is-zero i{height:2px!important;border-radius:1px;background:var(--an-grid)}
 .an-col.is-now i{background:var(--an-bar-hi)}
-.an-col b{font:700 11px/1.2 "DM Sans",system-ui,sans-serif;color:var(--an-ink);margin-bottom:3px;white-space:nowrap}
+.an-col b{font:700 11px/1.2 Manrope,system-ui,sans-serif;color:var(--an-ink);margin-bottom:3px;white-space:nowrap}
 .an-x{display:flex;gap:3px;font-size:12px;line-height:1.3;color:var(--an-mut)}
 .an-x span{flex:1 1 0;min-width:0;text-align:center;white-space:nowrap;overflow:visible}
 
@@ -41,7 +41,7 @@
 .an-rank{display:grid;gap:14px}
 .an-rank__r{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 12px;align-items:center}
 .an-rank__k{font:700 15px/1.3 "Manrope",system-ui,sans-serif;color:var(--an-ink);min-width:0}
-.an-rank__k small{display:block;font:400 13px/1.3 "DM Sans",system-ui,sans-serif;color:var(--an-mut)}
+.an-rank__k small{display:block;font:400 13px/1.3 Manrope,system-ui,sans-serif;color:var(--an-mut)}
 .an-rank__v{font-size:14px;color:var(--an-mut);text-align:right;white-space:nowrap}
 .an-rank__t{grid-column:1/-1;height:8px;border-radius:4px;background:var(--an-soft);overflow:hidden}
 .an-rank__t i{display:block;height:100%;border-radius:4px;background:var(--an-bar)}
@@ -65,10 +65,10 @@
 .an-day{display:grid;grid-template-columns:92px minmax(0,1fr);gap:12px;padding:12px 0;border-bottom:1px solid var(--an-line)}
 .an-day:last-child{border-bottom:0}
 .an-day__d{font:700 14px/1.4 "Manrope",system-ui,sans-serif;color:var(--an-ink)}
-.an-day__d small{display:block;font:400 13px/1.3 "DM Sans",system-ui,sans-serif;color:var(--an-mut)}
+.an-day__d small{display:block;font:400 13px/1.3 Manrope,system-ui,sans-serif;color:var(--an-mut)}
 .an-ev{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:baseline;font-size:15px;line-height:1.45}
 .an-ev + .an-ev{margin-top:4px}
-.an-tag{display:inline-block;padding:2px 7px;border-radius:6px;font:700 11px/1.5 "DM Sans",system-ui,sans-serif;letter-spacing:.05em;text-transform:uppercase;background:var(--an-soft);color:var(--an-bar)}
+.an-tag{display:inline-block;padding:2px 7px;border-radius:6px;font:700 11px/1.5 Manrope,system-ui,sans-serif;letter-spacing:.05em;text-transform:uppercase;background:var(--an-soft);color:var(--an-bar)}
 .an-tag.is-out{background:#F2F4F5;color:#3E5660}
 .an-tag.is-warn{background:var(--an-warm);color:var(--an-warm-ink)}
 .an-src{font-size:13px;color:var(--an-mut)}

@@ -12,7 +12,7 @@
 <title>Dashboard — Odmoria</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..700,0..100,0..1;1,9..144,300..600,0..100,0..1&family=Manrope:wght@400;500;600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Gelasio:wght@400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..700,0..100,0..1;1,9..144,300..600,0..100,0..1&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/analitika.css">
 <style>
 /* ==========================================================================
@@ -1128,7 +1128,7 @@ h1, h2, h3, .brand, .serif { font-family: var(--font-ui); font-weight: 700; lett
 .ov-mini { display: inline-block; width: 54px; height: 6px; margin-right: 8px; overflow: hidden; border-radius: 99px; background: #ECEEEE; vertical-align: middle; }
 .ov-mini i { display: block; height: 100%; border-radius: 99px; background: var(--crna); }
 .ov-st { display: inline-block; padding: 5px 10px; border-radius: 99px; background: #F1F3F3; color: var(--muted); font: 700 11.5px/1 var(--font-ui); }
-.ov-st.is-ok { background: #E6F5EC; color: #1E6B45; }
+.ov-st.is-ok { background: #E8F0ED; color: #1F5550; }
 .ov-st.is-warn { background: #FFF1DD; color: #94520E; }
 .ov-st.is-lock { background: #F1F3F3; color: #4A5559; }
 .ov-dij { color: var(--muted); font-size: 11px; }
@@ -1387,6 +1387,276 @@ section.v5-prazno{display:none!important}
 .adr-polje .input { flex: 1 1 160px; max-width: 280px; font-weight: 700; color: var(--ink); }
 .adr-akc { margin: 10px 0; }
 .adr-ok { display: inline-block; margin-bottom: 10px; padding: 4px 10px; border-radius: 99px; background: var(--sunce-meko); font: 800 13px/1.3 var(--font-ui); }
+
+/* =====================================================================
+   „PEARL / QUIET ADRIATIC” (redizajn 21. 10. 2026.) — zadnji sloj.
+   Jedan sustav: mat perla, bijele plohe, petrol akcija, fini razdjelnici,
+   jedno pismo (Manrope). Imena tokena su stara (vidi CLAUDE.md), samo
+   vrijednosti su nove. Shell: bočna traka 216 px (računalo), ikone 72 px
+   (tablet), na mobitelu je nema — donja traka Danas · Kalendar · Upiti · Više.
+   ===================================================================== */
+:root {
+  --cream: #F6F7F5; --paper: #FFFFFF; --paper-2: #E8F0ED;
+  --ink: #183D42; --muted: #536564;
+  --brown: #183D42; --brown-deep: #102C30; --brown-soft: #24525A;
+  --copper: #286863; --copper-hover: #1F5550;
+  --crna: #286863; --crna-hover: #1F5550;
+  --green: #286863; --green-soft: #E8F0ED;
+  --line: #DCE3DF; --control: #7A8B87;
+  --radius-sm: 8px; --radius: 12px; --radius-lg: 12px;
+  --shadow: 0 1px 2px rgba(24,61,66,.05), 0 8px 24px -12px rgba(24,61,66,.14);
+  --kartica-sjena: none;
+  --font-body: "Manrope", system-ui, sans-serif;
+  --sidebar-width: 216px;
+  --tb-h: 64px;
+  --bn-h: 64px;
+  --ease: cubic-bezier(.2,.7,.2,1);
+}
+body { background: var(--cream); color: var(--ink); font: 400 15.5px/1.55 var(--font-ui); }
+:focus-visible { outline: 3px solid rgba(40,104,99,.55); outline-offset: 2px; }
+
+/* shell — računalo: bočna traka u gridu (sticky, ne fixed → nema dvostrukog odmaka) */
+@media (min-width: 781px) {
+  .app-shell { display: grid; grid-template-columns: var(--sidebar-width) minmax(0, 1fr); }
+  .app-shell > .sidebar { display: flex !important; position: sticky; top: 0; height: 100vh; width: auto; transform: none; box-shadow: none; }
+  .main { grid-column: 2; }
+}
+.sidebar { background: var(--paper); border-right: 1px solid var(--line); }
+.sidebar-top { padding: 20px 20px 12px; }
+.sidebar .brand { margin: 0 4px 8px; }
+.sidebar-scroll { padding: 8px 12px; }
+.side-nav { gap: 2px; }
+.side-link { min-height: 44px; gap: 12px; padding: 0 12px; border-radius: var(--radius-sm); color: var(--ink); font: 500 15px/1.2 var(--font-ui); text-decoration: none; }
+.side-link .ic { width: 20px; height: 20px; color: var(--muted); stroke-width: 1.75; }
+.o-logo-ik { display: none; width: 32px; height: 32px; }
+.side-link:hover { background: var(--cream); }
+.side-link.active { background: var(--paper-2); color: var(--ink); font-weight: 700; }
+.side-link.active::before { display: none; }
+.side-link.active .ic { color: var(--copper); }
+.side-link > span:not(.nav-count):not(.side-av) { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sidebar-bottom { gap: 2px; padding: 12px; border-top: 1px solid var(--line); }
+.side-ja { min-height: 52px; }
+.side-av { display: grid; width: 32px; height: 32px; flex: none; place-items: center; border-radius: 50%; background: var(--paper-2); color: var(--copper); font: 700 13px/1 var(--font-ui); }
+.side-ja__tx { display: grid; min-width: 0; }
+.side-ja__tx b { overflow: hidden; font: 600 14px/1.25 var(--font-ui); text-overflow: ellipsis; white-space: nowrap; }
+.side-ja__tx small { color: var(--muted); font: 500 12.5px/1.3 var(--font-ui); }
+.nav-count { min-width: 20px; height: 20px; border-radius: 10px; background: var(--copper); font: 700 12px/1 var(--font-ui); }
+
+/* tablet: uska traka s ikonama (natpis ostaje za čitač zaslona i kao title) */
+@media (min-width: 781px) and (max-width: 1080px) {
+  :root { --sidebar-width: 72px; }
+  .sidebar-top { padding: 18px 12px 8px; text-align: center; }
+  .sidebar .brand { display: block; width: 32px; margin: 0 auto 4px; }
+  .sidebar .brand .o-logo { display: none; }
+  .sidebar .brand .o-logo-ik { display: block; }
+  .side-link { justify-content: center; padding: 0; }
+  .side-link > span:not(.nav-count):not(.side-av), .side-ja__tx { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .side-link .nav-count { position: absolute; top: 4px; right: 6px; margin: 0; }
+}
+
+/* gornja traka */
+.topbar { min-height: var(--tb-h); gap: 12px; padding: 10px 32px; border-bottom: 1px solid var(--line); background: rgba(246,247,245,.92); backdrop-filter: saturate(1.2) blur(10px); -webkit-backdrop-filter: saturate(1.2) blur(10px); }
+@media (min-width: 781px) { .tb-brand, .mobile-menu { display: none; } }
+.tb-ik--postavke { display: none; }
+.topbar .property-switcher { flex: 0 1 260px; }
+.topbar .ps-gumb { min-height: 44px; padding: 4px 6px 4px 4px; border: 1px solid var(--line); border-radius: var(--radius-sm); box-shadow: none; grid-template-columns: 34px minmax(0, 1fr) 24px; }
+.topbar .ps-gumb .property-thumb { width: 34px; height: 34px; border-radius: 6px; }
+.topbar .ps-gumb[aria-expanded="true"] { border-color: var(--copper); box-shadow: 0 0 0 3px rgba(40,104,99,.12); }
+.ps-strelica, .ps-gumb[aria-expanded="true"] .ps-strelica { background: none; color: var(--muted); }
+.ps-meni, .tb-pop { border: 1px solid var(--line); border-radius: var(--radius); box-shadow: 0 18px 40px -16px rgba(24,61,66,.28); }
+.ps-op, .tb-ob, .tb-st, .tb-lista li { border-radius: var(--radius-sm); }
+.ps-op[aria-selected="true"] { background: var(--paper-2); }
+.ps-op .ps-kvacica, .ps-dodaj { background: var(--copper); }
+.ps-dodaj, .ps-kopiraj { border-radius: var(--radius-sm); }
+.tb-desno { gap: 8px; }
+.tb-ik, .tb-av { width: 44px; height: 44px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--paper); box-shadow: none; }
+.tb-ik:hover { background: var(--cream); box-shadow: none; }
+.tb-ik[aria-expanded="true"] { border-color: var(--copper); background: var(--paper-2); color: var(--ink); }
+.tb-av { border-radius: 50%; background: var(--paper-2); color: var(--copper); font: 700 15px/1 var(--font-ui); box-shadow: none; }
+.tb-broj { border-color: var(--cream); background: #B42318; }
+.tb-ik--trazi { display: none; }
+@media (min-width: 1081px) {
+  .tb-ik.tb-ik--trazi { display: flex; width: min(360px, 32vw); justify-content: flex-start; gap: 10px; padding: 0 10px 0 12px; color: var(--muted); font: 500 14px/1 var(--font-ui); }
+  .tb-trazi-tx { flex: 1; overflow: hidden; text-align: left; text-overflow: ellipsis; white-space: nowrap; }
+  .tb-kbd { padding: 3px 6px; border: 1px solid var(--line); border-radius: 5px; background: var(--cream); color: var(--muted); font: 600 11px/1 var(--font-ui); }
+  .tb-desno { flex: 1; justify-content: flex-end; }
+  #tb-trazi { margin-right: auto; margin-left: 8px; }
+}
+@media (min-width: 781px) and (max-width: 1080px) { .tb-ik.tb-ik--trazi { display: grid; } .tb-trazi-tx, .tb-kbd { display: none; } }
+.tb-trazi-polje { border-radius: var(--radius-sm); background: var(--cream); }
+.tb-push__btn { border-radius: var(--radius-sm); background: var(--copper); }
+
+/* radni prostor */
+.editor { max-width: 1240px; padding: 28px 32px 120px; }
+.page-header { margin-bottom: 20px; gap: 24px; }
+.page-header .eyebrow { display: none; }
+.page-header h1 { margin-bottom: 4px; font: 700 26px/1.2 var(--font-ui); letter-spacing: -.02em; }
+.page-header p { color: var(--muted); font-size: 15px; }
+.ph-akcije .btn { min-height: 40px; }
+.ph-akcije .btn:not(.secondary) { border-color: var(--line); background: var(--paper); color: var(--ink); }
+.ph-akcije .btn:not(.secondary):hover { background: var(--cream); }
+/* lokalna navigacija dijela (podtabovi): podcrtani tabovi, isti na svim zaslonima */
+.panelnav-wrap { margin: -4px 0 20px; border-bottom: 1px solid var(--line); }
+.panelnav { gap: 4px; padding: 0; }
+.panelnav .nav-item, .panelnav .nav-item.active { min-height: 44px; margin: 0 0 -1px; padding: 0 12px; border: 0; border-bottom: 2px solid transparent; border-radius: 0; background: transparent; color: var(--muted); font: 600 14.5px/1 var(--font-ui); }
+.panelnav .nav-item:hover { color: var(--ink); background: transparent; }
+.panelnav .nav-item.active { border-bottom-color: var(--copper); color: var(--ink); }
+/* „Trenutačno uređujete” samo dok se uređuje objekt (gore je izbornik objekta) */
+body:not([data-grupa="objekt"]) .property-banner { display: none; }
+.property-banner { margin-bottom: 20px; padding: 10px 14px 10px 10px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper); box-shadow: none; }
+.property-banner .property-thumb { width: 44px; height: 44px; border-radius: 8px; }
+.property-banner .status-pill { background: var(--paper-2); color: var(--copper); }
+
+/* kartice, gumbi, polja */
+.card, .sync-card, .plan-card, .link-block, .calendar, .iq { border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper); box-shadow: none; }
+.card { padding: 24px; }
+.card:hover { box-shadow: none; }
+.card-number { display: none; }
+.card-head h2 { font: 700 18px/1.3 var(--font-ui); letter-spacing: -.01em; }
+.card-head p { color: var(--muted); font-size: 14.5px; }
+.btn { min-height: 44px; padding: 0 18px; border-radius: var(--radius-sm); border-color: var(--copper); background: var(--copper); font: 700 14.5px/1.2 var(--font-ui); }
+.btn:hover { border-color: var(--copper-hover); background: var(--copper-hover); }
+.btn.secondary, .btn.ghost, .btn.btn-ghost { border-color: #C5D0CB; background: var(--paper); color: var(--ink); }
+.btn.secondary:hover, .btn.ghost:hover, .btn.btn-ghost:hover { border-color: var(--control); background: var(--cream); }
+.btn.small { min-height: 40px; padding: 0 12px; }
+.btn[disabled] { border-color: var(--line); background: #EEF1EF; color: var(--muted); }
+.link-url button, .item-btn, .input-action { border-radius: var(--radius-sm); }
+.link-url { border-radius: var(--radius-sm); background: var(--cream); }
+.input, .select, .textarea { border-color: var(--control); border-radius: var(--radius-sm); background: var(--paper); font-size: 15.5px; }
+.input:hover, .select:hover, .textarea:hover { border-color: var(--ink); }
+.input:focus, .select:focus, .textarea:focus { border-color: var(--copper); box-shadow: 0 0 0 3px rgba(40,104,99,.15); }
+.switch { background: #B9C4C0; }
+.switch.on { background: var(--copper); }
+.type-option, .sub-interval, .an-seg { border-radius: var(--radius-sm); }
+.type-option.selected { border-color: var(--copper); background: var(--paper-2); color: var(--ink); }
+.status-pill { border-radius: 99px; }
+.repeat-item, .bk-card, .sync-row, .counter-card, .metric { border-color: var(--line); border-radius: var(--radius-sm); }
+.an-item { border-radius: var(--radius); }
+.toast { border-radius: var(--radius-sm); }
+
+/* stranica „Više” (mobitel): obični redovi preko cijele širine */
+.vise { display: grid; overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper); }
+.vise__red { display: flex; width: 100%; min-height: 56px; align-items: center; gap: 14px; padding: 0 16px; border: 0; border-top: 1px solid var(--line); background: none; color: var(--ink); cursor: pointer; font: 600 16px/1.2 var(--font-ui); text-align: left; text-decoration: none; }
+.vise__red:first-child { border-top: 0; }
+.vise__red:hover { background: var(--cream); }
+.vise__red > .ic:first-child { color: var(--muted); }
+.vise__red > span { flex: 1; }
+.vise__str { color: var(--muted); }
+
+/* mobitel: bez bočne trake (ni stupca ni margine), donja traka s 4 stavke */
+@media (max-width: 780px) {
+  .app-shell { display: block; }
+  .sidebar, .mobile-overlay, .mobile-menu { display: none !important; }
+  .topbar { min-height: 60px; padding: 8px 12px; padding-left: max(12px, env(safe-area-inset-left)); padding-right: max(12px, env(safe-area-inset-right)); }
+  .tb-brand { display: none; }
+  .tb-ik.tb-ik--trazi { display: grid; }
+  .tb-trazi-tx, .tb-kbd { display: none; }
+  .tb-ik, .tb-av { width: 44px; height: 44px; }
+  .editor { padding: 20px 16px calc(var(--bn-h) + env(safe-area-inset-bottom) + 40px); }
+  .page-header h1 { font-size: 24px; }
+  .panelnav-wrap { margin: -4px -16px 16px; padding: 0 4px; }
+  .panelnav { padding: 0 12px; }
+  .panelnav .nav-item, .panelnav .nav-item.active { min-height: 44px; padding: 0 10px; border: 0; border-bottom: 2px solid transparent; border-radius: 0; background: transparent; color: var(--muted); font-size: 14.5px; }
+  .panelnav .nav-item.active { border-bottom-color: var(--copper); color: var(--ink); }
+  .card { padding: 18px 16px; }
+  .input, .select, .textarea { font-size: 16px; }
+  .bottom-nav { left: 0; right: 0; bottom: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); padding: 4px max(8px, env(safe-area-inset-right)) calc(4px + env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left)); border: 0; border-top: 1px solid var(--line); border-radius: 0; background: rgba(255,255,255,.97); box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .bottom-nav button { min-height: 56px; gap: 4px; border-radius: var(--radius-sm); color: var(--muted); font: 600 12px/1.1 var(--font-ui); }
+  .bottom-nav .ic { width: 22px; height: 22px; stroke-width: 1.75; }
+  .bottom-nav button.active { color: var(--copper); font-weight: 700; }
+  .bottom-nav button.active::before { content: ""; position: absolute; top: 0; left: 30%; right: 30%; height: 2px; border-radius: 0 0 2px 2px; background: var(--copper); }
+  .bottom-nav .nav-count { top: 4px; right: calc(50% - 24px); }
+  .savebar { bottom: calc(var(--bn-h) + env(safe-area-inset-bottom) + 12px); }
+  .toast { bottom: calc(var(--bn-h) + env(safe-area-inset-bottom) + 12px); }
+  .ph-akcije .btn { flex: 1 1 0; padding-inline: 10px; font-size: 14px; white-space: nowrap; }
+}
+@media (min-width: 781px) { #section-vise .vise { max-width: 560px; } }
+@media (prefers-reduced-motion: no-preference) {
+  .side-link, .panelnav .nav-item, .btn, .vise__red, .tb-ik { transition: background-color .14s ease, color .14s ease, border-color .14s ease; }
+  .editor-panel.active { animation: pearl-in .18s ease both; }
+  .bottom-nav button:active, .btn:active { transform: none; }
+}
+@keyframes pearl-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+#section-overview { --ov-r: var(--radius); --ov-sjena: none; }
+#section-overview .card { border-color: var(--line); }
+/* ── DANAS („Pearl”): tri obveze · slijed događaja · traži pažnju · objekti u redovima ── */
+.dn-kpi { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 16px; }
+.dn-k { display: grid; grid-template-columns: 40px auto minmax(0, 1fr) 16px; align-items: center; gap: 12px; min-height: 72px; padding: 14px 16px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper); color: var(--ink); cursor: pointer; font: inherit; text-align: left; }
+.dn-k:hover { border-color: #C5D0CB; }
+.dn-k[disabled] { cursor: default; }
+.dn-k__ik { display: grid; width: 40px; height: 40px; place-items: center; border-radius: 50%; background: var(--paper-2); color: var(--copper); }
+.dn-k > b { font: 700 26px/1 var(--font-ui); font-variant-numeric: tabular-nums; }
+.dn-k > span:not(.dn-k__ik) { min-width: 0; font: 600 14.5px/1.3 var(--font-ui); }
+.dn-k small { display: block; color: var(--muted); font: 500 12.5px/1.3 var(--font-ui); }
+.dn-str { color: var(--muted); }
+.dn-grid { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 16px; align-items: start; margin-bottom: 16px; }
+.card.dn-card { margin-bottom: 16px; padding: 16px 20px 8px; }
+.dn-grid .card.dn-card { margin-bottom: 0; }
+.dn-h { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 4px; }
+.dn-h h2 { margin: 0; font: 700 18px/1.3 var(--font-ui); letter-spacing: -.01em; }
+.dn-link { display: inline-flex; align-items: center; gap: 4px; min-height: 44px; padding: 0 4px; border: 0; background: none; color: var(--copper); cursor: pointer; font: 600 14px/1 var(--font-ui); text-decoration: none; }
+.dn-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+.dn-broj { display: inline-grid; min-width: 22px; height: 22px; margin-left: 6px; padding: 0 6px; place-items: center; border-radius: 11px; background: #FDECEA; color: #B42318; font: 700 12px/1 var(--font-ui); vertical-align: 2px; }
+.dn-broj[hidden] { display: none; }
+.dn-dan { padding: 6px 0 8px; }
+.dn-dan + .dn-dan { border-top: 1px solid var(--line); }
+.dn-dan h3 { margin: 6px 0 2px; font: 700 14px/1.3 var(--font-ui); }
+.dn-dan h3 small { margin-left: 4px; color: var(--muted); font-weight: 500; }
+.dn-ev { display: grid; width: 100%; min-height: 56px; grid-template-columns: 48px 28px minmax(0, 1fr) auto 16px; align-items: center; gap: 10px; padding: 6px 6px 6px 2px; border: 0; border-radius: var(--radius-sm); background: none; color: var(--ink); cursor: pointer; font: inherit; text-align: left; }
+.dn-ev:hover { background: var(--cream); }
+.dn-ev__vr { font: 600 14px/1 var(--font-ui); font-variant-numeric: tabular-nums; }
+.dn-ev__ik { display: grid; width: 28px; height: 28px; place-items: center; color: var(--copper); }
+.dn-ev__t { min-width: 0; }
+.dn-ev__t b { display: block; font: 600 15px/1.3 var(--font-ui); }
+.dn-ev__t small { display: block; overflow: hidden; color: var(--muted); font-size: 13.5px; text-overflow: ellipsis; white-space: nowrap; }
+.dn-oz { padding: 4px 10px; border: 1px solid var(--line); border-radius: 99px; background: var(--paper); color: var(--ink); font: 600 12.5px/1.2 var(--font-ui); white-space: nowrap; }
+.dn-oz--dolazak, .dn-oz--ok { border-color: transparent; background: var(--paper-2); color: #1F5550; }
+.dn-oz--ceka { border-color: transparent; background: #FBF0DC; color: #6E4A0C; }
+.dn-oz--hitno { border-color: transparent; background: #FDECEA; color: #A11F15; }
+.dn-lista { display: grid; }
+.dn-red { display: grid; grid-template-columns: 32px minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 12px 0; border-top: 1px solid var(--line); }
+.dn-lista > .dn-red:first-child, .dn-koraci > .dn-red:first-child { border-top: 0; }
+.dn-red__ik { display: grid; width: 32px; height: 32px; place-items: center; border-radius: 50%; background: var(--cream); color: var(--muted); font: 700 14px/1 var(--font-ui); }
+.dn-red--hitno .dn-red__ik { background: #FDECEA; color: #A11F15; }
+.dn-red--vazno .dn-red__ik { background: #FBF0DC; color: #6E4A0C; }
+.dn-red__t { min-width: 0; }
+.dn-red__t b { display: block; font: 600 14.5px/1.35 var(--font-ui); }
+.dn-red__t small { display: block; margin-top: 2px; color: var(--muted); font-size: 13.5px; line-height: 1.45; }
+.dn-koraci { display: grid; }
+.dn-red--korak { width: 100%; min-height: 52px; grid-template-columns: 32px minmax(0, 1fr) auto 16px; border: 0; border-top: 1px solid var(--line); background: none; color: var(--ink); cursor: pointer; font: inherit; text-align: left; }
+.dn-red--korak:hover { background: var(--cream); }
+.dn-red--korak.je-gotovo .dn-red__ik { background: var(--paper-2); color: var(--copper); }
+.dn-red__s { color: var(--muted); font-size: 13.5px; }
+.dn-obj { display: grid; }
+.dn-o { display: grid; grid-template-columns: 84px minmax(0, 1.5fr) minmax(0, .8fr) minmax(0, .8fr) auto; align-items: center; gap: 16px; padding: 12px 0; border-top: 1px solid var(--line); }
+.dn-obj > .dn-o:first-child { border-top: 0; }
+.dn-o__f { display: block; width: 84px; aspect-ratio: 3 / 2; border-radius: 8px; background: var(--paper-2) center / cover no-repeat; }
+.dn-o__t, .dn-o__p, .dn-o__s { min-width: 0; }
+.dn-o__t b { display: block; overflow: hidden; font: 700 15.5px/1.3 var(--font-ui); text-overflow: ellipsis; white-space: nowrap; }
+.dn-o__t small, .dn-o__p small, .dn-o__s small { display: block; overflow: hidden; color: var(--muted); font-size: 13px; text-overflow: ellipsis; white-space: nowrap; }
+.dn-o__p b { font: 600 15px/1.3 var(--font-ui); }
+.dn-o.is-on .dn-o__t b::after { content: ""; display: inline-block; width: 6px; height: 6px; margin-left: 8px; border-radius: 50%; background: var(--copper); vertical-align: 3px; }
+@media (max-width: 1080px) { .dn-grid { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 780px) {
+  .dn-kpi { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .dn-k { min-height: 60px; padding: 10px 14px; }
+  .dn-k > b { font-size: 22px; }
+  .dn-grid > :nth-child(2) { order: -1; }   /* mobitel: prvo ono što traži pažnju, pa slijed */
+  .card.dn-card { padding: 14px 16px 6px; }
+  .dn-ev { grid-template-columns: 44px minmax(0, 1fr) auto; gap: 8px; }
+  .dn-ev__ik, .dn-ev .dn-str { display: none; }
+  .dn-red { grid-template-columns: 32px minmax(0, 1fr); }
+  .dn-red > .btn { grid-column: 2; justify-self: start; }
+  .dn-red--korak { grid-template-columns: 32px minmax(0, 1fr) auto; }
+  .dn-red--korak .dn-str { display: none; }
+  .dn-o { grid-template-columns: 64px minmax(0, 1fr) auto; gap: 12px; }
+  .dn-o__f { width: 64px; }
+  .dn-o__p { display: none; }
+  .dn-o__s { grid-column: 2; grid-row: 2; margin-top: -6px; }
+  .dn-o__a { grid-column: 3; grid-row: 1 / 3; }
+  .dn-o__f { grid-row: 1 / 3; }
+}
 </style>
 <script type="module">import{pokreni,prekidac}from'/domacin-jezik.js';pokreni();prekidac(document.getElementById('jezik-sw'))</script>
 </head>
@@ -1497,6 +1767,12 @@ section.v5-prazno{display:none!important}
   <symbol id="i-arrow-up-right" viewBox="0 0 24 24"><path d="M7 7h10v10" /> <path d="M7 17 17 7" /></symbol>
   <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
   <symbol id="i-bell" viewBox="0 0 24 24"><path d="M10.27 21a2 2 0 0 0 3.46 0"/><path d="M3.26 15.33A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.67C19.41 13.96 18 12.5 18 8A6 6 0 0 0 6 8c0 4.5-1.41 5.96-2.74 7.33"/></symbol>
+  <symbol id="i-inbox" viewBox="0 0 24 24"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></symbol>
+  <symbol id="i-clipboard-list" viewBox="0 0 24 24"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></symbol>
+  <symbol id="i-circle-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></symbol>
+  <symbol id="i-chevron-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+  <symbol id="i-qr-code" viewBox="0 0 24 24"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/><path d="M3 12h.01"/><path d="M12 3h.01"/><path d="M12 16v.01"/><path d="M16 12h1"/><path d="M21 12v.01"/><path d="M12 21v-1"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></symbol>
   <symbol id="i-compass" viewBox="0 0 24 24"><path d="m16.24 7.76-1.804 5.411a2 2 0 0 1-1.265 1.265L7.76 16.24l1.804-5.411a2 2 0 0 1 1.265-1.265z"/><circle cx="12" cy="12" r="10"/></symbol>
 </svg>
 <a class="skip" href="#main-content">Preskoči na sadržaj</a>
@@ -1505,26 +1781,27 @@ section.v5-prazno{display:none!important}
 <div class="app-shell" id="app" style="display:none">
   <aside class="sidebar" id="sidebar" aria-label="Uređivanje objekta">
     <div class="sidebar-top">
-      <a class="brand" href="/"><img class="o-logo" src="/assets/logo/odmoria.svg" alt="Odmoria" width="112" height="24"></a>
+      <a class="brand" href="/"><img class="o-logo" src="/assets/logo/odmoria.svg" alt="Odmoria" width="112" height="24"><img class="o-logo-ik" src="/assets/logo/ikona.svg" alt="Odmoria" width="32" height="32"></a>
     </div>
 
     <div class="sidebar-scroll">
-      <!-- Pet glavnih dijelova (Figma: HostSidebar). Paneli unutar grupe su
-           podtabovi u `.panelnav`; `nav()` i dalje radi s `.nav-item[data-panel]`. -->
+      <!-- Redizajn „Pearl” (21. 10. 2026.): osam glavnih dijelova. Paneli unutar
+           dijela su podtabovi u `.panelnav`; `nav()` i dalje radi s `.nav-item[data-panel]`. -->
       <nav class="side-nav" aria-label="Glavni dijelovi">
-        <button class="side-link" type="button" data-group="pregled" onclick="openGroup('pregled')"><svg class="nv nv-o" aria-hidden="true"><use href="#nv-pregled-o"/></svg><svg class="nv nv-b" aria-hidden="true"><use href="#nv-pregled-b"/></svg>Danas</button>
-        <button class="side-link" type="button" data-group="boravci" onclick="openGroup('boravci')"><svg class="nv nv-o" aria-hidden="true"><use href="#nv-boravci-o"/></svg><svg class="nv nv-b" aria-hidden="true"><use href="#nv-boravci-b"/></svg>Gosti<span class="nav-count" data-iq-count hidden></span></button>
-        <button class="side-link" type="button" data-group="vodic" onclick="openGroup('vodic')"><svg class="nv nv-o" aria-hidden="true"><use href="#nv-vodic-o"/></svg><svg class="nv nv-b" aria-hidden="true"><use href="#nv-vodic-b"/></svg>Vodič</button>
-        <button class="side-link" type="button" data-group="objekt" onclick="openGroup('objekt')"><svg class="nv nv-o" aria-hidden="true"><use href="#nv-objekt-o"/></svg><svg class="nv nv-b" aria-hidden="true"><use href="#nv-objekt-b"/></svg>Javna stranica</button>
+        <button class="side-link" type="button" data-group="pregled" onclick="openGroup('pregled')"><svg class="ic" aria-hidden="true"><use href="#i-house"/></svg><span>Danas</span></button>
+        <button class="side-link" type="button" data-group="upiti" onclick="openGroup('upiti')"><svg class="ic" aria-hidden="true"><use href="#i-inbox"/></svg><span>Upiti</span><span class="nav-count" data-iq-count hidden></span></button>
+        <button class="side-link" type="button" data-group="kalendar" onclick="openGroup('kalendar')"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg><span>Kalendar</span></button>
+        <button class="side-link" type="button" data-group="rezervacije" onclick="openGroup('rezervacije')"><svg class="ic" aria-hidden="true"><use href="#i-clipboard-list"/></svg><span>Rezervacije</span></button>
+        <button class="side-link" type="button" data-group="objekt" onclick="openGroup('objekt')"><svg class="ic" aria-hidden="true"><use href="#i-layout-dashboard"/></svg><span>Objekti</span></button>
+        <button class="side-link" type="button" data-group="analitika" onclick="openGroup('analitika')"><svg class="ic" aria-hidden="true"><use href="#i-chart-no-axes-column"/></svg><span>Analitika</span></button>
+        <button class="side-link" type="button" data-group="tim" onclick="openGroup('tim')"><svg class="ic" aria-hidden="true"><use href="#i-users"/></svg><span>Tim i čišćenje</span></button>
+        <button class="side-link" type="button" data-group="pretplata" onclick="openGroup('pretplata')"><svg class="ic" aria-hidden="true"><use href="#i-settings"/></svg><span>Postavke</span></button>
       </nav>
     </div>
 
     <div class="sidebar-bottom">
-      <button class="btn secondary btn-block add-btn" type="button" onclick="location.href='/add-property.html'">Dodaj objekt<svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></button>
-      <hr>
-      <button class="side-link" type="button" data-group="pretplata" onclick="openGroup('pretplata')"><svg class="ic" aria-hidden="true"><use href="#i-credit-card"/></svg>Pretplata<span class="badge" id="user-plan">Free plan</span></button>
-      <button class="side-link" type="button" onclick="location.href='/account.html'"><svg class="ic" aria-hidden="true"><use href="#i-settings"/></svg><span style="min-width:0">Postavke računa<small id="user-name">...</small></span></button>
-      <button class="side-link" type="button" onclick="signOut()"><svg class="ic" aria-hidden="true"><use href="#i-log-out"/></svg>Odjava</button>
+      <a class="side-link" href="/help.html"><svg class="ic" aria-hidden="true"><use href="#i-circle-help"/></svg><span>Pomoć</span></a>
+      <a class="side-link side-ja" href="/account.html"><span class="side-av" aria-hidden="true" id="side-av">?</span><span class="side-ja__tx"><b id="user-name" translate="no">...</b><small><span id="user-plan">Free plan</span></small></span></a>
       <!-- JS još puni ove elemente; dovršenost vodiča sada je u Pregledu -->
       <div class="completion-card" aria-hidden="true"><span class="mini-progress" id="mini-progress" data-pct="0"></span><span><strong id="completion-title">Vodič je 0% gotov</strong><small id="completion-sub">—</small></span></div>
       <div class="user-row" aria-hidden="true"><div class="user-av" id="user-av">?</div></div>
@@ -1556,16 +1833,10 @@ section.v5-prazno{display:none!important}
           </div>
           <select id="prop-sel" onchange="onPropChange()" hidden tabindex="-1" aria-hidden="true"></select>
         </div>
-      <nav class="tb-tabs" aria-label="Glavni dijelovi">
-        <button class="side-link tb-tab" type="button" data-group="pregled" onclick="openGroup('pregled')">Danas</button>
-        <button class="side-link tb-tab" type="button" data-group="boravci" onclick="openGroup('boravci')">Gosti<span class="nav-count" data-iq-count hidden></span></button>
-        <button class="side-link tb-tab" type="button" data-group="vodic" onclick="openGroup('vodic')">Vodič</button>
-        <button class="side-link tb-tab" type="button" data-group="objekt" onclick="openGroup('objekt')">Javna stranica</button>
-      </nav>
       <span id="crumb-name" hidden></span>
       <div class="tb-desno">
         <div class="tb-drop" id="tb-trazi">
-          <button class="tb-ik" type="button" id="tb-trazi-btn" aria-haspopup="dialog" aria-expanded="false" aria-label="Traži" title="Traži"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg></button>
+          <button class="tb-ik tb-ik--trazi" type="button" id="tb-trazi-btn" aria-haspopup="dialog" aria-expanded="false" aria-label="Traži" title="Traži (Ctrl K)"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg><span class="tb-trazi-tx">Traži goste, objekte, postavke…</span><kbd class="tb-kbd">Ctrl K</kbd></button>
           <div class="tb-pop tb-pop--trazi" id="tb-trazi-pop" hidden>
             <div class="tb-trazi-polje"><svg class="ic ic--sm" aria-hidden="true"><use href="#i-search"/></svg><input id="tb-trazi-in" type="search" autocomplete="off" placeholder="Traži gosta, polje, preporuku, radnju…" aria-label="Traži" aria-controls="tb-trazi-lista"></div>
             <ul class="tb-lista" id="tb-trazi-lista" role="listbox" aria-label="Rezultati"></ul>
@@ -1601,34 +1872,6 @@ section.v5-prazno{display:none!important}
 
     <div class="workspace">
       <div class="editor">
-        <!-- Tabovi panela. `nav()` i dalje veže `.nav-item[data-panel]`, pa je
-             ovo samo drugo mjesto za iste gumbe — logika panela nije dirana. -->
-        <div class="panelnav-wrap" id="panelnav-wrap" hidden>
-          <nav class="panelnav" id="panelnav" aria-label="Dijelovi objekta">
-            <button class="nav-item active" type="button" data-panel="overview" data-group="pregled" onclick="nav('overview',this)">Danas</button>
-            <button class="nav-item" type="button" data-panel="sviobjekti" data-group="pregled" onclick="nav('sviobjekti',this)">Svi objekti</button>
-            <!-- v5: tab Analitika maknut iz izbornika (tri broja su u Danas); panel ostaje za adresu ?otvori i tražilicu -->
-            <button class="nav-item" type="button" data-panel="analytics" data-group="pregled" data-skriven onclick="nav('analytics',this)">Analitika</button>
-            <span class="panelnav__sep" aria-hidden="true"></span>
-            <!-- Objekt: 5 podtabova (Figma); svaki pokazuje nekoliko postojećih panela, vidi SPOJ -->
-            <button class="nav-item" type="button" data-panel="basic" data-group="objekt" onclick="nav('basic',this)">Opis i izgled</button>
-            <button class="nav-item" type="button" data-panel="photos" data-group="objekt" onclick="nav('photos',this)">Fotografije</button>
-            <button class="nav-item" type="button" data-panel="pricing" data-group="objekt" onclick="nav('pricing',this)">Cijene i sadržaji</button>
-            <button class="nav-item" type="button" data-panel="arrival" data-group="vodic" onclick="nav('arrival',this)">Dolazak i upute</button>
-            <button class="nav-item" type="button" data-panel="guide" data-group="vodic" onclick="nav('guide',this)">Preporuke</button>
-            <button class="nav-item" type="button" data-panel="prijevodi" data-group="vodic" onclick="nav('prijevodi',this)">Jezici</button>
-            <span class="panelnav__sep" aria-hidden="true"></span>
-            <button class="nav-item" type="button" data-panel="inquiries" data-group="boravci" onclick="nav('inquiries',this)">Upiti<span class="nav-count" data-iq-count hidden></span></button>
-            <button class="nav-item" type="button" data-panel="reservations" data-group="boravci" onclick="nav('reservations',this)">Rezervacije</button>
-            <button class="nav-item" type="button" data-panel="availability" data-group="boravci" onclick="nav('availability',this)">Kalendar</button>
-            <button class="nav-item" type="button" data-panel="ical" data-group="boravci" onclick="nav('ical',this)">Booking i Airbnb</button>
-            <button class="nav-item" type="button" data-panel="reviews" data-group="boravci" onclick="nav('reviews',this)">Recenzije</button>
-            <button class="nav-item" type="button" data-panel="links" data-group="objekt" onclick="nav('links',this)">Linkovi i QR</button>
-            <button class="nav-item" type="button" data-panel="objave" data-group="objekt" onclick="nav('objave',this)">Promocija</button>
-            <span class="panelnav__sep" aria-hidden="true"></span>
-            <button class="nav-item" type="button" data-panel="sub" data-group="pretplata" onclick="nav('sub',this)">Pretplata</button>
-          </nav>
-        </div>
 
         <p class="uloga-traka" id="uloga-traka" role="status" hidden></p>
         <div class="page-header">
@@ -1647,6 +1890,34 @@ section.v5-prazno{display:none!important}
           </div>
         </div>
 
+        <!-- Tabovi panela. `nav()` i dalje veže `.nav-item[data-panel]`, pa je
+             ovo samo drugo mjesto za iste gumbe — logika panela nije dirana. -->
+        <div class="panelnav-wrap" id="panelnav-wrap" hidden>
+          <nav class="panelnav" id="panelnav" aria-label="Dijelovi objekta">
+            <button class="nav-item active" type="button" data-panel="overview" data-group="pregled" onclick="nav('overview',this)">Danas</button>
+            <button class="nav-item" type="button" data-panel="sviobjekti" data-group="pregled" onclick="nav('sviobjekti',this)">Svi objekti</button>
+            <button class="nav-item" type="button" data-panel="inquiries" data-group="upiti" onclick="nav('inquiries',this)">Upiti<span class="nav-count" data-iq-count hidden></span></button>
+            <button class="nav-item" type="button" data-panel="availability" data-group="kalendar" onclick="nav('availability',this)">Kalendar</button>
+            <button class="nav-item" type="button" data-panel="ical" data-group="kalendar" onclick="nav('ical',this)">Booking i Airbnb</button>
+            <button class="nav-item" type="button" data-panel="reservations" data-group="rezervacije" onclick="nav('reservations',this)">Rezervacije</button>
+            <button class="nav-item" type="button" data-panel="reviews" data-group="rezervacije" onclick="nav('reviews',this)">Recenzije</button>
+            <!-- Objekti: lokalna navigacija editora (specifikacija §11); svaki podtab pokazuje nekoliko postojećih panela, vidi SPOJ -->
+            <button class="nav-item" type="button" data-panel="basic" data-group="objekt" onclick="nav('basic',this)">Osnovno</button>
+            <button class="nav-item" type="button" data-panel="photos" data-group="objekt" onclick="nav('photos',this)">Fotografije</button>
+            <button class="nav-item" type="button" data-panel="arrival" data-group="objekt" onclick="nav('arrival',this)">Dolazak i boravak</button>
+            <button class="nav-item" type="button" data-panel="pricing" data-group="objekt" onclick="nav('pricing',this)">Cijene</button>
+            <button class="nav-item" type="button" data-panel="guide" data-group="objekt" onclick="nav('guide',this)">Lokalni vodič</button>
+            <button class="nav-item" type="button" data-panel="rules" data-group="objekt" onclick="nav('rules',this)">Pravila i FAQ</button>
+            <button class="nav-item" type="button" data-panel="prijevodi" data-group="objekt" onclick="nav('prijevodi',this)">Jezici</button>
+            <button class="nav-item" type="button" data-panel="links" data-group="objekt" onclick="nav('links',this)">Linkovi i QR</button>
+            <button class="nav-item" type="button" data-panel="objave" data-group="objekt" onclick="nav('objave',this)">Promocija</button>
+            <button class="nav-item" type="button" data-panel="analytics" data-group="analitika" onclick="nav('analytics',this)">Analitika</button>
+            <button class="nav-item" type="button" data-panel="tim" data-group="tim" onclick="nav('tim',this)">Tim i čišćenje</button>
+            <button class="nav-item" type="button" data-panel="sub" data-group="pretplata" onclick="nav('sub',this)">Pretplata</button>
+            <button class="nav-item" type="button" data-panel="vise" data-group="vise" onclick="nav('vise',this)">Više</button>
+          </nav>
+        </div>
+
         <div id="lock-banner-slot"></div>
 
         <div class="property-banner">
@@ -1659,84 +1930,37 @@ section.v5-prazno{display:none!important}
           <span class="status-pill" id="statusPill">Objavljeno</span>
         </div>
 
-        <!-- 00 OVERVIEW — operativni pregled: brojke, upozorenja, sljedećih 14 dana
-             (izračuni u analitika.js, podaci iz postojećih tablica) -->
+        <!-- 00 DANAS (redizajn „Pearl”, 21. 10. 2026.): tri obveze, slijed događaja,
+             „Traži pažnju” i objekti kao redovi. Sve iz postojećih tablica (analitika.js). -->
         <section class="editor-panel active an" id="section-overview" data-panel-content="overview">
-          <!-- zaglavlje Pregleda (stil „nekretnine”, vlasnik 4. 10.): objekt, traka zauzetosti, fotografija -->
-          <div class="ov-hero">
-            <div class="ov-hero__l">
-              <span class="ov-eyebrow">Trenutačno uređujete</span>
-              <h2 class="ov-ime" id="ov-ime" translate="no">—</h2>
-              <p class="ov-mjesto"><svg class="ic ic--sm" aria-hidden="true"><use href="#i-map-pin"/></svg><span id="ov-mjesto" translate="no">—</span></p>
-              <div class="ov-stat">
-                <div><small>Popunjenost · 30 dana</small><b id="ov-zauzeto">—</b></div>
-                <div><small>Slobodno · 30 dana</small><b id="ov-slobodno">—</b></div>
-                <div class="ov-stat__dol"><small>Sljedeći dolazak</small><b id="ov-dolazak">—</b><span id="ov-dolazak-s"></span></div>
-              </div>
-              <div class="ov-traka" id="ov-traka" role="img" aria-label="Zauzetost sljedećih 30 dana"><i class="z"></i><i class="p"></i><i class="s"></i></div>
-              <p class="ov-legenda"><span><i class="z"></i>zauzeto</span><span><i class="p"></i>kratke praznine</span><span><i class="s"></i>slobodno</span></p>
+          <div class="dn-kpi" id="dn-kpi" aria-live="polite">
+            <button type="button" class="dn-k" disabled><span class="dn-k__ik" aria-hidden="true"><svg class="ic"><use href="#i-door-open"/></svg></span><b>—</b><span>Dolasci danas</span></button>
+            <button type="button" class="dn-k" disabled><span class="dn-k__ik" aria-hidden="true"><svg class="ic"><use href="#i-inbox"/></svg></span><b>—</b><span>Upiti bez odgovora</span></button>
+            <button type="button" class="dn-k" disabled><span class="dn-k__ik" aria-hidden="true"><svg class="ic"><use href="#i-sparkles"/></svg></span><b>—</b><span>Čišćenja za potvrdu</span></button>
+          </div>
+          <div class="dn-grid">
+            <div class="card dn-card">
+              <div class="dn-h"><h2>Slijed događaja</h2><button type="button" class="dn-link" onclick="openGroup('kalendar')">Kalendar<svg class="ic ic--sm" aria-hidden="true"><use href="#i-chevron-right"/></svg></button></div>
+              <div id="ov-upcoming"><p class="an-empty">Učitavam…</p></div>
             </div>
-            <div class="ov-foto" id="ov-foto">
-              <span class="ov-cijena" id="ov-cijena" hidden></span>
-              <div class="ov-foto__akc">
-                <button type="button" class="ov-krug" onclick="viewPub()" aria-label="Otvori javnu stranicu" title="Javna stranica"><svg class="ic ic--sm" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></button>
-              </div>
+            <div class="card dn-card">
+              <div class="dn-h"><h2>Traži pažnju <span class="dn-broj" id="dn-paznja-broj" hidden></span></h2></div>
+              <div class="dn-lista" id="ov-alerts"><p class="an-empty">Provjeravam…</p></div>
             </div>
           </div>
-          <!-- drugi red (Aurex): dvije brojke s malim stupcima · izvori noći · kartice objekata -->
-          <div class="ov-red2">
-            <div class="an-kpis ov-kpis" id="ov-kpis" aria-live="polite">
-              <div class="an-kpi"><span class="an-kpi__l">Pregledi javne stranice · 30 dana</span><span class="an-kpi__v">—</span></div>
-              <div class="an-kpi"><span class="an-kpi__l">Upiti · 30 dana</span><span class="an-kpi__v">—</span></div>
+          <div class="card dn-card">
+            <div class="dn-h"><h2>Moji objekti</h2><a class="dn-link" href="/add-property.html"><svg class="ic ic--sm" aria-hidden="true"><use href="#i-plus"/></svg>Dodaj objekt</a></div>
+            <div class="ov-filt" id="ov-filt" hidden>
+              <label class="ov-f"><select id="ovf-vrsta" aria-label="Vrsta"><option value="">Sve vrste</option></select></label>
+              <label class="ov-f"><select id="ovf-stanje" aria-label="Stanje"><option value="">Sva stanja</option><option value="ok">Objavljeno</option><option value="nedovrseno">Nedovršeno</option><option value="zakljucano">Zaključano</option></select></label>
+              <label class="ov-f ov-f--trazi"><svg class="ic ic--sm" aria-hidden="true"><use href="#i-search"/></svg><input id="ovf-trazi" aria-label="Traži objekt" type="search" placeholder="Traži objekt" autocomplete="off" data-bez-spremanja></label>
             </div>
-            <div class="ov-izvori-k">
-              <div class="ov-k-head"><h2>Odakle dolaze noći</h2><span class="ov-oznaka">±90 dana</span></div>
-              <div class="ov-izvori" id="ov-izvori"><p class="an-empty">Računam…</p></div>
-            </div>
-            <div class="ov-objekti-k" id="ov-objekti-k">
-              <div class="ov-k-head"><h2>Vaši objekti</h2><a class="ov-krug ov-krug--svijetli" href="/add-property.html" aria-label="Dodaj objekt" title="Dodaj objekt"><svg class="ic ic--sm" aria-hidden="true"><use href="#i-plus"/></svg></a></div>
-              <div class="ov-objekti" id="ov-objekti"></div>
-            </div>
+            <div class="dn-obj" id="ov-tbl"></div>
           </div>
-          <!-- treći red: tablica svih objekata s filtrima · karta -->
-          <div class="ov-red3">
-            <div class="ov-tbl-k">
-              <div class="ov-filt">
-                <label class="ov-f"><select id="ovf-vrsta" aria-label="Vrsta"><option value="">Sve vrste</option></select></label>
-                <label class="ov-f"><select id="ovf-stanje" aria-label="Stanje"><option value="">Sva stanja</option><option value="ok">Objavljeno</option><option value="nedovrseno">Nedovršeno</option><option value="zakljucano">Zaključano</option></select></label>
-                <label class="ov-f ov-f--trazi"><svg class="ic ic--sm" aria-hidden="true"><use href="#i-search"/></svg><input id="ovf-trazi" aria-label="Traži objekt" type="search" placeholder="Traži objekt" autocomplete="off"></label>
-              </div>
-              <div class="ov-tblwrap"><table class="ov-tbl">
-                <thead><tr><th scope="col">Objekt</th><th scope="col">Vrsta</th><th scope="col">Cijena</th><th scope="col">Zauzeto · 30 dana</th><th scope="col">Pregledi · 30 dana</th><th scope="col">Stanje</th><th scope="col" aria-label="Radnja"></th></tr></thead>
-                <tbody id="ov-tbl"></tbody>
-              </table></div>
-            </div>
-          <div class="ov-karta-k" id="ov-karta-k" hidden>
-            <div class="ov-k-head"><h2>Karta</h2><a class="ov-krug ov-krug--svijetli" id="ov-karta-link" target="_blank" rel="noopener" aria-label="Otvori u Google Maps" title="Otvori u Google Maps"><svg class="ic ic--sm" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a></div>
-            <div class="ov-karta"><iframe id="ov-karta" title="Karta objekta" loading="lazy" referrerpolicy="no-referrer-when-downgrade" tabindex="-1"></iframe></div>
-          </div>
-          </div>
-          <div class="ov-dva">
-          <div class="card">
-            <div class="card-head"><div class="card-title-wrap"><span class="card-number">!</span><div><h2>Na što obratiti pažnju</h2><p>Automatske provjere kalendara, linkova za goste i vodiča.</p></div></div></div>
-            <div class="an-list" id="ov-alerts"><p class="an-empty">Provjeravam…</p></div>
-          </div>
-          <div class="card">
-            <div class="card-head"><div class="card-title-wrap"><span class="card-number">14</span><div><h2>Sljedećih 14 dana</h2><p>Dolasci i odlasci iz kalendara, s Bookinga, Airbnba i iz vaših rezervacija.</p></div></div>
-              <button class="btn secondary small" type="button" onclick="nav('availability',document.querySelector('.panelnav [data-panel=availability]'))">Kalendar</button></div>
-            <div id="ov-upcoming"></div>
-          </div>
-          </div>
-          <div class="card">
-            <div class="card-head"><div class="card-title-wrap"><span class="card-number">✓</span><div><h2 id="ov-title">Objekt je objavljen</h2><p>Vaši linkovi rade i promjene se prikazuju odmah nakon spremanja.</p></div></div></div>
-            <div class="link-blocks">
-              <article class="link-block light"><small>Javna stranica</small><h3>Predstavite objekt</h3><p>Fotografije, lokacija, sadržaji i preporuke.</p><div class="link-url"><span id="ov-pub-url">—</span><button type="button" onclick="copyLink('pub')">Kopiraj</button></div></article>
-              <article class="link-block"><small>Privatni vodič</small><h3>Svaki gost svoj link</h3><p>Link nastaje uz rezervaciju: šifra vrata otključa se sat prije prijave i prestaje vrijediti nakon odlaska.</p><div class="link-url"><span>Uz rezervaciju</span><button type="button" onclick="linkZaGosta()">Napravi link</button></div></article>
-            </div>
-          </div>
-          <div class="card">
-            <div class="card-head"><div class="card-title-wrap"><span class="card-number">i</span><div><h2>Sljedeći koraci</h2><p>Dovršite ove dijelove kako bi vodič bio potpun.</p></div></div></div>
-            <div id="checklist-items" style="display:grid;gap:10px"></div>
+          <div class="card dn-card" id="dn-koraci" hidden>
+            <div class="dn-h"><h2>Dovršite vodič</h2></div>
+            <p class="helper" style="margin:-4px 0 12px">Gost dobiva potpun vodič kad su ovi dijelovi upisani.</p>
+            <div id="checklist-items" class="dn-koraci"></div>
           </div>
         </section>
 
@@ -2010,6 +2234,20 @@ section.v5-prazno{display:none!important}
         </section>
 
         <!-- 05 AMENITIES -->
+        <!-- Uređaji (redizajn „Pearl”): ista kartica i isti saveDeviceInfo(), sada uz Dolazak i boravak -->
+        <section class="editor-panel" id="section-uredaji" data-panel-content="uredaji">
+          <div class="card">
+            <div class="card-head"><div class="card-title-wrap"><span class="card-number">i</span><div><h2>Upute za korištenje</h2><p>Kratke informacije za uređaje i sadržaje u objektu.</p></div></div></div>
+            <div class="form-grid">
+              <div class="field"><label for="ac-info">Klima-uređaj</label><textarea class="textarea" id="ac-info"></textarea></div>
+              <div class="field"><label for="heating-info">Grijanje</label><textarea class="textarea" id="heating-info"></textarea></div>
+              <div class="field"><label for="hotwater-info">Topla voda</label><textarea class="textarea" id="hotwater-info"></textarea></div>
+              <div class="field"><label for="kitchen-info">Kuhinja</label><textarea class="textarea" id="kitchen-info"></textarea></div>
+            </div>
+            <div style="margin-top:18px;display:flex;justify-content:flex-end"><button class="btn" onclick="saveDeviceInfo()">Spremi promjene</button></div>
+          </div>
+        </section>
+
         <section class="editor-panel" id="section-amenities" data-panel-content="amenities">
           <div class="card">
             <div class="card-head"><div class="card-title-wrap"><span class="card-number">05</span><div><h2>Sadržaji objekta</h2><p>Kliknite sve što gost ima na raspolaganju — prikazuje se na javnoj stranici, s ikonom i na jeziku gosta.</p></div></div></div>
@@ -2024,16 +2262,6 @@ section.v5-prazno{display:none!important}
                 <button class="btn small" onclick="addCustomAmenity()" style="flex-shrink:0">+ Dodaj</button>
               </div>
             </div>
-          </div>
-          <div class="card">
-            <div class="card-head"><div class="card-title-wrap"><span class="card-number">i</span><div><h2>Upute za korištenje</h2><p>Kratke informacije za uređaje i sadržaje u objektu.</p></div></div></div>
-            <div class="form-grid">
-              <div class="field"><label for="ac-info">Klima-uređaj</label><textarea class="textarea" id="ac-info"></textarea></div>
-              <div class="field"><label for="heating-info">Grijanje</label><textarea class="textarea" id="heating-info"></textarea></div>
-              <div class="field"><label for="hotwater-info">Topla voda</label><textarea class="textarea" id="hotwater-info"></textarea></div>
-              <div class="field"><label for="kitchen-info">Kuhinja</label><textarea class="textarea" id="kitchen-info"></textarea></div>
-            </div>
-            <div style="margin-top:18px;display:flex;justify-content:flex-end"><button class="btn" onclick="saveDeviceInfo()">Spremi promjene</button></div>
           </div>
         </section>
 
@@ -2315,16 +2543,6 @@ section.v5-prazno{display:none!important}
               <article class="link-block"><small>Privatni vodič</small><h3>Za potvrđenog gosta</h3><p>Svaki gost dobiva svoj link uz rezervaciju — šifra vrata i Wi-Fi otključaju se sat prije njegove prijave i prestaju vrijediti nakon odlaska.</p><div class="link-url"><span>Uz rezervaciju</span><button type="button" onclick="linkZaGosta()">Napravi link</button></div></article>
             </div>
           </div>
-          <!-- LINK ZA ČISTAČICU (sql/add-cleaner-links.sql) -->
-          <div class="card" id="cist-card" data-mog="cistacica">
-            <div class="card-head"><div class="card-title-wrap"><span class="card-number">✓</span><div><h2>Link za čistačicu</h2><p>Dolasci i odlasci za sljedećih 60 dana, s vremenom prijave i odjave. Bez šifri, Wi-Fija i imena gostiju. Stranica je uvijek ažurna.</p></div></div></div>
-            <div id="cist-body"><p class="helper">Učitavanje…</p></div>
-          </div>
-          <!-- SURADNICI (sql/add-team-access.sql) -->
-          <div class="card" id="tim-card">
-            <div class="card-head"><div class="card-title-wrap"><span class="card-number">+</span><div><h2>Suradnici</h2><p id="tim-opis">Suvlasnik, član obitelji ili agencija mogu uređivati ovaj objekt sa svojim računom: sadržaj, kalendar, rezervacije i upite. Pretplatu i suradnike vodite samo vi.</p></div></div></div>
-            <div id="tim-body"><p class="helper">Učitavanje…</p></div>
-          </div>
           <!-- Preporuči domaćina (sql/add-referrals.sql) -->
           <div class="card" id="prep-card">
             <div class="card-head"><div class="card-title-wrap"><span class="card-number"><svg class="ic ic--sm" aria-hidden="true"><use href="#i-users"/></svg></span><div><h2>Preporuči domaćina</h2><p>Poznajete još nekoga tko iznajmljuje? Pošaljite mu svoj link — ovdje vidite koliko ih se registriralo i postavilo objekt.</p></div></div></div>
@@ -2338,6 +2556,35 @@ section.v5-prazno{display:none!important}
               <div><h3 style="font-size:1rem;margin-bottom:6px">Spreman za ispis</h3><p style="color:var(--muted);font-size:.7rem;margin-bottom:16px">Preuzmite QR kod kao PNG i dodajte ga u karticu dobrodošlice ili okvir u objektu.</p><button class="btn secondary" type="button" onclick="downloadQr()">Preuzmi QR kod (PNG)</button></div>
             </div>
           </div>
+        </section>
+
+        <!-- TIM I ČIŠĆENJE (redizajn „Pearl”): suradnici i link za čistačicu, isti kod kao prije u Linkovima -->
+        <section class="editor-panel" id="section-tim" data-panel-content="tim">
+          <!-- LINK ZA ČISTAČICU (sql/add-cleaner-links.sql) -->
+          <div class="card" id="cist-card" data-mog="cistacica">
+            <div class="card-head"><div class="card-title-wrap"><span class="card-number">✓</span><div><h2>Link za čistačicu</h2><p>Dolasci i odlasci za sljedećih 60 dana, s vremenom prijave i odjave. Bez šifri, Wi-Fija i imena gostiju. Stranica je uvijek ažurna.</p></div></div></div>
+            <div id="cist-body"><p class="helper">Učitavanje…</p></div>
+          </div>
+          <!-- SURADNICI (sql/add-team-access.sql) -->
+          <div class="card" id="tim-card">
+            <div class="card-head"><div class="card-title-wrap"><span class="card-number">+</span><div><h2>Suradnici</h2><p id="tim-opis">Suvlasnik, član obitelji ili agencija mogu uređivati ovaj objekt sa svojim računom: sadržaj, kalendar, rezervacije i upite. Pretplatu i suradnike vodite samo vi.</p></div></div></div>
+            <div id="tim-body"><p class="helper">Učitavanje…</p></div>
+          </div>
+        </section>
+
+        <!-- VIŠE (mobitel): stranica izbornika preko cijele širine, ne bočna traka -->
+        <section class="editor-panel" id="section-vise" data-panel-content="vise">
+          <nav class="vise" aria-label="Više">
+            <button type="button" class="vise__red" onclick="openGroup('rezervacije')"><svg class="ic" aria-hidden="true"><use href="#i-clipboard-list"/></svg><span>Rezervacije</span><svg class="ic ic--sm vise__str" aria-hidden="true"><use href="#i-chevron-right"/></svg></button>
+            <button type="button" class="vise__red" onclick="openGroup('objekt')"><svg class="ic" aria-hidden="true"><use href="#i-layout-dashboard"/></svg><span>Objekti</span><svg class="ic ic--sm vise__str" aria-hidden="true"><use href="#i-chevron-right"/></svg></button>
+            <button type="button" class="vise__red" onclick="openGroup('analitika')"><svg class="ic" aria-hidden="true"><use href="#i-chart-no-axes-column"/></svg><span>Analitika</span><svg class="ic ic--sm vise__str" aria-hidden="true"><use href="#i-chevron-right"/></svg></button>
+            <button type="button" class="vise__red" onclick="openGroup('tim')"><svg class="ic" aria-hidden="true"><use href="#i-users"/></svg><span>Tim i čišćenje</span><svg class="ic ic--sm vise__str" aria-hidden="true"><use href="#i-chevron-right"/></svg></button>
+            <button type="button" class="vise__red" onclick="openGroup('linkovi')"><svg class="ic" aria-hidden="true"><use href="#i-qr-code"/></svg><span>Linkovi i QR</span><svg class="ic ic--sm vise__str" aria-hidden="true"><use href="#i-chevron-right"/></svg></button>
+            <button type="button" class="vise__red" onclick="openGroup('pretplata')"><svg class="ic" aria-hidden="true"><use href="#i-settings"/></svg><span>Postavke i pretplata</span><svg class="ic ic--sm vise__str" aria-hidden="true"><use href="#i-chevron-right"/></svg></button>
+            <a class="vise__red" href="/account.html"><svg class="ic" aria-hidden="true"><use href="#i-credit-card"/></svg><span>Račun</span><svg class="ic ic--sm vise__str" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
+            <a class="vise__red" href="/help.html"><svg class="ic" aria-hidden="true"><use href="#i-circle-help"/></svg><span>Pomoć</span><svg class="ic ic--sm vise__str" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
+            <button type="button" class="vise__red" onclick="signOut()"><svg class="ic" aria-hidden="true"><use href="#i-log-out"/></svg><span>Odjava</span></button>
+          </nav>
         </section>
 
         <!-- OBJAVE (objave.js): slika i tekst za društvene mreže, letak za ispis -->
@@ -2449,11 +2696,10 @@ section.v5-prazno{display:none!important}
 </div>
 
 <nav class="bottom-nav" aria-label="Glavni dijelovi">
-  <button type="button" data-group="pregled" onclick="openGroup('pregled')"><svg class="nv nv-o" aria-hidden="true"><use href="#nv-pregled-o"/></svg><svg class="nv nv-b" aria-hidden="true"><use href="#nv-pregled-b"/></svg><span>Danas</span></button>
-  <button type="button" data-group="boravci" onclick="openGroup('boravci')"><svg class="nv nv-o" aria-hidden="true"><use href="#nv-boravci-o"/></svg><svg class="nv nv-b" aria-hidden="true"><use href="#nv-boravci-b"/></svg><span>Gosti</span><span class="nav-count" data-iq-count hidden></span></button>
-  <button type="button" data-group="vodic" onclick="openGroup('vodic')"><svg class="nv nv-o" aria-hidden="true"><use href="#nv-vodic-o"/></svg><svg class="nv nv-b" aria-hidden="true"><use href="#nv-vodic-b"/></svg><span>Vodič</span></button>
-  <button type="button" data-group="objekt" onclick="openGroup('objekt')"><svg class="nv nv-o" aria-hidden="true"><use href="#nv-objekt-o"/></svg><svg class="nv nv-b" aria-hidden="true"><use href="#nv-objekt-b"/></svg><span>Stranica</span></button>
-  <button type="button" onclick="toggleSide()" aria-label="Više: objekti, pretplata, račun"><svg class="nv nv-o" aria-hidden="true"><use href="#nv-vise-o"/></svg><svg class="nv nv-b" aria-hidden="true"><use href="#nv-vise-b"/></svg><span>Više</span></button>
+  <button type="button" data-group="pregled" onclick="openGroup('pregled')"><svg class="ic" aria-hidden="true"><use href="#i-house"/></svg><span>Danas</span></button>
+  <button type="button" data-group="kalendar" onclick="openGroup('kalendar')"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg><span>Kalendar</span></button>
+  <button type="button" data-group="upiti" onclick="openGroup('upiti')"><svg class="ic" aria-hidden="true"><use href="#i-inbox"/></svg><span>Upiti</span><span class="nav-count" data-iq-count hidden></span></button>
+  <button type="button" data-group="vise" onclick="openGroup('vise')"><svg class="ic" aria-hidden="true"><use href="#i-ellipsis"/></svg><span>Više</span></button>
 </nav>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -2585,15 +2831,15 @@ const MOG_TX={koraci:['Koraci sa slikama i „Ušli smo”','Gost prolazi ulaz k
   email:['Automatski e-mail gostu','Link na vodič 3 dana prije dolaska i zahvala na odlasku.']}
 /* v5: uloga suradnika na dijeljenom objektu (sql/add-team-roles.sql) — baza
    to provodi RLS-om, ovdje se samo skriva ono što uloga ne smije otvoriti. */
-const ULOGA_PANELI={recepcija:['overview','sviobjekti','inquiries','reservations','availability','reviews','links'],
-  vlasnik:['overview','sviobjekti','availability','reviews']}
+const ULOGA_PANELI={recepcija:['overview','sviobjekti','inquiries','reservations','availability','reviews','links','tim','vise'],
+  vlasnik:['overview','sviobjekti','availability','reviews','vise']}
 const ulogaObjekta=()=>PROP?.__dijeljen?(PROP.__uloga||'upravitelj'):'vlasnik_racuna'
 function ulogaDopusta(panel){const l=ULOGA_PANELI[ulogaObjekta()];return !l||l.includes(RODITELJ[panel]||panel)}
 function primijeniUlogu(){
   const l=ULOGA_PANELI[ulogaObjekta()]
-  document.querySelectorAll('.panelnav .nav-item[data-panel]').forEach(b=>{if(b.dataset.panel==='analytics'||b.dataset.panel==='sviobjekti')return;b.toggleAttribute('data-uloga-skriven',!!l&&!l.includes(b.dataset.panel))})
+  document.querySelectorAll('.panelnav .nav-item[data-panel]').forEach(b=>{if(b.dataset.panel==='analytics'||b.dataset.panel==='sviobjekti'||b.dataset.panel==='vise')return;b.toggleAttribute('data-uloga-skriven',!!l&&!l.includes(b.dataset.panel))})
   const grupe=new Set([...document.querySelectorAll('.panelnav .nav-item[data-panel]')].filter(b=>!l||l.includes(b.dataset.panel)).map(b=>b.dataset.group))
-  document.querySelectorAll('.side-link[data-group],.bottom-nav [data-group]').forEach(a=>{if(a.dataset.group==='pretplata')return;a.toggleAttribute('data-uloga-skriven',!!l&&!grupe.has(a.dataset.group))})
+  document.querySelectorAll('.side-link[data-group],.bottom-nav [data-group]').forEach(a=>{if(a.dataset.group==='pretplata'||a.dataset.group==='vise')return;a.toggleAttribute('data-uloga-skriven',!!l&&!grupe.has(a.dataset.group))})
   const ban=document.getElementById('uloga-traka')
   if(ban){ban.hidden=!l;if(l)ban.textContent=ulogaObjekta()==='recepcija'?'Uloga: recepcija — vidite kalendar, rezervacije i upite. Šifre, Wi-Fi i sadržaj objekta uređuje upravitelj.':'Uloga: vlasnik objekta — vidite kalendar, ocjene i mjesečni izvještaj (samo čitanje).'}
   const akt=document.querySelector('.editor-panel.active')?.dataset.panelContent
@@ -2659,6 +2905,7 @@ async function init(){
   upisiPreporuku()
   const n=USER.user_metadata?.full_name||USER.email||'?'
   document.getElementById('user-av').textContent=n[0].toUpperCase()
+  {const sa=document.getElementById('side-av');if(sa)sa.textContent=n[0].toUpperCase()}
   ;['tb-av','tb-av2'].forEach(id=>document.getElementById(id).textContent=n[0].toUpperCase())
   document.getElementById('tb-ime').textContent=USER.user_metadata?.full_name||USER.email.split('@')[0]
   document.getElementById('tb-mail').textContent=USER.email||''
@@ -2691,7 +2938,7 @@ async function init(){
   if(otvori==='adresa'){nav('links',document.querySelector('.panelnav [data-panel=links]'));setTimeout(()=>document.getElementById('adresa-card')?.scrollIntoView({block:'start'}),250)
     // nakon plaćanja webhook upiše rok — pričeka se do ~20 s
     ;(async()=>{for(let i=0;i<10&&PROP&&!(PROP.poddomena_do&&new Date(PROP.poddomena_do)>new Date());i++){await new Promise(r=>setTimeout(r,2000));const{data}=await sb.from('properties').select('*').eq('id',PROP.id).maybeSingle();if(data){Object.assign(PROP,data);ucitajAdresu()}}})()}
-  if(otvori==='cistacica'){nav('links',document.querySelector('.panelnav [data-panel=links]'));setTimeout(()=>document.getElementById('cist-card')?.scrollIntoView({block:'start'}),200)}
+  if(otvori==='cistacica'){nav('tim',document.querySelector('.panelnav [data-panel=tim]'));setTimeout(()=>document.getElementById('cist-card')?.scrollIntoView({block:'start'}),200)}
   pushStanje()
 }
 
@@ -2856,7 +3103,6 @@ async function selectProp(p){
   document.getElementById('bannerName').textContent=p.name||'—'
   document.getElementById('bannerLocation').textContent=p.location||'—'
   const pubUrl=prettyUrl(publicUrl(p.slug))
-  document.getElementById('ov-pub-url').textContent=pubUrl
   document.getElementById('pub-url-d').textContent=pubUrl
   fillPropForm()
   loadPhotos()
@@ -3339,58 +3585,19 @@ async function anPodaci(dana){
 }
 
 function anBoravci(d){return A.boravci(AVAIL_ROWS,d.bookings)}
+const OVERVIEW_POZDRAV=()=>{const ime=(USER?.user_metadata?.full_name||'').trim().split(/\s+/)[0];if(!ime)return '';const h=new Date().getHours();return (h<10?'Dobro jutro':h<18?'Dobar dan':'Dobra večer')+', '+ime+'.'}
 const izvorTxt=s=>s.source==='odmoria'?'rezervacija u Odmoriji':s.source==='manual'?'ručno označeno':A.IZVOR[s.source]
 function relDan(ds){const n=A.razlikaDana(A.danas(),ds);return n===0?'danas':n===1?'sutra':n===-1?'jučer':n>1?'za '+n+' '+A.mn(n,'dan','dana','dana'):'prije '+(-n)+' '+A.mn(-n,'dan','dana','dana')}
 
 async function loadOverviewStats(){
   if(!PROP)return
-  document.getElementById('ov-title').textContent=(PROP.name||'Objekt')+' je objavljen'
-  ovStatika()
   await renderOverviewOps()
 }
 
 // ── ZAGLAVLJE PREGLEDA (stil „nekretnine”, 4. 10. 2026.) ──────────────
 // objekt + fotografija, traka zauzetosti, kartice objekata, karta
 const OV_STRELICA='<svg class="ic ic--sm" aria-hidden="true"><use href="#i-arrow-up-right"/></svg>'
-function ovStatika(){
-  if(!PROP)return
-  document.getElementById('ov-ime').textContent=PROP.name||'Objekt'
-  document.getElementById('ov-mjesto').textContent=PROP.location||'Lokacija još nije upisana'
-  const cover=PROP.cover_photo_url||(PROP.photo_urls||[])[0]
-  const f=document.getElementById('ov-foto')
-  f.style.backgroundImage=cover?`url('${String(cover).replace(/'/g,'%27')}')`:''
-  f.classList.toggle('bez',!cover)
-  const c=document.getElementById('ov-cijena'),cij=parseFloat(PROP.price_per_night)||0
-  c.hidden=!cij;if(cij)c.textContent='od '+cij+' € / noć'
-  // objekti
-  const el=document.getElementById('ov-objekti')
-  el.innerHTML=PROPS.map(p=>{
-    const ph=p.cover_photo_url||(p.photo_urls||[])[0],on=p.id===PROP.id
-    return `<button type="button" class="ov-obj${on?' is-on':''}" data-id="${esc(String(p.id))}"${on?' aria-current="true"':''}>
-      <span class="ov-obj__f${ph?'':' bez'}"${ph?` style="background-image:url('${esc(String(ph))}')"`:''}>${zakljucan(p)?'<em>zaključano</em>':p.__dijeljen?'<em>dijeljeno</em>':on?'<em>otvoreno</em>':''}<i class="ov-krug">${OV_STRELICA}</i></span>
-      <span class="ov-obj__t"><b translate="no">${esc(p.name||'Objekt')}</b><small translate="no">${esc(p.location||'—')}</small></span>
-      ${parseFloat(p.price_per_night)?`<span class="ov-obj__c">${esc(String(parseFloat(p.price_per_night)))} €</span>`:''}</button>`}).join('')
-    +`<a class="ov-obj ov-obj--novi" href="/add-property.html"><span class="ov-obj__f bez"><i class="ov-krug">${'<svg class="ic ic--sm" aria-hidden="true"><use href="#i-plus"/></svg>'}</i></span><span class="ov-obj__t"><b>Dodaj objekt</b><small>Novi apartman ili kuća</small></span></a>`
-  el.onclick=e=>{const b=e.target.closest('button.ov-obj');if(!b||b.classList.contains('is-on'))return
-    const sel=document.getElementById('prop-sel');sel.value=b.dataset.id;window.onPropChange()}
-  // karta
-  const kk=document.getElementById('ov-karta-k'),lok=(PROP.location||'').trim()
-  kk.hidden=!lok
-  if(lok){const q=encodeURIComponent(lok),src='https://www.google.com/maps?q='+q+'&z=14&output=embed',fr=document.getElementById('ov-karta')
-    if(fr.getAttribute('src')!==src)fr.setAttribute('src',src)
-    document.getElementById('ov-karta-link').href='https://www.google.com/maps/search/?api=1&query='+q}
-}
-function ovTraka(noci,t){
-  const gap=new Set()
-  A.praznine(noci,t,A.plusDana(t,30),7).forEach(g=>{for(let i=0;i<g.nights;i++)gap.add(A.plusDana(g.start,i))})
-  let z=0,p=0
-  for(let i=0;i<30;i++){const ds=A.plusDana(t,i);if(noci.has(ds))z++;else if(gap.has(ds))p++}
-  const sl=30-z-p,tr=document.getElementById('ov-traka')
-  document.getElementById('ov-zauzeto').textContent=Math.round(z/30*100)+' %'
-  document.getElementById('ov-slobodno').textContent=(30-z)+' '+A.mn(30-z,'noć','noći','noći')
-  const[iz,ip,is]=tr.children;iz.style.flexGrow=z;ip.style.flexGrow=p;is.style.flexGrow=sl
-  tr.setAttribute('aria-label',`Sljedećih 30 dana: ${z} zauzeto, ${p} u kratkim prazninama, ${sl} slobodno`)
-}
+function ovStatika(){}   // redizajn „Pearl”: zaglavlje objekta, kartice i karta Pregleda maknuti; objekti su redovi (ovTablicaNacrtaj)
 const ovDan=x=>{const d=new Date(x);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
 function ovNiz(views,test,t){
   const m={};views.forEach(v=>{if(test(v.view_type)){const k=ovDan(v.timestamp);m[k]=(m[k]||0)+1}})
@@ -3409,27 +3616,10 @@ async function renderOverviewOps(){
   const noci=new Set(AVAIL_ROWS.map(r=>r.date))
   const S=anBoravci(d)
 
-  // brojke
-  const p30=A.popunjenost(noci,t,A.plusDana(t,30))
   const sljedeci=S.find(x=>x.start>=t)
   const sada=S.find(x=>x.start<t&&x.end>t)
-  const od30=A.plusDana(sut,-30),od60=A.plusDana(sut,-60)
-  const v=A.broji(d.views,JE_JAVNA,od30,sut),vP=A.broji(d.views,JE_JAVNA,od60,od30)
-  const u=A.broji(d.views,A.JE_UPIT,od30,sut),uP=A.broji(d.views,A.JE_UPIT,od60,od30)
-  ovStatika();ovTraka(noci,t)
-  const zauz=Array.from({length:30},(_,i)=>noci.has(A.plusDana(t,i))?1:0)
-  const boravci="nav('availability',document.querySelector('.panelnav [data-panel=availability]'))"
-  document.getElementById('ov-kpis').innerHTML=[
-    // v5: tri broja — upiti, popunjenost (gore) i noći izravno; tab Analitika je maknut
-    ovKpi(A.kpi('Upiti · 30 dana',String(u),v?`${A.posto(u/v)} od ${v} posjeta javne stranice`:'WhatsApp, e-mail ili obrazac na stranici',A.promjena(u,uP)),ovSpark(ovNiz(d.views,A.JE_UPIT,t)),'openInquiries()'),
-    (()=>{const c=A.nociPoIzvoru(S,A.plusDana(t,-90),A.plusDana(t,90)),iz=c.odmoria||0,uk=Object.values(c).reduce((a,x)=>a+x,0)
-      return ovKpi(A.kpi('Noći izravno · ±90 dana',String(iz),uk?`${Math.round(iz/uk*100)} % noći bez provizije platforme`:'rezervacije koje ste dogovorili sami'),'',boravci)})()
-  ].join('')
-  document.getElementById('ov-dolazak').textContent=sljedeci?A.fmtSDanom(sljedeci.start):sada?'u tijeku':'—'
-  document.getElementById('ov-dolazak-s').textContent=sljedeci?`${A.imeBoravka(sljedeci)} · ${relDan(sljedeci.start)}`:sada?`${A.imeBoravka(sada)}, odlazak ${A.fmtKratko(sada.end)}`:'nema najavljenih'
-  ovIzvori(S,t,p30)
   ovTablica()
-  A.odbroji(document.getElementById('ov-kpis'))
+  if(OVERVIEW_POZDRAV()&&document.getElementById('section-overview').classList.contains('active'))document.getElementById('panelTitle').textContent=OVERVIEW_POZDRAV()
 
   // upozorenja
   const al=[]
@@ -3504,8 +3694,8 @@ async function renderOverviewOps(){
   nePovlaci().forEach(ime=>R.push({r:'vazno',n:`${ime} nije povukao vaš kalendar u zadnjih 48 h`,tx:'Dok ga ne povlači, izravne rezervacije i ručno zatvoreni dani tamo mogu ostati otvoreni. Zalijepite naš link za izvoz u platformu (Gosti → Booking i Airbnb) ili ih zatvorite ručno. I kad ga povlači, provjerite na platformi da je termin zatvoren.',btn:'Booking i Airbnb',on:"nav('ical',document.querySelector('.panelnav [data-panel=ical]'))"}))
   CIS.sort((a,b)=>a.dan<b.dan?-1:1).forEach(c=>{
     const kad=`${A.fmtSDanom(c.dan)} (${relDan(c.dan)})`
-    if(c.stanje==='ne_mogu'&&c.dan>=t)R.push({r:'hitno',n:`Čistačica ne može doći — ${kad}`,tx:c.napomena?`„${c.napomena}”`:'Dogovorite zamjenu ili drugi termin.',btn:'Čistačica',on:"nav('links',document.querySelector('.panelnav [data-panel=links]'))"})
-    else if(c.dan>=A.plusDana(t,-1)&&c.dan<=A.plusDana(t,3))R.push({r:'info',n:c.stanje==='gotovo'?`Čišćenje je gotovo — ${kad}`:c.stanje==='dolazim'?`Čistačica dolazi u ${c.vrijeme} — ${kad}`:`Čistačica je potvrdila — ${kad}`,tx:c.napomena?`„${c.napomena}”`:'Javljeno preko linka za čistačicu.',btn:'Čistačica',on:"nav('links',document.querySelector('.panelnav [data-panel=links]'))"})
+    if(c.stanje==='ne_mogu'&&c.dan>=t)R.push({r:'hitno',n:`Čistačica ne može doći — ${kad}`,tx:c.napomena?`„${c.napomena}”`:'Dogovorite zamjenu ili drugi termin.',btn:'Čistačica',on:"nav('tim',document.querySelector('.panelnav [data-panel=tim]'))"})
+    else if(c.dan>=A.plusDana(t,-1)&&c.dan<=A.plusDana(t,3))R.push({r:'info',n:c.stanje==='gotovo'?`Čišćenje je gotovo — ${kad}`:c.stanje==='dolazim'?`Čistačica dolazi u ${c.vrijeme} — ${kad}`:`Čistačica je potvrdila — ${kad}`,tx:c.napomena?`„${c.napomena}”`:'Javljeno preko linka za čistačicu.',btn:'Čistačica',on:"nav('tim',document.querySelector('.panelnav [data-panel=tim]'))"})
   })
   PROM.forEach(x=>{
     const iz=A.IZVOR[x.izvor]||x.izvor,raspon=`${A.fmtSDanom(x.od)} – ${A.fmtKratko(x.do_)}`
@@ -3519,24 +3709,42 @@ async function renderOverviewOps(){
   const RED={hitno:0,vazno:1,info:2}
   OBAV=R.sort((a,b)=>RED[a.r]-RED[b.r])
   tbObavijesti()
-  const kartica=OBAV.filter(x=>!/^(Danas|Sutra) (dolazi|odlazi)/.test(x.n))
-  document.getElementById('ov-alerts').innerHTML=kartica.length?kartica.map(({r,n,tx,btn,on})=>`<div class="an-item an-item--${r}">
-      <span class="an-ic${r!=='info'?' is-warn':''}" aria-hidden="true">${r==='hitno'?'!!':r==='vazno'?'!':'i'}</span>
-      <div><strong>${A.esc(n)}</strong><p>${A.esc(tx)}</p></div>
+  // „Traži pažnju”: bez dolazaka/odlazaka i bez potvrda čistačice (oni su u slijedu događaja)
+  const kartica=OBAV.filter(x=>!/^(Danas|Sutra) (dolazi|odlazi)|^Čišćenje je gotovo|^Čistačica (dolazi|je potvrdila)/.test(x.n))
+  const brPaz=kartica.filter(x=>x.r!=='info').length,bp=document.getElementById('dn-paznja-broj')
+  bp.hidden=!brPaz;bp.textContent=brPaz
+  const PAZ_IK={hitno:'!',vazno:'!',info:'i'}
+  document.getElementById('ov-alerts').innerHTML=kartica.length?kartica.map(({r,n,tx,btn,on})=>`<div class="dn-red dn-red--${r}">
+      <span class="dn-red__ik" aria-hidden="true">${PAZ_IK[r]}</span>
+      <span class="dn-red__t"><b>${A.esc(n)}</b><small>${A.esc(tx)}</small></span>
       <button class="btn secondary small" type="button" onclick="${on}">${A.esc(btn)}</button></div>`).join('')
-    :`<div class="an-item"><span class="an-ic" aria-hidden="true">✓</span><div><strong>Sve je u redu</strong><p>Kalendar je ažuran, svi nadolazeći gosti imaju link, a vodič ima šifru i Wi-Fi.</p></div><span></span></div>`
+    :`<div class="dn-red"><span class="dn-red__ik" aria-hidden="true">✓</span><span class="dn-red__t"><b>Sve je u redu</b><small>Kalendar je ažuran, nadolazeći gosti imaju link, a vodič ima šifru i Wi-Fi.</small></span></div>`
 
-  // sljedećih 14 dana
+  // slijed događaja: danas i sljedećih 14 dana, po danu i po vremenu (vremena iz Dolaska i upute)
+  const vrD=(SECTION?.checkin_time||'').slice(0,5),vrO=(SECTION?.checkout_time||'').slice(0,5)
+  const cisZa=dan=>CIS.find(c=>c.dan===dan)
+  const CIS_ST={potvrdeno:['Potvrđeno','ok'],dolazim:['Dolazi','ok'],gotovo:['Gotovo','ok'],ne_mogu:['Treba zamjena','hitno']}
   const ev=A.dogadjaji(S,t,A.plusDana(t,15))
+  const red=(vr,ik,nasl,pod,oz,kl,on)=>`<button type="button" class="dn-ev" onclick="${on}"><span class="dn-ev__vr">${vr||'—'}</span><span class="dn-ev__ik" aria-hidden="true"><svg class="ic ic--sm"><use href="#i-${ik}"/></svg></span><span class="dn-ev__t"><b>${nasl}</b><small>${pod}</small></span><span class="dn-oz dn-oz--${kl}">${oz}</span><svg class="ic ic--sm dn-str" aria-hidden="true"><use href="#i-chevron-right"/></svg></button>`
+  const NA_REZ="nav('reservations',document.querySelector('.panelnav [data-panel=reservations]'))",NA_TIM="nav('tim',document.querySelector('.panelnav [data-panel=tim]'))"
   let h=''
-  if(sada&&!ev.some(e=>e.dan===t))h+=`<div class="an-day"><div class="an-day__d">Sada<small>u tijeku</small></div><div><div class="an-ev"><span class="an-tag">Boravi</span><b>${A.esc(A.imeBoravka(sada))}</b><span class="an-src">odlazak ${A.fmtSDanom(sada.end)} · ${A.esc(izvorTxt(sada))}</span></div></div></div>`
+  if(sada&&!ev.some(e=>e.dan===t))h+=`<div class="dn-dan"><h3>Danas <small>${A.fmtSDanom(t)}</small></h3>${red('','bed','Gost boravi',`${A.esc(A.imeBoravka(sada))} · odlazak ${A.fmtSDanom(sada.end)}`,'Boravi','neutral',NA_REZ)}</div>`
   h+=ev.map(e=>{
-    const red=(x,vr)=>`<div class="an-ev"><span class="an-tag${vr==='o'?' is-out':''}">${vr==='o'?'Odlazak':'Dolazak'}</span><b>${A.esc(A.imeBoravka(x))}</b><span class="an-src">${vr==='d'?A.noci(x.nights)+' · ':''}${A.esc(izvorTxt(x))}</span>${vr==='d'&&A.JE_PLATFORMA(x.source)&&!x.booking?'<span class="an-tag is-warn">bez linka</span>':''}</div>`
-    return `<div class="an-day"><div class="an-day__d">${A.fmtSDanom(e.dan)}<small>${relDan(e.dan)}</small></div><div>
-      ${e.odlasci.map(x=>red(x,'o')).join('')}${e.dolasci.map(x=>red(x,'d')).join('')}
-      ${e.odlasci.length&&e.dolasci.length?'<div class="an-ev"><span class="an-tag is-warn">Izmjena istog dana</span><span class="an-src">čišćenje između odlaska i dolaska</span></div>':''}</div></div>`
+    const c=cisZa(e.dan),[cst,ckl]=c?CIS_ST[c.stanje]||['Javljeno','ok']:['Čeka potvrdu','ceka']
+    const odl=e.odlasci.map(x=>red(vrO,'log-out','Odlazak gostiju',`${A.esc(A.imeBoravka(x))} · ${A.esc(izvorTxt(x))}`,'Odlazak','neutral',NA_REZ)).join('')
+    const cis=e.odlasci.length?red(c?.stanje==='dolazim'&&c.vrijeme?String(c.vrijeme).slice(0,5):'','sparkles','Čišćenje nakon odlaska',e.dolasci.length?'Izmjena istog dana — između odlaska i dolaska':'Nakon odlaska gostiju',cst,ckl,NA_TIM):''
+    const dol=e.dolasci.map(x=>red(vrD,'door-open','Dolazak gostiju',`${A.esc(A.imeBoravka(x))} · ${A.noci(x.nights)}${A.JE_PLATFORMA(x.source)&&!x.booking?' · bez linka za vodič':''}`,A.JE_PLATFORMA(x.source)&&!x.booking?'Bez linka':'Dolazak',A.JE_PLATFORMA(x.source)&&!x.booking?'ceka':'dolazak',NA_REZ)).join('')
+    const naslov=e.dan===t?'Danas':e.dan===sut?'Sutra':A.fmtSDanom(e.dan)
+    return `<div class="dn-dan"><h3>${naslov} <small>${e.dan===t||e.dan===sut?A.fmtSDanom(e.dan):relDan(e.dan)}</small></h3>${odl}${cis}${dol}</div>`
   }).join('')
   document.getElementById('ov-upcoming').innerHTML=h||A.prazno('Nema dolazaka ni odlazaka u sljedećih 14 dana.')
+
+  // tri brojke: današnje obveze (klik vodi na mjesto gdje se rješavaju)
+  const eDanas=ev.find(e=>e.dan===t)
+  const dolDanas=eDanas?eDanas.dolasci.length:0
+  const cisCeka=ev.filter(e=>e.dan<=sut&&e.odlasci.length&&!cisZa(e.dan)).length
+  const K=[[dolDanas,'Dolasci danas','door-open',NA_REZ],[noviUpiti.length,'Upiti bez odgovora','inbox','openInquiries()'],[cisCeka,'Čišćenja za potvrdu','sparkles',NA_TIM]]
+  document.getElementById('dn-kpi').innerHTML=K.map(([n,l,ik,on])=>`<button type="button" class="dn-k${n?' ima':''}" onclick="${on}"><span class="dn-k__ik" aria-hidden="true"><svg class="ic"><use href="#i-${ik}"/></svg></span><b>${n}</b><span>${l}${l==='Čišćenja za potvrdu'?'<small>danas i sutra</small>':''}</span><svg class="ic ic--sm dn-str" aria-hidden="true"><use href="#i-chevron-right"/></svg></button>`).join('')
 }
 
 
@@ -3569,19 +3777,18 @@ async function ovTablica(){
 }
 const OV_STANJE={ok:['Objavljeno','is-ok'],nedovrseno:['Nedovršeno','is-warn'],zakljucano:['Zaključano','is-lock']}
 function ovTablicaNacrtaj(){
+  document.getElementById('ov-filt').hidden=OV_RED.length<4
   const fv=document.getElementById('ovf-vrsta').value,fs=document.getElementById('ovf-stanje').value,fq=tbNorm(document.getElementById('ovf-trazi').value).trim()
   const redovi=OV_RED.filter(r=>(!fv||r.p.type===fv)&&(!fs||r.stanje===fs)&&(!fq||tbNorm((r.p.name||'')+' '+(r.p.location||'')).includes(fq)))
-  document.getElementById('ov-tbl').innerHTML=redovi.length?redovi.map(({p,z,v,stanje})=>{
+  document.getElementById('ov-tbl').innerHTML=redovi.length?redovi.map(({p,z,stanje})=>{
     const ph=p.cover_photo_url||(p.photo_urls||[])[0],on=p.id===PROP?.id,[st,sc]=OV_STANJE[stanje]
-    return `<tr${on?' class="is-on"':''}>
-      <td><span class="ov-tbl__o"><span class="ov-tbl__f${ph?'':' bez'}"${ph?` style="background-image:url('${A.esc(String(ph))}')"`:''}></span><span><b translate="no">${A.esc(p.name||'Objekt')}</b><small translate="no">${A.esc(p.location||'—')}</small></span></span></td>
-      <td>${A.esc(p.type||'—')}${p.__dijeljen?' <small class="ov-dij">dijeljeno</small>':''}</td>
-      <td>${parseFloat(p.price_per_night)?A.esc(String(parseFloat(p.price_per_night)))+' €':'—'}</td>
-      <td><span class="ov-mini"><i style="width:${Math.round(z/30*100)}%"></i></span>${z}/30</td>
-      <td>${v}</td>
-      <td><span class="ov-st ${sc}">${st}</span></td>
-      <td>${on?'<span class="ov-st">otvoreno</span>':stanje==='zakljucano'?'':`<button type="button" class="ov-krug ov-krug--svijetli" data-id="${A.esc(String(p.id))}" aria-label="Otvori ${A.esc(p.name||'objekt')}" title="Otvori">${OV_STRELICA}</button>`}</td></tr>`}).join('')
-    :`<tr><td colspan="7"><p class="an-empty">Nijedan objekt ne odgovara filtru.</p></td></tr>`
+    return `<div class="dn-o${on?' is-on':''}">
+      <span class="dn-o__f${ph?'':' bez'}"${ph?` style="background-image:url('${A.esc(String(ph))}')"`:''} aria-hidden="true"></span>
+      <span class="dn-o__t"><b translate="no">${A.esc(p.name||'Objekt')}</b><small translate="no">${A.esc(p.location||'—')}${p.__dijeljen?' · dijeljeno':''}</small></span>
+      <span class="dn-o__p"><small>Zauzeto · 30 dana</small><b>${z} / 30</b></span>
+      <span class="dn-o__s"><span class="ov-st ${sc}">${st}</span>${on?'<small>otvoreno</small>':''}</span>
+      <span class="dn-o__a">${stanje==='zakljucano'?'':on?`<button type="button" class="btn secondary small" onclick="openGroup('objekt')">Uredi</button>`:`<button type="button" class="btn secondary small" data-id="${A.esc(String(p.id))}" aria-label="Otvori ${A.esc(p.name||'objekt')}">Otvori</button>`}</span></div>`}).join('')
+    :`<p class="an-empty">Nijedan objekt ne odgovara filtru.</p>`
 }
 ;['ovf-vrsta','ovf-stanje','ovf-trazi'].forEach(id=>document.getElementById(id)?.addEventListener('input',ovTablicaNacrtaj))
 document.getElementById('ov-tbl')?.addEventListener('click',e=>{const b=e.target.closest('button[data-id]');if(!b)return;const sel=document.getElementById('prop-sel');sel.value=b.dataset.id;window.onPropChange()})
@@ -4298,7 +4505,8 @@ function renderChecklist(){
   document.getElementById('completion-sub').textContent=`${done}/${items.length} dovršeno`
   document.getElementById('progressPct').textContent=pct+'%'
   document.getElementById('progressBar').style.width=pct+'%'
-  document.getElementById('checklist-items').innerHTML=items.map(i=>`<div class="repeat-item" style="grid-template-columns:32px 1fr auto;cursor:pointer" onclick="nav('${i.panel}',document.querySelector('[data-panel=${i.panel}]'))"><span class="item-icon" style="background:${i.done?'var(--green-soft)':'var(--paper-2)'};color:${i.done?'var(--green)':'var(--muted)'}">${i.done?'✓':'○'}</span><strong style="align-self:center">${i.label}</strong><span class="helper">${i.done?'Gotovo':'Nedostaje →'}</span></div>`).join('')
+  document.getElementById('dn-koraci').hidden=pct===100
+  document.getElementById('checklist-items').innerHTML=items.map(i=>`<button type="button" class="dn-red dn-red--korak${i.done?' je-gotovo':''}" onclick="nav('${i.panel}',document.querySelector('[data-panel=${i.panel}]'))"><span class="dn-red__ik" aria-hidden="true">${i.done?'✓':'○'}</span><span class="dn-red__t"><b>${i.label}</b></span><span class="dn-red__s">${i.done?'Gotovo':'Dopuni'}</span><svg class="ic ic--sm dn-str" aria-hidden="true"><use href="#i-chevron-right"/></svg></button>`).join('')
 }
 
 // ── AMENITIES (catalog + custom, with search + emoji guess) ──
@@ -4844,9 +5052,9 @@ function loadPhotos(){
 }
 
 // ── iCAL ──────────────────────────────────────────────
-/* Objekt ima 5 podtabova (Figma), a svaki pokazuje nekoliko postojećih panela.
+/* Objekti: lokalna navigacija editora (redizajn „Pearl”), a podtab pokazuje nekoliko postojećih panela.
    nav('wifi') i sl. i dalje radi: otvori roditeljski podtab i skrolne do panela. */
-const SPOJ={basic:['basic','izgled'],pricing:['pricing','amenities'],arrival:['arrival','wifi','rules'],guide:['guide','transport','attractions']}
+const SPOJ={basic:['basic','amenities','izgled'],arrival:['arrival','wifi','uredaji'],guide:['guide','transport','attractions']}
 const RODITELJ=Object.fromEntries(Object.entries(SPOJ).flatMap(([g,l])=>l.map(x=>[x,g])))
 window.nav=(id,el)=>{
   if(typeof ulogaDopusta==='function'&&PROP&&!ulogaDopusta(id)){id='overview';el=document.querySelector('.panelnav [data-panel=overview]')}
@@ -4861,29 +5069,32 @@ window.nav=(id,el)=>{
   const btn=document.querySelector(`.panelnav .nav-item[data-panel="${glavni}"]`)||el
   if(btn)btn.classList.add('active')
   const meta={
-    overview:['Danas','Danas','Što se događa ovih dana i na što obratiti pažnju.'],
-    analytics:['Danas','Analitika','Posjećenost, upiti, popunjenost i praznine u kalendaru.'],
+    overview:['Danas','Danas','Dolasci, odlasci, čišćenja i ono što traži vašu pažnju.'],
+    analytics:['Analitika','Analitika','Popunjenost, noći po izvoru i pregledi — iz kalendara i stvarnih posjeta.'],
     sviobjekti:['Danas','Svi objekti','Dolasci, kalendar, predlošci i izvještaji za sve objekte odjednom.'],
-    basic:['Javna stranica','Opis i izgled','Naziv, lokacija, opis, kontakt i izgled javne stranice.'],
-    photos:['Javna stranica','Fotografije','Složite galeriju koja predstavlja vaš objekt.'],
-    izgled:['Javna stranica','Izgled stranice','Izaberite temu koja odlučuje što gost vidi prvo.'],
-    arrival:['Vodič','Dolazak i upute','Dolazak, Wi-Fi, uređaji, kućna pravila i česta pitanja.'],
-    wifi:['Vodič','Wi-Fi','Spremite pristupne podatke za privatni vodič.'],
-    amenities:['Javna stranica','Sadržaji','Označite sve što je gostu dostupno u objektu.'],
-    guide:['Vodič','Preporuke','Vaše preporuke, prijevoz i izleti — gost ih vidi u vodiču i na javnoj stranici.'],
-    transport:['Vodič','Prijevoz','Dodajte korisne načine kretanja i kontakte.'],
-    attractions:['Vodič','Atrakcije','Istaknite aktivnosti i mjesta vrijedna posjeta.'],
-    prijevodi:['Vodič','Jezici','Kako gosti vide vaše tekstove na svom jeziku — pregledajte i ispravite prijevod.'],
-    pricing:['Javna stranica','Cijene i sadržaji','Informativna cijena, minimalan boravak i sve što je gostu dostupno.'],
-    reviews:['Gosti','Recenzije','Ocjene koje gosti ostave u vodiču na kraju boravka.'],
-    rules:['Vodič','Pravila i FAQ','Postavite očekivanja za ugodan boravak.'],
-    availability:['Gosti','Kalendar','Označite slobodne i zauzete datume.'],
-    inquiries:['Gosti','Upiti gostiju','Upiti s javne stranice — prihvatite ih i pošaljite link u jednom koraku.'],
-    reservations:['Gosti','Rezervacije','Generiraj privatni gostinski link za potvrđenog gosta.'],
-    ical:['Gosti','Booking i Airbnb','Poveži Booking.com i Airbnb kalendare.'],
-    links:['Javna stranica','Linkovi i QR','Podijelite javnu stranicu i privatni vodič.'],
-    objave:['Javna stranica','Promocija','Gotova slika i tekst za društvene mreže i oglase, te letak za ispis.'],
-    sub:['Račun','Pretplata','Upravljajte planom i naplatom.']
+    basic:['Objekti','Osnovno','Naziv, lokacija, kapacitet, opis, sadržaji i izgled javne stranice.'],
+    photos:['Objekti','Fotografije','Prva fotografija je naslovna. Redoslijed vidi gost na javnoj stranici.'],
+    izgled:['Objekti','Izgled stranice','Izaberite stil javne stranice.'],
+    arrival:['Objekti','Dolazak i boravak','Vremena, koraci ulaska, parking, Wi-Fi i uređaji — gost ih vidi u vodiču.'],
+    wifi:['Objekti','Wi-Fi','Spremite pristupne podatke za privatni vodič.'],
+    uredaji:['Objekti','Uređaji','Kratke upute za uređaje u objektu.'],
+    amenities:['Objekti','Sadržaji','Označite sve što je gostu dostupno u objektu.'],
+    guide:['Objekti','Lokalni vodič','Preporuke, prijevoz i izleti — gost ih vidi u vodiču i na javnoj stranici.'],
+    transport:['Objekti','Prijevoz','Dodajte korisne načine kretanja i kontakte.'],
+    attractions:['Objekti','Atrakcije','Istaknite aktivnosti i mjesta vrijedna posjeta.'],
+    prijevodi:['Objekti','Jezici','Kako gosti vide vaše tekstove na svom jeziku — pregledajte i ispravite prijevod.'],
+    pricing:['Objekti','Cijene','Osnovna cijena, minimalan boravak, sezone i kapara za izravne upite.'],
+    reviews:['Rezervacije','Recenzije','Ocjene koje gosti ostave u vodiču na kraju boravka.'],
+    rules:['Objekti','Pravila i FAQ','Kućna pravila i česta pitanja koja gost vidi u vodiču.'],
+    availability:['Kalendar','Kalendar','Zauzeti i slobodni dani, izravne rezervacije i uvoz s platformi.'],
+    inquiries:['Upiti','Upiti','Upiti s javne stranice — upit nije potvrđena rezervacija.'],
+    reservations:['Rezervacije','Rezervacije','Potvrđeni boravci i privatni link vodiča za svakog gosta.'],
+    ical:['Kalendar','Booking i Airbnb','Uvoz i izvoz kalendara (iCal). Nije sinkronizacija u stvarnom vremenu.'],
+    links:['Objekti','Linkovi i QR','Javna stranica za sve, privatni vodič samo za potvrđenog gosta.'],
+    objave:['Objekti','Promocija','Gotova slika i tekst za društvene mreže i oglase, te letak za ispis.'],
+    tim:['Tim i čišćenje','Tim i čišćenje','Suradnici na objektu i ograničen link za čistačicu — bez šifri i podataka gostiju.'],
+    vise:['Više','Više','Svi ostali dijelovi aplikacije.'],
+    sub:['Postavke','Pretplata','Plan, broj objekata i naplata. Račun, obavijesti i sigurnost su u Postavkama računa.']
   }
   const m=meta[glavni]||['','','']
   document.getElementById('panelEyebrow').textContent=m[0]
@@ -4896,7 +5107,8 @@ window.nav=(id,el)=>{
   id=glavni
   if(id==='reservations')window.loadBookings()
   if(id==='ical')loadIcal()
-  if(id==='links'){ucitajCistacicu();ucitajTim();ucitajPreporuke();ucitajAdresu()}
+  if(id==='links'){ucitajPreporuke();ucitajAdresu()}
+  if(id==='tim'){ucitajCistacicu();ucitajTim()}
   if(id==='objave')obOtvori()
   if(id==='reviews')ucitajRecenzije()
   if(id==='arrival')parkKarta()
@@ -4914,7 +5126,9 @@ window.nav=(id,el)=>{
 // „linkovi” je spojen u Javnu stranicu (openGroup('linkovi') i dalje otvara Linkove i QR).
 // Paneli su isti kao prije; grupa samo odlučuje koji se podtabovi vide i što
 // je istaknuto u bočnoj traci. Zadnji otvoreni podtab grupe se pamti.
-const GROUP_FIRST={pregled:'overview',boravci:'inquiries',vodic:'arrival',objekt:'basic',linkovi:'links',pretplata:'sub'}
+// redizajn „Pearl”: boravci i vodic su stari ključevi (adrese, stari pozivi) — vode na isto mjesto kao prije
+const GROUP_FIRST={pregled:'overview',upiti:'inquiries',kalendar:'availability',rezervacije:'reservations',objekt:'basic',analitika:'analytics',tim:'tim',pretplata:'sub',vise:'vise',linkovi:'links',boravci:'inquiries',vodic:'arrival'}
+const DONJA=['pregled','kalendar','upiti']
 const lastInGroup={}
 function syncGroup(id){
   const btn=document.querySelector(`.panelnav .nav-item[data-panel="${id}"]`)
@@ -4924,8 +5138,10 @@ function syncGroup(id){
   let n=0
   tabs.forEach(t=>{const on=t.dataset.group===g;t.hidden=!on;if(on&&!t.hasAttribute('data-skriven')&&!t.hasAttribute('data-uloga-skriven'))n++;t.setAttribute('aria-current',t===btn?'page':'false')})
   document.getElementById('panelnav-wrap').hidden=n<2
+  document.body.dataset.grupa=g
   document.querySelectorAll('.side-link[data-group],.bottom-nav [data-group]').forEach(l=>{
-    const on=l.dataset.group===g
+    // mobitel: dio koji nije u donjoj traci pripada „Više”
+    const on=l.dataset.group===g||(l.dataset.group==='vise'&&l.closest('.bottom-nav')&&!DONJA.includes(g))
     l.classList.toggle('active',on)
     if(on)l.setAttribute('aria-current','page');else l.removeAttribute('aria-current')
   })
@@ -4935,7 +5151,9 @@ function syncGroup(id){
     if(l<pn.scrollLeft+16||r>pn.scrollLeft+pn.clientWidth-16)pn.scrollTo({left:Math.max(0,l-16),behavior:'smooth'})}
 }
 window.openGroup=g=>{
-  let id=(g!=='linkovi'&&lastInGroup[g])||GROUP_FIRST[g]
+  if(g==='boravci')g='upiti'
+  if(g==='vodic')g='objekt'
+  let id=(g!=='linkovi'&&g!=='vise'&&lastInGroup[g])||GROUP_FIRST[g]
   // uloga suradnika: prvi dio grupe koji smije otvoriti
   if(PROP&&!ulogaDopusta(id)){const b=[...document.querySelectorAll(`.panelnav .nav-item[data-group="${g}"]`)].find(x=>ulogaDopusta(x.dataset.panel));if(b)id=b.dataset.panel}
   nav(id,document.querySelector(`.panelnav .nav-item[data-panel="${id}"]`))

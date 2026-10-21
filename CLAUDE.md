@@ -846,6 +846,45 @@ Dashboard **ne učitava `odmoria.css`** — ima vlastiti potpun CSS s istim vrij
   vrijedi samo za anon. **Novi stupac u `properties` anon ne vidi** — `p.html`
   ga dobiva kroz `javni_objekt`; nikad `select('*')` na `properties` iz javnih stranica.
 
+## Redizajn „Pearl / Quiet Adriatic” (21. 10. 2026., grana `odmoria-unified-redesign`)
+
+Specifikacija vlasnika (jedinstven sustav za cijeli proizvod). **Paket 1** gotov lokalno:
+- **Tokeni** (`odmoria.css` i zadnji sloj „PEARL” u `<style>` dashboarda, stara imena tokena):
+  perla `#F6F7F5`, bijela, tekst `#183D42`, sekundarni `#536564`, akcija `#286863`,
+  mekano `#E8F0ED`, obrub `#DCE3DF`; zaobljenja 8/12. **Jedno pismo: Manrope**
+  (DM Sans i Gelasio maknuti sa svih stranica; Fraunces ostaje samo u dashboardu za slike Objava).
+  Zadani stil u `stilovi.js` ima iste vrijednosti.
+- **Shell dashboarda:** bočna traka 216 px u gridu (sticky, ne fixed) s 8 dijelova —
+  `data-group`: `pregled` (Danas), `upiti`, `kalendar` (availability + ical), `rezervacije`
+  (reservations + reviews), `objekt` (Objekti: basic, photos, arrival, pricing, guide, rules,
+  prijevodi, links, objave), `analitika`, `tim`, `pretplata` (Postavke). 781–1080 px = traka
+  s ikonama (72 px). ≤ 780 px bočne trake **nema**; donja traka točno Danas · Kalendar · Upiti
+  · Više, a „Više” je panel `section-vise` (redovi preko cijele širine). Stari ključevi
+  `boravci`/`vodic` u `openGroup()` vode na Upite/Objekte. `body[data-grupa]` = aktivni dio
+  (traka „Trenutačno uređujete” samo u Objektima).
+- **Novi paneli:** `section-tim` (kartice čistačice i suradnika premještene iz Linkova —
+  `?otvori=cistacica` vodi ovamo) i `section-uredaji` (upute za uređaje, uz Dolazak).
+  `SPOJ = {basic:[basic, amenities, izgled], arrival:[arrival, wifi, uredaji], guide:[…]}`;
+  Pravila i FAQ su svoj podtab.
+- **Danas:** tri obveze (`#dn-kpi`: dolasci danas, upiti bez odgovora, čišćenja za potvrdu
+  danas/sutra = odlazak bez `cleaning_status`), slijed događaja po danu s vremenima iz
+  `sections.checkin_time/checkout_time` (bez izmišljenih vremena), „Traži pažnju” (isti `OBAV`),
+  objekti kao redovi (`ovTablicaNacrtaj`, filtri tek od 4 objekta), „Dovršite vodič” samo dok
+  nešto fali. Zaglavlje, karta, izvori noći i linkovi s Pregleda maknuti (podaci su u Analitici,
+  Kalendaru i Linkovima).
+- **Vodič (`h.html`):** početna = manja fotografija, naziv, karta boravka, **jedna** radnja po
+  fazi (`renderGlavna()`) i popis „Sve za vaš boravak” (`renderPopis()`, redovi `.pr`:
+  Parking, Ulazak, Wi-Fi, Uređaji, Kućni red, Odlazak, pa Prijava, Preporuke, Domaćin).
+  Red otvara **detalj** `#v/<id>` (`DETALJI`, `body[data-detalj]`): CSS pokaže samo taj
+  odjeljak, s „Povratak” (`nazad()`, povratak na isti položaj popisa). Parking i Ulazak dijele
+  `#o-ulaz` (svaki skriva tuđi dio). Stare adrese (`#dolazak`, `#kuca/pravila`, `#preporuke`…)
+  vode na detalj. Donja traka `#gnav`: Boravak · Vodič (`#v/vodic` = preporuke + korisne
+  informacije) · Domaćin (`#v/domacin` + hitno); skrivena samo na `#ulaz`. Šifre i dalje samo
+  kroz `secretHtml()`; status reda „Dostupno od …” ne otkriva vrijednost. `sw.js` VERZIJA 15.
+- Novi tekstovi: `jezici.js` (blok „redizajn vodiča”, množina `pravilo`) i `domacin-en.js`.
+- **Sljedeći paketi:** javna stranica i naslovnica → kalendar/upiti/rezervacije → editori →
+  tim/analitika → prateće stranice i admin.
+
 ## Redizajn v2 — prijenos iz Figme u kod (u tijeku)
 
 Figma datoteka `BVdEgki8jV7z6Oa3K6Te2h` (faze A, B, C) je vizualni izvor; postojeći

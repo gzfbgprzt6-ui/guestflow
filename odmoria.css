@@ -7,43 +7,46 @@
    ===================================================================== */
 
 :root{
-  /* boja — semantika (vrijednosti = Figma Primitives) */
-  --bg-page:#F6F5F1;          /* perla (v5) */
+  /* „Pearl / Quiet Adriatic” (redizajn 21. 10. 2026.): mat perla, bijele plohe,
+     petrol akcija, fini razdjelnici. Kontrast provjeren (≥ 4,5:1 za tekst). */
+  --bg-page:#F6F7F5;          /* perla */
   --bg-surface:#FFFFFF;
-  --bg-wash:#EFEEE8;
-  --bg-inverse:#12303A;       /* tinta (v5) */
-  --bg-warm:#FCEFD2;
-  --text:#12303A;             /* 13:1 na bijelom */
-  --text-muted:#5B6F75;       /* 5,3:1 na bijelom, 4,8:1 na perli */
-  --text-accent:#12303A;      /* v5: dvije boje — naglasak je tinta */
-  --text-warm:#7A5A1E;        /* 5,3:1 na --bg-warm */
+  --bg-wash:#EEF2EF;          /* tiha ploha, hover */
+  --bg-soft:#E8F0ED;          /* mekani naglasak */
+  --bg-inverse:#183D42;
+  --bg-warm:#FBF0DC;
+  --text:#183D42;             /* 11,6:1 na bijelom */
+  --text-muted:#536564;       /* 6,0:1 na bijelom, 5,6:1 na perli */
+  --text-accent:#286863;      /* 6,4:1 na bijelom */
+  --text-warm:#6E4A0C;        /* 6,9:1 na --bg-warm */
   --text-inverse:#FFFFFF;
-  --text-on-inverse-accent:#F2B33D;  /* sunce, 7,6:1 na tinti */
-  --action:#12303A;
-  --action-hover:#1E4654;
-  --action-pressed:#0A1F26;
-  --border:#E3E5E0;           /* samo razdjelnici */
-  --border-control:#7D8A8C;   /* obrub kontrola, ≥3:1 */
+  --text-on-inverse-accent:#F2B33D;  /* sunce na tamnom */
+  --action:#286863;
+  --action-hover:#1F5550;
+  --action-pressed:#18443F;
+  --border:#DCE3DF;           /* samo razdjelnici */
+  --border-control:#7A8B87;   /* obrub kontrola, ≥3:1 */
   --danger:#B42318;
-  --sunce:#F2B33D;            /* v5: jedina druga boja — znak, oznake, praznine */
-  --sunce-meko:#FCEFD2;
-  --sunce-tamno:#7A5A1E;
+  --sunce:#F2B33D;            /* znak u logotipu, sitne oznake */
+  --sunce-meko:#FBF0DC;
+  --sunce-tamno:#6E4A0C;
   --danger-bg:#FEF3F2;
-  --focus:#12303A;
+  --focus:#286863;
   --scrim:linear-gradient(180deg,rgba(14,34,41,0) 0%,rgba(14,34,41,.35) 30%,rgba(14,34,41,.72) 50%,rgba(14,34,41,.88) 100%);
 
   /* razmaci 4/8/12/16/24/32/48/64/96 */
   --s1:4px;--s2:8px;--s3:12px;--s4:16px;--s5:24px;--s6:32px;--s7:48px;--s8:64px;--s9:96px;
-  --radius-control:7px;--radius-panel:10px;--radius-feature:14px;
+  --radius-control:8px;--radius-panel:12px;--radius-feature:12px;
   --content-max:1376px;
   --gutter:48px;
 
+  /* jedno pismo na svim stranicama (stilovi javne stranice ga mogu promijeniti) */
   --font-ui:"Manrope",system-ui,sans-serif;
-  --font-body:"DM Sans",system-ui,sans-serif;
-  --font-editorial:Georgia,"Gelasio",serif;
+  --font-body:"Manrope",system-ui,sans-serif;
+  --font-editorial:"Manrope",system-ui,sans-serif;
 
-  --shadow-panel:0 12px 32px rgba(18,48,58,.08);
-  --shadow-raised:0 6px 16px rgba(18,48,58,.12);
+  --shadow-panel:0 1px 2px rgba(24,61,66,.05),0 10px 28px -14px rgba(24,61,66,.18);
+  --shadow-raised:0 6px 16px rgba(24,61,66,.12);
   --shadow-overlay:0 24px 64px rgba(14,34,41,.24);
   --ease:cubic-bezier(.2,.7,.2,1);
 }

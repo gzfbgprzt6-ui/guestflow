@@ -620,6 +620,7 @@ const UZORCI = [
 const P = {
   'gost': { hr: ['gost', 'gosta', 'gostiju'], en: ['guest', 'guests'], de: ['Gast', 'Gäste'], it: ['ospite', 'ospiti'], pl: ['gość', 'gości', 'gości'], cs: ['host', 'hosté', 'hostů'] },
   'gosta': { hr: ['gosta', 'gostiju', 'gostiju'], en: ['guest', 'guests'], de: ['Gast', 'Gäste'], it: ['ospite', 'ospiti'], pl: ['gościa', 'gości', 'gości'], cs: ['hosta', 'hosty', 'hostů'] },
+  'pravilo': { hr: ['pravilo', 'pravila', 'pravila'], en: ['rule', 'rules'], de: ['Regel', 'Regeln'], it: ['regola', 'regole'], pl: ['zasada', 'zasady', 'zasad'], cs: ['pravidlo', 'pravidla', 'pravidel'] },
   'korak': { hr: ['korak', 'koraka', 'koraka'], en: ['step', 'steps'], de: ['Schritt', 'Schritte'], it: ['passaggio', 'passaggi'], pl: ['krok', 'kroki', 'kroków'], cs: ['krok', 'kroky', 'kroků'] },
   'noć': { hr: ['noć', 'noći', 'noći'], en: ['night', 'nights'], de: ['Nacht', 'Nächte'], it: ['notte', 'notti'], pl: ['noc', 'noce', 'nocy'], cs: ['noc', 'noci', 'nocí'] },
   'dan': { hr: ['dan', 'dana', 'dana'], en: ['day', 'days'], de: ['Tag', 'Tage'], it: ['giorno', 'giorni'], pl: ['dzień', 'dni', 'dni'], cs: ['den', 'dny', 'dní'] },
@@ -776,6 +777,34 @@ async function ucitaj(upit, j) {
     return o && o.ok ? o : null
   } catch { return null }
 }
+// redizajn vodiča „Pearl” (21. 10. 2026.): popis „Sve za vaš boravak”, detalji, donja traka
+dodaj([
+  ['Sve za vaš boravak', 'Everything for your stay', 'Alles für Ihren Aufenthalt', 'Tutto per il tuo soggiorno', 'Wszystko na Twój pobyt', 'Vše pro váš pobyt'],
+  ['Povratak', 'Back', 'Zurück', 'Indietro', 'Wstecz', 'Zpět'],
+  ['Vodič', 'Guide', 'Reiseführer', 'Guida', 'Przewodnik', 'Průvodce'],
+  ['Boravak', 'Stay', 'Aufenthalt', 'Soggiorno', 'Pobyt', 'Pobyt'],
+  ['Ulazak', 'Getting in', 'Zugang', 'Ingresso', 'Wejście', 'Vstup'],
+  ['Uređaji', 'Appliances', 'Geräte', 'Elettrodomestici', 'Urządzenia', 'Spotřebiče'],
+  ['Kućni red', 'House rules', 'Hausordnung', 'Regole della casa', 'Regulamin domu', 'Domácí řád'],
+  ['Lokacija i pristup', 'Location and access', 'Lage und Zufahrt', 'Posizione e accesso', 'Lokalizacja i dojazd', 'Poloha a příjezd'],
+  ['Upute za korištenje', 'How to use', 'Bedienungshinweise', 'Istruzioni per l’uso', 'Instrukcje obsługi', 'Návod k použití'],
+  ['Šifra je dostupna', 'Door code available', 'Türcode verfügbar', 'Codice disponibile', 'Kod jest dostępny', 'Kód je k dispozici'],
+  ['Dostupno od {d} u {t}', 'Available from {d} at {t}', 'Verfügbar ab {d} um {t}', 'Disponibile dal {d} alle {t}', 'Dostępne od {d} o {t}', 'K dispozici od {d} v {t}'],
+  ['Lozinka je dostupna', 'Password available', 'Passwort verfügbar', 'Password disponibile', 'Hasło jest dostępne', 'Heslo je k dispozici'],
+  ['Adresa i karta', 'Address and map', 'Adresse und Karte', 'Indirizzo e mappa', 'Adres i mapa', 'Adresa a mapa'],
+  ['Korisne informacije', 'Useful information', 'Nützliche Informationen', 'Informazioni utili', 'Przydatne informacje', 'Užitečné informace'],
+  ['Pravila i česta pitanja', 'Rules and FAQ', 'Regeln und häufige Fragen', 'Regole e domande frequenti', 'Zasady i częste pytania', 'Pravidla a časté dotazy'],
+  ['Kontakt i hitni brojevi', 'Contact and emergency numbers', 'Kontakt und Notrufnummern', 'Contatti e numeri di emergenza', 'Kontakt i numery alarmowe', 'Kontakt a nouzová čísla'],
+  ['Wi-Fi i lozinka', 'Wi-Fi and password', 'WLAN und Passwort', 'Wi-Fi e password', 'Wi-Fi i hasło', 'Wi-Fi a heslo'],
+  ['Preporuke u blizini', 'Recommendations nearby', 'Empfehlungen in der Nähe', 'Consigli nei dintorni', 'Polecenia w pobliżu', 'Doporučení v okolí'],
+  ['Upute za odlazak', 'Departure instructions', 'Hinweise zur Abreise', 'Istruzioni per la partenza', 'Instrukcje wyjazdu', 'Pokyny k odjezdu'],
+  ['Hitno', 'Emergency', 'Notfall', 'Emergenza', 'Nagłe wypadki', 'Nouze'],
+  ['Mreža {n}', 'Network {n}', 'Netzwerk {n}', 'Rete {n}', 'Sieć {n}', 'Síť {n}'],
+  ['Ostale informacije', 'Other information', 'Weitere Informationen', 'Altre informazioni', 'Inne informacje', 'Další informace'],
+  ['Navigacija vodiča', 'Guide navigation', 'Navigation des Reiseführers', 'Navigazione della guida', 'Nawigacja przewodnika', 'Navigace průvodce'],
+  ['Pogledano', 'Viewed', 'Angesehen', 'Visto', 'Obejrzane', 'Zobrazeno']
+])
+
 // zahtjev poslan unaprijed (usporedo s podacima stranice), po jeziku
 const RANI = new Map()
 export function unaprijed(upit) { if (!RANI.has(J)) RANI.set(J, ucitaj(upit, J)) }
