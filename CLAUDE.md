@@ -882,8 +882,23 @@ Specifikacija vlasnika (jedinstven sustav za cijeli proizvod). **Paket 1** gotov
   informacije) · Domaćin (`#v/domacin` + hitno); skrivena samo na `#ulaz`. Šifre i dalje samo
   kroz `secretHtml()`; status reda „Dostupno od …” ne otkriva vrijednost. `sw.js` VERZIJA 15.
 - Novi tekstovi: `jezici.js` (blok „redizajn vodiča”, množina `pravilo`) i `domacin-en.js`.
-- **Sljedeći paketi:** javna stranica i naslovnica → kalendar/upiti/rezervacije → editori →
-  tim/analitika → prateće stranice i admin.
+- **Paket 2–3 (isti dan):** *Upiti* `.iqx` = popis (`IQ_SEL`, `#iq-filtar`, `#iq-trazi`) · detalj
+  (`iqDetalj()`: termin, gosti, procijenjena cijena, poruka, radnje) · ponuda u stupcu — `#ponuda-dlg`
+  više nije `<dialog>` nego `div` u `#iq-pon` (`iqPonuda()` → `iqPopuni()`; `otvoriPonudu(id)` samo odabere
+  upit). *Rezervacije* = tablica `.bk-tbl` + panel `#bk-panel` (`BK_SEL`, `bkStanje()`, `bkPanel()`,
+  `bkOdaberi()`); opasne radnje odvojeno. *Kalendar*: timeline svih objekata iznad mjeseca (`tlUcitaj()`,
+  `tlNacrtaj()`, `TL_N` mj/14/7; izravno petrol, B/A sivo, blokade šrafirano, praznine crtkano; stvarni
+  `ical_last_sync`), na mobitelu skriven. *Objekti*: putokaz u `#panelEyebrow`, `.property-banner`
+  skriven, `.ob-vrh` (Osnovno · `obFoto()` · dovršenost `#ob-prsten`), `#door-code` maskiran
+  (`pokaziTajnu()`), „Kako gost vidi” je `<details>`. *Analitika*: `an3()` (popunjenost, zauzete noći,
+  izravni upiti s usporedbom u p.b., SVG graf s prethodnim razdobljem, izvori noćenja, definicije).
+  *`p.html`*: galerija 1+2 na vrhu (`.gal-vrh`, na mobitelu listanje prstom), naslov bez fotografije,
+  `.pg` = sadržaj lijevo + `.pg-r` stalni panel (`sumTermin()` iz `refreshAsk()`), sidra
+  Pregled/Sadržaji/Lokacija/Dostupnost/Pitanja. *Naslovnica*: „Vaš smještaj. Sve na svom mjestu.”, bez
+  tamnih blokova. **Namjerno nije preuzeto sa slika:** chat, „polog za štetu”, „Najpopularnije”,
+  Destinacije/Inspiracija, favoriti, lijevak konverzije.
+- **Ostalo:** račun (Postavke: Račun/Pretplata/Obavijesti/Sigurnost), pomoć, pravne stranice, admin i
+  `c.html` zasad imaju samo novu paletu i pismo.
 
 ## Redizajn v2 — prijenos iz Figme u kod (u tijeku)
 

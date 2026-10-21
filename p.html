@@ -347,6 +347,72 @@
 .iqf__kv{display:flex;gap:10px;align-items:flex-start;font-size:14px;line-height:1.45;cursor:pointer}
 .iqf__kv input{flex:none;width:18px;height:18px;margin:2px 0 0;accent-color:var(--text)}
 .cday.past{opacity:.35;cursor:default;text-decoration:line-through;text-decoration-thickness:1px}
+
+/* =====================================================================
+   JAVNA STRANICA „PEARL” (redizajn 21. 10. 2026.): galerija 1 + 2 na vrhu,
+   naziv i podaci ispod (bez teksta na fotografiji), sadržaj lijevo,
+   stalni panel za upit desno. Logika stranice je ista.
+   ===================================================================== */
+.gal-vrh{padding-block:16px 0}
+.gal-vrh .head{display:none}
+.gal-vrh .wrap{position:relative}
+.gal-vrh .head--row{position:absolute;left:calc(var(--gutter) + 16px);bottom:16px;z-index:2;margin:0}
+.gal-vrh #gal-all{display:inline-flex;min-height:40px;padding:0 14px;border-radius:8px;background:rgba(255,255,255,.95);color:var(--text);box-shadow:var(--shadow-raised);font:600 14px/1 var(--font-ui);text-decoration:none}
+.gal-vrh .gal{margin-top:0;grid-template-rows:230px 230px;gap:8px}
+.gal-vrh .gal__i,.gal-vrh .gal__pair{border-radius:12px}
+.gal-vrh .gal__pair{gap:8px}
+.pg{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:48px;align-items:start}
+.pg-l{min-width:0}
+.pg-l .wrap{max-width:none;padding-inline:0}
+.pg-r{position:sticky;top:110px;padding-top:24px}
+.pg-r .summary{position:static;padding:22px;border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow-panel);gap:12px}
+.pg-l .sec{padding-block:40px;background:none;border-top:1px solid var(--border)}
+.pg-l .sec--tight{padding-top:40px}
+.pg-l #o-objektu{border-top:0;padding-top:24px}
+.hero-wrap{padding-inline:0}
+.hero,.hero.has-photo{min-height:0;padding:28px 0 0;border-radius:0;background:none!important;color:var(--text);align-items:flex-start}
+.hero::after,.hero::before{display:none!important}
+.hero__copy{gap:8px}
+.hero__copy .eyebrow{order:2;color:var(--text-muted);font:500 15px/1.4 var(--font-ui);letter-spacing:0;text-transform:none}
+.hero__name{order:1;font:700 clamp(30px,3.4vw,42px)/1.15 var(--font-editorial);letter-spacing:-.02em}
+.hero__sub{order:3;color:var(--text-muted);font-size:15.5px}
+.hero__copy .zivo{order:0}
+.hero__act{display:none}
+#facts-wrap{padding-inline:0}
+.facts{grid-template-columns:repeat(auto-fit,minmax(120px,1fr));padding-block:20px;gap:12px 24px}
+.intro,.intro--solo{grid-template-columns:minmax(0,1fr);gap:0}
+.letter__txt{font:400 18px/1.65 var(--font-ui)}
+.avail{grid-template-columns:minmax(0,1fr);gap:16px}
+.sum-termin{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--border-control);border-radius:8px;color:var(--text);text-decoration:none}
+.sum-termin > span{display:grid;gap:2px;padding:10px 12px}
+.sum-termin > span + span{border-left:1px solid var(--border)}
+.sum-termin small{color:var(--text-muted);font:600 12px/1.2 var(--font-ui)}
+.sum-termin b{font:600 15px/1.3 var(--font-ui)}
+.sum-termin:hover{border-color:var(--text)}
+.sum-iznos{margin:0;font:600 15px/1.4 var(--font-ui)}
+.contact{border-radius:12px}
+@media (max-width:1100px){.pg{grid-template-columns:minmax(0,1fr) 320px;gap:32px}}
+@media (max-width:900px){.pg{grid-template-columns:minmax(0,1fr)}.pg-r{display:none}}
+@media (max-width:760px){
+  .gal-vrh{padding-top:0}
+  .gal-vrh .wrap{padding-inline:0}
+  .gal-vrh .gal{display:flex;gap:0;height:auto;overflow-x:auto;scroll-snap-type:x mandatory;grid-template-rows:none;border-radius:0}
+  .gal-vrh .gal > *,.gal-vrh .gal__pair > *{flex:0 0 100%;aspect-ratio:3/2;height:auto;border-radius:0;scroll-snap-align:start}
+  .gal-vrh .gal__pair{display:contents}
+  .gal-vrh .head--row{left:16px;bottom:12px}
+  .gal-vrh #gal-all{display:inline-flex}
+  .gal-all-m{display:none!important}
+  .pg{padding-inline:16px}
+  .hero,.hero.has-photo{min-height:0;padding:20px 0 0}
+  .hero__name{font-size:28px}
+  .pg-l .sec{padding-block:28px}
+}
+
+.t-ed,.pg-l h2.t-ed{font:650 24px/1.25 var(--font-editorial);letter-spacing:-.015em}
+.contact .t-ed{font-size:26px}
+.phead__name{font:700 19px/1.2 var(--font-editorial);letter-spacing:-.01em}
+.hero .zivo{background:var(--bg-soft);color:var(--text-accent)}
+.hero .zivo i{background:var(--action)}
 </style>
 </head>
 <body>
@@ -472,10 +538,11 @@
       <span class="phead__loc" id="h-loc" hidden></span>
     </div>
     <nav class="phead__nav" aria-label="Dijelovi stranice" id="h-nav">
-      <a href="#o-objektu">O objektu</a>
-      <a href="#galerija" data-need="gal-sec">Fotografije</a>
+      <a href="#o-objektu">Pregled</a>
+      <a href="#details-sec" data-need="details-sec">Sadržaji</a>
       <a href="#lokacija" data-need="map-sec">Lokacija</a>
       <a href="#dostupnost" data-need="cal-sec">Dostupnost</a>
+      <a href="#faq-sec" data-need="faq-sec">Pitanja</a>
     </nav>
     <span class="phead__jez" data-jezik-birac hidden></span>
     <a class="btn btn--primary phead__cta" id="h-cta" href="#upit"><span class="lg">Pošalji upit</span><span class="sm">Upit</span><svg class="ic ic--sm"><use href="#i-arrow-up-right"/></svg></a>
@@ -483,6 +550,22 @@
 </header>
 
 <main id="sadrzaj">
+
+  <!-- galerija -->
+  <section class="sec gal-vrh" id="gal-sec" hidden aria-labelledby="gal-title">
+    <div class="wrap">
+      <div class="head--row">
+        <div class="head"><span class="eyebrow">Galerija</span><h2 class="t-ed" id="gal-title">Pogledajte prostor</h2></div>
+        <button class="btn btn--text" type="button" id="gal-all" onclick="openLb(0)"></button>
+      </div>
+      <div class="gal" id="gal"></div>
+      <button class="btn btn--secondary btn--block gal-all-m" type="button" id="gal-all-m" onclick="openLb(0)"></button>
+    </div>
+  </section>
+
+  <!-- redizajn „Pearl”: sadržaj lijevo, stalni panel za upit desno -->
+  <div class="wrap pg">
+  <div class="pg-l">
 
   <!-- prvi ekran -->
   <div class="wrap hero-wrap">
@@ -513,27 +596,9 @@
         <p class="letter__txt" id="welcome"></p>
         <p class="letter__sig" id="sig" hidden></p>
       </div>
-      <aside class="card summary" aria-label="Sažetak">
-        <div class="summary__price" id="sum-price"></div>
-        <p class="t-muted" id="sum-sub" hidden></p>
-        <a class="btn btn--primary" id="sum-cal" href="#dostupnost">Provjeri dostupnost</a>
-        <a class="btn btn--secondary" href="#upit">Pošalji upit domaćinu</a>
-        <p class="t-meta">Bez provizije. Termin i plaćanje dogovarate izravno s domaćinom.</p>
-      </aside>
     </div>
   </section>
 
-  <!-- galerija -->
-  <section class="sec sec--tight" id="gal-sec" hidden aria-labelledby="gal-title">
-    <div class="wrap">
-      <div class="head--row">
-        <div class="head"><span class="eyebrow">Galerija</span><h2 class="t-ed" id="gal-title">Pogledajte prostor</h2></div>
-        <button class="btn btn--text" type="button" id="gal-all" onclick="openLb(0)"></button>
-      </div>
-      <div class="gal" id="gal"></div>
-      <button class="btn btn--secondary btn--block gal-all-m" type="button" id="gal-all-m" onclick="openLb(0)"></button>
-    </div>
-  </section>
 
   <!-- lokacija -->
   <section class="sec sec--wash" id="map-sec" hidden aria-labelledby="loc-h">
@@ -712,6 +777,23 @@
   </section>
 
   <!-- kontakt -->
+  </div>
+  <div class="pg-r">
+    <aside class="card summary" aria-label="Sažetak">
+        <div class="summary__price" id="sum-price"></div>
+        <p class="t-muted" id="sum-sub" hidden></p>
+        <a class="sum-termin" href="#dostupnost" id="sum-termin" aria-label="Odaberite termin u kalendaru">
+          <span><small>Dolazak</small><b id="sum-od">Odaberite</b></span><span><small>Odlazak</small><b id="sum-do">Odaberite</b></span>
+        </a>
+        <p class="sum-iznos" id="sum-iznos" hidden></p>
+        <a class="btn btn--primary" id="sum-cal" href="#dostupnost">Provjeri dostupnost</a>
+        <a class="btn btn--secondary" href="#upit">Pošalji upit domaćinu</a>
+        <p class="t-meta">Upit nije potvrđena rezervacija — domaćin vam odgovara izravno.</p>
+        <p class="t-meta">Bez provizije. Termin i plaćanje dogovarate izravno s domaćinom.</p>
+    </aside>
+  </div>
+  </div>
+
   <section class="sec sec--tight" aria-labelledby="ask-title">
     <div class="wrap" id="upit">
       <div class="contact on-dark">
@@ -1581,7 +1663,16 @@ function askMessage() {
   return L.tu(j, '{pozdrav} Zanima me boravak u objektu {objekt}. Koji su termini slobodni? Hvala!', v)
 }
 
+function sumTermin() {
+  const od = $('#sum-od'); if (!od) return
+  od.textContent = checkinDs ? fmtHR(checkinDs) : t('Odaberite')
+  $('#sum-do').textContent = checkoutDs ? fmtHR(checkoutDs) : t('Odaberite')
+  const iz = iznosOdabranog(), n = checkinDs && checkoutDs ? Math.round((new Date(checkoutDs) - new Date(checkinDs)) / 864e5) : 0
+  const el = $('#sum-iznos')
+  if (n && (iz || price > 0)) { el.textContent = t('Okvirno {cijena} za {n}', { cijena: eur(Math.round(iz ?? price * n)), n: noci(n) }); show(el) } else show(el, false)
+}
 function refreshAsk() {
+  sumTermin()
   const p = PROP
   const msg = askMessage()
   const wa = p.phone ? waUrl(p.phone, msg) : null

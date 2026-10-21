@@ -250,6 +250,25 @@
   .plan{padding:24px}
   .foot__cols{grid-template-columns:1fr}
 }
+
+/* ── NASLOVNICA „PEARL” (21. 10. 2026.): svijetle plohe, petrol akcija, bez tamnih blokova ── */
+.bar{background:var(--bg-soft);color:var(--text)}
+.bar strong{color:var(--text-accent)}
+.bar a{color:var(--text)}
+.pill-0{justify-self:start;display:inline-block;margin:0;padding:6px 12px;border-radius:99px;background:var(--bg-soft);color:var(--text-accent);font:700 13.5px/1.2 var(--font-ui)}
+.t-hero{font-size:clamp(34px,4.4vw,52px);line-height:1.08}
+.guide .eyebrow{color:var(--text-accent)}
+.guide .phone{border:1px solid var(--border);box-shadow:var(--shadow-panel)}
+.plan{border-radius:12px}
+.plan--featured{background:var(--bg-surface);border:2px solid var(--action);color:var(--text);box-shadow:var(--shadow-panel)}
+.plan--featured .t-muted,.plan--featured .t-meta,.plan--featured .plan__za{color:var(--text-muted)}
+.plan--featured .checks .ic{color:var(--text-accent)}
+.final__panel{background:var(--bg-soft);color:var(--text);border-radius:12px}
+.final__panel .eyebrow{color:var(--text-accent)}
+.btn{border-radius:8px}
+.guide .t-lead,.guide p{color:var(--text-muted)}
+.cmp > div{background:var(--bg-surface);border:1px solid var(--border)}
+.cmp .ic{color:var(--text-accent)}
 </style>
 </head>
 <body>
@@ -291,10 +310,9 @@
   <div class="wrap">
     <a href="/" class="logo" aria-label="Odmoria — naslovnica"><img class="o-logo" src="/assets/logo/odmoria.svg" alt="Odmoria" width="112" height="24"></a>
     <nav class="nav__links" aria-label="Glavna navigacija">
-      <a href="#izlog">Vaša web-stranica</a>
-      <a href="#domacini">Za domaćine</a>
-      <a href="#kako">Kako funkcionira</a>
-      <a href="#planovi">Planovi</a>
+      <a href="#kako">Kako radi</a>
+      <a href="#domacini">Mogućnosti</a>
+      <a href="#planovi">Cijene</a>
     </nav>
     <div class="nav__cta">
       <a href="/login.html" class="nav__login">Prijava</a>
@@ -303,10 +321,9 @@
     </div>
   </div>
   <nav class="drawer" id="drawer" aria-label="Izbornik">
-    <a href="#izlog">Vaša web-stranica</a>
-    <a href="#domacini">Za domaćine</a>
-    <a href="#kako">Kako funkcionira</a>
-    <a href="#planovi">Planovi</a>
+    <a href="#kako">Kako radi</a>
+    <a href="#domacini">Mogućnosti</a>
+    <a href="#planovi">Cijene</a>
     <a href="/login.html">Prijava</a>
   </nav>
 </header>
@@ -317,12 +334,12 @@
 <section class="hero">
   <div class="wrap">
     <div class="hero__copy">
-      <p class="eyebrow">Za apartmane, vile i dobre domaćine</p>
-      <h1 class="t-hero">Vaš smještaj.<br><span class="accent">Njegov najbolji<br>prvi dojam.</span></h1>
-      <p class="t-lead">Web-stranica koja predstavlja vaš objekt. Alat koji organizira boravke. Privatni vodič koji gostima daje odgovore — bez novih poruka.</p>
+      <p class="pill-0">0% provizije po rezervaciji</p>
+      <h1 class="t-hero">Vaš smještaj.<br><span class="accent">Sve na svom mjestu.</span></h1>
+      <p class="t-lead">Izradite javnu stranicu za svoj objekt i podijelite privatni vodič s gostima. Upite, kalendar i rezervacije vodite na jednom mjestu — bez provizije.</p>
       <div class="hero__ctas">
-        <a href="/register.html" class="btn btn--primary">Izradi svoju stranicu <svg class="ic"><use href="#i-up"/></svg></a>
-        <a href="/h/demo" class="btn btn--text">Pogledaj primjer za gosta <svg class="ic"><use href="#i-right"/></svg></a>
+        <a href="/register.html" class="btn btn--primary">Izradi svoj objekt <svg class="ic"><use href="#i-right"/></svg></a>
+        <a href="/h/demo" class="btn btn--secondary">Pogledaj primjer</a>
       </div>
       <ul class="assure">
         <li><svg class="ic ic--sm"><use href="#i-check"/></svg>Bez provizije na rezervacije</li>
@@ -499,7 +516,7 @@
 </section>
 
 <!-- PRIVATNI VODIČ -->
-<section class="sec sec--dark guide on-dark" id="vodic">
+<section class="sec sec--wash guide" id="vodic">
   <div class="wrap">
     <div class="guide__copy">
       <p class="eyebrow">Privatni vodič za goste</p>
@@ -575,7 +592,7 @@
           <li><svg class="ic ic--zv"><use href="#i-star"/></svg>Prijava gostiju za eVisitor, link za čistačicu</li>
           <li><svg class="ic"><use href="#i-check"/></svg><span data-limits>5 objekata · 30 fotografija</span></li>
         </ul>
-        <a href="/register.html" class="btn btn--inverse">Započni besplatno</a>
+        <a href="/register.html" class="btn btn--primary">Započni besplatno</a>
         <p class="plan__note">Nadogradite kad vam zatreba.</p>
       </article>
       <article class="plan" data-plan="business">
@@ -634,11 +651,11 @@
 <!-- ZAVRŠNI POZIV -->
 <section class="final">
   <div class="wrap">
-    <div class="final__panel on-dark">
+    <div class="final__panel">
       <div class="final__copy">
         <p class="eyebrow">Vaš smještaj zaslužuje vlastitu adresu.</p>
         <h2 class="t-section">Dajte mu stranicu.<br>Sebi ostavite više vremena.</h2>
-        <a href="/register.html" class="btn btn--inverse">Izradi svoju stranicu <svg class="ic"><use href="#i-up"/></svg></a>
+        <a href="/register.html" class="btn btn--primary">Izradi svoj objekt <svg class="ic"><use href="#i-right"/></svg></a>
       </div>
       <div class="photo" role="img" aria-label="Ogledna vila"></div>
     </div>
