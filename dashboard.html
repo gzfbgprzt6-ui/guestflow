@@ -1875,6 +1875,83 @@ button.tl-ime:hover { background: var(--cream); }
 .cal-dva .day { border-radius: 8px; }
 .calendar-head strong, #cal-title { font: 700 20px/1.2 var(--font-ui); letter-spacing: -.01em; }
 .lg-rez { background: var(--copper) !important; }
+
+/* ── OBJEKTI („Pearl”): putokaz, Osnovno u tri stupca, pregled na zahtjev ── */
+body[data-grupa="objekt"] .page-header .eyebrow { display: block; margin-bottom: 6px; color: var(--muted); font: 600 13.5px/1.3 var(--font-ui); letter-spacing: 0; text-transform: none; }
+.property-banner { display: none !important; }
+.ob-vrh { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr) minmax(240px, .7fr); gap: 16px; align-items: start; margin-bottom: 16px; }
+.ob-vrh > .card { min-width: 0; margin: 0; }
+.ob-h { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 12px; }
+.ob-h h2 { margin: 0; font: 700 18px/1.3 var(--font-ui); }
+.ob-foto__gl { display: block; width: 100%; aspect-ratio: 3 / 2; border: 0; border-radius: 10px; background: var(--paper-2) center / cover no-repeat; cursor: pointer; }
+.ob-foto__m { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; margin-top: 8px; }
+.ob-foto__m > span { aspect-ratio: 1; border-radius: 8px; background: var(--paper-2) center / cover no-repeat; }
+.ob-foto__d { display: grid; aspect-ratio: 1; place-items: center; align-content: center; gap: 2px; border: 1.5px dashed #B9C6C1; border-radius: 8px; background: var(--paper); color: var(--copper); cursor: pointer; font: 600 12px/1 var(--font-ui); }
+.ob-foto__prazno { display: grid; width: 100%; aspect-ratio: 3 / 2; place-items: center; align-content: center; gap: 6px; padding: 16px; border: 1.5px dashed #B9C6C1; border-radius: 10px; background: var(--cream); color: var(--ink); cursor: pointer; font: inherit; text-align: center; }
+.ob-foto__prazno .ic { color: var(--copper); }
+.ob-foto__prazno small { color: var(--muted); font-size: 13px; }
+.ob-dov__g { display: flex; align-items: center; gap: 14px; margin-bottom: 8px; }
+.ob-dov__g .helper { margin: 0; }
+.ob-prsten { --p: 0; display: grid; flex: none; width: 76px; height: 76px; place-items: center; border-radius: 50%; background: conic-gradient(var(--copper) calc(var(--p) * 1%), var(--paper-2) 0); }
+.ob-prsten b { display: grid; width: 60px; height: 60px; place-items: center; border-radius: 50%; background: var(--paper); font: 700 17px/1 var(--font-ui); }
+.ob-dov__l { display: grid; margin-bottom: 14px; }
+.ob-st { display: flex; align-items: center; gap: 10px; min-height: 40px; border: 0; border-bottom: 1px solid var(--line); background: none; color: var(--ink); cursor: pointer; font: 500 14.5px/1.3 var(--font-ui); text-align: left; }
+.ob-st > span:first-child { display: grid; width: 20px; height: 20px; flex: none; place-items: center; border: 1.5px solid var(--control); border-radius: 50%; color: #fff; font-size: 11px; }
+.ob-st.je-gotovo > span:first-child { border-color: var(--copper); background: var(--copper); }
+.ob-st:hover { color: var(--copper); }
+.pv-na-zahtjev { padding: 0; }
+.pv-na-zahtjev > summary { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 24px; cursor: pointer; list-style: none; }
+.pv-na-zahtjev > summary::-webkit-details-marker { display: none; }
+.pv-na-zahtjev > summary b { display: block; font: 700 18px/1.3 var(--font-ui); }
+.pv-na-zahtjev > summary small { display: block; color: var(--muted); font-size: 14px; }
+.pv-na-zahtjev[open] > summary .btn { display: none; }
+.pv-na-zahtjev .stil-zivo { margin: 0 24px 24px; }
+/* cijena: svijetla ploha */
+.price-hero { border: 1px solid var(--line); background: var(--paper-2); color: var(--ink); }
+.price-hero small { color: var(--copper); }
+.price-display strong { color: var(--ink); }
+.price-display span { color: var(--muted); }
+/* Wi-Fi i uređaji jedan do drugog */
+@media (max-width: 1280px) { .ob-vrh { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .ob-dov { grid-column: 1 / -1; } }
+@media (max-width: 900px) { .ob-vrh { grid-template-columns: minmax(0, 1fr); } }
+
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.ob-vrh .kap { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+/* ── ANALITIKA („Pearl”) ── */
+.an3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 16px; }
+.an3-c { display: flex; gap: 14px; align-items: center; padding: 16px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper); }
+.an3-c > div { display: grid; min-width: 0; }
+.an3-l { color: var(--muted); font: 600 13px/1.3 var(--font-ui); }
+.an3-c b { font: 700 26px/1.2 var(--font-ui); font-variant-numeric: tabular-nums; }
+.an3-c small { color: var(--muted); font-size: 13px; }
+.an3-d { color: #1F5550; font-weight: 700; }
+.an3-d::before { content: "↗ "; }
+.an3-d.dolje { color: #A11F15; }
+.an3-d.dolje::before { content: "↘ "; }
+.an3-red { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: 16px; margin-bottom: 24px; align-items: start; }
+.an3-red > .card { min-width: 0; margin: 0; padding: 16px 20px; }
+.an3-leg { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 12.5px; }
+.an3-leg i { display: inline-block; width: 22px; height: 0; border-top: 2.5px solid var(--copper); }
+.an3-leg i.isp { margin-left: 10px; border-top: 2px dashed #8FA6A0; }
+.an3-svg { display: block; width: 100%; height: auto; overflow: visible; }
+.an3-svg text { fill: var(--muted); font: 500 11px var(--font-ui); }
+.an3-mr { stroke: #E6EBE8; stroke-width: 1; }
+.an3-line { fill: none; stroke: var(--copper); stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
+.an3-prev { fill: none; stroke: #8FA6A0; stroke-width: 1.75; stroke-dasharray: 5 5; }
+.an3-pov { fill: rgba(40,104,99,.08); }
+.an3-pt { fill: transparent; }
+.an3-pt:hover, .an3-pt:focus { fill: var(--copper); fill-opacity: .25; outline: none; }
+.an3-jed { color: var(--muted); font-size: 13px; }
+.an3-izv { display: grid; gap: 14px; margin: 8px 0 4px; }
+.an3-ir { display: grid; grid-template-columns: 110px minmax(0, 1fr) 36px 40px; gap: 10px; align-items: center; font-size: 14px; }
+.an3-it { height: 10px; border-radius: 5px; background: var(--paper-2); overflow: hidden; }
+.an3-it i { display: block; height: 100%; border-radius: 5px; background: var(--copper); }
+.an3-ir b { text-align: right; font-variant-numeric: tabular-nums; }
+.an3-ir small { color: var(--muted); text-align: right; }
+.an3-pod { margin: 8px 0 12px; font: 700 18px/1.3 var(--font-ui); }
+@media (max-width: 1080px) { .an3-red { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 780px) { .an3 { grid-template-columns: minmax(0, 1fr); } .an3-ir { grid-template-columns: 90px minmax(0, 1fr) 30px 36px; } }
 </style>
 <script type="module">import{pokreni,prekidac}from'/domacin-jezik.js';pokreni();prekidac(document.getElementById('jezik-sw'))</script>
 </head>
@@ -2235,6 +2312,15 @@ button.tl-ime:hover { background: var(--cream); }
             </div>
             <button class="btn secondary small" type="button" onclick="izvozBoravaka()">Izvezi boravke (CSV)</button>
           </div>
+          <!-- redizajn „Pearl”: popunjenost, zauzete noći, izravni upiti · graf po danima · izvori noćenja -->
+          <div class="an3" id="an3-kpi" aria-live="polite"></div>
+          <div class="an3-red">
+            <div class="card an3-k"><div class="dn-h"><h2>Popunjenost po danima</h2><span class="an3-leg"><i class="pun"></i><span id="an3-l1">Ovo razdoblje</span><i class="isp"></i><span>Prethodno</span></span></div>
+              <div id="an3-graf"></div><p class="an-note" id="an3-def"></p></div>
+            <div class="card an3-k"><div class="dn-h"><h2>Izvori noćenja</h2><small class="an3-jed">u noćima</small></div><div id="an3-izv"></div>
+              <p class="an-note">Iz kalendara objekta. Upiti nisu isto što i rezervacije — broje se zasebno.</p></div>
+          </div>
+          <h2 class="an3-pod">Posjećenost i upiti</h2>
           <div class="an-kpis" id="an-kpis" aria-live="polite"></div>
 
           <div class="card">
@@ -2310,6 +2396,7 @@ button.tl-ime:hover { background: var(--cream); }
         <section class="editor-panel" id="section-basic" data-panel-content="basic">
           <div id="basic-alert"></div>
           <!-- Osnovno (vlasnik, 16. 10.): jedna zbijena kartica — naziv, vrsta (jednom, s „Drugo…”), lokacija, kapacitet s upisom -->
+          <div class="ob-vrh">
           <div class="card card--zbijeno">
             <div class="card-head"><div class="card-title-wrap"><span class="card-number">01</span><div><h2>Osnovno</h2><p>Naziv, vrsta, lokacija i kapacitet — vide se u zaglavlju javne stranice i vodiča.</p></div></div></div>
             <div class="form-grid">
@@ -2328,6 +2415,17 @@ button.tl-ime:hover { background: var(--cream); }
               <div class="kap__i"><label for="kap-bathrooms">Kupaonice</label><div class="kap__c"><button type="button" onclick="stepCount('bathrooms',-1)" aria-label="Kupaonice − 1">−</button><input id="kap-bathrooms" class="kap__in" type="number" inputmode="numeric" min="0" max="99" data-count="bathrooms" value="0" oninput="kapUpis('bathrooms',this.value)"><button type="button" onclick="stepCount('bathrooms',1)" aria-label="Kupaonice + 1">+</button></div></div>
               <div class="kap__i"><label for="kap-size_m2">m²</label><div class="kap__c"><button type="button" onclick="stepCount('size_m2',-5)" aria-label="m² − 5">−</button><input id="kap-size_m2" class="kap__in" type="number" inputmode="numeric" min="0" max="999" data-count="size_m2" value="0" oninput="kapUpis('size_m2',this.value)"><button type="button" onclick="stepCount('size_m2',5)" aria-label="m² + 5">+</button></div></div>
             </div>
+          </div>
+          <div class="card ob-foto">
+            <div class="ob-h"><h2>Naslovna fotografija</h2><button type="button" class="dn-link" onclick="nav('photos',document.querySelector('.panelnav [data-panel=photos]'))">Uredi</button></div>
+            <div id="ob-foto"></div>
+          </div>
+          <div class="card ob-dov">
+            <div class="ob-h"><h2>Dovršenost objekta</h2></div>
+            <div class="ob-dov__g"><span class="ob-prsten" id="ob-prsten" style="--p:0"><b id="ob-pct">0%</b></span><p class="helper" id="ob-dov-tx">Još nekoliko detalja i objekt je spreman.</p></div>
+            <div class="ob-dov__l" id="ob-dov-l"></div>
+            <button type="button" class="btn secondary btn-block" onclick="viewPub()"><svg class="ic ic--sm" aria-hidden="true"><use href="#i-eye"/></svg>Pregledaj javnu stranicu</button>
+          </div>
           </div>
           <div class="card">
             <div class="card-head"><div class="card-title-wrap"><span class="card-number">02</span><div><h2>Riječ domaćina i kontakt</h2><p>Kratka osobna poruka gostu — prevodi se na jezik gosta (Objekt → Prijevodi).</p></div></div></div>
@@ -2375,14 +2473,10 @@ button.tl-ime:hover { background: var(--cream); }
             </div>
           </div>
 
-          <div class="card">
-            <!-- `.card-title-wrap` je mreža `32px 1fr` i traži DVA djeteta -->
-            <div class="card-head"><div class="card-title-wrap"><span class="card-number">◉</span><div>
-              <h2>Kako gost vidi</h2>
-              <p>Prava javna stranica s vašim podacima, u odabranom stilu. Prikaz se ne broji u analitici.</p>
-            </div></div></div>
+          <details class="card pv-na-zahtjev">
+            <summary><span><b>Kako gost vidi</b><small>Prava javna stranica u odabranom stilu — otvorite pregled kad ga trebate. Ne broji se u analitici.</small></span><span class="btn secondary small" aria-hidden="true">Prikaži pregled</span></summary>
             <div class="stil-zivo" id="stil-zivo"><iframe id="stil-okvir" title="Pregled javne stranice" loading="lazy" tabindex="-1"></iframe></div>
-          </div>
+          </details>
         </section>
 
         <!-- 02 PHOTOS -->
@@ -2407,7 +2501,7 @@ button.tl-ime:hover { background: var(--cream); }
               <div class="field"><label for="ci-time">Check-in od</label><input class="input" id="ci-time" type="time"></div>
               <div class="field"><label for="co-time">Check-out do</label><input class="input" id="co-time" type="time"></div>
               <div class="field"><label for="ci-address">Točna adresa <span class="optional">privatno</span></label><input class="input" id="ci-address"></div>
-              <div class="field"><label for="door-code">Kod za ulazak <span class="optional">privatno</span></label><input class="input" id="door-code" style="font-size:1.05rem;letter-spacing:.1em"></div>
+              <div class="field"><label for="door-code">Kod za ulazak <span class="optional">privatno</span></label><div class="inline-input"><input class="input" id="door-code" type="password" autocomplete="off" style="font-size:1.05rem;letter-spacing:.1em"><button class="input-action" type="button" onclick="pokaziTajnu('door-code',this)" aria-label="Prikaži šifru" aria-pressed="false"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="2.5"/></svg></button></div><small class="helper">Gost je vidi tek sat prije prijave.</small></div>
               <div class="field full"><label for="ci-notes">Upute za dolazak</label><textarea class="textarea" id="ci-notes"></textarea></div>
               <div class="field full"><label for="ci-parking">Parking</label><textarea class="textarea" id="ci-parking" placeholder="Npr. Dva mjesta ispred kuće, lijevo od ulaza. Besplatno."></textarea>
                 <!-- slika i pribadača (sql/add-parking.sql): sections.parking_foto / parking_lat / parking_lon -->
@@ -3787,6 +3881,7 @@ window.saveDeviceInfo=async()=>{
   Object.assign(SECTION,u);toast('Upute spremljene ✓')
 }
 
+window.pokaziTajnu=(id,b)=>{const i=document.getElementById(id);if(!i)return;const vid=i.type==='password';i.type=vid?'text':'password';b.setAttribute('aria-pressed',String(vid));b.setAttribute('aria-label',vid?'Sakrij':'Prikaži')}
 window.togglePw=()=>{
   const i=document.getElementById('wifi-pass')
   i.type=i.type==='password'?'text':'password'
@@ -4649,6 +4744,42 @@ document.querySelectorAll('[data-raspon]').forEach(b=>b.addEventListener('click'
   renderAnalytics()
 }))
 
+/* Gornji dio Analitike („Pearl”): sve iz kalendara (availability) i tablice upita.
+   Popunjenost = zauzete noći ÷ noći u razdoblju; ručne blokade se broje kao zauzete. */
+function an3(r,d,S,noci,od,sut,odP,rTxt){
+  const $=id=>document.getElementById(id)
+  const pS=A.popunjenost(noci,od,sut),pP=A.popunjenost(noci,odP,od)
+  const uIn=(a,b)=>UPITI.filter(u=>{const x=String(u.created_at||'').slice(0,10);return x>=a&&x<b}).length
+  const iS=uIn(od,sut),iP=uIn(odP,od)
+  const pp=Math.round((pS.udio-pP.udio)*100)
+  const delta=(txt,gore)=>`<span class="an3-d${gore===false?' dolje':''}">${txt}</span>`
+  const imaKal=AVAIL_ROWS.length>0
+  const K=[['bed','Popunjenost',imaKal?A.posto(pS.udio):'—',imaKal&&pP.ukupno?(pp?delta(`${pp>0?'+':''}${pp} p.b.`,pp>0)+' prema prethodnom razdoblju':'isto kao prethodno razdoblje'):'Još nema dovoljno podataka'],
+    ['calendar','Zauzete noći',imaKal?`${pS.zauzeto} / ${pS.ukupno}`:'—',imaKal?(pS.zauzeto-pP.zauzeto?delta(`${pS.zauzeto-pP.zauzeto>0?'+':''}${pS.zauzeto-pP.zauzeto}`,pS.zauzeto>=pP.zauzeto)+' noći prema prethodnom':'isto kao prethodno razdoblje'):'Kalendar je prazan'],
+    ['inbox','Izravni upiti',UPITI_OK===false?'—':String(iS),UPITI_OK===false?'Upiti se još ne spremaju':(iS===iP?(iS?'isto kao prethodno razdoblje':'obrazac na javnoj stranici'):delta(`${iS-iP>0?'+':''}${iS-iP}`,iS>iP)+' prema prethodnom razdoblju')]]
+  $('an3-kpi').innerHTML=K.map(([ik,l,v,sub])=>`<div class="an3-c"><span class="dn-k__ik" aria-hidden="true"><svg class="ic"><use href="#i-${ik}"/></svg></span><div><span class="an3-l">${l} · ${rTxt}</span><b>${v}</b><small>${sub}</small></div></div>`).join('')
+  // graf: klizna popunjenost (7 dana do tog dana), prethodno razdoblje isprekidano
+  const kor=r<=30?1:r<=90?7:30,pr=r<=30?7:kor
+  const tocke=(start)=>{const o=[];for(let i=kor;i<=r;i+=kor){const kraj=A.plusDana(start,i);o.push({d:A.plusDana(kraj,-1),v:A.popunjenost(noci,A.plusDana(kraj,-pr),kraj).udio})}return o}
+  const T=tocke(od),TP=tocke(odP)
+  if(!imaKal){$('an3-graf').innerHTML=A.prazno('Još nema dovoljno podataka — kalendar objekta je prazan. Označite zauzete dane ili povežite Booking i Airbnb.');$('an3-def').textContent='';}
+  else{
+    const W=640,H=200,L=40,R=8,Tp=10,B=26,w=W-L-R,h=H-Tp-B,n=Math.max(1,T.length-1)
+    const x=i=>L+i*w/n,y=v=>Tp+h-v*h
+    const put=a=>a.map((p,i)=>`${i?'L':'M'}${x(i).toFixed(1)},${y(p.v).toFixed(1)}`).join('')
+    const os=[0,.25,.5,.75,1].map(v=>`<line x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}" class="an3-mr"/><text x="${L-8}" y="${y(v)+4}" text-anchor="end">${v*100}%</text>`).join('')
+    const lab=T.map((p,i)=>i%Math.ceil(T.length/6)===0||i===T.length-1?`<text x="${x(i)}" y="${H-6}" text-anchor="middle">${A.fmtKratko(p.d)}</text>`:'').join('')
+    const pov=`<path d="${put(T)}L${x(T.length-1)},${y(0)}L${x(0)},${y(0)}Z" class="an3-pov"/>`
+    $('an3-graf').innerHTML=`<svg class="an3-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="Popunjenost po danima, zadnjih ${rTxt}. Kretanje od ${A.posto(T[0].v)} do ${A.posto(T[T.length-1].v)}.">${os}${pov}<path d="${put(TP)}" class="an3-prev"/><path d="${put(T)}" class="an3-line"/>${T.map((p,i)=>`<circle cx="${x(i)}" cy="${y(p.v)}" r="9" class="an3-pt" tabindex="0"><title>${A.fmtKratko(p.d)}: ${A.posto(p.v)} (prethodno ${A.posto(TP[i]?.v||0)})</title></circle>`).join('')}${lab}</svg>`
+      +A.kaoTablica(['Do dana','Popunjenost','Prethodno razdoblje'],T.map((p,i)=>[A.fmtKratko(p.d),A.posto(p.v),A.posto(TP[i]?.v||0)]))
+    $('an3-def').textContent=`Svaka točka = udio zauzetih noći u ${pr} ${A.mn(pr,'dan','dana','dana')} do tog dana. Popunjenost = zauzete noći ÷ noći u razdoblju; ručne blokade se broje kao zauzete. Prethodno razdoblje = istih ${rTxt} prije.`
+  }
+  // izvori noćenja u razdoblju
+  const c=A.nociPoIzvoru(S,od,sut)
+  const red=[['odmoria','Izravno'],['ical_booking','Booking.com'],['ical_airbnb','Airbnb'],['manual','Ručno označeno']].map(([k,n])=>[n,c[k]||0])
+  const uk=red.reduce((a,[,v])=>a+v,0),mx=Math.max(1,...red.map(x=>x[1]))
+  $('an3-izv').innerHTML=uk?`<div class="an3-izv">${red.map(([n,v])=>`<div class="an3-ir"><span>${n}</span><span class="an3-it"><i style="width:${v?Math.max(3,Math.round(v/mx*100)):0}%"></i></span><b>${v}</b><small>${A.posto(v/uk)}</small></div>`).join('')}</div>`:A.prazno('Još nema dovoljno podataka — u ovom razdoblju nema zauzetih noći.')
+}
 async function renderAnalytics(){
   if(AN_RASPON>anDana()){AN_RASPON=30;document.querySelectorAll('[data-raspon]').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.raspon==='30')))}
   zakljucajAnalitiku()
@@ -4661,6 +4792,7 @@ async function renderAnalytics(){
   const S=anBoravci(d)
   const rTxt=r===365?'12 mjeseci':r+' dana'
 
+  an3(r,d,S,noci,od,sut,odP,rTxt)
   // brojke s usporedbom
   const c=(f,a,b)=>A.broji(d.views,f,a,b)
   const v=c(JE_JAVNA,od,sut),vP=c(JE_JAVNA,odP,od)
@@ -4832,6 +4964,9 @@ function renderChecklist(){
   document.getElementById('progressPct').textContent=pct+'%'
   document.getElementById('progressBar').style.width=pct+'%'
   document.getElementById('dn-koraci').hidden=pct===100
+  {const pr=document.getElementById('ob-prsten');if(pr){pr.style.setProperty('--p',pct);document.getElementById('ob-pct').textContent=pct+'%'
+    document.getElementById('ob-dov-tx').textContent=pct===100?'Sve je upisano — gost dobiva potpunu stranicu i vodič.':'Još nekoliko detalja i objekt je spreman.'
+    document.getElementById('ob-dov-l').innerHTML=items.map(i=>`<button type="button" class="ob-st${i.done?' je-gotovo':''}" onclick="nav('${i.panel}',document.querySelector('[data-panel=${i.panel}]'))"><span aria-hidden="true">${i.done?'✓':''}</span>${i.label}<span class="sr-only">${i.done?' — gotovo':' — nedostaje'}</span></button>`).join('')}}
   document.getElementById('checklist-items').innerHTML=items.map(i=>`<button type="button" class="dn-red dn-red--korak${i.done?' je-gotovo':''}" onclick="nav('${i.panel}',document.querySelector('[data-panel=${i.panel}]'))"><span class="dn-red__ik" aria-hidden="true">${i.done?'✓':'○'}</span><span class="dn-red__t"><b>${i.label}</b></span><span class="dn-red__s">${i.done?'Gotovo':'Dopuni'}</span><svg class="ic ic--sm dn-str" aria-hidden="true"><use href="#i-chevron-right"/></svg></button>`).join('')
 }
 
@@ -5371,8 +5506,18 @@ function renderPhotos(urls){
   const cover=PROP.cover_photo_url
   grid.innerHTML=urls.map((url,i)=>`<div class="photo-card" style="background-image:url('${esc(url)}')" onclick="setCover('${esc(url)}')"><button class="photo-del" onclick="event.stopPropagation();deletePhoto('${esc(url)}')">✕</button>${url===cover?'<span class="cover-badge">Naslovna</span>':''}<span class="pname">Foto ${i+1}</span></div>`).join('')
 }
+function obFoto(){
+  const el=document.getElementById('ob-foto');if(!el||!PROP)return
+  const urls=[...(PROP.photo_urls||[])],cov=PROP.cover_photo_url||urls[0]
+  const ost=urls.filter(u=>u!==cov).slice(0,4),lim=fotoLimit()
+  const naP="nav('photos',document.querySelector('.panelnav [data-panel=photos]'))"
+  el.innerHTML=cov?`<button type="button" class="ob-foto__gl" style="background-image:url('${esc(String(cov))}')" onclick="${naP}" aria-label="Naslovna fotografija — uredi fotografije"></button>
+    <div class="ob-foto__m">${ost.map(u=>`<span style="background-image:url('${esc(String(u))}')"></span>`).join('')}${urls.length<lim||lim<0?`<button type="button" class="ob-foto__d" onclick="${naP}"><svg class="ic ic--sm" aria-hidden="true"><use href="#i-plus"/></svg>Dodaj</button>`:''}</div>`
+    :`<button type="button" class="ob-foto__prazno" onclick="${naP}"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg><b>Dodajte fotografije</b><small>Prva je naslovna — vidi se na javnoj stranici i u vodiču.</small></button>`
+}
 function loadPhotos(){
   const urls=PROP?.photo_urls||[]
+  obFoto()
   document.getElementById('photo-count-lbl').textContent=photoCountLabel(urls.length)
   renderPhotos(urls)
 }
@@ -5423,7 +5568,7 @@ window.nav=(id,el)=>{
     sub:['Postavke','Pretplata','Plan, broj objekata i naplata. Račun, obavijesti i sigurnost su u Postavkama računa.']
   }
   const m=meta[glavni]||['','','']
-  document.getElementById('panelEyebrow').textContent=m[0]
+  document.getElementById('panelEyebrow').textContent=m[0]==='Objekti'&&PROP?`Objekti › ${PROP.name||'Objekt'}`:m[0]
   document.getElementById('panelTitle').textContent=m[1]
   document.getElementById('panelSubtitle').textContent=m[2]
   closeSide()
@@ -5441,7 +5586,7 @@ window.nav=(id,el)=>{
   if(id==='arrival')parkKarta()
   if(id==='prijevodi')ucitajPrijevode()
   if((SPOJ[id]||[]).includes('izgled'))window.initStil&&window.initStil()
-  if(id==='analytics')renderAnalytics()
+  if(id==='analytics')(UPITI_OK===null?ucitajUpite():Promise.resolve()).then(renderAnalytics)
   if(id==='sviobjekti')agOtvori()
   if(id==='inquiries')ucitajUpite().then(renderUpiti)
   if(id==='overview'&&PROP)renderOverviewOps()
