@@ -1487,7 +1487,7 @@ body { background: var(--cream); color: var(--ink); font: 400 15.5px/1.55 var(--
 .tb-push__btn { border-radius: var(--radius-sm); background: var(--copper); }
 
 /* radni prostor */
-.editor { max-width: 1240px; padding: 28px 32px 120px; }
+.editor { max-width: 1480px; padding: 28px 32px 120px; }
 .page-header { margin-bottom: 20px; gap: 24px; }
 .page-header .eyebrow { display: none; }
 .page-header h1 { margin-bottom: 4px; font: 700 26px/1.2 var(--font-ui); letter-spacing: -.02em; }
@@ -1657,6 +1657,224 @@ body:not([data-grupa="objekt"]) .property-banner { display: none; }
   .dn-o__a { grid-column: 3; grid-row: 1 / 3; }
   .dn-o__f { grid-row: 1 / 3; }
 }
+
+/* ── UPITI („Pearl”): popis · odabrani upit · ponuda ── */
+.iqx { display: grid; grid-template-columns: minmax(280px, 340px) minmax(0, 1fr) minmax(280px, 340px); gap: 16px; align-items: start; margin-bottom: 16px; }
+.iqx > .card { min-width: 0; margin: 0; padding: 0; }
+.iqx-lista { overflow: hidden; }
+.iqx-h { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 14px 16px 8px; }
+.iqx-h h2 { margin: 0; font: 700 17px/1.3 var(--font-ui); }
+.iqx-br { color: var(--muted); font-weight: 600; }
+.iqx-f { width: auto; min-height: 36px; padding: 0 30px 0 10px; font-size: 14px; }
+.iqx-trazi { display: flex; align-items: center; gap: 8px; margin: 0 16px 8px; padding: 0 10px; border: 1px solid var(--line); border-radius: var(--radius-sm); color: var(--muted); }
+.iqx-trazi input { width: 100%; min-height: 40px; border: 0; background: none; color: var(--ink); outline: none; font: 500 14.5px/1.2 var(--font-ui); }
+.iqx-trazi:focus-within { border-color: var(--copper); box-shadow: 0 0 0 3px rgba(40,104,99,.15); }
+.iqx-redovi { display: grid; max-height: min(70vh, 720px); overflow-y: auto; border-top: 1px solid var(--line); }
+.iqx-redovi .an-empty { padding: 16px; }
+.iqr { position: relative; display: grid; width: 100%; grid-template-columns: 40px minmax(0, 1fr) auto; gap: 10px; align-items: start; padding: 12px 16px; border: 0; border-bottom: 1px solid var(--line); background: none; color: var(--ink); cursor: pointer; font: inherit; text-align: left; }
+.iqr:hover { background: var(--cream); }
+.iqr.is-sel { background: var(--paper-2); }
+.iqr.is-sel::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--copper); }
+.iq-av { display: grid; width: 40px; height: 40px; place-items: center; border-radius: 50%; background: var(--paper-2); color: var(--copper); font: 700 14px/1 var(--font-ui); }
+.iqr.is-sel .iq-av { background: #fff; }
+.iq-av--vel { width: 48px; height: 48px; font-size: 16px; }
+.iqr__t { min-width: 0; display: grid; gap: 2px; }
+.iqr__t b { overflow: hidden; font: 600 15px/1.3 var(--font-ui); text-overflow: ellipsis; white-space: nowrap; }
+.iqr__t small { color: var(--muted); font-size: 13px; line-height: 1.35; }
+.iqr__msg { display: -webkit-box; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 1; }
+.iqr__d { display: grid; justify-items: end; gap: 4px; }
+.iqr__d small { color: var(--muted); font-size: 12.5px; white-space: nowrap; }
+.iq-st { display: inline-block; padding: 3px 8px; border-radius: 99px; font: 700 12px/1.2 var(--font-ui); vertical-align: middle; white-space: nowrap; }
+.iq-st--novi { background: #FBF0DC; color: #6E4A0C; }
+.iq-st--ok { background: var(--paper-2); color: #1F5550; }
+.iq-st--out { background: #EEF1EF; color: var(--muted); }
+.iqx > .iqx-det { padding: 20px; }
+.iqx-nista { margin: 0; }
+.iqx-nazad { display: none; }
+.iq-d { display: grid; gap: 16px; }
+.iq-d__h { display: grid; grid-template-columns: 48px minmax(0, 1fr) auto; gap: 12px; align-items: center; }
+.iq-d__h h2 { margin: 0; font: 700 20px/1.3 var(--font-ui); letter-spacing: -.01em; }
+.iq-d__h h2 .iq-st { margin-left: 6px; }
+.iq-d__h p { margin: 2px 0 0; color: var(--muted); font-size: 14px; overflow-wrap: anywhere; }
+.iq-d__h p a { color: var(--ink); }
+.iq-d__kad { color: var(--muted); font-size: 13px; white-space: nowrap; }
+.iq-cinj { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border: 1px solid var(--line); border-radius: var(--radius); }
+.iq-cinj > div { display: flex; gap: 10px; align-items: flex-start; min-width: 0; padding: 12px 14px; border-left: 1px solid var(--line); }
+.iq-cinj > div:first-child { border-left: 0; }
+.iq-cinj .ic { flex: none; margin-top: 2px; color: var(--copper); }
+.iq-cinj span { display: grid; min-width: 0; }
+.iq-cinj small { color: var(--muted); font-size: 12.5px; }
+.iq-cinj b { font: 700 15px/1.3 var(--font-ui); }
+.iq-oz { display: flex; flex-wrap: wrap; gap: 6px; }
+.iq-proc { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 16px; align-items: center; padding: 14px 16px; border-radius: var(--radius); background: var(--paper-2); }
+.iq-proc span { display: grid; }
+.iq-proc small { color: var(--muted); font-size: 12.5px; }
+.iq-proc b { font: 700 22px/1.2 var(--font-ui); }
+.iq-proc p { margin: 0; color: var(--muted); font-size: 13.5px; line-height: 1.45; }
+.iq-por { margin: 0; padding: 14px 16px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--cream); }
+.iq-por figcaption { color: var(--muted); font-size: 13px; }
+.iq-por figcaption b { color: var(--ink); }
+.iq-por p { margin: 6px 0 0; white-space: pre-line; line-height: 1.55; }
+.iq-akc { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding-top: 16px; border-top: 1px solid var(--line); }
+.iq-akc .iq__link { flex-basis: 100%; }
+.iq-odbij { margin-left: auto; color: var(--danger); border-color: transparent; }
+.iqx > .iqx-pon { padding: 18px; }
+.iqx-pon.je-prazno { background: var(--cream); border-style: dashed; }
+.iqx-pon .helper { margin: 0; }
+.iq-ponuda h2 { margin: 0; font: 700 17px/1.3 var(--font-ui); }
+.iq-info { display: flex; gap: 8px; align-items: flex-start; margin: 10px 0 0; padding: 10px 12px; border-radius: var(--radius-sm); background: var(--paper-2); color: var(--ink); font-size: 13.5px; line-height: 1.45; }
+.iq-info .ic { flex: none; margin-top: 2px; color: var(--copper); }
+.iq-pon-polja { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; }
+.iq-pon-polja .field { grid-column: auto; margin: 0; }
+.iq-ponuda .textarea { min-height: 200px; font-size: 14px; }
+.iq-ponuda .po-akc { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.iq-ponuda .po-akc .btn { flex: 1 1 auto; }
+@media (max-width: 1280px) { .iqx { grid-template-columns: minmax(260px, 320px) minmax(0, 1fr); } .iqx-pon { grid-column: 2; } }
+@media (max-width: 1080px) { .iq-cinj { grid-template-columns: repeat(2, minmax(0, 1fr)); } .iq-cinj > div:nth-child(3) { border-left: 0; } .iq-cinj > div:nth-child(n+3) { border-top: 1px solid var(--line); } }
+@media (max-width: 780px) {
+  .iqx { grid-template-columns: minmax(0, 1fr); }
+  .iqx-pon { grid-column: auto; }
+  .iqx:not(.ima-odabir) .iqx-det, .iqx:not(.ima-odabir) .iqx-pon { display: none; }
+  .iqx.ima-odabir .iqx-lista { display: none; }
+  .iqx-nazad { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; margin: -8px 0 8px -6px; padding: 0 8px; border: 0; border-radius: var(--radius-sm); background: none; color: var(--copper); cursor: pointer; font: 600 15px/1 var(--font-ui); }
+  .iqx-redovi { max-height: none; }
+  .iqx > .iqx-det { padding: 16px; }
+  .iq-d__h { grid-template-columns: 48px minmax(0, 1fr); }
+  .iq-d__kad { grid-column: 2; }
+  .iq-proc { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .iq-odbij { margin-left: 0; }
+}
+
+/* ── REZERVACIJE („Pearl”): tablica + bočni panel ── */
+.bkx { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 16px; align-items: start; }
+.bkx:not(.ima-odabir) { grid-template-columns: minmax(0, 1fr); }
+.bkx > .card { min-width: 0; margin: 0; padding: 0; overflow: hidden; }
+.bk-list { position: relative; overflow-x: auto; }
+.bk-tbl { width: 100%; border-collapse: collapse; font-size: 14px; }
+.bk-tbl th { padding: 12px 14px; border-bottom: 1px solid var(--line); color: var(--muted); font: 600 12.5px/1.2 var(--font-ui); text-align: left; white-space: nowrap; }
+.bk-tbl td { padding: 12px 14px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+.bk-tbl tbody tr { cursor: pointer; }
+.bk-tbl tbody tr:hover { background: var(--cream); }
+.bk-tbl tbody tr.is-sel { background: var(--paper-2); }
+.bk-tbl tbody tr:last-child td { border-bottom: 0; }
+.bk-tbl td b { display: block; font: 600 14.5px/1.3 var(--font-ui); white-space: nowrap; }
+.bk-tbl td small { display: block; color: var(--muted); font-size: 12.5px; }
+.bk-g { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.bk-g .iq-av { width: 36px; height: 36px; flex: none; font-size: 13px; }
+.bk-v { font: 600 13px/1.3 var(--font-ui); color: var(--muted); white-space: nowrap; }
+.bk-v.ok { color: #1F5550; }
+.bk-v.ok::before { content: "● "; font-size: 9px; vertical-align: 2px; }
+.bk-akc { text-align: right; white-space: nowrap; }
+.bk-akc .btn { margin-left: 4px; }
+.bkx > .bkx-p { padding: 18px; }
+.bk-p__h { display: grid; grid-template-columns: 48px minmax(0, 1fr) auto; gap: 12px; align-items: center; }
+.bk-p__h h2 { margin: 0 0 2px; font: 700 18px/1.3 var(--font-ui); }
+.bk-x { width: 40px; height: 40px; border: 0; border-radius: var(--radius-sm); background: none; color: var(--muted); cursor: pointer; font-size: 24px; line-height: 1; }
+.bk-x:hover { background: var(--cream); }
+.bk-p__obj { display: flex; gap: 12px; align-items: center; margin: 16px 0 4px; padding: 10px; border: 1px solid var(--line); border-radius: var(--radius); }
+.bk-p__f { width: 72px; flex: none; aspect-ratio: 3 / 2; border-radius: 8px; background: var(--paper-2) center / cover; }
+.bk-p__obj b { display: block; font: 700 15px/1.3 var(--font-ui); }
+.bk-p__obj small { color: var(--muted); font-size: 13px; }
+.bk-p__dl { display: grid; margin: 8px 0; }
+.bk-p__dl > div { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 8px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.bk-p__dl dt { color: var(--muted); font-size: 13.5px; }
+.bk-p__dl dd { margin: 0; font: 600 14.5px/1.4 var(--font-ui); overflow-wrap: anywhere; }
+.bk-p__dl dd small { display: block; color: var(--muted); font: 500 12.5px/1.4 var(--font-ui); }
+.bk-p__link { display: grid; gap: 8px; margin: 12px 0; }
+.bk-p__lh { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 14.5px; }
+.bk-p__link .link-url span { overflow-wrap: anywhere; white-space: normal; font-size: 13.5px; }
+.bk-p__akc { display: flex; flex-wrap: wrap; gap: 8px; }
+.bk-p__link .helper { margin: 0; }
+.bk-p__gosti { width: 100%; }
+.bk-p__opasno { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); }
+.bk-p__opasno small { color: var(--muted); font-size: 12.5px; }
+.bkx.ima-odabir .bk-akc .btn.secondary { display: none; }
+@media (max-width: 1500px) { .bkx.ima-odabir .bk-tbl th:nth-child(2), .bkx.ima-odabir .bk-tbl td:nth-child(2) { display: none; } }
+@media (max-width: 1280px) { .bkx { grid-template-columns: minmax(0, 1fr) 320px; } .bk-tbl th:nth-child(2), .bk-tbl td:nth-child(2) { display: none; } }
+@media (max-width: 1080px) { .bkx.ima-odabir { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 780px) {
+  .bkx.ima-odabir .bkx-t { display: none; }
+  .bkx.ima-odabir .bk-x { display: none; }
+  .bk-tbl thead { display: none; }
+  .bk-tbl, .bk-tbl tbody { display: block; }
+  .bk-tbl tbody tr { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 10px; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+  .bk-tbl td { display: block; padding: 0; border: 0; }
+  .bk-tbl td:nth-child(1) { grid-column: 1; }
+  .bk-tbl td:nth-child(2) { display: none; }
+  .bk-tbl td:nth-child(3) { grid-column: 1; padding-left: 46px; }
+  .bk-tbl td:nth-child(4) { grid-column: 2; grid-row: 1; align-self: center; }
+  .bk-tbl td:nth-child(5) { grid-column: 1; padding-left: 46px; }
+  .bk-tbl td:nth-child(6) { grid-column: 2; grid-row: 2 / 4; align-self: end; }
+  .bk-tbl td:nth-child(6) .btn.ghost { display: none; }
+  .bkx > .bkx-p { padding: 16px; }
+}
+
+/* ── KALENDAR („Pearl”): timeline svih objekata ── */
+.tl-k { padding: 0; overflow: hidden; }
+.tl-h { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; padding: 14px 16px; border-bottom: 1px solid var(--line); }
+.tl-nav { display: flex; align-items: center; gap: 8px; margin-right: auto; }
+.tl-nav strong { min-width: 150px; font: 700 17px/1.2 var(--font-ui); text-transform: capitalize; }
+.tl-b { display: grid; width: 40px; height: 40px; place-items: center; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--paper); color: var(--ink); cursor: pointer; }
+.tl-b:hover { background: var(--cream); }
+.tl-seg { display: inline-flex; padding: 3px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--cream); }
+.tl-seg button { min-height: 36px; padding: 0 14px; border: 0; border-radius: 6px; background: none; color: var(--muted); cursor: pointer; font: 600 14px/1 var(--font-ui); }
+.tl-seg button[aria-pressed="true"] { background: var(--copper); color: #fff; }
+.tl-uvoz { display: grid; justify-items: end; text-align: right; }
+.tl-uvoz b { display: flex; align-items: center; gap: 6px; font: 600 13.5px/1.3 var(--font-ui); }
+.tl-uvoz small { color: var(--muted); font-size: 12.5px; }
+.tl-tocka { width: 8px; height: 8px; border-radius: 50%; background: #C98A12; }
+.tl-tocka.ok { background: #2E8B57; }
+.tl-w { position: relative; overflow-x: auto; }
+.tl { --tl-n: 31; min-width: calc(200px + var(--tl-n) * 30px); }
+.tl-r { display: grid; grid-template-columns: 200px repeat(var(--tl-n), minmax(30px, 1fr)); align-items: center; min-height: 60px; border-bottom: 1px solid var(--line); }
+.tl-r:last-child { border-bottom: 0; }
+.tl-r > * { grid-row: 1; }
+.tl-r--g { min-height: 48px; background: var(--paper); }
+.tl-ime { position: sticky; left: 0; z-index: 3; display: flex; align-items: center; gap: 10px; height: 100%; min-width: 0; padding: 8px 12px; border: 0; border-right: 1px solid var(--line); background: var(--paper); color: var(--ink); text-align: left; font: inherit; grid-column: 1; }
+button.tl-ime { cursor: pointer; }
+button.tl-ime:hover { background: var(--cream); }
+.tl-ime.is-on { box-shadow: inset 3px 0 0 var(--copper); }
+.tl-r--g .tl-ime { color: var(--muted); font: 600 12.5px/1 var(--font-ui); }
+.tl-ime b { display: block; overflow: hidden; font: 600 14px/1.3 var(--font-ui); text-overflow: ellipsis; white-space: nowrap; }
+.tl-ime small { display: block; color: var(--muted); font-size: 12px; }
+.tl-ime > span:last-child { min-width: 0; }
+.tl-f { width: 44px; flex: none; aspect-ratio: 3 / 2; border-radius: 6px; background: var(--paper-2) center / cover; }
+.tl-d { display: grid; justify-items: center; gap: 2px; padding: 6px 0; color: var(--ink); }
+.tl-d b { font: 600 13px/1 var(--font-ui); }
+.tl-d small { color: var(--muted); font-size: 10.5px; }
+.tl-d.vk, .tl-c.vk { background: #F1F4F2; }
+.tl-d.dn b { display: grid; width: 24px; height: 24px; place-items: center; border-radius: 50%; background: var(--copper); color: #fff; }
+.tl-c { align-self: stretch; border-left: 1px solid #EEF1EF; }
+.tl-c.dn { background: rgba(40,104,99,.06); }
+.tl-bar { position: relative; z-index: 1; display: flex; align-items: center; gap: 6px; min-width: 0; height: 32px; margin: 0 2px; padding: 0 8px; overflow: hidden; border-radius: 6px; font: 600 12.5px/1 var(--font-ui); white-space: nowrap; }
+.tl-bar > span { overflow: hidden; text-overflow: ellipsis; }
+.tl-bar i { display: grid; flex: none; width: 18px; height: 18px; place-items: center; border-radius: 4px; background: #fff; color: var(--ink); font: 700 11px/1 var(--font-ui); font-style: normal; }
+.tl-bar.iz { background: var(--copper); color: #fff; }
+.tl-bar.pl { background: #E6EAE8; color: var(--ink); }
+.tl-bar.pl i { background: #6B7C79; color: #fff; }
+.tl-bar.ru { background: repeating-linear-gradient(135deg, #E9ECEA 0 4px, #F7F8F7 4px 8px); color: var(--muted); box-shadow: inset 0 0 0 1px var(--line); }
+.tl-bar.pz { height: 32px; border: 1.5px dashed #8FA6A0; background: transparent; }
+.tl-bar.rez-l { border-top-left-radius: 0; border-bottom-left-radius: 0; margin-left: 0; }
+.tl-bar.rez-d { border-top-right-radius: 0; border-bottom-right-radius: 0; margin-right: 0; }
+.tl-leg { display: flex; flex-wrap: wrap; gap: 8px 18px; padding: 12px 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; }
+.tl-leg span { display: inline-flex; align-items: center; gap: 6px; }
+.tl-l { display: inline-grid; width: 18px; height: 14px; place-items: center; border-radius: 3px; font: 700 9px/1 var(--font-ui); font-style: normal; }
+.tl-l.iz { background: var(--copper); }
+.tl-l.pl { background: #6B7C79; color: #fff; }
+.tl-l.ru { background: repeating-linear-gradient(135deg, #D9DEDB 0 3px, #F7F8F7 3px 6px); }
+.tl-l.pz { box-shadow: inset 0 0 0 1.5px #9AB0AA; }
+@media (max-width: 780px) { .tl-k { display: none; } }   /* mobitel: početno jednostavan mjesec (spec. §10) */
+
+/* mjesečni kalendar u boji „Pearl”: izravno petrol, platforme neutralno, praznine nenametljivo */
+.day.busy.rez { background: var(--copper); }
+.day.ical, .day.ical.airbnb { background: #E6EAE8; color: var(--ink); }
+.day.ical .plt { background: #6B7C79; color: #fff; }
+.day.praz { background: #fff; border-color: #8FA6A0; color: var(--ink); }
+.day.danas { border-color: var(--copper); box-shadow: inset 0 0 0 1px var(--copper); }
+.day.busy.danas, .day.ical.danas { box-shadow: inset 0 0 0 2px #fff, 0 0 0 2px var(--copper); }
+.cal-dva .day { border-radius: 8px; }
+.calendar-head strong, #cal-title { font: 700 20px/1.2 var(--font-ui); letter-spacing: -.01em; }
+.lg-rez { background: var(--copper) !important; }
 </style>
 <script type="module">import{pokreni,prekidac}from'/domacin-jezik.js';pokreni();prekidac(document.getElementById('jezik-sw'))</script>
 </head>
@@ -1767,6 +1985,9 @@ body:not([data-grupa="objekt"]) .property-banner { display: none; }
   <symbol id="i-arrow-up-right" viewBox="0 0 24 24"><path d="M7 7h10v10" /> <path d="M7 17 17 7" /></symbol>
   <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
   <symbol id="i-bell" viewBox="0 0 24 24"><path d="M10.27 21a2 2 0 0 0 3.46 0"/><path d="M3.26 15.33A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.67C19.41 13.96 18 12.5 18 8A6 6 0 0 0 6 8c0 4.5-1.41 5.96-2.74 7.33"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></symbol>
+  <symbol id="i-arrow-left" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></symbol>
   <symbol id="i-inbox" viewBox="0 0 24 24"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></symbol>
   <symbol id="i-clipboard-list" viewBox="0 0 24 24"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></symbol>
   <symbol id="i-circle-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></symbol>
@@ -2391,8 +2612,19 @@ body:not([data-grupa="objekt"]) .property-banner { display: none; }
 
         <!-- 11 AVAILABILITY -->
         <section class="editor-panel" id="section-availability" data-panel-content="availability">
+          <!-- redizajn „Pearl”: pregled svih objekata po danima (timeline); ispod ostaje mjesečni kalendar objekta -->
+          <div class="card tl-k" id="tl-k">
+            <div class="tl-h">
+              <div class="tl-nav"><button type="button" class="tl-b" onclick="tlNav(-1)" aria-label="Prethodno razdoblje"><svg class="ic ic--sm" aria-hidden="true" style="transform:rotate(180deg)"><use href="#i-chevron-right"/></svg></button><button type="button" class="tl-b" onclick="tlNav(1)" aria-label="Sljedeće razdoblje"><svg class="ic ic--sm" aria-hidden="true"><use href="#i-chevron-right"/></svg></button>
+                <strong id="tl-naslov"></strong><button type="button" class="btn secondary small" onclick="tlDanas()">Danas</button></div>
+              <div class="tl-seg" role="group" aria-label="Raspon"><button type="button" data-tl="mj" aria-pressed="true">Mjesec</button><button type="button" data-tl="14" aria-pressed="false">2 tjedna</button><button type="button" data-tl="7" aria-pressed="false">Tjedan</button></div>
+              <div class="tl-uvoz" id="tl-uvoz"></div>
+            </div>
+            <div class="tl-w" tabindex="0" aria-label="Pregled zauzetosti svih objekata"><div class="tl" id="tl"></div></div>
+            <div class="tl-leg"><span><i class="tl-l iz"></i>Izravno</span><span><i class="tl-l pl">B</i>Booking</span><span><i class="tl-l pl">A</i>Airbnb</span><span><i class="tl-l ru"></i>Blokirano</span><span><i class="tl-l pz"></i>Kratka praznina</span></div>
+          </div>
           <div class="card">
-            <div class="card-head"><div class="card-title-wrap"><span class="card-number">11</span><div><h2>Dostupnost</h2><p>Klikni prvi i zadnji datum da označiš cijeli period zauzetim.</p></div></div></div>
+            <div class="card-head"><div class="card-title-wrap"><span class="card-number">11</span><div><h2>Mjesec · <span id="tl-obj" translate="no"></span></h2><p>Kliknite prvi i zadnji datum da označite cijeli period zauzetim.</p></div></div></div>
             <div class="calendar">
               <div class="calendar-head">
                 <div class="cal-naslov"><strong id="cal-title"></strong><span class="cal-stat" id="cal-stat" hidden></span></div>
@@ -2413,15 +2645,35 @@ body:not([data-grupa="objekt"]) .property-banner { display: none; }
         <!-- RESERVATIONS -->
         <!-- UPITI GOSTIJU (tablica inquiries, sql/add-inquiries.sql) -->
         <section class="editor-panel an" id="section-inquiries" data-panel-content="inquiries">
-          <div class="card">
-            <div class="card-head"><div class="card-title-wrap"><span class="card-number">✉</span><div><h2>Upiti gostiju</h2><p>Gosti ih šalju s vaše javne stranice. Prihvatite upit — nastane rezervacija, dani se označe kao zauzeti i dobijete link koji odmah pošaljete gostu.</p></div></div>
-              <div class="an-seg" role="group" aria-label="Koji upiti">
-                <button type="button" data-iqf="novi" aria-pressed="true">Novi</button>
-                <button type="button" data-iqf="prihvacen" aria-pressed="false">Prihvaćeni</button>
-                <button type="button" data-iqf="odbijen" aria-pressed="false">Odbijeni</button>
-                <button type="button" data-iqf="svi" aria-pressed="false">Svi</button>
-              </div></div>
-            <div class="an-list" id="iq-list" aria-live="polite"></div>
+          <!-- redizajn „Pearl”: popis · odabrani upit · ponuda (na mobitelu popis, pa detalj) -->
+          <div class="iqx" id="iqx">
+            <div class="card iqx-lista">
+              <div class="iqx-h"><h2>Upiti <span class="iqx-br" id="iq-broj"></span></h2>
+                <select class="select iqx-f" id="iq-filtar" aria-label="Koji upiti" data-bez-spremanja>
+                  <option value="novi">Novi</option><option value="prihvacen">Prihvaćeni</option><option value="odbijen">Odbijeni</option><option value="svi">Svi</option></select></div>
+              <label class="iqx-trazi"><svg class="ic ic--sm" aria-hidden="true"><use href="#i-search"/></svg><input id="iq-trazi" type="search" placeholder="Traži po imenu ili kontaktu" aria-label="Traži upit" autocomplete="off" data-bez-spremanja></label>
+              <div class="iqx-redovi" id="iq-list" aria-live="polite"></div>
+            </div>
+            <div class="card iqx-det" id="iq-det"></div>
+            <aside class="card iqx-pon" id="iq-pon" aria-label="Ponuda">
+              <p class="helper" id="iq-pon-prazno">Odaberite novi upit s datumima — ovdje ćete složiti ponudu s kaparom.</p>
+<div class="iq-ponuda" id="ponuda-dlg" aria-labelledby="ponuda-t" hidden>
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px"><div><h2 id="ponuda-t">Izradi ponudu</h2><p class="helper" id="ponuda-sub"></p></div></div>
+  <p class="iq-info"><svg class="ic ic--sm" aria-hidden="true"><use href="#i-info"/></svg><span>Upit nije potvrđena rezervacija. Ponuda je poruka koju šaljete sami — Odmoria ne naplaćuje ništa.</span></p>
+  <div class="form-grid iq-pon-polja" style="margin-top:12px">
+    <div class="field"><label for="po-iznos">Iznos boravka (€)</label><input class="input" id="po-iznos" type="number" min="0" step="1" data-bez-spremanja oninput="ponudaTekst()"></div>
+    <div class="field"><label for="po-kapara">Kapara (%)</label><input class="input" id="po-kapara" type="number" min="0" max="100" step="5" data-bez-spremanja oninput="ponudaTekst()"></div>
+    <div class="field"><label for="po-rok">Rok za kaparu (dana)</label><input class="input" id="po-rok" type="number" min="1" max="14" value="3" data-bez-spremanja oninput="ponudaTekst()"></div>
+    <div class="field"><label for="po-jezik">Jezik poruke</label><select class="input" id="po-jezik" data-bez-spremanja onchange="ponudaTekst()"><option value="hr">Hrvatski</option><option value="en">Engleski</option><option value="de">Njemački</option><option value="it">Talijanski</option></select></div>
+  </div>
+  <p class="helper" id="po-pop" hidden></p>
+  <label for="po-tx" class="sr-only">Poruka gostu</label>
+  <textarea class="textarea" id="po-tx" rows="11" data-bez-spremanja style="margin-top:10px"></textarea>
+  <p class="helper" id="po-upoz" hidden></p>
+  <div class="po-akc" id="po-akc"></div>
+  <p class="helper" style="margin-top:10px">Kad kapara stigne na vaš račun, kliknite „Prihvati i napravi link” — gost dobiva link za vodič.</p>
+</div>
+            </aside>
           </div>
           <div class="card" id="povratni-card" data-mog="izravno">
             <div class="card-head"><div class="card-title-wrap"><span class="card-number"><svg class="ic ic--sm" aria-hidden="true"><use href="#i-users"/></svg></span><div><h2>Povratni gosti</h2><p>Gosti koji su u upitu pristali da im šaljete ponude. Pošaljite im kod za popust — u sljedećem upitu ga upišu, a vi ga vidite uz upit.</p></div></div></div>
@@ -2436,7 +2688,7 @@ body:not([data-grupa="objekt"]) .property-banner { display: none; }
 
         <section class="editor-panel" id="section-reservations" data-panel-content="reservations">
           <div class="card">
-            <div class="card-head"><div class="card-title-wrap"><span class="card-number">R</span><div><h2>Rezervacije</h2><p>Generiraj privatni gostinski link za potvrđenog gosta.</p></div></div><button class="btn small" type="button" onclick="showAddBooking()">+ Nova rezervacija</button></div>
+            <div class="card-head"><div class="card-title-wrap"><span class="card-number">R</span><div><h2>Nova rezervacija</h2><p>Za potvrđenog gosta nastaje privatni link vodiča.</p></div></div><button class="btn small" type="button" onclick="showAddBooking()">+ Nova rezervacija</button></div>
             <div class="auto-mail" id="auto-mail-red" hidden data-mog="email"><label><input type="checkbox" id="auto-mail" onchange="spremiAutoMail(this.checked)"> <span><b>Automatski e-mail gostima</b><small>Link na vodič 3 dana prije dolaska i zahvala s molbom za ocjenu na dan odlaska — samo gostima kojima ste upisali e-mail.</small></span></label></div>
             <div class="card" id="add-booking-card" style="display:none;background:var(--cream)">
               <div id="bk-alert"></div>
@@ -2458,7 +2710,11 @@ body:not([data-grupa="objekt"]) .property-banner { display: none; }
               <div class="helper" id="bk-result-desc" style="margin-bottom:14px"></div>
               <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn small" onclick="copyResultLink()">Kopiraj link</button><button class="btn secondary small" onclick="shareWA()">WhatsAppom</button><button class="btn secondary small" onclick="shareMail()">E-mailom</button><button class="btn ghost small" onclick="hideResult()">Zatvori</button></div>
             </div>
-            <div class="bk-list" id="bookings-list"></div>
+          </div>
+          <!-- redizajn „Pearl”: tablica rezervacija + bočni panel s detaljem -->
+          <div class="bkx" id="bkx">
+            <div class="card bkx-t"><div class="bk-list" id="bookings-list"></div></div>
+            <aside class="card bkx-p" id="bk-panel" aria-label="Detalj rezervacije" hidden></aside>
           </div>
         </section>
 
@@ -2715,21 +2971,6 @@ body:not([data-grupa="objekt"]) .property-banner { display: none; }
 <!-- Pitanje pri odlasku s nespremljenim promjenama (panel ili objekt) -->
 <!-- Podaci gostiju za eVisitor + boravišna pristojba (sql/add-guest-registration.sql) -->
 <!-- v5: ponuda s kaparom — poruka koju domaćin sam pošalje; Odmoria ne obrađuje plaćanje -->
-<dialog class="dirty-dlg ponuda-dlg" id="ponuda-dlg" aria-labelledby="ponuda-t">
-  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px"><div><h2 id="ponuda-t">Ponuda s kaparom</h2><p class="helper" id="ponuda-sub"></p></div><button type="button" class="btn ghost small" onclick="document.getElementById('ponuda-dlg').close()" aria-label="Zatvori">✕</button></div>
-  <div class="form-grid" style="margin-top:12px">
-    <div class="field"><label for="po-iznos">Iznos boravka (€)</label><input class="input" id="po-iznos" type="number" min="0" step="1" data-bez-spremanja oninput="ponudaTekst()"></div>
-    <div class="field"><label for="po-kapara">Kapara (%)</label><input class="input" id="po-kapara" type="number" min="0" max="100" step="5" data-bez-spremanja oninput="ponudaTekst()"></div>
-    <div class="field"><label for="po-rok">Rok za kaparu (dana)</label><input class="input" id="po-rok" type="number" min="1" max="14" value="3" data-bez-spremanja oninput="ponudaTekst()"></div>
-    <div class="field"><label for="po-jezik">Jezik poruke</label><select class="input" id="po-jezik" data-bez-spremanja onchange="ponudaTekst()"><option value="hr">Hrvatski</option><option value="en">Engleski</option><option value="de">Njemački</option><option value="it">Talijanski</option></select></div>
-  </div>
-  <p class="helper" id="po-pop" hidden></p>
-  <label for="po-tx" class="sr-only">Poruka gostu</label>
-  <textarea class="textarea" id="po-tx" rows="11" data-bez-spremanja style="margin-top:10px"></textarea>
-  <p class="helper" id="po-upoz" hidden></p>
-  <div class="po-akc" id="po-akc"></div>
-  <p class="helper" style="margin-top:10px">Kad kapara stigne na vaš račun, kliknite „Prihvati i napravi link” — gost dobiva link za vodič.</p>
-</dialog>
 
 <dialog class="dirty-dlg gosti-dlg" id="gosti-dlg" aria-labelledby="gosti-t">
   <div class="gosti-dlg__in">
@@ -3108,6 +3349,7 @@ async function selectProp(p){
   loadPhotos()
   await loadSection()
   await loadAvail()
+  if(document.getElementById('section-availability')?.classList.contains('active'))tlUcitaj()
   await loadListSections()
   await loadAmenities()
   await ucitajUpite()
@@ -3937,7 +4179,10 @@ function renderPovratni(){
 }
 let PONUDA=null
 window.otvoriPonudu=id=>{
-  const u=UPITI.find(x=>x.id===id);if(!u)return
+  IQ_SEL=id;renderUpiti()
+  requestAnimationFrame(()=>document.getElementById('iq-pon')?.scrollIntoView({block:'start',behavior:'smooth'}))
+}
+function iqPopuni(u){
   PONUDA=u
   const n=A.razlikaDana(u.checkin_date,u.checkout_date)
   const iz=u.iznos!=null?Number(u.iznos):cijenaBoravka(PROP,u.checkin_date,u.checkout_date)
@@ -3949,7 +4194,6 @@ window.otvoriPonudu=id=>{
   pop.hidden=!kodOk;pop.textContent=kodOk?`Gost je upisao vaš kod ${pv.kod} — popust ${pv.posto} % je uračunat u ponudu.`:''
   const jz=jezikIzMaila(u.guest_email);document.getElementById('po-jezik').value=['hr','en','de','it'].includes(jz)?jz:'en'
   ponudaTekst()
-  document.getElementById('ponuda-dlg').showModal()
 }
 /* Ponuda na jeziku gosta (hr, en, de, it); pl/cs → engleski, kao poruka s javne stranice */
 const PO_TX={
@@ -3991,6 +4235,58 @@ document.getElementById('po-tx')?.addEventListener('input',e=>{const t=e.target.
 
 
 /* ===== v5 AGENCIJA: svi objekti (Danas, kalendar, predložak, izvještaj) ===== */
+/* ── Timeline svih objekata (redizajn „Pearl”): retci = objekti, stupci = dani ── */
+let TL_OD=null,TL_N='mj',TL_PODACI=null
+const tlPocetak=()=>{if(TL_OD)return TL_OD;const t=A.danas();return TL_N==='mj'?t.slice(0,8)+'01':t}
+const tlDana=od=>{if(TL_N!=='mj')return Number(TL_N);const x=A.uDatum(od);return new Date(x.getFullYear(),x.getMonth()+1,0).getDate()}
+window.tlNav=sm=>{const od=tlPocetak();if(TL_N==='mj'){const x=A.uDatum(od);x.setMonth(x.getMonth()+sm,1);TL_OD=A.plusDana(x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-01',0)}else TL_OD=A.plusDana(od,sm*Number(TL_N));tlUcitaj()}
+window.tlDanas=()=>{TL_OD=null;tlUcitaj()}
+document.querySelectorAll('[data-tl]').forEach(b=>b.addEventListener('click',()=>{TL_N=b.dataset.tl;TL_OD=null;document.querySelectorAll('[data-tl]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));tlUcitaj()}))
+async function tlUcitaj(){
+  const el=document.getElementById('tl');if(!el||!PROPS.length)return
+  document.getElementById('tl-obj').textContent=PROP?.name||''
+  const od=tlPocetak(),n=tlDana(od),do_=A.plusDana(od,n),ids=PROPS.map(p=>p.id)
+  let av=[],bk=[]
+  try{const r=await sb.from('availability').select('*').in('property_id',ids).gte('date',A.plusDana(od,-14)).lt('date',A.plusDana(do_,14));av=r.data||[]}catch{}
+  try{const r=await sb.from('bookings').select('id,property_id,guest_name').in('property_id',ids).gte('checkout_date',od).lte('checkin_date',do_);bk=r.data||[]}catch{}
+  TL_PODACI={od,n,av,ime:Object.fromEntries(bk.map(b=>[b.id,b.guest_name]))}
+  tlNacrtaj()
+}
+function tlNacrtaj(){
+  const {od,n,av,ime}=TL_PODACI,el=document.getElementById('tl'),t=A.danas()
+  const dani=Array.from({length:n},(_,i)=>A.plusDana(od,i)),do_=A.plusDana(od,n)
+  const x0=A.uDatum(od),x1=A.uDatum(A.plusDana(do_,-1))
+  document.getElementById('tl-naslov').textContent=TL_N==='mj'?A.mjesecGodina?.(x0)||x0.toLocaleDateString('hr-HR',{month:'long',year:'numeric'}):`${A.fmtKratko(od)} – ${A.fmtKratko(A.plusDana(do_,-1))}`
+  const DN=['ned','pon','uto','sri','čet','pet','sub']
+  el.style.setProperty('--tl-n',n)
+  const glava=`<div class="tl-r tl-r--g"><span class="tl-ime">Objekt</span>${dani.map((d,i)=>{const x=A.uDatum(d),vk=[0,6].includes(x.getDay());return `<span class="tl-d${vk?' vk':''}${d===t?' dn':''}" style="grid-column:${i+2}"><b>${x.getDate()}</b><small>${DN[x.getDay()]}</small></span>`}).join('')}</div>`
+  const S=agNizovi(av)
+  const redovi=PROPS.map(p=>{
+    const ph=p.cover_photo_url||(p.photo_urls||[])[0]
+    const moji=S.filter(s=>s.pid===String(p.id)||s.pid===p.id)
+    const zauz=new Set(av.filter(r=>r.property_id===p.id).map(r=>r.date))
+    const praz=A.praznine(zauz,od,do_,3)
+    const crte=dani.map((d,i)=>{const x=A.uDatum(d);return `<span class="tl-c${[0,6].includes(x.getDay())?' vk':''}${d===t?' dn':''}" style="grid-column:${i+2}"></span>`}).join('')
+    const traka=(a,b,cls,tx,oz,lbl)=>{const s0=a<od?od:a,e0=b>do_?do_:b;if(e0<=s0)return ''
+      const c1=A.razlikaDana(od,s0)+2,c2=A.razlikaDana(od,e0)+2
+      return `<span class="tl-bar ${cls}${a<od?' rez-l':''}${b>do_?' rez-d':''}" style="grid-column:${c1} / ${c2}" title="${A.esc(lbl)}">${oz?`<i>${oz}</i>`:''}<span>${A.esc(tx)}</span></span>`}
+    const bars=moji.map(s=>{
+      const pl=s.source==='ical_booking'?'B':s.source==='ical_airbnb'?'A':''
+      const imeG=s.booking_id&&ime[s.booking_id]
+      const cls=pl?'pl':s.booking_id||s.source==='odmoria'?'iz':'ru'
+      const tx=imeG||(pl?(pl==='B'?'Booking.com':'Airbnb'):cls==='ru'?'Blokirano':'Rezervacija')
+      return traka(s.start,s.end,cls,tx,pl,`${tx} · ${A.fmtKratko(s.start)} – ${A.fmtKratko(s.end)} (${A.noci(A.razlikaDana(s.start,s.end))})`)}).join('')
+      +praz.map(g=>traka(g.start,g.end,'pz','',null,`Kratka praznina · ${A.noci(g.nights)}`)).join('')
+    return `<div class="tl-r"><button type="button" class="tl-ime${p.id===PROP?.id?' is-on':''}" data-tl-p="${A.esc(String(p.id))}">${ph?`<span class="tl-f" style="background-image:url('${A.esc(String(ph))}')"></span>`:'<span class="tl-f"></span>'}<span><b translate="no">${A.esc(p.name||'Objekt')}</b><small>${p.max_guests?A.esc(String(p.max_guests))+' '+A.mn(p.max_guests,'osoba','osobe','osoba'):A.esc(p.type||'')}</small></span></button>${crte}${bars}</div>`}).join('')
+  el.innerHTML=glava+redovi
+  // stvarni zadnji uvoz s platformi
+  const sp=PROPS.filter(p=>(p.ical_booking_url||'').trim()||(p.ical_airbnb_url||'').trim())
+  const zadnji=sp.map(p=>p.ical_last_sync&&new Date(p.ical_last_sync)).filter(Boolean).sort((a,b)=>b-a)[0]
+  document.getElementById('tl-uvoz').innerHTML=!sp.length?'<small>Booking i Airbnb nisu povezani</small>'
+    :`<b><i class="tl-tocka${zadnji&&Date.now()-zadnji<864e5?' ok':''}"></i>${zadnji?'Zadnji uvoz '+prijeKoliko(zadnji):'Kalendar još nije povučen'}</b><small>iCal nije sinkronizacija u stvarnom vremenu.</small>`
+}
+document.getElementById('tl')?.addEventListener('click',e=>{const b=e.target.closest('[data-tl-p]');if(!b||b.dataset.tlP===String(PROP?.id))return;const sel=document.getElementById('prop-sel');sel.value=b.dataset.tlP;window.onPropChange()})
+
 function agNizovi(rows){
   // uzastopne noći istog objekta, izvora i rezervacije = jedan boravak
   const po={};rows.forEach(r=>{(po[r.property_id]=po[r.property_id]||[]).push(r)})
@@ -4184,63 +4480,93 @@ button{margin-top:20px;padding:10px 18px;border:0;border-radius:99px;background:
   w.document.open();w.document.write(html);w.document.close()
 }
 
+let IQ_SEL=null,IQ_TRAZI=''
+const iqInic=x=>(x||'?').trim().split(/\s+/).slice(0,2).map(w=>w[0]||'').join('').toUpperCase()
+const IQ_ST={novi:['Novi','novi'],prihvacen:['Prihvaćen','ok'],odbijen:['Odbijen','out']}
+const iqKad=u=>{const m=Math.max(0,Math.round((Date.now()-new Date(u.created_at))/6e4));return m<60?`prije ${m} min`:m<1440?`prije ${Math.round(m/60)} h`:m<2880?'jučer':new Date(u.created_at).toLocaleDateString('hr-HR')}
+const iqNoci=u=>u.checkin_date&&u.checkout_date?A.razlikaDana(u.checkin_date,u.checkout_date):0
+const iqSiroko=()=>matchMedia('(min-width: 781px)').matches
 function renderUpiti(){
   const el=document.getElementById('iq-list');if(!el)return
-  if(UPITI_OK===false){el.innerHTML=A.prazno('Upiti se još ne spremaju. Kad se u Supabaseu pokrene sql/add-inquiries.sql, gosti će s vaše javne stranice moći poslati upit s imenom i kontaktom, a vi ćete ga vidjeti ovdje.');return}
-  const L=UPITI.filter(u=>IQ_FILTAR==='svi'||u.status===IQ_FILTAR||u.id===IQ_ISTAKNI)
-  if(!L.length){el.innerHTML=A.prazno(IQ_FILTAR==='novi'?'Nema novih upita. Gost ga šalje s javne stranice nakon što odabere termin.':'Nema upita u ovom popisu.');return}
+  const det=document.getElementById('iq-det'),box=document.getElementById('iqx')
+  if(UPITI_OK===false){el.innerHTML=A.prazno('Upiti se još ne spremaju. Kad se u Supabaseu pokrene sql/add-inquiries.sql, gosti će s vaše javne stranice moći poslati upit s imenom i kontaktom, a vi ćete ga vidjeti ovdje.');det.innerHTML='';iqPonuda(null);return}
   renderPovratni()
+  const q=tbNorm(IQ_TRAZI).trim()
+  const L=UPITI.filter(u=>IQ_FILTAR==='svi'||u.status===IQ_FILTAR||u.id===IQ_ISTAKNI)
+    .filter(u=>!q||tbNorm([u.guest_name,u.guest_email,u.guest_phone].join(' ')).includes(q))
+  document.getElementById('iq-broj').textContent=L.length?'('+L.length+')':''
+  if(!L.some(u=>u.id===IQ_SEL))IQ_SEL=(IQ_ISTAKNI&&L.some(u=>u.id===IQ_ISTAKNI))?IQ_ISTAKNI:(iqSiroko()&&L[0]?L[0].id:null)
+  box.classList.toggle('ima-odabir',!!IQ_SEL)
+  if(!L.length){
+    el.innerHTML=A.prazno(q?'Nijedan upit ne odgovara pretrazi.':IQ_FILTAR==='novi'?'Nema novih upita. Gost ga šalje s javne stranice nakon što odabere termin.':'Nema upita u ovom popisu.')
+    det.innerHTML=`<p class="helper iqx-nista">Kad gost pošalje upit s vaše javne stranice, ovdje ćete vidjeti termin, broj gostiju, poruku i okvirnu cijenu.</p>`;iqPonuda(null);return}
   el.innerHTML=L.map(u=>{
-    const n=u.checkin_date&&u.checkout_date?A.razlikaDana(u.checkin_date,u.checkout_date):0
-    const prije=Math.max(0,Math.round((Date.now()-new Date(u.created_at))/6e4))
-    const kad=prije<60?`prije ${prije} min`:prije<1440?`prije ${Math.round(prije/60)} h`:new Date(u.created_at).toLocaleDateString('hr-HR')
-    const status={novi:['Novi',''],prihvacen:['Prihvaćen',''],odbijen:['Odbijen',' is-out']}[u.status]||['?','']
-    let termin='<span class="an-src">bez datuma</span>',slobodno=''
-    if(n){
-      termin=`<b>${A.fmtSDanom(u.checkin_date)} – ${A.fmtSDanom(u.checkout_date)}</b><span class="an-src">${A.noci(n)}${u.guests?' · '+u.guests+' '+A.mn(u.guests,'gost','gosta','gostiju'):''}</span>`
-      if(u.status==='novi'){const z=zauzeteNoci(u.checkin_date,u.checkout_date);slobodno=z?`<span class="an-tag is-warn">${z} ${A.mn(z,'noć je','noći su','noći je')} već zauzeto</span>`:'<span class="an-tag">Termin je slobodan</span>'}
-      if(u.checkin_date<A.danas()&&u.status==='novi')slobodno+=' <span class="an-tag is-out">termin je prošao</span>'
-    }
-    let akcije=''
-    const tok=u.booking_id&&UPITI_TOKENI[u.booking_id]
-    const iznos=u.iznos!=null?Number(u.iznos):(n?cijenaBoravka(PROP,u.checkin_date,u.checkout_date):null)
-    const pov=POVRATNI()
-    const kodOk=u.kod&&pov.kod&&String(u.kod).toUpperCase()===pov.kod
-    const izravno=imaMogucnost(planObjekta(),'izravno')
-    let dodatno=''
-    if(iznos)dodatno+=`<span class="an-tag">okvirno ${formatEur(iznos)}</span>`
-    if(u.kod)dodatno+=kodOk?`<span class="an-tag is-ok">kod ${A.esc(u.kod)} · −${pov.posto||0} %</span>`:`<span class="an-tag is-warn">kod ${A.esc(u.kod)} ne odgovara vašem</span>`
-    if(u.pristanak_ponude)dodatno+='<span class="an-tag">pristao/la na ponude</span>'
-    if(u.status==='novi'&&n&&izravno)akcije+=`<button class="btn small" type="button" onclick="otvoriPonudu('${u.id}')">Pošalji ponudu s kaparom</button>`
-    if(u.status==='novi'){
-      const odg=`Dobar dan${u.guest_name?', '+u.guest_name.split(' ')[0]:''}! Hvala na upitu za ${PROP.name}${n?` od ${A.fmtKratko(u.checkin_date)} do ${A.fmtKratko(u.checkout_date)}`:''}. `
-      akcije+=`${n?`<button class="btn ${izravno?'secondary ':''}small" type="button" onclick="prihvatiUpit('${u.id}')">Prihvati i napravi link</button>`:`<button class="btn small" type="button" onclick="napraviLinkZa('','','upit bez datuma');document.getElementById('bk-name').value=${A.esc(JSON.stringify(u.guest_name))};provjeriBk()">Napravi link</button>`}
-        <button class="btn secondary small" type="button" onclick="odbijUpit('${u.id}')">Odbij</button>
-        ${u.guest_phone?`<a class="btn ghost small" href="${A.esc(waLink(u.guest_phone,odg))}" target="_blank" rel="noopener">Odgovori WhatsAppom</a>`:''}
-        ${u.guest_email?`<a class="btn ghost small" href="${A.esc(mailLink(u.guest_email,'Upit za '+PROP.name,odg))}">Odgovori e-mailom</a>`:''}`
-    }else if(u.status==='prihvacen'&&tok){
-      const url=bookingUrl(tok)
-      akcije=`<div style="flex-basis:100%"><div class="iq__link">${A.esc(prettyUrl(url))}</div></div>
-        ${slanjeHtml(u,porukaGostu(u.guest_name,u.checkin_date,u.checkout_date,url),'Vaš boravak — '+PROP.name)}
-        <button class="btn secondary small" type="button" onclick="navigator.clipboard?.writeText('${A.esc(url)}');toast('Link kopiran!')">Kopiraj link</button>`
-    }else if(u.status==='odbijen'){
-      const txt=`Dobar dan${u.guest_name?', '+u.guest_name.split(' ')[0]:''}! Hvala na upitu za ${PROP.name}. Nažalost, termin${n?` od ${A.fmtKratko(u.checkin_date)} do ${A.fmtKratko(u.checkout_date)}`:''} nije slobodan. Slobodne termine vidite na ${publicUrl(PROP.slug)}`
-      akcije=`${slanjeHtml(u,txt,'Upit za '+PROP.name)}<button class="btn ghost small" type="button" onclick="obrisiUpit('${u.id}')">Obriši</button>`
-    }
-    return `<article class="iq${u.status==='novi'?' is-new':''}" id="iq-${u.id}">
-      <div class="iq__h"><div><strong>${A.esc(u.guest_name)}</strong><span class="iq__t">${kad}</span></div><span class="an-tag${status[1]}">${status[0]}</span></div>
-      <div class="iq__row">${termin} ${slobodno}</div>
-      ${dodatno?`<div class="iq__row">${dodatno}</div>`:''}
-      <div class="iq__row">${kontaktHtml(u)}</div>
-      ${u.message?`<p class="iq__msg">${A.esc(u.message)}</p>`:''}
-      <div class="iq__act">${akcije}</div></article>`
-  }).join('')
+    const n=iqNoci(u),[st,sk]=IQ_ST[u.status]||['?','']
+    return `<button type="button" class="iqr${u.id===IQ_SEL?' is-sel':''}" data-iq="${A.esc(String(u.id))}"${u.id===IQ_SEL?' aria-current="true"':''}>
+      <span class="iq-av" aria-hidden="true">${A.esc(iqInic(u.guest_name))}</span>
+      <span class="iqr__t"><b>${A.esc(u.guest_name||'Gost')}</b><small>${n?`${A.fmtKratko(u.checkin_date)} – ${A.fmtKratko(u.checkout_date)} · ${A.noci(n)}`:'bez datuma'}</small>${u.message?`<small class="iqr__msg">${A.esc(u.message)}</small>`:''}</span>
+      <span class="iqr__d"><span class="iq-st iq-st--${sk}">${st}</span><small>${iqKad(u)}</small></span></button>`}).join('')
+  const u=L.find(x=>x.id===IQ_SEL)
+  det.innerHTML=u?iqDetalj(u):`<p class="helper iqx-nista">Odaberite upit s popisa.</p>`
+  iqPonuda(u||null)
 }
-document.querySelectorAll('[data-iqf]').forEach(b=>b.addEventListener('click',()=>{
-  IQ_FILTAR=b.dataset.iqf;IQ_ISTAKNI=null
-  document.querySelectorAll('[data-iqf]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)))
-  renderUpiti()
-}))
+function iqDetalj(u){
+  const n=iqNoci(u),[st,sk]=IQ_ST[u.status]||['?','']
+  let slobodno=''
+  if(n&&u.status==='novi'){const z=zauzeteNoci(u.checkin_date,u.checkout_date);slobodno=z?`<span class="an-tag is-warn">${z} ${A.mn(z,'noć je','noći su','noći je')} već zauzeto</span>`:'<span class="an-tag is-ok">Termin je slobodan</span>'
+    if(u.checkin_date<A.danas())slobodno+=' <span class="an-tag is-out">termin je prošao</span>'}
+  const tok=u.booking_id&&UPITI_TOKENI[u.booking_id]
+  const iznos=u.iznos!=null?Number(u.iznos):(n?cijenaBoravka(PROP,u.checkin_date,u.checkout_date):null)
+  const pov=POVRATNI(),kodOk=u.kod&&pov.kod&&String(u.kod).toUpperCase()===pov.kod
+  let dodatno=''
+  if(u.kod)dodatno+=kodOk?`<span class="an-tag is-ok">kod ${A.esc(u.kod)} · −${pov.posto||0} %</span>`:`<span class="an-tag is-warn">kod ${A.esc(u.kod)} ne odgovara vašem</span>`
+  if(u.pristanak_ponude)dodatno+='<span class="an-tag">pristao/la na ponude</span>'
+  let akcije=''
+  if(u.status==='novi'){
+    const odg=`Dobar dan${u.guest_name?', '+u.guest_name.split(' ')[0]:''}! Hvala na upitu za ${PROP.name}${n?` od ${A.fmtKratko(u.checkin_date)} do ${A.fmtKratko(u.checkout_date)}`:''}. `
+    akcije=`${n?`<button class="btn small" type="button" onclick="prihvatiUpit('${u.id}')">Prihvati i napravi link</button>`:`<button class="btn small" type="button" onclick="napraviLinkZa('','','upit bez datuma');document.getElementById('bk-name').value=${A.esc(JSON.stringify(u.guest_name))};provjeriBk()">Napravi link</button>`}
+      ${u.guest_phone?`<a class="btn secondary small" href="${A.esc(waLink(u.guest_phone,odg))}" target="_blank" rel="noopener">Odgovori WhatsAppom</a>`:''}
+      ${u.guest_email?`<a class="btn secondary small" href="${A.esc(mailLink(u.guest_email,'Upit za '+PROP.name,odg))}">Odgovori e-mailom</a>`:''}
+      <button class="btn ghost small iq-odbij" type="button" onclick="odbijUpit('${u.id}')">Odbij</button>`
+  }else if(u.status==='prihvacen'&&tok){
+    const url=bookingUrl(tok)
+    akcije=`<div class="iq__link">${A.esc(prettyUrl(url))}</div>${slanjeHtml(u,porukaGostu(u.guest_name,u.checkin_date,u.checkout_date,url),'Vaš boravak — '+PROP.name)}
+      <button class="btn secondary small" type="button" onclick="navigator.clipboard?.writeText('${A.esc(url)}');toast('Link kopiran!')">Kopiraj link</button>`
+  }else if(u.status==='odbijen'){
+    const txt=`Dobar dan${u.guest_name?', '+u.guest_name.split(' ')[0]:''}! Hvala na upitu za ${PROP.name}. Nažalost, termin${n?` od ${A.fmtKratko(u.checkin_date)} do ${A.fmtKratko(u.checkout_date)}`:''} nije slobodan. Slobodne termine vidite na ${publicUrl(PROP.slug)}`
+    akcije=`${slanjeHtml(u,txt,'Upit za '+PROP.name)}<button class="btn ghost small" type="button" onclick="obrisiUpit('${u.id}')">Obriši</button>`
+  }
+  const cin=SECTION?.checkin_time,cout=SECTION?.checkout_time
+  return `<button type="button" class="iqx-nazad" onclick="iqNazad()"><svg class="ic ic--sm" aria-hidden="true"><use href="#i-arrow-left"/></svg>Svi upiti</button>
+    <article class="iq-d" id="iq-${u.id}">
+    <header class="iq-d__h"><span class="iq-av iq-av--vel" aria-hidden="true">${A.esc(iqInic(u.guest_name))}</span>
+      <div><h2>${A.esc(u.guest_name||'Gost')} <span class="iq-st iq-st--${sk}">${st}</span></h2>
+        <p>${u.guests?u.guests+' '+A.mn(u.guests,'gost','gosta','gostiju')+' · ':''}${kontaktHtml(u)||'bez kontakta'}</p></div>
+      <small class="iq-d__kad">${iqKad(u)}</small></header>
+    ${n?`<div class="iq-cinj">
+      <div><svg class="ic ic--sm" aria-hidden="true"><use href="#i-calendar"/></svg><span><small>Dolazak</small><b>${A.fmtKratko(u.checkin_date)}</b>${cin?`<small>od ${A.esc(cin)}</small>`:''}</span></div>
+      <div><svg class="ic ic--sm" aria-hidden="true"><use href="#i-calendar"/></svg><span><small>Odlazak</small><b>${A.fmtKratko(u.checkout_date)}</b>${cout?`<small>do ${A.esc(cout)}</small>`:''}</span></div>
+      <div><svg class="ic ic--sm" aria-hidden="true"><use href="#i-bed"/></svg><span><small>Noći</small><b>${n}</b></span></div>
+      <div><svg class="ic ic--sm" aria-hidden="true"><use href="#i-users"/></svg><span><small>Gosti</small><b>${u.guests||'—'}</b></span></div></div>`:'<p class="helper">Gost nije odabrao datume.</p>'}
+    ${slobodno||dodatno?`<div class="iq-oz">${slobodno} ${dodatno}</div>`:''}
+    ${iznos?`<div class="iq-proc"><span><small>Procijenjena cijena</small><b>${formatEur(iznos)}</b></span><p>Okvirno prema vašoj cijeni i sezonama. To nije ponuda ni potvrđena rezervacija.</p></div>`:''}
+    ${u.message?`<figure class="iq-por"><figcaption><b>${A.esc(u.guest_name||'Gost')}</b> · poruka s javne stranice</figcaption><p>${A.esc(u.message)}</p></figure>`:''}
+    ${akcije?`<div class="iq-akc">${akcije}</div>`:''}
+  </article>`
+}
+function iqPonuda(u){
+  const dlg=document.getElementById('ponuda-dlg'),pr=document.getElementById('iq-pon-prazno')
+  const izravno=imaMogucnost(planObjekta(),'izravno')
+  const ok=!!u&&u.status==='novi'&&iqNoci(u)>0&&izravno
+  dlg.hidden=!ok;pr.hidden=ok
+  document.getElementById('iq-pon').classList.toggle('je-prazno',!ok)
+  if(!ok){pr.textContent=!u?'Odaberite novi upit s datumima — ovdje ćete složiti ponudu s kaparom.':u.status!=='novi'?(u.status==='prihvacen'?'Upit je prihvaćen — gost ima link za vodič.':'Upit je odbijen.'):!iqNoci(u)?'Upit nema datume — javite se gostu i dogovorite termin.':'Ponuda s kaparom nije u planu ovog objekta. Upit možete prihvatiti ili odgovoriti gostu izravno.';PONUDA=null;return}
+  if(PONUDA?.id!==u.id)iqPopuni(u)
+}
+window.iqNazad=()=>{IQ_SEL=null;IQ_ISTAKNI=null;renderUpiti();scrollTo({top:0})}
+document.getElementById('iq-list')?.addEventListener('click',e=>{const b=e.target.closest('[data-iq]');if(!b)return;IQ_SEL=b.dataset.iq;IQ_ISTAKNI=null;renderUpiti();if(!iqSiroko())scrollTo({top:0})})
+document.getElementById('iq-filtar')?.addEventListener('change',e=>{IQ_FILTAR=e.target.value;IQ_ISTAKNI=null;IQ_SEL=null;renderUpiti()})
+document.getElementById('iq-trazi')?.addEventListener('input',e=>{IQ_TRAZI=e.target.value;renderUpiti()})
 window.prihvatiUpit=async id=>{
   const u=UPITI.find(x=>x.id===id);if(!u)return
   const z=zauzeteNoci(u.checkin_date,u.checkout_date)
@@ -4253,7 +4579,7 @@ window.prihvatiUpit=async id=>{
   else if(r.upozorenje)toast(r.upozorenje)
   else toast('Upit prihvaćen — pošaljite gostu link ✓')
   UPITI_TOKENI[r.booking.id]=r.booking.token
-  IQ_ISTAKNI=id
+  IQ_ISTAKNI=id;IQ_SEL=id
   await loadAvail();await ucitajUpite();renderUpiti()
   document.getElementById('iq-'+id)?.scrollIntoView({block:'center',behavior:'smooth'})
 }
@@ -4261,7 +4587,7 @@ window.odbijUpit=async id=>{
   if(!await potvrdi('Odbiti upit? Nakon toga možete gostu jednim klikom javiti da termin nije slobodan.',{da:'Odbij',opasno:true}))return
   const{error}=await sb.from('inquiries').update({status:'odbijen'}).eq('id',id)
   if(error){toast('Greška: '+error.message);return}
-  IQ_ISTAKNI=id;await ucitajUpite();renderUpiti()
+  IQ_ISTAKNI=id;IQ_SEL=id;await ucitajUpite();renderUpiti()
 }
 window.obrisiUpit=async id=>{
   if(!await potvrdi('Trajno obrisati ovaj upit i gostove podatke?',{da:'Obriši',opasno:true}))return
@@ -4269,7 +4595,7 @@ window.obrisiUpit=async id=>{
   if(error){toast('Greška: '+error.message);return}
   await ucitajUpite();renderUpiti()
 }
-window.openInquiries=()=>{IQ_FILTAR='novi';document.querySelectorAll('[data-iqf]').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.iqf==='novi')));nav('inquiries',document.querySelector('.panelnav .nav-item[data-panel="inquiries"]'))}
+window.openInquiries=()=>{IQ_FILTAR='novi';{const f=document.getElementById('iq-filtar');if(f)f.value='novi'}IQ_SEL=null;nav('inquiries',document.querySelector('.panelnav .nav-item[data-panel="inquiries"]'))}
 // novi upiti dok je dashboard otvoren: jednom u minuti, samo dok je kartica vidljiva
 setInterval(async()=>{
   if(document.hidden||!PROP||UPITI_OK===false)return
@@ -5107,6 +5433,7 @@ window.nav=(id,el)=>{
   id=glavni
   if(id==='reservations')window.loadBookings()
   if(id==='ical')loadIcal()
+  if(id==='availability')tlUcitaj()
   if(id==='links'){ucitajPreporuke();ucitajAdresu()}
   if(id==='tim'){ucitajCistacicu();ucitajTim()}
   if(id==='objave')obOtvori()
@@ -5276,22 +5603,60 @@ window.loadBookings=async function(){
   window.BK_LISTA=bk
   {const red=document.getElementById('auto-mail-red');const ima='auto_email_gostu' in ap
    red.hidden=!ima;if(ima)document.getElementById('auto-mail').checked=ap.auto_email_gostu!==false}
-  if(!bk.length){el.innerHTML='<div class="empty-hint">Još nema rezervacija. Kreiraj prvi gostinski link →</div>';return}
+  if(!bk.length){el.innerHTML='<div class="empty-hint">Još nema rezervacija. Kreirajte prvi gostinski link gumbom „Nova rezervacija”.</div>';bkPanel(null);return}
   await ucitajPrijave()
-  const now=new Date()
-  const colors=['#12303A','#12303A','#1E4654','#5B6F75','#7A5A1E','#174A5A']  // bijelo slovo ≥ 4,5:1 na svakoj
-  el.innerHTML=bk.map(b=>{
-    const exp=b.token_expires_at&&new Date(b.token_expires_at)<now
-    const act=b.is_active&&!exp
-    const col=colors[Math.abs(b.guest_name?.charCodeAt(0)||0)%colors.length]
-    return`<div class="bk-card">
-      <div class="bk-av" style="background:${col}">${(b.guest_name||'G')[0].toUpperCase()}</div>
-      <div><h3>${esc(b.guest_name||'Gost')}</h3><p>${fmtD(b.checkin_date)} – ${fmtD(b.checkout_date)}${b.guest_note?' · '+esc(b.guest_note):''}</p><div class="url">${esc(prettyUrl(bookingUrl(b.token)))}</div>${b.usao_at?`<p class="bk-mail">✓ Gost je ušao · ${new Date(b.usao_at).toLocaleString('hr-HR',{day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit'})}</p>`:''}${b.guest_email?`<p class="bk-mail">✉ ${esc(b.guest_email)} · ${b.email_dolazak_at?'link poslan':'link prije dolaska'} · ${b.email_ocjena_at?'zahvala poslana':'zahvala na odlasku'}</p>`:''}</div>
-      <span class="bk-status ${act?'':'exp'}">${act?'Aktivan':'Istekao'}</span>
-      <div class="bk-btns">${PRIJAVE_OK&&(act||PRIJAVE[b.id])?`<button class="btn ${PRIJAVE[b.id]?'secondary':'ghost'} small" onclick="otvoriGoste('${b.id}')" title="Podaci za eVisitor i boravišna pristojba">${PRIJAVE[b.id]?'Gosti · '+PRIJAVE[b.id].osobe.length+' '+A.mn(PRIJAVE[b.id].osobe.length,'osoba','osobe','osoba'):'Gosti · čeka podatke'}</button>`:''}${act?`<button class="btn small" onclick="cpBk('${b.token}')">Kopiraj</button><button class="btn secondary small" onclick="deactBk('${b.id}')">Deaktiviraj</button>`:`<button class="btn danger small" onclick="delBk('${b.id}')">Obriši</button>`}</div>
-    </div>`
-  }).join('')
+  if(!bk.some(b=>b.id===BK_SEL))BK_SEL=matchMedia('(min-width: 781px)').matches?(bk.find(b=>bkStanje(b)[1]!=='out')||bk[0]).id:null
+  el.innerHTML=`<table class="bk-tbl"><thead><tr><th scope="col">Gost</th><th scope="col">Objekt</th><th scope="col">Boravak</th><th scope="col">Status</th><th scope="col">Vodič</th><th scope="col"><span class="sr-only">Radnje</span></th></tr></thead><tbody>`+bk.map(b=>{
+    const [st,sk]=bkStanje(b),n=A.razlikaDana(b.checkin_date,b.checkout_date)
+    const pr=PRIJAVE_OK&&PRIJAVE[b.id]
+    return `<tr class="${b.id===BK_SEL?'is-sel':''}" data-bk="${esc(String(b.id))}">
+      <td><span class="bk-g"><span class="iq-av" aria-hidden="true">${esc(iqInic(b.guest_name))}</span><span><b>${esc(b.guest_name||'Gost')}</b><small>${esc(b.guest_note||'')}</small></span></span></td>
+      <td><span class="bk-o"><b translate="no">${esc(ap.name||'Objekt')}</b><small>${esc(ap.type||'')}</small></span></td>
+      <td><b>${fmtD(b.checkin_date)} – ${fmtD(b.checkout_date)}</b><small>${A.noci(n)}</small></td>
+      <td><span class="iq-st iq-st--${sk}">${st}</span></td>
+      <td>${b.usao_at?'<span class="bk-v ok">Gost je ušao</span>':sk==='out'?'<span class="bk-v">—</span>':b.email_dolazak_at?'<span class="bk-v ok">Link poslan</span>':'<span class="bk-v">Link spreman</span>'}${pr?`<small>Podaci gostiju · ${pr.osobe.length}</small>`:''}</td>
+      <td class="bk-akc">${sk!=='out'?`<button class="btn secondary small" type="button" onclick="event.stopPropagation();cpBk('${b.token}')">Kopiraj link</button>`:''}<button class="btn ghost small" type="button" onclick="event.stopPropagation();bkOdaberi('${b.id}')">Detalji</button></td></tr>`
+  }).join('')+'</tbody></table>'
+  bkPanel(bk.find(b=>b.id===BK_SEL)||null)
 }
+let BK_SEL=null
+function bkStanje(b){
+  const exp=b.token_expires_at&&new Date(b.token_expires_at)<new Date(),t=A.danas()
+  if(!b.is_active)return['Deaktiviran','out']
+  if(exp||b.checkout_date<t)return['Završeno','out']
+  if(b.checkin_date<=t)return['U tijeku','novi']
+  return['Potvrđeno','ok']
+}
+function bkPanel(b){
+  const el=document.getElementById('bk-panel'),box=document.getElementById('bkx')
+  box.classList.toggle('ima-odabir',!!b);el.hidden=!b
+  document.querySelectorAll('#bookings-list tr[data-bk]').forEach(r=>r.classList.toggle('is-sel',r.dataset.bk===String(b?.id)))
+  if(!b){el.innerHTML='';return}
+  const ap=PROP,[st,sk]=bkStanje(b),act=sk!=='out',n=A.razlikaDana(b.checkin_date,b.checkout_date)
+  const url=bookingUrl(b.token),ph=ap.cover_photo_url||(ap.photo_urls||[])[0]
+  const pr=PRIJAVE_OK&&PRIJAVE[b.id],cin=SECTION?.checkin_time,cout=SECTION?.checkout_time
+  const poruka=porukaGostu(b.guest_name,b.checkin_date,b.checkout_date,url)
+  el.innerHTML=`<button type="button" class="iqx-nazad" onclick="bkOdaberi(null)"><svg class="ic ic--sm" aria-hidden="true"><use href="#i-arrow-left"/></svg>Sve rezervacije</button>
+    <header class="bk-p__h"><span class="iq-av iq-av--vel" aria-hidden="true">${esc(iqInic(b.guest_name))}</span><div><h2>${esc(b.guest_name||'Gost')}</h2><span class="iq-st iq-st--${sk}">${st}</span></div>
+      <button type="button" class="bk-x" onclick="bkOdaberi(null)" aria-label="Zatvori detalj">×</button></header>
+    <div class="bk-p__obj">${ph?`<span class="bk-p__f" style="background-image:url('${esc(String(ph))}')" aria-hidden="true"></span>`:''}<span><b translate="no">${esc(ap.name||'Objekt')}</b><small translate="no">${esc(ap.location||'')}</small></span></div>
+    <dl class="bk-p__dl">
+      <div><dt>Dolazak</dt><dd>${fmtD(b.checkin_date)}${cin?` · od ${esc(cin)}`:''}</dd></div>
+      <div><dt>Odlazak</dt><dd>${fmtD(b.checkout_date)}${cout?` · do ${esc(cout)}`:''}</dd></div>
+      <div><dt>Boravak</dt><dd>${A.noci(n)}</dd></div>
+      ${b.guest_note?`<div><dt>Napomena</dt><dd>${esc(b.guest_note)}</dd></div>`:''}
+      ${b.guest_email?`<div><dt>E-mail</dt><dd>${esc(b.guest_email)}<small>${b.email_dolazak_at?'link poslan':'link 3 dana prije dolaska'} · ${b.email_ocjena_at?'zahvala poslana':'zahvala na odlasku'}</small></dd></div>`:''}
+      ${b.usao_at?`<div><dt>Ulazak</dt><dd>Gost je ušao · ${new Date(b.usao_at).toLocaleString('hr-HR',{day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit'})}</dd></div>`:''}
+    </dl>
+    <div class="bk-p__link"><div class="bk-p__lh"><b>Link na vodič za gosta</b><span class="iq-st iq-st--${act?'ok':'out'}">${act?'Aktivan':'Ne vrijedi'}</span></div>
+      <div class="link-url"><span>${esc(prettyUrl(url))}</span></div>
+      ${act?`<div class="bk-p__akc"><button class="btn small" type="button" onclick="cpBk('${b.token}')">Kopiraj link</button><a class="btn secondary small" href="https://wa.me/?text=${encodeURIComponent(poruka)}" target="_blank" rel="noopener">Pošalji WhatsAppom</a></div>
+      <p class="helper">Šifra vrata i Wi-Fi otključaju se sat prije prijave i prestaju vrijediti nakon odlaska.</p>`:''}</div>
+    ${PRIJAVE_OK&&(act||pr)?`<button class="btn secondary small bk-p__gosti" type="button" onclick="otvoriGoste('${b.id}')">${pr?'Podaci gostiju · '+pr.osobe.length+' '+A.mn(pr.osobe.length,'osoba','osobe','osoba'):'Podaci gostiju · čeka podatke'}</button>`:''}
+    <div class="bk-p__opasno"><small>Opasne radnje</small>${act?`<button class="btn danger small" type="button" onclick="deactBk('${b.id}')">Deaktiviraj link</button>`:`<button class="btn danger small" type="button" onclick="delBk('${b.id}')">Obriši rezervaciju</button>`}</div>`
+}
+window.bkOdaberi=id=>{BK_SEL=id;bkPanel((window.BK_LISTA||[]).find(b=>b.id===id)||null);if(id&&!matchMedia('(min-width: 781px)').matches)scrollTo({top:0})}
+document.getElementById('bookings-list')?.addEventListener('click',e=>{const r=e.target.closest('tr[data-bk]');if(r&&!e.target.closest('button,a'))bkOdaberi(r.dataset.bk)})
 window.showAddBooking=()=>{
   document.getElementById('add-booking-card').style.display='block'
   document.getElementById('bk-result-card').style.display='none'
