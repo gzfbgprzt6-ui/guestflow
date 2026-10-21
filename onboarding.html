@@ -244,7 +244,7 @@
             <rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="8.5" cy="9.5" r="1.8"/><path d="M21 16l-5-5L5 20"/>
           </svg>
           <div class="ph-drop-t">Dodajte fotografije</div>
-          <div class="ph-drop-s" id="ph-hint">JPG ili PNG, najviše 5 MB po slici</div>
+          <div class="ph-drop-s" id="ph-hint">JPG ili PNG · velike fotografije smanjimo sami</div>
           <input type="file" id="ph-input" accept="image/*" multiple hidden onchange="onPhotoPick(this.files)">
         </div>
         <div class="ph-grid" id="ph-grid"></div>
@@ -296,6 +296,7 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { loadPlans, limitFor, effectivePlanId, limitMessage } from './plans.js'
 import { publicUrl, prettyUrl } from './links.js'
+import { smanjiSliku } from './slike.js'
 
 const SURL = 'https://wtojzqjhipdfbrnmprmz.supabase.co'
 const SKEY = 'sb_publishable_tmZAZTDbQ7ktc1N-8y4q4w_ztAu_62F'
@@ -398,13 +399,13 @@ function showStep(n) {
 // ── FOTOGRAFIJE (Cloudinary) ──────────────────────────
 const CLOUDINARY_CLOUD = 'sck9mbg9'
 const CLOUDINARY_PRESET = 'odmoria_photos'
-const MAX_FILE_BYTES = 5 * 1024 * 1024
+const MAX_FILE_BYTES = 30 * 1024 * 1024   // smanjuje ih slike.js prije slanja
 let PHOTOS = []
 let PHOTO_LIMIT = 5
 
 async function uploadToCloudinary(file) {
   const fd = new FormData()
-  fd.append('file', file)
+  fd.append('file', await smanjiSliku(file))
   fd.append('upload_preset', CLOUDINARY_PRESET)
   const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`, { method: 'POST', body: fd })
   const data = await res.json()
@@ -435,7 +436,7 @@ window.onPhotoPick = async (files) => {
     }
   }
   drop.classList.remove('busy')
-  hint.textContent = 'JPG ili PNG, najviše 5 MB po slici'
+  hint.textContent = 'JPG ili PNG · velike fotografije smanjimo sami'
   document.getElementById('ph-input').value = ''
   if (skipped) showErr(4, `${skipped} ${skipped === 1 ? 'slika preskočena' : 'slika preskočeno'} — prevelika ili preko limita plana.`)
   if (done) await savePhotos()

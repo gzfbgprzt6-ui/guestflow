@@ -75,6 +75,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 ├── domacin-en.js             # engleski rječnik (T) i uzorci (P) za domacin-jezik.js; ključ = hrvatski tekst
 ├── sadrzaji.js               # KATALOG SADRŽAJA (75, 9 skupina): naziv, skupina, Lucide ikona, prijevodi — dashboard, p.html, jezici.js
 ├── drzave.js                 # države ISO 3166 za prijavu boravka (vodič bira s popisa, sprema kod) — kopija u api/_evisitor.js
+├── slike.js                  # smanjiSliku(): fotografije prije Cloudinaryja (2048 px, JPEG 82 %) — dashboard, onboarding, add-property
 ├── billing.js                # Stripe iz preglednika: billingStatus, startCheckout, openBillingPortal, povratak s plaćanja (dashboard, account)
 ├── assets/                   # landing/villa-1600.jpg i villa-900.jpg (naslovnica i prijava); logo/ (B2 „izlazak sunca”: odmoria.svg, odmoria-bijeli.svg, ikona.svg, ikona-svijetla.svg)
 ├── docs/must-do.md           # KRATKO za vlasnika: što je postavljeno (SQL, Vercel), što je u mainu, što ostaje
@@ -136,6 +137,8 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
     ├── add-ical-sukobi.sql              # v6: kalendar_sukobi (dvostruka rezervacija), calendar_exports.dohvat_*, kalendar_izvoz_za(), cron 10 min
     ├── add-evisitor.sql                 # v6: guest_registrations.evisitor (što je poslano u eVisitor)
     ├── add-cleaner-checklist.sql        # v6: cleaner_links.popis, cleaning_status.kvacice/fotke, ciscenje_popis()
+    ├── add-safety-v7.sql                # v7: zabrana preklapanja rezervacija (okidač + zaključavanje), bookings.plan_pri_izradi, mogucnosti_vodica do odlaska
+    ├── test-sigurnost.sql               # SIGURNOSNI TEST — pokretati nakon svake veće promjene; sve se poništi (rollback)
     └── fix-missing-columns-and-storage.sql # ALTER TABLE dopune (photo_urls, ical_*, beds/bathrooms/size_m2) + storage bucket policy
 ```
 
@@ -826,6 +829,18 @@ Dashboard **ne učitava `odmoria.css`** — ima vlastiti potpun CSS s istim vrij
 - Zamka: PostgreSQL regex ne prima ponavljanje > 255 (`{1,300}` baca grešku).
 - Zamka: `.sez` redak s `input type=date` treba `min-width:0` na labeli i polju,
   inače na 390 px raširi stranicu.
+
+## v7 — sigurnost (21. 10. 2026., odluke 44)
+
+- **Nakon svake veće promjene pokrenuti `sql/test-sigurnost.sql`** (rollback na kraju).
+  Nova tablica s podacima objekta = dodati je u popis `privatne` u testu.
+- Okidač `bookings_bez_preklapanja`: aktivna rezervacija koja još nije prošla
+  ne smije se preklapati s drugom (errcode 23P01, hrvatska poruka); dashboard
+  je prikazuje bez „Greška:”.
+- `mogucnosti_vodica()` sada je u `add-safety-v7.sql` (bolji od trenutnog plana i
+  `bookings.plan_pri_izradi` do odlaska).
+- **Otvoreno (P0):** `properties` je javno čitljiv sa SVIM stupcima
+  (`public_read_by_slug using (true)`) — `guest_token` i iCal adrese. Vidi odluke 44.
 
 ## Redizajn v2 — prijenos iz Figme u kod (u tijeku)
 

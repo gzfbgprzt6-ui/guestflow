@@ -1947,7 +1947,7 @@ section.v5-prazno{display:none!important}
             <div class="card-head"><div class="card-title-wrap"><span class="card-number">02</span><div><h2>Fotografije objekta</h2><p>Klikni fotografiju da je postaviš kao naslovnu.</p></div></div><span class="card-hint" id="photo-count-lbl">0 / 5</span></div>
             <label class="upload-zone">
               <input type="file" id="photo-input" multiple accept="image/jpeg,image/png,image/webp" onchange="uploadPhotos(this.files)">
-              <span><span class="upload-icon"><svg width="20" height="20" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 16V4m0 0L7 9m5-5 5 5"/><path d="M4 14v5h16v-5"/></svg></span><strong>Povucite fotografije ili kliknite za odabir</strong><span>JPG, PNG ili WEBP · do 5 MB po fotografiji</span></span>
+              <span><span class="upload-icon"><svg width="20" height="20" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 16V4m0 0L7 9m5-5 5 5"/><path d="M4 14v5h16v-5"/></svg></span><strong>Povucite fotografije ili kliknite za odabir</strong><span>JPG, PNG ili WEBP · velike fotografije smanjimo sami</span></span>
             </label>
             <div class="photo-grid" id="photo-grid"></div>
           </div>
@@ -2548,6 +2548,7 @@ import{kvacica}from'./pokret.js'
 import{cijenaBoravka,uMD,izMD,prijedloziCijena}from'./cijene.js'
 import{SADRZAJI,SKUPINE}from'./sadrzaji.js'
 import * as DR from'./drzave.js'
+import{smanjiSliku}from'./slike.js'
 import * as OSMM from'./mjesta-osm.js'
 import{predloziAdresu}from'./adresa-predlozi.js'
 import * as STIL from'./stilovi.js'
@@ -3497,10 +3498,10 @@ async function renderOverviewOps(){
   // moguća dvostruka rezervacija (sql/add-ical-sukobi.sql)
   let SUK=[];try{const r=await sb.from('kalendar_sukobi').select('*').eq('property_id',PROP.id).eq('vidjeno',false).gte('do_',t).order('od').limit(20);if(!r.error)SUK=r.data||[]}catch{}
   SUK.forEach(x=>{const iz=A.IZVOR[x.izvor]||x.izvor,s=x.s_cim==='rezervacija'?'vašom izravnom rezervacijom':(A.IZVOR[x.s_cim]||x.s_cim)
-    R.push({r:'hitno',n:`Moguća dvostruka rezervacija: ${A.fmtSDanom(x.od)} – ${A.fmtKratko(x.do_)}`,tx:`${iz} je prodao noći koje su već zauzete ${x.s_cim==='rezervacija'?s:'na '+s}. Provjerite na platformi; ako je to isti gost, zanemarite.`,btn:'U redu',on:`sukobVidjen('${x.id}')`})})
+    R.push({r:'hitno',n:`Moguća dvostruka rezervacija: ${A.fmtSDanom(x.od)} – ${A.fmtKratko(x.do_)}`,tx:`Kalendar s ${iz} pokazuje zauzete noći koje su kod vas već zauzete ${x.s_cim==='rezervacija'?s:'na '+s}. Provjerite na platformi je li termin stvarno prodan dvaput; ako je to isti gost, zanemarite.`,btn:'U redu',on:`sukobVidjen('${x.id}')`})})
   // na platformi je, a platforma ne povlači naš izvoz → izravne rezervacije tamo ostaju otvorene
   await ucitajUvoz()
-  nePovlaci().forEach(ime=>R.push({r:'vazno',n:`${ime} ne uvozi vaš kalendar`,tx:'Izravne rezervacije i ručno zatvoreni dani tamo ostaju otvoreni. Zalijepite naš link za izvoz u platformu (Gosti → Booking i Airbnb) ili ih zatvorite ručno.',btn:'Booking i Airbnb',on:"nav('ical',document.querySelector('.panelnav [data-panel=ical]'))"}))
+  nePovlaci().forEach(ime=>R.push({r:'vazno',n:`${ime} nije povukao vaš kalendar u zadnjih 48 h`,tx:'Dok ga ne povlači, izravne rezervacije i ručno zatvoreni dani tamo mogu ostati otvoreni. Zalijepite naš link za izvoz u platformu (Gosti → Booking i Airbnb) ili ih zatvorite ručno. I kad ga povlači, provjerite na platformi da je termin zatvoren.',btn:'Booking i Airbnb',on:"nav('ical',document.querySelector('.panelnav [data-panel=ical]'))"}))
   CIS.sort((a,b)=>a.dan<b.dan?-1:1).forEach(c=>{
     const kad=`${A.fmtSDanom(c.dan)} (${relDan(c.dan)})`
     if(c.stanje==='ne_mogu'&&c.dan>=t)R.push({r:'hitno',n:`Čistačica ne može doći — ${kad}`,tx:c.napomena?`„${c.napomena}”`:'Dogovorite zamjenu ili drugi termin.',btn:'Čistačica',on:"nav('links',document.querySelector('.panelnav [data-panel=links]'))"})
@@ -4784,7 +4785,7 @@ const CLOUDINARY_CLOUD='sck9mbg9'
 const CLOUDINARY_PRESET='odmoria_photos'
 async function uploadToCloudinary(file){
   const fd=new FormData()
-  fd.append('file',file)
+  fd.append('file',await smanjiSliku(file))
   fd.append('upload_preset',CLOUDINARY_PRESET)
   const res=await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`,{method:'POST',body:fd})
   const data=await res.json()
@@ -4801,7 +4802,7 @@ window.uploadPhotos=async(files)=>{
   let uploaded=0
   for(const file of Array.from(files)){
     if(urls.length>=limit)break
-    if(file.size>5*1024*1024){toast(file.name+' je prevelika');continue}
+    if(file.size>30*1024*1024){toast(file.name+' je prevelika');continue}
     try{const url=await uploadToCloudinary(file);urls.push(url);uploaded++}
     catch(e){toast('Upload greška: '+e.message);continue}
   }
@@ -5122,7 +5123,7 @@ async function napraviRezervaciju({name,note,ci,co,email,lang}){
   // nova izravna rezervacija, a platforma ne uvozi naš kalendar → neka domaćin zatvori ručno
   if(nights.length&&!upozorenje&&ap.id===PROP?.id){await ucitajUvoz();const np=nePovlaci()
     const na={'Booking.com':'Bookingu','Airbnb':'Airbnbu'}
-    if(np.length)upozorenje=`Rezervacija je spremljena. Zatvorite ${A.fmtKratko(ci)} – ${A.fmtKratko(co)} i na ${np.map(x=>na[x]).join(' i ')} — tamo se kalendar ne osvježava sam.`}
+    if(np.length)upozorenje=`Rezervacija je spremljena. Zatvorite ${A.fmtKratko(ci)} – ${A.fmtKratko(co)} i na ${np.map(x=>na[x]).join(' i ')} — ne vidimo da tamo povlači vaš kalendar.`}
   return{booking:data,url:bookingUrl(data.token),upozorenje}
 }
 /* Jezik poruka gostu po domeni e-maila (domaćin ga može promijeniti) */
@@ -5163,7 +5164,7 @@ window.createBooking=async()=>{
   const zauz=zauzeteNoci(ci,co)
   if(zauz&&!await potvrdi(`${zauz} ${A.mn(zauz,'noć','noći','noći')} u tom terminu već je zauzeto u kalendaru. Svejedno napraviti rezervaciju?`,{da:'Svejedno napravi'}))return
   const r=await napraviRezervaciju({name,note,ci,co,email:v('bk-mail'),lang:v('bk-lang')})
-  if(r.error){showA('bk-alert','err','Greška: '+r.error);return}
+  if(r.error){showA('bk-alert','err',/^Termin se preklapa/.test(r.error)?r.error+' Promijenite datume ili prvo deaktivirajte tu rezervaciju.':'Greška: '+r.error);return}
   lastBkUrl=r.url;lastBk={ime:name,ci,co,tel:v('bk-phone'),mail:v('bk-mail')}
   lastBkPhone=lastBk.tel
   document.getElementById('bk-result-url').textContent=r.url.replace('https://','')
