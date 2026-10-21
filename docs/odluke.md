@@ -1715,7 +1715,7 @@ odobrio 21. 10.):
 - **KORAK A:** `javni_objekt(slug, pod)` vraća objekt bez `guest_token`,
   `ical_booking_url`, `ical_airbnb_url`; `p.html` i `api/stranica.js` čitaju
   preko nje (rezerva: stari upit dok funkcije nema).
-- **KORAK B** (nakon objave koda): anon čita samo netajne stupce (stupčana
+- **KORAK B** (pokrenut 21. 10. nakon objave koda; sigurnosni test 43/43): anon čita samo netajne stupce (stupčana
   prava), a `public_read_by_slug` vrijedi samo za anon — prijavljeni drugi
   domaćin više ne vidi tuđe objekte. Vlasnik, suradnik i admin rade kao prije.
 - Provjereno u transakciji s poništavanjem: upit gosta, pregledi, sadržaji,
