@@ -133,12 +133,22 @@ async function stranica(req, res) {
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   try {
     let redovi
-    if (pod) {
-      if (!POD.test(pod)) throw new Error('neispravna poddomena');
+    if (pod && !POD.test(pod)) throw new Error('neispravna poddomena');
+    if (!pod && !slug) throw new Error('bez sluga');
+    // javni_objekt (sql/add-properties-privacy.sql): objekt bez tajnih stupaca;
+    // bez funkcije (404) stari upit na tablicu
+    try {
+      const j = await rest('/rpc/javni_objekt', { method: 'POST', body: JSON.stringify(pod ? { p_pod: pod } : { p_slug: slug }) });
+      redovi = j ? [j] : [];
+      if (pod && redovi[0]) { slug = redovi[0].slug; html = ubaci(html, `<meta name="odmoria-slug" content="${String(slug).replace(/[^a-z0-9-]/gi, '')}">`); }
+    } catch (e) {
+      if (!/ 404$/.test(String(e.message))) throw e;
+      redovi = null;
+    }
+    if (!redovi && pod) {
       redovi = await rest('/properties?select=*&limit=1&poddomena=eq.' + encodeURIComponent(pod) + '&poddomena_do=gt.' + encodeURIComponent(new Date().toISOString()));
       if (Array.isArray(redovi) && redovi[0]) { slug = redovi[0].slug; html = ubaci(html, `<meta name="odmoria-slug" content="${String(slug).replace(/[^a-z0-9-]/gi, '')}">`); }
-    } else {
-      if (!slug) throw new Error('bez sluga');
+    } else if (!redovi) {
       redovi = await rest('/properties?select=*&limit=1&slug=eq.' + encodeURIComponent(slug));
     }
     const prop = Array.isArray(redovi) ? redovi[0] : null;

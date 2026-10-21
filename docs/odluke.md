@@ -1670,3 +1670,56 @@ Vlasnik: pokretanje za ~7 mjeseci; sve što se plaća čeka.
 - **Stripe live, obrt, Resend**: s otvaranjem obrta.
 - **Domena**: vidi odgovor vlasniku (20. 10.) — kupiti ranije je jeftino i
   čuva ime.
+
+## 44. Sigurnosni test i popravci v7 (21. 10. 2026.)
+
+**Sigurnosni test** `sql/test-sigurnost.sql`: pokrenuti nakon svake veće promjene
+(SQL editor ili konektor). Sve u jednoj transakciji koja se na kraju poništi —
+u bazi ništa ne ostaje. Svaki red s `prolazi = false` je problem.
+Stanje 21. 10. nakon v7: **37 od 38 prolazi.**
+
+**Pokrenuto (`sql/add-safety-v7.sql`):**
+- dvije aktivne rezervacije za iste noći — baza odbija (i istodobne potvrde,
+  zaključavanje po objektu); dan odlaska = dan dolaska je dopušten; prošle
+  rezervacije se ne diraju;
+- `bookings.plan_pri_izradi` — gost do odlaska zadržava vodič kakav je bio kad
+  je rezervacija nastala, i kad domaćin padne na Free.
+- Kod: fotografije objekta smanjuju se prije slanja (`slike.js`, 2048 px,
+  JPEG 82 %), pa ograničenje 5 MB više ne odbija fotografije s mobitela.
+- Tekst upozorenja: „kalendar pokazuje… provjerite”, „nije povukao vaš
+  kalendar u zadnjih 48 h” — bez tvrdnje da je platforma zatvorila termin.
+
+**PRONAĐEN PROBLEM — čeka odluku vlasnika (P0):**
+Politika `public_read_by_slug` na `properties` je `using (true)` za sve uloge,
+pa javnim ključem svatko (i bez prijave) može pročitati **sve objekte sa svim
+stupcima**, uključujući `guest_token` (stari opći link vodiča) i
+`ical_booking_url` / `ical_airbnb_url` (tajne adrese kalendara platformi).
+Posljedica: stari link otvori vodič bilo kojeg objekta (bez šifri, ali s
+točnom adresom, uputama za ulazak i fotografijama koraka); iCal adrese
+otkrivaju termine (Airbnbov feed može nositi i dio podataka o rezervaciji).
+Prijedlog (dva koraka, kao KORAK 1/2 za šifre):
+1. tajni stupci u zasebnu tablicu `properties_tajno` (samo vlasnik i
+   suradnik-upravitelj) ili javna funkcija koja vraća samo sigurne stupce;
+   `p.html`, `h.html` i `api/stranica.js` prijeći na sigurne stupce;
+2. tek onda zatvoriti izravno čitanje tih stupaca.
+
+**Cloudinary (vlasnik, u konzoli):** postavka za upload `odmoria_photos` —
+dopustiti samo formate jpg, png, webp, heic i dodati ulaznu transformaciju
+koja ograniči veličinu (npr. najviše 2560 px). Tako ni tuđi upload s javnim
+ključem ne može puniti prostor velikim datotekama.
+
+## 45. Tajni stupci objekta zatvoreni (21. 10. 2026.)
+
+Popravak problema iz točke 44 (`sql/add-properties-privacy.sql`, vlasnik
+odobrio 21. 10.):
+- **KORAK A:** `javni_objekt(slug, pod)` vraća objekt bez `guest_token`,
+  `ical_booking_url`, `ical_airbnb_url`; `p.html` i `api/stranica.js` čitaju
+  preko nje (rezerva: stari upit dok funkcije nema).
+- **KORAK B** (nakon objave koda): anon čita samo netajne stupce (stupčana
+  prava), a `public_read_by_slug` vrijedi samo za anon — prijavljeni drugi
+  domaćin više ne vidi tuđe objekte. Vlasnik, suradnik i admin rade kao prije.
+- Provjereno u transakciji s poništavanjem: upit gosta, pregledi, sadržaji,
+  kalendar i javna stranica rade; vlasnik i dalje čita sve svoje stupce.
+- **Pazi ubuduće:** novi stupac u `properties` anon NE vidi (javna stranica ga
+  dobiva kroz `javni_objekt`). Ako ga treba čitati izravno — `grant select (stupac)
+  on public.properties to anon`, nikad tajni podatak.
