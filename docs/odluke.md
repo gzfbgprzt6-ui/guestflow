@@ -1707,3 +1707,19 @@ Prijedlog (dva koraka, kao KORAK 1/2 za šifre):
 dopustiti samo formate jpg, png, webp, heic i dodati ulaznu transformaciju
 koja ograniči veličinu (npr. najviše 2560 px). Tako ni tuđi upload s javnim
 ključem ne može puniti prostor velikim datotekama.
+
+## 45. Tajni stupci objekta zatvoreni (21. 10. 2026.)
+
+Popravak problema iz točke 44 (`sql/add-properties-privacy.sql`, vlasnik
+odobrio 21. 10.):
+- **KORAK A:** `javni_objekt(slug, pod)` vraća objekt bez `guest_token`,
+  `ical_booking_url`, `ical_airbnb_url`; `p.html` i `api/stranica.js` čitaju
+  preko nje (rezerva: stari upit dok funkcije nema).
+- **KORAK B** (nakon objave koda): anon čita samo netajne stupce (stupčana
+  prava), a `public_read_by_slug` vrijedi samo za anon — prijavljeni drugi
+  domaćin više ne vidi tuđe objekte. Vlasnik, suradnik i admin rade kao prije.
+- Provjereno u transakciji s poništavanjem: upit gosta, pregledi, sadržaji,
+  kalendar i javna stranica rade; vlasnik i dalje čita sve svoje stupce.
+- **Pazi ubuduće:** novi stupac u `properties` anon NE vidi (javna stranica ga
+  dobiva kroz `javni_objekt`). Ako ga treba čitati izravno — `grant select (stupac)
+  on public.properties to anon`, nikad tajni podatak.

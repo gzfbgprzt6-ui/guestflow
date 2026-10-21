@@ -859,7 +859,11 @@ const AT_IC = [[/nacional|park prirode|slap|priroda|planin/,'trees'],[/grad|muze
 // ══════════════════════════════════════════════════════
 async function loadPage() {
   // Javna stranica namjerno NE dira tablicu `sections`.
-  const { data: prop, error } = await sb.from('properties').select('*').eq('slug', slug).maybeSingle()
+  // javni_objekt (sql/add-properties-privacy.sql) vraća objekt bez tajnih stupaca;
+  // tablica properties za javnost ih više ne pokazuje. Bez funkcije — stari upit.
+  let { data: prop, error } = await sb.rpc('javni_objekt', { p_slug: slug })
+  if (error && /javni_objekt|PGRST202|function/i.test((error.code || '') + ' ' + error.message))
+    ({ data: prop, error } = await sb.from('properties').select('*').eq('slug', slug).maybeSingle())
   if (error || !prop) { showErr(); return }
   PROP = prop
   // stil stranice (stilovi.js): ?stil= je pregled iz dashboarda, inače izbor domaćina

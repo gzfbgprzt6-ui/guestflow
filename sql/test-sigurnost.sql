@@ -13,7 +13,7 @@
 --   - istekla / ugašena rezervacija ne otvara vodič
 --   - recepcija ne vidi šifre, vlasnik objekta ne vidi goste
 --   - raspored čistačice i izvoz kalendara ne nose šifre ni imena gostiju
---   - javna tablica objekata ne otkriva tajne stupce
+--   - javna tablica objekata ne otkriva tajne stupce (anon, prijavljeni stranac, javni_objekt)
 --   - dvije rezervacije za iste noći (v7) i plan gosta do odlaska (v7)
 --   - čistačica ne može podmetnuti tuđu adresu slike
 --
@@ -76,7 +76,7 @@ begin
   -- javna tablica objekata: tajni stupci
   begin
     execute 'select count(*) from public.properties where id = $1 and (guest_token is not null or ical_booking_url is not null or ical_airbnb_url is not null)' into n using pid;
-    insert into rez(test, prolazi, napomena) values ('anon ne čita tajne stupce objekta (guest_token, iCal)', n = 0, case when n > 0 then 'ČITLJIVO — vidi odluke 44' else 'skriveno' end);
+    insert into rez(test, prolazi, napomena) values ('anon ne čita tajne stupce objekta (guest_token, iCal)', n = 0, case when n > 0 then 'ČITLJIVO — vidi odluke 44/45 (sql/add-properties-privacy.sql, KORAK B)' else 'skriveno' end);
   exception when insufficient_privilege then insert into rez(test, prolazi, napomena) values ('anon ne čita tajne stupce objekta (guest_token, iCal)', true, 'zabranjeno');
   end;
 
@@ -122,6 +122,14 @@ begin
   update public.properties set name = 'Preuzeto' where id = pid;
   get diagnostics n = row_count;
   insert into rez(test, prolazi, napomena) values ('stranac ne mijenja tuđi objekt', n = 0, n || ' redova');
+  select count(*) into n from public.properties where id = pid;
+  insert into rez(test, prolazi, napomena) values ('prijavljeni stranac ne čita tuđi objekt iz tablice', n = 0, n || ' redova');
+  begin
+    r := public.javni_objekt(slug_, null);
+    insert into rez(test, prolazi, napomena) values ('javna stranica (javni_objekt) bez tajnih stupaca',
+      r->>'slug' = slug_ and not (r ? 'guest_token') and not (r ? 'ical_booking_url') and not (r ? 'ical_airbnb_url'), '');
+  exception when undefined_function then insert into rez(test, prolazi, napomena) values ('javna stranica (javni_objekt) bez tajnih stupaca', false, 'funkcija ne postoji');
+  end;
   perform set_config('role', 'postgres', true);
 
   -- 5) uloge u timu

@@ -54,6 +54,8 @@ Vercel su postavljeni i provjereni.
 - [x] **SQL paket v6 pokrenut 20. 10.** (konektorom, uz potvrdu vlasnika): `add-ical-sukobi.sql`
       (sinkronizacija svakih 10 min, dvostruka rezervacija, stanje uvoza), `add-evisitor.sql`,
       `add-cleaner-checklist.sql`
+- [ ] **Cloudinary (kod kuće, 5 min)**: konzola → Settings → Upload → Upload presets → `odmoria_photos`:
+      dopustiti samo jpg, png, webp, heic i ograničiti veličinu na najviše 2560 px (odluke 44)
 - [ ] **eVisitor** ostaje isključen (`EVISITOR` nije postavljen u Vercelu) dok jedan
       domaćin s eVisitor računom ne prijavi prvog gosta — vidi `docs/odluke.md`, točka 40
 - [ ] **Isprobati na produkciji**: Osnovno (vrsta, kapacitet, stil), Dolazak

@@ -138,6 +138,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
     ├── add-evisitor.sql                 # v6: guest_registrations.evisitor (što je poslano u eVisitor)
     ├── add-cleaner-checklist.sql        # v6: cleaner_links.popis, cleaning_status.kvacice/fotke, ciscenje_popis()
     ├── add-safety-v7.sql                # v7: zabrana preklapanja rezervacija (okidač + zaključavanje), bookings.plan_pri_izradi, mogucnosti_vodica do odlaska
+    ├── add-properties-privacy.sql       # v7: javni_objekt() + tajni stupci objekta (guest_token, iCal) zatvoreni za javnost (KORAK A pa B)
     ├── test-sigurnost.sql               # SIGURNOSNI TEST — pokretati nakon svake veće promjene; sve se poništi (rollback)
     └── fix-missing-columns-and-storage.sql # ALTER TABLE dopune (photo_urls, ical_*, beds/bathrooms/size_m2) + storage bucket policy
 ```
@@ -407,7 +408,7 @@ page_views      -- property_id, view_type, timestamp, country (ISO, iz /api/trac
                    inquiry_email, inquiry_copy, map, guide:<dolazak|kuca|preporuke|domacin>
 ```
 
-Anon (nelogirani) korisnici preko RLS mogu čitati: `properties` (po slugu), `bookings` (samo `is_active=true`, nije isteklo), `sections`/`local_places`/`transport`/`attractions`/`house_rules`/`faq`/`amenities`/`availability` (javno po `property_id`), i smiju `insert` u `page_views`.
+Anon (nelogirani) korisnici preko RLS mogu čitati: `properties` (samo netajni stupci; javna stranica kroz `javni_objekt()`), `bookings` (samo `is_active=true`, nije isteklo), `sections`/`local_places`/`transport`/`attractions`/`house_rules`/`faq`/`amenities`/`availability` (javno po `property_id`), i smiju `insert` u `page_views`.
 
 `sections.ac_info/heating_info/hot_water_info/kitchen_info` spremaju se iz dashboarda ("Upute za korištenje") i **prikazuju se gostu u `h.html`** (`renderHouse()` u `h.html`, zaslon „Wi-Fi i kuća”). U `p.html` ih namjerno nema — javna stranica ne dira `sections`.
 
@@ -839,8 +840,11 @@ Dashboard **ne učitava `odmoria.css`** — ima vlastiti potpun CSS s istim vrij
   je prikazuje bez „Greška:”.
 - `mogucnosti_vodica()` sada je u `add-safety-v7.sql` (bolji od trenutnog plana i
   `bookings.plan_pri_izradi` do odlaska).
-- **Otvoreno (P0):** `properties` je javno čitljiv sa SVIM stupcima
-  (`public_read_by_slug using (true)`) — `guest_token` i iCal adrese. Vidi odluke 44.
+- **Tajni stupci objekta** (odluke 45, `sql/add-properties-privacy.sql`): javna
+  stranica čita objekt kroz `javni_objekt(slug, pod)` (bez `guest_token` i iCal
+  adresa); anon ima stupčana prava bez tajnih stupaca, a `public_read_by_slug`
+  vrijedi samo za anon. **Novi stupac u `properties` anon ne vidi** — `p.html`
+  ga dobiva kroz `javni_objekt`; nikad `select('*')` na `properties` iz javnih stranica.
 
 ## Redizajn v2 — prijenos iz Figme u kod (u tijeku)
 
