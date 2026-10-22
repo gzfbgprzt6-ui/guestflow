@@ -1747,9 +1747,22 @@ export const T = {
   "— slika ili PDF potvrde nije dokaz da je novac stigao.": "— a screenshot or PDF receipt is not proof that the money has arrived.",
   "Je li kapara stigla na vaš račun? Provjerite u svojoj banci — slika ili PDF potvrde nije dokaz uplate. Link možete napraviti i bez kapare, ali tada gost može ne doći bez ikakve naknade.": "Has the deposit reached your account? Check in your bank — a screenshot or PDF receipt is not proof of payment. You can create the link without a deposit, but then the guest may not show up and you get nothing.",
   "Šifra vrata i Wi-Fi otključaju se sat prije prijave i prestaju vrijediti nakon odlaska. Gost ne plati dogovoreno? Deaktivirajte link prije dolaska — šifre tada nikad ne vidi. Šifru vrata mijenjajte između gostiju.": "The door code and Wi-Fi unlock an hour before check-in and stop working after check-out. Guest didn't pay as agreed? Deactivate the link before arrival — they will never see the codes. Change the door code between guests.",
+  "Prijava (check-in)": "Check-in",
+  "Od kada gost može ući": "When the guest can arrive",
+  "Odjava (check-out)": "Check-out",
+  "Do kada gost napušta objekt": "When the guest must leave",
+  "Npr. daljinski je u ladici, 24 °C je najbolje": "E.g. the remote is in the drawer, 24 °C works best",
+  "Npr. termostat je u hodniku": "E.g. the thermostat is in the hallway",
+  "Npr. bojler je uključen, voda je topla za 20 min": "E.g. the boiler is on, water is hot in 20 min",
+  "Npr. kava i začini su u gornjem ormariću": "E.g. coffee and spices are in the top cupboard",
+  "Na upit": "On request",
+  "Gost vidi cijenu na javnoj stranici.": "Guests see the price on the public page.",
+  "Na javnoj stranici piše „Cijena na upit”.": "The public page shows “Price on request”.",
+  "Cijena je spremljena, ali „Na upit” još ne radi — treba pokrenuti sql/add-price-display.sql.": "The price is saved, but “On request” does not work yet — sql/add-price-display.sql needs to be run."
 }
 
 export const P = {
+  "Sezona {}": "Season {}",
   "(najmanje {})": "(at least {})",
   ", {} nije ({})": ", {} not ({})",
   ", {} već postoji": ", {} already exist",

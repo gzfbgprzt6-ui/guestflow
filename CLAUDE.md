@@ -909,6 +909,27 @@ Specifikacija vlasnika (jedinstven sustav za cijeli proizvod). **Paket 1** gotov
   `kapara_posto > 0`); panel rezervacije: deaktivirati link ako gost ne plati. Pomoć: dva odgovora u
   Sigurnosti. Provjera domaćina / zaključani IBAN / 2FA = sljedeći paket (treba SQL i pravnika).
 
+## Dorade vlasnika (22. 10. 2026.)
+
+- **Dashboard:** „Traži pažnju” je preko cijele širine iznad slijeda (`.dn-paznja`, stavke kao kartice);
+  Osnovno = Osnovno | Dovršenost (kartica naslovne fotografije maknuta, `obFoto()` bez elementa ništa ne radi);
+  prijava/odjava kao kućice `.vr2` (isti `#ci-time`/`#co-time`); uređaji 2×2 `.ur4` (polja prazna, samo primjer
+  u placeholderu); cijene tri male kućice `.cj3` (`#pricePreview`/`#minStayPreview` ostaju skriveni za `livePreview()`);
+  sezone su jednake kartice `.sez` („Sezona N”). Gumbi „Pregled vodiča / Pogledaj stranicu” vide se samo u
+  Danas i Objektima (ne u Jezicima) — `body[data-panel]` postavlja `syncGroup()`. Postavke imaju četiri taba:
+  Račun, Obavijesti i Sigurnost su `.nav-van` gumbi bez `data-panel` koji vode u `account.html#…`.
+- **Prikaz cijene „Javno / Na upit”** (`sql/add-price-display.sql`, `properties.prikaz_cijene`): dashboard
+  `setPrikazCijene()`; bez stupca `savePricing()` spremi ostalo i kaže koji SQL. `p.html` (`NA_UPIT`) i
+  `api/stranica.js` (JSON-LD) tada ne pokazuju iznose. `javni_objekt()` vraća cijeli red, pa je ne treba mijenjati.
+- **`p.html`:** galerija visine `clamp(340px, 40vw, 580px)` (manje rezanja), karta preko cijele širine lijevog
+  stupca `16 / 7` (mobitel `4 / 3`).
+- **Vodič prema slici:** naslovna fotografija s imenom i mjestom na njoj (`.naslov--foto`), `renderKarta()` =
+  „Dobro došli!”, datumi i noći, okvir s vremenom dolaska/odjave po fazi; `#glavna` gumb; `renderZakl()` = topli
+  okvir „Podaci za ulazak dostupni od …” dok je zaključano, a nakon otključavanja šifra vrata kroz `secretHtml()`;
+  pločice `#plocice` (Parking, Ulazak s lokotom, Wi-Fi, Domaćin), `#prep-k` preporuke po vrsti (klik otvori
+  Preporuke s tim filtrom), `#popis-k` = „Korisne informacije”. Fotografija vodiča je naslovna fotografija objekta.
+  `sw.js` VERZIJA 16.
+
 ## Redizajn v2 — prijenos iz Figme u kod (u tijeku)
 
 Figma datoteka `BVdEgki8jV7z6Oa3K6Te2h` (faze A, B, C) je vizualni izvor; postojeći

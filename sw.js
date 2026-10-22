@@ -13,7 +13,7 @@
 //  Nova verzija: promijeniti VERZIJA — stara predmemorija se obriše.
 // ============================================================================
 
-const VERZIJA = 'odmoria-vodic-15'
+const VERZIJA = 'odmoria-vodic-16'
 const LJUSKA = '/h/__ljuska'
 
 self.addEventListener('install', e => {

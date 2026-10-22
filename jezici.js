@@ -777,6 +777,25 @@ async function ucitaj(upit, j) {
     return o && o.ok ? o : null
   } catch { return null }
 }
+// vodič prema slici (22. 10. 2026.): dobrodošlica, okvir s vremenom, pločice, preporuke
+dodaj([
+  ['Preporuke tijekom boravka', 'Recommendations for your stay', 'Empfehlungen für Ihren Aufenthalt', 'Consigli per il soggiorno', 'Polecane miejsca na pobyt', 'Doporučení na pobyt'],
+  ['Dobro došli!', 'Welcome!', 'Willkommen!', 'Benvenuti!', 'Witamy!', 'Vítejte!'],
+  ['Dobro došli, {ime}!', 'Welcome, {ime}!', 'Willkommen, {ime}!', 'Benvenuti, {ime}!', 'Witamy, {ime}!', 'Vítejte, {ime}!'],
+  ['Veselimo se vašem dolasku i želimo vam ugodan boravak.', 'We look forward to your arrival and wish you a pleasant stay.', 'Wir freuen uns auf Ihre Ankunft und wünschen Ihnen einen angenehmen Aufenthalt.', 'Vi aspettiamo e vi auguriamo un piacevole soggiorno.', 'Cieszymy się na Twój przyjazd i życzymy miłego pobytu.', 'Těšíme se na váš příjezd a přejeme příjemný pobyt.'],
+  ['Želimo vam ugodan boravak. Sve što trebate je ovdje.', 'Enjoy your stay. Everything you need is here.', 'Schönen Aufenthalt! Alles, was Sie brauchen, finden Sie hier.', 'Buon soggiorno. Tutto ciò che vi serve è qui.', 'Miłego pobytu. Wszystko, czego potrzebujesz, jest tutaj.', 'Příjemný pobyt. Vše potřebné najdete zde.'],
+  ['Nadamo se da ste uživali. Sretan put!', 'We hope you enjoyed it. Safe travels!', 'Wir hoffen, es hat Ihnen gefallen. Gute Reise!', 'Speriamo che vi sia piaciuto. Buon viaggio!', 'Mamy nadzieję, że było miło. Szerokiej drogi!', 'Doufáme, že se vám líbilo. Šťastnou cestu!'],
+  ['danas', 'today', 'heute', 'oggi', 'dziś', 'dnes'],
+  ['sutra', 'tomorrow', 'morgen', 'domani', 'jutro', 'zítra'],
+  ['Dolazak {dan} od {v}', 'Arrival {dan} from {v}', 'Anreise {dan} ab {v}', 'Arrivo {dan} dalle {v}', 'Przyjazd {dan} od {v}', 'Příjezd {dan} od {v}'],
+  ['Odjava {dan} do {v}', 'Check-out {dan} by {v}', 'Abreise {dan} bis {v}', 'Check-out {dan} entro le {v}', 'Wymeldowanie {dan} do {v}', 'Odjezd {dan} do {v}'],
+  ['Ako stignete ranije, javite nam se.', 'If you arrive earlier, let us know.', 'Wenn Sie früher ankommen, melden Sie sich bei uns.', 'Se arrivate prima, fatecelo sapere.', 'Jeśli przyjedziesz wcześniej, daj nam znać.', 'Pokud přijedete dříve, dejte nám vědět.'],
+  ['Popis za odlazak je u Korisnim informacijama.', 'The check-out list is under Useful information.', 'Die Abreise-Checkliste finden Sie unter Nützliche Informationen.', 'La lista per la partenza è in Informazioni utili.', 'Lista na wyjazd jest w Przydatnych informacjach.', 'Seznam k odjezdu najdete v Užitečných informacích.'],
+  ['Trebate kasniju odjavu? Pitajte domaćina.', 'Need a later check-out? Ask your host.', 'Späterer Check-out? Fragen Sie den Gastgeber.', 'Serve un check-out più tardi? Chiedete all’host.', 'Potrzebujesz późniejszego wymeldowania? Zapytaj gospodarza.', 'Potřebujete pozdější odjezd? Zeptejte se hostitele.'],
+  ['Podaci za ulazak dostupni od {t}', 'Access details available from {t}', 'Zugangsdaten verfügbar ab {t}', 'Dati di accesso disponibili dalle {t}', 'Dane do wejścia dostępne od {t}', 'Údaje pro vstup k dispozici od {t}'],
+  ['Iz sigurnosnih razloga šifra vrata i Wi-Fi lozinka vidljivi su od sat vremena prije prijave.', 'For security, the door code and Wi-Fi password appear one hour before check-in.', 'Aus Sicherheitsgründen sind Türcode und WLAN-Passwort ab einer Stunde vor dem Check-in sichtbar.', 'Per sicurezza, il codice della porta e la password Wi-Fi sono visibili da un’ora prima del check-in.', 'Ze względów bezpieczeństwa kod do drzwi i hasło Wi-Fi są widoczne godzinę przed zameldowaniem.', 'Z bezpečnostních důvodů jsou kód dveří a heslo k Wi-Fi vidět hodinu před příjezdem.'],
+  ['Brzo do', 'Quick links', 'Schnellzugriff', 'Accesso rapido', 'Szybki dostęp', 'Rychlý přístup']
+])
 // redizajn vodiča „Pearl” (21. 10. 2026.): popis „Sve za vaš boravak”, detalji, donja traka
 dodaj([
   ['Sve za vaš boravak', 'Everything for your stay', 'Alles für Ihren Aufenthalt', 'Tutto per il tuo soggiorno', 'Wszystko na Twój pobyt', 'Vše pro váš pobyt'],

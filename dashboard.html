@@ -1952,6 +1952,75 @@ body[data-grupa="objekt"] .page-header .eyebrow { display: block; margin-bottom:
 .an3-pod { margin: 8px 0 12px; font: 700 18px/1.3 var(--font-ui); }
 @media (max-width: 1080px) { .an3-red { grid-template-columns: minmax(0, 1fr); } }
 @media (max-width: 780px) { .an3 { grid-template-columns: minmax(0, 1fr); } .an3-ir { grid-template-columns: 90px minmax(0, 1fr) 30px 36px; } }
+
+/* ══ DORADE 22. 10. 2026. (vlasnik): Danas, Osnovno, Dolazak, uređaji, cijene, sezone, zaglavlje ══ */
+.ph-akcije { flex-wrap: nowrap; flex-shrink: 0; }
+.ph-akcije .btn { white-space: nowrap; }
+/* gumbi „Pregled vodiča” / „Pogledaj stranicu” samo tamo gdje se uređuje objekt */
+body:not([data-grupa="pregled"]):not([data-grupa="objekt"]) .ph-akcije,
+body[data-panel="prijevodi"] .ph-akcije { display: none; }
+.nav-van::after { content: "↗"; margin-left: 4px; color: var(--muted); font-size: 12px; }
+
+/* Danas: „Traži pažnju” preko cijele širine, stavke kao kartice u mreži */
+.dn-paznja .dn-lista { grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: 12px; padding: 4px 0 12px; }
+.dn-paznja .dn-red { grid-template-columns: 32px minmax(0, 1fr); align-content: start; gap: 10px 12px; padding: 14px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper); }
+.dn-paznja .dn-red--hitno { border-color: #F3C9C4; background: #FFF8F7; }
+.dn-paznja .dn-red--vazno { border-color: #EED9B4; background: #FFFBF3; }
+.dn-paznja .dn-red > .btn { grid-column: 2; justify-self: start; }
+.dn-paznja .dn-lista > .dn-red:first-child { border-top: 1px solid var(--line); }
+.dn-paznja .dn-lista > .dn-red--hitno:first-child { border-top-color: #F3C9C4; }
+.dn-paznja .dn-lista > .dn-red--vazno:first-child { border-top-color: #EED9B4; }
+
+/* Osnovno: Osnovno | Dovršenost */
+.ob-vrh { grid-template-columns: minmax(0, 1.7fr) minmax(260px, 1fr); }
+@media (max-width: 1280px) { .ob-vrh { grid-template-columns: minmax(0, 1.5fr) minmax(240px, 1fr); } .ob-dov { grid-column: auto; } }
+@media (max-width: 900px) { .ob-vrh { grid-template-columns: minmax(0, 1fr); } }
+
+/* Dolazak: dvije kućice za prijavu i odjavu */
+.vr2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.vr2__k { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; align-items: center; gap: 12px; margin: 0; padding: 14px 16px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--cream); cursor: pointer; }
+.vr2__k:focus-within { border-color: var(--copper); box-shadow: 0 0 0 3px rgba(40,104,99,.12); }
+.vr2__ik { display: grid; width: 44px; height: 44px; place-items: center; border-radius: 50%; background: var(--paper); color: var(--copper); }
+.vr2__t { min-width: 0; }
+.vr2__t b { display: block; color: var(--ink); font: 700 15px/1.3 var(--font-ui); }
+.vr2__t small { display: block; color: var(--muted); font: 500 13px/1.35 var(--font-ui); }
+.vr2__in.input { width: 150px; min-height: 48px; padding: 0 12px; background: var(--paper); font: 700 18px/1 var(--font-ui); font-variant-numeric: tabular-nums; }
+@media (max-width: 700px) { .vr2 { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 400px) { .vr2__k { grid-template-columns: 40px minmax(0, 1fr); } .vr2__ik { width: 40px; height: 40px; } .vr2__in.input { grid-column: 1 / -1; width: 100%; } }
+
+/* Upute za uređaje: 2×2 jednake kućice */
+.ur4 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.ur4__k { display: grid; grid-template-rows: auto 1fr; gap: 10px; min-width: 0; padding: 14px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--cream); }
+.ur4__k label { display: flex; align-items: center; gap: 10px; margin: 0; color: var(--ink); font: 700 15px/1.3 var(--font-ui); }
+.ur4__ik { display: grid; width: 36px; height: 36px; flex: none; place-items: center; border-radius: 50%; background: var(--paper); color: var(--copper); }
+.ur4__ik .ic { width: 18px; height: 18px; }
+.ur4__k .textarea { min-height: 96px; height: 96px; background: var(--paper); resize: vertical; }
+@media (max-width: 700px) { .ur4 { grid-template-columns: minmax(0, 1fr); } }
+
+/* Cijene: tri male kućice */
+.cj3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.cj3__k { display: grid; align-content: start; gap: 8px; min-width: 0; padding: 14px 16px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--cream); }
+.cj3__k > label, .cj3__k > .lbl { margin: 0; color: var(--muted); font: 600 13px/1.3 var(--font-ui); }
+.cj3__in { display: flex; align-items: center; gap: 8px; }
+.cj3__in .input { width: 110px; min-height: 44px; background: var(--paper); font: 700 18px/1 var(--font-ui); font-variant-numeric: tabular-nums; }
+.cj3__in span { color: var(--muted); font: 500 14px/1.2 var(--font-ui); }
+.cj3__k .helper { margin: 0; font-size: 12.5px; }
+.seg { display: inline-grid; grid-auto-flow: column; grid-auto-columns: 1fr; justify-self: start; padding: 3px; border: 1px solid var(--line); border-radius: 10px; background: var(--paper); }
+.seg button { min-height: 38px; padding: 0 14px; border: 0; border-radius: 8px; background: none; color: var(--ink); cursor: pointer; font: 600 14px/1 var(--font-ui); white-space: nowrap; }
+.seg button[aria-checked="true"] { background: var(--copper); color: #fff; }
+.seg button:focus-visible { outline: 2px solid var(--copper); outline-offset: 2px; }
+@media (max-width: 900px) { .cj3 { grid-template-columns: minmax(0, 1fr); } }
+
+/* Sezone: jednake kartice, isti stupci, ništa se ne preklapa */
+.sez-lista { grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 12px; }
+.sez-lista > .helper { grid-column: 1 / -1; }
+.sez { position: relative; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; align-items: end; padding: 14px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--cream); }
+.sez-n { grid-column: 1 / -1; padding-right: 40px; font: 700 14.5px/1.3 var(--font-ui); }
+.sez .item-btn.del { position: absolute; top: 8px; right: 8px; width: 36px; height: 36px; margin: 0; }
+.sez label:nth-of-type(3) { grid-column: 1 / -1; }
+.sez .input { min-height: 44px; padding-inline: 10px; background: var(--paper); font-size: 14.5px; }
+.sez-op { margin: 0; }
+@media (max-width: 600px) { .sez { grid-template-columns: repeat(2, minmax(0, 1fr)); } .sez label:nth-child(3) { grid-column: auto; } .sez label:nth-of-type(3) { grid-column: 1 / -1; } }
 </style>
 <script type="module">import{pokreni,prekidac}from'/domacin-jezik.js';pokreni();prekidac(document.getElementById('jezik-sw'))</script>
 </head>
@@ -2211,7 +2280,10 @@ body[data-grupa="objekt"] .page-header .eyebrow { display: block; margin-bottom:
             <button class="nav-item" type="button" data-panel="objave" data-group="objekt" onclick="nav('objave',this)">Promocija</button>
             <button class="nav-item" type="button" data-panel="analytics" data-group="analitika" onclick="nav('analytics',this)">Analitika</button>
             <button class="nav-item" type="button" data-panel="tim" data-group="tim" onclick="nav('tim',this)">Tim i čišćenje</button>
+            <button class="nav-item nav-van" type="button" data-group="pretplata" onclick="location.href='/account.html'">Račun</button>
             <button class="nav-item" type="button" data-panel="sub" data-group="pretplata" onclick="nav('sub',this)">Pretplata</button>
+            <button class="nav-item nav-van" type="button" data-group="pretplata" onclick="location.href='/account.html#obavijesti'">Obavijesti</button>
+            <button class="nav-item nav-van" type="button" data-group="pretplata" onclick="location.href='/account.html#sigurnost'">Sigurnost</button>
             <button class="nav-item" type="button" data-panel="vise" data-group="vise" onclick="nav('vise',this)">Više</button>
           </nav>
         </div>
@@ -2236,15 +2308,13 @@ body[data-grupa="objekt"] .page-header .eyebrow { display: block; margin-bottom:
             <button type="button" class="dn-k" disabled><span class="dn-k__ik" aria-hidden="true"><svg class="ic"><use href="#i-inbox"/></svg></span><b>—</b><span>Upiti bez odgovora</span></button>
             <button type="button" class="dn-k" disabled><span class="dn-k__ik" aria-hidden="true"><svg class="ic"><use href="#i-sparkles"/></svg></span><b>—</b><span>Čišćenja za potvrdu</span></button>
           </div>
-          <div class="dn-grid">
-            <div class="card dn-card">
-              <div class="dn-h"><h2>Slijed događaja</h2><button type="button" class="dn-link" onclick="openGroup('kalendar')">Kalendar<svg class="ic ic--sm" aria-hidden="true"><use href="#i-chevron-right"/></svg></button></div>
-              <div id="ov-upcoming"><p class="an-empty">Učitavam…</p></div>
-            </div>
-            <div class="card dn-card">
-              <div class="dn-h"><h2>Traži pažnju <span class="dn-broj" id="dn-paznja-broj" hidden></span></h2></div>
-              <div class="dn-lista" id="ov-alerts"><p class="an-empty">Provjeravam…</p></div>
-            </div>
+          <div class="card dn-card dn-paznja">
+            <div class="dn-h"><h2>Traži pažnju <span class="dn-broj" id="dn-paznja-broj" hidden></span></h2></div>
+            <div class="dn-lista" id="ov-alerts"><p class="an-empty">Provjeravam…</p></div>
+          </div>
+          <div class="card dn-card">
+            <div class="dn-h"><h2>Slijed događaja</h2><button type="button" class="dn-link" onclick="openGroup('kalendar')">Kalendar<svg class="ic ic--sm" aria-hidden="true"><use href="#i-chevron-right"/></svg></button></div>
+            <div id="ov-upcoming"><p class="an-empty">Učitavam…</p></div>
           </div>
           <div class="card dn-card">
             <div class="dn-h"><h2>Moji objekti</h2><a class="dn-link" href="/add-property.html"><svg class="ic ic--sm" aria-hidden="true"><use href="#i-plus"/></svg>Dodaj objekt</a></div>
@@ -2416,10 +2486,6 @@ body[data-grupa="objekt"] .page-header .eyebrow { display: block; margin-bottom:
               <div class="kap__i"><label for="kap-size_m2">m²</label><div class="kap__c"><button type="button" onclick="stepCount('size_m2',-5)" aria-label="m² − 5">−</button><input id="kap-size_m2" class="kap__in" type="number" inputmode="numeric" min="0" max="999" data-count="size_m2" value="0" oninput="kapUpis('size_m2',this.value)"><button type="button" onclick="stepCount('size_m2',5)" aria-label="m² + 5">+</button></div></div>
             </div>
           </div>
-          <div class="card ob-foto">
-            <div class="ob-h"><h2>Naslovna fotografija</h2><button type="button" class="dn-link" onclick="nav('photos',document.querySelector('.panelnav [data-panel=photos]'))">Uredi</button></div>
-            <div id="ob-foto"></div>
-          </div>
           <div class="card ob-dov">
             <div class="ob-h"><h2>Dovršenost objekta</h2></div>
             <div class="ob-dov__g"><span class="ob-prsten" id="ob-prsten" style="--p:0"><b id="ob-pct">0%</b></span><p class="helper" id="ob-dov-tx">Još nekoliko detalja i objekt je spreman.</p></div>
@@ -2498,8 +2564,10 @@ body[data-grupa="objekt"] .page-header .eyebrow { display: block; margin-bottom:
           <div class="card">
             <div class="card-head"><div class="card-title-wrap"><span class="card-number">03</span><div><h2>Vrijeme dolaska i odlaska</h2><p>Jasno postavite kada je objekt spreman.</p></div></div></div>
             <div class="form-grid">
-              <div class="field"><label for="ci-time">Check-in od</label><input class="input" id="ci-time" type="time"></div>
-              <div class="field"><label for="co-time">Check-out do</label><input class="input" id="co-time" type="time"></div>
+              <div class="field full"><div class="vr2">
+                <label class="vr2__k" for="ci-time"><span class="vr2__ik" aria-hidden="true"><svg class="ic"><use href="#i-door-open"/></svg></span><span class="vr2__t"><b>Prijava (check-in)</b><small>Od kada gost može ući</small></span><input class="input vr2__in" id="ci-time" type="time"></label>
+                <label class="vr2__k" for="co-time"><span class="vr2__ik" aria-hidden="true"><svg class="ic"><use href="#i-log-out"/></svg></span><span class="vr2__t"><b>Odjava (check-out)</b><small>Do kada gost napušta objekt</small></span><input class="input vr2__in" id="co-time" type="time"></label>
+              </div></div>
               <div class="field"><label for="ci-address">Točna adresa <span class="optional">privatno</span></label><input class="input" id="ci-address"></div>
               <div class="field"><label for="door-code">Kod za ulazak <span class="optional">privatno</span></label><div class="inline-input"><input class="input" id="door-code" type="password" autocomplete="off" style="font-size:1.05rem;letter-spacing:.1em"><button class="input-action" type="button" onclick="pokaziTajnu('door-code',this)" aria-label="Prikaži šifru" aria-pressed="false"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="2.5"/></svg></button></div><small class="helper">Gost je vidi tek sat prije prijave.</small></div>
               <div class="field full"><label for="ci-notes">Upute za dolazak</label><textarea class="textarea" id="ci-notes"></textarea></div>
@@ -2553,11 +2621,11 @@ body[data-grupa="objekt"] .page-header .eyebrow { display: block; margin-bottom:
         <section class="editor-panel" id="section-uredaji" data-panel-content="uredaji">
           <div class="card">
             <div class="card-head"><div class="card-title-wrap"><span class="card-number">i</span><div><h2>Upute za korištenje</h2><p>Kratke informacije za uređaje i sadržaje u objektu.</p></div></div></div>
-            <div class="form-grid">
-              <div class="field"><label for="ac-info">Klima-uređaj</label><textarea class="textarea" id="ac-info"></textarea></div>
-              <div class="field"><label for="heating-info">Grijanje</label><textarea class="textarea" id="heating-info"></textarea></div>
-              <div class="field"><label for="hotwater-info">Topla voda</label><textarea class="textarea" id="hotwater-info"></textarea></div>
-              <div class="field"><label for="kitchen-info">Kuhinja</label><textarea class="textarea" id="kitchen-info"></textarea></div>
+            <div class="ur4">
+              <div class="ur4__k"><label for="ac-info"><span class="ur4__ik" aria-hidden="true"><svg class="ic"><use href="#i-snowflake"/></svg></span>Klima-uređaj</label><textarea class="textarea" id="ac-info" placeholder="Npr. daljinski je u ladici, 24 °C je najbolje"></textarea></div>
+              <div class="ur4__k"><label for="heating-info"><span class="ur4__ik" aria-hidden="true"><svg class="ic"><use href="#i-flame"/></svg></span>Grijanje</label><textarea class="textarea" id="heating-info" placeholder="Npr. termostat je u hodniku"></textarea></div>
+              <div class="ur4__k"><label for="hotwater-info"><span class="ur4__ik" aria-hidden="true"><svg class="ic"><use href="#i-droplets"/></svg></span>Topla voda</label><textarea class="textarea" id="hotwater-info" placeholder="Npr. bojler je uključen, voda je topla za 20 min"></textarea></div>
+              <div class="ur4__k"><label for="kitchen-info"><span class="ur4__ik" aria-hidden="true"><svg class="ic"><use href="#i-utensils"/></svg></span>Kuhinja</label><textarea class="textarea" id="kitchen-info" placeholder="Npr. kava i začini su u gornjem ormariću"></textarea></div>
             </div>
             <div style="margin-top:18px;display:flex;justify-content:flex-end"><button class="btn" onclick="saveDeviceInfo()">Spremi promjene</button></div>
           </div>
@@ -2642,14 +2710,18 @@ body[data-grupa="objekt"] .page-header .eyebrow { display: block; margin-bottom:
           <div id="pricing-alert"></div>
           <div class="card">
             <div class="card-head"><div class="card-title-wrap"><span class="card-number">09</span><div><h2>Cijena boravka</h2><p>Informativna cijena za javnu stranicu objekta.</p></div></div><span class="card-hint">Odmoria ne obrađuje naplatu gosta.</span></div>
-            <div class="price-builder">
-              <div class="price-hero"><small>Po noćenju</small><div class="price-display"><strong id="pricePreview">0 €</strong><span>/ noć</span></div></div>
-              <div class="price-meta"><div class="metric"><span>Minimalno noćenja</span><strong id="minStayPreview">1</strong></div><div class="metric"><span>Prikaz cijene</span><strong>Javno</strong></div></div>
+            <div class="cj3">
+              <div class="cj3__k"><label for="prop-price">Cijena po noćenju</label><div class="cj3__in"><input class="input" id="prop-price" type="number" min="0" step="0.01" oninput="livePreview()"><span>€ / noć</span></div></div>
+              <div class="cj3__k"><label for="prop-minstay">Minimalno noćenja</label><div class="cj3__in"><input class="input" id="prop-minstay" type="number" min="1" oninput="livePreview()"><span>noći</span></div></div>
+              <div class="cj3__k"><span class="lbl" id="pc-lbl">Prikaz cijene</span>
+                <div class="seg" role="radiogroup" aria-labelledby="pc-lbl" id="prikaz-cijene">
+                  <button type="button" role="radio" aria-checked="true" data-pc="javno" onclick="setPrikazCijene('javno')">Javno</button>
+                  <button type="button" role="radio" aria-checked="false" data-pc="na_upit" onclick="setPrikazCijene('na_upit')">Na upit</button>
+                </div>
+                <small class="helper" id="pc-tx">Gost vidi cijenu na javnoj stranici.</small>
+              </div>
             </div>
-            <div class="form-grid" style="margin-top:20px">
-              <div class="field"><label for="prop-price">Cijena po noćenju u eurima</label><input class="input" id="prop-price" type="number" min="0" step="0.01" oninput="livePreview()"></div>
-              <div class="field"><label for="prop-minstay">Minimalno noćenja</label><input class="input" id="prop-minstay" type="number" min="1" oninput="livePreview()"></div>
-            </div>
+            <span hidden><b id="pricePreview"></b><b id="minStayPreview"></b></span>
             <div class="field" style="margin-top:14px;display:flex;align-items:flex-start;gap:10px">
               <input type="checkbox" id="prop-gapfill" style="width:18px;height:18px;margin-top:2px" onchange="toggleGapRow()" oninput="livePreview()">
               <label for="prop-gapfill" style="margin:0">Dopusti kraći boravak ako popunjava prazninu između dvije rezervacije (neovisno o minimalnom broju noćenja)</label>
@@ -3569,6 +3641,7 @@ function fillPropForm(){
   document.getElementById('prop-phone').value=PROP.phone||''
   document.getElementById('prop-email').value=PROP.email||''
   document.getElementById('prop-price').value=PROP.price_per_night||0
+  window.setPrikazCijene(PROP.prikaz_cijene==='na_upit'?'na_upit':'javno',true)
   puniIzravno()
   document.getElementById('prop-minstay').value=PROP.min_stay||1
   document.getElementById('prop-gapfill').checked=!!PROP.allow_gap_fill_stays
@@ -3690,13 +3763,25 @@ window.toggleGapRow=()=>{
   const on=document.getElementById('prop-gapfill').checked
   document.getElementById('gap-row').style.display=on?'':'none'
 }
+// Prikaz cijene (sql/add-price-display.sql): javno = gost vidi iznos, na_upit = „Cijena na upit”
+let PRIKAZ_CIJENE='javno'
+window.setPrikazCijene=(k,tiho)=>{
+  PRIKAZ_CIJENE=k==='na_upit'?'na_upit':'javno'
+  document.querySelectorAll('#prikaz-cijene [data-pc]').forEach(b=>b.setAttribute('aria-checked',String(b.dataset.pc===PRIKAZ_CIJENE)))
+  const tx=document.getElementById('pc-tx');if(tx)tx.textContent=PRIKAZ_CIJENE==='javno'?'Gost vidi cijenu na javnoj stranici.':'Na javnoj stranici piše „Cijena na upit”.'
+  if(!tiho&&window.markDirty)markDirty(document.getElementById('section-pricing'))
+}
 window.savePricing=async()=>{
   if(!PROP)return
   const u={price_per_night:v('prop-price')?+v('prop-price'):0,min_stay:v('prop-minstay')?+v('prop-minstay'):1,allow_gap_fill_stays:document.getElementById('prop-gapfill').checked,
     min_gap_stay:Math.max(1,parseInt(v('prop-mingap'))||3)}
-  const{error}=await sb.from('properties').update(u).eq('id',PROP.id)
+  const promjenaPrikaza=PRIKAZ_CIJENE!==(PROP.prikaz_cijene==='na_upit'?'na_upit':'javno')
+  let{error}=await sb.from('properties').update({...u,prikaz_cijene:PRIKAZ_CIJENE}).eq('id',PROP.id)
+  let bezStupca=false
+  if(error&&/prikaz_cijene/.test(error.message||'')){bezStupca=true;({error}=await sb.from('properties').update(u).eq('id',PROP.id))}
   if(error){showA('pricing-alert','err',error.message);return}
-  Object.assign(PROP,u)
+  Object.assign(PROP,u);if(!bezStupca)PROP.prikaz_cijene=PRIKAZ_CIJENE
+  if(bezStupca&&promjenaPrikaza){showA('pricing-alert','err','Cijena je spremljena, ali „Na upit” još ne radi — treba pokrenuti sql/add-price-display.sql.');return}
   showA('pricing-alert','ok','Spremljeno ✓');toast('Cijena spremljena ✓')
 }
 
@@ -4187,6 +4272,7 @@ const MDuDatum=(md,doD,od)=>{if(!/^\d{2}-\d{2}$/.test(md||''))return '';const y=
 function nacrtajSezone(){
   const el=document.getElementById('sez-lista');if(!el)return
   el.innerHTML=SEZ.length?SEZ.map((x,i)=>`<div class="sez" data-i="${i}">
+      <b class="sez-n">Sezona ${i+1}</b>
       <label><span>Od</span><input class="input" type="date" data-sz="od" value="${esc(MDuDatum(x.od))}" aria-label="Sezona ${i+1} od"></label>
       <label><span>Do</span><input class="input" type="date" data-sz="do" value="${esc(MDuDatum(x.do,true,x.od))}" aria-label="Sezona ${i+1} do"></label>
       <label><span>€ / noć</span><input class="input" data-sz="cijena" type="number" min="1" step="1" value="${esc(String(x.cijena||''))}" aria-label="Sezona ${i+1} cijena"></label>
@@ -5613,6 +5699,7 @@ function syncGroup(id){
   tabs.forEach(t=>{const on=t.dataset.group===g;t.hidden=!on;if(on&&!t.hasAttribute('data-skriven')&&!t.hasAttribute('data-uloga-skriven'))n++;t.setAttribute('aria-current',t===btn?'page':'false')})
   document.getElementById('panelnav-wrap').hidden=n<2
   document.body.dataset.grupa=g
+  document.body.dataset.panel=id
   document.querySelectorAll('.side-link[data-group],.bottom-nav [data-group]').forEach(l=>{
     // mobitel: dio koji nije u donjoj traci pripada „Više”
     const on=l.dataset.group===g||(l.dataset.group==='vise'&&l.closest('.bottom-nav')&&!DONJA.includes(g))

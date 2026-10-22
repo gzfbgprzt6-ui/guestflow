@@ -421,6 +421,23 @@
 .sig__l{display:grid;gap:8px;margin:0;padding-left:20px;list-style:disc;color:var(--text);font-size:15px;line-height:1.55}
 .sig__p{margin:0;color:var(--text-muted);font-size:14px}
 .sig__p a{color:var(--text);font-weight:600}
+
+/* dorade 22. 10. (vlasnik): galerija bez jakog rezanja, karta široka i niska */
+.gal-vrh .gal{grid-template-rows:repeat(2,minmax(0,1fr));height:clamp(340px,40vw,580px)}
+.gal-vrh .gal--1,.gal-vrh .gal--2{grid-template-rows:minmax(0,1fr)}
+.gal-vrh .gal img{object-position:center 55%}
+.loc{grid-template-columns:minmax(0,1fr);gap:20px;align-items:start}
+.loc__copy{grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px 24px}
+.loc__copy > .eyebrow,.loc__copy > h2,.loc__copy > #adr-later{grid-column:1 / -1}
+.loc__copy > #adr-link{grid-column:2;grid-row:3;justify-self:end}
+.loc__place{grid-column:1}
+.map{min-height:0;aspect-ratio:16 / 7;width:100%}
+@media (max-width:760px){
+  .gal-vrh .gal{height:auto}
+  .loc__copy{grid-template-columns:minmax(0,1fr)}
+  .loc__copy > #adr-link{grid-column:1;grid-row:auto;justify-self:stretch}
+  .map{aspect-ratio:4 / 3}
+}
 </style>
 </head>
 <body>
@@ -898,7 +915,7 @@ const MJ_GEN = ['siječnja','veljače','ožujka','travnja','svibnja','lipnja','s
 const noci = (n, j) => L.n(n, 'noć', j)
 const eur = n => L.novac(n)
 
-let PROP = null, nights = 7, price = 0
+let PROP = null, nights = 7, price = 0, NA_UPIT = false
 
 /* Statistika za domaćina (page_views: objekt, vrsta, vrijeme — bez podataka o
    posjetitelju): pregled, upit WhatsAppom / e-mailom / kopiranjem, karta.
@@ -976,6 +993,8 @@ async function loadPage() {
   const stilIzAdrese = new URLSearchParams(location.search).get('stil')
   STIL.primijeni(stilIzAdrese != null ? stilIzAdrese : prop.theme)
   price = najnizaCijena(prop)   // v5: najniža od osnovne i sezonskih cijena („od … / noć”)
+  NA_UPIT = prop.prikaz_cijene === 'na_upit'   // sql/add-price-display.sql: domaćin skriva iznose
+  if (NA_UPIT) price = 0
 
   const [ams, places, txs, atts, rules, faqs] = await Promise.all([
     sb.from('amenities').select('icon,name').eq('property_id', prop.id).eq('enabled', true).order('sort_order'),
@@ -1436,7 +1455,7 @@ const fmtHR = ds => { const [y, m, d] = ds.split('-'); return L.jezik() === 'hr'
 const fmtFull = (ds, j = L.jezik()) => { const [y, m, d] = ds.split('-'); return L.datum(new Date(+y, +m - 1, +d), { godina: true, j }) }
 const setLbl = t => { const e = $('#cal-lbl'); if (e) e.textContent = t }
 // v5: iznos po sezonama (cijene.js — ista pravila kao cijena_boravka() u bazi)
-const iznosOdabranog = () => checkinDs && checkoutDs ? cijenaBoravka(PROP, checkinDs, checkoutDs) : null
+const iznosOdabranog = () => !NA_UPIT && checkinDs && checkoutDs ? cijenaBoravka(PROP, checkinDs, checkoutDs) : null
 const priceTxt = n => { const iz = iznosOdabranog() ?? (price > 0 ? price * n : null); return iz ? ' · ' + t('okvirno {cijena}', { cijena: eur(Math.round(iz)) }) : '' }
 const isSelected = ds => checkinDs && checkoutDs && ds > checkinDs && ds < checkoutDs
 const HINT = () => t('Kliknite datum dolaska, zatim datum odlaska.') +

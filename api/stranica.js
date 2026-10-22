@@ -62,7 +62,7 @@ function glava(prop, javno, baza) {
         'fotografije, dostupnost i izravan kontakt s domaćinom, bez provizije'].filter(Boolean).join(' · '), 160);
   const slike = [prop.cover_photo_url, ...(Array.isArray(prop.photo_urls) ? prop.photo_urls : [])]
     .filter((u, i, a) => u && /^https:\/\//.test(u) && a.indexOf(u) === i);
-  const cijena = parseFloat(prop.price_per_night) || 0;
+  const cijena = prop.prikaz_cijene === 'na_upit' ? 0 : (parseFloat(prop.price_per_night) || 0);
 
   const ld = {
     '@context': 'https://schema.org', '@type': 'LodgingBusiness',
