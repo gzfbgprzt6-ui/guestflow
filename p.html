@@ -413,6 +413,14 @@
 .phead__name{font:700 19px/1.2 var(--font-editorial);letter-spacing:-.01em}
 .hero .zivo{background:var(--bg-soft);color:var(--text-accent)}
 .hero .zivo i{background:var(--action)}
+
+.sig{display:grid;gap:14px;padding:20px;border:1px solid var(--border);border-radius:12px;background:var(--bg-surface)}
+.pg-l #sig-sec{border-top:0}
+.sig__h{display:flex;align-items:center;gap:10px;margin:0;font:700 18px/1.3 var(--font-ui)}
+.sig__h .ic{color:var(--text-accent)}
+.sig__l{display:grid;gap:8px;margin:0;padding-left:20px;list-style:disc;color:var(--text);font-size:15px;line-height:1.55}
+.sig__p{margin:0;color:var(--text-muted);font-size:14px}
+.sig__p a{color:var(--text);font-weight:600}
 </style>
 </head>
 <body>
@@ -465,6 +473,7 @@
   <symbol id="i-cigarette" viewBox="0 0 24 24"><path d="M17 12H3a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h14" /> <path d="M18 8c0-2.5-2-2.5-2-5" /> <path d="M21 16a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1" /> <path d="M22 8c0-2.5-2-2.5-2-5" /> <path d="M7 12v4" /></symbol>
   <symbol id="i-arrow-up-right" viewBox="0 0 24 24"><path d="M7 7h10v10" /> <path d="M7 17 17 7" /></symbol>
   <symbol id="i-arrow-left" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7" /> <path d="M19 12H5" /></symbol>
+  <symbol id="i-shield-check" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></symbol>
   <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" /></symbol>
   <symbol id="i-chevron-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" /></symbol>
   <symbol id="i-chevron-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></symbol>
@@ -776,6 +785,20 @@
     </div>
   </section>
 
+  <!-- sigurna izravna rezervacija (21. 10. 2026.): Odmoria ne prima uplate; gost i domaćin dogovaraju izravno -->
+  <section class="sec" id="sig-sec" aria-labelledby="sig-h">
+    <div class="wrap sig">
+      <h2 class="sig__h" id="sig-h"><svg class="ic" aria-hidden="true"><use href="#i-shield-check"/></svg><span>Sigurna izravna rezervacija</span></h2>
+      <ul class="sig__l">
+        <li>Odmoria ne prima uplate i nikad ne traži podatke kartice. Dogovor i plaćanje su izravno između vas i domaćina.</li>
+        <li>Upit nije rezervacija. Rezervacija vrijedi kad je domaćin potvrdi.</li>
+        <li>Prije uplate kapare razgovarajte s domaćinom — telefonom ili porukom s ove stranice.</li>
+        <li>Pri uplati vaša banka pokazuje ime primatelja. Ako se ne podudara s imenom domaćina, ne uplaćujte.</li>
+      </ul>
+      <p class="sig__p"><span>Nešto nije u redu sa stranicom?</span> <a id="sig-prijava" href="mailto:podrska@odmoria.com">Prijavi stranicu</a></p>
+    </div>
+  </section>
+
   <!-- kontakt -->
   </div>
   <div class="pg-r">
@@ -789,6 +812,7 @@
         <a class="btn btn--primary" id="sum-cal" href="#dostupnost">Provjeri dostupnost</a>
         <a class="btn btn--secondary" href="#upit">Pošalji upit domaćinu</a>
         <p class="t-meta">Upit nije potvrđena rezervacija — domaćin vam odgovara izravno.</p>
+        <p class="t-meta">Odmoria ne prima uplate. <a href="#sig-sec">Kako sigurno rezervirati</a></p>
         <p class="t-meta">Bez provizije. Termin i plaćanje dogovarate izravno s domaćinom.</p>
     </aside>
   </div>
@@ -1127,7 +1151,14 @@ function buildFacts(prop) {
   $('#facts').innerHTML = f.map(([ic, t]) => `<li class="fact">${ico(ic, 'ic--lg')}<span>${esc(t)}</span></li>`).join('')
 }
 
+function buildSig(prop) {
+  const a = $('#sig-prijava'); if (!a) return
+  const adr = location.origin + location.pathname
+  a.href = 'mailto:podrska@odmoria.com?subject=' + encodeURIComponent(t('Prijava stranice') + ': ' + (prop.name || prop.slug || ''))
+    + '&body=' + encodeURIComponent(adr + '\n\n' + t('Opišite što nije u redu:') + '\n')
+}
 function buildSummary(prop) {
+  buildSig(prop)
   $('#sum-price').textContent = price > 0 ? t('od {cijena} / noć', { cijena: eur(price) }) : t('Cijena na upit')
   const s = [prop.min_stay && +prop.min_stay > 1 && t('Najmanje {n}', { n: noci(+prop.min_stay) }),
              prop.max_guests && gostiju(prop.max_guests)].filter(Boolean)

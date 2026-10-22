@@ -2765,7 +2765,7 @@ body[data-grupa="objekt"] .page-header .eyebrow { display: block; margin-bottom:
   <textarea class="textarea" id="po-tx" rows="11" data-bez-spremanja style="margin-top:10px"></textarea>
   <p class="helper" id="po-upoz" hidden></p>
   <div class="po-akc" id="po-akc"></div>
-  <p class="helper" style="margin-top:10px">Kad kapara stigne na vaš račun, kliknite „Prihvati i napravi link” — gost dobiva link za vodič.</p>
+  <p class="helper" style="margin-top:10px">Kad kapara stigne na vaš račun, kliknite „Prihvati i napravi link” — gost dobiva link za vodič. <b>Uplatu provjerite u svojoj banci</b> — slika ili PDF potvrde nije dokaz da je novac stigao.</p>
 </div>
             </aside>
           </div>
@@ -4293,13 +4293,13 @@ function iqPopuni(u){
 /* Ponuda na jeziku gosta (hr, en, de, it); pl/cs → engleski, kao poruka s javne stranice */
 const PO_TX={
   hr:{poz:i=>`Dobar dan${i?', '+i:''}!`,slob:(t,n,o)=>`Termin ${t} (${n}) u objektu ${o} je slobodan.`,cij:(x,p,s)=>`Cijena boravka: ${x}${p?` (s ${p} % popusta za povratne goste, umjesto ${s})`:''}.`,bez:'Cijena boravka: [upišite iznos].',
-      kap:(k,p,d)=>`Za potvrdu rezervacije molim kaparu od ${k} (${p} %) do ${d}:`,opis:'Opis plaćanja: Kapara',prim:'Primatelj',ost:x=>`Ostatak (${x}) plaćate pri dolasku.`,link:'Kad kapara stigne, poslat ću vam link s uputama za dolazak.',kraj:'Lijep pozdrav,',noc:n=>A.noci(n)},
+      kap:(k,p,d)=>`Za potvrdu rezervacije molim kaparu od ${k} (${p} %) do ${d}:`,opis:'Opis plaćanja: Kapara',prim:'Primatelj',potv:'Rezervacija je potvrđena kad kapara stigne na moj račun; do tada termin nije rezerviran.',ost:x=>`Ostatak (${x}) plaćate pri dolasku.`,link:'Kad kapara stigne, poslat ću vam link s uputama za dolazak.',kraj:'Lijep pozdrav,',noc:n=>A.noci(n)},
   en:{poz:i=>`Hello${i?' '+i:''},`,slob:(t,n,o)=>`${o} is available for ${t} (${n}).`,cij:(x,p,s)=>`Price for the stay: ${x}${p?` (${p} % returning-guest discount, instead of ${s})`:''}.`,bez:'Price for the stay: [enter amount].',
-      kap:(k,p,d)=>`To confirm the booking, please pay a deposit of ${k} (${p} %) by ${d}:`,opis:'Payment reference: Deposit',prim:'Beneficiary',ost:x=>`The rest (${x}) is paid on arrival.`,link:'Once the deposit arrives, I will send you a link with arrival instructions.',kraj:'Kind regards,',noc:n=>n+' '+(n===1?'night':'nights')},
+      kap:(k,p,d)=>`To confirm the booking, please pay a deposit of ${k} (${p} %) by ${d}:`,opis:'Payment reference: Deposit',prim:'Beneficiary',potv:'The booking is confirmed once the deposit reaches my account; until then the dates are not reserved.',ost:x=>`The rest (${x}) is paid on arrival.`,link:'Once the deposit arrives, I will send you a link with arrival instructions.',kraj:'Kind regards,',noc:n=>n+' '+(n===1?'night':'nights')},
   de:{poz:i=>`Hallo${i?' '+i:''},`,slob:(t,n,o)=>`${o} ist für ${t} (${n}) frei.`,cij:(x,p,s)=>`Preis für den Aufenthalt: ${x}${p?` (${p} % Rabatt für wiederkehrende Gäste, statt ${s})`:''}.`,bez:'Preis für den Aufenthalt: [Betrag eintragen].',
-      kap:(k,p,d)=>`Zur Bestätigung der Buchung bitte ich um eine Anzahlung von ${k} (${p} %) bis ${d}:`,opis:'Verwendungszweck: Anzahlung',prim:'Empfänger',ost:x=>`Den Rest (${x}) zahlen Sie bei Ankunft.`,link:'Sobald die Anzahlung eingeht, schicke ich Ihnen einen Link mit der Anreisebeschreibung.',kraj:'Viele Grüße,',noc:n=>n+' '+(n===1?'Nacht':'Nächte')},
+      kap:(k,p,d)=>`Zur Bestätigung der Buchung bitte ich um eine Anzahlung von ${k} (${p} %) bis ${d}:`,opis:'Verwendungszweck: Anzahlung',prim:'Empfänger',potv:'Die Buchung ist bestätigt, sobald die Anzahlung auf meinem Konto eingeht; bis dahin ist der Termin nicht reserviert.',ost:x=>`Den Rest (${x}) zahlen Sie bei Ankunft.`,link:'Sobald die Anzahlung eingeht, schicke ich Ihnen einen Link mit der Anreisebeschreibung.',kraj:'Viele Grüße,',noc:n=>n+' '+(n===1?'Nacht':'Nächte')},
   it:{poz:i=>`Buongiorno${i?' '+i:''},`,slob:(t,n,o)=>`${o} è disponibile per ${t} (${n}).`,cij:(x,p,s)=>`Prezzo del soggiorno: ${x}${p?` (sconto ${p} % per ospiti abituali, invece di ${s})`:''}.`,bez:'Prezzo del soggiorno: [inserire importo].',
-      kap:(k,p,d)=>`Per confermare la prenotazione chiedo una caparra di ${k} (${p} %) entro il ${d}:`,opis:'Causale: Caparra',prim:'Beneficiario',ost:x=>`Il resto (${x}) si paga all'arrivo.`,link:"Appena arriva la caparra, le invio il link con le istruzioni per l'arrivo.",kraj:'Cordiali saluti,',noc:n=>n+' '+(n===1?'notte':'notti')}
+      kap:(k,p,d)=>`Per confermare la prenotazione chiedo una caparra di ${k} (${p} %) entro il ${d}:`,opis:'Causale: Caparra',prim:'Beneficiario',potv:'La prenotazione è confermata quando la caparra arriva sul mio conto; fino ad allora le date non sono riservate.',ost:x=>`Il resto (${x}) si paga all'arrivo.`,link:"Appena arriva la caparra, le invio il link con le istruzioni per l'arrivo.",kraj:'Cordiali saluti,',noc:n=>n+' '+(n===1?'notte':'notti')}
 }
 window.ponudaTekst=()=>{
   const u=PONUDA;if(!u)return
@@ -4318,7 +4318,7 @@ window.ponudaTekst=()=>{
   const red=[j.poz(ime),'',j.slob(termin,j.noc(n),PROP.name),iznos?j.cij(formatEur(iznos),kodOk?pv.posto:0,formatEur(puni)):j.bez]
   if(posto>0&&iznos){
     red.push('',j.kap(formatEur(kap),posto,`${doD.getDate()}. ${doD.getMonth()+1}.`),
-      `IBAN: ${iban||'[IBAN]'}`,`${j.prim}: ${prim}`,`${j.opis} ${PROP.name} ${A.fmtKratko(u.checkin_date)}`,'',j.ost(formatEur(iznos-kap)))
+      `IBAN: ${iban||'[IBAN]'}`,`${j.prim}: ${prim}`,`${j.opis} ${PROP.name} ${A.fmtKratko(u.checkin_date)}`,'',j.potv,j.ost(formatEur(iznos-kap)))
   }
   red.push('',j.link,'',j.kraj+(potpis?'\n'+potpis:''))
   const tx=red.join('\n')
@@ -4666,6 +4666,8 @@ window.prihvatiUpit=async id=>{
   const u=UPITI.find(x=>x.id===id);if(!u)return
   const z=zauzeteNoci(u.checkin_date,u.checkout_date)
   if(z&&!await potvrdi(`${z} ${A.mn(z,'noć','noći','noći')} u tom terminu već je zauzeto. Svejedno prihvatiti upit?`,{da:'Svejedno prihvati'}))return
+  // izravni dogovor: link za vodič tek kad je novac stvarno na računu (zaštita domaćina)
+  if(imaMogucnost(planObjekta(),'izravno')&&(Number(PROP.kapara_posto)||0)>0&&!await potvrdi('Je li kapara stigla na vaš račun? Provjerite u svojoj banci — slika ili PDF potvrde nije dokaz uplate. Link možete napraviti i bez kapare, ali tada gost može ne doći bez ikakve naknade.',{da:'Prihvati i napravi link'}))return
   const napomena=[u.guests?u.guests+' '+A.mn(u.guests,'gost','gosta','gostiju'):'','upit s javne stranice'].filter(Boolean).join(' · ')
   const r=await napraviRezervaciju({name:u.guest_name,note:napomena,ci:u.checkin_date,co:u.checkout_date,email:u.guest_email||''})
   if(r.error){toast('Greška: '+r.error);return}
@@ -5796,7 +5798,7 @@ function bkPanel(b){
     <div class="bk-p__link"><div class="bk-p__lh"><b>Link na vodič za gosta</b><span class="iq-st iq-st--${act?'ok':'out'}">${act?'Aktivan':'Ne vrijedi'}</span></div>
       <div class="link-url"><span>${esc(prettyUrl(url))}</span></div>
       ${act?`<div class="bk-p__akc"><button class="btn small" type="button" onclick="cpBk('${b.token}')">Kopiraj link</button><a class="btn secondary small" href="https://wa.me/?text=${encodeURIComponent(poruka)}" target="_blank" rel="noopener">Pošalji WhatsAppom</a></div>
-      <p class="helper">Šifra vrata i Wi-Fi otključaju se sat prije prijave i prestaju vrijediti nakon odlaska.</p>`:''}</div>
+      <p class="helper">Šifra vrata i Wi-Fi otključaju se sat prije prijave i prestaju vrijediti nakon odlaska. Gost ne plati dogovoreno? Deaktivirajte link prije dolaska — šifre tada nikad ne vidi. Šifru vrata mijenjajte između gostiju.</p>`:''}</div>
     ${PRIJAVE_OK&&(act||pr)?`<button class="btn secondary small bk-p__gosti" type="button" onclick="otvoriGoste('${b.id}')">${pr?'Podaci gostiju · '+pr.osobe.length+' '+A.mn(pr.osobe.length,'osoba','osobe','osoba'):'Podaci gostiju · čeka podatke'}</button>`:''}
     <div class="bk-p__opasno"><small>Opasne radnje</small>${act?`<button class="btn danger small" type="button" onclick="deactBk('${b.id}')">Deaktiviraj link</button>`:`<button class="btn danger small" type="button" onclick="delBk('${b.id}')">Obriši rezervaciju</button>`}</div>`
 }

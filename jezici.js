@@ -805,6 +805,21 @@ dodaj([
   ['Pogledano', 'Viewed', 'Angesehen', 'Visto', 'Obejrzane', 'Zobrazeno']
 ])
 
+// sigurna izravna rezervacija (javna stranica, 21. 10. 2026.)
+dodaj([
+  ['Sigurna izravna rezervacija', 'Safe direct booking', 'Sicher direkt buchen', 'Prenotazione diretta sicura', 'Bezpieczna rezerwacja bezpośrednia', 'Bezpečná přímá rezervace'],
+  ['Odmoria ne prima uplate i nikad ne traži podatke kartice. Dogovor i plaćanje su izravno između vas i domaćina.', 'Odmoria does not take payments and never asks for card details. The agreement and payment are directly between you and the host.', 'Odmoria nimmt keine Zahlungen entgegen und fragt nie nach Kartendaten. Vereinbarung und Zahlung erfolgen direkt zwischen Ihnen und dem Gastgeber.', 'Odmoria non riceve pagamenti e non chiede mai i dati della carta. Accordo e pagamento avvengono direttamente tra te e l’host.', 'Odmoria nie przyjmuje płatności i nigdy nie prosi o dane karty. Umowa i płatność są bezpośrednio między Tobą a gospodarzem.', 'Odmoria nepřijímá platby a nikdy nežádá údaje o kartě. Dohoda i platba probíhají přímo mezi vámi a hostitelem.'],
+  ['Upit nije rezervacija. Rezervacija vrijedi kad je domaćin potvrdi.', 'An inquiry is not a booking. The booking is valid once the host confirms it.', 'Eine Anfrage ist keine Buchung. Die Buchung gilt, sobald der Gastgeber sie bestätigt.', 'Una richiesta non è una prenotazione. La prenotazione è valida quando l’host la conferma.', 'Zapytanie nie jest rezerwacją. Rezerwacja obowiązuje po potwierdzeniu przez gospodarza.', 'Poptávka není rezervace. Rezervace platí, jakmile ji hostitel potvrdí.'],
+  ['Prije uplate kapare razgovarajte s domaćinom — telefonom ili porukom s ove stranice.', 'Before paying a deposit, talk to the host — by phone or a message from this page.', 'Sprechen Sie vor einer Anzahlung mit dem Gastgeber — telefonisch oder per Nachricht von dieser Seite.', 'Prima di pagare la caparra, parla con l’host — al telefono o con un messaggio da questa pagina.', 'Przed wpłatą zaliczki porozmawiaj z gospodarzem — telefonicznie lub wiadomością z tej strony.', 'Před zaplacením zálohy si promluvte s hostitelem — telefonicky nebo zprávou z této stránky.'],
+  ['Pri uplati vaša banka pokazuje ime primatelja. Ako se ne podudara s imenom domaćina, ne uplaćujte.', 'When you pay, your bank shows the recipient’s name. If it does not match the host’s name, do not pay.', 'Bei der Überweisung zeigt Ihre Bank den Namen des Empfängers. Stimmt er nicht mit dem Namen des Gastgebers überein, zahlen Sie nicht.', 'Al momento del pagamento la tua banca mostra il nome del beneficiario. Se non corrisponde al nome dell’host, non pagare.', 'Przy przelewie bank pokazuje nazwę odbiorcy. Jeśli nie zgadza się z nazwiskiem gospodarza, nie płać.', 'Při platbě vám banka ukáže jméno příjemce. Pokud neodpovídá jménu hostitele, neplaťte.'],
+  ['Nešto nije u redu sa stranicom?', 'Something wrong with this page?', 'Stimmt etwas mit dieser Seite nicht?', 'Qualcosa non va con questa pagina?', 'Coś jest nie tak z tą stroną?', 'Něco není v pořádku s touto stránkou?'],
+  ['Prijavi stranicu', 'Report this page', 'Seite melden', 'Segnala la pagina', 'Zgłoś stronę', 'Nahlásit stránku'],
+  ['Prijava stranice', 'Page report', 'Seitenmeldung', 'Segnalazione pagina', 'Zgłoszenie strony', 'Nahlášení stránky'],
+  ['Opišite što nije u redu:', 'Describe what is wrong:', 'Beschreiben Sie, was nicht stimmt:', 'Descrivi cosa non va:', 'Opisz, co jest nie tak:', 'Popište, co není v pořádku:'],
+  ['Odmoria ne prima uplate.', 'Odmoria does not take payments.', 'Odmoria nimmt keine Zahlungen entgegen.', 'Odmoria non riceve pagamenti.', 'Odmoria nie przyjmuje płatności.', 'Odmoria nepřijímá platby.'],
+  ['Kako sigurno rezervirati', 'How to book safely', 'So buchen Sie sicher', 'Come prenotare in sicurezza', 'Jak bezpiecznie rezerwować', 'Jak bezpečně rezervovat']
+])
+
 // zahtjev poslan unaprijed (usporedo s podacima stranice), po jeziku
 const RANI = new Map()
 export function unaprijed(upit) { if (!RANI.has(J)) RANI.set(J, ucitaj(upit, J)) }

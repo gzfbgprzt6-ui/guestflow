@@ -1743,6 +1743,10 @@ export const T = {
   "Plan, broj objekata i naplata. Račun, obavijesti i sigurnost su u Postavkama računa.": "Plan, number of properties and billing. Account, notifications and security are in Account settings.",
   "bez linka za vodič": "no guide link",
   "Zadani izgled — mat perla, bijele plohe i petrol.": "Default look — matte pearl, white surfaces and petrol.",
+  "Uplatu provjerite u svojoj banci": "Check the payment in your own bank",
+  "— slika ili PDF potvrde nije dokaz da je novac stigao.": "— a screenshot or PDF receipt is not proof that the money has arrived.",
+  "Je li kapara stigla na vaš račun? Provjerite u svojoj banci — slika ili PDF potvrde nije dokaz uplate. Link možete napraviti i bez kapare, ali tada gost može ne doći bez ikakve naknade.": "Has the deposit reached your account? Check in your bank — a screenshot or PDF receipt is not proof of payment. You can create the link without a deposit, but then the guest may not show up and you get nothing.",
+  "Šifra vrata i Wi-Fi otključaju se sat prije prijave i prestaju vrijediti nakon odlaska. Gost ne plati dogovoreno? Deaktivirajte link prije dolaska — šifre tada nikad ne vidi. Šifru vrata mijenjajte između gostiju.": "The door code and Wi-Fi unlock an hour before check-in and stop working after check-out. Guest didn't pay as agreed? Deactivate the link before arrival — they will never see the codes. Change the door code between guests.",
 }
 
 export const P = {
