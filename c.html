@@ -60,6 +60,14 @@ main{max-width:760px;margin-inline:auto;padding:32px 16px 64px}
 .pop__dod .t-meta{flex:1 1 160px}
 .boot{min-height:60vh;display:grid;place-items:center}
 @media (max-width:520px){.dan{grid-template-columns:minmax(0,1fr);gap:8px}}
+
+/* redizajn „Pearl”: crvena samo za „ne mogu”, odabir u boji akcije, gumbi ≥ 44 px */
+.tag--out{background:var(--bg-wash);color:var(--text)}
+.tag--in{background:var(--bg-soft);color:var(--text-accent)}
+.jav__btn button{min-height:44px;border-radius:8px}
+.jav__btn button[aria-pressed="true"]{border-color:var(--action);background:var(--action);color:#fff}
+.pop__traka i{background:var(--action)}
+.pop>label input{accent-color:var(--action)}
 </style>
 </head>
 <body>

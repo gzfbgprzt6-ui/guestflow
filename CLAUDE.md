@@ -897,8 +897,17 @@ Specifikacija vlasnika (jedinstven sustav za cijeli proizvod). **Paket 1** gotov
   Pregled/Sadržaji/Lokacija/Dostupnost/Pitanja. *Naslovnica*: „Vaš smještaj. Sve na svom mjestu.”, bez
   tamnih blokova. **Namjerno nije preuzeto sa slika:** chat, „polog za štetu”, „Najpopularnije”,
   Destinacije/Inspiracija, favoriti, lijevak konverzije.
-- **Ostalo:** račun (Postavke: Račun/Pretplata/Obavijesti/Sigurnost), pomoć, pravne stranice, admin i
-  `c.html` zasad imaju samo novu paletu i pismo.
+- **Postavke** (`account.html`): četiri taba Račun · Pretplata · Obavijesti · Sigurnost (`TABOVI`
+  na vrhu modula — zamka kao `STATES`; `#pretplata`/`#obavijesti`/`#sigurnost` u adresi), podcrtani tabovi.
+  `forms.css` bez stare tinte (akcija `var(--action)`). `c.html`: „Odlazak” neutralno, odabir u boji akcije.
+  Admin: bijeli logo na tamnoj traci (tamna traka = jasno administratorski dio). Pomoć i pravne
+  stranice samo nova paleta.
+- **Sigurna izravna rezervacija** (22. 10. 2026.): `p.html` `#sig-sec` (Odmoria ne prima uplate, upit
+  nije rezervacija, razgovor prije kapare, ime primatelja u banci) + „Prijavi stranicu” (`buildSig()`,
+  mailto podrške s adresom), 6 jezika. Dashboard: ponuda (`PO_TX.potv`) kaže da je termin rezerviran tek
+  kad kapara stigne; `prihvatiUpit()` pita je li kapara na računu (samo uz mogućnost `izravno` i
+  `kapara_posto > 0`); panel rezervacije: deaktivirati link ako gost ne plati. Pomoć: dva odgovora u
+  Sigurnosti. Provjera domaćina / zaključani IBAN / 2FA = sljedeći paket (treba SQL i pravnika).
 
 ## Redizajn v2 — prijenos iz Figme u kod (u tijeku)
 

@@ -58,6 +58,16 @@
 .sub-akcije{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
 @media (max-width:760px){.plans{grid-template-columns:minmax(0,1fr)}}
 @media (max-width:420px){.tab{padding:0 10px;font-size:15px}}
+
+/* redizajn „Pearl”: četiri taba, tabovi se pomiču vodoravno na mobitelu */
+.tabs{overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:none;white-space:nowrap}
+.sig-l{display:grid;gap:8px;margin:0;padding-left:20px;list-style:disc;font-size:15px;line-height:1.55}
+.tabs{gap:4px;border-bottom:1px solid var(--border)}
+.tab,.tab:hover{min-height:44px;margin-bottom:-1px;padding:0 12px;border:0;border-bottom:2px solid transparent;border-radius:0;background:transparent;color:var(--text-muted)}
+.tab:hover{color:var(--text)}
+.tab[aria-selected="true"]{border-bottom-color:var(--action);background:transparent;color:var(--text)}
 </style>
 <script type="module">import{pokreni,prekidac}from'/domacin-jezik.js';pokreni();prekidac(document.getElementById('jezik-sw'))</script>
 </head>
@@ -72,10 +82,12 @@
 
 <div class="main" id="main-app" style="display:none">
   <main class="wrap">
-    <h1 class="page-title">Račun</h1>
-    <div class="tabs" role="tablist" aria-label="Račun">
-      <button class="tab" role="tab" id="t-profil" aria-controls="p-profil" aria-selected="true" onclick="openTab('profil')">Profil i sigurnost</button>
-      <button class="tab" role="tab" id="t-pretplata" aria-controls="p-pretplata" aria-selected="false" tabindex="-1" onclick="openTab('pretplata')">Pretplata i limiti</button>
+    <h1 class="page-title">Postavke</h1>
+    <div class="tabs" role="tablist" aria-label="Postavke">
+      <button class="tab" role="tab" id="t-profil" aria-controls="p-profil" aria-selected="true" onclick="openTab('profil')">Račun</button>
+      <button class="tab" role="tab" id="t-pretplata" aria-controls="p-pretplata" aria-selected="false" tabindex="-1" onclick="openTab('pretplata')">Pretplata</button>
+      <button class="tab" role="tab" id="t-obavijesti" aria-controls="p-obavijesti" aria-selected="false" tabindex="-1" onclick="openTab('obavijesti')">Obavijesti</button>
+      <button class="tab" role="tab" id="t-sigurnost" aria-controls="p-sigurnost" aria-selected="false" tabindex="-1" onclick="openTab('sigurnost')">Sigurnost</button>
     </div>
 
     <!-- ============ PROFIL I SIGURNOST ============ -->
@@ -102,6 +114,50 @@
         </div>
       </section>
 
+
+
+      <section class="card danger">
+        <h2 class="card-head">Brisanje računa</h2>
+        <div class="card-body">
+          <p class="danger-text">Trajno i nepovratno: brišu se svi objekti, linkovi, rezervacije, recenzije i podaci gostiju. Privatni linkovi gostiju prestaju raditi. Ako plaćate karticom, prvo otkažite pretplatu.</p>
+          <div class="alert alert-err" id="delete-err" role="alert"></div>
+          <div class="fg" id="confirm-wrap">
+            <label for="confirm-input">Za potvrdu upišite: obriši račun</label>
+            <input class="fi" id="confirm-input" autocomplete="off" oninput="checkDelete()">
+          </div>
+          <button class="btn-red" type="button" id="delete-btn" onclick="handleDelete()" disabled><span id="delete-btn-txt">Obriši račun</span></button>
+          <p class="fg-hint" style="margin-top:10px;color:var(--danger)">Gumb se uključuje tek kad je potvrda upisana točno.</p>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============ OBAVIJESTI ============ -->
+    <div role="tabpanel" id="p-obavijesti" aria-labelledby="t-obavijesti" hidden>
+      <section class="card">
+        <h2 class="card-head">E-mail obavijesti</h2>
+        <div class="card-body">
+          <div class="switch-row">
+            <div><b id="notif-l">Važne obavijesti</b><span>Novi upit gosta, istek plana, problem sa sinkronizacijom kalendara.</span></div>
+            <button class="switch" type="button" role="switch" aria-checked="true" aria-labelledby="notif-l" data-obavijest="vazne" onclick="toggleNotif(this)"></button>
+          </div>
+          <div class="switch-row">
+            <div><b id="notif-n">Novosti i savjeti</b><span>Nove mogućnosti Odmorie i savjeti za više rezervacija, najviše jednom mjesečno.</span></div>
+            <button class="switch" type="button" role="switch" aria-checked="false" aria-labelledby="notif-n" data-obavijest="novosti" onclick="toggleNotif(this)"></button>
+          </div>
+          <p class="fg-hint" id="notif-hint">Izbor se sprema uz vaš račun. E-mailove počinjemo slati kad uključimo slanje pošte.</p>
+        </div>
+      </section>
+      <section class="card">
+        <h2 class="card-head">Obavijesti na mobitelu</h2>
+        <div class="card-body">
+          <p class="fg-hint" style="margin:0">Novi upit, čistačica ne može doći, otkazano na platformi — uključuju se na svakom uređaju posebno: u aplikaciji kliknite zvono gore desno → „Obavijesti na ovom uređaju”.</p>
+          <div class="save-row"><a class="btn-out" href="/dashboard.html">Otvori aplikaciju</a></div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============ SIGURNOST ============ -->
+    <div role="tabpanel" id="p-sigurnost" aria-labelledby="t-sigurnost" hidden>
       <section class="card">
         <h2 class="card-head">Promjena lozinke</h2>
         <p class="card-sub">Najmanje 8 znakova.</p>
@@ -125,33 +181,14 @@
           </div>
         </div>
       </section>
-
       <section class="card">
-        <h2 class="card-head">Obavijesti</h2>
+        <h2 class="card-head">Dobro je znati</h2>
         <div class="card-body">
-          <div class="switch-row">
-            <div><b id="notif-l">Važne obavijesti</b><span>Novi upit gosta, istek plana, problem sa sinkronizacijom kalendara.</span></div>
-            <button class="switch" type="button" role="switch" aria-checked="true" aria-labelledby="notif-l" data-obavijest="vazne" onclick="toggleNotif(this)"></button>
-          </div>
-          <div class="switch-row">
-            <div><b id="notif-n">Novosti i savjeti</b><span>Nove mogućnosti Odmorie i savjeti za više rezervacija, najviše jednom mjesečno.</span></div>
-            <button class="switch" type="button" role="switch" aria-checked="false" aria-labelledby="notif-n" data-obavijest="novosti" onclick="toggleNotif(this)"></button>
-          </div>
-          <p class="fg-hint" id="notif-hint">Izbor se sprema uz vaš račun. E-mailove počinjemo slati kad uključimo slanje pošte.</p>
-        </div>
-      </section>
-
-      <section class="card danger">
-        <h2 class="card-head">Brisanje računa</h2>
-        <div class="card-body">
-          <p class="danger-text">Trajno i nepovratno: brišu se svi objekti, linkovi, rezervacije, recenzije i podaci gostiju. Privatni linkovi gostiju prestaju raditi. Ako plaćate karticom, prvo otkažite pretplatu.</p>
-          <div class="alert alert-err" id="delete-err" role="alert"></div>
-          <div class="fg" id="confirm-wrap">
-            <label for="confirm-input">Za potvrdu upišite: obriši račun</label>
-            <input class="fi" id="confirm-input" autocomplete="off" oninput="checkDelete()">
-          </div>
-          <button class="btn-red" type="button" id="delete-btn" onclick="handleDelete()" disabled><span id="delete-btn-txt">Obriši račun</span></button>
-          <p class="fg-hint" style="margin-top:10px;color:var(--danger)">Gumb se uključuje tek kad je potvrda upisana točno.</p>
+          <ul class="sig-l">
+            <li>Odmoria vas nikad neće pitati za lozinku e-mailom ili porukom.</li>
+            <li>Šifru vrata i Wi-Fi gost vidi tek sat prije prijave, samo s osobnim linkom rezervacije.</li>
+            <li>Kaparu tražite na svoj račun i provjeravajte je u svojoj banci, ne po slici potvrde.</li>
+          </ul>
         </div>
       </section>
     </div>
@@ -200,6 +237,8 @@
 </div>
 
 <script type="module">
+// tabovi Postavki — stoji na vrhu jer ga init čita prije kraja modula (zamka kao STATES)
+const TABOVI = ['profil', 'pretplata', 'obavijesti', 'sigurnost']
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { loadPlans, getPlan, limitFor, effectivePlanId, listPlans, popustZa, formatEur, rokPopusta, trajanjePopusta, cijenaPlana } from './plans.js'
 import { billingStatus, startCheckout, openBillingPortal, povratakSPlacanja, cekajPlan } from './billing.js'
@@ -292,7 +331,7 @@ async function init() {
     : BILLING.test
     ? '<b>Testni način:</b> ništa se stvarno ne naplaćuje. Za probu: kartica <b>4242 4242 4242 4242</b>, bilo koji budući datum i CVC.'
     : 'Plaćanje karticom preko Stripea. Pretplatu možete otkazati bilo kad; plan vrijedi do kraja plaćenog razdoblja.'
-  if (location.hash === '#pretplata') openTab('pretplata')
+  { const h = location.hash.slice(1); if (TABOVI.includes(h) && h !== 'profil') openTab(h) }
   povratakNaPretplatu()
 
   const created = new Date(USER.created_at)
@@ -413,20 +452,22 @@ window.upravljajPretplatom = async btn => {
   try { await openBillingPortal(sb, 'account') } catch (e) { cekaGumb(btn, ''); porukaPretplate(e.message, 'upoz') }
 }
 
-// tabovi: Profil i sigurnost · Pretplata i limiti (#pretplata)
+// tabovi (redizajn „Pearl”): Račun · Pretplata (#pretplata) · Obavijesti (#obavijesti) · Sigurnost (#sigurnost)
 window.openTab = (id) => {
-  ;['profil', 'pretplata'].forEach(t => {
+  TABOVI.forEach(t => {
     const on = t === id
     const tab = document.getElementById('t-' + t)
     tab.setAttribute('aria-selected', on); tab.tabIndex = on ? 0 : -1
     document.getElementById('p-' + t).hidden = !on
   })
-  history.replaceState(null, '', id === 'pretplata' ? '#pretplata' : location.pathname)
+  history.replaceState(null, '', id === 'profil' ? location.pathname : '#' + id)
 }
 document.querySelector('.tabs').addEventListener('keydown', e => {
-  if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return
-  const next = document.querySelector('.tab[aria-selected="false"]')
-  window.openTab(next.id.slice(2)); next.focus()
+  if (!['ArrowRight', 'ArrowLeft', 'Home', 'End'].includes(e.key)) return
+  e.preventDefault()
+  const i = TABOVI.findIndex(t => document.getElementById('t-' + t).getAttribute('aria-selected') === 'true')
+  const n = e.key === 'Home' ? 0 : e.key === 'End' ? TABOVI.length - 1 : (i + (e.key === 'ArrowRight' ? 1 : -1) + TABOVI.length) % TABOVI.length
+  window.openTab(TABOVI[n]); document.getElementById('t-' + TABOVI[n]).focus()
 })
 
 // ── UTILS ─────────────────────────────────────────────
