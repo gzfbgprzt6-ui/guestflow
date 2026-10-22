@@ -22,7 +22,11 @@ Vercel su postavljeni i provjereni.
 - [x] `sql/add-referrals.sql` — „Preporuči domaćina”
 - [x] `sql/add-translations.sql`, `sql/auto-ical-sync.sql` (od ranije)
 - [x] `sql/add-price-display.sql`, `sql/add-device-titles.sql`, `sql/add-place-photos.sql` (22. 10., samo novi stupci) —
-      kod koji ih koristi je za sada samo na grani `claude/funny-archimedes-c0qosu`
+      (u `main` 22. 10.)
+- [x] `sql/add-inquiry-email.sql` i `sql/add-guest-emails.sql` (22. 10.) — e-mail domaćinu o upitu i gostu
+      prije dolaska / nakon odlaska. **Ništa se ne šalje dok u Vaultu stoje zamjenski nazivi** (`<RESEND_KEY>`,
+      `<OD>`, `<ADRESA>`) — za uključivanje vidi točku 2.
+- [x] Sigurnosni test (`sql/test-sigurnost.sql`, 22. 10.): 40/40, sve poništeno
 - [x] zatvoren stari pogled `plan_violations` (bio je čitljiv javnim ključem i
       otkrivao e-mail domaćina): `revoke select … from anon, authenticated`
 
@@ -65,8 +69,8 @@ Vercel su postavljeni i provjereni.
 - [ ] **Isprobati na produkciji**: Osnovno (vrsta, kapacitet, stil), Dolazak
       (koraci, parking), Sadržaji, Prijevodi → „Prevedi besplatno”, kalendar 2
       mjeseca, link čistačice → „Potvrđujem” (vidi se u 🔔), vodič rezervacije
-- [ ] **E-mailovi** — Resend račun + potvrda domene, pa `sql/add-inquiry-email.sql`
-      (ključ u Vaultu) i tek onda `sql/add-guest-emails.sql`
+- [ ] **E-mailovi** — SQL je pokrenut; ostaje Resend račun + potvrda domene, pa u Supabase →
+      Vault upisati prave vrijednosti u `odmoria_resend_key`, `odmoria_email_od`, `odmoria_adresa`
 - [ ] Supabase → Authentication → uključiti „Leaked password protection”
       (ako je dostupno na Free planu)
 - [ ] `ANTHROPIC_API_KEY` u Vercelu — **neobavezno** (automatski prijevod);
