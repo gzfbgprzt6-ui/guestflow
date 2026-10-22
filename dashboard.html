@@ -2018,6 +2018,34 @@ body[data-panel="prijevodi"] .ph-akcije { display: none; }
 .item-foto { width: 56px !important; height: 42px !important; border-radius: 8px; background: var(--paper-2) center / cover no-repeat; }
 .foto-izv { display: block; margin-top: 2px; color: var(--muted); font-size: 12px; }
 .foto-ukl { min-height: 0; padding: 0; font-size: 12px; }
+/* Tim i čišćenje: link i slanje gore, popis i javljanja dolje u dva stupca */
+.cs-vrh, .cs-dno { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.cs-dno { margin-top: 12px; align-items: start; }
+.cs-blok { display: grid; align-content: start; gap: 10px; min-width: 0; padding: 16px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--cream); }
+.cs-blok .link-url { margin: 0; background: var(--paper); }
+.cs-h { margin: 0; color: var(--ink); font: 700 15px/1.3 var(--font-ui); }
+.cs-oz { display: inline-flex; align-items: center; gap: 8px; color: var(--copper); font: 700 13px/1.2 var(--font-ui); }
+.cs-tocka { width: 8px; height: 8px; border-radius: 50%; background: var(--copper); box-shadow: 0 0 0 4px rgba(40,104,99,.15); }
+.cs-akc { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.cs-novi { margin-left: auto; color: var(--muted); }
+.cs-salji .input { background: var(--paper); }
+.cs-salji .helper { margin: -4px 0 0; }
+.cs-blok .pr-gr { display: none; }
+.cs-tl { display: grid; gap: 0; }
+.cs-tl .cist-r { display: grid; grid-template-columns: 14px minmax(0, 1fr); gap: 12px; padding: 0 0 14px; border: 0; }
+.cs-r__t { position: relative; width: 10px; height: 10px; margin-top: 5px; border-radius: 50%; background: var(--copper); }
+.cs-r--ne .cs-r__t { background: #B42318; }
+.cs-tl .cist-r:not(:last-child) .cs-r__t::after { content: ""; position: absolute; left: 4px; top: 14px; width: 2px; height: calc(100% + 30px); background: var(--line); }
+.cs-r__in { display: grid; gap: 4px; min-width: 0; }
+.cs-r__g { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; }
+.cs-r__g em { margin-left: auto; color: var(--muted); font-size: 12.5px; font-style: normal; }
+.cs-r__in small { color: var(--ink); font-size: 13.5px; }
+.cs-prazno { display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 12px; align-items: start; padding: 12px; border: 1px dashed #C5D0CB; border-radius: 10px; background: var(--paper); color: var(--muted); }
+.cs-prazno .ic { width: 36px; height: 36px; padding: 8px; border-radius: 50%; background: var(--paper-2); color: var(--copper); }
+.cs-prazno p { margin: 0; font-size: 13.5px; line-height: 1.5; }
+#cist-popis { min-height: 160px; background: var(--paper); }
+@media (max-width: 900px) { .cs-vrh, .cs-dno { grid-template-columns: minmax(0, 1fr); } }
+
 /* Sezone: jednake kartice; Od i Do jedno uz drugo samo kad oba stanu (≥ 170 px), inače jedno ispod drugog */
 .sez-lista { grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr)); gap: 12px; }
 .sez-lista > .helper { grid-column: 1 / -1; }
@@ -2030,7 +2058,10 @@ body[data-panel="prijevodi"] .ph-akcije { display: none; }
 .sez .input { display: block; box-sizing: border-box; width: 100%; min-width: 0; max-width: 100%; min-height: 44px; padding-inline: 10px; background: var(--paper); font-size: 14.5px; }
 .sez .sez-op { margin: 0; }
 .sez input[type="date"] { -webkit-appearance: none; appearance: none; overflow: hidden; }   /* iPhone: datum inače ne prati širinu polja */
-.sez input[type="date"]::-webkit-date-and-time-value { text-align: left; }
+.sez input[type="date"] { text-align: center; }
+.sez input[type="date"]::-webkit-date-and-time-value { text-align: center; }
+.sez input[type="date"]::-webkit-datetime-edit { display: inline-flex; justify-content: center; width: 100%; }
+.sez [data-sz="cijena"] { text-align: center; font-weight: 700; }
 </style>
 <script type="module">import{pokreni,prekidac}from'/domacin-jezik.js';pokreni();prekidac(document.getElementById('jezik-sw'))</script>
 </head>
@@ -2285,7 +2316,7 @@ body[data-panel="prijevodi"] .ph-akcije { display: none; }
             <button class="nav-item" type="button" data-panel="pricing" data-group="objekt" onclick="nav('pricing',this)">Cijene</button>
             <button class="nav-item" type="button" data-panel="guide" data-group="objekt" onclick="nav('guide',this)">Lokalni vodič</button>
             <button class="nav-item" type="button" data-panel="rules" data-group="objekt" onclick="nav('rules',this)">Pravila i FAQ</button>
-            <button class="nav-item" type="button" data-panel="prijevodi" data-group="objekt" onclick="nav('prijevodi',this)">Jezici</button>
+            <button class="nav-item" type="button" data-panel="prijevodi" data-group="objekt" data-skriven onclick="nav('prijevodi',this)">Jezici</button>
             <button class="nav-item" type="button" data-panel="links" data-group="objekt" onclick="nav('links',this)">Linkovi i QR</button>
             <button class="nav-item" type="button" data-panel="objave" data-group="objekt" onclick="nav('objave',this)">Promocija</button>
             <button class="nav-item" type="button" data-panel="analytics" data-group="analitika" onclick="nav('analytics',this)">Analitika</button>
@@ -6693,11 +6724,16 @@ async function ucitajCistacicu(){
   if(!CIST){el.innerHTML='<button class="btn" type="button" onclick="napraviCistacicu()">Napravi link za čistačicu</button>';return}
   const url=cleanerUrl(CIST.token)
   let tel='';try{tel=localStorage.getItem('odm-cist-tel:'+PROP.id)||''}catch{}
-  el.innerHTML=`<div class="link-url" style="margin-bottom:12px"><span>${esc(prettyUrl(url))}</span><button type="button" onclick="kopirajCistacicu()">Kopiraj</button></div>
-    <div class="form-grid" style="margin-bottom:12px"><div class="field"><label for="cist-tel">Broj čistačice <span class="optional">za WhatsApp, pamti se na ovom uređaju</span></label><input class="input" id="cist-tel" type="tel" placeholder="+385 91 123 4567" value="${esc(tel)}" autocomplete="off"></div></div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn small" type="button" onclick="posaljiCistacici('wa')">Pošalji WhatsAppom</button><button class="btn secondary small" type="button" onclick="posaljiCistacici('mail')">E-mailom</button><a class="btn secondary small" href="${esc(url)}" target="_blank" rel="noopener">Otvori</a><button class="btn ghost small" type="button" onclick="noviCistacica()">Novi link (stari prestaje raditi)</button></div>
-    <div class="cist-pop" id="cist-pop"></div>
-    <div class="cist-jav" id="cist-jav"></div>`
+  el.innerHTML=`<div class="cs-vrh">
+      <div class="cs-blok cs-link"><span class="cs-oz"><span class="cs-tocka" aria-hidden="true"></span>Link je aktivan</span>
+        <div class="link-url"><span>${esc(prettyUrl(url))}</span><button type="button" onclick="kopirajCistacicu()">Kopiraj</button></div>
+        <div class="cs-akc"><a class="btn secondary small" href="${esc(url)}" target="_blank" rel="noopener">Otvori kako ga vidi čistačica</a><button class="btn ghost small cs-novi" type="button" onclick="noviCistacica()">Novi link</button></div></div>
+      <div class="cs-blok cs-salji"><label for="cist-tel" class="cs-h">Pošalji čistačici</label>
+        <input class="input" id="cist-tel" type="tel" placeholder="+385 91 123 4567" value="${esc(tel)}" autocomplete="off" data-bez-spremanja>
+        <small class="helper">Broj se pamti samo na ovom uređaju.</small>
+        <div class="cs-akc"><button class="btn small" type="button" onclick="posaljiCistacici('wa')">WhatsApp</button><button class="btn secondary small" type="button" onclick="posaljiCistacici('mail')">E-mail</button></div></div>
+    </div>
+    <div class="cs-dno"><div class="cs-blok cist-pop" id="cist-pop"></div><div class="cs-blok cist-jav" id="cist-jav"></div></div>`
   nacrtajPopisCist()
   // javljanja čistačice (sql/add-cleaner-status.sql) — bez tablice samo napomena
   const r=await sb.from('cleaning_status').select('*').eq('property_id',PROP.id).gte('dan',A.plusDana(A.danas(),-7)).order('dan')
@@ -6707,7 +6743,7 @@ async function ucitajCistacicu(){
   const pop=Array.isArray(CIST.popis)?CIST.popis:[]
   const kvTxt=c=>pop.length&&Array.isArray(c.kvacice)?`<span class="ov-st ${c.kvacice.length===pop.length?'is-ok':''}">Popis ${c.kvacice.length} / ${pop.length}</span>`:''
   const foto=c=>Array.isArray(c.fotke)&&c.fotke.length?`<span class="cist-f">${c.fotke.map(u=>`<a href="${esc(u)}" target="_blank" rel="noopener"><img src="${esc(String(u).replace('/image/upload/','/image/upload/w_120,h_120,c_fill,q_auto/'))}" alt="Fotografija čistačice" loading="lazy"></a>`).join('')}</span>`:''
-  j.innerHTML=`<h3 class="pr-gr">Javljanja čistačice</h3>`+((r.data||[]).length?(r.data||[]).map(c=>`<div class="cist-r"><b>${A.fmtSDanom(c.dan)}</b><span class="ov-st ${OP[c.stanje][1]==='is-ne'?'is-warn':'is-ok'}">${OP[c.stanje][0]}${c.vrijeme?' u '+esc(c.vrijeme):''}</span>${kvTxt(c)}${c.napomena?`<small>„${esc(c.napomena)}”</small>`:''}${foto(c)}<em>${new Date(c.updated_at).toLocaleString('hr-HR',{day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit'})}</em></div>`).join(''):'<p class="helper">Još nema javljanja. Čistačica na svom linku uz svako čišćenje može potvrditi, javiti vrijeme dolaska, „gotovo” ili da ne može doći.</p>')
+  j.innerHTML=`<h3 class="cs-h">Javljanja čistačice</h3>`+((r.data||[]).length?'<div class="cs-tl">'+(r.data||[]).map(c=>`<div class="cist-r cs-r--${OP[c.stanje][1]==='is-ne'?'ne':'ok'}"><span class="cs-r__t" aria-hidden="true"></span><div class="cs-r__in"><div class="cs-r__g"><b>${A.fmtSDanom(c.dan)}</b><span class="ov-st ${OP[c.stanje][1]==='is-ne'?'is-warn':'is-ok'}">${OP[c.stanje][0]}${c.vrijeme?' u '+esc(c.vrijeme):''}</span>${kvTxt(c)}<em>${new Date(c.updated_at).toLocaleString('hr-HR',{day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit'})}</em></div>${c.napomena?`<small>„${esc(c.napomena)}”</small>`:''}${foto(c)}</div></div>`).join('')+'</div>':'<div class="cs-prazno"><svg class="ic" aria-hidden="true"><use href="#i-sparkles"/></svg><p>Još nema javljanja. Čistačica na svom linku uz svako čišćenje može potvrditi, javiti vrijeme dolaska, „gotovo” ili da ne može doći.</p></div>')
 }
 /* Popis zadataka za čistačicu (sql/add-cleaner-checklist.sql → cleaner_links.popis) */
 const POPIS_PREDLOZAK=['Promijeniti posteljinu i ručnike','Očistiti kupaonicu i WC','Očistiti kuhinju, hladnjak i sudoper','Isprazniti smeće i staviti nove vrećice','Usisati i oprati podove','Provjeriti terasu i namještaj','Nadopuniti toaletni papir, sapun i kavu','Provjeriti štete i zaboravljene stvari']
@@ -6715,9 +6751,9 @@ function nacrtajPopisCist(){
   const el=document.getElementById('cist-pop');if(!el||!CIST)return
   if(!('popis' in CIST)){el.innerHTML='<p class="helper">Popis zadataka s fotografijama uključuje se s <code>sql/add-cleaner-checklist.sql</code>.</p>';return}
   const p=Array.isArray(CIST.popis)?CIST.popis:[]
-  el.innerHTML=`<h3 class="pr-gr">Popis za čišćenje</h3>
+  el.innerHTML=`<h3 class="cs-h">Popis za čišćenje</h3>
     <p class="helper" style="margin-bottom:8px">Čistačica uz svako čišćenje kvači stavke i može dodati fotografije — vi to vidite ispod, u javljanjima. Jedna stavka po retku, najviše 30.</p>
-    <textarea class="input" id="cist-popis" rows="6" data-bez-spremanja placeholder="Promijeniti posteljinu i ručnike">${esc(p.join('\n'))}</textarea>
+    <textarea class="input textarea" id="cist-popis" rows="8" data-bez-spremanja placeholder="Promijeniti posteljinu i ručnike">${esc(p.join('\n'))}</textarea>
     <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;margin-top:8px">${p.length?'':'<button class="btn ghost small" type="button" onclick="popisPredlozak()">Uzmi uobičajeni popis</button>'}<button class="btn secondary small" type="button" onclick="spremiPopisCist()">Spremi popis</button></div>`
 }
 window.popisPredlozak=()=>{const t=document.getElementById('cist-popis');if(t){t.value=POPIS_PREDLOZAK.join('\n');t.focus()}}

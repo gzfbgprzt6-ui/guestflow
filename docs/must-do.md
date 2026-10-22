@@ -21,6 +21,8 @@ Vercel su postavljeni i provjereni.
 - [x] `sql/add-cleaner-status.sql` — čistačica javlja + otkazano/novo s platformi
 - [x] `sql/add-referrals.sql` — „Preporuči domaćina”
 - [x] `sql/add-translations.sql`, `sql/auto-ical-sync.sql` (od ranije)
+- [x] `sql/add-price-display.sql`, `sql/add-device-titles.sql`, `sql/add-place-photos.sql` (22. 10., samo novi stupci) —
+      kod koji ih koristi je za sada samo na grani `claude/funny-archimedes-c0qosu`
 - [x] zatvoren stari pogled `plan_violations` (bio je čitljiv javnim ključem i
       otkrivao e-mail domaćina): `revoke select … from anon, authenticated`
 

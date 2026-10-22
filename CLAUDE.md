@@ -938,6 +938,10 @@ Specifikacija vlasnika (jedinstven sustav za cijeli proizvod). **Paket 1** gotov
   `odaberi()` ih nosi u `osm`) pa geosearch (plaže 300 m, ostalo 60 m); samo slobodne licence, autor i licenca u
   `foto_izvor` i ispod slike u vodiču. „Predloži mjesta” ih traži odmah, „Pronađi fotografije” za postojeće (koordinate iz
   `maps_query`); „Ukloni sliku” u popisu. Bez slike vodič crta obojenu pločicu po vrsti (`PREP_TON`).
+- **Pokrenuto u bazi 22. 10.:** `add-price-display.sql`, `add-device-titles.sql`, `add-place-photos.sql`.
+- **Jezici** (prijevodi) tab je skriven (`data-skriven`, vlasnik: „ne treba”); panel i `nav('prijevodi')` ostaju,
+  `autoPrevedi()` i dalje radi nakon spremanja. **Tim i čišćenje:** kartica čistačice = `.cs-vrh` (link · slanje)
+  i `.cs-dno` (popis · javljanja kao vremenska crta `.cs-tl`). Sezone: datum i cijena centrirani.
 
 ## Redizajn v2 — prijenos iz Figme u kod (u tijeku)
 
