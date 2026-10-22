@@ -1991,7 +1991,11 @@ body[data-panel="prijevodi"] .ph-akcije { display: none; }
 /* Upute za uređaje: 2×2 jednake kućice */
 .ur4 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 .ur4__k { display: grid; grid-template-rows: auto 1fr; gap: 10px; min-width: 0; padding: 14px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--cream); }
-.ur4__k label { display: flex; align-items: center; gap: 10px; margin: 0; color: var(--ink); font: 700 15px/1.3 var(--font-ui); }
+.ur4__g { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.ur4__n { flex: 1; min-width: 0; min-height: 40px; padding: 0 10px; border: 1px dashed var(--line); border-radius: 8px; background: transparent; color: var(--ink); font: 700 15px/1.3 var(--font-ui); }
+.ur4__n::placeholder { color: var(--ink); opacity: .55; }
+.ur4__n:hover { border-color: var(--line); background: var(--paper); }
+.ur4__n:focus { border-color: var(--copper); background: var(--paper); outline: none; box-shadow: 0 0 0 3px rgba(40,104,99,.12); }
 .ur4__ik { display: grid; width: 36px; height: 36px; flex: none; place-items: center; border-radius: 50%; background: var(--paper); color: var(--copper); }
 .ur4__ik .ic { width: 18px; height: 18px; }
 .ur4__k .textarea { min-height: 96px; height: 96px; background: var(--paper); resize: vertical; }
@@ -2011,16 +2015,22 @@ body[data-panel="prijevodi"] .ph-akcije { display: none; }
 .seg button:focus-visible { outline: 2px solid var(--copper); outline-offset: 2px; }
 @media (max-width: 900px) { .cj3 { grid-template-columns: minmax(0, 1fr); } }
 
-/* Sezone: jednake kartice, isti stupci, ništa se ne preklapa */
-.sez-lista { grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 12px; }
+.item-foto { width: 56px !important; height: 42px !important; border-radius: 8px; background: var(--paper-2) center / cover no-repeat; }
+.foto-izv { display: block; margin-top: 2px; color: var(--muted); font-size: 12px; }
+.foto-ukl { min-height: 0; padding: 0; font-size: 12px; }
+/* Sezone: jednake kartice; Od i Do jedno uz drugo samo kad oba stanu (≥ 170 px), inače jedno ispod drugog */
+.sez-lista { grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr)); gap: 12px; }
 .sez-lista > .helper { grid-column: 1 / -1; }
-.sez { position: relative; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; align-items: end; padding: 14px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--cream); }
+.sez { position: relative; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px 12px; align-items: end; min-width: 0; padding: 14px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--cream); }
+.sez > * { min-width: 0; }
 .sez-n { grid-column: 1 / -1; padding-right: 40px; font: 700 14.5px/1.3 var(--font-ui); }
 .sez .item-btn.del { position: absolute; top: 8px; right: 8px; width: 36px; height: 36px; margin: 0; }
-.sez label:nth-of-type(3) { grid-column: 1 / -1; }
-.sez .input { min-height: 44px; padding-inline: 10px; background: var(--paper); font-size: 14.5px; }
-.sez-op { margin: 0; }
-@media (max-width: 600px) { .sez { grid-template-columns: repeat(2, minmax(0, 1fr)); } .sez label:nth-child(3) { grid-column: auto; } .sez label:nth-of-type(3) { grid-column: 1 / -1; } }
+.sez label { display: block; min-width: 0; margin: 0; }
+.sez label:nth-of-type(3), .sez .sez-op { grid-column: 1 / -1; }
+.sez .input { display: block; box-sizing: border-box; width: 100%; min-width: 0; max-width: 100%; min-height: 44px; padding-inline: 10px; background: var(--paper); font-size: 14.5px; }
+.sez .sez-op { margin: 0; }
+.sez input[type="date"] { -webkit-appearance: none; appearance: none; overflow: hidden; }   /* iPhone: datum inače ne prati širinu polja */
+.sez input[type="date"]::-webkit-date-and-time-value { text-align: left; }
 </style>
 <script type="module">import{pokreni,prekidac}from'/domacin-jezik.js';pokreni();prekidac(document.getElementById('jezik-sw'))</script>
 </head>
@@ -2620,12 +2630,12 @@ body[data-panel="prijevodi"] .ph-akcije { display: none; }
         <!-- Uređaji (redizajn „Pearl”): ista kartica i isti saveDeviceInfo(), sada uz Dolazak i boravak -->
         <section class="editor-panel" id="section-uredaji" data-panel-content="uredaji">
           <div class="card">
-            <div class="card-head"><div class="card-title-wrap"><span class="card-number">i</span><div><h2>Upute za korištenje</h2><p>Kratke informacije za uređaje i sadržaje u objektu.</p></div></div></div>
+            <div class="card-head"><div class="card-title-wrap"><span class="card-number">i</span><div><h2>Upute za korištenje</h2><p>Kratke informacije za uređaje i sadržaje u objektu. Naslov kućice možete promijeniti (npr. „Perilica rublja”) — prazan naslov ostaje kao u sivom tekstu.</p></div></div></div>
             <div class="ur4">
-              <div class="ur4__k"><label for="ac-info"><span class="ur4__ik" aria-hidden="true"><svg class="ic"><use href="#i-snowflake"/></svg></span>Klima-uređaj</label><textarea class="textarea" id="ac-info" placeholder="Npr. daljinski je u ladici, 24 °C je najbolje"></textarea></div>
-              <div class="ur4__k"><label for="heating-info"><span class="ur4__ik" aria-hidden="true"><svg class="ic"><use href="#i-flame"/></svg></span>Grijanje</label><textarea class="textarea" id="heating-info" placeholder="Npr. termostat je u hodniku"></textarea></div>
-              <div class="ur4__k"><label for="hotwater-info"><span class="ur4__ik" aria-hidden="true"><svg class="ic"><use href="#i-droplets"/></svg></span>Topla voda</label><textarea class="textarea" id="hotwater-info" placeholder="Npr. bojler je uključen, voda je topla za 20 min"></textarea></div>
-              <div class="ur4__k"><label for="kitchen-info"><span class="ur4__ik" aria-hidden="true"><svg class="ic"><use href="#i-utensils"/></svg></span>Kuhinja</label><textarea class="textarea" id="kitchen-info" placeholder="Npr. kava i začini su u gornjem ormariću"></textarea></div>
+              <div class="ur4__k"><div class="ur4__g"><span class="ur4__ik" aria-hidden="true"><svg class="ic"><use href="#i-snowflake"/></svg></span><input class="ur4__n" data-ur="ac" maxlength="40" title="Naslov možete promijeniti" placeholder="Klima-uređaj" aria-label="Naslov — npr. Klima-uređaj" autocomplete="off"></div><textarea class="textarea" id="ac-info" placeholder="Npr. daljinski je u ladici, 24 °C je najbolje"></textarea></div>
+              <div class="ur4__k"><div class="ur4__g"><span class="ur4__ik" aria-hidden="true"><svg class="ic"><use href="#i-flame"/></svg></span><input class="ur4__n" data-ur="grijanje" maxlength="40" title="Naslov možete promijeniti" placeholder="Grijanje" aria-label="Naslov — npr. Grijanje" autocomplete="off"></div><textarea class="textarea" id="heating-info" placeholder="Npr. termostat je u hodniku"></textarea></div>
+              <div class="ur4__k"><div class="ur4__g"><span class="ur4__ik" aria-hidden="true"><svg class="ic"><use href="#i-droplets"/></svg></span><input class="ur4__n" data-ur="voda" maxlength="40" title="Naslov možete promijeniti" placeholder="Topla voda" aria-label="Naslov — npr. Topla voda" autocomplete="off"></div><textarea class="textarea" id="hotwater-info" placeholder="Npr. bojler je uključen, voda je topla za 20 min"></textarea></div>
+              <div class="ur4__k"><div class="ur4__g"><span class="ur4__ik" aria-hidden="true"><svg class="ic"><use href="#i-utensils"/></svg></span><input class="ur4__n" data-ur="kuhinja" maxlength="40" title="Naslov možete promijeniti" placeholder="Kuhinja" aria-label="Naslov — npr. Kuhinja" autocomplete="off"></div><textarea class="textarea" id="kitchen-info" placeholder="Npr. kava i začini su u gornjem ormariću"></textarea></div>
             </div>
             <div style="margin-top:18px;display:flex;justify-content:flex-end"><button class="btn" onclick="saveDeviceInfo()">Spremi promjene</button></div>
           </div>
@@ -2651,7 +2661,7 @@ body[data-panel="prijevodi"] .ph-akcije { display: none; }
         <!-- 06 GUIDE -->
         <section class="editor-panel" id="section-guide" data-panel-content="guide" data-mog="preporuke">
           <div class="card">
-            <div class="card-head"><div class="card-title-wrap"><span class="card-number">06</span><div><h2>Preporuke</h2><p>Plaže, hrana, prijevoz i izleti — sve na jednom popisu, s vrstom.</p></div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn secondary small" type="button" onclick="otvoriOsm()">Predloži mjesta u blizini</button><button class="btn small" type="button" onclick="openForm('guide')">+ Dodaj mjesto</button></div></div>
+            <div class="card-head"><div class="card-title-wrap"><span class="card-number">06</span><div><h2>Preporuke</h2><p>Plaže, hrana, prijevoz i izleti — sve na jednom popisu, s vrstom.</p></div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn secondary small" type="button" onclick="otvoriOsm()">Predloži mjesta u blizini</button><button class="btn secondary small" type="button" onclick="traziFotkeMjesta(this)">Pronađi fotografije</button><button class="btn small" type="button" onclick="openForm('guide')">+ Dodaj mjesto</button></div></div>
             <div class="card" id="guide-form" style="display:none;background:var(--cream)">
               <div class="form-grid">
                 <!-- v5: ikona se bira po vrsti (vodič), emoji se ne prikazuje — polje ostaje skriveno radi starih zapisa -->
@@ -3203,6 +3213,7 @@ import{SADRZAJI,SKUPINE}from'./sadrzaji.js'
 import * as DR from'./drzave.js'
 import{smanjiSliku}from'./slike.js'
 import * as OSMM from'./mjesta-osm.js'
+import * as FOTKE from'./fotke-mjesta.js'
 import{predloziAdresu}from'./adresa-predlozi.js'
 import * as STIL from'./stilovi.js'
 // gore, prije prvog poziva selectProp()/livePreview() (zamka kao STATES u h.html)
@@ -3805,6 +3816,8 @@ async function loadSection(){
   document.getElementById('heating-info').value=SECTION.heating_info||''
   document.getElementById('hotwater-info').value=SECTION.hot_water_info||''
   document.getElementById('kitchen-info').value=SECTION.kitchen_info||''
+  const urN=SECTION.uredaji_naslovi&&typeof SECTION.uredaji_naslovi==='object'?SECTION.uredaji_naslovi:{}
+  document.querySelectorAll('[data-ur]').forEach(i=>{i.value=urN[i.dataset.ur]||''})
   updateWifiPrev()
 }
 
@@ -3959,11 +3972,17 @@ window.saveWifi=async()=>{
   renderChecklist();livePreview()
 }
 
+// naslovi kućica (sql/add-device-titles.sql): sections.uredaji_naslovi = {ac, grijanje, voda, kuhinja}; prazno = zadani naziv
 window.saveDeviceInfo=async()=>{
   const u={ac_info:v('ac-info'),heating_info:v('heating-info'),hot_water_info:v('hotwater-info'),kitchen_info:v('kitchen-info')}
-  const{error}=await sb.from('sections').update(u).eq('property_id',PROP.id)
+  const nas={};document.querySelectorAll('[data-ur]').forEach(i=>{const x=i.value.trim();if(x&&x!==i.placeholder)nas[i.dataset.ur]=x})
+  let{error}=await sb.from('sections').update({...u,uredaji_naslovi:nas}).eq('property_id',PROP.id)
+  let bez=false
+  if(error&&/uredaji_naslovi/.test(error.message||'')){bez=true;({error}=await sb.from('sections').update(u).eq('property_id',PROP.id))}
   if(error){toast('Greška: '+error.message);return}
-  Object.assign(SECTION,u);toast('Upute spremljene ✓')
+  Object.assign(SECTION,u);if(!bez)SECTION.uredaji_naslovi=nas
+  if(bez&&Object.keys(nas).length){toast('Upute su spremljene, ali vlastiti naslovi još ne — treba pokrenuti sql/add-device-titles.sql');return}
+  toast('Upute spremljene ✓')
 }
 
 window.pokaziTajnu=(id,b)=>{const i=document.getElementById(id);if(!i)return;const vid=i.type==='password';i.type=vid?'text':'password';b.setAttribute('aria-pressed',String(vid));b.setAttribute('aria-label',vid?'Sakrij':'Prikaži')}
@@ -5215,8 +5234,31 @@ function renderList(key){
     const sub=key==='guide'?[r.category,r.distance].filter(Boolean).join(' · ')
       :key==='transport'?[r.details,r.phone].filter(Boolean).join(' · ')
       :[r.type,r.distance,r.price].filter(Boolean).join(' · ')
+    if(key==='guide'&&r.foto)return`<div class="repeat-item" onclick="editListItem('${key}','${r.id}')"><span class="item-icon item-foto" style="background-image:url('${esc(String(r.foto))}')" title="${esc(r.foto_izvor||'')}"></span><span><strong>${esc(r.name)}</strong><small>${esc(sub)}</small><small class="foto-izv">Foto: ${esc(r.foto_izvor||'')} · <button type="button" class="dn-link foto-ukl" onclick="event.stopPropagation();ukloniFotoMjesta('${r.id}')">Ukloni sliku</button></small></span>${itemActions(key,r.id,i,rows.length)}</div>`
     return`<div class="repeat-item" onclick="editListItem('${key}','${r.id}')"><span class="item-icon">${r.icon||'📍'}</span><span><strong>${esc(r.name)}</strong><small>${esc(sub)}</small></span>${itemActions(key,r.id,i,rows.length)}</div>`
   }).join('')
+}
+// fotografije za preporuke koje već postoje (koordinate iz maps_query) — samo bez slike
+window.traziFotkeMjesta=async b=>{
+  const bez=guideRows.filter(r=>!r.foto&&FOTKE.koordinate(r.maps_query))
+  if(!bez.length){toast(guideRows.some(r=>r.foto)?'Sve preporuke s lokacijom već imaju sliku':'Preporuke nemaju točnu lokaciju — dodajte ih kroz „Predloži mjesta u blizini”');return}
+  b&&(b.disabled=true);toast('Tražim fotografije…')
+  let n=0
+  for(const r of bez){
+    const k=FOTKE.koordinate(r.maps_query),f=await FOTKE.fotoZa({...k,vrsta:/plaž/i.test(r.category||'')?'plaza':''}).catch(()=>null)
+    if(!f)continue
+    const{error}=await sb.from('local_places').update({foto:f.url,foto_izvor:f.izvor}).eq('id',r.id)
+    if(error){toast(/foto/.test(error.message||'')?'Za slike treba pokrenuti sql/add-place-photos.sql':'Greška: '+error.message);b&&(b.disabled=false);return}
+    n++
+  }
+  b&&(b.disabled=false)
+  await loadListSections()
+  toast(n?`Pronađeno slika: ${n} od ${bez.length}`:'Za ova mjesta nema slobodnih fotografija — ostaje ikona')
+}
+window.ukloniFotoMjesta=async id=>{
+  const{error}=await sb.from('local_places').update({foto:null,foto_izvor:null}).eq('id',id)
+  if(error){toast('Greška: '+error.message);return}
+  await loadListSections();toast('Slika je uklonjena')
 }
 function itemActions(key,id,i,len){
   return`<div class="item-actions" onclick="event.stopPropagation()">
@@ -6403,8 +6445,16 @@ window.dodajOsm=async()=>{
   if(!odabrano.length){st.textContent='Označite barem jedno mjesto.';return}
   btn.disabled=true;st.textContent='Dodajem…'
   let red=Math.max(0,...guideRows.map(r=>+r.sort_order||0)),n=0,limit=false
-  for(const x of odabrano){
-    const{error}=await sb.from('local_places').insert({property_id:PROP.id,icon:x.icon,name:x.name,category:x.category,distance:x.distance,maps_query:x.maps_query,sort_order:++red})
+  // fotografije (fotke-mjesta.js, Wikimedia Commons) — usporedo, svaka s rokom; bez slike ostaje ikona
+  st.textContent='Tražim fotografije…'
+  const fotke=await Promise.all(odabrano.map(x=>FOTKE.fotoZa(x).catch(()=>null)))
+  st.textContent='Dodajem…'
+  let bezStupca=false
+  for(const [i,x] of odabrano.entries()){
+    const red1={property_id:PROP.id,icon:x.icon,name:x.name,category:x.category,distance:x.distance,maps_query:x.maps_query,sort_order:++red}
+    const f=fotke[i]
+    let{error}=await sb.from('local_places').insert(f&&!bezStupca?{...red1,foto:f.url,foto_izvor:f.izvor}:red1)
+    if(error&&/foto/.test(error.message||'')){bezStupca=true;({error}=await sb.from('local_places').insert(red1))}
     if(error){limit=true;break}
     n++
   }

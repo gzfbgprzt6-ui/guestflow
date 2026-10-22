@@ -900,6 +900,13 @@ body[data-detalj="ulaz"] #o-ulaz :is(.park-g,#arr-adr){display:none}
 .prep__ik{display:grid;width:64px;height:52px;flex:none;place-items:center;border-radius:8px;background:var(--bg-soft);color:var(--text-accent)}
 .prep__ik .ic{width:24px;height:24px}
 @media (min-width:600px){.plocice{grid-template-columns:repeat(4,minmax(0,1fr))}.pl{flex-direction:column;align-items:flex-start;justify-content:center;min-height:92px}.pl__lok{position:absolute;top:12px;right:12px}}
+
+/* fotografije preporuka (local_places.foto, Wikimedia Commons) i obojene pločice */
+.prep__ik{background:linear-gradient(135deg,var(--pt-a,var(--bg-soft)),var(--pt-b,var(--bg-soft)));color:var(--pt-c,var(--text-accent))}
+.prep__ik--foto{background:var(--bg-soft) center/cover no-repeat}
+.lrow__foto{display:block;width:64px;height:48px;flex:none;border-radius:8px;background:var(--bg-soft) center/cover no-repeat}
+.istaknuto__foto{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:10px;margin-bottom:4px}
+.foto-izv{display:block;margin-top:2px;color:var(--text-muted);font-size:11.5px;line-height:1.35}
 </style>
 </head>
 <body>
@@ -1622,12 +1629,24 @@ function stavkePopisa() {
 const redPopisa = ([id, ik, n, st, zak]) => `<a class="pr" href="#v/${id}" data-red="${id}">${ico(ik)}<span class="pr__t"><b>${esc(n)}</b><small>${zak ? ico('lock', 'ic--xs') : ''}${esc(st || '')}</small></span>${ico('chevron-right', 'pr__str')}</a>`
 const PLOCE = ['parking', 'ulaz', 'wifi', 'domacin', 'hitno']
 const plocica = ([id, ik, n, st, zak]) => `<a class="pl${zak ? ' pl--zak' : ''}" href="#v/${id}" data-red="${id}" aria-label="${esc(n + (st ? ' · ' + st : ''))}">${ico(ik)}<b>${esc(n)}</b>${zak ? ico('lock', 'pl__lok') : ''}</a>`
+// pločica bez fotografije: blagi prijelaz u boji vrste (more, hrana, kava, trgovina, izlet)
+const PREP_TON = [
+  [/plaž|beach|umbrella|waves/i, '#D6ECF3', '#A9D3E3', '#1D5B70'],
+  [/restor|utensils|hrana|konob/i, '#F7E3D3', '#EEC4A4', '#7A3E17'],
+  [/kafi|cafe|coffee|bar/i, '#EFE5DA', '#D9C3AC', '#5C3E22'],
+  [/trgov|shop|basket|pekar/i, '#E3F0DF', '#BFDDB6', '#2E5A27'],
+  [/izlet|camera|park|mountain|sail|ship/i, '#E1EEEA', '#B6D6CC', '#1F5550'],
+  [/./, '#E8F0ED', '#CFE0D9', '#286863']
+]
 function renderPreporuke() {
   const izbor = RECS.filter(x => x.cat !== t('Prijevoz'))
   const vrste = [...new Set(izbor.map(x => x.cat))].slice(0, 4)
   $('#prep').innerHTML = vrste.map(c => {
-    const u = izbor.filter(x => x.cat === c)
-    return `<a class="prep__r" href="#v/okolica" data-vrsta="${esc(c)}"><span class="prep__ik" aria-hidden="true">${ico(u[0].ic)}</span>
+    const u = izbor.filter(x => x.cat === c), sf = u.find(x => x.foto)
+    const ton = PREP_TON.find(([re]) => re.test(c + ' ' + u[0].ic)) || PREP_TON[PREP_TON.length - 1]
+    const sl = sf ? `<span class="prep__ik prep__ik--foto" style="background-image:url('${esc(sf.foto)}')" aria-hidden="true"></span>`
+      : `<span class="prep__ik" style="--pt-a:${ton[1]};--pt-b:${ton[2]};--pt-c:${ton[3]}" aria-hidden="true">${ico(u[0].ic)}</span>`
+    return `<a class="prep__r" href="#v/okolica" data-vrsta="${esc(c)}">${sl}
       <span class="pr__t"><b>${esc(c)}</b><small>${esc(u.slice(0, 2).map(x => x.name).join(', ') + (u.length > 2 ? ' · +' + (u.length - 2) : ''))}</small></span>${ico('chevron-right', 'pr__str')}</a>`
   }).join('')
   show('#prep-k', vrste.length > 0)
@@ -2127,10 +2146,12 @@ window.loadMap = () => {
 // ══════════════════════════════════════════════════════
 //  WI-FI I KUĆA — uređaji, pravila, odlazak, pitanja
 // ══════════════════════════════════════════════════════
+// naslov kućice uređaja: domaćinov (sections.uredaji_naslovi, sql/add-device-titles.sql) ili zadani
+const urNaslov = (k, zad) => { const n = SECTION.uredaji_naslovi && SECTION.uredaji_naslovi[k]; return n ? H(String(n)) : t(zad) }
 function renderHouse(rules, faqs) {
   const s = SECTION
-  const d = [['snowflake', t('Klima-uređaj'), H(s.ac_info)], ['flame', t('Grijanje'), H(s.heating_info)],
-             ['droplets', t('Topla voda'), H(s.hot_water_info)], ['utensils', t('Kuhinja'), H(s.kitchen_info)]].filter(x => x[2])
+  const d = [['snowflake', urNaslov('ac', 'Klima-uređaj'), H(s.ac_info)], ['flame', urNaslov('grijanje', 'Grijanje'), H(s.heating_info)],
+             ['droplets', urNaslov('voda', 'Topla voda'), H(s.hot_water_info)], ['utensils', urNaslov('kuhinja', 'Kuhinja'), H(s.kitchen_info)]].filter(x => x[2])
   if (d.length) {
     // pločice koje se otvore na mjestu (otvorena zauzme cijeli red)
     $('#dev-list').innerHTML = `<div class="uredaji">${d.map(([ic, n, v]) =>
@@ -2177,7 +2198,8 @@ let RECS = []
 function renderRecs(places, txs, atts) {
   RECS = [
     ...(places || []).map(p => ({ cat: p.category && p.category.trim() ? H(p.category.trim()) : t('Ostalo'), ic: pick((p.category || '') + ' ' + p.name, PLACE_IC, 'map-pin'),
-      name: H(p.name), dt: [H(p.category), H(p.distance)].filter(Boolean).join(' · '), maps: p.maps_query })),
+      name: H(p.name), dt: [H(p.category), H(p.distance)].filter(Boolean).join(' · '), maps: p.maps_query,
+      foto: /^https:\/\//.test(p.foto || '') ? p.foto : '', fotoIzv: p.foto_izvor || '' })),
     ...(txs || []).map(x => ({ cat: t('Prijevoz'), ic: pick(x.name, TX_IC, 'car'), name: H(x.name),
       dt: [t('Prijevoz'), H(x.details)].filter(Boolean).join(' · '), maps: x.maps_query, phone: x.phone })),
     ...(atts || []).map(a => ({ cat: t('Izleti'), ic: pick((a.type || '') + ' ' + a.name, AT_IC, 'camera'), name: H(a.name),
@@ -2204,15 +2226,16 @@ function paintRecs(cat) {
   const sve = cat === '*' ? RECS : RECS.filter(r => r.cat === cat)
   // prvo mjesto na popisu domaćina = „prvi izbor”, istaknuto (redoslijed je domaćinov)
   const prvi = cat === '*' && sve.length > 1 ? sve[0] : null, list = prvi ? sve.slice(1) : sve
-  $('#places').innerHTML = (prvi ? `<article class="istaknuto"><span class="istaknuto__z">${ico('star', 'ic--sm')}${esc(t('Prvi izbor domaćina'))}</span>
+  $('#places').innerHTML = (prvi ? `<article class="istaknuto">${prvi.foto ? `<img class="istaknuto__foto" src="${esc(prvi.foto)}" alt="" loading="lazy" decoding="async"><small class="foto-izv">${esc(t('Foto'))}: ${esc(prvi.fotoIzv)}</small>` : ''}<span class="istaknuto__z">${ico('star', 'ic--sm')}${esc(t('Prvi izbor domaćina'))}</span>
       <h3>${esc(prvi.name)}</h3>${prvi.dt ? `<p>${esc(prvi.dt)}</p>` : ''}${prvi.desc ? `<p style="font-weight:400">${esc(prvi.desc)}</p>` : ''}
       ${prvi.maps ? `<a class="btn btn--primary btn--sm" href="${esc(mapsUrl(prvi.maps))}" target="_blank" rel="noopener">${esc(t('Odvedi me'))}${ico('arrow-up-right', 'ic--sm')}</a>` : ''}</article>` : '') + (list.length ? '<div class="mjesta">' : '') + list.map(r => {
     const go = r.maps
       ? `<a class="lrow__go" href="${esc(mapsUrl(r.maps))}" target="_blank" rel="noopener" aria-label="${esc(t('{n} na karti', { n: r.name }))}">${esc(t('Karta'))}${ico('arrow-up-right', 'ic--sm')}</a>`
       : r.phone ? `<a class="lrow__go" href="tel:${esc(String(r.phone).replace(/[^\d+]/g, ''))}">${esc(t('Nazovi'))}${ico('phone', 'ic--sm')}</a>` : ''
     const [ib, ic] = TON_IC[r.ic] || ['#EFEEE8', '#12303A']
-    return `<div class="lrow"><span class="lrow__ic" style="--ic-bg:${ib};--ic:${ic}">${ico(r.ic)}</span>
-      <div class="lrow__tx"><span class="lrow__nm">${esc(r.name)}</span>${r.dt ? `<span class="lrow__dt">${esc(r.dt)}</span>` : ''}${r.desc ? `<span class="lrow__dt">${esc(r.desc)}</span>` : ''}</div>${go}</div>`
+    const slika = r.foto ? `<span class="lrow__foto" style="background-image:url('${esc(r.foto)}')" role="img" aria-label="${esc(r.name)}"></span>` : `<span class="lrow__ic" style="--ic-bg:${ib};--ic:${ic}">${ico(r.ic)}</span>`
+    return `<div class="lrow">${slika}
+      <div class="lrow__tx"><span class="lrow__nm">${esc(r.name)}</span>${r.dt ? `<span class="lrow__dt">${esc(r.dt)}</span>` : ''}${r.desc ? `<span class="lrow__dt">${esc(r.desc)}</span>` : ''}${r.foto && r.fotoIzv ? `<small class="foto-izv">${esc(t('Foto'))}: ${esc(r.fotoIzv)}</small>` : ''}</div>${go}</div>`
   }).join('') + (list.length ? '</div>' : '')
 }
 
@@ -2269,7 +2292,7 @@ const VIEWS = {
 function vglava(view) {
   const s = SECTION, mj = (PROP.location || '').split(',').map(x => x.trim()).filter(Boolean).pop()
   const k = ulazKoraci(), zv = s.door_code ? k.findIndex(x => x.sifra) : -1
-  const uredaji = [[s.ac_info, 'snowflake', t('Klima-uređaj')], [s.heating_info, 'flame', t('Grijanje')], [s.hot_water_info, 'droplets', t('Topla voda')], [s.kitchen_info, 'utensils', t('Kuhinja')]].filter(x => x[0])
+  const uredaji = [[s.ac_info, 'snowflake', urNaslov('ac', 'Klima-uređaj')], [s.heating_info, 'flame', urNaslov('grijanje', 'Grijanje')], [s.hot_water_info, 'droplets', urNaslov('voda', 'Topla voda')], [s.kitchen_info, 'utensils', urNaslov('kuhinja', 'Kuhinja')]].filter(x => x[0])
   const { odjava } = kadTrenuci()
   const kat = {}; for (const r of RECS) kat[r.cat] = (kat[r.cat] || 0) + 1
   const G = {

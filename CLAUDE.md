@@ -928,7 +928,16 @@ Specifikacija vlasnika (jedinstven sustav za cijeli proizvod). **Paket 1** gotov
   okvir „Podaci za ulazak dostupni od …” dok je zaključano, a nakon otključavanja šifra vrata kroz `secretHtml()`;
   pločice `#plocice` (Parking, Ulazak s lokotom, Wi-Fi, Domaćin), `#prep-k` preporuke po vrsti (klik otvori
   Preporuke s tim filtrom), `#popis-k` = „Korisne informacije”. Fotografija vodiča je naslovna fotografija objekta.
-  `sw.js` VERZIJA 16.
+  `sw.js` VERZIJA 17.
+- **Naslovi uređaja** (`sql/add-device-titles.sql`, `sections.uredaji_naslovi` = `{ac, grijanje, voda, kuhinja}`):
+  dashboard `[data-ur]` polja u kućicama, prazno = zadani naziv; vodič `urNaslov()`; `api/prevedi.js` ih prevodi.
+- **Sezone:** `.sez` stupci `auto-fit minmax(180px)` — Od/Do jedno uz drugo samo kad stanu; `input[type=date]` s
+  `appearance:none` (iPhone). Provjera preklapanja: `scratchpad/rd/t14.mjs` (rubovi polja, 360–1440 px).
+- **Fotografije preporuka** (`fotke-mjesta.js`, `sql/add-place-photos.sql`: `local_places.foto`, `foto_izvor`):
+  Wikimedia Commons iz preglednika domaćina — OSM oznake (`wikimedia_commons`, `wikidata` → P18, `image` na Commons;
+  `odaberi()` ih nosi u `osm`) pa geosearch (plaže 300 m, ostalo 60 m); samo slobodne licence, autor i licenca u
+  `foto_izvor` i ispod slike u vodiču. „Predloži mjesta” ih traži odmah, „Pronađi fotografije” za postojeće (koordinate iz
+  `maps_query`); „Ukloni sliku” u popisu. Bez slike vodič crta obojenu pločicu po vrsti (`PREP_TON`).
 
 ## Redizajn v2 — prijenos iz Figme u kod (u tijeku)
 

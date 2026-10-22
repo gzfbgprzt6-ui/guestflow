@@ -794,7 +794,8 @@ dodaj([
   ['Trebate kasniju odjavu? Pitajte domaćina.', 'Need a later check-out? Ask your host.', 'Späterer Check-out? Fragen Sie den Gastgeber.', 'Serve un check-out più tardi? Chiedete all’host.', 'Potrzebujesz późniejszego wymeldowania? Zapytaj gospodarza.', 'Potřebujete pozdější odjezd? Zeptejte se hostitele.'],
   ['Podaci za ulazak dostupni od {t}', 'Access details available from {t}', 'Zugangsdaten verfügbar ab {t}', 'Dati di accesso disponibili dalle {t}', 'Dane do wejścia dostępne od {t}', 'Údaje pro vstup k dispozici od {t}'],
   ['Iz sigurnosnih razloga šifra vrata i Wi-Fi lozinka vidljivi su od sat vremena prije prijave.', 'For security, the door code and Wi-Fi password appear one hour before check-in.', 'Aus Sicherheitsgründen sind Türcode und WLAN-Passwort ab einer Stunde vor dem Check-in sichtbar.', 'Per sicurezza, il codice della porta e la password Wi-Fi sono visibili da un’ora prima del check-in.', 'Ze względów bezpieczeństwa kod do drzwi i hasło Wi-Fi są widoczne godzinę przed zameldowaniem.', 'Z bezpečnostních důvodů jsou kód dveří a heslo k Wi-Fi vidět hodinu před příjezdem.'],
-  ['Brzo do', 'Quick links', 'Schnellzugriff', 'Accesso rapido', 'Szybki dostęp', 'Rychlý přístup']
+  ['Brzo do', 'Quick links', 'Schnellzugriff', 'Accesso rapido', 'Szybki dostęp', 'Rychlý přístup'],
+  ['Foto', 'Photo', 'Foto', 'Foto', 'Zdjęcie', 'Foto']
 ])
 // redizajn vodiča „Pearl” (21. 10. 2026.): popis „Sve za vaš boravak”, detalji, donja traka
 dodaj([

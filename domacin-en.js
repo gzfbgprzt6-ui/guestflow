@@ -1758,10 +1758,23 @@ export const T = {
   "Na upit": "On request",
   "Gost vidi cijenu na javnoj stranici.": "Guests see the price on the public page.",
   "Na javnoj stranici piše „Cijena na upit”.": "The public page shows “Price on request”.",
-  "Cijena je spremljena, ali „Na upit” još ne radi — treba pokrenuti sql/add-price-display.sql.": "The price is saved, but “On request” does not work yet — sql/add-price-display.sql needs to be run."
+  "Cijena je spremljena, ali „Na upit” još ne radi — treba pokrenuti sql/add-price-display.sql.": "The price is saved, but “On request” does not work yet — sql/add-price-display.sql needs to be run.",
+  "Pronađi fotografije": "Find photos",
+  "Ukloni sliku": "Remove photo",
+  "Tražim fotografije…": "Looking for photos…",
+  "Slika je uklonjena": "Photo removed",
+  "Sve preporuke s lokacijom već imaju sliku": "All recommendations with a location already have a photo",
+  "Preporuke nemaju točnu lokaciju — dodajte ih kroz „Predloži mjesta u blizini”": "Recommendations have no exact location — add them via “Suggest places nearby”",
+  "Za ova mjesta nema slobodnih fotografija — ostaje ikona": "No free photos for these places — the icon stays",
+  "Za slike treba pokrenuti sql/add-place-photos.sql": "Photos need sql/add-place-photos.sql to be run",
+  "Upute su spremljene, ali vlastiti naslovi još ne — treba pokrenuti sql/add-device-titles.sql": "Instructions saved, but custom titles are not yet — sql/add-device-titles.sql needs to be run",
+  "Kratke informacije za uređaje i sadržaje u objektu. Naslov kućice možete promijeniti (npr. „Perilica rublja”) — prazan naslov ostaje kao u sivom tekstu.": "Short notes on appliances and facilities. You can rename each box (e.g. “Washing machine”) — an empty title stays as the grey text."
 }
 
 export const P = {
+  "Pronađeno slika: {} od {}": "Photos found: {} of {}",
+  "Naslov — npr. {}": "Title — e.g. {}",
+  "Foto: {}": "Photo: {}",
   "Sezona {}": "Season {}",
   "(najmanje {})": "(at least {})",
   ", {} nije ({})": ", {} not ({})",
