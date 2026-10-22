@@ -8,7 +8,7 @@
 <meta name="description" content="Fotografije, sadržaji, dostupnost i izravan kontakt s domaćinom.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Gelasio:wght@400;500&family=Manrope:wght@600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="/odmoria.css">
 <link rel="stylesheet" href="/stilovi.css">
 <style>
@@ -347,6 +347,97 @@
 .iqf__kv{display:flex;gap:10px;align-items:flex-start;font-size:14px;line-height:1.45;cursor:pointer}
 .iqf__kv input{flex:none;width:18px;height:18px;margin:2px 0 0;accent-color:var(--text)}
 .cday.past{opacity:.35;cursor:default;text-decoration:line-through;text-decoration-thickness:1px}
+
+/* =====================================================================
+   JAVNA STRANICA „PEARL” (redizajn 21. 10. 2026.): galerija 1 + 2 na vrhu,
+   naziv i podaci ispod (bez teksta na fotografiji), sadržaj lijevo,
+   stalni panel za upit desno. Logika stranice je ista.
+   ===================================================================== */
+.gal-vrh{padding-block:16px 0}
+.gal-vrh .head{display:none}
+.gal-vrh .wrap{position:relative}
+.gal-vrh .head--row{position:absolute;left:calc(var(--gutter) + 16px);bottom:16px;z-index:2;margin:0}
+.gal-vrh #gal-all{display:inline-flex;min-height:40px;padding:0 14px;border-radius:8px;background:rgba(255,255,255,.95);color:var(--text);box-shadow:var(--shadow-raised);font:600 14px/1 var(--font-ui);text-decoration:none}
+.gal-vrh .gal{margin-top:0;grid-template-rows:230px 230px;gap:8px}
+.gal-vrh .gal__i,.gal-vrh .gal__pair{border-radius:12px}
+.gal-vrh .gal__pair{gap:8px}
+.pg{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:48px;align-items:start}
+.pg-l{min-width:0}
+.pg-l .wrap{max-width:none;padding-inline:0}
+.pg-r{position:sticky;top:110px;padding-top:24px}
+.pg-r .summary{position:static;padding:22px;border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow-panel);gap:12px}
+.pg-l .sec{padding-block:40px;background:none;border-top:1px solid var(--border)}
+.pg-l .sec--tight{padding-top:40px}
+.pg-l #o-objektu{border-top:0;padding-top:24px}
+.hero-wrap{padding-inline:0}
+.hero,.hero.has-photo{min-height:0;padding:28px 0 0;border-radius:0;background:none!important;color:var(--text);align-items:flex-start}
+.hero::after,.hero::before{display:none!important}
+.hero__copy{gap:8px}
+.hero__copy .eyebrow{order:2;color:var(--text-muted);font:500 15px/1.4 var(--font-ui);letter-spacing:0;text-transform:none}
+.hero__name{order:1;font:700 clamp(30px,3.4vw,42px)/1.15 var(--font-editorial);letter-spacing:-.02em}
+.hero__sub{order:3;color:var(--text-muted);font-size:15.5px}
+.hero__copy .zivo{order:0}
+.hero__act{display:none}
+#facts-wrap{padding-inline:0}
+.facts{grid-template-columns:repeat(auto-fit,minmax(120px,1fr));padding-block:20px;gap:12px 24px}
+.intro,.intro--solo{grid-template-columns:minmax(0,1fr);gap:0}
+.letter__txt{font:400 18px/1.65 var(--font-ui)}
+.avail{grid-template-columns:minmax(0,1fr);gap:16px}
+.sum-termin{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--border-control);border-radius:8px;color:var(--text);text-decoration:none}
+.sum-termin > span{display:grid;gap:2px;padding:10px 12px}
+.sum-termin > span + span{border-left:1px solid var(--border)}
+.sum-termin small{color:var(--text-muted);font:600 12px/1.2 var(--font-ui)}
+.sum-termin b{font:600 15px/1.3 var(--font-ui)}
+.sum-termin:hover{border-color:var(--text)}
+.sum-iznos{margin:0;font:600 15px/1.4 var(--font-ui)}
+.contact{border-radius:12px}
+@media (max-width:1100px){.pg{grid-template-columns:minmax(0,1fr) 320px;gap:32px}}
+@media (max-width:900px){.pg{grid-template-columns:minmax(0,1fr)}.pg-r{display:none}}
+@media (max-width:760px){
+  .gal-vrh{padding-top:0}
+  .gal-vrh .wrap{padding-inline:0}
+  .gal-vrh .gal{display:flex;gap:0;height:auto;overflow-x:auto;scroll-snap-type:x mandatory;grid-template-rows:none;border-radius:0}
+  .gal-vrh .gal > *,.gal-vrh .gal__pair > *{flex:0 0 100%;aspect-ratio:3/2;height:auto;border-radius:0;scroll-snap-align:start}
+  .gal-vrh .gal__pair{display:contents}
+  .gal-vrh .head--row{left:16px;bottom:12px}
+  .gal-vrh #gal-all{display:inline-flex}
+  .gal-all-m{display:none!important}
+  .pg{padding-inline:16px}
+  .hero,.hero.has-photo{min-height:0;padding:20px 0 0}
+  .hero__name{font-size:28px}
+  .pg-l .sec{padding-block:28px}
+}
+
+.t-ed,.pg-l h2.t-ed{font:650 24px/1.25 var(--font-editorial);letter-spacing:-.015em}
+.contact .t-ed{font-size:26px}
+.phead__name{font:700 19px/1.2 var(--font-editorial);letter-spacing:-.01em}
+.hero .zivo{background:var(--bg-soft);color:var(--text-accent)}
+.hero .zivo i{background:var(--action)}
+
+.sig{display:grid;gap:14px;padding:20px;border:1px solid var(--border);border-radius:12px;background:var(--bg-surface)}
+.pg-l #sig-sec{border-top:0}
+.sig__h{display:flex;align-items:center;gap:10px;margin:0;font:700 18px/1.3 var(--font-ui)}
+.sig__h .ic{color:var(--text-accent)}
+.sig__l{display:grid;gap:8px;margin:0;padding-left:20px;list-style:disc;color:var(--text);font-size:15px;line-height:1.55}
+.sig__p{margin:0;color:var(--text-muted);font-size:14px}
+.sig__p a{color:var(--text);font-weight:600}
+
+/* dorade 22. 10. (vlasnik): galerija bez jakog rezanja, karta široka i niska */
+.gal-vrh .gal{grid-template-rows:repeat(2,minmax(0,1fr));height:clamp(340px,40vw,580px)}
+.gal-vrh .gal--1,.gal-vrh .gal--2{grid-template-rows:minmax(0,1fr)}
+.gal-vrh .gal img{object-position:center 55%}
+.loc{grid-template-columns:minmax(0,1fr);gap:20px;align-items:start}
+.loc__copy{grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px 24px}
+.loc__copy > .eyebrow,.loc__copy > h2,.loc__copy > #adr-later{grid-column:1 / -1}
+.loc__copy > #adr-link{grid-column:2;grid-row:3;justify-self:end}
+.loc__place{grid-column:1}
+.map{min-height:0;aspect-ratio:16 / 7;width:100%}
+@media (max-width:760px){
+  .gal-vrh .gal{height:auto}
+  .loc__copy{grid-template-columns:minmax(0,1fr)}
+  .loc__copy > #adr-link{grid-column:1;grid-row:auto;justify-self:stretch}
+  .map{aspect-ratio:4 / 3}
+}
 </style>
 </head>
 <body>
@@ -399,6 +490,7 @@
   <symbol id="i-cigarette" viewBox="0 0 24 24"><path d="M17 12H3a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h14" /> <path d="M18 8c0-2.5-2-2.5-2-5" /> <path d="M21 16a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1" /> <path d="M22 8c0-2.5-2-2.5-2-5" /> <path d="M7 12v4" /></symbol>
   <symbol id="i-arrow-up-right" viewBox="0 0 24 24"><path d="M7 7h10v10" /> <path d="M7 17 17 7" /></symbol>
   <symbol id="i-arrow-left" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7" /> <path d="M19 12H5" /></symbol>
+  <symbol id="i-shield-check" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></symbol>
   <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" /></symbol>
   <symbol id="i-chevron-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" /></symbol>
   <symbol id="i-chevron-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></symbol>
@@ -472,10 +564,11 @@
       <span class="phead__loc" id="h-loc" hidden></span>
     </div>
     <nav class="phead__nav" aria-label="Dijelovi stranice" id="h-nav">
-      <a href="#o-objektu">O objektu</a>
-      <a href="#galerija" data-need="gal-sec">Fotografije</a>
+      <a href="#o-objektu">Pregled</a>
+      <a href="#details-sec" data-need="details-sec">Sadržaji</a>
       <a href="#lokacija" data-need="map-sec">Lokacija</a>
       <a href="#dostupnost" data-need="cal-sec">Dostupnost</a>
+      <a href="#faq-sec" data-need="faq-sec">Pitanja</a>
     </nav>
     <span class="phead__jez" data-jezik-birac hidden></span>
     <a class="btn btn--primary phead__cta" id="h-cta" href="#upit"><span class="lg">Pošalji upit</span><span class="sm">Upit</span><svg class="ic ic--sm"><use href="#i-arrow-up-right"/></svg></a>
@@ -483,6 +576,22 @@
 </header>
 
 <main id="sadrzaj">
+
+  <!-- galerija -->
+  <section class="sec gal-vrh" id="gal-sec" hidden aria-labelledby="gal-title">
+    <div class="wrap">
+      <div class="head--row">
+        <div class="head"><span class="eyebrow">Galerija</span><h2 class="t-ed" id="gal-title">Pogledajte prostor</h2></div>
+        <button class="btn btn--text" type="button" id="gal-all" onclick="openLb(0)"></button>
+      </div>
+      <div class="gal" id="gal"></div>
+      <button class="btn btn--secondary btn--block gal-all-m" type="button" id="gal-all-m" onclick="openLb(0)"></button>
+    </div>
+  </section>
+
+  <!-- redizajn „Pearl”: sadržaj lijevo, stalni panel za upit desno -->
+  <div class="wrap pg">
+  <div class="pg-l">
 
   <!-- prvi ekran -->
   <div class="wrap hero-wrap">
@@ -513,27 +622,9 @@
         <p class="letter__txt" id="welcome"></p>
         <p class="letter__sig" id="sig" hidden></p>
       </div>
-      <aside class="card summary" aria-label="Sažetak">
-        <div class="summary__price" id="sum-price"></div>
-        <p class="t-muted" id="sum-sub" hidden></p>
-        <a class="btn btn--primary" id="sum-cal" href="#dostupnost">Provjeri dostupnost</a>
-        <a class="btn btn--secondary" href="#upit">Pošalji upit domaćinu</a>
-        <p class="t-meta">Bez provizije. Termin i plaćanje dogovarate izravno s domaćinom.</p>
-      </aside>
     </div>
   </section>
 
-  <!-- galerija -->
-  <section class="sec sec--tight" id="gal-sec" hidden aria-labelledby="gal-title">
-    <div class="wrap">
-      <div class="head--row">
-        <div class="head"><span class="eyebrow">Galerija</span><h2 class="t-ed" id="gal-title">Pogledajte prostor</h2></div>
-        <button class="btn btn--text" type="button" id="gal-all" onclick="openLb(0)"></button>
-      </div>
-      <div class="gal" id="gal"></div>
-      <button class="btn btn--secondary btn--block gal-all-m" type="button" id="gal-all-m" onclick="openLb(0)"></button>
-    </div>
-  </section>
 
   <!-- lokacija -->
   <section class="sec sec--wash" id="map-sec" hidden aria-labelledby="loc-h">
@@ -711,7 +802,39 @@
     </div>
   </section>
 
+  <!-- sigurna izravna rezervacija (21. 10. 2026.): Odmoria ne prima uplate; gost i domaćin dogovaraju izravno -->
+  <section class="sec" id="sig-sec" aria-labelledby="sig-h">
+    <div class="wrap sig">
+      <h2 class="sig__h" id="sig-h"><svg class="ic" aria-hidden="true"><use href="#i-shield-check"/></svg><span>Sigurna izravna rezervacija</span></h2>
+      <ul class="sig__l">
+        <li>Odmoria ne prima uplate i nikad ne traži podatke kartice. Dogovor i plaćanje su izravno između vas i domaćina.</li>
+        <li>Upit nije rezervacija. Rezervacija vrijedi kad je domaćin potvrdi.</li>
+        <li>Prije uplate kapare razgovarajte s domaćinom — telefonom ili porukom s ove stranice.</li>
+        <li>Pri uplati vaša banka pokazuje ime primatelja. Ako se ne podudara s imenom domaćina, ne uplaćujte.</li>
+      </ul>
+      <p class="sig__p"><span>Nešto nije u redu sa stranicom?</span> <a id="sig-prijava" href="mailto:podrska@odmoria.com">Prijavi stranicu</a></p>
+    </div>
+  </section>
+
   <!-- kontakt -->
+  </div>
+  <div class="pg-r">
+    <aside class="card summary" aria-label="Sažetak">
+        <div class="summary__price" id="sum-price"></div>
+        <p class="t-muted" id="sum-sub" hidden></p>
+        <a class="sum-termin" href="#dostupnost" id="sum-termin" aria-label="Odaberite termin u kalendaru">
+          <span><small>Dolazak</small><b id="sum-od">Odaberite</b></span><span><small>Odlazak</small><b id="sum-do">Odaberite</b></span>
+        </a>
+        <p class="sum-iznos" id="sum-iznos" hidden></p>
+        <a class="btn btn--primary" id="sum-cal" href="#dostupnost">Provjeri dostupnost</a>
+        <a class="btn btn--secondary" href="#upit">Pošalji upit domaćinu</a>
+        <p class="t-meta">Upit nije potvrđena rezervacija — domaćin vam odgovara izravno.</p>
+        <p class="t-meta">Odmoria ne prima uplate. <a href="#sig-sec">Kako sigurno rezervirati</a></p>
+        <p class="t-meta">Bez provizije. Termin i plaćanje dogovarate izravno s domaćinom.</p>
+    </aside>
+  </div>
+  </div>
+
   <section class="sec sec--tight" aria-labelledby="ask-title">
     <div class="wrap" id="upit">
       <div class="contact on-dark">
@@ -792,7 +915,7 @@ const MJ_GEN = ['siječnja','veljače','ožujka','travnja','svibnja','lipnja','s
 const noci = (n, j) => L.n(n, 'noć', j)
 const eur = n => L.novac(n)
 
-let PROP = null, nights = 7, price = 0
+let PROP = null, nights = 7, price = 0, NA_UPIT = false
 
 /* Statistika za domaćina (page_views: objekt, vrsta, vrijeme — bez podataka o
    posjetitelju): pregled, upit WhatsAppom / e-mailom / kopiranjem, karta.
@@ -870,6 +993,8 @@ async function loadPage() {
   const stilIzAdrese = new URLSearchParams(location.search).get('stil')
   STIL.primijeni(stilIzAdrese != null ? stilIzAdrese : prop.theme)
   price = najnizaCijena(prop)   // v5: najniža od osnovne i sezonskih cijena („od … / noć”)
+  NA_UPIT = prop.prikaz_cijene === 'na_upit'   // sql/add-price-display.sql: domaćin skriva iznose
+  if (NA_UPIT) price = 0
 
   const [ams, places, txs, atts, rules, faqs] = await Promise.all([
     sb.from('amenities').select('icon,name').eq('property_id', prop.id).eq('enabled', true).order('sort_order'),
@@ -1045,7 +1170,14 @@ function buildFacts(prop) {
   $('#facts').innerHTML = f.map(([ic, t]) => `<li class="fact">${ico(ic, 'ic--lg')}<span>${esc(t)}</span></li>`).join('')
 }
 
+function buildSig(prop) {
+  const a = $('#sig-prijava'); if (!a) return
+  const adr = location.origin + location.pathname
+  a.href = 'mailto:podrska@odmoria.com?subject=' + encodeURIComponent(t('Prijava stranice') + ': ' + (prop.name || prop.slug || ''))
+    + '&body=' + encodeURIComponent(adr + '\n\n' + t('Opišite što nije u redu:') + '\n')
+}
 function buildSummary(prop) {
+  buildSig(prop)
   $('#sum-price').textContent = price > 0 ? t('od {cijena} / noć', { cijena: eur(price) }) : t('Cijena na upit')
   const s = [prop.min_stay && +prop.min_stay > 1 && t('Najmanje {n}', { n: noci(+prop.min_stay) }),
              prop.max_guests && gostiju(prop.max_guests)].filter(Boolean)
@@ -1323,7 +1455,7 @@ const fmtHR = ds => { const [y, m, d] = ds.split('-'); return L.jezik() === 'hr'
 const fmtFull = (ds, j = L.jezik()) => { const [y, m, d] = ds.split('-'); return L.datum(new Date(+y, +m - 1, +d), { godina: true, j }) }
 const setLbl = t => { const e = $('#cal-lbl'); if (e) e.textContent = t }
 // v5: iznos po sezonama (cijene.js — ista pravila kao cijena_boravka() u bazi)
-const iznosOdabranog = () => checkinDs && checkoutDs ? cijenaBoravka(PROP, checkinDs, checkoutDs) : null
+const iznosOdabranog = () => !NA_UPIT && checkinDs && checkoutDs ? cijenaBoravka(PROP, checkinDs, checkoutDs) : null
 const priceTxt = n => { const iz = iznosOdabranog() ?? (price > 0 ? price * n : null); return iz ? ' · ' + t('okvirno {cijena}', { cijena: eur(Math.round(iz)) }) : '' }
 const isSelected = ds => checkinDs && checkoutDs && ds > checkinDs && ds < checkoutDs
 const HINT = () => t('Kliknite datum dolaska, zatim datum odlaska.') +
@@ -1581,7 +1713,16 @@ function askMessage() {
   return L.tu(j, '{pozdrav} Zanima me boravak u objektu {objekt}. Koji su termini slobodni? Hvala!', v)
 }
 
+function sumTermin() {
+  const od = $('#sum-od'); if (!od) return
+  od.textContent = checkinDs ? fmtHR(checkinDs) : t('Odaberite')
+  $('#sum-do').textContent = checkoutDs ? fmtHR(checkoutDs) : t('Odaberite')
+  const iz = iznosOdabranog(), n = checkinDs && checkoutDs ? Math.round((new Date(checkoutDs) - new Date(checkinDs)) / 864e5) : 0
+  const el = $('#sum-iznos')
+  if (n && (iz || price > 0)) { el.textContent = t('Okvirno {cijena} za {n}', { cijena: eur(Math.round(iz ?? price * n)), n: noci(n) }); show(el) } else show(el, false)
+}
 function refreshAsk() {
+  sumTermin()
   const p = PROP
   const msg = askMessage()
   const wa = p.phone ? waUrl(p.phone, msg) : null

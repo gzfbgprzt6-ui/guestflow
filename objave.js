@@ -261,7 +261,7 @@ function kartica(ctx, x, y, w, h, o, { pozadina = '#FFFFFF', sjena = true } = {}
   ctx.textBaseline = 'alphabetic'; ctx.textAlign = 'left'
   ctx.fillStyle = BOJE.petrol; stani(ctx, r('izravnoKratko', j), ts, 800, 44, 'Manrope'); ctx.fillText(r('izravnoKratko', j), tx, y + h * 0.36)
   ctx.fillStyle = BOJE.akcija; stani(ctx, o.adresa || '', ts, 700, 32, 'Manrope'); ctx.fillText(o.adresa || '', tx, y + h * 0.6)
-  ctx.fillStyle = '#5B6F75'; stani(ctx, r('bezProvizije', j), ts, 400, 26, '"DM Sans"'); ctx.fillText(r('bezProvizije', j), tx, y + h * 0.82)
+  ctx.fillStyle = '#5B6F75'; stani(ctx, r('bezProvizije', j), ts, 400, 26, 'Manrope'); ctx.fillText(r('bezProvizije', j), tx, y + h * 0.82)
 }
 /** Lukovi: fotografija u obliku kamenog luka (zaobljen vrh). */
 function luk(ctx, x, y, w, h) {
@@ -294,7 +294,7 @@ export function ucitajSliku(url) {
     i.src = url
   })
 }
-export const PISMA = ['800 80px Manrope', '700 40px Manrope', '600 30px "DM Sans"', '400 30px "DM Sans"', '500 30px "DM Sans"', '600 80px Fraunces']
+export const PISMA = ['800 80px Manrope', '700 40px Manrope', '600 30px Manrope', '400 30px Manrope', '500 30px Manrope', '600 80px Fraunces']
 export const PREDLOSCI = { foto: 'Fotografija', razglednica: 'Razglednica', luk: 'Luk' }
 const NASLOV = (v) => `600 ${v}px Fraunces, Georgia, serif`
 
@@ -335,7 +335,7 @@ export function nacrtaj(canvas, o) {
       for (let i = red.length - 1; i >= 0; i--) { ctx.fillText(red[i], M, y); y -= razmak }
       y -= 12
     }
-    pisi(t.sitno, '500 30px "DM Sans"', 'rgba(255,255,255,.8)', 40)
+    pisi(t.sitno, '500 30px Manrope', 'rgba(255,255,255,.8)', 40)
     pisi(t.pod, '700 40px Manrope', BOJE.menta, 50, 2)
     const vel = story ? 112 : 100
     pisi(t.naslov, NASLOV(vel), '#FFFFFF', vel + 4, 2)
@@ -355,7 +355,7 @@ export function nacrtaj(canvas, o) {
     for (const red of prelomi(ctx, t.naslov, W - 2 * M - (d.cijena ? 150 : 0), 2)) { ctx.fillText(red, M, y); y += vel + 4 }
     y += 6; ctx.font = '700 38px Manrope'; ctx.fillStyle = BOJE.akcija
     if (t.pod) for (const red of prelomi(ctx, t.pod, W - 2 * M, 2)) { ctx.fillText(red, M, y); y += 48 }
-    ctx.font = '500 30px "DM Sans"'; ctx.fillStyle = '#5B6F75'
+    ctx.font = '500 30px Manrope'; ctx.fillStyle = '#5B6F75'
     if (t.sitno) { ctx.fillText(prelomi(ctx, t.sitno, W - 2 * M, 1)[0], M, y + 4) }
     // crtkana crta kao na razglednici, pa QR
     const kH = 216, kY = H - dno - kH
@@ -381,7 +381,7 @@ export function nacrtaj(canvas, o) {
     const vel = story ? 100 : 80
     ctx.font = NASLOV(vel); ctx.fillStyle = '#FFFFFF'
     for (const red of prelomi(ctx, t.naslov, W - 2 * M, 2)) { ctx.fillText(red, W / 2, y); y += vel + 4 }
-    ctx.font = '600 34px "DM Sans"'; ctx.fillStyle = 'rgba(255,255,255,.82)'
+    ctx.font = '600 34px Manrope'; ctx.fillStyle = 'rgba(255,255,255,.82)'
     if (t.pod) ctx.fillText(prelomi(ctx, t.pod, W - 2 * M, 1)[0], W / 2, y + 2)
     ctx.textAlign = 'left'
     const kH = 210
@@ -414,7 +414,7 @@ setTimeout(ispis,4000)})()</script>
 <style>
 @page{size:A4;margin:0}
 *{box-sizing:border-box}
-body{margin:0;font-family:"DM Sans",system-ui,sans-serif;color:#12303A;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+body{margin:0;font-family:Manrope,system-ui,sans-serif;color:#12303A;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 .list{width:210mm;height:297mm;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr}
 .k{border:.2mm dashed #B9C7CC;display:flex;flex-direction:column;overflow:hidden}
 .f{height:44mm;background:#12303A center/cover no-repeat}
@@ -429,7 +429,7 @@ p{margin:0;font-size:3.5mm;line-height:1.4}
 .q b{display:block;font:700 3.4mm/1.3 Manrope,sans-serif}
 .q span{display:block;margin-top:1mm;font-weight:600;font-size:3.3mm;color:#12303A;word-break:break-all}
 .q small{display:block;margin-top:1.4mm;font-size:2.9mm;color:#5B6F75}
-.upute{font:14px/1.5 "DM Sans",sans-serif;padding:16px 20px;background:#EFEEE8}
+.upute{font:14px/1.5 Manrope,sans-serif;padding:16px 20px;background:#EFEEE8}
 @media print{.upute{display:none}}
 </style></head><body>
 <p class="upute">Četiri kartice na jednom listu A4 — izrežite po isprekidanim crtama. Ispis se otvara sam; ako ne, pritisnite Ctrl + P (na Macu ⌘ + P).</p>

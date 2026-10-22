@@ -6,6 +6,15 @@ je samo pregled posla. **Sve niže je spojeno u `main` i u produkciji**
 iz tablice treba pokrenuti u Supabaseu — dok se ne pokrenu, stranice rade na
 starom putu (vidi „Čeka tvoj pregled”).
 
+## Redizajn „Pearl” (21. 10. 2026.) — u tijeku, samo lokalno
+
+| Paket | Što | Stanje |
+| --- | --- | --- |
+| 1 | Zajednički tokeni i jedno pismo (sve stranice), shell dashboarda (bočna traka 216 px, mobitel Danas · Kalendar · Upiti · Više), Danas, vodič s popisom i detaljima, donja traka gosta | gotovo lokalno, **čeka pregled** |
+| 2 | Javna stranica i naslovnica | gotovo, čeka pregled |
+| 3 | Kalendar (timeline po jedinicama), upiti s ponudom u bočnom panelu, rezervacije (tablica + panel) | gotovo, čeka pregled |
+| 4 | Editori objekta i analitika gotovi; postavke, prateće stranice, admin i čistačica samo nova paleta | djelomično |
+
 ## Gotovo (prošli smo)
 
 ### Figma — `BVdEgki8jV7z6Oa3K6Te2h`

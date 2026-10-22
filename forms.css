@@ -115,14 +115,14 @@ body{background:#F5F6F5}
 .card-head{font-weight:800}
 .fi,.fta,.fsel{border-color:rgba(18,48,58,.16);border-radius:12px;background:#FBFBFB}
 .fi:hover,.fta:hover,.fsel:hover{border-color:rgba(18,48,58,.4)}
-.fi:focus,.fta:focus,.fsel:focus{border-color:#12303A;background:#fff;box-shadow:0 0 0 3px rgba(18,48,58,.1)}
+.fi:focus,.fta:focus,.fsel:focus{border-color:var(--action);background:#fff;box-shadow:0 0 0 3px rgba(40,104,99,.15)}
 .type-btn{border-radius:999px;border-color:rgba(18,48,58,.16)}
-.type-btn.on{border-color:#12303A;background:#12303A;color:#fff}
+.type-btn.on{border-color:var(--action);background:var(--bg-soft);color:var(--text)}
 .type-btn.on::before{color:#fff}
 .btn-blue,.btn-out,.btn-red,.lbtn{border-radius:999px}
-.btn-blue{background:#12303A}
+.btn-blue{background:var(--action)}
 .btn-blue:hover{background:#1E4654}
 .btn-out,.lbtn-out{border-color:rgba(18,48,58,.16)}
 .btn-out:hover,.lbtn-out:hover{background:#F6F7F7;border-color:rgba(18,48,58,.3)}
 .ph-drop{border-color:rgba(18,48,58,.2);border-radius:18px;background:#FAFBFB}
-.ph-drop:hover,.ph-drop.over{border-color:#12303A}
+.ph-drop:hover,.ph-drop.over{border-color:var(--action)}

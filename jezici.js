@@ -620,6 +620,7 @@ const UZORCI = [
 const P = {
   'gost': { hr: ['gost', 'gosta', 'gostiju'], en: ['guest', 'guests'], de: ['Gast', 'Gäste'], it: ['ospite', 'ospiti'], pl: ['gość', 'gości', 'gości'], cs: ['host', 'hosté', 'hostů'] },
   'gosta': { hr: ['gosta', 'gostiju', 'gostiju'], en: ['guest', 'guests'], de: ['Gast', 'Gäste'], it: ['ospite', 'ospiti'], pl: ['gościa', 'gości', 'gości'], cs: ['hosta', 'hosty', 'hostů'] },
+  'pravilo': { hr: ['pravilo', 'pravila', 'pravila'], en: ['rule', 'rules'], de: ['Regel', 'Regeln'], it: ['regola', 'regole'], pl: ['zasada', 'zasady', 'zasad'], cs: ['pravidlo', 'pravidla', 'pravidel'] },
   'korak': { hr: ['korak', 'koraka', 'koraka'], en: ['step', 'steps'], de: ['Schritt', 'Schritte'], it: ['passaggio', 'passaggi'], pl: ['krok', 'kroki', 'kroków'], cs: ['krok', 'kroky', 'kroků'] },
   'noć': { hr: ['noć', 'noći', 'noći'], en: ['night', 'nights'], de: ['Nacht', 'Nächte'], it: ['notte', 'notti'], pl: ['noc', 'noce', 'nocy'], cs: ['noc', 'noci', 'nocí'] },
   'dan': { hr: ['dan', 'dana', 'dana'], en: ['day', 'days'], de: ['Tag', 'Tage'], it: ['giorno', 'giorni'], pl: ['dzień', 'dni', 'dni'], cs: ['den', 'dny', 'dní'] },
@@ -776,6 +777,69 @@ async function ucitaj(upit, j) {
     return o && o.ok ? o : null
   } catch { return null }
 }
+// vodič prema slici (22. 10. 2026.): dobrodošlica, okvir s vremenom, pločice, preporuke
+dodaj([
+  ['Preporuke tijekom boravka', 'Recommendations for your stay', 'Empfehlungen für Ihren Aufenthalt', 'Consigli per il soggiorno', 'Polecane miejsca na pobyt', 'Doporučení na pobyt'],
+  ['Dobro došli!', 'Welcome!', 'Willkommen!', 'Benvenuti!', 'Witamy!', 'Vítejte!'],
+  ['Dobro došli, {ime}!', 'Welcome, {ime}!', 'Willkommen, {ime}!', 'Benvenuti, {ime}!', 'Witamy, {ime}!', 'Vítejte, {ime}!'],
+  ['Veselimo se vašem dolasku i želimo vam ugodan boravak.', 'We look forward to your arrival and wish you a pleasant stay.', 'Wir freuen uns auf Ihre Ankunft und wünschen Ihnen einen angenehmen Aufenthalt.', 'Vi aspettiamo e vi auguriamo un piacevole soggiorno.', 'Cieszymy się na Twój przyjazd i życzymy miłego pobytu.', 'Těšíme se na váš příjezd a přejeme příjemný pobyt.'],
+  ['Želimo vam ugodan boravak. Sve što trebate je ovdje.', 'Enjoy your stay. Everything you need is here.', 'Schönen Aufenthalt! Alles, was Sie brauchen, finden Sie hier.', 'Buon soggiorno. Tutto ciò che vi serve è qui.', 'Miłego pobytu. Wszystko, czego potrzebujesz, jest tutaj.', 'Příjemný pobyt. Vše potřebné najdete zde.'],
+  ['Nadamo se da ste uživali. Sretan put!', 'We hope you enjoyed it. Safe travels!', 'Wir hoffen, es hat Ihnen gefallen. Gute Reise!', 'Speriamo che vi sia piaciuto. Buon viaggio!', 'Mamy nadzieję, że było miło. Szerokiej drogi!', 'Doufáme, že se vám líbilo. Šťastnou cestu!'],
+  ['danas', 'today', 'heute', 'oggi', 'dziś', 'dnes'],
+  ['sutra', 'tomorrow', 'morgen', 'domani', 'jutro', 'zítra'],
+  ['Dolazak {dan} od {v}', 'Arrival {dan} from {v}', 'Anreise {dan} ab {v}', 'Arrivo {dan} dalle {v}', 'Przyjazd {dan} od {v}', 'Příjezd {dan} od {v}'],
+  ['Odjava {dan} do {v}', 'Check-out {dan} by {v}', 'Abreise {dan} bis {v}', 'Check-out {dan} entro le {v}', 'Wymeldowanie {dan} do {v}', 'Odjezd {dan} do {v}'],
+  ['Ako stignete ranije, javite nam se.', 'If you arrive earlier, let us know.', 'Wenn Sie früher ankommen, melden Sie sich bei uns.', 'Se arrivate prima, fatecelo sapere.', 'Jeśli przyjedziesz wcześniej, daj nam znać.', 'Pokud přijedete dříve, dejte nám vědět.'],
+  ['Popis za odlazak je u Korisnim informacijama.', 'The check-out list is under Useful information.', 'Die Abreise-Checkliste finden Sie unter Nützliche Informationen.', 'La lista per la partenza è in Informazioni utili.', 'Lista na wyjazd jest w Przydatnych informacjach.', 'Seznam k odjezdu najdete v Užitečných informacích.'],
+  ['Trebate kasniju odjavu? Pitajte domaćina.', 'Need a later check-out? Ask your host.', 'Späterer Check-out? Fragen Sie den Gastgeber.', 'Serve un check-out più tardi? Chiedete all’host.', 'Potrzebujesz późniejszego wymeldowania? Zapytaj gospodarza.', 'Potřebujete pozdější odjezd? Zeptejte se hostitele.'],
+  ['Podaci za ulazak dostupni od {t}', 'Access details available from {t}', 'Zugangsdaten verfügbar ab {t}', 'Dati di accesso disponibili dalle {t}', 'Dane do wejścia dostępne od {t}', 'Údaje pro vstup k dispozici od {t}'],
+  ['Iz sigurnosnih razloga šifra vrata i Wi-Fi lozinka vidljivi su od sat vremena prije prijave.', 'For security, the door code and Wi-Fi password appear one hour before check-in.', 'Aus Sicherheitsgründen sind Türcode und WLAN-Passwort ab einer Stunde vor dem Check-in sichtbar.', 'Per sicurezza, il codice della porta e la password Wi-Fi sono visibili da un’ora prima del check-in.', 'Ze względów bezpieczeństwa kod do drzwi i hasło Wi-Fi są widoczne godzinę przed zameldowaniem.', 'Z bezpečnostních důvodů jsou kód dveří a heslo k Wi-Fi vidět hodinu před příjezdem.'],
+  ['Brzo do', 'Quick links', 'Schnellzugriff', 'Accesso rapido', 'Szybki dostęp', 'Rychlý přístup'],
+  ['Foto', 'Photo', 'Foto', 'Foto', 'Zdjęcie', 'Foto']
+])
+// redizajn vodiča „Pearl” (21. 10. 2026.): popis „Sve za vaš boravak”, detalji, donja traka
+dodaj([
+  ['Sve za vaš boravak', 'Everything for your stay', 'Alles für Ihren Aufenthalt', 'Tutto per il tuo soggiorno', 'Wszystko na Twój pobyt', 'Vše pro váš pobyt'],
+  ['Povratak', 'Back', 'Zurück', 'Indietro', 'Wstecz', 'Zpět'],
+  ['Vodič', 'Guide', 'Reiseführer', 'Guida', 'Przewodnik', 'Průvodce'],
+  ['Boravak', 'Stay', 'Aufenthalt', 'Soggiorno', 'Pobyt', 'Pobyt'],
+  ['Ulazak', 'Getting in', 'Zugang', 'Ingresso', 'Wejście', 'Vstup'],
+  ['Uređaji', 'Appliances', 'Geräte', 'Elettrodomestici', 'Urządzenia', 'Spotřebiče'],
+  ['Kućni red', 'House rules', 'Hausordnung', 'Regole della casa', 'Regulamin domu', 'Domácí řád'],
+  ['Lokacija i pristup', 'Location and access', 'Lage und Zufahrt', 'Posizione e accesso', 'Lokalizacja i dojazd', 'Poloha a příjezd'],
+  ['Upute za korištenje', 'How to use', 'Bedienungshinweise', 'Istruzioni per l’uso', 'Instrukcje obsługi', 'Návod k použití'],
+  ['Šifra je dostupna', 'Door code available', 'Türcode verfügbar', 'Codice disponibile', 'Kod jest dostępny', 'Kód je k dispozici'],
+  ['Dostupno od {d} u {t}', 'Available from {d} at {t}', 'Verfügbar ab {d} um {t}', 'Disponibile dal {d} alle {t}', 'Dostępne od {d} o {t}', 'K dispozici od {d} v {t}'],
+  ['Lozinka je dostupna', 'Password available', 'Passwort verfügbar', 'Password disponibile', 'Hasło jest dostępne', 'Heslo je k dispozici'],
+  ['Adresa i karta', 'Address and map', 'Adresse und Karte', 'Indirizzo e mappa', 'Adres i mapa', 'Adresa a mapa'],
+  ['Korisne informacije', 'Useful information', 'Nützliche Informationen', 'Informazioni utili', 'Przydatne informacje', 'Užitečné informace'],
+  ['Pravila i česta pitanja', 'Rules and FAQ', 'Regeln und häufige Fragen', 'Regole e domande frequenti', 'Zasady i częste pytania', 'Pravidla a časté dotazy'],
+  ['Kontakt i hitni brojevi', 'Contact and emergency numbers', 'Kontakt und Notrufnummern', 'Contatti e numeri di emergenza', 'Kontakt i numery alarmowe', 'Kontakt a nouzová čísla'],
+  ['Wi-Fi i lozinka', 'Wi-Fi and password', 'WLAN und Passwort', 'Wi-Fi e password', 'Wi-Fi i hasło', 'Wi-Fi a heslo'],
+  ['Preporuke u blizini', 'Recommendations nearby', 'Empfehlungen in der Nähe', 'Consigli nei dintorni', 'Polecenia w pobliżu', 'Doporučení v okolí'],
+  ['Upute za odlazak', 'Departure instructions', 'Hinweise zur Abreise', 'Istruzioni per la partenza', 'Instrukcje wyjazdu', 'Pokyny k odjezdu'],
+  ['Hitno', 'Emergency', 'Notfall', 'Emergenza', 'Nagłe wypadki', 'Nouze'],
+  ['Mreža {n}', 'Network {n}', 'Netzwerk {n}', 'Rete {n}', 'Sieć {n}', 'Síť {n}'],
+  ['Ostale informacije', 'Other information', 'Weitere Informationen', 'Altre informazioni', 'Inne informacje', 'Další informace'],
+  ['Navigacija vodiča', 'Guide navigation', 'Navigation des Reiseführers', 'Navigazione della guida', 'Nawigacja przewodnika', 'Navigace průvodce'],
+  ['Pogledano', 'Viewed', 'Angesehen', 'Visto', 'Obejrzane', 'Zobrazeno']
+])
+
+// sigurna izravna rezervacija (javna stranica, 21. 10. 2026.)
+dodaj([
+  ['Sigurna izravna rezervacija', 'Safe direct booking', 'Sicher direkt buchen', 'Prenotazione diretta sicura', 'Bezpieczna rezerwacja bezpośrednia', 'Bezpečná přímá rezervace'],
+  ['Odmoria ne prima uplate i nikad ne traži podatke kartice. Dogovor i plaćanje su izravno između vas i domaćina.', 'Odmoria does not take payments and never asks for card details. The agreement and payment are directly between you and the host.', 'Odmoria nimmt keine Zahlungen entgegen und fragt nie nach Kartendaten. Vereinbarung und Zahlung erfolgen direkt zwischen Ihnen und dem Gastgeber.', 'Odmoria non riceve pagamenti e non chiede mai i dati della carta. Accordo e pagamento avvengono direttamente tra te e l’host.', 'Odmoria nie przyjmuje płatności i nigdy nie prosi o dane karty. Umowa i płatność są bezpośrednio między Tobą a gospodarzem.', 'Odmoria nepřijímá platby a nikdy nežádá údaje o kartě. Dohoda i platba probíhají přímo mezi vámi a hostitelem.'],
+  ['Upit nije rezervacija. Rezervacija vrijedi kad je domaćin potvrdi.', 'An inquiry is not a booking. The booking is valid once the host confirms it.', 'Eine Anfrage ist keine Buchung. Die Buchung gilt, sobald der Gastgeber sie bestätigt.', 'Una richiesta non è una prenotazione. La prenotazione è valida quando l’host la conferma.', 'Zapytanie nie jest rezerwacją. Rezerwacja obowiązuje po potwierdzeniu przez gospodarza.', 'Poptávka není rezervace. Rezervace platí, jakmile ji hostitel potvrdí.'],
+  ['Prije uplate kapare razgovarajte s domaćinom — telefonom ili porukom s ove stranice.', 'Before paying a deposit, talk to the host — by phone or a message from this page.', 'Sprechen Sie vor einer Anzahlung mit dem Gastgeber — telefonisch oder per Nachricht von dieser Seite.', 'Prima di pagare la caparra, parla con l’host — al telefono o con un messaggio da questa pagina.', 'Przed wpłatą zaliczki porozmawiaj z gospodarzem — telefonicznie lub wiadomością z tej strony.', 'Před zaplacením zálohy si promluvte s hostitelem — telefonicky nebo zprávou z této stránky.'],
+  ['Pri uplati vaša banka pokazuje ime primatelja. Ako se ne podudara s imenom domaćina, ne uplaćujte.', 'When you pay, your bank shows the recipient’s name. If it does not match the host’s name, do not pay.', 'Bei der Überweisung zeigt Ihre Bank den Namen des Empfängers. Stimmt er nicht mit dem Namen des Gastgebers überein, zahlen Sie nicht.', 'Al momento del pagamento la tua banca mostra il nome del beneficiario. Se non corrisponde al nome dell’host, non pagare.', 'Przy przelewie bank pokazuje nazwę odbiorcy. Jeśli nie zgadza się z nazwiskiem gospodarza, nie płać.', 'Při platbě vám banka ukáže jméno příjemce. Pokud neodpovídá jménu hostitele, neplaťte.'],
+  ['Nešto nije u redu sa stranicom?', 'Something wrong with this page?', 'Stimmt etwas mit dieser Seite nicht?', 'Qualcosa non va con questa pagina?', 'Coś jest nie tak z tą stroną?', 'Něco není v pořádku s touto stránkou?'],
+  ['Prijavi stranicu', 'Report this page', 'Seite melden', 'Segnala la pagina', 'Zgłoś stronę', 'Nahlásit stránku'],
+  ['Prijava stranice', 'Page report', 'Seitenmeldung', 'Segnalazione pagina', 'Zgłoszenie strony', 'Nahlášení stránky'],
+  ['Opišite što nije u redu:', 'Describe what is wrong:', 'Beschreiben Sie, was nicht stimmt:', 'Descrivi cosa non va:', 'Opisz, co jest nie tak:', 'Popište, co není v pořádku:'],
+  ['Odmoria ne prima uplate.', 'Odmoria does not take payments.', 'Odmoria nimmt keine Zahlungen entgegen.', 'Odmoria non riceve pagamenti.', 'Odmoria nie przyjmuje płatności.', 'Odmoria nepřijímá platby.'],
+  ['Kako sigurno rezervirati', 'How to book safely', 'So buchen Sie sicher', 'Come prenotare in sicurezza', 'Jak bezpiecznie rezerwować', 'Jak bezpečně rezervovat']
+])
+
 // zahtjev poslan unaprijed (usporedo s podacima stranice), po jeziku
 const RANI = new Map()
 export function unaprijed(upit) { if (!RANI.has(J)) RANI.set(J, ucitaj(upit, J)) }

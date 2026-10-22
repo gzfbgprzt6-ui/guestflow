@@ -846,6 +846,103 @@ Dashboard **ne učitava `odmoria.css`** — ima vlastiti potpun CSS s istim vrij
   vrijedi samo za anon. **Novi stupac u `properties` anon ne vidi** — `p.html`
   ga dobiva kroz `javni_objekt`; nikad `select('*')` na `properties` iz javnih stranica.
 
+## Redizajn „Pearl / Quiet Adriatic” (21. 10. 2026., grana `odmoria-unified-redesign`)
+
+Specifikacija vlasnika (jedinstven sustav za cijeli proizvod). **Paket 1** gotov lokalno:
+- **Tokeni** (`odmoria.css` i zadnji sloj „PEARL” u `<style>` dashboarda, stara imena tokena):
+  perla `#F6F7F5`, bijela, tekst `#183D42`, sekundarni `#536564`, akcija `#286863`,
+  mekano `#E8F0ED`, obrub `#DCE3DF`; zaobljenja 8/12. **Jedno pismo: Manrope**
+  (DM Sans i Gelasio maknuti sa svih stranica; Fraunces ostaje samo u dashboardu za slike Objava).
+  Zadani stil u `stilovi.js` ima iste vrijednosti.
+- **Shell dashboarda:** bočna traka 216 px u gridu (sticky, ne fixed) s 8 dijelova —
+  `data-group`: `pregled` (Danas), `upiti`, `kalendar` (availability + ical), `rezervacije`
+  (reservations + reviews), `objekt` (Objekti: basic, photos, arrival, pricing, guide, rules,
+  prijevodi, links, objave), `analitika`, `tim`, `pretplata` (Postavke). 781–1080 px = traka
+  s ikonama (72 px). ≤ 780 px bočne trake **nema**; donja traka točno Danas · Kalendar · Upiti
+  · Više, a „Više” je panel `section-vise` (redovi preko cijele širine). Stari ključevi
+  `boravci`/`vodic` u `openGroup()` vode na Upite/Objekte. `body[data-grupa]` = aktivni dio
+  (traka „Trenutačno uređujete” samo u Objektima).
+- **Novi paneli:** `section-tim` (kartice čistačice i suradnika premještene iz Linkova —
+  `?otvori=cistacica` vodi ovamo) i `section-uredaji` (upute za uređaje, uz Dolazak).
+  `SPOJ = {basic:[basic, amenities, izgled], arrival:[arrival, wifi, uredaji], guide:[…]}`;
+  Pravila i FAQ su svoj podtab.
+- **Danas:** tri obveze (`#dn-kpi`: dolasci danas, upiti bez odgovora, čišćenja za potvrdu
+  danas/sutra = odlazak bez `cleaning_status`), slijed događaja po danu s vremenima iz
+  `sections.checkin_time/checkout_time` (bez izmišljenih vremena), „Traži pažnju” (isti `OBAV`),
+  objekti kao redovi (`ovTablicaNacrtaj`, filtri tek od 4 objekta), „Dovršite vodič” samo dok
+  nešto fali. Zaglavlje, karta, izvori noći i linkovi s Pregleda maknuti (podaci su u Analitici,
+  Kalendaru i Linkovima).
+- **Vodič (`h.html`):** početna = manja fotografija, naziv, karta boravka, **jedna** radnja po
+  fazi (`renderGlavna()`) i popis „Sve za vaš boravak” (`renderPopis()`, redovi `.pr`:
+  Parking, Ulazak, Wi-Fi, Uređaji, Kućni red, Odlazak, pa Prijava, Preporuke, Domaćin).
+  Red otvara **detalj** `#v/<id>` (`DETALJI`, `body[data-detalj]`): CSS pokaže samo taj
+  odjeljak, s „Povratak” (`nazad()`, povratak na isti položaj popisa). Parking i Ulazak dijele
+  `#o-ulaz` (svaki skriva tuđi dio). Stare adrese (`#dolazak`, `#kuca/pravila`, `#preporuke`…)
+  vode na detalj. Donja traka `#gnav`: Boravak · Vodič (`#v/vodic` = preporuke + korisne
+  informacije) · Domaćin (`#v/domacin` + hitno); skrivena samo na `#ulaz`. Šifre i dalje samo
+  kroz `secretHtml()`; status reda „Dostupno od …” ne otkriva vrijednost. `sw.js` VERZIJA 15.
+- Novi tekstovi: `jezici.js` (blok „redizajn vodiča”, množina `pravilo`) i `domacin-en.js`.
+- **Paket 2–3 (isti dan):** *Upiti* `.iqx` = popis (`IQ_SEL`, `#iq-filtar`, `#iq-trazi`) · detalj
+  (`iqDetalj()`: termin, gosti, procijenjena cijena, poruka, radnje) · ponuda u stupcu — `#ponuda-dlg`
+  više nije `<dialog>` nego `div` u `#iq-pon` (`iqPonuda()` → `iqPopuni()`; `otvoriPonudu(id)` samo odabere
+  upit). *Rezervacije* = tablica `.bk-tbl` + panel `#bk-panel` (`BK_SEL`, `bkStanje()`, `bkPanel()`,
+  `bkOdaberi()`); opasne radnje odvojeno. *Kalendar*: timeline svih objekata iznad mjeseca (`tlUcitaj()`,
+  `tlNacrtaj()`, `TL_N` mj/14/7; izravno petrol, B/A sivo, blokade šrafirano, praznine crtkano; stvarni
+  `ical_last_sync`), na mobitelu skriven. *Objekti*: putokaz u `#panelEyebrow`, `.property-banner`
+  skriven, `.ob-vrh` (Osnovno · `obFoto()` · dovršenost `#ob-prsten`), `#door-code` maskiran
+  (`pokaziTajnu()`), „Kako gost vidi” je `<details>`. *Analitika*: `an3()` (popunjenost, zauzete noći,
+  izravni upiti s usporedbom u p.b., SVG graf s prethodnim razdobljem, izvori noćenja, definicije).
+  *`p.html`*: galerija 1+2 na vrhu (`.gal-vrh`, na mobitelu listanje prstom), naslov bez fotografije,
+  `.pg` = sadržaj lijevo + `.pg-r` stalni panel (`sumTermin()` iz `refreshAsk()`), sidra
+  Pregled/Sadržaji/Lokacija/Dostupnost/Pitanja. *Naslovnica*: „Vaš smještaj. Sve na svom mjestu.”, bez
+  tamnih blokova. **Namjerno nije preuzeto sa slika:** chat, „polog za štetu”, „Najpopularnije”,
+  Destinacije/Inspiracija, favoriti, lijevak konverzije.
+- **Postavke** (`account.html`): četiri taba Račun · Pretplata · Obavijesti · Sigurnost (`TABOVI`
+  na vrhu modula — zamka kao `STATES`; `#pretplata`/`#obavijesti`/`#sigurnost` u adresi), podcrtani tabovi.
+  `forms.css` bez stare tinte (akcija `var(--action)`). `c.html`: „Odlazak” neutralno, odabir u boji akcije.
+  Admin: bijeli logo na tamnoj traci (tamna traka = jasno administratorski dio). Pomoć i pravne
+  stranice samo nova paleta.
+- **Sigurna izravna rezervacija** (22. 10. 2026.): `p.html` `#sig-sec` (Odmoria ne prima uplate, upit
+  nije rezervacija, razgovor prije kapare, ime primatelja u banci) + „Prijavi stranicu” (`buildSig()`,
+  mailto podrške s adresom), 6 jezika. Dashboard: ponuda (`PO_TX.potv`) kaže da je termin rezerviran tek
+  kad kapara stigne; `prihvatiUpit()` pita je li kapara na računu (samo uz mogućnost `izravno` i
+  `kapara_posto > 0`); panel rezervacije: deaktivirati link ako gost ne plati. Pomoć: dva odgovora u
+  Sigurnosti. Provjera domaćina / zaključani IBAN / 2FA = sljedeći paket (treba SQL i pravnika).
+
+## Dorade vlasnika (22. 10. 2026.)
+
+- **Dashboard:** „Traži pažnju” je preko cijele širine iznad slijeda (`.dn-paznja`, stavke kao kartice);
+  Osnovno = Osnovno | Dovršenost (kartica naslovne fotografije maknuta, `obFoto()` bez elementa ništa ne radi);
+  prijava/odjava kao kućice `.vr2` (isti `#ci-time`/`#co-time`); uređaji 2×2 `.ur4` (polja prazna, samo primjer
+  u placeholderu); cijene tri male kućice `.cj3` (`#pricePreview`/`#minStayPreview` ostaju skriveni za `livePreview()`);
+  sezone su jednake kartice `.sez` („Sezona N”). Gumbi „Pregled vodiča / Pogledaj stranicu” vide se samo u
+  Danas i Objektima (ne u Jezicima) — `body[data-panel]` postavlja `syncGroup()`. Postavke imaju četiri taba:
+  Račun, Obavijesti i Sigurnost su `.nav-van` gumbi bez `data-panel` koji vode u `account.html#…`.
+- **Prikaz cijene „Javno / Na upit”** (`sql/add-price-display.sql`, `properties.prikaz_cijene`): dashboard
+  `setPrikazCijene()`; bez stupca `savePricing()` spremi ostalo i kaže koji SQL. `p.html` (`NA_UPIT`) i
+  `api/stranica.js` (JSON-LD) tada ne pokazuju iznose. `javni_objekt()` vraća cijeli red, pa je ne treba mijenjati.
+- **`p.html`:** galerija visine `clamp(340px, 40vw, 580px)` (manje rezanja), karta preko cijele širine lijevog
+  stupca `16 / 7` (mobitel `4 / 3`).
+- **Vodič prema slici:** naslovna fotografija s imenom i mjestom na njoj (`.naslov--foto`), `renderKarta()` =
+  „Dobro došli!”, datumi i noći, okvir s vremenom dolaska/odjave po fazi; `#glavna` gumb; `renderZakl()` = topli
+  okvir „Podaci za ulazak dostupni od …” dok je zaključano, a nakon otključavanja šifra vrata kroz `secretHtml()`;
+  pločice `#plocice` (Parking, Ulazak s lokotom, Wi-Fi, Domaćin), `#prep-k` preporuke po vrsti (klik otvori
+  Preporuke s tim filtrom), `#popis-k` = „Korisne informacije”. Fotografija vodiča je naslovna fotografija objekta.
+  `sw.js` VERZIJA 17.
+- **Naslovi uređaja** (`sql/add-device-titles.sql`, `sections.uredaji_naslovi` = `{ac, grijanje, voda, kuhinja}`):
+  dashboard `[data-ur]` polja u kućicama, prazno = zadani naziv; vodič `urNaslov()`; `api/prevedi.js` ih prevodi.
+- **Sezone:** `.sez` stupci `auto-fit minmax(180px)` — Od/Do jedno uz drugo samo kad stanu; `input[type=date]` s
+  `appearance:none` (iPhone). Provjera preklapanja: `scratchpad/rd/t14.mjs` (rubovi polja, 360–1440 px).
+- **Fotografije preporuka** (`fotke-mjesta.js`, `sql/add-place-photos.sql`: `local_places.foto`, `foto_izvor`):
+  Wikimedia Commons iz preglednika domaćina — OSM oznake (`wikimedia_commons`, `wikidata` → P18, `image` na Commons;
+  `odaberi()` ih nosi u `osm`) pa geosearch (plaže 300 m, ostalo 60 m); samo slobodne licence, autor i licenca u
+  `foto_izvor` i ispod slike u vodiču. „Predloži mjesta” ih traži odmah, „Pronađi fotografije” za postojeće (koordinate iz
+  `maps_query`); „Ukloni sliku” u popisu. Bez slike vodič crta obojenu pločicu po vrsti (`PREP_TON`).
+- **Pokrenuto u bazi 22. 10.:** `add-price-display.sql`, `add-device-titles.sql`, `add-place-photos.sql`.
+- **Jezici** (prijevodi) tab je skriven (`data-skriven`, vlasnik: „ne treba”); panel i `nav('prijevodi')` ostaju,
+  `autoPrevedi()` i dalje radi nakon spremanja. **Tim i čišćenje:** kartica čistačice = `.cs-vrh` (link · slanje)
+  i `.cs-dno` (popis · javljanja kao vremenska crta `.cs-tl`). Sezone: datum i cijena centrirani.
+
 ## Redizajn v2 — prijenos iz Figme u kod (u tijeku)
 
 Figma datoteka `BVdEgki8jV7z6Oa3K6Te2h` (faze A, B, C) je vizualni izvor; postojeći

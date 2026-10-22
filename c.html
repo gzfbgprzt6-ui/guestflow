@@ -8,7 +8,7 @@
 <title>Raspored čišćenja — Odmoria</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Manrope:wght@600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="/odmoria.css">
 <style>
 /* ==========================================================================
@@ -60,6 +60,14 @@ main{max-width:760px;margin-inline:auto;padding:32px 16px 64px}
 .pop__dod .t-meta{flex:1 1 160px}
 .boot{min-height:60vh;display:grid;place-items:center}
 @media (max-width:520px){.dan{grid-template-columns:minmax(0,1fr);gap:8px}}
+
+/* redizajn „Pearl”: crvena samo za „ne mogu”, odabir u boji akcije, gumbi ≥ 44 px */
+.tag--out{background:var(--bg-wash);color:var(--text)}
+.tag--in{background:var(--bg-soft);color:var(--text-accent)}
+.jav__btn button{min-height:44px;border-radius:8px}
+.jav__btn button[aria-pressed="true"]{border-color:var(--action);background:var(--action);color:#fff}
+.pop__traka i{background:var(--action)}
+.pop>label input{accent-color:var(--action)}
 </style>
 </head>
 <body>

@@ -8,7 +8,7 @@
 <title>Vaš vodič — Odmoria</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Gelasio:wght@400;500&family=Manrope:wght@600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="/odmoria.css">
 <style>
 /* ==========================================================================
@@ -726,6 +726,187 @@ body[data-v="ulaz"] .gfoot{display:none}
 @media (max-width:420px){.odj__g{padding:14px 14px 0}.odj__t{padding:12px 14px 16px}.odj__saz{padding-left:64px}}
 .naslov__brend{display:inline-flex;align-items:center;gap:8px;margin:8px 0 0;font:700 13px/1.2 var(--font-ui);letter-spacing:.02em}
 .naslov__brend::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--bg-inverse)}
+
+/* =====================================================================
+   VODIČ „PEARL” (redizajn 21. 10. 2026.) — zadnji sloj.
+   Početna: manja fotografija, naziv, datumi, jedna radnja po fazi i popis
+   „Sve za vaš boravak” (redovi s finim razdjelnicima, bez pločica).
+   Detalj (#v/<id>, body[data-detalj]) pokazuje samo jedan odjeljak s
+   „Povratak”. Donja traka: Boravak · Vodič · Domaćin.
+   ===================================================================== */
+body{padding-bottom:calc(64px + env(safe-area-inset-bottom))}
+body[data-v="ulaz"]{padding-bottom:0}
+.ghead{background:rgba(246,247,245,.94)}
+/* zaglavlje: manja fotografija i naziv ispod nje, bez teksta na fotografiji */
+.naslov{max-width:720px;margin:0 auto;padding:16px max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px));overflow:visible;background:none;color:var(--text)}
+.naslov::after{display:none}
+.naslov__foto{position:static;width:100%;height:auto;aspect-ratio:16/9;max-height:260px;border-radius:12px;background:var(--bg-soft)}
+.naslov__in{max-width:none;padding:16px 0 0}
+.naslov .eyebrow{color:var(--text-accent);opacity:1}
+.naslov__ime{margin:4px 0 0;font:700 clamp(24px,5vw,30px)/1.2 var(--font-ui);letter-spacing:-.02em;color:var(--text)}
+.naslov__mj{color:var(--text-muted)}
+.naslov__brend::before{background:var(--action)}
+.pocetna{margin:0 auto;padding:16px 16px 32px;gap:16px}
+/* karta boravka: mirna bijela ploha */
+.karta{border:1px solid var(--border);border-radius:12px;box-shadow:none}
+.karta__sat{font:700 24px/1.1 var(--font-ui)}
+.karta__let{color:var(--text-muted)}
+.karta__crta{border-top:1px dashed var(--border)}
+.karta__crta::before,.karta__crta::after{border:1px solid var(--border);background:var(--bg-page)}
+.karta__lbl{color:var(--text-warm)}
+.karta__lbl--ok{color:var(--text-accent)}
+.karta__d{border-radius:8px}
+.sef{border-radius:10px}
+/* jedna istaknuta radnja */
+.glavna__btn{display:flex;width:100%;min-height:56px;justify-content:space-between;gap:12px;padding:0 18px;border-radius:10px;font:700 16px/1.2 var(--font-ui);text-align:left}
+.glavna__btn span{flex:1}
+.glavna__btn small{font:500 13.5px/1.2 var(--font-ui);opacity:.9}
+/* popis „Sve za vaš boravak” */
+.popis-k{border:1px solid var(--border);border-radius:12px;background:var(--bg-surface)}
+.popis-k > h2{margin:0;padding:16px 16px 4px;font:700 18px/1.3 var(--font-ui);letter-spacing:-.01em}
+.popis{display:grid}
+.pr{display:flex;align-items:center;gap:14px;min-height:64px;padding:10px 16px;border-top:1px solid var(--border);color:var(--text);text-decoration:none}
+.popis .pr:first-child{border-top:0}
+.pr:hover{background:var(--bg-page)}
+.pr > .ic:first-child{width:22px;height:22px;flex:none;color:var(--text-accent);stroke-width:1.75}
+.pr__t{flex:1;min-width:0;display:grid;gap:2px}
+.pr__t b{font:600 16px/1.3 var(--font-ui)}
+.pr__t small{display:flex;align-items:center;gap:5px;color:var(--text-muted);font-size:14px;line-height:1.35}
+.pr__t small .ic{width:13px;height:13px;flex:none}
+.pr__str{width:18px;height:18px;flex:none;color:var(--text-muted)}
+.skok{display:none!important}
+/* „sada”: svijetla ploha, bez tamne kartice */
+.sada{border:1px solid var(--border)!important;border-radius:12px;background:var(--bg-surface)!important;color:var(--text);box-shadow:none}
+.sada h2,.sada .preporuka b{color:var(--text)}
+.sada p,.sada .preporuka div span{color:var(--text-muted)!important}
+.sada .sada__oz{color:var(--text-accent)}
+.sada .vremena button{border-color:var(--border-control);background:var(--bg-surface);color:var(--text)}
+.sada .vremena button:hover{border-color:var(--action)}
+.sef{background:var(--bg-soft);color:var(--text)}
+.sef .ic{color:var(--text-accent)}
+.sef span{color:var(--text-muted)}
+.sef--otv{background:var(--action);color:#fff}
+.sef--otv .ic,.sef--otv span{color:#fff}
+.karta__d{background:var(--bg-wash)}
+.karta__d i{color:var(--text-muted)}
+.karta__tocka{background:var(--action)}
+body[data-detalj] #back{display:none}
+.sada__oz{color:var(--text-accent)}
+.sada .preporuka{background:var(--bg-page)}
+.sada .preporuka__ik{background:var(--bg-soft);color:var(--text-accent)}
+.sada .napredak{background:var(--bg-wash)}
+.sada .btn--secondary{border-color:var(--border-control);background:var(--bg-surface);color:var(--text)}
+.sada .btn--primary,.sada .btn--sunce{border:0;background:var(--action);color:#fff}
+.sada .vremena button{border-radius:8px}
+/* početna ↔ detalj */
+body:not([data-detalj]) #odjeljci,body:not([data-detalj]) #o-domacin,body:not([data-detalj]) #o-hitno,body:not([data-detalj]) #vodic-k{display:none}
+body[data-detalj] #hero,body[data-detalj] #karta,body[data-detalj] #glavna,body[data-detalj] #popis-k,body[data-detalj] #zakl,body[data-detalj] #plocice,body[data-detalj] #prep-k,body[data-detalj] #sada,body[data-detalj] #got-oz,
+body[data-detalj] .odj,body[data-detalj] #o-hitno,body[data-detalj] #vodic-k{display:none}
+body[data-detalj="parking"] #o-ulaz,body[data-detalj="ulaz"] #o-ulaz,body[data-detalj="wifi"] #o-wifi,body[data-detalj="kuca"] #o-kuca,
+body[data-detalj="pravila"] #o-pravila,body[data-detalj="odlazak"] #o-odlazak,body[data-detalj="prijava"] #o-prijava,
+body[data-detalj="okolica"] #o-okolica,body[data-detalj="vodic"] #o-okolica,body[data-detalj="vodic"] #vodic-k,
+body[data-detalj="domacin"] #o-domacin,body[data-detalj="domacin"] #o-hitno,body[data-detalj="hitno"] #o-hitno{display:block}
+body[data-detalj] .odj__g,body[data-detalj] .odj__saz{display:none!important}
+body[data-detalj] .odj--got .odj__t{display:grid}
+/* parking i ulazak dijele odjeljak „Kako ući”: svaki pokazuje svoj dio */
+body[data-detalj="parking"] #o-ulaz :is(#ulaz-blk,#codes-arr),body[data-detalj="parking"] #arr-steps > .blk:not(.park-g){display:none}
+body[data-detalj="ulaz"] #o-ulaz :is(.park-g,#arr-adr){display:none}
+.det-g{display:grid;gap:4px;padding-top:4px}
+.det-nazad{justify-self:start;display:inline-flex;align-items:center;gap:6px;min-height:44px;margin-left:-8px;padding:0 10px;border:0;border-radius:8px;background:none;color:var(--text-accent);cursor:pointer;font:600 15px/1 var(--font-ui)}
+.det-nazad:hover{background:var(--bg-wash)}
+.det-g h1{margin:4px 0 0;font:700 26px/1.2 var(--font-ui);letter-spacing:-.02em}
+.det-g h1:focus{outline:none}
+.det-g p{color:var(--text-muted)}
+/* odjeljci: bijela ploha, fini obrub, bez obojenih ikona */
+.odj{border:1px solid var(--border);border-radius:12px;box-shadow:none}
+.odj__ik,.odj--got .odj__ik{border-radius:0;background:none;color:var(--text-accent)}
+.odj__t p,.odj .blk p{color:var(--text)}
+.odj .map{border-radius:10px}
+.odj .btnrow .btn,.odj .ulaz-cta .btn,.odj--dom .pisi__btn .btn,.odj--dom .host__btns .btn,.odj .kasnije .btn{border-radius:8px}
+.odj .secret{border:1px solid var(--border);border-radius:10px;background:var(--bg-page)}
+.odj .secret > .ic{border-radius:8px;background:var(--bg-soft);color:var(--text-accent)}
+.odj .wifi-k{padding:0;border-radius:0;background:none;color:var(--text)}
+.odj .wifi-k .secret,.odj .wifi-k .secret.open{background:var(--bg-page)}
+.odj .wifi-k .secret > .ic{background:var(--bg-soft);color:var(--text-accent)}
+.odj .wifi-k .secret__k,.odj .wifi-k .secret__lock,.odj .wifi-k .ulaz__nap{color:var(--text-muted)}
+.odj .wifi-k .secret__v{color:var(--text)}
+.odj .wifi-k .copybtn{border:1px solid var(--border-control);border-radius:8px;background:var(--bg-surface);color:var(--text)}
+.odj .rules .rule .ic{padding:0;border-radius:0;background:none;color:var(--text-accent)}
+.odj .rules .rule span{padding-top:0}
+.odj .rules .rule--kv{border-radius:8px;background:var(--bg-page)}
+.odj .fchip{border-radius:8px;background:var(--bg-wash)}
+.odj .fchip[aria-pressed="true"]{background:var(--action)}
+.odj .fchip[aria-pressed="true"] .ic{color:#fff}
+.odj .mjesta .lrow__ic{border-radius:0;background:none;color:var(--text-accent)}
+.odj .istaknuto{background:var(--bg-page)}
+.odj .checklist label{border-radius:8px;background:var(--bg-page)}
+.odj .kasnije,.odj .ocjena{border:1px solid var(--border);border-radius:10px;background:var(--bg-page)}
+.odj--dom{background:var(--bg-surface)}
+.hitno{border:1px solid #F2C9C4;border-radius:12px;background:#FEF3F2;color:#A11F15}
+.hitno .sos,.hitno .broj{border-radius:10px}
+.palac{border-radius:10px}
+/* donja traka gosta */
+.gnav{position:fixed;left:0;right:0;bottom:0;z-index:45;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));padding:4px max(8px,env(safe-area-inset-right,0px)) calc(4px + env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left,0px));border-top:1px solid var(--border);background:rgba(255,255,255,.97)}
+.gnav a{position:relative;display:grid;justify-items:center;align-content:center;gap:4px;min-height:56px;border-radius:8px;color:var(--text-muted);font:600 12.5px/1.1 var(--font-ui);text-decoration:none}
+.gnav a .ic{width:22px;height:22px;stroke-width:1.75}
+.gnav a[aria-current="page"]{color:var(--text-accent);font-weight:700}
+.gnav a[aria-current="page"]::before{content:"";position:absolute;top:-4px;left:32%;right:32%;height:2px;border-radius:0 0 2px 2px;background:var(--action)}
+@media (min-width:760px){.gnav{left:50%;right:auto;width:min(720px,100%);transform:translateX(-50%);border:1px solid var(--border);border-bottom:0;border-radius:12px 12px 0 0}}
+.toast{bottom:calc(76px + env(safe-area-inset-bottom))}
+@media (prefers-reduced-motion:no-preference){.pr,.gnav a,.det-nazad{transition:background-color .14s ease,color .14s ease}
+  body[data-detalj] .pocetna{animation:pearl-in .18s ease both}}
+@keyframes pearl-in{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* ══ VODIČ prema slici (vlasnik, 22. 10.): fotografija s imenom, dobrodošlica, pločice, preporuke ══ */
+.naslov{padding-top:12px}
+.naslov--foto{position:relative;color:#fff}
+.naslov--foto .naslov__foto{display:block;aspect-ratio:16/10;max-height:300px;object-fit:cover}
+.naslov--foto .naslov__in{position:absolute;left:max(16px,env(safe-area-inset-left,0px));right:max(16px,env(safe-area-inset-right,0px));bottom:0;padding:48px 16px 14px;border-radius:0 0 12px 12px;background:linear-gradient(180deg,rgba(8,30,38,0) 0%,rgba(8,30,38,.72) 100%)}
+.naslov--foto .naslov__ime{color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.35)}
+.naslov--foto .naslov__mj{color:rgba(255,255,255,.92)}
+.naslov--foto .naslov__mj .ic{color:#fff}
+.naslov .eyebrow{display:none}
+.karta{display:grid;gap:12px;padding:4px 0 0;border:0;border-radius:0;background:none}
+.dd__h{margin:0;font:700 clamp(26px,6vw,32px)/1.15 var(--font-ui);letter-spacing:-.02em;color:var(--text)}
+.dd__tx{margin:0;color:var(--text-muted);font-size:16px;line-height:1.5}
+.dd__cip{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
+.dd__cip span{display:flex;align-items:center;gap:10px;min-height:48px;padding:0 14px;border:1px solid var(--border);border-radius:10px;background:var(--bg-surface);color:var(--text);font:600 15px/1.2 var(--font-ui)}
+.dd__cip .ic{width:18px;height:18px;flex:none;color:var(--text-accent)}
+.dd__ok,.zakl__k{display:flex;align-items:flex-start;gap:14px;padding:14px 16px;border-radius:10px}
+.dd__ok{background:var(--bg-soft);color:var(--text)}
+.dd__ok > .ic,.zakl__k > .ic{width:24px;height:24px;flex:none;margin-top:1px}
+.dd__ok > .ic{color:var(--text-accent)}
+.dd__ok b,.zakl__k b{display:block;font:700 16px/1.3 var(--font-ui)}
+.dd__ok span,.zakl__k span{display:block;margin-top:2px;color:var(--text-muted);font-size:14.5px;line-height:1.45}
+.glavna__btn{justify-content:center;gap:8px;text-align:center}
+.glavna__btn span{flex:0 1 auto}
+.zakl__k{border:1px solid #EFDDBB;background:#FDF6E8;color:#3D2E10}
+.zakl__k > .ic{color:#8A5A0B}
+.zakl__k span{color:#5E4A26}
+.plocice{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.pl{position:relative;display:flex;align-items:center;gap:12px;min-height:64px;padding:12px 14px;border:1px solid var(--border);border-radius:12px;background:var(--bg-surface);color:var(--text);text-decoration:none;font:700 16px/1.2 var(--font-ui)}
+.pl:hover{border-color:var(--border-control)}
+.pl > .ic:first-child{width:24px;height:24px;flex:none;color:var(--text-accent);stroke-width:1.75}
+.pl b{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pl--zak{background:var(--bg-page);color:var(--text-muted)}
+.pl--zak > .ic:first-child{color:var(--text-muted)}
+.pl__lok{width:15px!important;height:15px!important;margin-left:auto;flex:none;color:var(--text-muted)}
+.prep-k > h2,.popis-k > h2{margin:0 0 10px;padding:0;font:700 19px/1.3 var(--font-ui);letter-spacing:-.01em}
+.popis-k{padding:0;border:0;border-radius:0;background:none;box-shadow:none}
+.prep,.popis{display:grid;gap:8px;border-radius:0;background:none;box-shadow:none;overflow:visible}
+.prep__r,.popis .pr{display:flex;align-items:center;gap:14px;min-height:64px;padding:10px 14px;border:1px solid var(--border);border-radius:12px;background:var(--bg-surface);color:var(--text);text-decoration:none}
+.popis .pr:first-child{border-top:1px solid var(--border)}
+.prep__r:hover{background:var(--bg-page)}
+.prep__ik{display:grid;width:64px;height:52px;flex:none;place-items:center;border-radius:8px;background:var(--bg-soft);color:var(--text-accent)}
+.prep__ik .ic{width:24px;height:24px}
+@media (min-width:600px){.plocice{grid-template-columns:repeat(4,minmax(0,1fr))}.pl{flex-direction:column;align-items:flex-start;justify-content:center;min-height:92px}.pl__lok{position:absolute;top:12px;right:12px}}
+
+/* fotografije preporuka (local_places.foto, Wikimedia Commons) i obojene pločice */
+.prep__ik{background:linear-gradient(135deg,var(--pt-a,var(--bg-soft)),var(--pt-b,var(--bg-soft)));color:var(--pt-c,var(--text-accent))}
+.prep__ik--foto{background:var(--bg-soft) center/cover no-repeat}
+.lrow__foto{display:block;width:64px;height:48px;flex:none;border-radius:8px;background:var(--bg-soft) center/cover no-repeat}
+.istaknuto__foto{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:10px;margin-bottom:4px}
+.foto-izv{display:block;margin-top:2px;color:var(--text-muted);font-size:11.5px;line-height:1.35}
 </style>
 </head>
 <body>
@@ -747,6 +928,7 @@ body[data-v="ulaz"] .gfoot{display:none}
   <symbol id="i-mail" viewBox="0 0 24 24"><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" /> <rect x="2" y="4" width="20" height="16" rx="2" /></symbol>
   <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" /></symbol>
   <symbol id="i-chevron-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6" /></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><path d="M8 2v4"/><path d="M16 2v4"/><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18"/></symbol>
   <symbol id="i-moon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" /></symbol>
   <symbol id="i-cigarette-off" viewBox="0 0 24 24"><path d="M12 12H3a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h13" /> <path d="M18 8c0-2.5-2-2.5-2-5" /> <path d="m2 2 20 20" /> <path d="M21 12a1 1 0 0 1 1 1v2a1 1 0 0 1-.5.866" /> <path d="M22 8c0-2.5-2-2.5-2-5" /> <path d="M7 12v4" /></symbol>
   <symbol id="i-paw-print" viewBox="0 0 24 24"><circle cx="11" cy="4" r="2" /> <circle cx="18" cy="8" r="2" /> <circle cx="20" cy="16" r="2" /> <path d="M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.045Q6.52 17.48 4.46 16.84A3.5 3.5 0 0 1 5.5 10Z" /></symbol>
@@ -780,6 +962,7 @@ body[data-v="ulaz"] .gfoot{display:none}
   <symbol id="i-siren" viewBox="0 0 24 24"><path d="M7 18v-6a5 5 0 1 1 10 0v6" /> <path d="M5 21a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-1a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2z" /> <path d="M21 12h1" /> <path d="M18.5 4.5 18 5" /> <path d="M2 12h1" /> <path d="M12 2v1" /> <path d="m4.929 4.929.707.707" /> <path d="M12 12v6" /></symbol>
   <symbol id="i-star" viewBox="0 0 24 24"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z" /></symbol>
   <symbol id="i-id-card" viewBox="0 0 24 24"><path d="M16 10h2" /> <path d="M16 14h2" /> <path d="M6.17 15a3 3 0 0 1 5.66 0" /> <circle cx="9" cy="11" r="2" /> <rect x="2" y="5" width="20" height="14" rx="2" /></symbol>
+  <symbol id="i-plug" viewBox="0 0 24 24"><path d="M12 22v-5"/><path d="M9 8V2"/><path d="M15 8V2"/><path d="M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8Z"/></symbol>
   <symbol id="i-snowflake" viewBox="0 0 24 24"><path d="m10 20-1.25-2.5L6 18" /> <path d="M10 4 8.75 6.5 6 6" /> <path d="m14 20 1.25-2.5L18 18" /> <path d="m14 4 1.25 2.5L18 6" /> <path d="m17 21-3-6h-4" /> <path d="m17 3-3 6 1.5 3" /> <path d="M2 12h6.5L10 9" /> <path d="m20 10-1.5 2 1.5 2" /> <path d="M22 12h-6.5L14 15" /> <path d="m4 10 1.5 2L4 14" /> <path d="m7 21 3-6-1.5-3" /> <path d="m7 3 3 6h4" /></symbol>
 </svg>
 
@@ -839,8 +1022,25 @@ body[data-v="ulaz"] .gfoot{display:none}
   </section>
 
   <div class="pocetna">
+    <!-- detalj (redizajn „Pearl”, 21. 10. 2026.): #v/<id> pokazuje samo jedan odjeljak, s „Povratak” -->
+    <div class="det-g" id="det-g" hidden>
+      <button type="button" class="det-nazad" onclick="nazad()"><svg class="ic ic--sm"><use href="#i-arrow-left"/></svg><span>Povratak</span></button>
+      <h1 id="det-t" tabindex="-1"></h1>
+      <p id="det-s" hidden></p>
+    </div>
     <section class="karta" id="karta" aria-label="Vaš boravak"></section>
-    <nav class="skok" id="skok" aria-label="Skoči na"></nav>
+    <div class="glavna" id="glavna" hidden></div>
+    <div class="zakl" id="zakl" hidden></div>
+    <nav class="plocice" id="plocice" aria-label="Brzo do" hidden></nav>
+    <section class="prep-k" id="prep-k" aria-labelledby="prep-h" hidden>
+      <h2 id="prep-h">Preporuke tijekom boravka</h2>
+      <div class="prep" id="prep"></div>
+    </section>
+    <nav class="skok" id="skok" aria-label="Skoči na" hidden></nav>
+    <section class="popis-k" id="popis-k" aria-labelledby="popis-h" hidden>
+      <h2 id="popis-h">Korisne informacije</h2>
+      <div class="popis" id="popis"></div>
+    </section>
     <section class="sada" id="sada" hidden></section>
 
     <div id="odjeljci">
@@ -938,6 +1138,10 @@ body[data-v="ulaz"] .gfoot{display:none}
     </section>
       <p class="got-oz" id="got-oz" hidden><svg class="ic ic--sm"><use href="#i-check"/></svg>Već obavljeno</p>
     </div>
+    <section class="popis-k" id="vodic-k" aria-labelledby="vodic-h">
+      <h2 id="vodic-h">Korisne informacije</h2>
+      <div class="popis" id="popis-v"></div>
+    </section>
 
     <section class="odj odj--dom" id="o-domacin" data-ton="domacin" hidden aria-labelledby="host-name">
       <div class="odj__t">
@@ -1002,6 +1206,12 @@ body[data-v="ulaz"] .gfoot{display:none}
 
 <footer class="wrap gfoot"><p id="jez-nap" hidden style="margin-bottom:8px"></p>Stranica ne prati vaše kretanje; podaci koje sami upišete (prijava boravka, ocjena) idu samo domaćinu · <a href="/">Odmoria</a></footer>
 </div>
+
+<nav class="gnav" id="gnav" aria-label="Navigacija vodiča">
+  <a href="#" data-gn="boravak"><svg class="ic" aria-hidden="true"><use href="#i-house"/></svg><span>Boravak</span></a>
+  <a href="#v/vodic" data-gn="vodic"><svg class="ic" aria-hidden="true"><use href="#i-book-open"/></svg><span>Vodič</span></a>
+  <a href="#v/domacin" data-gn="domacin"><svg class="ic" aria-hidden="true"><use href="#i-message-circle"/></svg><span>Domaćin</span></a>
+</nav>
 
 <div class="dock" id="dock"><div class="dock__in">
   <span>Trebate nešto? Javite se domaćinu.</span>
@@ -1314,6 +1524,7 @@ function renderTop() {
     if (!img) { img = document.createElement('img'); img.className = 'naslov__foto'; img.alt = ''; img.decoding = 'async'; hero.prepend(img) }
     if (img.getAttribute('src') !== cover) img.src = cover
   } else if (img) img.remove()
+  hero.classList.toggle('naslov--foto', !!cover)
 
 }
 
@@ -1387,15 +1598,95 @@ function poredaj() {
   $('#skok').innerHTML = [...skok.map(id => [id, ...IK[id]]), ['domacin', 'message-circle', t('Domaćin')]]
     .filter(x => x[0] !== 'domacin' || !$('#o-domacin').hidden)
     .map(([id, i, n]) => `<button type="button" data-skok="${id}" class="${got(id) ? 'got' : ''}">${ico(got(id) ? 'check' : i)}${esc(n)}</button>`).join('')
-  show('#skok', skok.length > 1)
+  show('#skok', false)
+  renderPopis()
 }
+
+// ── popis „Sve za vaš boravak” (redovi: ikona, naslov, stanje, strelica) ──
+const imaParking = () => { const s = SECTION; return !!(s.parking_info || s.parking_foto || s.parking_lat != null) }
+const imaLokacija = () => imaParking() || !$('#arr-adr').hidden
+const imaUlazak = () => !$('#ulaz-blk').hidden || !!SECTION.door_code || !!SECTION.checkin_notes
+function zakljucanoDo() {
+  if (STARI_LINK) return t('Šifru dobivate u osobnom linku')
+  return UNLOCK_AT && new Date() < UNLOCK_AT ? t('Dostupno od {d} u {t}', { d: fmtShort(UNLOCK_AT), t: fmtHM(UNLOCK_AT) }) : t('Zaključano')
+}
+function stavkePopisa() {
+  const s = SECTION, sv = []
+  const brPr = $('#rules').querySelectorAll('.rule:not(.rule--kv)').length
+  if (imaLokacija()) sv.push(['parking', imaParking() ? 'car' : 'map-pin', imaParking() ? t('Parking') : t('Lokacija'), imaParking() ? t('Lokacija i pristup') : t('Adresa i karta')])
+  if (imaUlazak()) sv.push(['ulaz', 'door-open', t('Ulazak'), GOTOVO.ulaz ? t('Ušli ste') : s.door_code ? (UNLOCKED ? t('Šifra je dostupna') : zakljucanoDo()) : ulazKoraci().length ? L.n(ulazKoraci().length, 'korak') : t('Upute za dolazak'), !!s.door_code && !UNLOCKED])
+  if (imaOdjeljak('wifi')) sv.push(['wifi', 'wifi', 'Wi-Fi', s.wifi_pass ? (UNLOCKED ? t('Lozinka je dostupna') : zakljucanoDo()) : t('Mreža {n}', { n: s.wifi_name }), !!s.wifi_pass && !UNLOCKED])
+  if (imaOdjeljak('kuca')) sv.push(['kuca', 'plug', t('Uređaji'), t('Upute za korištenje')])
+  if (imaOdjeljak('pravila')) sv.push(['pravila', 'book-open', t('Kućni red'), brPr ? L.n(brPr, 'pravilo') : t('Pravila i česta pitanja')])
+  sv.push(['odlazak', 'log-out', t('Odlazak'), s.checkout_time ? t('Odjava do {v}', { v: s.checkout_time }) : t('Prije nego krenete')])
+  const ost = []
+  if (imaOdjeljak('prijava')) ost.push(['prijava', 'id-card', t('Prijava boravka'), GOTOVO.prijava ? t('Poslano domaćinu') : t('Podaci za eVisitor')])
+  if (imaOdjeljak('okolica')) ost.push(['okolica', 'umbrella', t('Preporuke'), t('Plaže, hrana i izleti u blizini')])
+  if (!$('#o-domacin').hidden) ost.push(['domacin', 'message-circle', PROP.host_name || t('Domaćin'), t('Kontakt i hitni brojevi')])
+  else ost.push(['hitno', 'siren', t('Hitno i pomoć'), '112 · 0–24'])
+  return [sv, ost]
+}
+const redPopisa = ([id, ik, n, st, zak]) => `<a class="pr" href="#v/${id}" data-red="${id}">${ico(ik)}<span class="pr__t"><b>${esc(n)}</b><small>${zak ? ico('lock', 'ic--xs') : ''}${esc(st || '')}</small></span>${ico('chevron-right', 'pr__str')}</a>`
+const PLOCE = ['parking', 'ulaz', 'wifi', 'domacin', 'hitno']
+const plocica = ([id, ik, n, st, zak]) => `<a class="pl${zak ? ' pl--zak' : ''}" href="#v/${id}" data-red="${id}" aria-label="${esc(n + (st ? ' · ' + st : ''))}">${ico(ik)}<b>${esc(n)}</b>${zak ? ico('lock', 'pl__lok') : ''}</a>`
+// pločica bez fotografije: blagi prijelaz u boji vrste (more, hrana, kava, trgovina, izlet)
+const PREP_TON = [
+  [/plaž|beach|umbrella|waves/i, '#D6ECF3', '#A9D3E3', '#1D5B70'],
+  [/restor|utensils|hrana|konob/i, '#F7E3D3', '#EEC4A4', '#7A3E17'],
+  [/kafi|cafe|coffee|bar/i, '#EFE5DA', '#D9C3AC', '#5C3E22'],
+  [/trgov|shop|basket|pekar/i, '#E3F0DF', '#BFDDB6', '#2E5A27'],
+  [/izlet|camera|park|mountain|sail|ship/i, '#E1EEEA', '#B6D6CC', '#1F5550'],
+  [/./, '#E8F0ED', '#CFE0D9', '#286863']
+]
+function renderPreporuke() {
+  const izbor = RECS.filter(x => x.cat !== t('Prijevoz'))
+  const vrste = [...new Set(izbor.map(x => x.cat))].slice(0, 4)
+  $('#prep').innerHTML = vrste.map(c => {
+    const u = izbor.filter(x => x.cat === c), sf = u.find(x => x.foto)
+    const ton = PREP_TON.find(([re]) => re.test(c + ' ' + u[0].ic)) || PREP_TON[PREP_TON.length - 1]
+    const sl = sf ? `<span class="prep__ik prep__ik--foto" style="background-image:url('${esc(sf.foto)}')" aria-hidden="true"></span>`
+      : `<span class="prep__ik" style="--pt-a:${ton[1]};--pt-b:${ton[2]};--pt-c:${ton[3]}" aria-hidden="true">${ico(u[0].ic)}</span>`
+    return `<a class="prep__r" href="#v/okolica" data-vrsta="${esc(c)}">${sl}
+      <span class="pr__t"><b>${esc(c)}</b><small>${esc(u.slice(0, 2).map(x => x.name).join(', ') + (u.length > 2 ? ' · +' + (u.length - 2) : ''))}</small></span>${ico('chevron-right', 'pr__str')}</a>`
+  }).join('')
+  show('#prep-k', vrste.length > 0)
+}
+// klik na vrstu preporuke: otvori preporuke s tim filtrom
+document.addEventListener('click', e => {
+  const r = e.target.closest('.prep__r'); if (!r) return
+  setTimeout(() => { const b = [...document.querySelectorAll('#fchips .fchip')].find(x => x.dataset.c === r.dataset.vrsta); b && b.click() }, 0)
+})
+function renderPopis() {
+  if (!PROP || !SECTION) return
+  const [sv, ost] = stavkePopisa()
+  const svi = [...sv, ...ost]
+  const ploce = PLOCE.map(id => svi.find(x => x[0] === id)).filter(Boolean).slice(0, 4)
+  $('#plocice').innerHTML = ploce.map(plocica).join('')
+  show('#plocice', ploce.length > 0)
+  const ostalo = svi.filter(x => !ploce.includes(x) && x[0] !== 'okolica' && !(x[0] === 'hitno' && ploce.some(p => p[0] === 'domacin')))
+  $('#popis').innerHTML = ostalo.map(redPopisa).join('')
+  show('#popis-k', ostalo.length > 0)
+  renderPreporuke()
+  $('#popis-v').innerHTML = [...sv, ...ost.filter(x => x[0] !== 'okolica')].map(redPopisa).join('')
+  renderGlavna()
+}
+// jedna istaknuta radnja po fazi boravka
+function renderGlavna() {
+  const f = faza(), s = SECTION, el = $('#glavna')
+  let g = null
+  if ((f === 'prije' || f === 'dolazak') && !GOTOVO.ulaz && (imaUlazak() || imaLokacija()))
+    g = [imaUlazak() ? 'ulaz' : 'parking', t('Upute za dolazak'), s.checkin_time ? t('Prijava od {v}', { v: s.checkin_time }) : '']
+  else if (f === 'odlazak') g = ['odlazak', t('Upute za odlazak'), s.checkout_time ? t('Odjava do {v}', { v: s.checkout_time }) : '']
+  else if (imaOdjeljak('wifi')) g = ['wifi', t('Wi-Fi i lozinka'), s.wifi_name || '']
+  else if (imaOdjeljak('okolica')) g = ['okolica', t('Preporuke u blizini'), '']
+  el.innerHTML = g ? `<a class="btn btn--primary glavna__btn" href="#v/${g[0]}"><span>${esc(g[1])}</span>${ico('chevron-right', 'ic--sm')}</a>` : ''
+  show(el, !!g)
+  renderZakl()
+}
+// redizajn „Pearl”: odjeljak se otvara kao zaseban detalj (#v/<id>), ne skrolanjem
 function skociNa(id) {
-  const el = $('#o-' + id); if (!el || el.hidden) return
-  if (el.classList.contains('odj--got')) { OTVORENO.add(id); poredaj() }
-  if (el.tagName === 'DETAILS') el.open = true
-  el.scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })
-  const h = el.querySelector('h2'); if (h) h.focus({ preventScroll: true })
-  biljezi('guide:' + id)
+  const cilj = '#v/' + (id === 'ulaz' && !imaUlazak() ? 'parking' : id)
+  if (location.hash === cilj) route(); else location.hash = cilj
 }
 document.addEventListener('click', e => {
   const b = e.target.closest('[data-skok]'); if (b) { e.preventDefault(); skociNa(b.dataset.skok); return }
@@ -1521,37 +1812,42 @@ let KARTA_TICK = null
 function renderKarta() {
   const el = $('#karta'), s = SECTION, f = faza(), { dolazak, odjava } = kadTrenuci()
   clearInterval(KARTA_TICK)
-  const items = vaultItems(), dc = items.findIndex(x => x.id === 'door_code')
-  const strana = (oz, sat, dan, desno) => `<div class="karta__s${desno ? ' karta__s--d' : ''}"><span class="karta__oz">${esc(oz)}</span>
-    <b class="karta__sat">${esc(sat || '—')}</b>${dan ? `<span class="karta__dan">${esc(dan)}</span>` : ''}</div>`
-  // sef: šifra vrata (zapečaćena = samo točkice), dodir otvara korake ili kopira
-  let sef = ''
-  if (dc >= 0) sef = UNLOCKED
-    ? `<button type="button" class="sef sef--otv" onclick="copyVal(${dc})" aria-label="${esc(t('Šifra vrata'))}: ${esc(items[dc].v)}. ${esc(t('Kopiraj'))}">${ico('lock-open')}<b>${esc(items[dc].v)}</b><span>${esc(t('šifra vrata'))}</span></button>`
-    : `<a class="sef" href="#dolazak" aria-label="${esc(t('Šifra vrata'))} · ${esc(t('Zaključano'))}">${ico('lock')}<b>••••</b><span>${esc(t('šifra vrata'))}</span></a>`
-  let st
-  const prijeDol = !!(BOOKING && dolazak && new Date() < dolazak)
-  if (prijeDol)
-    st = `<span class="karta__lbl"><span class="karta__tocka" aria-hidden="true"></span>${esc(t('Dolazak moguć za'))}</span><div class="karta__br" id="karta-br" role="timer">${kartaBrojevi(dolazak)}</div>`
-  else if (f === 'odlazak' && odjava && new Date() < odjava)
-    st = `<span class="karta__lbl"><span class="karta__tocka" aria-hidden="true"></span>${esc(t('Odjava za'))}</span><div class="karta__br" id="karta-br" role="timer">${kartaBrojevi(odjava)}</div>`
-  else if (UNLOCKED)
-    st = `<span class="karta__lbl karta__lbl--ok">${ico('shield-check')}${esc(CO_END ? t('Otključano · vrijedi do {d} u 23:59', { d: fmtShort(CO_END) }) : t('Otključano'))}</span>`
-      + (s.wifi_name ? `<span class="karta__mali">Wi-Fi: <b translate="no">${esc(s.wifi_name)}</b></span>` : '')
-  else
-    st = `<span class="karta__lbl">${ico('lock')}${esc(STARI_LINK ? t('Šifru dobivate u osobnom linku') : t('Zaključano'))}</span>`
-      + (s.wifi_name ? `<span class="karta__mali">Wi-Fi: <b translate="no">${esc(s.wifi_name)}</b></span>` : '')
-  el.innerHTML = `<div class="karta__red">${strana(t('Dolazak'), s.checkin_time, danKratko(BOOKING && dolazak))}
-      <svg class="karta__let" width="54" height="22" viewBox="0 0 54 22" aria-hidden="true"><path d="M2 11h44" stroke="currentColor" stroke-opacity=".35" stroke-width="2" stroke-dasharray="3 4" fill="none"/><path d="M44 5l7 6-7 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      ${strana(t('Odlazak'), s.checkout_time, danKratko(BOOKING && odjava), true)}</div>
-    <div class="karta__crta"></div>
-    <div class="karta__dno"><div class="karta__st">${st}</div>${sef}</div>`
-  const cilj = prijeDol ? dolazak : f === 'odlazak' ? odjava : null
-  if (cilj && new Date() < cilj) KARTA_TICK = setInterval(() => {
-    const b = $('#karta-br'); if (!b) return
-    if (new Date() >= cilj) { renderKarta(); renderSada(); renderTop(); return }
-    b.innerHTML = kartaBrojevi(cilj)
-  }, 1000)
+  const ime = BOOKING && BOOKING.guest_name && BOOKING.guest_name !== 'Gost' ? BOOKING.guest_name.split(' ')[0] : null
+  const nasl = f === 'odlazak' ? t('Hvala što ste bili s nama') : ime ? t('Dobro došli, {ime}!', { ime }) : t('Dobro došli!')
+  const tx = f === 'odlazak' ? t('Nadamo se da ste uživali. Sretan put!')
+    : f === 'boravak' ? t('Želimo vam ugodan boravak. Sve što trebate je ovdje.')
+    : t('Veselimo se vašem dolasku i želimo vam ugodan boravak.')
+  const n = BOOKING && BOOKING.checkin_date && BOOKING.checkout_date ? Math.round((new Date(BOOKING.checkout_date) - new Date(BOOKING.checkin_date)) / 864e5) : 0
+  const cipovi = BOOKING && BOOKING.checkin_date && BOOKING.checkout_date
+    ? `<div class="dd__cip"><span>${ico('calendar')}${esc(datesTxt())}</span>${n > 0 ? `<span>${ico('moon')}${esc(L.n(n, 'noć'))}</span>` : ''}</div>` : ''
+  const dan = d => { if (!d) return ''; const x = new Date(d); x.setHours(0, 0, 0, 0); const dd = new Date(); dd.setHours(0, 0, 0, 0)
+    const r = Math.round((x - dd) / 864e5); return r === 0 ? t('danas') : r === 1 ? t('sutra') : danKratko(d) }
+  let ok = ''
+  if (f === 'prije' || f === 'dolazak') {
+    const vr = s.checkin_time || (dolazak && fmtHM(dolazak))
+    ok = vr ? [BOOKING && dolazak ? t('Dolazak {dan} od {v}', { dan: dan(dolazak), v: vr }) : t('Prijava od {v}', { v: vr }),
+      PROP.phone || PROP.email ? t('Ako stignete ranije, javite nam se.') : ''] : null
+  } else {
+    const vr = s.checkout_time || (odjava && fmtHM(odjava))
+    ok = vr ? [BOOKING && odjava ? t('Odjava {dan} do {v}', { dan: dan(odjava), v: vr }) : t('Odjava do {v}', { v: vr }),
+      f === 'odlazak' ? t('Popis za odlazak je u Korisnim informacijama.') : t('Trebate kasniju odjavu? Pitajte domaćina.')] : null
+  }
+  el.innerHTML = `<h2 class="dd__h">${esc(nasl)}</h2><p class="dd__tx">${esc(tx)}</p>${cipovi}
+    ${ok ? `<div class="dd__ok">${ico('clock')}<div><b>${esc(ok[0])}</b>${ok[1] ? `<span>${esc(ok[1])}</span>` : ''}</div></div>` : ''}`
+}
+// okvir ispod glavnog gumba: dok je zaključano „dostupno od…”, nakon otključavanja šifra vrata (kroz secretHtml)
+function renderZakl() {
+  const el = $('#zakl'), items = vaultItems(), dc = items.findIndex(x => x.id === 'door_code')
+  const tajne = items.some(x => x.sensitive)
+  let h = ''
+  if (tajne && !UNLOCKED) {
+    const b = STARI_LINK ? t('Šifru dobivate u osobnom linku')
+      : UNLOCK_AT && new Date() < UNLOCK_AT ? t('Podaci za ulazak dostupni od {t}', { t: (faza() === 'dolazak' ? '' : fmtShort(UNLOCK_AT) + ' ') + fmtHM(UNLOCK_AT) }) : t('Zaključano')
+    h = `<div class="zakl__k">${ico('lock')}<div><b>${esc(b)}</b><span>${esc(STARI_LINK ? t('Šifru vrata i Wi-Fi lozinku dobivate u osobnom linku od domaćina.') : t('Iz sigurnosnih razloga šifra vrata i Wi-Fi lozinka vidljivi su od sat vremena prije prijave.'))}</span></div></div>`
+  } else if (UNLOCKED && dc >= 0 && !GOTOVO.ulaz) h = secretHtml(items[dc], dc)
+  el.innerHTML = h
+  el.classList.toggle('zakl--otv', !!h && UNLOCKED)
+  show(el, !!h)
 }
 
 // ══════════════════════════════════════════════════════
@@ -1592,6 +1888,7 @@ function renderSada() {
       <div class="napredak" aria-hidden="true"><span style="width:${Math.round(gotovo / n * 100)}%"></span></div>
       <div class="odgovor__akc"><a class="btn btn--sunce btn--sm" href="#odlazak" data-skok="odlazak">${esc(t('Otvori popis'))}${ico('arrow-down', 'ic--sm')}</a></div>`
   }
+  if (f === 'dolazak' || f === 'odlazak') h = ''   // radnju za danas nosi glavni gumb (renderGlavna)
   el.innerHTML = h
   show(el, !!h)
 }
@@ -1600,8 +1897,8 @@ window.javiDolazak = v => {
   const tekst = v ? t('Pozdrav! Ovdje {ime}. Stižemo otprilike {v}.', { ime: ime || t('vaš gost'), v })
     : t('Pozdrav! Ovdje {ime}. Stižemo kasnije, javit ćemo točno vrijeme.', { ime: ime || t('vaš gost') })
   $('#dom-tx').value = tekst
-  $('#o-domacin').scrollIntoView({ block: 'center', behavior: 'smooth' })
-  $('#dom-tx').focus({ preventScroll: true })
+  skociNa('domacin')
+  requestAnimationFrame(() => $('#dom-tx').focus({ preventScroll: true }))
 }
 
 // ══════════════════════════════════════════════════════
@@ -1849,10 +2146,12 @@ window.loadMap = () => {
 // ══════════════════════════════════════════════════════
 //  WI-FI I KUĆA — uređaji, pravila, odlazak, pitanja
 // ══════════════════════════════════════════════════════
+// naslov kućice uređaja: domaćinov (sections.uredaji_naslovi, sql/add-device-titles.sql) ili zadani
+const urNaslov = (k, zad) => { const n = SECTION.uredaji_naslovi && SECTION.uredaji_naslovi[k]; return n ? H(String(n)) : t(zad) }
 function renderHouse(rules, faqs) {
   const s = SECTION
-  const d = [['snowflake', t('Klima-uređaj'), H(s.ac_info)], ['flame', t('Grijanje'), H(s.heating_info)],
-             ['droplets', t('Topla voda'), H(s.hot_water_info)], ['utensils', t('Kuhinja'), H(s.kitchen_info)]].filter(x => x[2])
+  const d = [['snowflake', urNaslov('ac', 'Klima-uređaj'), H(s.ac_info)], ['flame', urNaslov('grijanje', 'Grijanje'), H(s.heating_info)],
+             ['droplets', urNaslov('voda', 'Topla voda'), H(s.hot_water_info)], ['utensils', urNaslov('kuhinja', 'Kuhinja'), H(s.kitchen_info)]].filter(x => x[2])
   if (d.length) {
     // pločice koje se otvore na mjestu (otvorena zauzme cijeli red)
     $('#dev-list').innerHTML = `<div class="uredaji">${d.map(([ic, n, v]) =>
@@ -1899,7 +2198,8 @@ let RECS = []
 function renderRecs(places, txs, atts) {
   RECS = [
     ...(places || []).map(p => ({ cat: p.category && p.category.trim() ? H(p.category.trim()) : t('Ostalo'), ic: pick((p.category || '') + ' ' + p.name, PLACE_IC, 'map-pin'),
-      name: H(p.name), dt: [H(p.category), H(p.distance)].filter(Boolean).join(' · '), maps: p.maps_query })),
+      name: H(p.name), dt: [H(p.category), H(p.distance)].filter(Boolean).join(' · '), maps: p.maps_query,
+      foto: /^https:\/\//.test(p.foto || '') ? p.foto : '', fotoIzv: p.foto_izvor || '' })),
     ...(txs || []).map(x => ({ cat: t('Prijevoz'), ic: pick(x.name, TX_IC, 'car'), name: H(x.name),
       dt: [t('Prijevoz'), H(x.details)].filter(Boolean).join(' · '), maps: x.maps_query, phone: x.phone })),
     ...(atts || []).map(a => ({ cat: t('Izleti'), ic: pick((a.type || '') + ' ' + a.name, AT_IC, 'camera'), name: H(a.name),
@@ -1926,15 +2226,16 @@ function paintRecs(cat) {
   const sve = cat === '*' ? RECS : RECS.filter(r => r.cat === cat)
   // prvo mjesto na popisu domaćina = „prvi izbor”, istaknuto (redoslijed je domaćinov)
   const prvi = cat === '*' && sve.length > 1 ? sve[0] : null, list = prvi ? sve.slice(1) : sve
-  $('#places').innerHTML = (prvi ? `<article class="istaknuto"><span class="istaknuto__z">${ico('star', 'ic--sm')}${esc(t('Prvi izbor domaćina'))}</span>
+  $('#places').innerHTML = (prvi ? `<article class="istaknuto">${prvi.foto ? `<img class="istaknuto__foto" src="${esc(prvi.foto)}" alt="" loading="lazy" decoding="async"><small class="foto-izv">${esc(t('Foto'))}: ${esc(prvi.fotoIzv)}</small>` : ''}<span class="istaknuto__z">${ico('star', 'ic--sm')}${esc(t('Prvi izbor domaćina'))}</span>
       <h3>${esc(prvi.name)}</h3>${prvi.dt ? `<p>${esc(prvi.dt)}</p>` : ''}${prvi.desc ? `<p style="font-weight:400">${esc(prvi.desc)}</p>` : ''}
       ${prvi.maps ? `<a class="btn btn--primary btn--sm" href="${esc(mapsUrl(prvi.maps))}" target="_blank" rel="noopener">${esc(t('Odvedi me'))}${ico('arrow-up-right', 'ic--sm')}</a>` : ''}</article>` : '') + (list.length ? '<div class="mjesta">' : '') + list.map(r => {
     const go = r.maps
       ? `<a class="lrow__go" href="${esc(mapsUrl(r.maps))}" target="_blank" rel="noopener" aria-label="${esc(t('{n} na karti', { n: r.name }))}">${esc(t('Karta'))}${ico('arrow-up-right', 'ic--sm')}</a>`
       : r.phone ? `<a class="lrow__go" href="tel:${esc(String(r.phone).replace(/[^\d+]/g, ''))}">${esc(t('Nazovi'))}${ico('phone', 'ic--sm')}</a>` : ''
     const [ib, ic] = TON_IC[r.ic] || ['#EFEEE8', '#12303A']
-    return `<div class="lrow"><span class="lrow__ic" style="--ic-bg:${ib};--ic:${ic}">${ico(r.ic)}</span>
-      <div class="lrow__tx"><span class="lrow__nm">${esc(r.name)}</span>${r.dt ? `<span class="lrow__dt">${esc(r.dt)}</span>` : ''}${r.desc ? `<span class="lrow__dt">${esc(r.desc)}</span>` : ''}</div>${go}</div>`
+    const slika = r.foto ? `<span class="lrow__foto" style="background-image:url('${esc(r.foto)}')" role="img" aria-label="${esc(r.name)}"></span>` : `<span class="lrow__ic" style="--ic-bg:${ib};--ic:${ic}">${ico(r.ic)}</span>`
+    return `<div class="lrow">${slika}
+      <div class="lrow__tx"><span class="lrow__nm">${esc(r.name)}</span>${r.dt ? `<span class="lrow__dt">${esc(r.dt)}</span>` : ''}${r.desc ? `<span class="lrow__dt">${esc(r.desc)}</span>` : ''}${r.foto && r.fotoIzv ? `<small class="foto-izv">${esc(t('Foto'))}: ${esc(r.fotoIzv)}</small>` : ''}</div>${go}</div>`
   }).join('') + (list.length ? '</div>' : '')
 }
 
@@ -1991,7 +2292,7 @@ const VIEWS = {
 function vglava(view) {
   const s = SECTION, mj = (PROP.location || '').split(',').map(x => x.trim()).filter(Boolean).pop()
   const k = ulazKoraci(), zv = s.door_code ? k.findIndex(x => x.sifra) : -1
-  const uredaji = [[s.ac_info, 'snowflake', t('Klima-uređaj')], [s.heating_info, 'flame', t('Grijanje')], [s.hot_water_info, 'droplets', t('Topla voda')], [s.kitchen_info, 'utensils', t('Kuhinja')]].filter(x => x[0])
+  const uredaji = [[s.ac_info, 'snowflake', urNaslov('ac', 'Klima-uređaj')], [s.heating_info, 'flame', urNaslov('grijanje', 'Grijanje')], [s.hot_water_info, 'droplets', urNaslov('voda', 'Topla voda')], [s.kitchen_info, 'utensils', urNaslov('kuhinja', 'Kuhinja')]].filter(x => x[0])
   const { odjava } = kadTrenuci()
   const kat = {}; for (const r of RECS) kat[r.cat] = (kat[r.cat] || 0) + 1
   const G = {
@@ -2020,24 +2321,52 @@ function vglava(view) {
   show(el)
   return G[0]
 }
-// stare adrese podstranica (e-mail gostu, obavijesti, oznake) vode na odjeljak početne
+// stare adrese podstranica (e-mail gostu, obavijesti, oznake) vode na detalj
 const ODJ_ZA = { dolazak: 'ulaz', kuca: 'wifi', odlazak: 'odlazak', preporuke: 'okolica', domacin: 'domacin', hitno: 'hitno' }
 const ODJ_SIDRO = { pravila: 'pravila', pitanja: 'pravila', uredaji: 'kuca', odlazak: 'odlazak' }
+// detalj → odjeljak koji se prikazuje, naslov i opis (redizajn „Pearl”)
+const DETALJI = {
+  parking: ['o-ulaz', () => imaParking() ? t('Parking') : t('Lokacija'), () => t('Lokacija i pristup')],
+  ulaz: ['o-ulaz', () => t('Ulazak'), () => $('#o-ulaz-sub').textContent],
+  wifi: ['o-wifi', () => 'Wi-Fi', () => t('Za mobitel i laptop')],
+  kuca: ['o-kuca', () => t('Uređaji'), () => t('Upute za korištenje')],
+  pravila: ['o-pravila', () => t('Kućni red'), () => t('Pravila i česta pitanja')],
+  odlazak: ['o-odlazak', () => t('Odlazak'), () => t('Prije nego krenete')],
+  prijava: ['o-prijava', () => t('Prijava boravka'), () => t('Podaci za eVisitor')],
+  okolica: ['o-okolica', () => t('Preporuke'), () => t('Plaže, hrana i izleti u blizini')],
+  vodic: ['o-okolica', () => t('Vodič'), () => ''],
+  domacin: ['o-domacin', () => PROP.host_name || t('Domaćin'), () => t('Kontakt i hitni brojevi')],
+  hitno: ['o-hitno', () => t('Hitno i pomoć'), () => '112 · 0–24']
+}
+let POC_Y = 0, DETALJ = ''
 function route() {
   let [v, anchor] = location.hash.slice(1).split('/')
-  // ekran korak po korak postoji samo s koracima; bez njih → odjeljak „Kako ući”
+  // ekran korak po korak postoji samo s koracima; bez njih → detalj „Ulazak”
   if (v === 'ulaz' && !ULAZ.length) v = 'dolazak'
   const view = v === 'ulaz' || v === 'prijava' ? v : 'home'
   if (view !== 'home') biljezi('guide:' + view)
   document.querySelectorAll('[data-view]').forEach(el => { el.hidden = el.dataset.view !== view })
-  const home = view === 'home'
+  // detalj: #v/<id>, ili stara adresa podstranice
+  let det = view !== 'home' ? '' : v === 'v' ? anchor || '' : (ODJ_SIDRO[anchor] || ODJ_ZA[v] || '')
+  if (det === 'ulaz' && !imaUlazak()) det = 'parking'
+  if (det && !DETALJI[det]) det = ''
+  if (det && det !== 'vodic' && $('#' + DETALJI[det][0])?.hidden) det = det === 'domacin' ? 'hitno' : ''
+  const bio = DETALJ
+  if (det && !bio && view === 'home') POC_Y = scrollY
+  DETALJ = det
+  const home = view === 'home' && !det
   document.body.dataset.v = view
+  if (det) document.body.dataset.detalj = det; else delete document.body.dataset.detalj
   $('#sadrzaj').dataset.ton = vglava(view) || ''
   show('#back', !home)
   show('#h-badge', home)
-  $('#h-title').textContent = home ? (PROP.name || t('Vaš smještaj')) : t(VIEWS[view][0])
-  $('#h-sub').textContent = home ? t('Vaš privatni vodič') : t('{n} · privatni vodič', { n: PROP.name || t('Vaš smještaj') })
+  $('#h-title').textContent = home || det ? (PROP.name || t('Vaš smještaj')) : t(VIEWS[view][0])
+  $('#h-sub').textContent = home || det ? t('Vaš privatni vodič') : t('{n} · privatni vodič', { n: PROP.name || t('Vaš smještaj') })
   show('#dock', false)
+  // donja traka gosta: isto na svim podstranicama (osim ekrana korak po korak)
+  const gn = !det && view === 'home' ? 'boravak' : det === 'domacin' || det === 'hitno' ? 'domacin' : 'vodic'
+  document.querySelectorAll('#gnav [data-gn]').forEach(a => { if (a.dataset.gn === gn) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current') })
+  show('#gnav', view !== 'ulaz')
   if (view === 'ulaz') {
     const n = parseInt(anchor, 10)
     UK = Number.isFinite(n) ? n - 1 : 0; UK_SMJER = 1
@@ -2045,11 +2374,29 @@ function route() {
     return
   }
   if (view === 'prijava') { scrollTo(0, 0); return }
-  if (v === 'dolazak' && !ULAZ.length && faza() !== 'prije') oznaci('ulaz')
-  const cilj = ODJ_SIDRO[anchor] || ODJ_ZA[v]
-  if (cilj) requestAnimationFrame(() => skociNa(cilj))
+  show('#det-g', !!det)
+  if (det) {
+    const [sek, nasl, opis] = DETALJI[det]
+    $('#det-t').textContent = nasl()
+    const o = opis(); $('#det-s').textContent = o; show('#det-s', !!o)
+    if ($('#' + sek)?.classList.contains('odj--got')) { OTVORENO.add(sek.slice(2)); poredaj() }
+    const el = $('#' + sek); if (el && el.tagName === 'DETAILS') el.open = true
+    if (det === 'ulaz' && !ULAZ.length && faza() !== 'prije') oznaci('ulaz')
+    biljezi('guide:' + det)
+    scrollTo(0, 0)
+    $('#det-t').focus({ preventScroll: true })
+  } else if (bio) requestAnimationFrame(() => scrollTo(0, POC_Y))
   else if (!v) scrollTo(0, 0)
 }
+// „Povratak”: natrag u povijesti ako smo došli s početne, inače na početnu
+window.nazad = () => { if (history.state && history.state.odPocetne) history.back(); else goHome() }
+document.addEventListener('click', e => {
+  const a = e.target.closest('a[href^="#v/"]'); if (!a || e.defaultPrevented || e.metaKey || e.ctrlKey) return
+  e.preventDefault()
+  if (location.hash === a.getAttribute('href')) return
+  history.pushState({ odPocetne: !DETALJ && document.body.dataset.v === 'home' }, '', a.getAttribute('href'))
+  route()
+})
 addEventListener('hashchange', route)
 window.goHome = () => {
   history.pushState(null, '', location.pathname + location.search)

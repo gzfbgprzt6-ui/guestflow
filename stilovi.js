@@ -18,10 +18,10 @@
 const GF = 'https://fonts.googleapis.com/css2?'
 
 export const STILOVI = [
-  { id: '', ime: 'Svijetli', opis: 'Zadani izgled — perla, tinta i sunce.', pisma: '', izbor: true,
-    t: { bg: '#F6F5F1', surface: '#FFFFFF', wash: '#EFEEE8', ink: '#12303A', muted: '#5B6F75', accent: '#12303A',
-         action: '#12303A', actionInk: '#FFFFFF', line: '#E3E5E0', display: "Georgia,'Gelasio',serif", ui: "'Manrope',system-ui,sans-serif",
-         body: "'DM Sans',system-ui,sans-serif", r: '14px', rBtn: '7px', tint: '14,34,41' } },
+  { id: '', ime: 'Svijetli', opis: 'Zadani izgled — mat perla, bijele plohe i petrol.', pisma: '', izbor: true,
+    t: { bg: '#F6F7F5', surface: '#FFFFFF', wash: '#EEF2EF', ink: '#183D42', muted: '#536564', accent: '#286863',
+         action: '#286863', actionInk: '#FFFFFF', line: '#DCE3DF', display: "'Manrope',system-ui,sans-serif", ui: "'Manrope',system-ui,sans-serif",
+         body: "'Manrope',system-ui,sans-serif", r: '12px', rBtn: '8px', tint: '24,61,66' } },
   { id: 'priroda', ime: 'Topli', opis: 'Lan i maslina, organski oblici, pismo domaćina.', izbor: true,
     pisma: 'family=Cormorant+Garamond:ital,wght@0,500;0,600;1,400;1,500;1,600&family=Karla:wght@400;500;600;700',
     t: { bg: '#F4F0E6', surface: '#FBF8F1', wash: '#E9E8D6', ink: '#33402A', muted: '#5B5A44', accent: '#4E5C33',

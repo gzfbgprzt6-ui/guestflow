@@ -86,7 +86,9 @@ export function odaberi(elementi, centar, mjesto = '') {
     const lat = e.lat ?? e.center?.lat, lon = e.lon ?? e.center?.lon
     const v = VRSTE.find(x => x.test(t))
     if (!v || !t.name || lat == null || lon == null) return null
-    return { v, ime: String(t.name).trim(), m: metara(centar, { lat, lon }), lat: +lat, lon: +lon }
+    // oznake za fotografiju (fotke-mjesta.js): Commons, Wikidata, slika
+    const osm = {}; for (const k of ['wikimedia_commons', 'wikidata', 'image']) if (t[k]) osm[k] = String(t[k])
+    return { v, ime: String(t.name).trim(), m: metara(centar, { lat, lon }), lat: +lat, lon: +lon, osm }
   }).filter(Boolean).sort((a, b) => a.m - b.m)
   const out = []
   for (const x of lista) {
@@ -98,7 +100,7 @@ export function odaberi(elementi, centar, mjesto = '') {
     out.push({ icon: x.v.ikona, name: x.ime, category: x.v.kategorija, distance: udaljenost(x.m),
       // za kartu točne koordinate: „naziv, mjesto” je Google znao odvesti na adresu
       // objekta (u „Lokaciji” zna stajati cijela adresa), a koordinate uvijek pogode
-      maps_query: `${x.lat.toFixed(6)},${x.lon.toFixed(6)}`, metara: Math.round(x.m), vrsta: x.v.k })
+      maps_query: `${x.lat.toFixed(6)},${x.lon.toFixed(6)}`, metara: Math.round(x.m), vrsta: x.v.k, lat: x.lat, lon: x.lon, osm: x.osm })
   }
   // redom vrsta (plaže prve), unutar vrste po udaljenosti
   return out.sort((a, b) => VRSTE.findIndex(v => v.k === a.vrsta) - VRSTE.findIndex(v => v.k === b.vrsta) || a.metara - b.metara)

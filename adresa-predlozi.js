@@ -31,7 +31,7 @@ const CSS = `
 .odm-adr{position:fixed;z-index:1000;margin:0;padding:6px 0 0;box-sizing:border-box;
   background:var(--paper,var(--bg-surface,#fff));color:var(--ink,var(--text,#12303A));
   border:1px solid var(--line,var(--border,#D5DEE1));border-radius:var(--radius-sm,var(--radius-control,10px));
-  box-shadow:0 12px 32px rgba(14,34,41,.16);font:500 15px/1.35 var(--font-body,"DM Sans",system-ui,sans-serif);overflow:hidden}
+  box-shadow:0 12px 32px rgba(14,34,41,.16);font:500 15px/1.35 var(--font-body,Manrope,system-ui,sans-serif);overflow:hidden}
 .odm-adr[hidden]{display:none}
 /* mobitel: popis u toku stranice ispod polja — nikad preko polja (tipkovnica
    pomiče vidljivi dio zaslona, pa lebdeći popis zna pasti na upisani tekst) */
