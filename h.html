@@ -859,6 +859,8 @@ function biljezi(vrsta) {
 }
 
 let UNLOCKED = false, tick = null, UNLOCK_AT = null, CO_END = null, STARI_LINK = false
+// šifre čekaju domaćinovu potvrdu uplate (bookings.ceka_uplatu, sql/add-payment-gate.sql)
+let CEKA_UPLATU = false
 
 const params = new URLSearchParams(location.search)
 let token = params.get('token')
@@ -949,9 +951,12 @@ async function izFunkcije(r) {
   SECTION = zapecati(r.section)
   UNLOCKED = !!r.otvoreno
   STARI_LINK = !!r.stari_link
+  CEKA_UPLATU = !!r.ceka_uplatu
   UNLOCK_AT = r.otkljucava ? new Date(r.otkljucava) : null
   CO_END = r.zavrsava ? new Date(r.zavrsava) : null
   if (!UNLOCKED && UNLOCK_AT && new Date() < UNLOCK_AT) startCountdown(UNLOCK_AT)
+  // prozor je već otvoren, a šifre čekaju potvrdu uplate → pitaj bazu svake 2 minute; otključa se samo
+  else if (!UNLOCKED && CEKA_UPLATU) setTimeout(otkljucaj, 120000)
   await finish()
 }
 
@@ -1297,7 +1302,7 @@ function renderVault() {
   // Dolazak: samo šifra vrata
   const dc = idx('door_code')
   // (šifra na koraku sa zvjezdicom ili ispod koraka — renderUlaz/renderArrival; odbrojavanje je u kartici „kada”)
-  const nap = STARI_LINK ? t('Šifru vrata i Wi-Fi lozinku dobivate u osobnom linku od domaćina.') : t('Šifra vrata i Wi-Fi pojavit će se ovdje sat prije prijave.')
+  const nap = CEKA_UPLATU ? t('Šifra vrata i Wi-Fi pojavit će se ovdje kad domaćin potvrdi uplatu.') : STARI_LINK ? t('Šifru vrata i Wi-Fi lozinku dobivate u osobnom linku od domaćina.') : t('Šifra vrata i Wi-Fi pojavit će se ovdje sat prije prijave.')
   $('#codes-arr').innerHTML = dc >= 0 ? `<div class="karticaw">${secretHtml(items[dc], dc)}${UNLOCKED ? '' : `<p class="ulaz__nap" style="margin-top:10px">${ico('clock', 'ic--sm')}${esc(nap)}</p>`}</div>` : ''
 
   // Wi-Fi i kuća: mreža i lozinka
@@ -1351,7 +1356,8 @@ async function otkljucaj() {
   if (IZ_FUNKCIJE) {
     let r = null
     try { const { data } = await zvatiFunkciju(); r = data } catch {}
-    if (!r || r.stanje !== 'ok' || !r.otvoreno) { setTimeout(otkljucaj, 60000); return }
+    if (r && r.stanje === 'ok') { const bio = CEKA_UPLATU; CEKA_UPLATU = !!r.ceka_uplatu; if (bio !== CEKA_UPLATU) { renderVault(); renderZakl() } }
+    if (!r || r.stanje !== 'ok' || !r.otvoreno) { setTimeout(otkljucaj, CEKA_UPLATU ? 120000 : 60000); return }
     SECTION = zapecati(r.section)
     CO_END = r.zavrsava ? new Date(r.zavrsava) : CO_END
   }
@@ -1417,9 +1423,9 @@ function renderZakl() {
   const tajne = items.some(x => x.sensitive)
   let h = ''
   if (tajne && !UNLOCKED) {
-    const b = STARI_LINK ? t('Šifru dobivate u osobnom linku')
+    const b = CEKA_UPLATU ? t('Šifra stiže kad domaćin potvrdi uplatu') : STARI_LINK ? t('Šifru dobivate u osobnom linku')
       : UNLOCK_AT && new Date() < UNLOCK_AT ? t('Podaci za ulazak dostupni od {t}', { t: (faza() === 'dolazak' ? '' : fmtShort(UNLOCK_AT) + ' ') + fmtHM(UNLOCK_AT) }) : t('Zaključano')
-    h = `<div class="zakl__k">${ico('lock')}<div><b>${esc(b)}</b><span>${esc(STARI_LINK ? t('Šifru vrata i Wi-Fi lozinku dobivate u osobnom linku od domaćina.') : t('Iz sigurnosnih razloga šifra vrata i Wi-Fi lozinka vidljivi su od sat vremena prije prijave.'))}</span></div></div>`
+    h = `<div class="zakl__k">${ico('lock')}<div><b>${esc(b)}</b><span>${esc(CEKA_UPLATU ? t('Upute su već ovdje. Čim domaćin potvrdi da je uplata stigla, šifra vrata i Wi-Fi lozinka pojave se same — ne trebate ništa osvježavati.') : STARI_LINK ? t('Šifru vrata i Wi-Fi lozinku dobivate u osobnom linku od domaćina.') : t('Iz sigurnosnih razloga šifra vrata i Wi-Fi lozinka vidljivi su od sat vremena prije prijave.'))}</span></div></div>`
   } else if (UNLOCKED && dc >= 0 && !GOTOVO.ulaz) h = secretHtml(items[dc], dc)
   el.innerHTML = h
   el.classList.toggle('zakl--otv', !!h && UNLOCKED)

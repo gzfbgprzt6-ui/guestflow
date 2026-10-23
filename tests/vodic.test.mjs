@@ -10,9 +10,9 @@ const LISTE = { local_places: [{ id: 'l1', property_id: 'p1', name: 'Plaža Radu
   { id: 'l2', property_id: 'p1', name: 'Konoba', category: 'Restorani', distance: '10 min', sort_order: 2 }],
   house_rules: [{ id: 'r1', property_id: 'p1', rule_text: 'Tišina od 23 sata.', sort_order: 1 }], faq: [], transport: [], attractions: [] }
 
-function odgovor({ otvoreno, ci, co, theme = null }) {
+function odgovor({ otvoreno, ci, co, theme = null, ceka = false }) {
   const section = otvoreno ? { ...SEC, door_code: '4821', wifi_pass: 'tajna-lozinka-9' } : { ...SEC, ima_door_code: true, ima_wifi_pass: true }
-  return { stanje: 'ok', otvoreno, property: { ...PROP, theme }, booking: { guest_name: 'Ana Kovač', checkin_date: ci, checkout_date: co },
+  return { stanje: 'ok', otvoreno, ceka_uplatu: ceka, property: { ...PROP, theme }, booking: { guest_name: 'Ana Kovač', checkin_date: ci, checkout_date: co },
     section, otkljucava: ci + 'T14:00:00', zavrsava: co + 'T23:59:00' }
 }
 
@@ -65,6 +65,13 @@ export default async function () {
   ok(await pg.evaluate(() => document.documentElement.dataset.stil) === 'luksuz', 'stil objekta (Tamni) vrijedi i u vodiču')
   ok(await pg.evaluate(() => document.documentElement.scrollWidth) <= 1280, 'bez prelijevanja na 1280 px')
   ok(errs.length === 0, 'bez JS grešaka (boravak) ' + errs.join(' | '))
+  await pg.close()
+
+  // 3b) boravak, ali šifre čekaju potvrdu uplate (baza ih ne šalje)
+  ;({ pg, errs } = await otvoriVodic(b, odgovor({ otvoreno: false, ceka: true, ci: d(0), co: d(3) })))
+  ok(!(await pg.content()).includes('4821'), 'čeka uplatu: šifre nema u HTML-u')
+  ok((await pg.textContent('#zakl')).includes('potvrdi uplatu'), 'čeka uplatu: „Šifra stiže kad domaćin potvrdi uplatu”')
+  ok(errs.length === 0, 'bez JS grešaka (čeka uplatu) ' + errs.join(' | '))
   await pg.close()
 
   // 4) 360 px, dan odlaska

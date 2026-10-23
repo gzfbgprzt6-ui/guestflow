@@ -739,6 +739,7 @@
               </div>
               <label class="fld"><span>Kod povratnog gosta <em class="opc">ako ga imate</em></span><input id="iq-kod" name="kod" autocomplete="off" maxlength="30" autocapitalize="characters"></label>
               <label class="iqf__kv"><input type="checkbox" id="iq-ponude"><span>Domaćin mi smije slati ponude za buduće boravke</span></label>
+              <label class="iqf__kv"><input type="checkbox" id="iq-uvjet" required><span>Razumijem da ugovor o boravku sklapam s domaćinom, a Odmoria nije strana tog ugovora i ne prima uplate.</span></label>
               <input class="iqf__hp" name="web" tabindex="-1" autocomplete="off" aria-hidden="true">
               <p class="t-meta">Dovoljan je e-mail ili telefon. Vidi ih samo domaćin, da vam odgovori na upit (<a href="/privacy.html">privatnost</a>).</p>
               <p class="iqf__err" id="iq-err" role="alert" hidden></p>
@@ -1648,6 +1649,7 @@ window.posaljiUpit = async e => {
   if (tel && !/^[+0-9 ()/.-]{6,30}$/.test(tel)) return greska(t('Telefon smije sadržavati samo brojke, razmake i znak +.'))
   if (!checkinDs || !checkoutDs) return greska(t('Odaberite dolazak i odlazak u kalendaru.'))
   if (checkinDs < fmtLocal(new Date())) return greska(t('Taj termin je prošao — odaberite novi datum dolaska.'))
+  if (!$('#iq-uvjet').checked) { $('#iq-uvjet').focus(); return greska(t('Potvrdite da razumijete da ugovor sklapate s domaćinom.')) }
   greska('')
   const btn = $('#iq-btn'); btn.disabled = true; btn.textContent = t('Šaljem…')
   const red = {

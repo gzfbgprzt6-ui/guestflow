@@ -140,6 +140,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
     ├── add-cleaner-checklist.sql        # v6: cleaner_links.popis, cleaning_status.kvacice/fotke, ciscenje_popis()
     ├── add-safety-v7.sql                # v7: zabrana preklapanja rezervacija (okidač + zaključavanje), bookings.plan_pri_izradi, mogucnosti_vodica do odlaska
     ├── add-properties-privacy.sql       # v7: javni_objekt() + tajni stupci objekta (guest_token, iCal) zatvoreni za javnost (KORAK A pa B)
+    ├── add-payment-gate.sql             # P0-2: bookings.ceka_uplatu / uplata_potvrdena_at; vodic_gosta ne šalje šifre dok domaćin ne potvrdi uplatu
     ├── test-sigurnost.sql               # SIGURNOSNI TEST — pokretati nakon svake veće promjene; sve se poništi (rollback)
     └── fix-missing-columns-and-storage.sql # ALTER TABLE dopune (photo_urls, ical_*, beds/bathrooms/size_m2) + storage bucket policy
 ```
@@ -970,6 +971,26 @@ SQL fali** (za vlasnika i testove); `window.__ADMIN` (vlasnikov UID, isti kao `a
 vidi ih kao prije, a `[data-tehnika]` izuzima element. Kartica „Vlastita adresa” je skrivena
 (`hidden`) dok dodatak nije spreman, „Preporuči domaćina” je u Postavkama (`section-sub`,
 `ucitajPreporuke()` na `nav('sub')`). Test: `tests/tehnika.test.mjs`.
+
+## Plaćanje potvrđeno prije šifre (23. 10. 2026., P0-2, `sql/add-payment-gate.sql`)
+
+`bookings.ceka_uplatu` + `bookings.uplata_potvrdena_at`. Dok je `ceka_uplatu` i nema potvrde,
+`vodic_gosta()` vraća `otvoreno = false` i `ceka_uplatu = true` (šifre ne izlaze iz baze ni u
+prozoru prijave). Dashboard: kvačica `#bk-ceka` u obrascu rezervacije; `prihvatiUpit()` uz
+kaparu pita „Je li kapara stigla?” (Još nije → `cekaUplatu`); `napraviRezervaciju({cekaUplatu})`
+bez stupca **odbije** (ne pušta šifre tiho); stanje „Čeka uplatu” (`bkStanje`), panel
+`.bk-p__upl` s „Uplata je stigla” → `potvrdiUplatu()`. Vodič: `CEKA_UPLATU`, `renderZakl()`
+„Šifra stiže kad domaćin potvrdi uplatu”; dok čeka, `otkljucaj()` pita bazu svake 2 min pa se
+otključa sam. `sw.js` VERZIJA 19. Testovi: `tests/uplata.test.mjs`, slučaj u `vodic.test.mjs`.
+
+## Pravni nacrt (23. 10. 2026., P0-3)
+
+`docs/pravno/nacrt-uvjeta.md` — **nacrt za pravnika, nije objavljen**: Uvjeti za domaćine,
+Uvjeti za goste, Pravila privatnosti (domaćin = voditelj za podatke gostiju, Odmoria =
+izvršitelj; popis obrađivača s Open-Meteo, Wikimedia, esm.sh…) i postupak prijave sadržaja
+(DSA). `terms.html` / `privacy.html` se **ne mijenjaju** dok vlasnik ne upiše podatke tvrtke i
+pravnik ne odobri. Već u kodu: obavezna kvačica uz upit na `p.html` (`#iq-uvjet`, „ugovor
+sklapam s domaćinom, Odmoria nije strana i ne prima uplate”).
 
 ## Redizajn v2 — prijenos iz Figme u kod (u tijeku)
 
