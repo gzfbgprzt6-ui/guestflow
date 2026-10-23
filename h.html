@@ -314,7 +314,12 @@ body.preko .ghead .jezik{background-color:rgba(255,255,255,.94);color:#183D42;bo
 .ocjena{display:grid;gap:12px;padding:18px;border-radius:var(--radius-panel);border:1px solid var(--border);background:var(--bg-page)}
 .ocjena h2{display:flex;align-items:center;gap:10px;margin:0;font:700 18px/1.3 var(--font-ui)}
 .ocjena h2 .ic{box-sizing:content-box;width:20px;height:20px;padding:10px;border-radius:12px;background:var(--bg-warm);color:#C98A0B}
-.stars{display:flex;gap:6px}
+.stars{display:flex;gap:4px}
+.oc-kat{display:grid;gap:10px}
+.oc-red{display:flex;align-items:center;justify-content:space-between;gap:8px 14px;flex-wrap:wrap}
+.oc-red b{font:700 15px/1.3 var(--font-ui)}
+.oc-red .stars button{width:42px;height:42px}
+.oc-red .stars button svg{width:22px;height:22px}
 .stars button{width:48px;height:48px;border:1px solid var(--border-control);border-radius:var(--radius-control);background:var(--bg-surface);color:var(--border-control);cursor:pointer;display:grid;place-items:center}
 .stars button svg{width:26px;height:26px;fill:currentColor;stroke:none}
 .stars button[aria-checked="true"],.stars button.on{color:#C98A0B;border-color:#C98A0B;background:var(--bg-warm)}
@@ -716,7 +721,7 @@ body[data-v="ulaz"] .gfoot{display:none}
     <h2 id="ocjena-h" tabindex="-1"><svg class="ic" style="box-sizing:content-box;width:20px;height:20px;padding:10px;border-radius:13px;background:#FFF4DC;color:#C98A0B"><use href="#i-star"/></svg>Kako vam je bilo?</h2>
     <div id="ocjena-forma">
       <p class="t-muted" style="margin-bottom:12px">Kratka ocjena pomaže domaćinu da sljedećim gostima bude još bolje.</p>
-      <div class="stars" role="radiogroup" aria-label="Ocjena od 1 do 5" id="stars"></div>
+      <div class="oc-kat" id="stars"></div>
       <label class="fld" style="margin-top:14px">Što vam se svidjelo, a što bi moglo bolje? <span class="t-meta">(nije obavezno)</span>
         <textarea id="oc-tekst" maxlength="1000"></textarea></label>
       <label class="fld" style="margin-top:12px">Ime uz recenziju
@@ -2083,7 +2088,7 @@ function renderOdlazak() {
 const $$ = sel => [...document.querySelectorAll(sel)]
 const danasISO = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}` }
 
-let OCJENA = 0
+const OCJENE = {}
 async function pripremiOcjenu() {
   if (!imaM('ocjena')) return
   // samo s linkom rezervacije i tek od dana dolaska
@@ -2095,35 +2100,43 @@ async function pripremiOcjenu() {
     prikaziOcjenu(!!data.ocijenjeno)
   } catch {}
 }
+// ocjena po kategorijama (L.KATEGORIJE_OCJENE): red zvjezdica za svaku, ukupnu računa baza
 function prikaziOcjenu(vec) {
   show('#ocjena-blk')
   if (vec) { show('#ocjena-forma', false); $('#oc-hvala').textContent = t('Hvala, ovaj boravak ste već ocijenili.'); show('#oc-hvala'); return }
-  const st = $('#stars')
-  st.innerHTML = [1, 2, 3, 4, 5].map(n =>
-    `<button type="button" role="radio" aria-checked="false" aria-label="${esc(t('{n} od 5', { n }))}" data-n="${n}" tabindex="${n === 1 ? 0 : -1}">${ico('star')}</button>`).join('')
-  const postavi = n => {
-    OCJENA = n
-    $$('#stars button').forEach(b => { const k = Number(b.dataset.n); b.classList.toggle('on', k <= n); b.setAttribute('aria-checked', String(k === n)); b.tabIndex = k === (n || 1) ? 0 : -1 })
+  const box = $('#stars')
+  box.innerHTML = `<p class="t-muted" style="margin:0">${esc(t('Ocijenite svaku stavku od 1 do 5 zvjezdica.'))}</p>` + L.KATEGORIJE_OCJENE.map(([k, n]) =>
+    `<div class="oc-red"><b id="oc-l-${k}">${esc(t(n))}</b><div class="stars" role="radiogroup" aria-labelledby="oc-l-${k}" data-k="${k}">${[1, 2, 3, 4, 5].map(i =>
+      `<button type="button" role="radio" aria-checked="false" aria-label="${esc(t('{n} od 5', { n: i }))}" data-n="${i}" tabindex="${i === 1 ? 0 : -1}">${ico('star')}</button>`).join('')}</div></div>`).join('')
+  const postavi = (grp, n) => {
+    OCJENE[grp.dataset.k] = n
+    grp.querySelectorAll('button').forEach(b => { const k = Number(b.dataset.n); b.classList.toggle('on', k <= n); b.setAttribute('aria-checked', String(k === n)); b.tabIndex = k === (n || 1) ? 0 : -1 })
   }
-  st.onclick = e => { const b = e.target.closest('button'); if (b) postavi(Number(b.dataset.n)) }
-  st.onkeydown = e => {
+  box.onclick = e => { const b = e.target.closest('.stars button'); if (b) postavi(b.parentElement, Number(b.dataset.n)) }
+  box.onkeydown = e => {
+    const grp = e.target.closest('.stars'); if (!grp) return
     const d = { ArrowRight: 1, ArrowUp: 1, ArrowLeft: -1, ArrowDown: -1 }[e.key]
     if (!d) return
-    e.preventDefault(); postavi(Math.min(5, Math.max(1, (OCJENA || 0) + d))); st.querySelector(`[data-n="${OCJENA}"]`).focus()
+    e.preventDefault(); const n = Math.min(5, Math.max(1, (OCJENE[grp.dataset.k] || 0) + d)); postavi(grp, n); grp.querySelector(`[data-n="${n}"]`).focus()
   }
   const ime = BOOKING && BOOKING.guest_name && BOOKING.guest_name !== 'Gost' ? BOOKING.guest_name.trim().split(/\s+/)[0] : ''
   if (!$('#oc-ime').value) $('#oc-ime').value = ime
 }
 window.posaljiOcjenu = async () => {
   const err = t => { $('#oc-err').textContent = t; show('#oc-err', !!t) }
-  if (!OCJENA) return err(t('Odaberite ocjenu od 1 do 5 zvjezdica.'))
+  const fali = L.KATEGORIJE_OCJENE.filter(([k]) => !OCJENE[k]).map(([, n]) => t(n))
+  if (fali.length) return err(t('Ocijenite još: {k}', { k: fali.join(', ') }))
   err('')
   if (DEMO) return toast(t('U primjeru se ocjena ne šalje.'))
   const btn = $('#oc-posalji'); btn.disabled = true
+  const ostalo = { p_tekst: $('#oc-tekst').value.trim() || null, p_ime: $('#oc-ime').value.trim() || null, p_javno: $('#oc-javno').checked }
   let st = null
   try {
-    const { data, error } = await sb.rpc('ostavi_ocjenu', { p_token: token, p_ocjena: OCJENA,
-      p_tekst: $('#oc-tekst').value.trim() || null, p_ime: $('#oc-ime').value.trim() || null, p_javno: $('#oc-javno').checked })
+    let { data, error } = await sb.rpc('ostavi_ocjenu', { p_token: token, p_ocjene: { ...OCJENE }, ...ostalo })
+    // baza još bez kategorija (sql/add-review-categories.sql) → stara funkcija s ukupnom ocjenom
+    if (error && /function|schema cache|PGRST202/i.test((error.code || '') + ' ' + (error.message || ''))) {
+      const v = Object.values(OCJENE); ({ data, error } = await sb.rpc('ostavi_ocjenu', { p_token: token, p_ocjena: Math.round(v.reduce((a, b) => a + b, 0) / v.length), ...ostalo }))
+    }
     st = error ? null : data && data.stanje
   } catch {}
   btn.disabled = false

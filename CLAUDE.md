@@ -141,6 +141,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
     ├── add-safety-v7.sql                # v7: zabrana preklapanja rezervacija (okidač + zaključavanje), bookings.plan_pri_izradi, mogucnosti_vodica do odlaska
     ├── add-properties-privacy.sql       # v7: javni_objekt() + tajni stupci objekta (guest_token, iCal) zatvoreni za javnost (KORAK A pa B)
     ├── add-payment-gate.sql             # P0-2: bookings.ceka_uplatu / uplata_potvrdena_at; vodic_gosta ne šalje šifre dok domaćin ne potvrdi uplatu
+    ├── add-review-categories.sql        # recenzije po 6 kategorija (reviews.ocjene), domaćin ne može brisati recenziju
     ├── test-sigurnost.sql               # SIGURNOSNI TEST — pokretati nakon svake veće promjene; sve se poništi (rollback)
     └── fix-missing-columns-and-storage.sql # ALTER TABLE dopune (photo_urls, ical_*, beds/bathrooms/size_m2) + storage bucket policy
 ```
@@ -991,6 +992,18 @@ izvršitelj; popis obrađivača s Open-Meteo, Wikimedia, esm.sh…) i postupak p
 (DSA). `terms.html` / `privacy.html` se **ne mijenjaju** dok vlasnik ne upiše podatke tvrtke i
 pravnik ne odobri. Već u kodu: obavezna kvačica uz upit na `p.html` (`#iq-uvjet`, „ugovor
 sklapam s domaćinom, Odmoria nije strana i ne prima uplate”).
+
+## Recenzije po kategorijama, bez brisanja (23. 10. 2026., `sql/add-review-categories.sql`)
+
+Šest kategorija `JZ/L.KATEGORIJE_OCJENE` (`jezici.js`): cistoca, smjestaj, lokacija, domacin,
+opis, vrijednost → `reviews.ocjene` jsonb (CHECK `ocjene_ispravne`), `reviews.ocjena` = zaokruženi
+prosjek (računa baza u `ostavi_ocjenu(p_token, p_ocjene jsonb, …)`; stara inačica s `p_ocjena`
+ostaje, vodič na nju pada bez SQL-a). `javno_o_objektu()` vraća i `kategorije` (prosjeci).
+**Domaćin i suradnik recenziju ne mogu ni obrisati ni sakriti** (`revoke all` + samo `grant select`;
+stare sakrivene vraćene); dashboard nema „Obriši” ni „Sakrij”. Na vrhu `p.html` samo ukupna ocjena
+(`#hero-ocj` → `#rev-sec`), kategorije su u recenzijama. Vodič: `prikaziOcjenu()` 6 redova
+zvjezdica, `OCJENE`; `p.html` `#rev-kat` trake; dashboard `.rv-kat` + `.rv-kr`. `sw.js` VERZIJA 20.
+Test: `tests/recenzije.test.mjs`.
 
 ## Redizajn v2 — prijenos iz Figme u kod (u tijeku)
 

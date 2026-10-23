@@ -5,6 +5,14 @@
 // hrvatski (ne pukne). Prijevode gostinskih stranica drži jezici.js.
 
 export const T = {
+  "Recenzije koje gost dopusti objaviti vide se na vašoj javnoj stranici. Recenzije se ne mogu obrisati ni sakriti — tako gosti vjeruju ocjeni.": "Reviews the guest allows to publish appear on your public page. Reviews cannot be deleted or hidden — that is why guests trust the rating.",
+  "Privatno (gost nije dopustio objavu)": "Private (the guest did not allow publishing)",
+  "gost je dopustio objavu": "guest allowed publishing",
+  "Čistoća": "Cleanliness",
+  "Smještaj i oprema": "Comfort and equipment",
+  "Točnost opisa": "Accuracy",
+  "Vrijednost za novac": "Value for money",
+  "Gost ocjenjuje boravak u vodiču (Odlazak), od dana dolaska. Javne recenzije vide se na vašoj javnoj stranici. Recenzije se ne mogu obrisati — javnu možete sakriti s javne stranice.": "Guests rate their stay in the guide (Departure), from the arrival day. Public reviews appear on your public page. Reviews cannot be deleted — you can hide a public one from your public page.",
   "Šifre tek kad potvrdim uplatu": "Codes only after I confirm payment",
   "Gost odmah dobiva link s uputama, ali šifru vrata i Wi-Fi lozinku vidi tek kad u rezervaciji kliknete „Uplata je stigla”. Za izravne rezervacije s kaparom.": "The guest gets the link with instructions right away, but sees the door code and Wi-Fi password only after you click “Payment received” in the booking. For direct bookings with a deposit.",
   "Čeka uplatu": "Awaiting payment",

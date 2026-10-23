@@ -195,6 +195,13 @@
 .zv{display:inline-flex;gap:2px;color:#C98A0B}
 .zv svg{width:18px;height:18px;fill:currentColor;stroke:none}
 .zv .p{color:var(--border-control)}
+.rev__kat{display:grid;gap:8px;margin:6px 0 4px}
+.rev__kat div{display:grid;grid-template-columns:minmax(0,1fr) 96px 30px;align-items:center;gap:10px;font-size:14.5px}
+.rev__kat dt{color:var(--text)}
+.rev__kat dd{margin:0}
+.rev__kat .bar{height:6px;border-radius:99px;background:var(--bg-wash);overflow:hidden}
+.rev__kat .bar i{display:block;height:100%;border-radius:99px;background:var(--text)}
+.rev__kat b{font:700 14px/1 var(--font-ui);text-align:right;font-variant-numeric:tabular-nums}
 .rev__list{display:grid;gap:16px}
 .rev__i{padding:20px;border:1px solid var(--border);border-radius:var(--radius-feature);background:var(--bg-surface);display:grid;gap:8px}
 .rev__i p{white-space:pre-line}
@@ -377,6 +384,10 @@
 .hero__name{order:1;font:700 clamp(30px,3.4vw,42px)/1.15 var(--font-editorial);letter-spacing:-.02em}
 .hero__sub{order:3;color:var(--text-muted);font-size:15.5px}
 .hero__copy .zivo{order:0}
+.hero__ocj{order:4;justify-self:start;display:inline-flex;align-items:center;gap:6px;font:700 15px/1.3 var(--font-ui);color:var(--text);text-decoration:none}
+.hero__ocj .zv svg{width:16px;height:16px}
+.hero__ocj span{font-weight:500;color:var(--text-muted);text-decoration:underline;text-underline-offset:3px}
+.hero__ocj:hover span{color:var(--text)}
 .hero__act{display:none}
 #facts-wrap{padding-inline:0}
 .facts{grid-template-columns:repeat(auto-fit,minmax(120px,1fr));padding-block:20px;gap:12px 24px}
@@ -601,6 +612,7 @@
         <span class="eyebrow" id="hero-loc" hidden></span>
         <h1 class="hero__name" id="hero-name"></h1>
         <p class="hero__sub" id="hero-sub" hidden></p>
+        <a class="hero__ocj" id="hero-ocj" href="#rev-sec" hidden></a>
       </div>
       <div class="hero__act">
         <span class="pricetag" id="hero-price" hidden></span>
@@ -786,6 +798,7 @@
         <h2 class="t-ed" id="rev-h">Što kažu gosti</h2>
         <div><span class="rev__avg" id="rev-avg"></span> <span class="zv" id="rev-zv" aria-hidden="true"></span></div>
         <p class="t-muted" id="rev-n"></p>
+        <dl class="rev__kat" id="rev-kat" hidden></dl>
         <p class="t-meta">Ocjene ostavljaju gosti na kraju boravka, preko privatnog vodiča.</p>
       </div>
       <div>
@@ -1312,6 +1325,16 @@ async function javnoODobjektu(slugObj) {
   $('#rev-avg').textContent = Number(j.prosjek).toLocaleString(L.lokal(), { maximumFractionDigits: 1 })
   $('#rev-zv').innerHTML = zv(j.prosjek)
   $('#rev-n').textContent = L.n(j.broj, 'ocjena gostiju')
+  // na vrhu stranice samo ukupna ocjena (klik vodi na recenzije s kategorijama)
+  const uk = Number(j.prosjek).toLocaleString(L.lokal(), { minimumFractionDigits: 1, maximumFractionDigits: 1 })
+  $('#hero-ocj').innerHTML = `<span class="zv" aria-hidden="true"><svg><use href="#i-star"/></svg></span>${esc(uk)} <span>${esc(L.n(j.broj, 'ocjena gostiju'))}</span>`
+  $('#hero-ocj').setAttribute('aria-label', t('Ocjena {n} od 5', { n: uk }) + ' · ' + L.n(j.broj, 'ocjena gostiju'))
+  show('#hero-ocj')
+  // prosjek po kategoriji (sql/add-review-categories.sql); bez nje samo ukupna ocjena
+  const kat = j.kategorije && typeof j.kategorije === 'object' ? L.KATEGORIJE_OCJENE.filter(([k]) => Number(j.kategorije[k]) > 0) : []
+  $('#rev-kat').innerHTML = kat.map(([k, n]) => { const v = Number(j.kategorije[k]), tx = v.toLocaleString(L.lokal(), { minimumFractionDigits: 1, maximumFractionDigits: 1 })
+    return `<div><dt>${esc(t(n))}</dt><dd class="bar" aria-hidden="true"><i style="width:${Math.round(v / 5 * 100)}%"></i></dd><dd><b aria-label="${esc(t('{k}: {n} od 5', { k: t(n), n: tx }))}">${tx}</b></dd></div>` }).join('')
+  show('#rev-kat', kat.length > 0)
   // tekst recenzije ostaje na jeziku kojim ju je gost napisao
   const kartica = r => {
     return `<article class="rev__i"><span class="zv" role="img" aria-label="${esc(t('Ocjena {n} od 5', { n: r.ocjena }))}">${zv(r.ocjena)}</span>`

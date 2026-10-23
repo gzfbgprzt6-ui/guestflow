@@ -36,6 +36,9 @@ let DOPUSTENI = KODOVI
 let SADRZAJ = Object.create(null)
 let STANJE_PRIJEVODA = null          // odgovor rute za trenutni jezik
 
+// kategorije ocjene gosta (sql/add-review-categories.sql) — isti ključevi u bazi, vodiču, javnoj stranici i dashboardu
+export const KATEGORIJE_OCJENE = [['cistoca', 'Čistoća'], ['smjestaj', 'Smještaj i oprema'], ['lokacija', 'Lokacija'],
+  ['domacin', 'Domaćin'], ['opis', 'Točnost opisa'], ['vrijednost', 'Vrijednost za novac']]
 export const jezik = () => J
 export const lokal = (j = J) => LOC[j] || 'hr-HR'
 export const dopusteni = () => DOPUSTENI
@@ -868,6 +871,15 @@ dodaj([
   ['Šifra vrata i Wi-Fi pojavit će se ovdje kad domaćin potvrdi uplatu.', 'The door code and Wi-Fi will appear here once the host confirms payment.', 'Türcode und WLAN erscheinen hier, sobald der Gastgeber die Zahlung bestätigt.', 'Il codice della porta e il Wi-Fi appariranno qui quando l’host confermerà il pagamento.', 'Kod do drzwi i Wi-Fi pojawią się tutaj, gdy gospodarz potwierdzi płatność.', 'Kód ke dveřím a Wi-Fi se zde objeví, jakmile hostitel potvrdí platbu.'],
   ['Razumijem da ugovor o boravku sklapam s domaćinom, a Odmoria nije strana tog ugovora i ne prima uplate.', 'I understand that I make the stay agreement with the host; Odmoria is not a party to it and does not take payments.', 'Ich verstehe, dass ich den Aufenthaltsvertrag mit dem Gastgeber schließe; Odmoria ist nicht Vertragspartei und nimmt keine Zahlungen entgegen.', 'Capisco che il contratto di soggiorno lo stipulo con l’host; Odmoria non è parte del contratto e non riceve pagamenti.', 'Rozumiem, że umowę o pobyt zawieram z gospodarzem; Odmoria nie jest jej stroną i nie przyjmuje płatności.', 'Rozumím, že smlouvu o pobytu uzavírám s hostitelem; Odmoria není její stranou a nepřijímá platby.'],
   ['Potvrdite da razumijete da ugovor sklapate s domaćinom.', 'Please confirm you understand the agreement is with the host.', 'Bitte bestätigen Sie, dass der Vertrag mit dem Gastgeber zustande kommt.', 'Conferma di aver capito che il contratto è con l’host.', 'Potwierdź, że rozumiesz, iż umowa jest zawierana z gospodarzem.', 'Potvrďte, že rozumíte, že smlouvu uzavíráte s hostitelem.'],
+  ['Čistoća', 'Cleanliness', 'Sauberkeit', 'Pulizia', 'Czystość', 'Čistota'],
+  ['Smještaj i oprema', 'Comfort and equipment', 'Komfort und Ausstattung', 'Comfort e dotazioni', 'Komfort i wyposażenie', 'Pohodlí a vybavení'],
+  ['Lokacija', 'Location', 'Lage', 'Posizione', 'Lokalizacja', 'Poloha'],
+  ['Domaćin', 'Host', 'Gastgeber', 'Host', 'Gospodarz', 'Hostitel'],
+  ['Točnost opisa', 'Accuracy', 'Genauigkeit', 'Precisione', 'Zgodność z opisem', 'Přesnost popisu'],
+  ['Vrijednost za novac', 'Value for money', 'Preis-Leistung', 'Rapporto qualità-prezzo', 'Stosunek jakości do ceny', 'Poměr cena/výkon'],
+  ['Ocijenite svaku stavku od 1 do 5 zvjezdica.', 'Rate each item from 1 to 5 stars.', 'Bewerten Sie jeden Punkt mit 1 bis 5 Sternen.', 'Valuta ogni voce da 1 a 5 stelle.', 'Oceń każdy punkt od 1 do 5 gwiazdek.', 'Ohodnoťte každou položku 1 až 5 hvězdičkami.'],
+  ['Ocijenite još: {k}', 'Still to rate: {k}', 'Noch zu bewerten: {k}', 'Ancora da valutare: {k}', 'Pozostało do oceny: {k}', 'Zbývá ohodnotit: {k}'],
+  ['{k}: {n} od 5', '{k}: {n} of 5', '{k}: {n} von 5', '{k}: {n} su 5', '{k}: {n} z 5', '{k}: {n} z 5'],
   ['Uređaji i kako ih koristiti', 'Appliances and how to use them', 'Geräte und ihre Bedienung', 'Elettrodomestici e come usarli', 'Urządzenia i jak z nich korzystać', 'Spotřebiče a jak je používat']
 ])
 

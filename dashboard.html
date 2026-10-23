@@ -1781,6 +1781,12 @@ body:not([data-grupa="objekt"]) .property-banner { display: none; }
 .bk-p__dl dd { margin: 0; font: 600 14.5px/1.4 var(--font-ui); overflow-wrap: anywhere; }
 .bk-p__dl dd small { display: block; color: var(--muted); font: 500 12.5px/1.4 var(--font-ui); }
 .bk-p__link { display: grid; gap: 8px; margin: 12px 0; }
+.rv-kat { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 8px 24px; padding: 4px 0 8px; }
+.rv-kat div { display: grid; grid-template-columns: minmax(0, 1fr) 90px 30px; align-items: center; gap: 10px; font-size: 13.5px; }
+.rv-kat i { height: 6px; border-radius: 99px; background: var(--paper-2); overflow: hidden; }
+.rv-kat i b { display: block; height: 100%; background: var(--ink); border-radius: 99px; }
+.rv-kat em { font-style: normal; font-weight: 700; text-align: right; }
+.rv-kr { display: block; margin: 2px 0; color: var(--muted); font-size: 12.5px; }
 .bk-p__upl { display: grid; gap: 6px; margin: 12px 0 0; padding: 14px; border-radius: 12px; background: #FDF6E8; border: 1px solid #EFDDBB; color: #3D2E10; }
 .bk-p__upl b { font-size: 14.5px; }
 .bk-p__upl span { font-size: 13.5px; color: #5E4A26; line-height: 1.45; }
@@ -2983,7 +2989,7 @@ body[data-panel="prijevodi"] .ph-akcije { display: none; }
         <!-- RECENZIJE (tablica reviews, sql/add-reviews.sql) -->
         <section class="editor-panel an" id="section-reviews" data-panel-content="reviews" data-mog="ocjena">
           <div class="card">
-            <div class="card-head"><div class="card-title-wrap"><span class="card-number">★</span><div><h2>Ocjene gostiju</h2><p>Gost ocjenjuje boravak u vodiču (Odlazak), od dana dolaska. Javne recenzije vide se na vašoj javnoj stranici; svaku možete sakriti.</p></div></div></div>
+            <div class="card-head"><div class="card-title-wrap"><span class="card-number">★</span><div><h2>Ocjene gostiju</h2><p>Gost ocjenjuje boravak u vodiču (Odlazak), od dana dolaska. Recenzije koje gost dopusti objaviti vide se na vašoj javnoj stranici. Recenzije se ne mogu obrisati ni sakriti — tako gosti vjeruju ocjeni.</p></div></div></div>
             <div class="an-kpis" id="rv-kpis"></div>
             <div class="an-list" id="rv-list" aria-live="polite"></div>
           </div>
@@ -6821,15 +6827,16 @@ async function ucitajRecenzije(){
   const javne=r.filter(x=>x.javno&&!x.skriveno)
   const pros=r.length?(r.reduce((z,x)=>z+x.ocjena,0)/r.length):0
   k.innerHTML=[A.kpi('Prosječna ocjena',r.length?pros.toFixed(1).replace('.',','):'—','od 5, sve ocjene'),
-    A.kpi('Ocjena',String(r.length),'ukupno'),A.kpi('Na javnoj stranici',String(javne.length),'javne i ne sakrivene')].join('')
+    A.kpi('Ocjena',String(r.length),'ukupno'),A.kpi('Na javnoj stranici',String(javne.length),'gost je dopustio objavu')].join('')
+    // prosjek po kategoriji (sql/add-review-categories.sql) — domaćin recenzije ne može ni obrisati ni sakriti
+    +(()=>{const kat=JZ.KATEGORIJE_OCJENE.map(([kl,n])=>{const v=r.map(x=>Number(x.ocjene?.[kl])).filter(Boolean);return v.length?[n,v.reduce((a,b)=>a+b,0)/v.length]:null}).filter(Boolean)
+      return kat.length?`<div class="rv-kat">${kat.map(([n,v])=>`<div><span>${esc(n)}</span><i><b style="width:${Math.round(v/5*100)}%"></b></i><em>${v.toFixed(1).replace('.',',')}</em></div>`).join('')}</div>`:''})()
   if(!r.length){el.innerHTML=A.prazno('Još nema ocjena. Gost ocjenu daje u vodiču pod „Odlazak”, od dana dolaska.');return}
   const zv=n=>'★'.repeat(n)+'☆'.repeat(5-n)
-  el.innerHTML=r.map(x=>`<div class="an-item" style="grid-template-columns:minmax(0,1fr) auto"><div><b><span aria-label="${x.ocjena} od 5" style="color:#9A6A08">${zv(x.ocjena)}</span> · ${esc(x.ime||'Gost')}</b>
-      <span>${new Date(x.created_at).toLocaleDateString('hr-HR')} · ${!x.javno?'Privatno (samo vama)':x.skriveno?'Sakriveno s javne stranice':'Na javnoj stranici'}</span>${x.tekst?`<p style="margin:6px 0 0;white-space:pre-line">${esc(x.tekst)}</p>`:''}</div>
-      <div style="display:flex;gap:6px;flex-wrap:wrap">${x.javno?`<button class="btn secondary small" type="button" onclick="skrijRecenziju('${x.id}',${!x.skriveno})">${x.skriveno?'Prikaži':'Sakrij'}</button>`:''}<button class="btn ghost small" type="button" onclick="obrisiRecenziju('${x.id}')">Obriši</button></div></div>`).join('')
+  el.innerHTML=r.map(x=>`<div class="an-item" ><div><b><span aria-label="${x.ocjena} od 5" style="color:#9A6A08">${zv(x.ocjena)}</span> · ${esc(x.ime||'Gost')}</b>
+      ${x.ocjene?`<small class="rv-kr">${JZ.KATEGORIJE_OCJENE.filter(([kl])=>x.ocjene[kl]).map(([kl,n])=>esc(n)+' '+x.ocjene[kl]).join(' · ')}</small>`:''}<span>${new Date(x.created_at).toLocaleDateString('hr-HR')} · ${!x.javno?'Privatno (gost nije dopustio objavu)':'Na javnoj stranici'}</span>${x.tekst?`<p style="margin:6px 0 0;white-space:pre-line">${esc(x.tekst)}</p>`:''}</div>
+      </div>`).join('')
 }
-window.skrijRecenziju=async(id,sakrij)=>{const{error}=await sb.from('reviews').update({skriveno:sakrij}).eq('id',id);if(error){toast('Greška: '+error.message);return}toast(sakrij?'Recenzija je sakrivena':'Recenzija je opet javna');ucitajRecenzije()}
-window.obrisiRecenziju=async id=>{if(!await potvrdi('Trajno obrisati ovu ocjenu?',{da:'Obriši',opasno:true}))return;const{error}=await sb.from('reviews').delete().eq('id',id);if(error){toast('Greška: '+error.message);return}toast('Ocjena obrisana');ucitajRecenzije()}
 
 // ── PRIJEVODI ZA GOSTE (api/prevedi.js u načinu za domaćina) ──────────
 // Ruta provjeri da je objekt korisnikov, vrati sve njegove tekstove s
