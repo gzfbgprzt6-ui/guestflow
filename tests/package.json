@@ -1,0 +1,8 @@
+{
+  "name": "odmoria-testovi",
+  "private": true,
+  "type": "module",
+  "description": "Playwright testovi s lažnim Supabase klijentom — ne objavljuju se (.vercelignore).",
+  "scripts": { "test": "node run.mjs" },
+  "devDependencies": { "playwright-core": "1.56.1", "leaflet": "1.9.4" }
+}

@@ -9,3 +9,5 @@ odmoria-public-page-refresh.zip
 .env.*
 !.env.example
 .vercel/
+node_modules/
+tests/rezultati/
