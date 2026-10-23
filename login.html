@@ -54,6 +54,22 @@
       <p class="bottom">Nemate račun?<a href="/register.html">Registrirajte se</a></p>
     </div>
 
+    <!-- prijava u dva koraka: kod iz aplikacije (Supabase MFA, TOTP) -->
+    <div class="auth__box" id="mfa-box" hidden>
+      <a class="auth__logo" href="/"><img class="o-logo" src="/assets/logo/odmoria.svg" alt="Odmoria" width="112" height="24"></a>
+      <h1 class="auth__title">Kod iz aplikacije</h1>
+      <p class="auth__lead">Uključili ste prijavu u dva koraka. Upišite šesteroznamenkasti kod iz aplikacije za autentifikaciju.</p>
+      <div class="alert" id="mfa-alert" role="alert" hidden></div>
+      <form class="form" onsubmit="event.preventDefault();mfaPrijava()" novalidate>
+        <div class="fg">
+          <label for="mfa-kod">Kod</label>
+          <input class="inp" id="mfa-kod" inputmode="numeric" autocomplete="one-time-code" maxlength="6" required style="letter-spacing:.25em;font-weight:700">
+        </div>
+        <button class="btn btn--primary btn--block" type="submit" id="mfa-btn">Potvrdi<svg class="ic ic--sm"><use href="#i-arrow-right"/></svg></button>
+      </form>
+      <button class="btn btn--text" type="button" onclick="mfaOdjava()">Odjava i natrag na prijavu</button>
+    </div>
+
     <!-- nakon slanja linka za prijavu -->
     <div class="auth__box" id="sent-box" hidden>
       <a class="auth__logo" href="/"><img class="o-logo" src="/assets/logo/odmoria.svg" alt="Odmoria" width="112" height="24"></a>
@@ -113,8 +129,37 @@ window.login=async()=>{
   const b=$('login-btn');b.disabled=true
   const{error}=await sb.auth.signInWithPassword({email,password:pass})
   if(error){b.disabled=false;showA('err',hrErr(error));return}
-  location.href='/dashboard.html'
+  if(await trebaKod())return pokaziKod()
+  location.href=dalje()
 }
+
+/* Prijava u dva koraka (Postavke → Sigurnost): nakon lozinke, linka ili Googlea
+   sesija je aal1; s uključenim kodom traži se aal2. Dashboard vraća ovamo s ?kod=1. */
+const dalje=()=>{const n=new URLSearchParams(location.search).get('dalje')||'';return /^\/[a-z-]+(\.html)?([?#].*)?$/.test(n)?n:'/dashboard.html'}
+async function trebaKod(){
+  try{const{data}=await sb.auth.mfa.getAuthenticatorAssuranceLevel();return data?.nextLevel==='aal2'&&data?.currentLevel!=='aal2'}catch{return false}
+}
+function pokaziKod(){$('form-box').hidden=true;$('sent-box').hidden=true;$('mfa-box').hidden=false;$('mfa-kod').focus()}
+window.mfaPrijava=async()=>{
+  const code=$('mfa-kod').value.replace(/\D/g,''),a=$('mfa-alert')
+  const greska=t=>{a.className='alert alert--err';a.textContent=t;a.hidden=false}
+  if(code.length!==6)return greska('Upišite šest znamenki iz aplikacije.')
+  const b=$('mfa-btn');b.disabled=true
+  try{
+    const{data:f}=await sb.auth.mfa.listFactors()
+    const faktor=(f?.totp||[])[0]
+    if(!faktor){location.href=dalje();return}
+    const{error}=await sb.auth.mfa.challengeAndVerify({factorId:faktor.id,code})
+    if(error){greska('Kod nije ispravan ili je istekao. Upišite novi kod iz aplikacije.');return}
+    location.href=dalje()
+  }finally{b.disabled=false}
+}
+window.mfaOdjava=async()=>{await sb.auth.signOut();location.href='/login.html'}
+;(async()=>{
+  if(!/[?&]kod=1/.test(location.search))return
+  const{data:{session}}=await sb.auth.getSession()
+  if(session&&await trebaKod())pokaziKod()
+})()
 
 window.sendMagic=async()=>{
   const email=$('email').value.trim()

@@ -53,7 +53,17 @@
     rpc: (n, a) => { (window.__RPCS = window.__RPCS || []).push(n); return Promise.resolve(window.__RPC ? window.__RPC(n, a) : { data: null, error: { code: 'PGRST202', message: 'Could not find the function' } }) },
     storage: { from: () => ({}) },
     auth: { getSession: async () => ({ data: { session: sess() } }), getUser: async () => ({ data: { user: window.__USER || null } }),
-      onAuthStateChange: () => ({ data: { subscription: { unsubscribe() {} } } }), signOut: async () => ({}), updateUser: async () => ({ data: {}, error: null }) },
+      onAuthStateChange: () => ({ data: { subscription: { unsubscribe() {} } } }), signOut: async () => ({}), updateUser: async () => ({ data: {}, error: null }),
+      signInWithPassword: async () => ({ data: { user: window.__USER }, error: null }),
+      // prijava u dva koraka: window.__MFA = { aal: {currentLevel, nextLevel}, totp: [{id}], kod: '123456' }
+      mfa: (() => { const M = () => window.__MFA || { aal: { currentLevel: 'aal1', nextLevel: 'aal1' }, totp: [] }, z = s => (window.__CALLS = window.__CALLS || []).push('mfa:' + s)
+        return {
+          getAuthenticatorAssuranceLevel: async () => ({ data: M().aal, error: null }),
+          listFactors: async () => ({ data: { totp: M().totp, all: M().totp.map(f => ({ ...f, status: 'verified' })) }, error: null }),
+          enroll: async () => { z('enroll'); return { data: { id: 'f-novi', totp: { qr_code: 'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22/>', secret: 'TAJNA' } }, error: null } },
+          challengeAndVerify: async ({ code }) => { z('verify:' + code); const ok = code === (M().kod || '123456'); if (ok && window.__MFA) window.__MFA.aal = { currentLevel: 'aal2', nextLevel: 'aal2' }; return ok ? { data: {}, error: null } : { data: null, error: { message: 'Invalid TOTP code' } } },
+          unenroll: async ({ factorId }) => { z('unenroll:' + factorId); return { data: {}, error: null } }
+        } })() },
     channel: () => ({ on() { return this }, subscribe() { return this } }), removeChannel() {}
   }
 })()

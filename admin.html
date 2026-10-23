@@ -87,6 +87,17 @@ code{font:500 .9em ui-monospace,monospace;background:var(--bg-wash);padding:1px 
 .tbl td{padding:12px;border-bottom:1px solid var(--border);vertical-align:middle}
 .tbl td b,.tbl td strong{font-family:var(--font-ui)}
 .tbl .num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.pv-upute{display:grid;gap:6px;margin:0;padding-left:20px;font-size:15px;line-height:1.5}
+.pv-l{display:grid;gap:12px}
+.pv{position:relative;display:grid;gap:12px;padding:16px;border:1px solid var(--border);border-radius:12px;background:var(--bg-surface);min-width:0}
+.pv[data-st=ceka]{border-color:var(--action)}
+.pv__top{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:baseline;justify-content:space-between}
+.pv__top h3{margin:0;font:700 18px/1.3 var(--font-ui)}
+.pv dl{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px 18px;margin:0}
+.pv dt{font-size:13px;color:var(--text-muted)}.pv dd{margin:2px 0 0;font-weight:600;overflow-wrap:anywhere}
+.pv__ob{margin:0;padding-left:18px;font-size:14px}
+.pv__akc{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.pv__akc .inp{flex:1 1 220px;min-width:0;margin-top:0;min-height:40px}
 .tag{display:inline-flex;align-items:center;padding:4px 8px;border-radius:6px;font:700 12px/1.3 var(--font-body);letter-spacing:.04em;margin:2px 2px 2px 0;white-space:nowrap}
 .tag--ok{background:var(--bg-wash);color:var(--text-accent)}
 .tag--warn{background:var(--bg-warm);color:var(--text-warm)}
@@ -201,6 +212,7 @@ textarea.inp{padding:12px 14px;min-height:140px;resize:vertical}
     <a class="navi" data-tab="koristenje" href="#koristenje"><svg class="ic" aria-hidden="true"><use href="#i-activity"/></svg>Korištenje</a>
     <a class="navi" data-tab="prihod" href="#prihod"><svg class="ic" aria-hidden="true"><use href="#i-chart-no-axes-column"/></svg>Prihod</a>
     <a class="navi" data-tab="popusti" href="#popusti"><svg class="ic" aria-hidden="true"><use href="#i-tag"/></svg>Popusti</a>
+    <a class="navi" data-tab="provjere" href="#provjere"><svg class="ic" aria-hidden="true"><use href="#i-shield-check"/></svg>Provjere<span class="cnt" id="cntProvjere" hidden></span></a>
     <a class="navi" data-tab="poruke" href="#poruke"><svg class="ic" aria-hidden="true"><use href="#i-mail"/></svg>Poruke</a>
     <a class="navi" data-tab="sustav" href="#sustav"><svg class="ic" aria-hidden="true"><use href="#i-settings"/></svg>Sustav</a>
     <div class="side__foot">
@@ -438,6 +450,25 @@ textarea.inp{padding:12px 14px;min-height:140px;resize:vertical}
     </section>
 
     <!-- ============ PORUKE ============ -->
+    <!-- ============ PROVJERE (Provjeren domaćin, sql/add-host-verification.sql) ============ -->
+    <section class="tabpanel" data-panel="provjere" hidden>
+      <div class="head"><div><h1>Provjere domaćina</h1><p class="head__sub">Ručna provjera za oznaku „Provjeren domaćin” (samo plaćeni planovi). Oznaka vrijedi dok se IBAN i primatelj ne promijene.</p></div></div>
+      <section class="panel">
+        <p class="kicker">Što provjeriti</p>
+        <ol class="pv-upute mt8">
+          <li><b>Primatelj uplate</b> glasi na osobu ili obrt iz zahtjeva (ne na treću osobu).</li>
+          <li><b>OIB i obrt</b>: kontrolna znamenka OIB-a je već provjerena; naziv obrta usporedite u <a href="https://pretrazivac-obrta.gov.hr/" target="_blank" rel="noopener">Obrtnom registru</a> ili <a href="https://sudreg.pravosudje.hr/" target="_blank" rel="noopener">Sudskom registru</a>.</li>
+          <li><b>Registracijski brojevi</b> objekata odgovaraju mjestu i nazivu (rješenje o kategorizaciji).</li>
+          <li>Ako nešto nije jasno, nazovite domaćina na broj iz objekta prije odluke.</li>
+        </ol>
+      </section>
+      <section class="panel mt24">
+        <div class="filters"><div class="pchips" id="pvChips" role="group" aria-label="Stanje"></div></div>
+        <div class="pv-l mt16" id="pvLista"></div>
+        <p class="small mt16" id="pvPrazno" hidden>Nema zahtjeva u ovom stanju.</p>
+      </section>
+    </section>
+
     <section class="tabpanel" data-panel="poruke" hidden>
       <div class="head"><div><h1>Poruke</h1><p class="head__sub">E-mail odabranoj skupini domaćina.</p></div></div>
       <section class="g g-main">
@@ -557,6 +588,8 @@ let PROPS=[], SUBS={}, SUBROWS=[], BOOKINGS=[], VIEWS=[], VIEWS_OD=null, VIEWS_P
 /* Računi iz auth.users (admin_korisnici, sql/admin-upgrades.sql): e-mail računa i
    datum registracije. Bez funkcije ostaje staro: kontakt iz objekta. */
 let KORISNICI=null
+/* Provjere domaćina (admin_provjere); bez funkcije null → tab kaže da SQL nije pokrenut */
+let PROVJERE=null, PV_FILTAR='ceka'
 let HOSTS=[], PSTAT={}, PLANOVI=[], TRAJANJE=0
 let hStr=0, oStr=0, K_RASPON=30
 
@@ -565,6 +598,7 @@ init()
 async function init(){
   const{data:{user}}=await sb.auth.getUser()
   if(!user){location.href='/login.html';return}
+  try{const{data:a}=await sb.auth.mfa.getAuthenticatorAssuranceLevel();if(a?.nextLevel==='aal2'&&a?.currentLevel!=='aal2'){location.href='/login.html?kod=1&dalje='+encodeURIComponent(location.pathname+location.search);return}}catch{}  // prijava u dva koraka: bez koda natrag na prijavu
   if(user.id!==ADMIN_UID){ $('#gate').style.display='none'; $('#denied').style.display='flex'; return }
   $('#gate').style.display='none'; $('#app').style.display='block'
   try{ await loadPlans(sb) }catch{}      // bez baze radi s rezervnim vrijednostima
@@ -605,6 +639,7 @@ async function ucitaj(){
     ])
     PROPS=props; SUBROWS=subs; BOOKINGS=bks
     await ucitajPonude()
+    try{ const{data,error}=await sb.rpc('admin_provjere'); PROVJERE=error?null:(data||[]) }catch{ PROVJERE=null }
     try{ const{data,error}=await sb.rpc('admin_korisnici'); KORISNICI=error?null:Object.fromEntries((data||[]).map(u=>[u.id,u])) }catch{ KORISNICI=null }
     // s državom ako stupac postoji (sql/add-country-to-page-views.sql)
     const upit=kol=>()=>sb.from('page_views').select(kol).gte('timestamp',A.uDatum(od).toISOString()).order('timestamp')
@@ -726,7 +761,7 @@ const SEG={
 }
 
 function crtajSve(){
-  pregled(); filtri(); tablica(); objekti(); prihod(); poruke(); sustav(); popusti()
+  pregled(); filtri(); tablica(); objekti(); prihod(); poruke(); sustav(); popusti(); provjere()
   if(!$('[data-panel="koristenje"]').hidden)koristenje()
 }
 
@@ -764,6 +799,8 @@ function pregled(){
   if(n('istjece'))al.push(['warn',`${n('istjece')} ${A.mn(n('istjece'),'pretplata istječe','pretplate istječu','pretplata istječe')} u 14 dana`,'Nakon isteka domaćin pada na besplatni plan i gubi objekte iznad limita.','Prihod',"prihod"])
   if(n('rizik'))al.push(['warn',`${n('rizik')} ${A.mn(n('rizik'),'plaćeni domaćin je','plaćena domaćina su','plaćenih domaćina je')} u riziku`,'Bez prometa u 30 dana, slabo korištenje ili pretplata pri kraju.','Pogledaj',"seg:rizik"])
   if(n('nadogradnja'))al.push(['info',`${n('nadogradnja')} ${A.mn(n('nadogradnja'),'kandidat','kandidata','kandidata')} za nadogradnju`,'Besplatni domaćini na limitu objekata ili fotografija, ili s puno prometa.','Pogledaj',"seg:nadogradnja"])
+  const pvCeka=(PROVJERE||[]).filter(v=>v.stanje==='ceka').length
+  if(pvCeka)al.push(['warn',`${pvCeka} ${A.mn(pvCeka,'domaćin čeka','domaćina čekaju','domaćina čeka')} provjeru`,'Zahtjev za oznaku „Provjeren domaćin”: pregledajte podatke i račun za kaparu.','Provjere',"provjere"])
   const stari=PROPS.filter(icalStar).length
   if(stari)al.push(['info',`${stari} ${A.mn(stari,'objekt ima','objekta imaju','objekata ima')} iCal koji nije sinkroniziran 7+ dana`,'Sinkronizacija je ručna; domaćin možda ne vidi nove rezervacije s platformi.','Objekti',"obj:icalStar"])
   const bezObj=[...racuni].filter(id=>!HOSTS.some(h=>h.user_id===id)).length
@@ -820,6 +857,62 @@ $('#paznja').addEventListener('click',e=>{
   if(c.startsWith('seg:')){ $('#segment').value=c.slice(4); hStr=0; tablica(); idiNa('domacini') }
   else if(c.startsWith('obj:')){ $('#oSeg').value=c.slice(4); oStr=0; objekti(); idiNa('objekti') }
   else idiNa(c)
+})
+
+/* ---------- PROVJERE DOMAĆINA ---------- */
+const PV_ST={ceka:['Na čekanju','tag--warn'],provjeren:['Provjeren','tag--ok'],odbijen:['Odbijen','tag--mut']}
+function provjere(){
+  const L=PROVJERE
+  const n=k=>(L||[]).filter(v=>k==='svi'||v.stanje===k).length
+  $('#cntProvjere').hidden=!n('ceka'); $('#cntProvjere').textContent=n('ceka')
+  $('#pvChips').innerHTML=[['ceka','Na čekanju'],['provjeren','Provjereni'],['odbijen','Odbijeni'],['svi','Svi']]
+    .map(([k,t])=>`<button type="button" class="pchip" aria-pressed="${PV_FILTAR===k}" data-pv="${k}">${t} (${n(k)})</button>`).join('')
+  if(!L){ $('#pvLista').innerHTML='<p class="small">Provjere još nisu uključene u bazi (<code>sql/add-host-verification.sql</code>).</p>'; $('#pvPrazno').hidden=true; return }
+  const red=L.filter(v=>PV_FILTAR==='svi'||v.stanje===PV_FILTAR)
+  $('#pvPrazno').hidden=red.length>0
+  $('#pvLista').innerHTML=red.map(v=>{
+    const [st,cls]=PV_ST[v.stanje]||[v.stanje,'tag--mut']
+    const ob=(v.objekti||[]).map(o=>`<li>${esc(o.naziv||'Objekt')} · ${o.registracijski_broj?`<b translate="no">${esc(o.registracijski_broj)}</b>`:'<span class="small">bez registracijskog broja</span>'}${o.slug?` · <a href="/p/${encodeURIComponent(o.slug)}?domacin=1" target="_blank" rel="noopener">stranica</a>`:''}</li>`).join('')
+    const upoz=[v.stanje==='provjeren'&&!v.racun_isti&&'IBAN ili primatelj promijenjen nakon provjere — oznaka se ne prikazuje.',
+      v.stanje==='provjeren'&&v.racun_isti&&!v.vrijedi&&'Plan više ne uključuje provjeru — oznaka se ne prikazuje.'].filter(Boolean)
+    return `<article class="pv" data-st="${esc(v.stanje)}" data-uid="${esc(v.user_id)}">
+      <div class="pv__top"><h3>${esc(v.ime)}</h3><div><span class="tag ${cls}">${esc(st)}</span><span class="tag tag--mut">${esc(ODMORIA_PLANS[v.plan]?.name||v.plan||'—')}</span>${v.vrijedi?'<span class="tag tag--ok">Oznaka vidljiva</span>':''}</div></div>
+      <dl>
+        <div><dt>E-mail računa</dt><dd>${esc(v.email||'—')}</dd></div>
+        <div><dt>OIB</dt><dd translate="no">${esc(v.oib)}</dd></div>
+        <div><dt>Obrt / tvrtka</dt><dd>${esc(v.obrt||'—')}</dd></div>
+        <div><dt>Primatelj uplate</dt><dd>${esc(v.primatelj)}</dd></div>
+        <div><dt>IBAN</dt><dd translate="no">${esc(v.iban)}</dd></div>
+        <div><dt>Poslano</dt><dd>${datum(v.poslano_at)}${v.provjereno_at?` · odluka ${datum(v.provjereno_at)}`:''}</dd></div>
+      </dl>
+      ${v.napomena?`<p class="small"><b>Napomena domaćina:</b> ${esc(v.napomena)}</p>`:''}
+      ${ob?`<div><p class="small"><b>Objekti</b></p><ul class="pv__ob">${ob}</ul></div>`:''}
+      ${v.razlog?`<p class="small"><b>Razlog odbijanja:</b> ${esc(v.razlog)}</p>`:''}
+      ${upoz.map(t=>`<p class="small" style="color:var(--text-warm)">${esc(t)}</p>`).join('')}
+      <div class="pv__akc">
+        ${v.stanje!=='provjeren'?`<button class="btn btn--fill btn--sm" type="button" data-pv-odluka="provjeren">Provjeren</button>`:''}
+        <label class="sr-only" for="pvr-${esc(v.user_id)}">Razlog odbijanja</label>
+        <input class="inp inp--sm" id="pvr-${esc(v.user_id)}" placeholder="Razlog (vidi ga domaćin), npr. primatelj ne glasi na vas" maxlength="400">
+        <button class="btn btn--ghost btn--sm" type="button" data-pv-odluka="odbijen">${v.stanje==='provjeren'?'Ukini provjeru':'Odbij'}</button>
+      </div>
+    </article>`}).join('')
+}
+$('#pvChips').addEventListener('click',e=>{const b=e.target.closest('[data-pv]');if(!b)return;PV_FILTAR=b.dataset.pv;provjere()})
+$('#pvLista').addEventListener('click',async e=>{
+  const b=e.target.closest('[data-pv-odluka]'); if(!b)return
+  const kart=b.closest('.pv'), uid=kart.dataset.uid, odl=b.dataset.pvOdluka
+  const v=(PROVJERE||[]).find(x=>x.user_id===uid); if(!v)return
+  const razlog=kart.querySelector('input').value.trim()
+  if(odl==='odbijen'&&!razlog){ await obavijesti('Upišite razlog — domaćin ga vidi u Postavkama i zna što ispraviti.'); kart.querySelector('input').focus(); return }
+  const ok=await potvrdi(odl==='provjeren'
+    ?`Označiti „${v.ime}” kao provjerenog domaćina? Na javnoj stranici pojavit će se oznaka i ime primatelja „${v.primatelj}”.`
+    :`${v.stanje==='provjeren'?'Ukinuti provjeru':'Odbiti zahtjev'} za „${v.ime}”?`,{da:odl==='provjeren'?'Provjeren':'Odbij',opasno:odl!=='provjeren'})
+  if(!ok)return
+  b.disabled=true
+  const{data,error}=await sb.rpc('admin_odluci_provjeru',{p_user:uid,p_odluka:odl,p_razlog:razlog||null})
+  if(error||data?.stanje!=='ok'){ b.disabled=false; await obavijesti('Odluka nije spremljena: '+(error?.message||data?.stanje||'nepoznato')); return }
+  try{ const{data:d}=await sb.rpc('admin_provjere'); PROVJERE=d||[] }catch{}
+  provjere(); pregled()
 })
 
 /* ---------- DOMAĆINI ---------- */

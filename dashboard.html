@@ -2105,6 +2105,9 @@ body[data-panel="prijevodi"] .ph-akcije { display: none; }
 .sez input[type="date"]::-webkit-date-and-time-value { text-align: center; }
 .sez input[type="date"]::-webkit-datetime-edit { display: inline-flex; justify-content: center; width: 100%; }
 .sez [data-sz="cijena"] { text-align: center; font-weight: 700; }
+.dom-prov{margin-top:10px;padding:12px 14px;border-radius:var(--radius-sm);background:var(--paper-2);font-size:14px;line-height:1.5}
+.dom-prov[hidden]{display:none}
+.dom-prov .btn{margin-left:6px;vertical-align:middle}
 </style>
 <script src="/bez-tehnike.js"></script>
 <script type="module">import{pokreni,prekidac}from'/domacin-jezik.js';pokreni();prekidac(document.getElementById('jezik-sw'))</script>
@@ -2836,6 +2839,7 @@ body[data-panel="prijevodi"] .ph-akcije { display: none; }
               <div class="field"><label for="dom-primatelj">Primatelj (ime ili obrt)</label><input class="input" id="dom-primatelj" autocomplete="off" placeholder="Marko Horvat"></div>
             </div>
             <p class="helper">IBAN i primatelj spremaju se samo u vaš račun (ne na javnu stranicu) i upisuju se u ponudu koju šaljete gostu.</p>
+            <div class="dom-prov" id="dom-prov" hidden></div>
             <div style="margin-top:14px;display:flex;justify-content:flex-end"><button class="btn" type="button" onclick="saveIzravno()">Spremi sezone i kaparu</button></div>
           </div>
           <!-- P1-2: registracijski broj i pravila otkazivanja (sql/add-listing-trust.sql) — javna stranica, „Uvjeti ovog smještaja” -->
@@ -3418,6 +3422,7 @@ async function init(){
   const pozQ=new URLSearchParams(location.search).get('pozivnica')
   if(pozQ){try{localStorage.setItem('odm-pozivnica',pozQ)}catch{}}
   if(!session){location.href='/login.html'+(pozQ?'?pozivnica=1':'');return}
+  try{const{data:a}=await sb.auth.mfa.getAuthenticatorAssuranceLevel();if(a?.nextLevel==='aal2'&&a?.currentLevel!=='aal2'){location.href='/login.html?kod=1&dalje='+encodeURIComponent(location.pathname+location.search);return}}catch{}  // prijava u dva koraka: bez koda natrag na prijavu
   USER=session.user
   window.__ADMIN=USER.id==='56549320-2c02-405c-9936-770144bd9b49'   // vlasnik aplikacije (isti UID kao admin.html) vidi tehničke poruke
   await prihvatiPozivnicu()
@@ -4506,9 +4511,30 @@ function puniIzravno(){
   const m=META()
   const ib=document.getElementById('dom-iban');if(ib)ib.value=m.iban||''
   const pr=document.getElementById('dom-primatelj');if(pr)pr.value=m.primatelj||''
+  provjeraIbana()
   const pv=POVRATNI()
   const pk=document.getElementById('pov-kod');if(pk)pk.value=pv.kod
   const pp=document.getElementById('pov-posto');if(pp)pp.value=pv.posto||''
+}
+/* Provjeren domaćin (sql/add-host-verification.sql): dok je oznaka važeća, IBAN i primatelj
+   su zaključani — promjena bi tiho skinula oznaku. „Promijeni” traži potvrdu. */
+let PROV_DOM=null,PROV_OTKLJ=false
+async function provjeraIbana(){
+  const box=document.getElementById('dom-prov');if(!box)return
+  if(PROV_DOM===null){try{const{data,error}=await sb.rpc('moja_provjera');PROV_DOM=error?false:data}catch{PROV_DOM=false}}
+  const v=PROV_DOM,zakl=!!(v&&v.vrijedi&&!PROV_OTKLJ)
+  ;['dom-iban','dom-primatelj'].forEach(id=>{const el=document.getElementById(id);if(el)el.readOnly=zakl})
+  if(!v||!v.smije){box.hidden=true;return}
+  box.hidden=false
+  box.innerHTML=v.vrijedi&&!PROV_OTKLJ
+    ?`<b>Zaključano — provjereni ste kao domaćin.</b> Gosti vide ovo ime primatelja na javnoj stranici. Promijenite li IBAN ili primatelja, oznaka se skriva dok ne pošaljete novu provjeru. <button class="btn secondary small" type="button" onclick="otkljucajIban()">Promijeni račun</button>`
+    :v.stanje==='ceka'?'<b>Provjera je u tijeku.</b> Ne mijenjajte IBAN ni primatelja dok ne završi.'
+    :v.stanje==='provjeren'?'<b>Oznaka „Provjeren domaćin” se ne prikazuje</b> jer je račun promijenjen nakon provjere. <a href="/account.html#sigurnost">Pošaljite novu provjeru</a>.'
+    :'<b>Postanite provjereni domaćin.</b> Gosti uz vašu stranicu vide oznaku i ime primatelja uplate. <a href="/account.html#sigurnost">Pošalji na provjeru</a>'
+}
+window.otkljucajIban=async()=>{
+  if(!await potvrdi('Promijeniti račun za kaparu? Oznaka „Provjeren domaćin” skriva se dok ne pošaljete novu provjeru.',{da:'Promijeni'}))return
+  PROV_OTKLJ=true;provjeraIbana();document.getElementById('dom-iban')?.focus()
 }
 window.saveIzravno=async()=>{
   if(!PROP)return
@@ -4525,6 +4551,7 @@ window.saveIzravno=async()=>{
     const{data,error:e2}=await sb.auth.updateUser({data:{iban,primatelj:prim}})
     if(e2){toast('Sezone su spremljene, IBAN nije: '+e2.message);return}
     if(data?.user)USER=data.user
+    if(PROV_DOM&&PROV_DOM.vrijedi){PROV_DOM=null;PROV_OTKLJ=false;provjeraIbana();toast('Spremljeno. Oznaka „Provjeren domaćin” skrivena je dok ne pošaljete novu provjeru (Postavke → Sigurnost).');window.clearDirty&&clearDirty();return}
   }
   window.clearDirty&&clearDirty();toast('Sezone i kapara su spremljene ✓')
 }

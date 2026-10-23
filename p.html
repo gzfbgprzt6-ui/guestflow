@@ -384,7 +384,19 @@
 .hero__name{order:1;font:700 clamp(30px,3.4vw,42px)/1.15 var(--font-editorial);letter-spacing:-.02em}
 .hero__sub{order:3;color:var(--text-muted);font-size:15.5px}
 .hero__copy .zivo{order:0}
-.hero__ocj{order:4;justify-self:start;display:inline-flex;align-items:center;gap:6px;font:700 15px/1.3 var(--font-ui);color:var(--text);text-decoration:none}
+.hero__oz{order:4;display:flex;flex-wrap:wrap;align-items:center;gap:6px 18px}
+.hero__oz:not(:has(> :not([hidden]))){display:none}
+.hero__prov{display:inline-flex;align-items:center;gap:6px;font:700 15px/1.3 var(--font-ui);color:var(--text-accent);text-decoration:none}
+.hero__prov .ic{width:17px;height:17px}
+.hero__prov:hover span{text-decoration:underline;text-underline-offset:3px}
+.prov{display:grid;gap:8px;padding:16px;border-radius:10px;background:var(--bg-wash)}
+.prov p{margin:0;font-size:15px;line-height:1.55}
+.prov__h{display:flex;align-items:center;gap:8px;font:700 16px/1.3 var(--font-ui)}
+.prov__h .ic{color:var(--text-accent)}
+.prov__l{display:flex;flex-wrap:wrap;gap:4px 10px;margin:0;font-size:15px}
+.prov__l dt{color:var(--text-muted)}.prov__l dd{margin:0;font-weight:700}
+.prov__s{color:var(--text-muted)!important;font-size:14px!important}
+.hero__ocj{justify-self:start;display:inline-flex;align-items:center;gap:6px;font:700 15px/1.3 var(--font-ui);color:var(--text);text-decoration:none}
 .hero__ocj .zv svg{width:16px;height:16px}
 .hero__ocj span{font-weight:500;color:var(--text-muted);text-decoration:underline;text-underline-offset:3px}
 .hero__ocj:hover span{color:var(--text)}
@@ -619,7 +631,10 @@
         <span class="eyebrow" id="hero-loc" hidden></span>
         <h1 class="hero__name" id="hero-name"></h1>
         <p class="hero__sub" id="hero-sub" hidden></p>
-        <a class="hero__ocj" id="hero-ocj" href="#rev-sec" hidden></a>
+        <div class="hero__oz">
+          <a class="hero__ocj" id="hero-ocj" href="#rev-sec" hidden></a>
+          <a class="hero__prov" id="hero-prov" href="#sig-sec" hidden><svg class="ic" aria-hidden="true"><use href="#i-shield-check"/></svg><span>Provjeren domaćin</span></a>
+        </div>
       </div>
       <div class="hero__act">
         <span class="pricetag" id="hero-price" hidden></span>
@@ -829,6 +844,13 @@
       <div class="uvj" id="uvj" hidden>
         <h2 class="sig__h">Uvjeti ovog smještaja</h2>
         <dl class="uvj__l" id="uvj-l"></dl>
+      </div>
+      <!-- Provjeren domaćin (sql/add-host-verification.sql): Odmoria je ručno provjerila podatke i račun za kaparu -->
+      <div class="prov" id="prov" hidden>
+        <p class="prov__h"><svg class="ic" aria-hidden="true"><use href="#i-shield-check"/></svg><b>Provjeren domaćin</b></p>
+        <p id="prov-tx"></p>
+        <dl class="prov__l"><dt>Primatelj uplate</dt><dd id="prov-prim" translate="no"></dd></dl>
+        <p class="prov__s">Ako vaša banka pokaže drugo ime primatelja, ne uplaćujte i prijavite stranicu.</p>
       </div>
       <h2 class="sig__h" id="sig-h"><svg class="ic" aria-hidden="true"><use href="#i-shield-check"/></svg><span>Sigurna izravna rezervacija</span></h2>
       <ul class="sig__l">
@@ -1344,6 +1366,14 @@ async function javnoODobjektu(slugObj) {
   try { const { data, error } = await sb.rpc('javno_o_objektu', { p_slug: slugObj }); if (!error) j = data } catch {}
   if (!j || j.stanje !== 'ok') return
   show('#f-by', j.oznaka !== false)
+  // Provjeren domaćin: oznaka pod naslovom + ime primatelja u „Sigurna izravna rezervacija”
+  const pv = j.provjera && typeof j.provjera === 'object' && j.provjera.primatelj ? j.provjera : null
+  if (pv) {
+    $('#prov-tx').textContent = t('Odmoria je provjerila domaćina ({d}): podatke i račun za kaparu.', { d: L.datum(new Date(pv.od + 'T12:00'), { godina: true }) })
+    $('#prov-prim').textContent = pv.primatelj
+    $('#hero-prov').setAttribute('aria-label', t('Provjeren domaćin — što to znači'))
+  }
+  show('#prov', !!pv); show('#hero-prov', !!pv)
   const lista = Array.isArray(j.recenzije) ? j.recenzije : []
   if (!j.broj || !lista.length) return
   const zv = n => Array.from({ length: 5 }, (_, i) => `<svg class="${i < Math.round(n) ? '' : 'p'}"><use href="#i-star"/></svg>`).join('')

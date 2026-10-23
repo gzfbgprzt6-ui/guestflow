@@ -68,6 +68,28 @@
 .tab,.tab:hover{min-height:44px;margin-bottom:-1px;padding:0 12px;border:0;border-bottom:2px solid transparent;border-radius:0;background:transparent;color:var(--text-muted)}
 .tab:hover{color:var(--text)}
 .tab[aria-selected="true"]{border-bottom-color:var(--action);background:transparent;color:var(--text)}
+/* prijava u dva koraka i Provjeren domaćin */
+.mfa-novi{display:grid;gap:12px;margin-top:8px;padding-top:16px;border-top:1px solid var(--border)}
+.mfa-qr{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+.mfa-qr img{width:176px;height:176px;padding:8px;border:1px solid var(--border);border-radius:12px;background:#fff}
+.mfa-qr .sig-l{flex:1 1 220px;min-width:0}
+.mfa-kod{max-width:12ch;font:700 22px/1 var(--font-ui);letter-spacing:.2em}
+#mfa-tajna{word-break:break-all}
+.prov-akc{display:flex;flex-wrap:wrap;gap:10px}
+.prov-akc:empty{display:none}
+.prov-st{display:grid;gap:6px;font-size:15px;line-height:1.55}
+.prov-st:empty{display:none}
+.prov-st .prov-r{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:var(--radius-panel);background:var(--bg-wash)}
+.prov-st .prov-r[data-ton=upoz]{background:#FFF4DC;color:#6B4A00}
+.prov-st .prov-r[data-ton=ok]{background:#E8F0ED}
+.prov-st dl{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 14px;margin:6px 0 0}
+.prov-st dt{color:var(--text-muted)}.prov-st dd{margin:0;font-weight:600;overflow-wrap:anywhere}
+.prov-forma{display:grid;gap:12px;margin-top:4px}
+.prov-iban{grid-column:1/-1}
+.prov-pristanak{display:flex;gap:10px;align-items:flex-start;font-size:15px;line-height:1.45}
+.prov-pristanak input{width:18px;height:18px;margin-top:2px;flex:none;accent-color:var(--action)}
+.prov-oz{display:inline-flex;align-items:center;gap:6px;margin-left:8px;padding:3px 10px;border-radius:999px;background:#E8F0ED;color:var(--action);font:700 13px/1.4 var(--font-ui);vertical-align:middle}
+.prov-oz .ic{stroke:currentColor;fill:none;stroke-width:2}
 </style>
 <script type="module">import{pokreni,prekidac}from'/domacin-jezik.js';pokreni();prekidac(document.getElementById('jezik-sw'))</script>
 </head>
@@ -181,6 +203,48 @@
           </div>
         </div>
       </section>
+      <!-- prijava u dva koraka (TOTP, Supabase MFA) -->
+      <section class="card" id="mfa-card">
+        <h2 class="card-head">Prijava u dva koraka</h2>
+        <p class="card-sub">Uz lozinku traži se i šesteroznamenkasti kod iz aplikacije na mobitelu (Google Authenticator, Microsoft Authenticator, 1Password…). Tko sazna lozinku, bez mobitela ne ulazi.</p>
+        <div class="card-body">
+          <div class="alert alert-err" id="mfa-err" role="alert"></div>
+          <div class="alert alert-ok" id="mfa-ok" role="status"></div>
+          <div class="switch-row"><div><b id="mfa-st">Provjeravam…</b><span id="mfa-st-s"></span></div><button class="btn-out" id="mfa-btn" type="button" onclick="mfaGumb()" hidden>Uključi</button></div>
+          <div class="mfa-novi" id="mfa-novi" hidden>
+            <div class="mfa-qr" id="mfa-qr-wrap">
+              <img id="mfa-qr" alt="QR kod za aplikaciju za autentifikaciju" width="176" height="176">
+              <ol class="sig-l"><li>U aplikaciji za autentifikaciju dodajte račun i skenirajte kod.</li><li>Upišite šesteroznamenkasti kod koji aplikacija pokaže.</li></ol>
+            </div>
+            <p class="t-meta" id="mfa-tajna-red">Ne možete skenirati? Upišite ključ: <code id="mfa-tajna" translate="no"></code></p>
+            <div class="fg"><label for="mfa-kod" id="mfa-kod-l">Kod iz aplikacije</label><input class="fi mfa-kod" id="mfa-kod" inputmode="numeric" autocomplete="one-time-code" maxlength="6"></div>
+            <div class="save-row prov-akc"><button class="btn-blue" id="mfa-potvrdi" type="button" onclick="mfaPotvrdi()">Potvrdi i uključi</button><button class="btn-out" type="button" onclick="mfaOdustani()">Odustani</button></div>
+          </div>
+        </div>
+      </section>
+      <!-- Provjeren domaćin (P1-3, sql/add-host-verification.sql) — samo plaćeni planovi; bez SQL-a kartica se ne vidi -->
+      <section class="card" id="prov-card" hidden>
+        <h2 class="card-head">Provjeren domaćin <span class="prov-oz" id="prov-oz" hidden><svg class="ic ic--sm" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>Provjereni ste</span></h2>
+        <p class="card-sub">Odmoria ručno provjeri tko ste i glasi li račun za kaparu na vas. Gosti na javnoj stranici vide oznaku „Provjeren domaćin” i ime primatelja uplate — isto ime koje im pokaže banka.</p>
+        <div class="card-body">
+          <div class="alert alert-err" id="prov-err" role="alert"></div>
+          <div class="prov-st" id="prov-st" role="status"></div>
+          <div class="save-row prov-akc" id="prov-akc"></div>
+          <form class="prov-forma" id="prov-forma" hidden onsubmit="event.preventDefault();posaljiProvjeru()">
+            <div class="grid2">
+              <div class="fg"><label for="prov-ime">Ime i prezime</label><input class="fi" id="prov-ime" autocomplete="name" maxlength="120" required></div>
+              <div class="fg"><label for="prov-oib">OIB</label><input class="fi" id="prov-oib" inputmode="numeric" maxlength="11" required translate="no"><span class="fg-hint">Vaš OIB ili OIB obrta.</span></div>
+              <div class="fg"><label for="prov-obrt">Naziv obrta ili tvrtke <span class="t-muted">(ako postoji)</span></label><input class="fi" id="prov-obrt" maxlength="160"></div>
+              <div class="fg"><label for="prov-primatelj">Primatelj uplate</label><input class="fi" id="prov-primatelj" maxlength="120" required><span class="fg-hint">Kako ime stoji u banci.</span></div>
+              <div class="fg prov-iban"><label for="prov-iban">IBAN za kaparu</label><input class="fi" id="prov-iban" maxlength="40" required autocomplete="off" placeholder="HR12 3456 7890 1234 5678 9" translate="no"></div>
+              <div class="fg prov-iban"><label for="prov-nap">Napomena za provjeru <span class="t-muted">(neobavezno)</span></label><textarea class="fi" id="prov-nap" rows="2" maxlength="600" placeholder="Npr. objekt je na ime supruga, rješenje glasi na obrt…"></textarea></div>
+            </div>
+            <p class="t-meta">Provjeravamo i registracijske brojeve vaših objekata (Objekti → Cijene → Uvjeti). Ako nakon provjere promijenite IBAN ili primatelja, oznaka se skriva dok ne pošaljete novu provjeru — tako nitko ne može tiho podmetnuti drugi račun.</p>
+            <label class="prov-pristanak"><input type="checkbox" id="prov-pristanak" required> Pristajem da se ime primatelja uplate prikazuje gostima na javnoj stranici.</label>
+            <div class="save-row"><button class="btn-blue" id="prov-btn" type="submit">Pošalji na provjeru</button></div>
+          </form>
+        </div>
+      </section>
       <section class="card">
         <h2 class="card-head">Dobro je znati</h2>
         <div class="card-body">
@@ -253,6 +317,7 @@ let USER = null
 async function init() {
   const { data: { session } } = await sb.auth.getSession()
   if (!session) { window.location.href = '/login.html'; return }
+  try{const{data:a}=await sb.auth.mfa.getAuthenticatorAssuranceLevel();if(a?.nextLevel==='aal2'&&a?.currentLevel!=='aal2'){location.href='/login.html?kod=1&dalje='+encodeURIComponent(location.pathname+location.search);return}}catch{}  // prijava u dva koraka: bez koda natrag na prijavu
   USER = session.user
 
   // Fill profile
@@ -333,6 +398,7 @@ async function init() {
     : 'Plaćanje karticom preko Stripea. Pretplatu možete otkazati bilo kad; plan vrijedi do kraja plaćenog razdoblja.'
   { const h = location.hash.slice(1); if (TABOVI.includes(h) && h !== 'profil') openTab(h) }
   povratakNaPretplatu()
+  mfaStanje().then(ucitajProvjeru)
 
   const created = new Date(USER.created_at)
   document.getElementById('reg-date').textContent = created.toLocaleDateString('hr-HR', { day: 'numeric', month: 'long', year: 'numeric' })
@@ -423,6 +489,135 @@ window.toggleNotif = async (el) => {
   if (error) { el.setAttribute('aria-checked', String(!novo)); toast('Nije spremljeno: ' + hrGreska(error)); return }
   if (data?.user) USER = data.user
   toast('Spremljeno.')
+}
+
+// ── PRIJAVA U DVA KORAKA (Supabase MFA, TOTP) ─────────
+// Uključivanje: enroll → QR → kod iz aplikacije → challengeAndVerify.
+// Isključivanje traži kod (Supabase briše provjereni faktor samo uz aal2).
+let MFA = { faktor: null, novi: null, iskljucujem: false }
+const $id = id => document.getElementById(id)
+async function mfaStanje() {
+  let f = null
+  try { const { data, error } = await sb.auth.mfa.listFactors(); if (error) throw error; f = (data?.totp || [])[0] || null }
+  catch (e) { $id('mfa-st').textContent = 'Trenutačno nedostupno'; $id('mfa-st-s').textContent = 'Pokušajte ponovno kasnije.'; return }
+  MFA.faktor = f
+  $id('mfa-st').textContent = f ? 'Uključeno' : 'Isključeno'
+  $id('mfa-st-s').textContent = f ? 'Pri prijavi tražimo i kod iz aplikacije.' : 'Preporučujemo — potrebno je i za oznaku „Provjeren domaćin”.'
+  const b = $id('mfa-btn'); b.hidden = false; b.textContent = f ? 'Isključi' : 'Uključi'
+}
+window.mfaGumb = async () => {
+  clearAlerts('mfa')
+  if (MFA.faktor) {   // isključivanje: prvo kod
+    MFA.iskljucujem = true
+    $id('mfa-qr-wrap').hidden = true; $id('mfa-tajna-red').hidden = true
+    $id('mfa-kod-l').textContent = 'Kod iz aplikacije (za isključivanje)'
+    $id('mfa-potvrdi').textContent = 'Isključi prijavu u dva koraka'
+    $id('mfa-novi').hidden = false; $id('mfa-kod').value = ''; $id('mfa-kod').focus(); return
+  }
+  // nedovršeni (neprovjereni) faktori iz prijašnjeg pokušaja smetaju novom upisu
+  try { const { data } = await sb.auth.mfa.listFactors(); for (const x of (data?.all || []).filter(x => x.status !== 'verified')) await sb.auth.mfa.unenroll({ factorId: x.id }) } catch {}
+  const { data, error } = await sb.auth.mfa.enroll({ factorType: 'totp', friendlyName: 'Odmoria ' + new Date().toISOString().slice(0, 16) })
+  if (error) { showAlert('mfa', 'err', hrGreska(error, 'Prijava u dva koraka se nije mogla uključiti')); return }
+  MFA.novi = data.id; MFA.iskljucujem = false
+  $id('mfa-qr').src = data.totp.qr_code
+  $id('mfa-tajna').textContent = data.totp.secret
+  $id('mfa-qr-wrap').hidden = false; $id('mfa-tajna-red').hidden = false
+  $id('mfa-kod-l').textContent = 'Kod iz aplikacije'
+  $id('mfa-potvrdi').textContent = 'Potvrdi i uključi'
+  $id('mfa-novi').hidden = false; $id('mfa-kod').value = ''; $id('mfa-kod').focus()
+}
+window.mfaPotvrdi = async () => {
+  clearAlerts('mfa')
+  const code = $id('mfa-kod').value.replace(/\D/g, '')
+  if (code.length !== 6) { showAlert('mfa', 'err', 'Upišite šest znamenki iz aplikacije.'); return }
+  const id = MFA.iskljucujem ? MFA.faktor.id : MFA.novi
+  const { error } = await sb.auth.mfa.challengeAndVerify({ factorId: id, code })
+  if (error) { showAlert('mfa', 'err', 'Kod nije ispravan ili je istekao. Upišite novi kod iz aplikacije.'); return }
+  if (MFA.iskljucujem) {
+    const { error: e2 } = await sb.auth.mfa.unenroll({ factorId: id })
+    if (e2) { showAlert('mfa', 'err', hrGreska(e2, 'Isključivanje nije uspjelo')); return }
+    toast('Prijava u dva koraka je isključena.')
+  } else toast('Prijava u dva koraka je uključena.')
+  $id('mfa-novi').hidden = true; MFA.novi = null
+  await mfaStanje(); ucitajProvjeru()
+}
+window.mfaOdustani = async () => {
+  if (MFA.novi) { try { await sb.auth.mfa.unenroll({ factorId: MFA.novi }) } catch {} MFA.novi = null }
+  $id('mfa-novi').hidden = true; clearAlerts('mfa')
+}
+
+// ── PROVJEREN DOMAĆIN (sql/add-host-verification.sql) ──
+// Ručna provjera: domaćin pošalje podatke, vlasnik platforme odluči u adminu.
+// Samo plaćeni planovi (mogućnost „provjera”). Bez funkcije u bazi kartica ostaje skrivena.
+let PROV = null
+const escH = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]))
+const datumHr = s => s ? new Date(s).toLocaleDateString('hr-HR', { day: 'numeric', month: 'long', year: 'numeric' }) : ''
+async function ucitajProvjeru() {
+  try { const { data, error } = await sb.rpc('moja_provjera'); if (error) throw error; PROV = data } catch { PROV = null }
+  const card = $id('prov-card'); card.hidden = !PROV || PROV.stanje === 'prijava'
+  if (card.hidden) return
+  const st = $id('prov-st'), akc = $id('prov-akc'), forma = $id('prov-forma')
+  const red = (ton, html) => `<div class="prov-r"${ton ? ` data-ton="${ton}"` : ''}><div>${html}</div></div>`
+  const racun = `<dl><dt>Primatelj</dt><dd>${escH(PROV.primatelj)}</dd><dt>IBAN</dt><dd translate="no">${escH(PROV.iban)}</dd></dl>`
+  $id('prov-oz').hidden = !PROV.vrijedi
+  forma.hidden = true; akc.innerHTML = ''
+  if (!PROV.smije) {
+    st.innerHTML = red('', PROV.stanje === 'provjeren'
+      ? '<b>Oznaka se trenutačno ne prikazuje.</b> Provjera vrijedi uz plaćeni plan — vratit će se čim ga obnovite.'
+      : '<b>Dostupno u plaćenim planovima.</b> Uz plan Domaćin ili Agencija Odmoria provjeri vaše podatke i račun za kaparu, a gosti vide oznaku „Provjeren domaćin”.')
+    akc.innerHTML = '<button class="btn-out" type="button" onclick="openTab(\'pretplata\')">Pogledaj planove</button>'
+    return
+  }
+  if (PROV.stanje === 'ceka') {
+    st.innerHTML = red('', `<b>Zahtjev je poslan ${datumHr(PROV.poslano_at)}.</b> Pregledavamo ga ručno, obično u jedan do dva radna dana. Stanje vidite ovdje.${racun}`)
+    akc.innerHTML = '<button class="btn-out" type="button" onclick="pokaziFormuProvjere()">Ispravi podatke</button>'
+    return
+  }
+  if (PROV.stanje === 'provjeren' && PROV.vrijedi) {
+    st.innerHTML = red('ok', `<b>Provjereni ste od ${datumHr(PROV.provjereno_at)}.</b> Gosti na javnoj stranici vide oznaku i ime primatelja.${racun}<span class="t-meta">Promijenite li IBAN ili primatelja, oznaka se skriva dok ne pošaljete novu provjeru.</span>`)
+    akc.innerHTML = '<button class="btn-out" type="button" onclick="pokaziFormuProvjere()">Promijeni račun za uplatu</button>'
+    return
+  }
+  if (PROV.stanje === 'provjeren') st.innerHTML = red('upoz', '<b>Račun za uplatu promijenjen je nakon provjere.</b> Oznaka se ne prikazuje dok ne pošaljete novu provjeru.')
+  else if (PROV.stanje === 'odbijen') st.innerHTML = red('upoz', `<b>Provjera nije prošla.</b> ${escH(PROV.razlog || 'Podaci se ne podudaraju.')} Ispravite podatke i pošaljite ponovno.`)
+  else st.innerHTML = ''
+  pokaziFormuProvjere()
+}
+window.pokaziFormuProvjere = () => {
+  const m = USER.user_metadata || {}
+  $id('prov-ime').value = PROV?.ime || m.full_name || ''
+  $id('prov-obrt').value = PROV?.obrt || ''
+  $id('prov-iban').value = m.iban || ''
+  $id('prov-primatelj').value = m.primatelj || PROV?.ime || m.full_name || ''
+  $id('prov-oib').value = ''
+  $id('prov-forma').hidden = false; $id('prov-akc').innerHTML = ''
+  const bez2fa = !PROV?.ima_2fa
+  $id('prov-btn').disabled = bez2fa
+  if (bez2fa) $id('prov-st').insertAdjacentHTML('beforeend', '<div class="prov-r" data-ton="upoz"><div><b>Prvo uključite prijavu u dva koraka</b> (kartica iznad). Bez nje račun za kaparu nije dovoljno zaštićen.</div></div>')
+}
+window.posaljiProvjeru = async () => {
+  clearAlerts('prov')
+  const ime = $id('prov-ime').value.trim(), oib = $id('prov-oib').value.replace(/\D/g, '')
+  const iban = $id('prov-iban').value.replace(/\s+/g, ' ').trim().toUpperCase(), prim = $id('prov-primatelj').value.trim()
+  if (!/^[A-Z]{2}\d{2}[A-Z0-9 ]{11,36}$/.test(iban)) { showAlert('prov', 'err', 'IBAN nije ispravan. Primjer: HR12 3456 7890 1234 5678 9.'); return }
+  if (!$id('prov-pristanak').checked) { showAlert('prov', 'err', 'Potvrdite da se ime primatelja smije prikazati gostima.'); return }
+  const b = $id('prov-btn'); b.disabled = true; b.textContent = 'Šaljem…'
+  try {
+    const m = USER.user_metadata || {}
+    if (iban !== (m.iban || '') || prim !== (m.primatelj || '')) {
+      const { data, error } = await sb.auth.updateUser({ data: { iban, primatelj: prim } })
+      if (error) throw error
+      if (data?.user) USER = data.user
+    }
+    const { data, error } = await sb.rpc('zatrazi_provjeru', { p_ime: ime, p_oib: oib, p_obrt: $id('prov-obrt').value.trim() || null, p_napomena: $id('prov-nap').value.trim() || null })
+    if (error) throw error
+    const msg = { plan: 'Provjera je dostupna samo u plaćenim planovima.', '2fa': 'Prvo uključite prijavu u dva koraka.', ime: 'Upišite ime i prezime.',
+      oib: 'OIB nije ispravan — provjerite znamenke.', iban: 'Upišite IBAN i primatelja uplate.', prebrzo: 'Zahtjev je upravo poslan. Pričekajte minutu.' }[data?.stanje]
+    if (data?.stanje !== 'ok') { showAlert('prov', 'err', msg || 'Zahtjev nije poslan. Pokušajte ponovno.'); return }
+    toast('Zahtjev za provjeru je poslan.')
+    await ucitajProvjeru()
+  } catch (e) { showAlert('prov', 'err', hrGreska(e, 'Zahtjev nije poslan')) }
+  finally { b.disabled = !PROV?.ima_2fa; b.textContent = 'Pošalji na provjeru' }
 }
 
 // Stripe: povratak s plaćanja (?placanje=uspjeh|odustao). Plan upisuje webhook,

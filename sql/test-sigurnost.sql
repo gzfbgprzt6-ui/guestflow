@@ -119,6 +119,15 @@ begin
               when undefined_table then insert into rez(test, prolazi, napomena) values ('stranac ne vidi ' || tablica, true, 'tablica ne postoji');
     end;
   end loop;
+  -- provjere domaćina (sql/add-host-verification.sql): stranac ne vidi OIB/IBAN drugih ni kroz admin funkciju
+  begin
+    select count(*) into n from public.provjere_domacina;
+    insert into rez(test, prolazi, napomena) values ('stranac ne vidi provjere domaćina', n = 0, n || ' redova');
+    select jsonb_array_length(public.admin_provjere()) into n;
+    insert into rez(test, prolazi, napomena) values ('stranac ne čita admin_provjere()', n = 0, n || ' redova');
+  exception when insufficient_privilege then insert into rez(test, prolazi, napomena) values ('stranac ne vidi provjere domaćina', true, 'zabranjeno');
+            when undefined_table or undefined_function then insert into rez(test, prolazi, napomena) values ('stranac ne vidi provjere domaćina', true, 'nije pokrenuto');
+  end;
   update public.properties set name = 'Preuzeto' where id = pid;
   get diagnostics n = row_count;
   insert into rez(test, prolazi, napomena) values ('stranac ne mijenja tuđi objekt', n = 0, n || ' redova');
