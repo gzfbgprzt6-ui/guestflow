@@ -3422,7 +3422,6 @@ async function init(){
   const pozQ=new URLSearchParams(location.search).get('pozivnica')
   if(pozQ){try{localStorage.setItem('odm-pozivnica',pozQ)}catch{}}
   if(!session){location.href='/login.html'+(pozQ?'?pozivnica=1':'');return}
-  try{const{data:a}=await sb.auth.mfa.getAuthenticatorAssuranceLevel();if(a?.nextLevel==='aal2'&&a?.currentLevel!=='aal2'){location.href='/login.html?kod=1&dalje='+encodeURIComponent(location.pathname+location.search);return}}catch{}  // prijava u dva koraka: bez koda natrag na prijavu
   USER=session.user
   window.__ADMIN=USER.id==='56549320-2c02-405c-9936-770144bd9b49'   // vlasnik aplikacije (isti UID kao admin.html) vidi tehničke poruke
   await prihvatiPozivnicu()

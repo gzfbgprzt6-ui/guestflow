@@ -598,7 +598,6 @@ init()
 async function init(){
   const{data:{user}}=await sb.auth.getUser()
   if(!user){location.href='/login.html';return}
-  try{const{data:a}=await sb.auth.mfa.getAuthenticatorAssuranceLevel();if(a?.nextLevel==='aal2'&&a?.currentLevel!=='aal2'){location.href='/login.html?kod=1&dalje='+encodeURIComponent(location.pathname+location.search);return}}catch{}  // prijava u dva koraka: bez koda natrag na prijavu
   if(user.id!==ADMIN_UID){ $('#gate').style.display='none'; $('#denied').style.display='flex'; return }
   $('#gate').style.display='none'; $('#app').style.display='block'
   try{ await loadPlans(sb) }catch{}      // bez baze radi s rezervnim vrijednostima

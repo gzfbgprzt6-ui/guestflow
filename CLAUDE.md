@@ -903,7 +903,7 @@ Specifikacija vlasnika (jedinstven sustav za cijeli proizvod). **Paket 1** gotov
   Pregled/Sadržaji/Lokacija/Dostupnost/Pitanja. *Naslovnica*: „Vaš smještaj. Sve na svom mjestu.”, bez
   tamnih blokova. **Namjerno nije preuzeto sa slika:** chat, „polog za štetu”, „Najpopularnije”,
   Destinacije/Inspiracija, favoriti, lijevak konverzije.
-- **Postavke** (`account.html`): četiri taba Račun · Pretplata · Obavijesti · Sigurnost (2FA i Provjeren domaćin) (`TABOVI`
+- **Postavke** (`account.html`): četiri taba Račun · Pretplata · Obavijesti · Sigurnost (Provjeren domaćin na vrhu) (`TABOVI`
   na vrhu modula — zamka kao `STATES`; `#pretplata`/`#obavijesti`/`#sigurnost` u adresi), podcrtani tabovi.
   `forms.css` bez stare tinte (akcija `var(--action)`). `c.html`: „Odlazak” neutralno, odabir u boji akcije.
   Admin: bijeli logo na tamnoj traci (tamna traka = jasno administratorski dio). Pomoć i pravne
@@ -1027,17 +1027,20 @@ Test: `tests/recenzije.test.mjs`.
 - **Kapljica po kartici:** `markDirty(el)` pamti najbližu `.card`/panel sa svojim `save…` gumbom,
   pa „Spremi” na kapljici u panelu s više kartica (Cijene) sprema samo izmijenjenu.
 
-## Provjeren domaćin i prijava u dva koraka (23. 10. 2026., P1-3, `sql/add-host-verification.sql`)
+## Provjeren domaćin (23. 10. 2026., P1-3, `sql/add-host-verification.sql`)
 
 **Ručna provjera, samo plaćeni planovi** (mogućnost `provjera` u `plans.mogucnosti`, Domaćin i
 Agencija; Free je nema — vlasnik, 23. 10.; dugoročno automatika). Tablica `provjere_domacina`
 (po **računu**, ne po objektu): domaćin je samo čita, piše se kroz funkcije.
-- **Postavke → Sigurnost** (`account.html`): kartica „Prijava u dva koraka” (Supabase MFA TOTP:
-  `mfaGumb()` enroll → QR + ključ, `mfaPotvrdi()` challengeAndVerify; isključivanje traži kod) i
-  „Provjeren domaćin” (`ucitajProvjeru()` po `moja_provjera()`, `posaljiProvjeru()`: IBAN/primatelj
-  u `user_metadata`, pa `zatrazi_provjeru(ime, oib, obrt, napomena)`). Baza odbija bez plana,
-  bez verificiranog TOTP-a, s neispravnim OIB-om (kontrolna znamenka) ili bez IBAN-a; uz zahtjev
-  sama zapiše IBAN, primatelja i registracijske brojeve objekata.
+- **Prijava u dva koraka NIJE uvjet i nije u sučelju** (vlasnik, 23. 10.: „ne znam što
+  napraviti ni zašto” — domaćini to ne razumiju). Bila je napravljena pa maknuta (commit `76ecb90`).
+  Zaštitu daje zaključani IBAN (niže).
+- **Postavke → Sigurnost** (`account.html`), prva kartica „Provjeren domaćin”: tri koraka
+  (`.prov-koraci`) i obrazac (`ucitajProvjeru()` po `moja_provjera()`; bez funkcije u bazi obrazac
+  se ipak vidi po `imaMogucnost(PLAN_ID,'provjera')`, a slanje kaže „još nije uključena”).
+  `posaljiProvjeru()`: IBAN/primatelj u `user_metadata`, pa `zatrazi_provjeru(ime, oib, obrt,
+  napomena)`. Baza odbija bez plana, s neispravnim OIB-om (kontrolna znamenka) ili bez IBAN-a;
+  uz zahtjev sama zapiše IBAN, primatelja i registracijske brojeve objekata.
 - **Admin → Provjere** (`provjere()`, `admin_provjere()`, `admin_odluci_provjeru()`): popis s
   uputom što provjeriti, Provjeren / Odbij (razlog obavezan, vidi ga domaćin), značka na čekanju,
   red u „Zahtijeva pažnju”.
@@ -1046,10 +1049,7 @@ Agencija; Free je nema — vlasnik, 23. 10.; dugoročno automatika). Tablica `pr
   {primatelj, od}`; `p.html` `#hero-prov` pod naslovom + `#prov` u „Sigurna izravna rezervacija”
   (ime primatelja — gost ga uspoređuje s bankom). Dashboard Cijene: `provjeraIbana()` zaključa
   `#dom-iban`/`#dom-primatelj` (`#dom-prov`, „Promijeni račun” uz potvrdu).
-- **Kod pri prijavi:** `login.html` nakon lozinke (`trebaKod()` po `getAuthenticatorAssuranceLevel`)
-  pokaže `#mfa-box`; dashboard, račun, admin, postavljanje i dodavanje objekta bez aal2 vraćaju na
-  `/login.html?kod=1&dalje=…`. To je provjera u sučelju — RLS ne traži aal2.
-- Test `tests/provjera.test.mjs` (lažni `auth.mfa` u `tests/lib/sbfake.js`, `window.__MFA`).
+- Test `tests/provjera.test.mjs`.
 
 ## Redizajn v2 — prijenos iz Figme u kod (u tijeku)
 

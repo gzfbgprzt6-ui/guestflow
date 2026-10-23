@@ -5,8 +5,8 @@
 -- Domaćin u Postavkama → Sigurnost pošalje zahtjev: ime i prezime, OIB (ili
 -- OIB obrta i naziv). Baza uz zahtjev sama zapiše IBAN i primatelja iz računa
 -- (user_metadata) i registracijske brojeve njegovih objekata — to je ono što
--- vlasnik platforme provjerava. Zahtjev se smije poslati tek s uključenom
--- prijavom u dva koraka (TOTP, auth.mfa_factors).
+-- vlasnik platforme provjerava. (Prijava u dva koraka namjerno NIJE uvjet —
+-- vlasnik, 23. 10.: domaćinima je nejasna; štiti zaključani IBAN, vidi niže.)
 --
 -- Vlasnik platforme u adminu (tab Provjere) klikne Provjeren / Odbij.
 -- Oznaka „Provjeren domaćin” na javnoj stranici vrijedi dok:
@@ -101,8 +101,6 @@ begin
   select * into v from public.provjere_domacina where user_id = uid;
   return jsonb_build_object(
     'smije',     public._plan_ima(uid, 'provjera'),
-    'ima_2fa',   exists (select 1 from auth.mfa_factors f where f.user_id = uid
-                          and f.factor_type::text = 'totp' and f.status::text = 'verified'),
     'stanje',    case when v.user_id is null then 'nema' else v.stanje end,
     'vrijedi',   public.provjeren_domacin(uid),
     'racun_isti', v.user_id is not null
@@ -128,10 +126,6 @@ declare
 begin
   if uid is null then return jsonb_build_object('stanje', 'prijava'); end if;
   if not public._plan_ima(uid, 'provjera') then return jsonb_build_object('stanje', 'plan'); end if;
-  if not exists (select 1 from auth.mfa_factors f where f.user_id = uid
-                  and f.factor_type::text = 'totp' and f.status::text = 'verified') then
-    return jsonb_build_object('stanje', '2fa');
-  end if;
   if length(ime) < 2 then return jsonb_build_object('stanje', 'ime'); end if;
   if not public._oib_ispravan(oib) then return jsonb_build_object('stanje', 'oib'); end if;
   select raw_user_meta_data into m from auth.users where id = uid;
