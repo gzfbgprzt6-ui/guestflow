@@ -840,6 +840,32 @@ dodaj([
   ['Kako sigurno rezervirati', 'How to book safely', 'So buchen Sie sicher', 'Come prenotare in sicurezza', 'Jak bezpiecznie rezerwować', 'Jak bezpečně rezervovat']
 ])
 
+// vodič „časopis” (23. 10. 2026.): oznaka faze, vrijeme, QR za Wi-Fi
+dodaj([
+  ['Dolazak za {n}', 'Arriving in {n}', 'Anreise in {n}', 'Arrivo tra {n}', 'Przyjazd za {n}', 'Příjezd za {n}'],
+  ['Dolazak sutra', 'Arriving tomorrow', 'Anreise morgen', 'Arrivo domani', 'Przyjazd jutro', 'Příjezd zítra'],
+  ['Danas stižete', 'You arrive today', 'Sie reisen heute an', 'Arrivate oggi', 'Przyjeżdżacie dziś', 'Dnes přijíždíte'],
+  ['Dan {a} od {b}', 'Day {a} of {b}', 'Tag {a} von {b}', 'Giorno {a} di {b}', 'Dzień {a} z {b}', 'Den {a} z {b}'],
+  ['Danas odlazite', 'You leave today', 'Sie reisen heute ab', 'Partite oggi', 'Wyjeżdżacie dziś', 'Dnes odjíždíte'],
+  ['Popis za odlazak je niže na stranici.', 'The departure checklist is further down the page.', 'Die Checkliste für die Abreise finden Sie weiter unten.', 'La lista per la partenza è più in basso nella pagina.', 'Lista przed wyjazdem jest niżej na stronie.', 'Seznam před odjezdem je níže na stránce.'],
+  ['QR kod za Wi-Fi', 'Wi-Fi QR code', 'WLAN-QR-Code', 'Codice QR del Wi-Fi', 'Kod QR do Wi-Fi', 'QR kód pro Wi-Fi'],
+  ['Spojite se skeniranjem', 'Connect by scanning', 'Per Scan verbinden', 'Connettiti con la scansione', 'Połącz przez skanowanie', 'Připojte se naskenováním'],
+  ['Za drugi mobitel ili tablet: usmjerite kameru na kod i mreža se spoji sama.', 'For another phone or tablet: point the camera at the code and it connects by itself.', 'Für ein weiteres Handy oder Tablet: Kamera auf den Code richten, die Verbindung erfolgt automatisch.', 'Per un altro telefono o tablet: inquadra il codice con la fotocamera e si connette da solo.', 'Dla drugiego telefonu lub tabletu: skieruj aparat na kod, a sieć połączy się sama.', 'Pro další telefon nebo tablet: namiřte fotoaparát na kód a síť se připojí sama.'],
+  ['Vrijeme · {mj}', 'Weather · {mj}', 'Wetter · {mj}', 'Meteo · {mj}', 'Pogoda · {mj}', 'Počasí · {mj}'],
+  ['Vrijeme', 'Weather', 'Wetter', 'Meteo', 'Pogoda', 'Počasí'],
+  ['More {t}°', 'Sea {t}°', 'Meer {t}°', 'Mare {t}°', 'Morze {t}°', 'Moře {t}°'],
+  ['Prognoza', 'Forecast', 'Vorhersage', 'Previsioni', 'Prognoza', 'Předpověď'],
+  ['Sunčano', 'Sunny', 'Sonnig', 'Soleggiato', 'Słonecznie', 'Slunečno'],
+  ['Djelomično oblačno', 'Partly cloudy', 'Teilweise bewölkt', 'Parzialmente nuvoloso', 'Częściowe zachmurzenie', 'Polojasno'],
+  ['Oblačno', 'Cloudy', 'Bewölkt', 'Nuvoloso', 'Pochmurno', 'Zataženo'],
+  ['Magla', 'Fog', 'Nebel', 'Nebbia', 'Mgła', 'Mlha'],
+  ['Rosulja', 'Drizzle', 'Nieselregen', 'Pioviggine', 'Mżawka', 'Mrholení'],
+  ['Kiša', 'Rain', 'Regen', 'Pioggia', 'Deszcz', 'Déšť'],
+  ['Snijeg', 'Snow', 'Schnee', 'Neve', 'Śnieg', 'Sníh'],
+  ['Grmljavina', 'Thunderstorm', 'Gewitter', 'Temporale', 'Burza', 'Bouřka'],
+  ['Uređaji i kako ih koristiti', 'Appliances and how to use them', 'Geräte und ihre Bedienung', 'Elettrodomestici e come usarli', 'Urządzenia i jak z nich korzystać', 'Spotřebiče a jak je používat']
+])
+
 // zahtjev poslan unaprijed (usporedo s podacima stranice), po jeziku
 const RANI = new Map()
 export function unaprijed(upit) { if (!RANI.has(J)) RANI.set(J, ucitaj(upit, J)) }
