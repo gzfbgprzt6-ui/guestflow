@@ -143,6 +143,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
     ├── add-payment-gate.sql             # P0-2: bookings.ceka_uplatu / uplata_potvrdena_at; vodic_gosta ne šalje šifre dok domaćin ne potvrdi uplatu
     ├── add-review-categories.sql        # recenzije po 6 kategorija (reviews.ocjene), domaćin ne može brisati recenziju
     ├── add-listing-trust.sql            # P1-2: properties.registracijski_broj, otkazivanje, otkazivanje_tekst (javna stranica)
+    ├── add-inquiry-timeline.sql         # P1-4: inquiries.odgovoreno_at / odgovor_kanal (vremenska crta upita)
     ├── test-sigurnost.sql               # SIGURNOSNI TEST — pokretati nakon svake veće promjene; sve se poništi (rollback)
     └── fix-missing-columns-and-storage.sql # ALTER TABLE dopune (photo_urls, ical_*, beds/bathrooms/size_m2) + storage bucket policy
 ```
@@ -1017,6 +1018,11 @@ Test: `tests/recenzije.test.mjs`.
   `#uvjeti-card` (`nacrtajUvjete()`, `saveUvjeti()`, tekstovi `JZ.OTKAZIVANJE`); `p.html`
   `buildUvjeti()` → `#uvj` („Uvjeti ovog smještaja” u `#sig-sec`) i red `#sum-uvj` u sažetku.
   Test `tests/uvjeti.test.mjs`.
+- **Gotove poruke i vremenska crta upita** (`sql/add-inquiry-timeline.sql`: `inquiries.odgovoreno_at`,
+  `odgovor_kanal` wa|email|kopija; okidač ih pri upisu gosta briše): u detalju novog upita
+  `iqOdgovorHtml()` — četiri predloška `IQ_PRED` (hr/en/de/it, jezik po e-mailu), uređivanje, slanje
+  `iqPosalji()` upiše prvi odgovor; `iqCrta()` = stigao → odgovoreno → prihvaćeno/link → uplata →
+  gost ušao (`UPITI_BK` iz `bookings`). Test `tests/upiti.test.mjs`.
 - **Kapljica po kartici:** `markDirty(el)` pamti najbližu `.card`/panel sa svojim `save…` gumbom,
   pa „Spremi” na kapljici u panelu s više kartica (Cijene) sprema samo izmijenjenu.
 

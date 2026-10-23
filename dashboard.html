@@ -1801,6 +1801,22 @@ body:not([data-grupa="objekt"]) .property-banner { display: none; }
 .rv-kat i b { display: block; height: 100%; background: var(--ink); border-radius: 99px; }
 .rv-kat em { font-style: normal; font-weight: 700; text-align: right; }
 .rv-kr { display: block; margin: 2px 0; color: var(--muted); font-size: 12.5px; }
+.iq-odg { display: grid; gap: 10px; margin-top: 16px; padding: 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--paper); }
+.iq-odg__g { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.iq-odg__j { width: auto; min-height: 36px; padding: 0 30px 0 10px; font-size: 13.5px; }
+.iq-odg__p { display: flex; flex-wrap: wrap; gap: 6px; }
+.iq-odg__p button { min-height: 34px; padding: 0 12px; border: 1px solid var(--line); border-radius: 99px; background: var(--paper); color: var(--ink); cursor: pointer; font: 600 13px/1 var(--font-ui); }
+.iq-odg__p button[aria-pressed="true"] { border-color: var(--ink); background: var(--ink); color: #fff; }
+.iq-odg textarea { min-height: 110px; }
+.iq-odg__b { display: flex; flex-wrap: wrap; gap: 8px; }
+.iq-crta { display: grid; gap: 0; margin: 18px 0 0; padding: 0; list-style: none; }
+.iq-crta li { position: relative; padding: 0 0 14px 26px; color: var(--muted); }
+.iq-crta li::before { content: ""; position: absolute; left: 4px; top: 5px; width: 10px; height: 10px; border: 2px solid var(--line); border-radius: 50%; background: var(--paper); box-sizing: border-box; }
+.iq-crta li:not(:last-child)::after { content: ""; position: absolute; left: 8px; top: 17px; bottom: 0; width: 2px; background: var(--line); }
+.iq-crta li.je-g { color: var(--ink); }
+.iq-crta li.je-g::before { border-color: var(--copper); background: var(--copper); }
+.iq-crta b { display: block; font: 600 14px/1.35 var(--font-ui); }
+.iq-crta small { display: block; font-size: 12.5px; color: var(--muted); }
 .bk-p__upl { display: grid; gap: 6px; margin: 12px 0 0; padding: 14px; border-radius: 12px; background: #FDF6E8; border: 1px solid #EFDDBB; color: #3D2E10; }
 .bk-p__upl b { font-size: 14.5px; }
 .bk-p__upl span { font-size: 13.5px; color: #5E4A26; line-height: 1.45; }
@@ -4336,6 +4352,74 @@ window.openAnalytics=()=>nav('analytics',document.querySelector('.panelnav .nav-
 // postoji, panel to kaže umjesto greške.
 let UPITI=[],UPITI_OK=null,IQ_FILTAR='novi',IQ_ISTAKNI=null,UPITI_TOKENI={}
 const NASLOV=document.title
+const UPITI_BK={}
+/* P1-4: gotove poruke za odgovor na upit (hr/en/de/it; jezik po e-mailu gosta, domaćin ga može promijeniti)
+   i vremenska crta upita (sql/add-inquiry-timeline.sql: odgovoreno_at, odgovor_kanal) */
+const IQ_PRED=[
+  ['slobodno','Termin je slobodan',{
+    hr:'Dobar dan{ime}! Termin od {od} do {do} u objektu {objekt} je slobodan.{iznos} Ako vam odgovara, javite mi pa vam pošaljem ponudu s podacima za kaparu.',
+    en:'Hello{ime}! {objekt} is available from {od} to {do}.{iznos} If that works for you, let me know and I will send you an offer with the deposit details.',
+    de:'Guten Tag{ime}! {objekt} ist vom {od} bis {do} frei.{iznos} Wenn es passt, melden Sie sich und ich sende Ihnen ein Angebot mit den Angaben zur Anzahlung.',
+    it:'Buongiorno{ime}! {objekt} è libero dal {od} al {do}.{iznos} Se va bene, mi scriva e le invio un’offerta con i dati per la caparra.'}],
+  ['pitanje','Pitanje gostu',{
+    hr:'Dobar dan{ime}! Hvala na upitu za {objekt}. Koliko vas dolazi i putuju li s vama djeca ili kućni ljubimac? Javite i otprilike kad stižete.',
+    en:'Hello{ime}! Thank you for your inquiry about {objekt}. How many of you are coming, and are you travelling with children or a pet? Please also let me know roughly when you arrive.',
+    de:'Guten Tag{ime}! Danke für Ihre Anfrage für {objekt}. Wie viele Personen kommen, und reisen Kinder oder ein Haustier mit? Teilen Sie mir bitte auch ungefähr Ihre Ankunftszeit mit.',
+    it:'Buongiorno{ime}! Grazie per la richiesta per {objekt}. Quanti siete e viaggiate con bambini o un animale? Mi indichi anche più o meno quando arrivate.'}],
+  ['drugi','Predloži drugi termin',{
+    hr:'Dobar dan{ime}! Hvala na upitu za {objekt}. Nažalost, termin od {od} do {do} nije slobodan. Slobodne datume vidite ovdje: {stranica} — javite koji vam odgovara.',
+    en:'Hello{ime}! Thank you for your inquiry about {objekt}. Unfortunately {od} – {do} is not available. You can see free dates here: {stranica} — let me know which suits you.',
+    de:'Guten Tag{ime}! Danke für Ihre Anfrage für {objekt}. Leider ist der {od} – {do} nicht frei. Freie Termine sehen Sie hier: {stranica} — sagen Sie mir, welcher passt.',
+    it:'Buongiorno{ime}! Grazie per la richiesta per {objekt}. Purtroppo dal {od} al {do} non è libero. Le date libere sono qui: {stranica} — mi dica quale preferisce.'}],
+  ['kapara','Rezervacija nakon kapare',{
+    hr:'Hvala{ime}! Termin od {od} do {do} je rezerviran čim kapara stigne na moj račun. Nakon toga dobivate osobni link vodiča s uputama za dolazak.',
+    en:'Thank you{ime}! Your stay from {od} to {do} is booked as soon as the deposit reaches my account. You will then receive your personal guide link with arrival instructions.',
+    de:'Vielen Dank{ime}! Ihr Aufenthalt vom {od} bis {do} ist gebucht, sobald die Anzahlung auf meinem Konto ist. Danach erhalten Sie Ihren persönlichen Link zum Gästeführer mit der Anreisebeschreibung.',
+    it:'Grazie{ime}! Il soggiorno dal {od} al {do} è prenotato appena la caparra arriva sul mio conto. Poi riceverà il link personale alla guida con le istruzioni per l’arrivo.'}]
+]
+let IQ_TX={}   // upit → {k, j, tekst} dok domaćin uređuje
+function iqTekst(u,k,j){
+  const p=(IQ_PRED.find(x=>x[0]===k)||IQ_PRED[0])[2][j]||'',n=iqNoci(u)
+  const lok=({hr:'hr-HR',en:'en-GB',de:'de-DE',it:'it-IT'})[j]
+  const dat=d=>d?new Date(d+'T12:00:00').toLocaleDateString(lok,{day:'numeric',month:'long'}):''
+  const iz=u.iznos!=null?Number(u.iznos):(n?cijenaBoravka(PROP,u.checkin_date,u.checkout_date):null)
+  const izTx=iz&&PROP.prikaz_cijene!=='na_upit'?({hr:` Cijena za ${n} noći je ${formatEur(iz)}.`,en:` The price for ${n} nights is ${formatEur(iz)}.`,de:` Der Preis für ${n} Nächte beträgt ${formatEur(iz)}.`,it:` Il prezzo per ${n} notti è ${formatEur(iz)}.`})[j]:''
+  const ime=u.guest_name?(j==='hr'?', ':' ')+u.guest_name.split(' ')[0]:''
+  return p.replace('{ime}',ime).replace('{objekt}',PROP.name||'').replace('{od}',dat(u.checkin_date)).replace('{do}',dat(u.checkout_date)).replace('{iznos}',izTx).replace('{stranica}',publicUrl(PROP.slug))
+}
+function iqOdgovorHtml(u){
+  const st=IQ_TX[u.id]||(IQ_TX[u.id]={k:'slobodno',j:['hr','en','de','it'].includes(jezikIzMaila(u.guest_email||''))?jezikIzMaila(u.guest_email||''):'en'})
+  if(st.tekst==null)st.tekst=iqTekst(u,st.k,st.j)
+  return `<div class="iq-odg"><div class="iq-odg__g"><b>Brzi odgovor</b><label class="sr-only" for="iq-odg-j">Jezik poruke</label><select class="select iq-odg__j" id="iq-odg-j" data-bez-spremanja onchange="iqOdgJezik('${u.id}',this.value)">${[['hr','Hrvatski'],['en','English'],['de','Deutsch'],['it','Italiano']].map(([k,n])=>`<option value="${k}"${k===st.j?' selected':''}>${n}</option>`).join('')}</select></div>
+    <div class="iq-odg__p" role="group" aria-label="Gotove poruke">${IQ_PRED.map(([k,n])=>`<button type="button" aria-pressed="${k===st.k}" onclick="iqOdgPred('${u.id}','${k}')">${n}</button>`).join('')}</div>
+    <textarea class="textarea" id="iq-odg-tx" rows="5" data-bez-spremanja oninput="IQ_TX['${u.id}'].tekst=this.value">${A.esc(st.tekst)}</textarea>
+    <div class="iq-odg__b">${u.guest_phone?`<button type="button" class="btn small" onclick="iqPosalji('${u.id}','wa')">WhatsAppom</button>`:''}${u.guest_email?`<button type="button" class="btn ${u.guest_phone?'secondary ':''}small" onclick="iqPosalji('${u.id}','email')">E-mailom</button>`:''}<button type="button" class="btn ghost small" onclick="iqPosalji('${u.id}','kopija')">Kopiraj tekst</button></div></div>`
+}
+window.iqOdgPred=(id,k)=>{const s=IQ_TX[id];s.k=k;s.tekst=null;renderUpiti()}
+window.iqOdgJezik=(id,j)=>{const s=IQ_TX[id];s.j=j;s.tekst=null;renderUpiti()}
+window.iqPosalji=async(id,kanal)=>{
+  const u=UPITI.find(x=>x.id===id);if(!u)return
+  const tx=(document.getElementById('iq-odg-tx')?.value||'').trim();if(!tx){toast('Upišite poruku.');return}
+  if(kanal==='wa')window.open(waLink(u.guest_phone,tx),'_blank','noopener')
+  else if(kanal==='email')location.href=mailLink(u.guest_email,'Upit za '+PROP.name,tx)
+  else{try{await navigator.clipboard.writeText(tx);toast('Tekst je kopiran')}catch{toast('Kopiranje nije uspjelo')}}
+  if(u.odgovoreno_at)return
+  const kad=new Date().toISOString()
+  const{error}=await sb.from('inquiries').update({odgovoreno_at:kad,odgovor_kanal:kanal}).eq('id',id)
+  if(!error){u.odgovoreno_at=kad;u.odgovor_kanal=kanal;renderUpiti()}
+}
+function iqCrta(u){
+  const bk=u.booking_id&&UPITI_BK[u.booking_id],kad=d=>new Date(d).toLocaleString('hr-HR',{day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit'})
+  const kn={wa:'WhatsAppom',email:'e-mailom',kopija:'kopiranim tekstom'}
+  const ev=[[u.created_at,'Upit stigao','s javne stranice',true],
+    [u.odgovoreno_at,'Odgovorili ste',u.odgovor_kanal?kn[u.odgovor_kanal]:'',!!u.odgovoreno_at],
+    u.status==='odbijen'?[null,'Upit odbijen','',true]:[bk&&bk.created_at,'Prihvaćeno · link napravljen','',!!bk],
+    ...(bk&&bk.ceka_uplatu?[[bk.uplata_potvrdena_at,'Uplata potvrđena',bk.uplata_potvrdena_at?'':'šifre čekaju potvrdu',!!bk.uplata_potvrdena_at]]:[]),
+    ...(bk?[[bk.usao_at,'Gost je ušao','',!!bk.usao_at]]:[])]
+  if(u.status==='odbijen')ev.splice(2,ev.length)
+  if(u.status==='odbijen')ev.push([null,'Upit odbijen','',true])
+  return `<ol class="iq-crta" aria-label="Tijek upita">${ev.map(([d,n,o,g])=>`<li class="${g?'je-g':''}"><b>${n}</b>${d||o?`<small>${[d&&kad(d),o].filter(Boolean).join(' · ')}</small>`:''}</li>`).join('')}</ol>`
+}
 async function ucitajUpite(){
   if(!PROP)return
   const pid=PROP.id
@@ -4345,7 +4429,7 @@ async function ucitajUpite(){
   else{
     UPITI=data||[];UPITI_OK=true
     const ids=UPITI.map(u=>u.booking_id).filter(Boolean)
-    if(ids.length){const{data:bk}=await sb.from('bookings').select('id,token').in('id',ids);(bk||[]).forEach(b=>UPITI_TOKENI[b.id]=b.token)}
+    if(ids.length){const{data:bk}=await sb.from('bookings').select('*').in('id',ids);(bk||[]).forEach(b=>{UPITI_TOKENI[b.id]=b.token;UPITI_BK[b.id]=b})}
   }
   osvjeziBrojUpita()
 }
@@ -4812,8 +4896,6 @@ function iqDetalj(u){
   if(u.status==='novi'){
     const odg=`Dobar dan${u.guest_name?', '+u.guest_name.split(' ')[0]:''}! Hvala na upitu za ${PROP.name}${n?` od ${A.fmtKratko(u.checkin_date)} do ${A.fmtKratko(u.checkout_date)}`:''}. `
     akcije=`${n?`<button class="btn small" type="button" onclick="prihvatiUpit('${u.id}')">Prihvati i napravi link</button>`:`<button class="btn small" type="button" onclick="napraviLinkZa('','','upit bez datuma');document.getElementById('bk-name').value=${A.esc(JSON.stringify(u.guest_name))};provjeriBk()">Napravi link</button>`}
-      ${u.guest_phone?`<a class="btn secondary small" href="${A.esc(waLink(u.guest_phone,odg))}" target="_blank" rel="noopener">Odgovori WhatsAppom</a>`:''}
-      ${u.guest_email?`<a class="btn secondary small" href="${A.esc(mailLink(u.guest_email,'Upit za '+PROP.name,odg))}">Odgovori e-mailom</a>`:''}
       <button class="btn ghost small iq-odbij" type="button" onclick="odbijUpit('${u.id}')">Odbij</button>`
   }else if(u.status==='prihvacen'&&tok){
     const url=bookingUrl(tok)
@@ -4839,6 +4921,8 @@ function iqDetalj(u){
     ${iznos?`<div class="iq-proc"><span><small>Procijenjena cijena</small><b>${formatEur(iznos)}</b></span><p>Okvirno prema vašoj cijeni i sezonama. To nije ponuda ni potvrđena rezervacija.</p></div>`:''}
     ${u.message?`<figure class="iq-por"><figcaption><b>${A.esc(u.guest_name||'Gost')}</b> · poruka s javne stranice</figcaption><p>${A.esc(u.message)}</p></figure>`:''}
     ${akcije?`<div class="iq-akc">${akcije}</div>`:''}
+    ${u.status==='novi'&&(u.guest_phone||u.guest_email)?iqOdgovorHtml(u):''}
+    ${iqCrta(u)}
   </article>`
 }
 function iqPonuda(u){

@@ -5,6 +5,21 @@
 // hrvatski (ne pukne). Prijevode gostinskih stranica drži jezici.js.
 
 export const T = {
+  "Brzi odgovor": "Quick reply",
+  "Pitanje gostu": "Question for the guest",
+  "Predloži drugi termin": "Suggest other dates",
+  "Rezervacija nakon kapare": "Booking after deposit",
+  "Kopiraj tekst": "Copy text",
+  "Upit stigao": "Inquiry received",
+  "s javne stranice": "from the public page",
+  "Odgovorili ste": "You replied",
+  "Prihvaćeno · link napravljen": "Accepted · link created",
+  "šifre čekaju potvrdu": "codes awaiting confirmation",
+  "Gost je ušao": "Guest checked in",
+  "Upit odbijen": "Inquiry declined",
+  "e-mailom": "by e-mail",
+  "kopiranim tekstom": "with copied text",
+  "Tekst je kopiran": "Text copied",
   "Otkazivanje i registracija": "Cancellation and registration",
   "Gost ih vidi na javnoj stranici prije upita — jasni uvjeti grade povjerenje.": "Guests see them on your public page before they ask — clear terms build trust.",
   "Pravila otkazivanja": "Cancellation policy",
