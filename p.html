@@ -431,6 +431,13 @@
 .sig__h .ic{color:var(--text-accent)}
 .sig__l{display:grid;gap:8px;margin:0;padding-left:20px;list-style:disc;color:var(--text);font-size:15px;line-height:1.55}
 .sig__p{margin:0;color:var(--text-muted);font-size:14px}
+.uvj{display:grid;gap:10px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+.uvj__l{display:grid;gap:10px;margin:0}
+.uvj__l div{display:grid;grid-template-columns:minmax(120px,180px) minmax(0,1fr);gap:4px 16px}
+.uvj__l dt{color:var(--text-muted);font-size:14.5px}
+.uvj__l dd{margin:0;font-size:15px;line-height:1.55;white-space:pre-line}
+.uvj__l dd small{display:block;margin-top:2px;color:var(--text-muted);font-size:13px}
+@media (max-width:560px){.uvj__l div{grid-template-columns:minmax(0,1fr)}}
 .sig__p a{color:var(--text);font-weight:600}
 
 /* dorade 22. 10. (vlasnik): galerija bez jakog rezanja, karta široka i niska */
@@ -819,6 +826,10 @@
   <!-- sigurna izravna rezervacija (21. 10. 2026.): Odmoria ne prima uplate; gost i domaćin dogovaraju izravno -->
   <section class="sec" id="sig-sec" aria-labelledby="sig-h">
     <div class="wrap sig">
+      <div class="uvj" id="uvj" hidden>
+        <h2 class="sig__h">Uvjeti ovog smještaja</h2>
+        <dl class="uvj__l" id="uvj-l"></dl>
+      </div>
       <h2 class="sig__h" id="sig-h"><svg class="ic" aria-hidden="true"><use href="#i-shield-check"/></svg><span>Sigurna izravna rezervacija</span></h2>
       <ul class="sig__l">
         <li>Odmoria ne prima uplate i nikad ne traži podatke kartice. Dogovor i plaćanje su izravno između vas i domaćina.</li>
@@ -843,6 +854,7 @@
         <a class="btn btn--primary" id="sum-cal" href="#dostupnost">Provjeri dostupnost</a>
         <a class="btn btn--secondary" href="#upit">Pošalji upit domaćinu</a>
         <p class="t-meta">Upit nije potvrđena rezervacija — domaćin vam odgovara izravno.</p>
+        <p class="t-meta" id="sum-uvj" hidden></p>
         <p class="t-meta">Odmoria ne prima uplate. <a href="#sig-sec">Kako sigurno rezervirati</a></p>
         <p class="t-meta">Bez provizije. Termin i plaćanje dogovarate izravno s domaćinom.</p>
     </aside>
@@ -1190,8 +1202,21 @@ function buildSig(prop) {
   a.href = 'mailto:podrska@odmoria.com?subject=' + encodeURIComponent(t('Prijava stranice') + ': ' + (prop.name || prop.slug || ''))
     + '&body=' + encodeURIComponent(adr + '\n\n' + t('Opišite što nije u redu:') + '\n')
 }
+// registracijski broj i pravila otkazivanja (sql/add-listing-trust.sql); bez stupaca ništa se ne prikazuje
+function buildUvjeti(prop) {
+  const v = prop.otkazivanje, o = L.OTKAZIVANJE[v]
+  const otk = !o ? '' : v === 'vlastito' ? H(String(prop.otkazivanje_tekst || '').trim()) : t(o[1])
+  const reg = String(prop.registracijski_broj || '').trim()
+  const redovi = [otk && [t('Otkazivanje'), `${esc(otk)}<small>${esc(t('Pravila otkazivanja određuje domaćin; dogovor o boravku je između vas i domaćina.'))}</small>`],
+    reg && [t('Registracijski broj'), `<span translate="no">${esc(reg)}</span>`]].filter(Boolean)
+  $('#uvj-l').innerHTML = redovi.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${v}</dd></div>`).join('')
+  show('#uvj', redovi.length > 0)
+  const kr = [otk && v !== 'vlastito' && t('Otkazivanje: {t}', { t: otk.split('. ')[0].replace(/\.$/, '') }), reg && t('Reg. br. {b}', { b: reg })].filter(Boolean)
+  $('#sum-uvj').textContent = kr.join(' · '); show('#sum-uvj', kr.length > 0)
+}
 function buildSummary(prop) {
   buildSig(prop)
+  buildUvjeti(prop)
   $('#sum-price').textContent = price > 0 ? t('od {cijena} / noć', { cijena: eur(price) }) : t('Cijena na upit')
   const s = [prop.min_stay && +prop.min_stay > 1 && t('Najmanje {n}', { n: noci(+prop.min_stay) }),
              prop.max_guests && gostiju(prop.max_guests)].filter(Boolean)

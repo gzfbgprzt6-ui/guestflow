@@ -2035,6 +2035,7 @@ body[data-panel="prijevodi"] .ph-akcije { display: none; }
 .cj3__in .input { width: 110px; min-height: 44px; background: var(--paper); font: 700 18px/1 var(--font-ui); font-variant-numeric: tabular-nums; }
 .cj3__in span { color: var(--muted); font: 500 14px/1.2 var(--font-ui); }
 .cj3__k .helper { margin: 0; font-size: 12.5px; }
+.seg--4 { max-width: 100%; overflow-x: auto; }
 .seg { display: inline-grid; grid-auto-flow: column; grid-auto-columns: 1fr; justify-self: start; padding: 3px; border: 1px solid var(--line); border-radius: 10px; background: var(--paper); }
 .seg button { min-height: 38px; padding: 0 14px; border: 0; border-radius: 8px; background: none; color: var(--ink); cursor: pointer; font: 600 14px/1 var(--font-ui); white-space: nowrap; }
 .seg button[aria-checked="true"] { background: var(--copper); color: #fff; }
@@ -2820,6 +2821,23 @@ body[data-panel="prijevodi"] .ph-akcije { display: none; }
             </div>
             <p class="helper">IBAN i primatelj spremaju se samo u vaš račun (ne na javnu stranicu) i upisuju se u ponudu koju šaljete gostu.</p>
             <div style="margin-top:14px;display:flex;justify-content:flex-end"><button class="btn" type="button" onclick="saveIzravno()">Spremi sezone i kaparu</button></div>
+          </div>
+          <!-- P1-2: registracijski broj i pravila otkazivanja (sql/add-listing-trust.sql) — javna stranica, „Uvjeti ovog smještaja” -->
+          <div class="card" id="uvjeti-card">
+            <div class="card-head"><div class="card-title-wrap"><span class="card-number"><svg class="ic ic--sm" aria-hidden="true"><use href="#i-shield-check"/></svg></span><div><h2>Otkazivanje i registracija</h2><p>Gost ih vidi na javnoj stranici prije upita — jasni uvjeti grade povjerenje.</p></div></div></div>
+            <div id="uvjeti-alert"></div>
+            <span class="lbl" id="otk-lbl">Pravila otkazivanja</span>
+            <div class="seg seg--4" role="radiogroup" aria-labelledby="otk-lbl" id="otk-seg">
+              <button type="button" role="radio" aria-checked="false" data-otk="">Bez pravila</button>
+              <button type="button" role="radio" aria-checked="false" data-otk="fleksibilno">Fleksibilno</button>
+              <button type="button" role="radio" aria-checked="false" data-otk="umjereno">Umjereno</button>
+              <button type="button" role="radio" aria-checked="false" data-otk="strogo">Strogo</button>
+              <button type="button" role="radio" aria-checked="false" data-otk="vlastito">Vlastito</button>
+            </div>
+            <p class="helper" id="otk-tx" style="margin-top:8px"></p>
+            <div class="field" id="otk-vl" hidden style="margin-top:10px"><label for="otk-tekst">Vaša pravila otkazivanja</label><textarea class="textarea" id="otk-tekst" maxlength="600" rows="3" placeholder="npr. Otkazivanje bez troška do 14 dana prije dolaska. Kasnije zadržavamo kaparu."></textarea></div>
+            <div class="field" style="margin-top:14px;max-width:420px"><label for="prop-regbr">Registracijski broj / broj rješenja <span class="optional">opcionalno</span></label><input class="input" id="prop-regbr" maxlength="40" autocomplete="off" translate="no" placeholder="npr. 2181-RJ-2024-00123"><div class="helper">Broj s rješenja o kategorizaciji. Od 2026. ga EU traži na svakom oglasu za kratkoročni najam.</div></div>
+            <div style="margin-top:14px;display:flex;justify-content:flex-end"><button class="btn" type="button" onclick="saveUvjeti()">Spremi uvjete</button></div>
           </div>
         </section>
 
@@ -3721,6 +3739,7 @@ function fillPropForm(){
   document.getElementById('prop-price').value=PROP.price_per_night||0
   window.setPrikazCijene(PROP.prikaz_cijene==='na_upit'?'na_upit':'javno',true)
   puniIzravno()
+  nacrtajUvjete()
   document.getElementById('prop-minstay').value=PROP.min_stay||1
   document.getElementById('prop-gapfill').checked=!!PROP.allow_gap_fill_stays
   document.getElementById('prop-mingap').value=PROP.min_gap_stay??3
@@ -6018,6 +6037,31 @@ function bkPanel(b){
     ${PRIJAVE_OK&&(act||pr)?`<button class="btn secondary small bk-p__gosti" type="button" onclick="otvoriGoste('${b.id}')">${pr?'Podaci gostiju · '+pr.osobe.length+' '+A.mn(pr.osobe.length,'osoba','osobe','osoba'):'Podaci gostiju · čeka podatke'}</button>`:''}
     <div class="bk-p__opasno"><small>Opasne radnje</small>${act?`<button class="btn danger small" type="button" onclick="deactBk('${b.id}')">Deaktiviraj link</button>`:`<button class="btn danger small" type="button" onclick="delBk('${b.id}')">Obriši rezervaciju</button>`}</div>`
 }
+/* P1-2: otkazivanje i registracijski broj (sql/add-listing-trust.sql) */
+let OTK=''
+function nacrtajUvjete(){
+  const seg=document.getElementById('otk-seg');if(!seg||!PROP)return
+  OTK=PROP.otkazivanje||''
+  document.getElementById('prop-regbr').value=PROP.registracijski_broj||''
+  document.getElementById('otk-tekst').value=PROP.otkazivanje_tekst||''
+  oznaciOtk()
+}
+function oznaciOtk(){
+  document.querySelectorAll('#otk-seg [data-otk]').forEach(b=>b.setAttribute('aria-checked',String(b.dataset.otk===OTK)))
+  const o=JZ.OTKAZIVANJE[OTK]
+  document.getElementById('otk-tx').textContent=!OTK?'Na javnoj stranici neće pisati ništa o otkazivanju.':OTK==='vlastito'?'Gost vidi vaš tekst.':'Gost vidi: „'+o[1]+'”'
+  document.getElementById('otk-vl').hidden=OTK!=='vlastito'
+}
+document.getElementById('otk-seg')?.addEventListener('click',e=>{const b=e.target.closest('[data-otk]');if(!b)return;OTK=b.dataset.otk;oznaciOtk();window.markDirty&&window.markDirty(document.getElementById('otk-seg'))})
+window.saveUvjeti=async()=>{
+  if(!PROP)return
+  const tekst=document.getElementById('otk-tekst').value.trim()
+  if(OTK==='vlastito'&&tekst.length<10){showA('uvjeti-alert','err','Upišite svoja pravila otkazivanja (barem jednu rečenicu).');return}
+  const u={otkazivanje:OTK||null,otkazivanje_tekst:OTK==='vlastito'?tekst:null,registracijski_broj:document.getElementById('prop-regbr').value.trim()||null}
+  const{error}=await sb.from('properties').update(u).eq('id',PROP.id)
+  if(error){showA('uvjeti-alert','err',/otkazivanje|registracijski|column|schema cache/i.test(error.message)?'Uvjeti se još ne mogu spremiti — treba pokrenuti sql/add-listing-trust.sql.':'Nije spremljeno: '+error.message);return}
+  Object.assign(PROP,u);showA('uvjeti-alert','ok','Spremljeno ✓ — gost uvjete vidi na javnoj stranici.')
+}
 window.potvrdiUplatu=async id=>{
   if(!await potvrdi('Potvrditi da je uplata stigla na vaš račun? Gost tada u vodiču vidi šifru vrata i Wi-Fi lozinku (sat prije prijave).',{da:'Da, uplata je stigla'}))return
   const{data,error}=await sb.from('bookings').update({uplata_potvrdena_at:new Date().toISOString()}).eq('id',id).select()
@@ -6431,10 +6475,13 @@ function saveBtnOf(panel){
   return [...panel.querySelectorAll('button')].find(b=>/^save[A-Z]/.test((b.getAttribute('onclick')||'').trim()))
 }
 const DIRTY=new Set()
-function markDirty(panel){
-  panel=panel instanceof Element?panel:document.querySelector('.editor-panel.active')
-  if(!saveBtnOf(panel))return          // paneli bez gumba (npr. liste) spremaju se sami
-  DIRTY.add(panel)
+function markDirty(el){
+  el=el instanceof Element?el:document.querySelector('.editor-panel.active')
+  // najbliža kartica (ili panel) sa svojim „Spremi” — panel s više kartica (Cijene) sprema samo izmijenjenu
+  let k=el
+  while(k&&!(k.matches?.('.card,.editor-panel')&&saveBtnOf(k)))k=k.parentElement
+  if(!k)return          // paneli bez gumba (npr. liste) spremaju se sami
+  DIRTY.add(k)
   document.getElementById('savebar').classList.add('show')
 }
 window.markDirty=markDirty
@@ -6478,19 +6525,19 @@ addEventListener('beforeunload',e=>{if(DIRTY.size){e.preventDefault();e.returnVa
 document.addEventListener('click',e=>{
   const b=e.target.closest('button')
   if(!b||!/^save[A-Z]/.test((b.getAttribute('onclick')||'').trim()))return
-  const p=b.closest('.editor-panel')
   if(b.closest('#savebar'))return
-  if(p)DIRTY.delete(p);else DIRTY.clear()
+  const p=[...DIRTY].filter(k=>k.contains(b))
+  if(p.length)p.forEach(k=>DIRTY.delete(k));else if(!b.closest('.editor-panel'))DIRTY.clear()
   if(!DIRTY.size)window.clearDirty()
 })
 // polja koja se ne spremaju gumbom (pretraga, popisi koji se spremaju odmah) nose data-bez-spremanja
 document.addEventListener('input',e=>{
   if(e.target.closest('[data-bez-spremanja]'))return
-  const p=e.target.closest('.editor-panel');if(p)markDirty(p)
+  if(e.target.closest('.editor-panel'))markDirty(e.target)
 })
 document.addEventListener('change',e=>{
   if(e.target.closest('[data-bez-spremanja]'))return
-  const p=e.target.closest('.editor-panel');if(p)markDirty(p)
+  if(e.target.closest('.editor-panel'))markDirty(e.target)
 })
 
 

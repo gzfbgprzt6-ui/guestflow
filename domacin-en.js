@@ -5,6 +5,22 @@
 // hrvatski (ne pukne). Prijevode gostinskih stranica drži jezici.js.
 
 export const T = {
+  "Otkazivanje i registracija": "Cancellation and registration",
+  "Gost ih vidi na javnoj stranici prije upita — jasni uvjeti grade povjerenje.": "Guests see them on your public page before they ask — clear terms build trust.",
+  "Pravila otkazivanja": "Cancellation policy",
+  "Bez pravila": "No policy",
+  "Fleksibilno": "Flexible",
+  "Umjereno": "Moderate",
+  "Strogo": "Strict",
+  "Vlastito": "Custom",
+  "Vaša pravila otkazivanja": "Your cancellation policy",
+  "Registracijski broj / broj rješenja": "Registration / licence number",
+  "Broj s rješenja o kategorizaciji. Od 2026. ga EU traži na svakom oglasu za kratkoročni najam.": "The number from your categorisation licence. From 2026 the EU requires it on every short-term rental listing.",
+  "Spremi uvjete": "Save terms",
+  "Na javnoj stranici neće pisati ništa o otkazivanju.": "Nothing about cancellation will be shown on the public page.",
+  "Gost vidi vaš tekst.": "The guest sees your text.",
+  "Upišite svoja pravila otkazivanja (barem jednu rečenicu).": "Enter your cancellation policy (at least one sentence).",
+  "Spremljeno ✓ — gost uvjete vidi na javnoj stranici.": "Saved ✓ — guests see the terms on your public page.",
   "Prvi koraci · oko 10 minuta": "First steps · about 10 minutes",
   "Pripremite objekt za prvog gosta": "Get your property ready for the first guest",
   "Još malo i objekt je spreman": "Almost there — your property is nearly ready",
@@ -1809,6 +1825,7 @@ export const T = {
 }
 
 export const P = {
+  "Gost vidi: „{}”": "The guest sees: “{}”",
   "{} od {} · još oko {} min": "{} of {} · about {} min left",
   "Sljedeće · {} min": "Next · {} min",
   "Pronađeno slika: {} od {}": "Photos found: {} of {}",

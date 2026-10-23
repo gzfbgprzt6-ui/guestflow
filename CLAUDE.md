@@ -142,6 +142,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
     ├── add-properties-privacy.sql       # v7: javni_objekt() + tajni stupci objekta (guest_token, iCal) zatvoreni za javnost (KORAK A pa B)
     ├── add-payment-gate.sql             # P0-2: bookings.ceka_uplatu / uplata_potvrdena_at; vodic_gosta ne šalje šifre dok domaćin ne potvrdi uplatu
     ├── add-review-categories.sql        # recenzije po 6 kategorija (reviews.ocjene), domaćin ne može brisati recenziju
+    ├── add-listing-trust.sql            # P1-2: properties.registracijski_broj, otkazivanje, otkazivanje_tekst (javna stranica)
     ├── test-sigurnost.sql               # SIGURNOSNI TEST — pokretati nakon svake veće promjene; sve se poništi (rollback)
     └── fix-missing-columns-and-storage.sql # ALTER TABLE dopune (photo_urls, ical_*, beds/bathrooms/size_m2) + storage bucket policy
 ```
@@ -1004,6 +1005,20 @@ stare sakrivene vraćene); dashboard nema „Obriši” ni „Sakrij”. Na vrhu
 (`#hero-ocj` → `#rev-sec`), kategorije su u recenzijama. Vodič: `prikaziOcjenu()` 6 redova
 zvjezdica, `OCJENE`; `p.html` `#rev-kat` trake; dashboard `.rv-kat` + `.rv-kr`. `sw.js` VERZIJA 20.
 Test: `tests/recenzije.test.mjs`.
+
+## P1 (23. 10. 2026.): prvi koraci, otkazivanje i registracija
+
+- **Prvi koraci** (Danas, prva kartica `#dn-koraci`): `koraciObjekta()` — 7 koraka s minutama
+  (fotografija, ulaz i šifra, Wi-Fi, cijena, sadržaji, preporuke, prvi link = `AN.bookings`);
+  „Sljedeće” + „Nastavi”, nestaje na 100 %. Isti popis puni `#ob-dov-l`. `anPodaci()` zove
+  `renderChecklist()` kad stignu rezervacije. Test `tests/prvi.test.mjs`.
+- **Otkazivanje i registracija** (`sql/add-listing-trust.sql`: `properties.registracijski_broj`,
+  `otkazivanje` fleksibilno|umjereno|strogo|vlastito, `otkazivanje_tekst`): dashboard Cijene →
+  `#uvjeti-card` (`nacrtajUvjete()`, `saveUvjeti()`, tekstovi `JZ.OTKAZIVANJE`); `p.html`
+  `buildUvjeti()` → `#uvj` („Uvjeti ovog smještaja” u `#sig-sec`) i red `#sum-uvj` u sažetku.
+  Test `tests/uvjeti.test.mjs`.
+- **Kapljica po kartici:** `markDirty(el)` pamti najbližu `.card`/panel sa svojim `save…` gumbom,
+  pa „Spremi” na kapljici u panelu s više kartica (Cijene) sprema samo izmijenjenu.
 
 ## Redizajn v2 — prijenos iz Figme u kod (u tijeku)
 

@@ -39,6 +39,13 @@ let STANJE_PRIJEVODA = null          // odgovor rute za trenutni jezik
 // kategorije ocjene gosta (sql/add-review-categories.sql) — isti ključevi u bazi, vodiču, javnoj stranici i dashboardu
 export const KATEGORIJE_OCJENE = [['cistoca', 'Čistoća'], ['smjestaj', 'Smještaj i oprema'], ['lokacija', 'Lokacija'],
   ['domacin', 'Domaćin'], ['opis', 'Točnost opisa'], ['vrijednost', 'Vrijednost za novac']]
+// pravila otkazivanja (sql/add-listing-trust.sql) — domaćin bira, javna stranica pokazuje tekst
+export const OTKAZIVANJE = {
+  fleksibilno: ['Fleksibilno', 'Otkazivanje bez troška do 7 dana prije dolaska. Kasnije se kapara ne vraća.'],
+  umjereno: ['Umjereno', 'Otkazivanje bez troška do 30 dana prije dolaska. Kasnije se kapara ne vraća.'],
+  strogo: ['Strogo', 'Kapara se pri otkazivanju ne vraća.'],
+  vlastito: ['Vlastito', '']
+}
 export const jezik = () => J
 export const lokal = (j = J) => LOC[j] || 'hr-HR'
 export const dopusteni = () => DOPUSTENI
@@ -880,6 +887,15 @@ dodaj([
   ['Ocijenite svaku stavku od 1 do 5 zvjezdica.', 'Rate each item from 1 to 5 stars.', 'Bewerten Sie jeden Punkt mit 1 bis 5 Sternen.', 'Valuta ogni voce da 1 a 5 stelle.', 'Oceń każdy punkt od 1 do 5 gwiazdek.', 'Ohodnoťte každou položku 1 až 5 hvězdičkami.'],
   ['Ocijenite još: {k}', 'Still to rate: {k}', 'Noch zu bewerten: {k}', 'Ancora da valutare: {k}', 'Pozostało do oceny: {k}', 'Zbývá ohodnotit: {k}'],
   ['{k}: {n} od 5', '{k}: {n} of 5', '{k}: {n} von 5', '{k}: {n} su 5', '{k}: {n} z 5', '{k}: {n} z 5'],
+  ['Otkazivanje bez troška do 7 dana prije dolaska. Kasnije se kapara ne vraća.', 'Free cancellation up to 7 days before arrival. After that the deposit is not refunded.', 'Kostenlose Stornierung bis 7 Tage vor Anreise. Danach wird die Anzahlung nicht erstattet.', 'Cancellazione gratuita fino a 7 giorni prima dell’arrivo. Dopo, la caparra non è rimborsata.', 'Bezpłatne anulowanie do 7 dni przed przyjazdem. Później zaliczka nie jest zwracana.', 'Bezplatné zrušení do 7 dnů před příjezdem. Později se záloha nevrací.'],
+  ['Otkazivanje bez troška do 30 dana prije dolaska. Kasnije se kapara ne vraća.', 'Free cancellation up to 30 days before arrival. After that the deposit is not refunded.', 'Kostenlose Stornierung bis 30 Tage vor Anreise. Danach wird die Anzahlung nicht erstattet.', 'Cancellazione gratuita fino a 30 giorni prima dell’arrivo. Dopo, la caparra non è rimborsata.', 'Bezpłatne anulowanie do 30 dni przed przyjazdem. Później zaliczka nie jest zwracana.', 'Bezplatné zrušení do 30 dnů před příjezdem. Později se záloha nevrací.'],
+  ['Kapara se pri otkazivanju ne vraća.', 'The deposit is not refunded on cancellation.', 'Die Anzahlung wird bei Stornierung nicht erstattet.', 'La caparra non è rimborsata in caso di cancellazione.', 'Zaliczka nie jest zwracana przy anulowaniu.', 'Záloha se při zrušení nevrací.'],
+  ['Uvjeti ovog smještaja', 'Terms of this property', 'Bedingungen dieser Unterkunft', 'Condizioni di questo alloggio', 'Warunki tego obiektu', 'Podmínky tohoto ubytování'],
+  ['Otkazivanje', 'Cancellation', 'Stornierung', 'Cancellazione', 'Anulowanie', 'Zrušení'],
+  ['Registracijski broj', 'Registration number', 'Registrierungsnummer', 'Numero di registrazione', 'Numer rejestracyjny', 'Registrační číslo'],
+  ['Pravila otkazivanja određuje domaćin; dogovor o boravku je između vas i domaćina.', 'The host sets the cancellation policy; the stay agreement is between you and the host.', 'Die Stornobedingungen legt der Gastgeber fest; die Vereinbarung besteht zwischen Ihnen und dem Gastgeber.', 'La politica di cancellazione la stabilisce l’host; l’accordo è tra te e l’host.', 'Zasady anulowania ustala gospodarz; umowa jest między Tobą a gospodarzem.', 'Storno podmínky určuje hostitel; dohoda je mezi vámi a hostitelem.'],
+  ['Otkazivanje: {t}', 'Cancellation: {t}', 'Stornierung: {t}', 'Cancellazione: {t}', 'Anulowanie: {t}', 'Zrušení: {t}'],
+  ['Reg. br. {b}', 'Reg. no. {b}', 'Reg.-Nr. {b}', 'N. reg. {b}', 'Nr rej. {b}', 'Reg. č. {b}'],
   ['Uređaji i kako ih koristiti', 'Appliances and how to use them', 'Geräte und ihre Bedienung', 'Elettrodomestici e come usarli', 'Urządzenia i jak z nich korzystać', 'Spotřebiče a jak je používat']
 ])
 
