@@ -1723,3 +1723,17 @@ odobrio 21. 10.):
 - **Pazi ubuduće:** novi stupac u `properties` anon NE vidi (javna stranica ga
   dobiva kroz `javni_objekt`). Ako ga treba čitati izravno — `grant select (stupac)
   on public.properties to anon`, nikad tajni podatak.
+
+## 46. Provjeren domaćin — ručna provjera (23. 10. 2026.)
+
+- **Odluka vlasnika:** zasad ručna provjera u adminu (tab Provjere), samo za plaćene
+  planove (Domaćin, Agencija). Dugoročno automatska provjera (npr. Stripe Identity,
+  okvirno 1–2 $ po domaćinu — cijenu potvrditi prije odluke).
+- **Prijava u dva koraka nije uvjet** i nije u sučelju — domaćinima je nejasna. Zaštita
+  je zaključani račun: promjena IBAN-a ili primatelja skida oznaku dok se ne provjeri ponovno.
+- Aplikacija sama provjerava samo kontrolnu znamenku OIB-a (tipfeleri). Pripada li OIB
+  domaćinu, glasi li obrt na njega i odgovara li registracijski broj — gleda vlasnik ručno.
+- **ZA POSLIJE (otvoreno):** uz zahtjev da domaćin učita fotografiju **rješenja o
+  kategorizaciji** (ime vlasnika + registracijski broj na jednom mjestu), pa provjera
+  postaje usporedba na prvi pogled. Treba spremište za dokument (ne javni Cloudinary —
+  osobni podatak) i rok brisanja nakon odluke.

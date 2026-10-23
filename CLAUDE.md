@@ -913,7 +913,7 @@ Specifikacija vlasnika (jedinstven sustav za cijeli proizvod). **Paket 1** gotov
   mailto podrške s adresom), 6 jezika. Dashboard: ponuda (`PO_TX.potv`) kaže da je termin rezerviran tek
   kad kapara stigne; `prihvatiUpit()` pita je li kapara na računu (samo uz mogućnost `izravno` i
   `kapara_posto > 0`); panel rezervacije: deaktivirati link ako gost ne plati. Pomoć: dva odgovora u
-  Sigurnosti. Provjera domaćina / zaključani IBAN / 2FA = sljedeći paket (treba SQL i pravnika).
+  Sigurnosti. Provjera domaćina i zaključani IBAN: vidi „Provjeren domaćin” (2FA odbačen).
 
 ## Dorade vlasnika (22. 10. 2026.)
 
@@ -1049,7 +1049,7 @@ Agencija; Free je nema — vlasnik, 23. 10.; dugoročno automatika). Tablica `pr
   {primatelj, od}`; `p.html` `#hero-prov` pod naslovom + `#prov` u „Sigurna izravna rezervacija”
   (ime primatelja — gost ga uspoređuje s bankom). Dashboard Cijene: `provjeraIbana()` zaključa
   `#dom-iban`/`#dom-primatelj` (`#dom-prov`, „Promijeni račun” uz potvrdu).
-- Test `tests/provjera.test.mjs`.
+- Test `tests/provjera.test.mjs`. **Za poslije:** fotografija rješenja o kategorizaciji uz zahtjev (`docs/odluke.md`, točka 46).
 
 ## Redizajn v2 — prijenos iz Figme u kod (u tijeku)
 
