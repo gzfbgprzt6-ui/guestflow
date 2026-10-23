@@ -5,6 +5,21 @@
 // hrvatski (ne pukne). Prijevode gostinskih stranica drži jezici.js.
 
 export const T = {
+  "Prvi koraci · oko 10 minuta": "First steps · about 10 minutes",
+  "Pripremite objekt za prvog gosta": "Get your property ready for the first guest",
+  "Još malo i objekt je spreman": "Almost there — your property is nearly ready",
+  "Pogledaj vodič kao gost": "View the guide as a guest",
+  "Naslovna fotografija": "Cover photo",
+  "Prvo što gost vidi na stranici i u vodiču.": "The first thing a guest sees on the page and in the guide.",
+  "Kako ući: prijava i šifra": "Getting in: check-in and code",
+  "Vrijeme prijave i šifra vrata (ili upute za ključ) — otključaju se gostu sat prije dolaska.": "Check-in time and door code (or key instructions) — unlocked for the guest one hour before arrival.",
+  "Naziv mreže i lozinka; gost dobiva i QR kod za spajanje.": "Network name and password; the guest also gets a QR code to connect.",
+  "Javna stranica tada pokazuje cijenu i računa iznos upita.": "The public page then shows the price and calculates the inquiry total.",
+  "Klima, parking, bazen… — kvačice na javnoj stranici.": "Air conditioning, parking, pool… — ticks on the public page.",
+  "„Predloži mjesta u blizini” sam nađe plaže, restorane i trgovine.": "“Suggest nearby places” finds beaches, restaurants and shops for you.",
+  "Prvi link za gosta": "First guest link",
+  "Napravite rezervaciju i pošaljite gostu osobni link vodiča.": "Create a booking and send the guest their personal guide link.",
+  "Nastavi": "Continue",
   "Recenzije koje gost dopusti objaviti vide se na vašoj javnoj stranici. Recenzije se ne mogu obrisati ni sakriti — tako gosti vjeruju ocjeni.": "Reviews the guest allows to publish appear on your public page. Reviews cannot be deleted or hidden — that is why guests trust the rating.",
   "Privatno (gost nije dopustio objavu)": "Private (the guest did not allow publishing)",
   "gost je dopustio objavu": "guest allowed publishing",
@@ -1794,6 +1809,8 @@ export const T = {
 }
 
 export const P = {
+  "{} od {} · još oko {} min": "{} of {} · about {} min left",
+  "Sljedeće · {} min": "Next · {} min",
   "Pronađeno slika: {} od {}": "Photos found: {} of {}",
   "Naslov — npr. {}": "Title — e.g. {}",
   "Foto: {}": "Photo: {}",

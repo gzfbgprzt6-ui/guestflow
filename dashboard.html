@@ -1624,6 +1624,20 @@ body:not([data-grupa="objekt"]) .property-banner { display: none; }
 .dn-red__t b { display: block; font: 600 14.5px/1.35 var(--font-ui); }
 .dn-red__t small { display: block; margin-top: 2px; color: var(--muted); font-size: 13.5px; line-height: 1.45; }
 .dn-koraci { display: grid; }
+.dn-prvi { border: 1px solid var(--line); }
+.dn-prvi__g { display: flex; align-items: flex-end; justify-content: space-between; gap: 8px 16px; flex-wrap: wrap; }
+.dn-prvi__oz { display: block; color: var(--copper); font: 700 11.5px/1.3 var(--font-ui); letter-spacing: .1em; text-transform: uppercase; }
+.dn-prvi__g h2 { margin: 4px 0 0; }
+.dn-prvi__st { color: var(--muted); font-size: 13.5px; font-variant-numeric: tabular-nums; }
+.dn-prvi__bar { height: 6px; margin: 12px 0 14px; border-radius: 99px; background: var(--paper-2); overflow: hidden; }
+.dn-prvi__bar i { display: block; height: 100%; border-radius: 99px; background: var(--copper); transition: width .3s; }
+.dn-prvi__sad { display: flex; align-items: center; justify-content: space-between; gap: 12px 16px; flex-wrap: wrap; margin-bottom: 8px; padding: 14px 16px; border-radius: 12px; background: var(--paper-2); }
+.dn-prvi__sad > div { display: grid; gap: 2px; min-width: 0; flex: 1 1 260px; }
+.dn-prvi__sad small { color: var(--copper); font: 700 12px/1.3 var(--font-ui); }
+.dn-prvi__sad b { font: 700 16px/1.3 var(--font-ui); }
+.dn-prvi__sad span { color: var(--muted); font-size: 13.5px; line-height: 1.45; }
+.dn-red--korak.je-sad .dn-red__ik { background: var(--copper); color: #fff; }
+.dn-prvi__dno { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px 0 6px; border-top: 1px solid var(--line); }
 .dn-red--korak { width: 100%; min-height: 52px; grid-template-columns: 32px minmax(0, 1fr) auto 16px; border: 0; border-top: 1px solid var(--line); background: none; color: var(--ink); cursor: pointer; font: inherit; text-align: left; }
 .dn-red--korak:hover { background: var(--cream); }
 .dn-red--korak.je-gotovo .dn-red__ik { background: var(--paper-2); color: var(--copper); }
@@ -2357,6 +2371,17 @@ body[data-panel="prijevodi"] .ph-akcije { display: none; }
         <!-- 00 DANAS (redizajn „Pearl”, 21. 10. 2026.): tri obveze, slijed događaja,
              „Traži pažnju” i objekti kao redovi. Sve iz postojećih tablica (analitika.js). -->
         <section class="editor-panel active an" id="section-overview" data-panel-content="overview">
+          <!-- P1-1 (23. 10. 2026.): prvi dan domaćina — sedam koraka, oko 10 minuta, na vrhu dok nešto fali -->
+          <div class="card dn-card dn-prvi" id="dn-koraci" hidden>
+            <div class="dn-prvi__g">
+              <div><span class="dn-prvi__oz">Prvi koraci · oko 10 minuta</span><h2 id="dn-prvi-h">Pripremite objekt za prvog gosta</h2></div>
+              <span class="dn-prvi__st" id="dn-prvi-st"></span>
+            </div>
+            <div class="dn-prvi__bar" aria-hidden="true"><i id="dn-prvi-bar"></i></div>
+            <div class="dn-prvi__sad" id="dn-prvi-sad"></div>
+            <div id="checklist-items" class="dn-koraci"></div>
+            <div class="dn-prvi__dno"><button type="button" class="btn secondary small" onclick="viewGuest()">Pogledaj vodič kao gost</button><button type="button" class="btn ghost small" onclick="viewPub()">Javna stranica</button></div>
+          </div>
           <div class="dn-kpi" id="dn-kpi" aria-live="polite">
             <button type="button" class="dn-k" disabled><span class="dn-k__ik" aria-hidden="true"><svg class="ic"><use href="#i-door-open"/></svg></span><b>—</b><span>Dolasci danas</span></button>
             <button type="button" class="dn-k" disabled><span class="dn-k__ik" aria-hidden="true"><svg class="ic"><use href="#i-inbox"/></svg></span><b>—</b><span>Upiti bez odgovora</span></button>
@@ -2378,11 +2403,6 @@ body[data-panel="prijevodi"] .ph-akcije { display: none; }
               <label class="ov-f ov-f--trazi"><svg class="ic ic--sm" aria-hidden="true"><use href="#i-search"/></svg><input id="ovf-trazi" aria-label="Traži objekt" type="search" placeholder="Traži objekt" autocomplete="off" data-bez-spremanja></label>
             </div>
             <div class="dn-obj" id="ov-tbl"></div>
-          </div>
-          <div class="card dn-card" id="dn-koraci" hidden>
-            <div class="dn-h"><h2>Dovršite vodič</h2></div>
-            <p class="helper" style="margin:-4px 0 12px">Gost dobiva potpun vodič kad su ovi dijelovi upisani.</p>
-            <div id="checklist-items" class="dn-koraci"></div>
           </div>
         </section>
 
@@ -4058,6 +4078,7 @@ async function anPodaci(dana){
   const{data:bk}=await sb.from('bookings').select('id,guest_name,checkin_date,checkout_date,is_active,token,token_expires_at').eq('property_id',pid).order('checkin_date',{ascending:false}).limit(1000)
   if(AN.prop!==pid)return null
   AN.bookings=bk||[]
+  renderChecklist()
   if(!AN.viewsOd||od<AN.viewsOd){
     // s državom ako stupac postoji (sql/add-country-to-page-views.sql), inače bez nje
     const upit=kol=>()=>sb.from('page_views').select(kol).eq('property_id',pid).gte('timestamp',A.uDatum(od).toISOString()).order('timestamp')
@@ -5099,18 +5120,23 @@ window.izvozBoravaka=async()=>{
   a.download=(PROP.slug||'objekt')+'-boravci.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)
 }
 
+/* Prvi koraci (P1-1): redoslijed kojim gost najbrže dobiva koristan vodič; minute su gruba procjena.
+   Isti popis puni i dovršenost u Objektima (#ob-dov-l). */
+function koraciObjekta(){
+  const S=SECTION||{},bk=AN.prop===PROP.id?(AN.bookings||[]).length:0
+  return[
+    {label:'Naslovna fotografija',zasto:'Prvo što gost vidi na stranici i u vodiču.',min:2,done:!!(PROP.cover_photo_url||(PROP.photo_urls||[]).length),panel:'photos'},
+    {label:'Kako ući: prijava i šifra',zasto:'Vrijeme prijave i šifra vrata (ili upute za ključ) — otključaju se gostu sat prije dolaska.',min:2,done:!!(S.checkin_time&&(S.door_code||S.checkin_notes||(S.ulazak_koraci||[]).length)),panel:'arrival'},
+    {label:'Wi-Fi',zasto:'Naziv mreže i lozinka; gost dobiva i QR kod za spajanje.',min:1,done:!!(S.wifi_name&&S.wifi_pass),panel:'wifi'},
+    {label:'Cijena po noćenju',zasto:'Javna stranica tada pokazuje cijenu i računa iznos upita.',min:1,done:(PROP.price_per_night||0)>0,panel:'pricing'},
+    {label:'Sadržaji objekta',zasto:'Klima, parking, bazen… — kvačice na javnoj stranici.',min:1,done:amenityRows.length>0,panel:'amenities'},
+    {label:'Preporuke u blizini',zasto:'„Predloži mjesta u blizini” sam nađe plaže, restorane i trgovine.',min:2,done:localCount>0,panel:'guide'},
+    {label:'Prvi link za gosta',zasto:'Napravite rezervaciju i pošaljite gostu osobni link vodiča.',min:1,done:bk>0,akcija:'linkZaGosta()'}
+  ]
+}
 function renderChecklist(){
   if(!PROP)return
-  const items=[
-    {label:'Fotografije objekta',done:(PROP.photo_urls?.length||0)>0,panel:'photos'},
-    {label:'Check-in i Wi-Fi',done:!!(SECTION?.wifi_pass&&SECTION?.door_code),panel:'arrival'},
-    {label:'Cijena po noćenju',done:(PROP.price_per_night||0)>0,panel:'pricing'},
-    {label:'Sadržaji objekta',done:false,panel:'amenities'},
-    {label:'Dostupnost',done:bookedDays.length>0,panel:'availability'},
-    {label:'Lokalni vodič',done:localCount>0,panel:'guide'}
-  ]
-  const amCard=document.querySelector('#amenity-catalog-list')
-  items[3].done=amenityRows.length>0
+  const items=koraciObjekta()
   const done=items.filter(i=>i.done).length
   const pct=Math.round(done/items.length*100)
   const mp=document.getElementById('mini-progress')
@@ -5120,11 +5146,18 @@ function renderChecklist(){
   document.getElementById('completion-sub').textContent=`${done}/${items.length} dovršeno`
   document.getElementById('progressPct').textContent=pct+'%'
   document.getElementById('progressBar').style.width=pct+'%'
-  document.getElementById('dn-koraci').hidden=pct===100
+  const klik=i=>i.akcija||`nav('${i.panel}',document.querySelector('[data-panel=${i.panel}]'))`
   {const pr=document.getElementById('ob-prsten');if(pr){pr.style.setProperty('--p',pct);document.getElementById('ob-pct').textContent=pct+'%'
     document.getElementById('ob-dov-tx').textContent=pct===100?'Sve je upisano — gost dobiva potpunu stranicu i vodič.':'Još nekoliko detalja i objekt je spreman.'
-    document.getElementById('ob-dov-l').innerHTML=items.map(i=>`<button type="button" class="ob-st${i.done?' je-gotovo':''}" onclick="nav('${i.panel}',document.querySelector('[data-panel=${i.panel}]'))"><span aria-hidden="true">${i.done?'✓':''}</span>${i.label}<span class="sr-only">${i.done?' — gotovo':' — nedostaje'}</span></button>`).join('')}}
-  document.getElementById('checklist-items').innerHTML=items.map(i=>`<button type="button" class="dn-red dn-red--korak${i.done?' je-gotovo':''}" onclick="nav('${i.panel}',document.querySelector('[data-panel=${i.panel}]'))"><span class="dn-red__ik" aria-hidden="true">${i.done?'✓':'○'}</span><span class="dn-red__t"><b>${i.label}</b></span><span class="dn-red__s">${i.done?'Gotovo':'Dopuni'}</span><svg class="ic ic--sm dn-str" aria-hidden="true"><use href="#i-chevron-right"/></svg></button>`).join('')
+    document.getElementById('ob-dov-l').innerHTML=items.map(i=>`<button type="button" class="ob-st${i.done?' je-gotovo':''}" onclick="${klik(i)}"><span aria-hidden="true">${i.done?'✓':''}</span>${i.label}<span class="sr-only">${i.done?' — gotovo':' — nedostaje'}</span></button>`).join('')}}
+  document.getElementById('dn-koraci').hidden=pct===100
+  if(pct===100)return
+  const ostalo=items.filter(i=>!i.done),min=ostalo.reduce((z,i)=>z+i.min,0),sl=ostalo[0]
+  document.getElementById('dn-prvi-st').textContent=`${done} od ${items.length} · još oko ${min} min`
+  document.getElementById('dn-prvi-bar').style.width=pct+'%'
+  document.getElementById('dn-prvi-h').textContent=done?'Još malo i objekt je spreman':'Pripremite objekt za prvog gosta'
+  document.getElementById('dn-prvi-sad').innerHTML=`<div><small>Sljedeće · ${sl.min} min</small><b>${esc(sl.label)}</b><span>${esc(sl.zasto)}</span></div><button type="button" class="btn small" onclick="${klik(sl)}">Nastavi<svg class="ic ic--sm" aria-hidden="true"><use href="#i-chevron-right"/></svg></button>`
+  document.getElementById('checklist-items').innerHTML=items.map((i,n)=>`<button type="button" class="dn-red dn-red--korak${i.done?' je-gotovo':''}${i===sl?' je-sad':''}" onclick="${klik(i)}"><span class="dn-red__ik" aria-hidden="true">${i.done?'✓':n+1}</span><span class="dn-red__t"><b>${i.label}</b></span><span class="dn-red__s">${i.done?'Gotovo':i.min+' min'}</span><svg class="ic ic--sm dn-str" aria-hidden="true"><use href="#i-chevron-right"/></svg></button>`).join('')
 }
 
 // ── AMENITIES (catalog + custom, with search + emoji guess) ──
