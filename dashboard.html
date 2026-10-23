@@ -1781,6 +1781,12 @@ body:not([data-grupa="objekt"]) .property-banner { display: none; }
 .bk-p__dl dd { margin: 0; font: 600 14.5px/1.4 var(--font-ui); overflow-wrap: anywhere; }
 .bk-p__dl dd small { display: block; color: var(--muted); font: 500 12.5px/1.4 var(--font-ui); }
 .bk-p__link { display: grid; gap: 8px; margin: 12px 0; }
+.bk-p__upl { display: grid; gap: 6px; margin: 12px 0 0; padding: 14px; border-radius: 12px; background: #FDF6E8; border: 1px solid #EFDDBB; color: #3D2E10; }
+.bk-p__upl b { font-size: 14.5px; }
+.bk-p__upl span { font-size: 13.5px; color: #5E4A26; line-height: 1.45; }
+.bk-p__upl .btn { justify-self: start; margin-top: 4px; }
+.bk-p__upl.ok { background: var(--paper-2); border-color: var(--line); color: var(--ink); }
+.bk-p__upl.ok span { color: var(--muted); }
 .bk-p__lh { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 14.5px; }
 .bk-p__link .link-url span { overflow-wrap: anywhere; white-space: normal; font-size: 13.5px; }
 .bk-p__akc { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -2909,6 +2915,7 @@ body[data-panel="prijevodi"] .ph-akcije { display: none; }
                 <div class="field"><label for="bk-mail">E-mail gosta <span class="optional">za automatske poruke</span></label><input class="input" id="bk-mail" type="email" placeholder="ana@primjer.hr" autocomplete="off"></div>
                 <div class="field"><label for="bk-lang">Jezik poruka gostu</label><select class="select" id="bk-lang"><option value="hr">Hrvatski</option><option value="en">English</option><option value="de">Deutsch</option><option value="it">Italiano</option><option value="pl">Polski</option><option value="cs">Čeština</option></select></div>
               </div>
+              <div class="auto-mail" style="margin-top:12px"><label><input type="checkbox" id="bk-ceka" data-bez-spremanja> <span><b>Šifre tek kad potvrdim uplatu</b><small>Gost odmah dobiva link s uputama, ali šifru vrata i Wi-Fi lozinku vidi tek kad u rezervaciji kliknete „Uplata je stigla”. Za izravne rezervacije s kaparom.</small></span></label></div>
               <div class="helper" style="margin-top:10px">Nastaje jedinstven link koji vrijedi do dan nakon odlaska. Ako upišete e-mail, gost sam dobije link 3 dana prije dolaska i zahvalu s molbom za ocjenu na dan odlaska; e-mail se briše 30 dana nakon odlaska. Telefon služi samo za slanje odavde i ne sprema se.</div>
               <div style="display:flex;gap:12px;justify-content:flex-end;align-items:center;flex-wrap:wrap;margin-top:16px"><span class="helper" id="bk-why" aria-live="polite"></span><button class="btn secondary small" onclick="hideAddBooking()">Odustani</button><button class="btn small" id="bk-create" onclick="createBooking()" disabled>Kreiraj link →</button></div>
             </div>
@@ -4806,14 +4813,17 @@ window.prihvatiUpit=async id=>{
   const z=zauzeteNoci(u.checkin_date,u.checkout_date)
   if(z&&!await potvrdi(`${z} ${A.mn(z,'noć','noći','noći')} u tom terminu već je zauzeto. Svejedno prihvatiti upit?`,{da:'Svejedno prihvati'}))return
   // izravni dogovor: link za vodič tek kad je novac stvarno na računu (zaštita domaćina)
-  if(imaMogucnost(planObjekta(),'izravno')&&(Number(PROP.kapara_posto)||0)>0&&!await potvrdi('Je li kapara stigla na vaš račun? Provjerite u svojoj banci — slika ili PDF potvrde nije dokaz uplate. Link možete napraviti i bez kapare, ali tada gost može ne doći bez ikakve naknade.',{da:'Prihvati i napravi link'}))return
+  // „Još nije” = link nastaje odmah, ali šifre čekaju dok domaćin ne potvrdi uplatu (P0-2)
+  let cekaUplatu=false
+  if(imaMogucnost(planObjekta(),'izravno')&&(Number(PROP.kapara_posto)||0)>0)
+    cekaUplatu=!await potvrdi('Je li kapara stigla na vaš račun? Provjerite u svojoj banci — slika ili PDF potvrde nije dokaz uplate.\n\nAko još nije, gost odmah dobiva link s uputama, a šifru vrata i Wi-Fi lozinku vidi tek kad u rezervaciji kliknete „Uplata je stigla”.',{da:'Da, stigla je',ne:'Još nije'})
   const napomena=[u.guests?u.guests+' '+A.mn(u.guests,'gost','gosta','gostiju'):'','upit s javne stranice'].filter(Boolean).join(' · ')
-  const r=await napraviRezervaciju({name:u.guest_name,note:napomena,ci:u.checkin_date,co:u.checkout_date,email:u.guest_email||''})
+  const r=await napraviRezervaciju({name:u.guest_name,note:napomena,ci:u.checkin_date,co:u.checkout_date,email:u.guest_email||'',cekaUplatu})
   if(r.error){toast('Greška: '+r.error);return}
   const{error}=await sb.from('inquiries').update({status:'prihvacen',booking_id:r.booking.id}).eq('id',id)
   if(error)toast('Rezervacija je napravljena, ali upit nije označen: '+error.message)
   else if(r.upozorenje)toast(r.upozorenje)
-  else toast('Upit prihvaćen — pošaljite gostu link ✓')
+  else toast(cekaUplatu?'Upit prihvaćen — šifre čekaju vašu potvrdu uplate':'Upit prihvaćen — pošaljite gostu link ✓')
   UPITI_TOKENI[r.booking.id]=r.booking.token
   IQ_ISTAKNI=id;IQ_SEL=id
   await loadAvail();await ucitajUpite();renderUpiti()
@@ -5934,6 +5944,7 @@ function bkStanje(b){
   const exp=b.token_expires_at&&new Date(b.token_expires_at)<new Date(),t=A.danas()
   if(!b.is_active)return['Deaktiviran','out']
   if(exp||b.checkout_date<t)return['Završeno','out']
+  if(b.ceka_uplatu&&!b.uplata_potvrdena_at)return['Čeka uplatu','novi']
   if(b.checkin_date<=t)return['U tijeku','novi']
   return['Potvrđeno','ok']
 }
@@ -5958,12 +5969,21 @@ function bkPanel(b){
       ${b.guest_email?`<div><dt>E-mail</dt><dd>${esc(b.guest_email)}<small>${b.email_dolazak_at?'link poslan':'link 3 dana prije dolaska'} · ${b.email_ocjena_at?'zahvala poslana':'zahvala na odlasku'}</small></dd></div>`:''}
       ${b.usao_at?`<div><dt>Ulazak</dt><dd>Gost je ušao · ${new Date(b.usao_at).toLocaleString('hr-HR',{day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit'})}</dd></div>`:''}
     </dl>
+    ${b.ceka_uplatu&&act?(b.uplata_potvrdena_at
+      ?`<div class="bk-p__upl ok"><b>Uplata potvrđena</b><span>${new Date(b.uplata_potvrdena_at).toLocaleString('hr-HR',{day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit'})} · šifre se otključaju sat prije prijave</span></div>`
+      :`<div class="bk-p__upl"><b>Šifre čekaju vašu potvrdu uplate</b><span>Gost vidi upute, ali ne i šifru vrata ni Wi-Fi lozinku. Provjerite u svojoj banci — slika potvrde nije dokaz uplate.</span><button class="btn small" type="button" onclick="potvrdiUplatu('${b.id}')">Uplata je stigla</button></div>`):''}
     <div class="bk-p__link"><div class="bk-p__lh"><b>Link na vodič za gosta</b><span class="iq-st iq-st--${act?'ok':'out'}">${act?'Aktivan':'Ne vrijedi'}</span></div>
       <div class="link-url"><span>${esc(prettyUrl(url))}</span></div>
       ${act?`<div class="bk-p__akc"><button class="btn small" type="button" onclick="cpBk('${b.token}')">Kopiraj link</button><a class="btn secondary small" href="https://wa.me/?text=${encodeURIComponent(poruka)}" target="_blank" rel="noopener">Pošalji WhatsAppom</a></div>
       <p class="helper">Šifra vrata i Wi-Fi otključaju se sat prije prijave i prestaju vrijediti nakon odlaska. Gost ne plati dogovoreno? Deaktivirajte link prije dolaska — šifre tada nikad ne vidi. Šifru vrata mijenjajte između gostiju.</p>`:''}</div>
     ${PRIJAVE_OK&&(act||pr)?`<button class="btn secondary small bk-p__gosti" type="button" onclick="otvoriGoste('${b.id}')">${pr?'Podaci gostiju · '+pr.osobe.length+' '+A.mn(pr.osobe.length,'osoba','osobe','osoba'):'Podaci gostiju · čeka podatke'}</button>`:''}
     <div class="bk-p__opasno"><small>Opasne radnje</small>${act?`<button class="btn danger small" type="button" onclick="deactBk('${b.id}')">Deaktiviraj link</button>`:`<button class="btn danger small" type="button" onclick="delBk('${b.id}')">Obriši rezervaciju</button>`}</div>`
+}
+window.potvrdiUplatu=async id=>{
+  if(!await potvrdi('Potvrditi da je uplata stigla na vaš račun? Gost tada u vodiču vidi šifru vrata i Wi-Fi lozinku (sat prije prijave).',{da:'Da, uplata je stigla'}))return
+  const{data,error}=await sb.from('bookings').update({uplata_potvrdena_at:new Date().toISOString()}).eq('id',id).select()
+  if(error||!data?.length){toast('Nije spremljeno: '+(error?.message||'rezervacija nije pronađena'));return}
+  toast('Uplata potvrđena — šifre su otključane za gosta ✓');BK_SEL=id;await loadBookings()
 }
 window.bkOdaberi=id=>{BK_SEL=id;bkPanel((window.BK_LISTA||[]).find(b=>b.id===id)||null);if(id&&!matchMedia('(min-width: 781px)').matches)scrollTo({top:0})}
 document.getElementById('bookings-list')?.addEventListener('click',e=>{const r=e.target.closest('tr[data-bk]');if(r&&!e.target.closest('button,a'))bkOdaberi(r.dataset.bk)})
@@ -5991,12 +6011,16 @@ window.hideAddBooking=()=>{document.getElementById('add-booking-card').style.dis
 window.hideResult=()=>{document.getElementById('bk-result-card').style.display='none'}
 /* Rezervacija + zauzeti dani + link. Zajedničko za obrazac i prihvaćanje upita.
    Link vrijedi do dan nakon odlaska (token_expires_at), kako i piše uz obrazac. */
-async function napraviRezervaciju({name,note,ci,co,email,lang}){
+async function napraviRezervaciju({name,note,ci,co,email,lang,cekaUplatu=false}){
   const ap=PROP||PROPS.find(p=>!zakljucan(p));if(!ap)return{error:'Nema objekta.'}
   const istek=new Date(A.plusDana(co,1)+'T23:59:00').toISOString()
   const red={property_id:ap.id,guest_name:name,guest_note:note||null,checkin_date:ci,checkout_date:co,token_expires_at:istek}
   const mail=(email||'').trim()
+  // šifre čekaju potvrdu uplate (sql/add-payment-gate.sql); bez stupca rezervacija NE nastaje —
+  // domaćin je tražio da šifre čekaju, pa ih ne smijemo tiho pustiti
+  if(cekaUplatu)red.ceka_uplatu=true
   let{data,error}=await sb.from('bookings').insert(mail?{...red,guest_email:mail,guest_lang:lang||jezikIzMaila(mail)}:red).select().single()
+  if(error&&cekaUplatu&&/ceka_uplatu/i.test(error.message||''))return{error:'Zadržavanje šifre do uplate još nije uključeno (sql/add-payment-gate.sql). Napravite rezervaciju bez te kvačice.'}
   let bezMaila=false
   // stupci iz sql/add-guest-emails.sql još ne postoje → rezervacija svejedno nastaje, bez automatskih poruka
   if(error&&mail&&/guest_email|guest_lang|column|schema cache|PGRST204|42703/i.test((error.code||'')+' '+error.message)){
@@ -6056,7 +6080,7 @@ window.createBooking=async()=>{
   if(ci>=co){showA('bk-alert','err','Check-out mora biti nakon check-in.');return}
   const zauz=zauzeteNoci(ci,co)
   if(zauz&&!await potvrdi(`${zauz} ${A.mn(zauz,'noć','noći','noći')} u tom terminu već je zauzeto u kalendaru. Svejedno napraviti rezervaciju?`,{da:'Svejedno napravi'}))return
-  const r=await napraviRezervaciju({name,note,ci,co,email:v('bk-mail'),lang:v('bk-lang')})
+  const r=await napraviRezervaciju({name,note,ci,co,email:v('bk-mail'),lang:v('bk-lang'),cekaUplatu:!!document.getElementById('bk-ceka')?.checked})
   if(r.error){showA('bk-alert','err',/^Termin se preklapa/.test(r.error)?r.error+' Promijenite datume ili prvo deaktivirajte tu rezervaciju.':'Greška: '+r.error);return}
   lastBkUrl=r.url;lastBk={ime:name,ci,co,tel:v('bk-phone'),mail:v('bk-mail')}
   lastBkPhone=lastBk.tel

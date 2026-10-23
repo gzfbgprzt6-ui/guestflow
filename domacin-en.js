@@ -5,6 +5,19 @@
 // hrvatski (ne pukne). Prijevode gostinskih stranica drži jezici.js.
 
 export const T = {
+  "Šifre tek kad potvrdim uplatu": "Codes only after I confirm payment",
+  "Gost odmah dobiva link s uputama, ali šifru vrata i Wi-Fi lozinku vidi tek kad u rezervaciji kliknete „Uplata je stigla”. Za izravne rezervacije s kaparom.": "The guest gets the link with instructions right away, but sees the door code and Wi-Fi password only after you click “Payment received” in the booking. For direct bookings with a deposit.",
+  "Čeka uplatu": "Awaiting payment",
+  "Šifre čekaju vašu potvrdu uplate": "Codes are waiting for your payment confirmation",
+  "Gost vidi upute, ali ne i šifru vrata ni Wi-Fi lozinku. Provjerite u svojoj banci — slika potvrde nije dokaz uplate.": "The guest sees the instructions but not the door code or Wi-Fi password. Check your bank — a screenshot of a receipt is not proof of payment.",
+  "Uplata je stigla": "Payment received",
+  "Uplata potvrđena": "Payment confirmed",
+  "Da, stigla je": "Yes, it has arrived",
+  "Još nije": "Not yet",
+  "Da, uplata je stigla": "Yes, payment received",
+  "Uplata potvrđena — šifre su otključane za gosta ✓": "Payment confirmed — codes are unlocked for the guest ✓",
+  "Upit prihvaćen — šifre čekaju vašu potvrdu uplate": "Inquiry accepted — codes are waiting for your payment confirmation",
+  "Potvrditi da je uplata stigla na vaš račun? Gost tada u vodiču vidi šifru vrata i Wi-Fi lozinku (sat prije prijave).": "Confirm that the payment has reached your account? The guest will then see the door code and Wi-Fi password in the guide (one hour before check-in).",
   "Ova mogućnost još nije uključena.": "This feature is not switched on yet.",
   "(bez datuma rođenja računa se kao odrasla osoba)": "(without a date of birth counted as an adult)",
   ")\">Vrati automatski": ")\">Restore automatic",
