@@ -999,8 +999,9 @@ sklapam s domaćinom, Odmoria nije strana i ne prima uplate”).
 opis, vrijednost → `reviews.ocjene` jsonb (CHECK `ocjene_ispravne`), `reviews.ocjena` = zaokruženi
 prosjek (računa baza u `ostavi_ocjenu(p_token, p_ocjene jsonb, …)`; stara inačica s `p_ocjena`
 ostaje, vodič na nju pada bez SQL-a). `javno_o_objektu()` vraća i `kategorije` (prosjeci).
-**Domaćin i suradnik recenziju ne mogu obrisati** (`revoke all` + `grant select`, `update(skriveno)`),
-samo sakriti s javne stranice; dashboard nema „Obriši”. Vodič: `prikaziOcjenu()` 6 redova
+**Domaćin i suradnik recenziju ne mogu ni obrisati ni sakriti** (`revoke all` + samo `grant select`;
+stare sakrivene vraćene); dashboard nema „Obriši” ni „Sakrij”. Na vrhu `p.html` samo ukupna ocjena
+(`#hero-ocj` → `#rev-sec`), kategorije su u recenzijama. Vodič: `prikaziOcjenu()` 6 redova
 zvjezdica, `OCJENE`; `p.html` `#rev-kat` trake; dashboard `.rv-kat` + `.rv-kr`. `sw.js` VERZIJA 20.
 Test: `tests/recenzije.test.mjs`.
 

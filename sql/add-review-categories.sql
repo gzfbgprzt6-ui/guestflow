@@ -5,9 +5,10 @@
 --    oprema), lokacija, domaćin (komunikacija), točnost opisa, vrijednost
 --    za novac. reviews.ocjene = {"cistoca":5,"smjestaj":4,…}; ukupna
 --    reviews.ocjena = zaokruženi prosjek (stari prikazi rade i dalje).
--- 2) Domaćin recenziju NE MOŽE obrisati (ni suradnik). Smije je samo sakriti
---    s javne stranice (stupac skriveno), kao i prije. Brisanje ostaje samo
---    uz brisanje cijelog objekta ili računa (SECURITY DEFINER funkcije).
+-- 2) Domaćin recenziju NE MOŽE ni obrisati ni sakriti (ni suradnik) — samo
+--    čita. Javna je ako je gost to dopustio (javno). Već sakrivene se vraćaju
+--    na javnu stranicu. Brisanje ostaje samo uz brisanje cijelog objekta ili
+--    računa (SECURITY DEFINER funkcije).
 -- 3) javno_o_objektu() vraća i prosjek po kategoriji.
 -- Pokrenuti jednom; ponavljanje ne mijenja ništa.
 -- =====================================================================
@@ -32,10 +33,10 @@ do $$ begin
   end if;
 end $$;
 
--- domaćin i suradnik: samo čitanje i skrivanje (bez brisanja)
+-- domaćin i suradnik: samo čitanje (bez brisanja i sakrivanja)
 revoke all on public.reviews from authenticated;
 grant select on public.reviews to authenticated;
-grant update (skriveno) on public.reviews to authenticated;
+update public.reviews set skriveno = false where skriveno;
 
 -- nova inačica: ocjene po kategorijama (stara s p_ocjena ostaje za stare vodiče u predmemoriji)
 create or replace function public.ostavi_ocjenu(p_token text, p_ocjene jsonb, p_tekst text default null,

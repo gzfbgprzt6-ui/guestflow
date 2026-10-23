@@ -5,6 +5,9 @@
 // hrvatski (ne pukne). Prijevode gostinskih stranica drži jezici.js.
 
 export const T = {
+  "Recenzije koje gost dopusti objaviti vide se na vašoj javnoj stranici. Recenzije se ne mogu obrisati ni sakriti — tako gosti vjeruju ocjeni.": "Reviews the guest allows to publish appear on your public page. Reviews cannot be deleted or hidden — that is why guests trust the rating.",
+  "Privatno (gost nije dopustio objavu)": "Private (the guest did not allow publishing)",
+  "gost je dopustio objavu": "guest allowed publishing",
   "Čistoća": "Cleanliness",
   "Smještaj i oprema": "Comfort and equipment",
   "Točnost opisa": "Accuracy",
