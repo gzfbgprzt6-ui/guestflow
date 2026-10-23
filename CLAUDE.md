@@ -44,7 +44,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 ├── p.html                  # Javna stranica objekta (?slug=xxx) — AKTIVNA, **redizajn v2 iz Figme** (`odmoria.css`), teme se NE primjenjuju
 ├── h.html                  # Privatni gostinski hub (?token=xxx) — AKTIVNA, **redizajn v2** (`odmoria.css`), podstranice preko #adrese; /h/demo = primjer
 ├── c.html                  # Raspored za čistačicu (/c/<token>) — dolasci i odlasci, bez šifri i imena
-├── sw.js                   # service worker vodiča (opseg /h/) — rad bez interneta (VERZIJA odmoria-vodic-13)
+├── sw.js                   # service worker vodiča (opseg /h/) — rad bez interneta (VERZIJA odmoria-vodic-21)
 ├── push-sw.js              # service worker obavijesti domaćina (opseg /dashboard) — samo push i klik, bez predmemorije
 ├── manifest-domacin.webmanifest  # dashboard kao aplikacija na početnom zaslonu (iPhone obavijesti to traže)
 ├── dashboard.html          # Glavni host dashboard — AKTIVNA, **redizajn v2** (vlastiti CSS, ista imena tokena), navigacija po grupama
@@ -144,6 +144,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
     ├── add-review-categories.sql        # recenzije po 6 kategorija (reviews.ocjene), domaćin ne može brisati recenziju
     ├── add-listing-trust.sql            # P1-2: properties.registracijski_broj, otkazivanje, otkazivanje_tekst (javna stranica)
     ├── add-inquiry-timeline.sql         # P1-4: inquiries.odgovoreno_at / odgovor_kanal (vremenska crta upita)
+    ├── add-host-verification.sql        # P1-3: provjere_domacina, zatrazi_provjeru / moja_provjera / admin_provjere / admin_odluci_provjeru, javno_o_objektu.provjera, mogućnost „provjera”
     ├── test-sigurnost.sql               # SIGURNOSNI TEST — pokretati nakon svake veće promjene; sve se poništi (rollback)
     └── fix-missing-columns-and-storage.sql # ALTER TABLE dopune (photo_urls, ical_*, beds/bathrooms/size_m2) + storage bucket policy
 ```
@@ -902,7 +903,7 @@ Specifikacija vlasnika (jedinstven sustav za cijeli proizvod). **Paket 1** gotov
   Pregled/Sadržaji/Lokacija/Dostupnost/Pitanja. *Naslovnica*: „Vaš smještaj. Sve na svom mjestu.”, bez
   tamnih blokova. **Namjerno nije preuzeto sa slika:** chat, „polog za štetu”, „Najpopularnije”,
   Destinacije/Inspiracija, favoriti, lijevak konverzije.
-- **Postavke** (`account.html`): četiri taba Račun · Pretplata · Obavijesti · Sigurnost (`TABOVI`
+- **Postavke** (`account.html`): četiri taba Račun · Pretplata · Obavijesti · Sigurnost (Provjeren domaćin na vrhu) (`TABOVI`
   na vrhu modula — zamka kao `STATES`; `#pretplata`/`#obavijesti`/`#sigurnost` u adresi), podcrtani tabovi.
   `forms.css` bez stare tinte (akcija `var(--action)`). `c.html`: „Odlazak” neutralno, odabir u boji akcije.
   Admin: bijeli logo na tamnoj traci (tamna traka = jasno administratorski dio). Pomoć i pravne
@@ -912,7 +913,7 @@ Specifikacija vlasnika (jedinstven sustav za cijeli proizvod). **Paket 1** gotov
   mailto podrške s adresom), 6 jezika. Dashboard: ponuda (`PO_TX.potv`) kaže da je termin rezerviran tek
   kad kapara stigne; `prihvatiUpit()` pita je li kapara na računu (samo uz mogućnost `izravno` i
   `kapara_posto > 0`); panel rezervacije: deaktivirati link ako gost ne plati. Pomoć: dva odgovora u
-  Sigurnosti. Provjera domaćina / zaključani IBAN / 2FA = sljedeći paket (treba SQL i pravnika).
+  Sigurnosti. Provjera domaćina i zaključani IBAN: vidi „Provjeren domaćin” (2FA odbačen).
 
 ## Dorade vlasnika (22. 10. 2026.)
 
@@ -1025,6 +1026,30 @@ Test: `tests/recenzije.test.mjs`.
   gost ušao (`UPITI_BK` iz `bookings`). Test `tests/upiti.test.mjs`.
 - **Kapljica po kartici:** `markDirty(el)` pamti najbližu `.card`/panel sa svojim `save…` gumbom,
   pa „Spremi” na kapljici u panelu s više kartica (Cijene) sprema samo izmijenjenu.
+
+## Provjeren domaćin (23. 10. 2026., P1-3, `sql/add-host-verification.sql`)
+
+**Ručna provjera, samo plaćeni planovi** (mogućnost `provjera` u `plans.mogucnosti`, Domaćin i
+Agencija; Free je nema — vlasnik, 23. 10.; dugoročno automatika). Tablica `provjere_domacina`
+(po **računu**, ne po objektu): domaćin je samo čita, piše se kroz funkcije.
+- **Prijava u dva koraka NIJE uvjet i nije u sučelju** (vlasnik, 23. 10.: „ne znam što
+  napraviti ni zašto” — domaćini to ne razumiju). Bila je napravljena pa maknuta (commit `76ecb90`).
+  Zaštitu daje zaključani IBAN (niže).
+- **Postavke → Sigurnost** (`account.html`), prva kartica „Provjeren domaćin”: tri koraka
+  (`.prov-koraci`) i obrazac (`ucitajProvjeru()` po `moja_provjera()`; bez funkcije u bazi obrazac
+  se ipak vidi po `imaMogucnost(PLAN_ID,'provjera')`, a slanje kaže „još nije uključena”).
+  `posaljiProvjeru()`: IBAN/primatelj u `user_metadata`, pa `zatrazi_provjeru(ime, oib, obrt,
+  napomena)`. Baza odbija bez plana, s neispravnim OIB-om (kontrolna znamenka) ili bez IBAN-a;
+  uz zahtjev sama zapiše IBAN, primatelja i registracijske brojeve objekata.
+- **Admin → Provjere** (`provjere()`, `admin_provjere()`, `admin_odluci_provjeru()`): popis s
+  uputom što provjeriti, Provjeren / Odbij (razlog obavezan, vidi ga domaćin), značka na čekanju,
+  red u „Zahtijeva pažnju”.
+- **Oznaka vrijedi** (`provjeren_domacin(uid)`) dok je stanje `provjeren`, plan ima `provjera` i
+  IBAN + primatelj u računu su **isti** kao pri provjeri. `javno_o_objektu()` vraća `provjera:
+  {primatelj, od}`; `p.html` `#hero-prov` pod naslovom + `#prov` u „Sigurna izravna rezervacija”
+  (ime primatelja — gost ga uspoređuje s bankom). Dashboard Cijene: `provjeraIbana()` zaključa
+  `#dom-iban`/`#dom-primatelj` (`#dom-prov`, „Promijeni račun” uz potvrdu).
+- Test `tests/provjera.test.mjs`. **Za poslije:** fotografija rješenja o kategorizaciji uz zahtjev (`docs/odluke.md`, točka 46).
 
 ## Redizajn v2 — prijenos iz Figme u kod (u tijeku)
 

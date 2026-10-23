@@ -57,7 +57,7 @@ const FALLBACK = {
     canRemoveBranding: false,   // odluka vlasnika: oznaka i na Pro (sql/add-reviews.sql)
     canCloneProperty: true,
     whiteLabel: false,
-    mogucnosti: ["koraci", "preporuke", "ocjena", "evisitor", "stilovi", "cistacica", "izravno"],
+    mogucnosti: ["koraci", "preporuke", "ocjena", "evisitor", "stilovi", "cistacica", "izravno", "provjera"],
   },
   business: {
     id: "business",
@@ -82,7 +82,7 @@ const FALLBACK = {
     canRemoveBranding: true,
     canCloneProperty: true,
     whiteLabel: true,
-    mogucnosti: ["koraci", "preporuke", "ocjena", "evisitor", "stilovi", "cistacica", "promocija", "email", "izravno", "agencija", "brend"],
+    mogucnosti: ["koraci", "preporuke", "ocjena", "evisitor", "stilovi", "cistacica", "promocija", "email", "izravno", "agencija", "brend", "provjera"],
   },
 };
 
