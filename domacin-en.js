@@ -5,6 +5,7 @@
 // hrvatski (ne pukne). Prijevode gostinskih stranica drži jezici.js.
 
 export const T = {
+  "Ova mogućnost još nije uključena.": "This feature is not switched on yet.",
   "(bez datuma rođenja računa se kao odrasla osoba)": "(without a date of birth counted as an adult)",
   ")\">Vrati automatski": ")\">Restore automatic",
   "+ Dodaj": "+ Add",

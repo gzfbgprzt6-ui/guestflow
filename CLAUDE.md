@@ -76,6 +76,7 @@ SaaS za iznajmljivače apartmana i villa na Jadranu. Digitalni gostinski vodič 
 ├── sadrzaji.js               # KATALOG SADRŽAJA (75, 9 skupina): naziv, skupina, Lucide ikona, prijevodi — dashboard, p.html, jezici.js
 ├── drzave.js                 # države ISO 3166 za prijavu boravka (vodič bira s popisa, sprema kod) — kopija u api/_evisitor.js
 ├── slike.js                  # smanjiSliku(): fotografije prije Cloudinaryja (2048 px, JPEG 82 %) — dashboard, onboarding, add-property
+├── bez-tehnike.js            # domaćin ne vidi „pokrenite sql/…”: tehničke rečenice → „Ova mogućnost još nije uključena.” (vidi niže)
 ├── billing.js                # Stripe iz preglednika: billingStatus, startCheckout, openBillingPortal, povratak s plaćanja (dashboard, account)
 ├── assets/                   # landing/villa-1600.jpg i villa-900.jpg (naslovnica i prijava); logo/ (B2 „izlazak sunca”: odmoria.svg, odmoria-bijeli.svg, ikona.svg, ikona-svijetla.svg)
 ├── docs/must-do.md           # KRATKO za vlasnika: što je postavljeno (SQL, Vercel), što je u mainu, što ostaje
@@ -959,6 +960,16 @@ preporuke kao kartice s fotografijom (`paintRecs()`, `.mc`), uređaji uvijek otv
 **Stil objekta vrijedi i u vodiču** (`STIL.primijeni(PROP.theme)` + `stilovi.css`); CSS je
 samo na tokenima, `--bg-soft` u stilovima = `--bg-wash`. `sw.js` VERZIJA 18 (sprema i
 `stilovi.js/css`). Test: `tests/vodic.test.mjs`; snimke: `node tests/snimi-vodic.mjs <mapa>`.
+
+## Bez tehničkih poruka za domaćina (23. 10. 2026., P0-4)
+
+`bez-tehnike.js` (učitan u dashboardu): MutationObserver prepravi svaki tekst s `sql/…`,
+Supabase, Vercel, imenom ključa ili `docs/odluke` — tehnička rečenica ispada, stoji
+„Ova mogućnost još nije uključena.” (izvornik u konzoli). Poruke u kodu **i dalje pišu koji
+SQL fali** (za vlasnika i testove); `window.__ADMIN` (vlasnikov UID, isti kao `admin.html`)
+vidi ih kao prije, a `[data-tehnika]` izuzima element. Kartica „Vlastita adresa” je skrivena
+(`hidden`) dok dodatak nije spreman, „Preporuči domaćina” je u Postavkama (`section-sub`,
+`ucitajPreporuke()` na `nav('sub')`). Test: `tests/tehnika.test.mjs`.
 
 ## Redizajn v2 — prijenos iz Figme u kod (u tijeku)
 

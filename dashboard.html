@@ -2063,6 +2063,7 @@ body[data-panel="prijevodi"] .ph-akcije { display: none; }
 .sez input[type="date"]::-webkit-datetime-edit { display: inline-flex; justify-content: center; width: 100%; }
 .sez [data-sz="cijena"] { text-align: center; font-weight: 700; }
 </style>
+<script src="/bez-tehnike.js"></script>
 <script type="module">import{pokreni,prekidac}from'/domacin-jezik.js';pokreni();prekidac(document.getElementById('jezik-sw'))</script>
 </head>
 <body>
@@ -2995,7 +2996,8 @@ body[data-panel="prijevodi"] .ph-akcije { display: none; }
         <!-- LINKS -->
         <section class="editor-panel" id="section-links" data-panel-content="links">
           <!-- v5: vlastita adresa ime.odmoria.hr — plaćeni dodatak (sql/add-subdomain.sql, tablica dodaci) -->
-          <div class="card" id="adresa-card">
+          <!-- skriveno dok vlastita adresa nije gotova za prodaju (analiza 23. 10., P0-4) -->
+          <div class="card" id="adresa-card" hidden>
             <div class="card-head"><div class="card-title-wrap"><span class="card-number"><svg class="ic ic--sm" aria-hidden="true"><use href="#i-link"/></svg></span><div><h2>Vlastita adresa</h2><p>Kratka adresa za vaš objekt — za vizitku, Instagram i oglase: <b translate="no">ime.odmoria.hr</b>.</p></div></div><span class="card-hint" id="adresa-cijena"></span></div>
             <div id="adresa-body"><p class="helper">Učitavam…</p></div>
           </div>
@@ -3005,12 +3007,6 @@ body[data-panel="prijevodi"] .ph-akcije { display: none; }
               <article class="link-block light"><small>Javna stranica</small><h3>Za promociju</h3><p>Sigurno za dijeljenje na društvenim mrežama i oglasima.</p><div class="link-url"><span id="pub-url-d">—</span><button type="button" onclick="copyLink('pub')">Kopiraj</button></div></article>
               <article class="link-block"><small>Privatni vodič</small><h3>Za potvrđenog gosta</h3><p>Svaki gost dobiva svoj link uz rezervaciju — šifra vrata i Wi-Fi otključaju se sat prije njegove prijave i prestaju vrijediti nakon odlaska.</p><div class="link-url"><span>Uz rezervaciju</span><button type="button" onclick="linkZaGosta()">Napravi link</button></div></article>
             </div>
-          </div>
-          <!-- Preporuči domaćina (sql/add-referrals.sql) -->
-          <div class="card" id="prep-card">
-            <div class="card-head"><div class="card-title-wrap"><span class="card-number"><svg class="ic ic--sm" aria-hidden="true"><use href="#i-users"/></svg></span><div><h2>Preporuči domaćina</h2><p>Poznajete još nekoga tko iznajmljuje? Pošaljite mu svoj link — ovdje vidite koliko ih se registriralo i postavilo objekt.</p></div></div></div>
-            <p class="prep-nap"><svg class="ic ic--sm" aria-hidden="true"><use href="#i-sparkles"/></svg><span>Uskoro: nagrada za preporuku (npr. mjesec besplatno). Pravila još dorađujemo — preporuke koje pošaljete sada se broje.</span></p>
-            <div id="prep-body"><p class="helper">Učitavam…</p></div>
           </div>
           <div class="card">
             <div class="card-head"><div class="card-title-wrap"><span class="card-number">QR</span><div><h2>QR kod za javnu stranicu</h2><p>Postavite ga u smještaju kako bi vodič uvijek bio pri ruci.</p></div></div></div>
@@ -3102,6 +3098,12 @@ body[data-panel="prijevodi"] .ph-akcije { display: none; }
             <div class="plan-card current"><div class="tier">Free</div><div class="price">0 €</div><div class="note">bez pretplate</div><ul><li>1 objekt</li><li>5 fotografija po objektu</li><li>Javna stranica i privatni vodič</li></ul></div>
           </div>
           <p class="sub-note" id="sub-note">Online plaćanje još nije spojeno. Za promjenu plana pišite na <a href="mailto:podrska@odmoria.com">podrska@odmoria.com</a> s adrese svog računa.</p>
+          <!-- Preporuči domaćina (sql/add-referrals.sql) — u Postavkama (analiza 23. 10.) -->
+          <div class="card" id="prep-card">
+            <div class="card-head"><div class="card-title-wrap"><span class="card-number"><svg class="ic ic--sm" aria-hidden="true"><use href="#i-users"/></svg></span><div><h2>Preporuči domaćina</h2><p>Poznajete još nekoga tko iznajmljuje? Pošaljite mu svoj link — ovdje vidite koliko ih se registriralo i postavilo objekt.</p></div></div></div>
+            <p class="prep-nap"><svg class="ic ic--sm" aria-hidden="true"><use href="#i-sparkles"/></svg><span>Uskoro: nagrada za preporuku (npr. mjesec besplatno). Pravila još dorađujemo — preporuke koje pošaljete sada se broje.</span></p>
+            <div id="prep-body"><p class="helper">Učitavam…</p></div>
+          </div>
         </section>
       </div>
 
@@ -3350,6 +3352,7 @@ async function init(){
   if(pozQ){try{localStorage.setItem('odm-pozivnica',pozQ)}catch{}}
   if(!session){location.href='/login.html'+(pozQ?'?pozivnica=1':'');return}
   USER=session.user
+  window.__ADMIN=USER.id==='56549320-2c02-405c-9936-770144bd9b49'   // vlasnik aplikacije (isti UID kao admin.html) vidi tehničke poruke
   await prihvatiPozivnicu()
   upisiPreporuku()
   const n=USER.user_metadata?.full_name||USER.email||'?'
@@ -5740,7 +5743,7 @@ window.nav=(id,el)=>{
   if(id==='reservations')window.loadBookings()
   if(id==='ical')loadIcal()
   if(id==='availability')tlUcitaj()
-  if(id==='links'){ucitajPreporuke();ucitajAdresu()}
+  if(id==='links')ucitajAdresu();if(id==='sub')ucitajPreporuke()
   if(id==='tim'){ucitajCistacicu();ucitajTim()}
   if(id==='objave')obOtvori()
   if(id==='reviews')ucitajRecenzije()
