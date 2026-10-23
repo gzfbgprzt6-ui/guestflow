@@ -15,6 +15,14 @@ export default async function () {
     ok(r.sw <= r.iw, `${w}px bez prelijevanja`)
     ok(!r.sek, `${w}px javna stranica ne čita sections`)
     if (naUpit) ok(!/€/.test(r.cijena), `na upit: bez iznosa u sažetku („${r.cijena}”)`)
+    if (w === 1440) {
+      ok(await pg.$('#iq-uvjet') !== null, 'upit ima kvačicu „Odmoria nije strana ugovora”')
+      const prije = await pg.evaluate(() => (window.__CALLS || []).filter(c => c.startsWith('inquiries:insert')).length)
+      await pg.evaluate(() => { document.getElementById('iq-ime').value = 'Ana Test'; document.getElementById('iq-mail').value = 'ana@x.hr'; document.getElementById('iqf').requestSubmit() })
+      await pg.waitForTimeout(300)
+      const posle = await pg.evaluate(() => (window.__CALLS || []).filter(c => c.startsWith('inquiries:insert')).length)
+      ok(posle === prije, 'bez kvačice upit se ne šalje')
+    }
     ok(errs.length === 0, `${w}px bez JS grešaka ${errs.join(' | ')}`)
     await pg.close()
   }

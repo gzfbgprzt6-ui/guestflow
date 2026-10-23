@@ -983,6 +983,15 @@ bez stupca **odbije** (ne pušta šifre tiho); stanje „Čeka uplatu” (`bkSta
 „Šifra stiže kad domaćin potvrdi uplatu”; dok čeka, `otkljucaj()` pita bazu svake 2 min pa se
 otključa sam. `sw.js` VERZIJA 19. Testovi: `tests/uplata.test.mjs`, slučaj u `vodic.test.mjs`.
 
+## Pravni nacrt (23. 10. 2026., P0-3)
+
+`docs/pravno/nacrt-uvjeta.md` — **nacrt za pravnika, nije objavljen**: Uvjeti za domaćine,
+Uvjeti za goste, Pravila privatnosti (domaćin = voditelj za podatke gostiju, Odmoria =
+izvršitelj; popis obrađivača s Open-Meteo, Wikimedia, esm.sh…) i postupak prijave sadržaja
+(DSA). `terms.html` / `privacy.html` se **ne mijenjaju** dok vlasnik ne upiše podatke tvrtke i
+pravnik ne odobri. Već u kodu: obavezna kvačica uz upit na `p.html` (`#iq-uvjet`, „ugovor
+sklapam s domaćinom, Odmoria nije strana i ne prima uplate”).
+
 ## Redizajn v2 — prijenos iz Figme u kod (u tijeku)
 
 Figma datoteka `BVdEgki8jV7z6Oa3K6Te2h` (faze A, B, C) je vizualni izvor; postojeći
